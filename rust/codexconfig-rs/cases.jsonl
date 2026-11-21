@@ -1,0 +1,825 @@
+{"fn":"parseCodexConfigModelProvider","args":["﻿bom"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["ünïcödé"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["line1\nline2{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["ab"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["line1\nline2"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["Hello World"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["😀"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["a:b:cHELLO"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["src/a/b.ts"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["a😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["a"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":[".leading"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["hello world"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["a.b.c"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":[":"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["éabc"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["hello world日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["ΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["key_name-1"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["é"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["hello world﻿bom"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["HELLO"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["trailing."],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":[""],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["  padded  "],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["İstanbul"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["tab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["straße"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["é  padded  "],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["a:b:c"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["emoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["ns:key.path"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":[":İstanbul"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["{name} has {count} itemsabc"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["./x/**/*.jsona😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["abc"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["hello"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["emoji 👍🏽 mixtab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["trailing.Hello World"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["HELLOtab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["hello😀"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["helloHello World"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":[":a"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["./x/**/*.jsonΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["hello worldemoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["{name} has {count} itemskey_name-1"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":[":ΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["a..b"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["tab\tseparateda..b"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["a:b:cİstanbul"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["İstanbulé"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":[".leadingé"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["ünïcödéhello world"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["ünïcödéa:b:c"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["abab"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["{name} has {count} itemsa😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["a..bns:key.path"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["helloabc"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["src/a/b.ts﻿bom"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["./x/**/*.jsonHello World"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["ab.leading"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["line1\nline2ab"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["aa😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["日本語のテキストkey_name-1"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":[":key_name-1"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["﻿bom:"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["hello world:"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["straßekey_name-1"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["ΣΊΣΥΦΟΣtab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["  padded  key_name-1"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["Hello WorldHELLO"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["ns:key.pathHello World"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["İstanbulİstanbul"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["a😀b😀cünïcödé"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["key_name-1straße"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["abca"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["straße.leading"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["line1\nline2a..b"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["trailing.emoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["src/a/b.tsab"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["a.b.c.leading"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["helloé"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["hello worlda:b:c"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["aΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["Hello Worldsrc/a/b.ts"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["tab\tseparatedns:key.path"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["İstanbulkey_name-1"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["ab日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["Hello Worldé"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["tab\tseparatedemoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["{name} has {count} itemstrailing."],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["a😀b😀c.leading"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["İstanbulhello"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["HELLOΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":[":a:b:c"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["é.leading"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["abHello World"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["emoji 👍🏽 mixa:b:c"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["﻿bomtab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["a:b:cemoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["hellohello world"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["ns:key.path:"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":[".leadingsrc/a/b.ts"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":[".leadingHELLO"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["a😀b😀c  padded  "],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["日本語のテキストa..b"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["line1\nline2  padded  "],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["{name} has {count} itemsab"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["trailing.日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["a😀b😀ca"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["src/a/b.tsünïcödé"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["日本語のテキストtab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["straßeünïcödé"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["tab\tseparatedtrailing."],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["hello:"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["aHELLO"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["ünïcödéa😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["ΣΊΣΥΦΟΣ😀"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["HELLOsrc/a/b.ts"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["line1\nline2hello"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["trailing.  padded  "],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":[":tab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["tab\tseparatedİstanbul"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":[":a😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["a:b:cab"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["a.b.cHELLO"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":[".leading  padded  "],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["ΣΊΣΥΦΟΣline1\nline2"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["a😀b😀cΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["😀tab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["a..babc"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["日本語のテキストHello World"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["ΣΊΣΥΦΟΣa.b.c"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["ΣΊΣΥΦΟΣkey_name-1"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["a😀b😀csrc/a/b.ts"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["line1\nline2line1\nline2"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["ns:key.path  padded  "],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["abcé"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":[":trailing."],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["a..bİstanbul"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["  padded  😀"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["éİstanbul"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["line1\nline2src/a/b.ts"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["İstanbulline1\nline2"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["ns:key.path😀"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["ünïcödé./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["abca😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["./x/**/*.json{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["hellohello"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["src/a/b.ts:"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["{name} has {count} itemsa:b:c"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["a:b:ca"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["İstanbulHELLO"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["a:b:c😀"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["Hello Worldab"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["hellosrc/a/b.ts"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["aba😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["ns:key.patha😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["İstanbulHello World"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["emoji 👍🏽 mixhello world"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["straße日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["éhello world"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["ünïcödéab"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["emoji 👍🏽 mixünïcödé"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":[":HELLO"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":[":﻿bom"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["abchello"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["a😀b😀ca😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["HELLOa"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["  padded  a"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["HELLOHello World"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["﻿bomΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["日本語のテキストstraße"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["  padded  trailing."],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["abc{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["{name} has {count} items😀"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["ns:key.path﻿bom"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["HELLOemoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["hello.leading"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["line1\nline2é"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["hello world.leading"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["a..ba.b.c"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["straße{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["éé"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["hello worlda.b.c"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["a.b.ca"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["İstanbul  padded  "],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["ΣΊΣΥΦΟΣ./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["a..bé"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["line1\nline2ΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["hello world./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["İstanbultrailing."],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":[".leading😀"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":[".leadingkey_name-1"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["a.b.cemoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["emoji 👍🏽 mixa..b"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["trailing.:"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["héllo wörld"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["👍🏽 thumbs"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["日本語"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["ılık ırmak"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["👨‍👩‍👧 family"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["a b"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["a😀b"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["a²b x½ y①"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["aⅠb Ⅻ"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["a𐐀b 𝐀bc"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["कि ٣٤"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["Iı İi"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["K K k"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["ſ s S"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["x‍y 👨‍👩‍👧"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["a b c　d"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["١٢٣ ٤٥"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["𝟘𝟙 ²³"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["snake_case foo-bar o'neil"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["ǅungla Ǆ"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["one\r\ntwo threefour"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["café café"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["ΣΑΣ σας ς"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["日本語のテキスト","😀"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["HELLO","  padded  "],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["é","abc"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["tab\tseparatedabc","tab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["a:b:c",":"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["tab\tseparated",":line1\nline2"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["straße","tab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["emoji 👍🏽 mix","👍🏽 "],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["😀","ünïcödé"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["a.b.c","HELLO"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["a..b","line1\nline2"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["trailing.","key_name-1"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["ns:key.path","hello world"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["a.b.c","c"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":[".leading",".leading"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["テ","日本語のテキストé"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":[" PADD","  padded  "],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["a.b.c","b"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["emoji 👍🏽 mix","a..b"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["  padded  ","straße"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["trailing.ab","a.b.c"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["emoji 👍🏽 mix","aa"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["abcΣΊΣΥΦΟΣ","a:b:c"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["İstanbul:","BUL"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["ab","ΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["key_name-1","abc"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["Hello World","Hello World"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["Hello World","ΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["﻿bom","{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["emoji 👍🏽 mix","ünïcödéHello World"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["a😀b😀c","{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["a.b.c","a:b:c./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["helloab","日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["tab\tseparated","d"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["a.b.c","ns:key.path"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["ïcödé{name} has {count} it","ünïcödé{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["İstanbul","b"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["HELLO","é"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["src/a/b.ts","S"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["😀ns:key.path","ΣΊΣΥΦΟΣstraße"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["  padded  "," "],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["line1\nline2","key_name-1"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["a:b:c","İstanbul"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["a","A"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["HELLO","a:b:c"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["abc","Hello World"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["ab","b"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["l","İstanbul"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":[".leading","  padded  "],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["emoji 👍🏽","emoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["キス","日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["ns:key.path","a"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["﻿bom","./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["HELLOkey_name-1","trailing."],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["d",".leading"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["  padded  ","ab"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["","trailing."],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["b","﻿bom"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["HELLOtrailing.","ns:key.path"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["ab","Hello World"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["abc","c"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["trailing.","g"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":[":",":"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":[":",".leading"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["a:b:ctrailing.","straßeHELLO"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["src/a/b.ts","{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":[".leading","a..bİstanbul"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["key_name-1","a:b:c"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["tab\tseparated","hello world./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["src/a/b.ts","tab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["ab","😀"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["ab","tab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["ab","ünïcödéhello world"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["a.b.c{name} has {count} items","ab"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["ab","abc"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["a","straße"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["O","HELLO"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["ünïcödé","a..b"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["é",""],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["asrc/a/b.ts","ns:key.path"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["hello","ns:key.path"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["emoji 👍🏽 mix","a:b:c"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["a.b.c﻿bom","b.c﻿bom"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["a..b","src/a/b.ts"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["tab\tseparated","ab"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["İstanbul","ul"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["src/a/b.tsünïcödé","ünïcödé"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["/*.","./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["./x/**/*.json",""],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["tab\tseparated","{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["😀","😀"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["src/a/b.ts.leading","İstanbul"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":[".leadingkey_name-1","a😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["İstanbul","日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["a😀b😀c","c"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["src/a/b.ts","  padded  "],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["","Hello WorldHELLO"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":[".leading","hello"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["./x/**/*.jsonΣΊΣΥΦΟΣ","key_name-1"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["ü","Hello Worldünïcödé"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["ünïcödé","a😀b😀chello world"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["abc","a😀b😀cab"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["hello.leading","aabc"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["/a/","src/a/b.ts"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["","a😀b😀cİstanbul"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["moji 👍🏽 ","emoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["  padded  ","😀"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["abc","Hello WorldΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["trailing.","﻿bom"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["{name} has {count} itemsa.b.c","{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["abc","B"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["hello world","  padded  "],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["a","  padded  a..b"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["a.b.cabc","./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["a😀b😀cns:key.path","ΣΊΣΥΦΟΣ😀"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["😀","./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["abab","HELLO"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["a..bemoji 👍🏽 mix","abcab"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["straße","a😀b😀cé"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["a..b","emoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["hello","abΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["hello","a..bHello World"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["a","./x/**/*.jsonkey_name-1"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["hello","l"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["日本語のテキスト","a😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["a.b.c","😀"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["trailing.","abc"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["tab\tseparated","trailing."],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["a..b","./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":[" has {coun","{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["  padded  ","ΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["abc","hello worldİstanbul"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["Hello Worldsrc/a/b.ts","src/a/b.tstab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["a:b:c","straße"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["a:b:c","hello"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["./x/**/*.json","﻿bom"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["a..bkey_name-1","{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["ΣΊΣΥΦΟΣ","ΣΥΦΟ"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["ünïcödéa","tab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["./x/**/*.json","ns:key.path"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["a","a"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["İstanbul","hello worlda"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["a","😀"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["trailing.","é"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["World","Hello World"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["ns:key.path","src/a/b.ts.leading"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["H","Hello World"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["ΣΊΣΥΦΟΣ","ünïcödé"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["ab﻿bom","a..b"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["hello world","a.b.c"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["{name} has {count} items","a.b.c"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["a:b:cHello World","﻿boma:b:c"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["HELLOsrc/a/b.ts","日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["a😀b😀c","日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["ΣΊΣΥΦΟΣé","ns:key.path"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["HELLOkey_name-1","key_name-1trailing."],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["ünïcödé","ÏCÖD"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":[":b:c","a:b:c"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["/x/**/*.jso","./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["key_name-1emoji 👍🏽 mix","😀"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["ΣΊΣΥΦΟΣ","key_name-1"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["","日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["separ","tab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["a.b.cünïcödé","ö"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["ab","line1\nline2"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["é","日本語のテキストab"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["日本語のテキスト","ns:key.path"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["tab\tseparated","İstanbul"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["2","line1\nline2"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["é","ünïcödé"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["hello","emoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["./x/**/*.json","a..b"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["a.b.c","ünïcödé"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["ns:key.path","{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["abhello world","İstanbul"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":[".leading","é"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["hello","key_name-1"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["ΣΊΣΥΦΟΣ","tab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["straße","line1\nline2"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["trailing.","straße"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["a:b:c",":c"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["ünïcödé","{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["  padded  ","hello worldemoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":[":a:b:c","a:b:c"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["ünïcödé","ö"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["  padded  ﻿bom","a..b"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["a..b","b"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["emoji 👍🏽 mix"," 👍🏽"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["abc","😀"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["Hello Worldünïcödé","ΣΊΣΥΦΟΣİstanbul"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["ünïcödésrc/a/b.ts","a😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["日本語のテキスト","tab\tseparatedstraße"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["日本語のテキスト",":"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["{name} has {count} items","😀"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["{name} has {count} items","m"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["ns:key.path","é"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":[":",""],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["trailing.","hello"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["a😀b😀c","😀"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["ns:key.path","日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["héllo wörld","😀"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["👍🏽 thumbs","😀"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["日本語","😀"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["","😀"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["é","😀"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["İstanbul","😀"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["straße","😀"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["ılık ırmak","😀"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["👨‍👩‍👧 family","😀"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["a b","😀"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["ΣΊΣΥΦΟΣ","😀"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["a😀b","😀"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["﻿bom","😀"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["a²b x½ y①","😀"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["aⅠb Ⅻ","😀"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["a𐐀b 𝐀bc","😀"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["कि ٣٤","😀"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["Iı İi","😀"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["K K k","😀"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["ſ s S","😀"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["x‍y 👨‍👩‍👧","😀"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["a b c　d","😀"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["١٢٣ ٤٥","😀"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["𝟘𝟙 ²³","😀"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["snake_case foo-bar o'neil","😀"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["ǅungla Ǆ","😀"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["one\r\ntwo threefour","😀"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["café café","😀"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["ΣΑΣ σας ς","😀"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["日本語のテキスト","héllo wörld"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["日本語のテキスト","👍🏽 thumbs"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["日本語のテキスト","日本語"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["日本語のテキスト",""],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["日本語のテキスト","é"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["日本語のテキスト","İstanbul"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["日本語のテキスト","straße"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["日本語のテキスト","ılık ırmak"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["日本語のテキスト","👨‍👩‍👧 family"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["日本語のテキスト","a b"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["日本語のテキスト","ΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["日本語のテキスト","a😀b"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["日本語のテキスト","﻿bom"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["日本語のテキスト","a²b x½ y①"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["日本語のテキスト","aⅠb Ⅻ"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["日本語のテキスト","a𐐀b 𝐀bc"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["日本語のテキスト","कि ٣٤"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["日本語のテキスト","Iı İi"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["日本語のテキスト","K K k"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["日本語のテキスト","ſ s S"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["日本語のテキスト","x‍y 👨‍👩‍👧"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["日本語のテキスト","a b c　d"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["日本語のテキスト","١٢٣ ٤٥"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["日本語のテキスト","𝟘𝟙 ²³"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["日本語のテキスト","snake_case foo-bar o'neil"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["日本語のテキスト","ǅungla Ǆ"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["日本語のテキスト","one\r\ntwo threefour"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["日本語のテキスト","café café"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["日本語のテキスト","ΣΑΣ σας ς"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["Hello World"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["hello world"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["abcΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["日本語のテキストa..b"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["﻿bom"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["ns:key.path"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["a..b"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["ns:key.pathemoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["İstanbula😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["İstanbul"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["﻿bomtrailing."],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["abc"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["HELLO"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":[":"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["trailing."],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["emoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["ΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["a😀b😀ctab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["a.b.c"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["a:b:c"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["a😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["Hello Worldstraße"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["  padded  "],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["﻿bomtab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["key_name-1hello world"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["a"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["src/a/b.ts"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["😀"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["😀trailing."],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["line1\nline2ab"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["ünïcödé"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["Hello World:"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":[""],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["straße"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["é{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["key_name-1"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":[".leadinghello"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["ünïcödéhello"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["ab"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["HELLOline1\nline2"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["emoji 👍🏽 mix.leading"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["İstanbulHELLO"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":[".leading"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["key_name-1abc"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["line1\nline2"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["ns:key.pathkey_name-1"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["HELLOHELLO"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["﻿bom{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["tab\tseparated😀"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["straßea.b.c"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["é"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["src/a/b.tsstraße"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["日本語のテキストtab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["tab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["key_name-1Hello World"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["hellotab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["tab\tseparatedhello"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["{name} has {count} items😀"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":[":line1\nline2"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["İstanbultab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["ΣΊΣΥΦΟΣtab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["trailing.日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["ns:key.pathé"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["abca😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["Hello Worldİstanbul"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["hello"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["hello worlda:b:c"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["straßea😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["helloé"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["😀src/a/b.ts"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["a:b:ca"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["a😀b😀ca:b:c"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["abchello world"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["ΣΊΣΥΦΟΣhello world"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["  padded  İstanbul"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["日本語のテキスト  padded  "],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["a..b:"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["trailing.a:b:c"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["a:b:ctab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["﻿bom﻿bom"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["ΣΊΣΥΦΟΣ./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["ns:key.patha:b:c"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":[":  padded  "],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["tab\tseparatedHello World"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["😀  padded  "],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["key_name-1ünïcödé"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["ΣΊΣΥΦΟΣab"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["éemoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["ΣΊΣΥΦΟΣünïcödé"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["HELLOns:key.path"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["src/a/b.tsemoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["a..bemoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":[":a..b"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["  padded  ﻿bom"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["./x/**/*.jsontab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["straßeHELLO"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["😀﻿bom"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["ΣΊΣΥΦΟΣİstanbul"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["aa:b:c"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["./x/**/*.jsonhello world"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["日本語のテキストΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["😀:"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["  padded  ünïcödé"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":[".leadingsrc/a/b.ts"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["emoji 👍🏽 mixns:key.path"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["a..ba:b:c"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["aa..b"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["😀Hello World"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["key_name-1a"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":[".leading.leading"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["trailing.HELLO"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["İstanbulsrc/a/b.ts"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["a😀b😀c﻿bom"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["  padded  Hello World"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["./x/**/*.jsoné"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["Hello Worldtab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["  padded  .leading"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["é./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["ab:"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["tab\tseparatedünïcödé"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["ns:key.patha..b"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["a.b.c.leading"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["a..ba.b.c"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["a:b:ctrailing."],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["﻿bomΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["line1\nline2.leading"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["a😀b😀cHELLO"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["a.b.cHello World"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["straßetrailing."],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["😀abc"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["akey_name-1"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["straßea..b"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["ΣΊΣΥΦΟΣ﻿bom"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["straße./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["  padded  hello world"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["aHELLO"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["src/a/b.tsa😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":[".leadingkey_name-1"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["abctab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":[".leadingtab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["abcHELLO"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["hello😀"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["straßeé"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["{name} has {count} items日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["😀😀"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["ns:key.pathabc"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["ns:key.pathstraße"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["a😀b😀cİstanbul"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["ΣΊΣΥΦΟΣ😀"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["straße😀"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":[":é"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["ΣΊΣΥΦΟΣ  padded  "],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["﻿bomHELLO"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["a..b﻿bom"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["{name} has {count} itemsHello World"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["aé"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["helloa.b.c"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["a:"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["src/a/b.tsab"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["helloΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["helloline1\nline2"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["a😀b😀chello world"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["ΣΊΣΥΦΟΣHello World"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["{name} has {count} items.leading"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["😀./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["  padded  😀"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["straße.leading"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["a:b:ca.b.c"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["src/a/b.tshello"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["straßeİstanbul"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["key_name-1﻿bom"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":[".leading日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["key_name-1İstanbul"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["src/a/b.tssrc/a/b.ts"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["abΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["étrailing."],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["helloab"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["src/a/b.tstrailing."],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["tab\tseparated.leading"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["tab\tseparatedline1\nline2"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["trailing.İstanbul"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["a..bns:key.path"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["😀straße"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["line1\nline2😀"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["﻿bomHello World"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["{name} has {count} itemshello world"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["  padded  a"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["tab\tseparatedsrc/a/b.ts"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["日本語のテキストa.b.c"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["tab\tseparatedΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["  padded  ΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["ünïcödéΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["aemoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["a:b:cemoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["ns:key.pathhello"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["{name} has {count} itemsΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["src/a/b.tsΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["héllo wörld"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["👍🏽 thumbs"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["日本語"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["ılık ırmak"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["👨‍👩‍👧 family"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["a b"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["a😀b"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["a²b x½ y①"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["aⅠb Ⅻ"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["a𐐀b 𝐀bc"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["कि ٣٤"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["Iı İi"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["K K k"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["ſ s S"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["x‍y 👨‍👩‍👧"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["a b c　d"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["١٢٣ ٤٥"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["𝟘𝟙 ²³"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["snake_case foo-bar o'neil"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["ǅungla Ǆ"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["one\r\ntwo threefour"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["café café"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["ΣΑΣ σας ς"],"ok":{"$undefined":true}}
+{"fn":"resolveCodexHome","args":[true],"ok":"/Users/devin/.codex"}
+{"fn":"resolveCodexHome","args":[0],"ok":"/Users/devin/.codex"}
+{"fn":"resolveCodexHome","args":[{"a":"b"}],"ok":"/Users/devin/.codex"}
+{"fn":"resolveCodexHome","args":[null],"error":"Cannot read properties of null (reading 'CODEX_HOME')"}
+{"fn":"resolveCodexHome","args":[[]],"ok":"/Users/devin/.codex"}
+{"fn":"resolveCodexHome","args":[{}],"ok":"/Users/devin/.codex"}
+{"fn":"resolveCodexHome","args":["x"],"ok":"/Users/devin/.codex"}
+{"fn":"resolveCodexHome","args":[{"a":{"b":"c"}}],"ok":"/Users/devin/.codex"}
+{"fn":"resolveCodexHome","args":[{"$undefined":true}],"ok":"/Users/devin/.codex"}
+{"fn":"resolveCodexHome","args":[["a",1]],"ok":"/Users/devin/.codex"}
+{"fn":"resolveCodexHome","args":[],"ok":"/Users/devin/.codex"}
+{"fn":"readCodexConfigContent","args":[{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"readCodexConfigContent","args":["x"],"ok":{"$undefined":true}}
+{"fn":"readCodexConfigContent","args":[],"ok":{"$undefined":true}}
+{"fn":"readCodexConfigContent","args":[true],"ok":{"$undefined":true}}
+{"fn":"readCodexConfigContent","args":[[]],"ok":{"$undefined":true}}
+{"fn":"readCodexConfigContent","args":[["a",1]],"ok":{"$undefined":true}}
+{"fn":"readCodexConfigContent","args":[null],"error":"Cannot read properties of null (reading 'CODEX_HOME')"}
+{"fn":"readCodexConfigContent","args":[0],"ok":{"$undefined":true}}
+{"fn":"readCodexConfigContent","args":[{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"readCodexConfigContent","args":[{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"readCodexConfigContent","args":[{}],"ok":{"$undefined":true}}
+{"fn":"readActiveCodexProviderEnvKey","args":[],"ok":{"$undefined":true}}
+{"fn":"readActiveCodexProviderEnvKey","args":[[]],"ok":{"$undefined":true}}
+{"fn":"readActiveCodexProviderEnvKey","args":[{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"readActiveCodexProviderEnvKey","args":[["a",1]],"ok":{"$undefined":true}}
+{"fn":"readActiveCodexProviderEnvKey","args":[true],"ok":{"$undefined":true}}
+{"fn":"readActiveCodexProviderEnvKey","args":["x"],"ok":{"$undefined":true}}
+{"fn":"readActiveCodexProviderEnvKey","args":[{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"readActiveCodexProviderEnvKey","args":[{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"readActiveCodexProviderEnvKey","args":[null],"error":"Cannot read properties of null (reading 'CODEX_HOME')"}
+{"fn":"readActiveCodexProviderEnvKey","args":[0],"ok":{"$undefined":true}}
+{"fn":"readActiveCodexProviderEnvKey","args":[{}],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["model_provider = \"azure\"\nmodel_provider = \"b\"\n"],"ok":"azure"}
+{"fn":"parseCodexConfigModelProvider","args":["model = \"x\"\n# c\n\nmodel_provider = \"azure\"\n"],"ok":"azure"}
+{"fn":"parseCodexConfigModelProvider","args":["[model_providers.portkey]\nmodel_provider = \"ignored\"\n"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["[other]\nmodel_provider = \"x\"\nmodel_provider2 = \"y\"\n"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["model_provider= \"azure\"\n"],"ok":"azure"}
+{"fn":"parseCodexConfigModelProvider","args":["model_provider   =   \"azure\"\n"],"ok":"azure"}
+{"fn":"parseCodexConfigModelProvider","args":["model_provider = 'azure'\n"],"ok":"azure"}
+{"fn":"parseCodexConfigModelProvider","args":["model_provider = \"azure\" trailing\n"],"ok":"azure"}
+{"fn":"parseCodexConfigModelProvider","args":["model_provider = \"\"\n"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["xmodel_provider = \"azure\"\n"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["model_provider=\"azure\"\n"],"ok":"azure"}
+{"fn":"parseCodexConfigModelProvider","args":["model_provider = \"a\"b\"c\"\n"],"ok":"a"}
+{"fn":"parseCodexConfigModelProvider","args":["MODEL_PROVIDER = \"azure\"\n"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["model_provider = \"azure\n"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["[x]\nmodel_provider = \"azure\"\n"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["# model_provider = \"azure\"\n"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["   model_provider = \"azure\"\n"],"ok":"azure"}
+{"fn":"parseCodexConfigModelProvider","args":["  [other]  \nmodel_provider = \"azure\"\n"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["[]\nmodel_provider = \"azure\"\n"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["[\nmodel_provider = \"azure\"\n"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":[""],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigModelProvider","args":["model_provider"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["model_provider = \"azure\"\n\n[model_providers.azure]\nenv_key = \"AZURE_KEY\"\n","azure"],"ok":"AZURE_KEY"}
+{"fn":"parseCodexConfigProviderEnvKey","args":["model_provider = \"azure\"\n\n[model_providers.azure]\nenv_key = \"AZURE_KEY\"\n","other"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["[model_providers.azure]\nenv_key = \"K1\"\nenv_key = \"K2\"\n","azure"],"ok":"K1"}
+{"fn":"parseCodexConfigProviderEnvKey","args":["[model_providers.azure]\nother = \"x\"\nenv_key = \"K\"\n","azure"],"ok":"K"}
+{"fn":"parseCodexConfigProviderEnvKey","args":["[model_providers.\"a-b_c\"]\nenv_key = \"K\"\n","a-b_c"],"ok":"K"}
+{"fn":"parseCodexConfigProviderEnvKey","args":["[model_providers.'sq']\nenv_key = \"K\"\n","sq"],"ok":"K"}
+{"fn":"parseCodexConfigProviderEnvKey","args":["[model_providers.a b]\nenv_key = \"K\"\n","a"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["[model_providers.a]x\nenv_key = \"K\"\n","a"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["[ model_providers.a ]\nenv_key = \"K\"\n","a"],"ok":"K"}
+{"fn":"parseCodexConfigProviderEnvKey","args":["[model_providers.a]\nenv_key = \"K\" extra\n","a"],"ok":"K"}
+{"fn":"parseCodexConfigProviderEnvKey","args":["[model_providers.a]\nenv_key=\"K\"\n","a"],"ok":"K"}
+{"fn":"parseCodexConfigProviderEnvKey","args":["[model_providers.a]\nenv_key = 'K'\n","a"],"ok":"K"}
+{"fn":"parseCodexConfigProviderEnvKey","args":["[model_providers.a]\nxenv_key = \"K\"\n","a"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["[model_providers.a]\nenv_key = \"\"\n","a"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["[model_providers.a]\n# env_key = \"K\"\n","a"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["[model_providers.a]\n[x]\nenv_key = \"K\"\n","a"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["[model_providers.a]\n[model_providers.b]\nenv_key = \"K\"\n","b"],"ok":"K"}
+{"fn":"parseCodexConfigProviderEnvKey","args":["[model_providers.a]\n[model_providers.b]\nenv_key = \"K\"\n","a"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["[model_providers.a]\nenv_key = \"K\"\n[model_providers.a]\nenv_key = \"K2\"\n","a"],"ok":"K"}
+{"fn":"parseCodexConfigProviderEnvKey","args":["model_providers.a = \"x\"\nenv_key = \"K\"\n","a"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["[model_providers]\nenv_key = \"K\"\n","a"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["[model_providers.]\nenv_key = \"K\"\n","a"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["[model_providers.a\t]\nenv_key = \"K\"\n","a"],"ok":"K"}
+{"fn":"parseCodexConfigProviderEnvKey","args":["[model_providers.\"a\"extra]\nenv_key = \"K\"\n","a"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigProviderEnvKey","args":["[model_providers.a]\nenv_key = \"K\"","a"],"ok":"K"}
+{"fn":"parseCodexConfigProviderEnvKey","args":["model_provider = \"azure\"\n\n[model_providers.azure]\nenv_key = \"AZURE_KEY\"\n",""],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["model_provider = \"azure\"\n\n[model_providers.azure]\nenv_key = \"AZURE_KEY\"\n"],"ok":"AZURE_KEY"}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["model_provider = \"openai\"\n"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["model_provider = \"openai\"\n[model_providers.openai]\nenv_key = \"K\"\n"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":[""],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["model_provider = \"a\"\n"],"ok":{"$undefined":true}}
+{"fn":"parseCodexConfigActiveProviderEnvKey","args":["model_provider = \"a\"\n[model_providers.b]\nenv_key = \"K\"\n"],"ok":{"$undefined":true}}
+{"fn":"resolveCodexHome","args":[{}],"ok":"/Users/devin/.codex"}
+{"fn":"readCodexConfigContent","args":[{}],"ok":{"$undefined":true}}
+{"fn":"readActiveCodexProviderEnvKey","args":[{}],"ok":{"$undefined":true}}
+{"fn":"resolveCodexHome","args":[{"CODEX_HOME":"/tmp/cc_home1"}],"ok":"/tmp/cc_home1"}
+{"fn":"readCodexConfigContent","args":[{"CODEX_HOME":"/tmp/cc_home1"}],"ok":"model_provider = \"my-company-proxy\"\n\n[model_providers.\"my-company-proxy\"]\nenv_key = \"MY_COMPANY_PROXY_KEY\"\n"}
+{"fn":"readActiveCodexProviderEnvKey","args":[{"CODEX_HOME":"/tmp/cc_home1"}],"ok":"MY_COMPANY_PROXY_KEY"}
+{"fn":"resolveCodexHome","args":[{"CODEX_HOME":"  /tmp/cc_home1  "}],"ok":"/tmp/cc_home1"}
+{"fn":"readCodexConfigContent","args":[{"CODEX_HOME":"  /tmp/cc_home1  "}],"ok":"model_provider = \"my-company-proxy\"\n\n[model_providers.\"my-company-proxy\"]\nenv_key = \"MY_COMPANY_PROXY_KEY\"\n"}
+{"fn":"readActiveCodexProviderEnvKey","args":[{"CODEX_HOME":"  /tmp/cc_home1  "}],"ok":"MY_COMPANY_PROXY_KEY"}
+{"fn":"resolveCodexHome","args":[{"CODEX_HOME":""}],"ok":"/Users/devin/.codex"}
+{"fn":"readCodexConfigContent","args":[{"CODEX_HOME":""}],"ok":{"$undefined":true}}
+{"fn":"readActiveCodexProviderEnvKey","args":[{"CODEX_HOME":""}],"ok":{"$undefined":true}}
+{"fn":"resolveCodexHome","args":[{"CODEX_HOME":"   "}],"ok":"/Users/devin/.codex"}
+{"fn":"readCodexConfigContent","args":[{"CODEX_HOME":"   "}],"ok":{"$undefined":true}}
+{"fn":"readActiveCodexProviderEnvKey","args":[{"CODEX_HOME":"   "}],"ok":{"$undefined":true}}
+{"fn":"resolveCodexHome","args":[{"CODEX_HOME":null}],"ok":"/Users/devin/.codex"}
+{"fn":"readCodexConfigContent","args":[{"CODEX_HOME":null}],"ok":{"$undefined":true}}
+{"fn":"readActiveCodexProviderEnvKey","args":[{"CODEX_HOME":null}],"ok":{"$undefined":true}}
+{"fn":"resolveCodexHome","args":[{"CODEX_HOME":5}],"error":"env.CODEX_HOME?.trim is not a function"}
+{"fn":"readCodexConfigContent","args":[{"CODEX_HOME":5}],"error":"env.CODEX_HOME?.trim is not a function"}
+{"fn":"readActiveCodexProviderEnvKey","args":[{"CODEX_HOME":5}],"error":"env.CODEX_HOME?.trim is not a function"}
+{"fn":"resolveCodexHome","args":[{"CODEX_HOME":"/nonexistent_dir_xyz"}],"ok":"/nonexistent_dir_xyz"}
+{"fn":"readCodexConfigContent","args":[{"CODEX_HOME":"/nonexistent_dir_xyz"}],"ok":{"$undefined":true}}
+{"fn":"readActiveCodexProviderEnvKey","args":[{"CODEX_HOME":"/nonexistent_dir_xyz"}],"ok":{"$undefined":true}}
+{"fn":"resolveCodexHome","args":[{"CODEX_HOME":"/tmp/cc_home2"}],"ok":"/tmp/cc_home2"}
+{"fn":"readCodexConfigContent","args":[{"CODEX_HOME":"/tmp/cc_home2"}],"ok":"model_provider = \"openai\"\n"}
+{"fn":"readActiveCodexProviderEnvKey","args":[{"CODEX_HOME":"/tmp/cc_home2"}],"ok":{"$undefined":true}}
+{"fn":"resolveCodexHome","args":[{"CODEX_HOME":"/tmp/cc_empty"}],"ok":"/tmp/cc_empty"}
+{"fn":"readCodexConfigContent","args":[{"CODEX_HOME":"/tmp/cc_empty"}],"ok":{"$undefined":true}}
+{"fn":"readActiveCodexProviderEnvKey","args":[{"CODEX_HOME":"/tmp/cc_empty"}],"ok":{"$undefined":true}}
+{"fn":"resolveCodexHome","args":[{"OTHER":"x"}],"ok":"/Users/devin/.codex"}
+{"fn":"readCodexConfigContent","args":[{"OTHER":"x"}],"ok":{"$undefined":true}}
+{"fn":"readActiveCodexProviderEnvKey","args":[{"OTHER":"x"}],"ok":{"$undefined":true}}
+{"fn":"resolveCodexHome","args":[null],"error":"Cannot read properties of null (reading 'CODEX_HOME')"}

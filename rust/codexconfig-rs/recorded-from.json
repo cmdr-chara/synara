@@ -1,0 +1,17 @@
+{
+  "unit": "packages/shared/src/codexConfig.ts",
+  "files": 1,
+  "fingerprint": "fb8730ac64682135",
+  "coverage": {
+    "lines": 79,
+    "reached": 79,
+    "files": [
+      {
+        "file": "packages/shared/src/codexConfig.ts",
+        "lines": 79,
+        "reached": 79,
+        "missed": ""
+      }
+    ]
+  }
+}

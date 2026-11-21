@@ -1,0 +1,983 @@
+{"fn":"sanitizeDesktopUpdateFailureReason","args":[0],"ok":{"$undefined":true}}
+{"fn":"sanitizeDesktopUpdateFailureReason","args":[["a",1]],"ok":{"$undefined":true}}
+{"fn":"sanitizeDesktopUpdateFailureReason","args":[{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"sanitizeDesktopUpdateFailureReason","args":[{}],"ok":{"$undefined":true}}
+{"fn":"sanitizeDesktopUpdateFailureReason","args":[{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"sanitizeDesktopUpdateFailureReason","args":["x"],"ok":{"$undefined":true}}
+{"fn":"sanitizeDesktopUpdateFailureReason","args":[null],"ok":{"$undefined":true}}
+{"fn":"sanitizeDesktopUpdateFailureReason","args":[[]],"ok":{"$undefined":true}}
+{"fn":"sanitizeDesktopUpdateFailureReason","args":[true],"ok":{"$undefined":true}}
+{"fn":"sanitizeDesktopUpdateFailureReason","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6}],"ok":{"$undefined":true}}
+{"fn":"sanitizeDesktopUpdateFailureReason","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7}],"ok":{"$undefined":true}}
+{"fn":"sanitizeDesktopUpdateFailureReason","args":[[3,1,2]],"ok":{"$undefined":true}}
+{"fn":"classifyDesktopUpdateFailure","args":[[]],"ok":"unknown"}
+{"fn":"classifyDesktopUpdateFailure","args":[{"a":{"b":"c"}}],"ok":"unknown"}
+{"fn":"classifyDesktopUpdateFailure","args":[null],"ok":"unknown"}
+{"fn":"classifyDesktopUpdateFailure","args":[{"a":"b"}],"ok":"unknown"}
+{"fn":"classifyDesktopUpdateFailure","args":["x"],"ok":"unknown"}
+{"fn":"classifyDesktopUpdateFailure","args":[true],"ok":"unknown"}
+{"fn":"classifyDesktopUpdateFailure","args":[{}],"ok":"unknown"}
+{"fn":"classifyDesktopUpdateFailure","args":[0],"ok":"unknown"}
+{"fn":"classifyDesktopUpdateFailure","args":[["a",1]],"ok":"unknown"}
+{"fn":"classifyDesktopUpdateFailure","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6}],"ok":"unknown"}
+{"fn":"classifyDesktopUpdateFailure","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7}],"ok":"unknown"}
+{"fn":"classifyDesktopUpdateFailure","args":[[3,1,2]],"ok":"unknown"}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"ΣΊΣΥΦΟΣ","stack":{"$undefined":true}}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"emoji 👍🏽 mixΣΊΣΥΦΟΣ","stack":"é"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"a":{"b":"c"}}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"ΣΊΣΥΦΟΣ","stack":"emoji 👍🏽 mix"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"hello world"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"src/a/b.ts","stack":"😀"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"./x/**/*.json","stack":"Hello World"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"line1\nline2","stack":{"$undefined":true}}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"a.b.c","stack":{"$undefined":true}}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"ns:key.path","stack":{"$undefined":true}}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"  padded  ","stack":"emoji 👍🏽 mix"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"","stack":"😀HELLO"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"日本語のテキスト","stack":"abc日本語のテキスト"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"src/a/b.ts","stack":{"$undefined":true}}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"Hello Worlda😀b😀c","stack":"日本語のテキスト"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"emoji 👍🏽 mix","stack":{"$undefined":true}}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"İstanbula:b:c"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"İstanbul","stack":"a:b:c"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"hello world","stack":"./x/**/*.json"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"line1\nline2","stack":"emoji 👍🏽 mix"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"éünïcödé"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"hello","stack":{"$undefined":true}}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"hello","stack":"src/a/b.ts"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"emoji 👍🏽 mix","stack":"hello world"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"hello","stack":"straße"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[0],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"hello world","stack":{"$undefined":true}}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"{name} has {count} items"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"a:b:c","stack":"trailing.a😀b😀c"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"./x/**/*.json./x/**/*.json","stack":"﻿bom"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"trailing.","stack":"ünïcödé"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"emoji 👍🏽 mix"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"a..b","stack":"emoji 👍🏽 mix"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"hellohello","stack":"  padded  "}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"a","stack":{"$undefined":true}}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"a:b:c","stack":"straße"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"é"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"a..b","stack":""}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"tab\tseparated","stack":{"$undefined":true}}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"HELLO","stack":{"$undefined":true}}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[true],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"a.b.c"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[["a",1]],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"abc","stack":{"$undefined":true}}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"./x/**/*.json"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"hello","stack":"./x/**/*.json"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"src/a/b.ts","stack":"tab\tseparated.leading"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"tab\tseparated","stack":{"$undefined":true}}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"a","stack":"HELLO"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"straßestraße","stack":{"$undefined":true}}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"😀","stack":{"$undefined":true}}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"line1\nline2","stack":"hello world"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"İstanbul"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"ΣΊΣΥΦΟΣ","stack":"😀  padded  "}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"é","stack":{"$undefined":true}}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"a"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"key_name-1"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"a:b:c","stack":{"$undefined":true}}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"a","stack":{"$undefined":true}}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"İstanbul","stack":{"$undefined":true}}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":":","stack":"src/a/b.ts"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"ünïcödé","stack":"a"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"src/a/b.ts{name} has {count} items","stack":{"$undefined":true}}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"./x/**/*.json","stack":{"$undefined":true}}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"a.b.c","stack":"{name} has {count} items"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"straße","stack":{"$undefined":true}}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"Hello World"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"a:b:c","stack":"trailing.ns:key.path"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"a"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"日本語のテキスト"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"a:b:c"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"key_name-1","stack":{"$undefined":true}}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"trailing.","stack":"line1\nline2"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[null],"error":"Cannot read properties of null (reading 'message')"}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"straße","stack":"{name} has {count} items"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"./x/**/*.json"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"﻿bom","stack":{"$undefined":true}}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"line1\nline2trailing.","stack":"İstanbul"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"﻿bom","stack":{"$undefined":true}}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"trailing."}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"  padded  "}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"abc","stack":"é"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"a","stack":"tab\tseparated"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"key_name-1"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":["x"],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"a:b:chello","stack":{"$undefined":true}}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"a😀b😀c.leading"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":".leading日本語のテキスト","stack":{"$undefined":true}}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"  padded  a:b:c","stack":"ab"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"abc","stack":{"$undefined":true}}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"a..b﻿bom","stack":{"$undefined":true}}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"a..b","stack":"é"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"abc","stack":"straßeünïcödé"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":".leading","stack":"HELLO"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"a😀b😀c","stack":"ab"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"straße","stack":".leadingline1\nline2"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":".leading.leading","stack":{"$undefined":true}}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"a:b:c","stack":{"$undefined":true}}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"é","stack":{"$undefined":true}}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"aba😀b😀c","stack":"日本語のテキスト"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"hello world"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"line1\nline2emoji 👍🏽 mix"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"src/a/b.ts.leading","stack":{"$undefined":true}}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"﻿bom","stack":"key_name-1İstanbul"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"","stack":{"$undefined":true}}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"a😀b😀c"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"./x/**/*.json","stack":"﻿bom"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"a":"b"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"key_name-1","stack":":"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"src/a/b.ts","stack":"İstanbul"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"日本語のテキスト","stack":"😀src/a/b.ts"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"hello world","stack":"Hello World"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"a.b.ckey_name-1"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"tab\tseparated","stack":"key_name-1"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"ns:key.path","stack":"HELLO"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"Hello World","stack":{"$undefined":true}}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"  padded  ","stack":"{name} has {count} items"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"hello"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"hello world","stack":"tab\tseparateda:b:c"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"hello world","stack":"ünïcödéabc"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"ünïcödé﻿bom","stack":"line1\nline2"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"ünïcödé","stack":{"$undefined":true}}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"Hello Worldhello world","stack":"{name} has {count} items"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"{name} has {count} items","stack":{"$undefined":true}}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"straße"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"./x/**/*.json","stack":"key_name-1hello"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":""}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"a😀b😀c","stack":"src/a/b.ts.leading"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"emoji 👍🏽 mix{name} has {count} items"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"trailing.{name} has {count} items"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"key_name-1","stack":"a"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"a..b","stack":{"$undefined":true}}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"hello","stack":"  padded  "}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"hello world日本語のテキスト","stack":"a:b:cHELLO"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"tab\tseparated  padded  "}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"😀","stack":{"$undefined":true}}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"ünïcödé","stack":{"$undefined":true}}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"","stack":"日本語のテキスト"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"emoji 👍🏽 mix","stack":"ünïcödé"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"ünïcödé","stack":".leadingünïcödé"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"hello world","stack":"a"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"ΣΊΣΥΦΟΣ","stack":{"$undefined":true}}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"line1\nline2"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"trailing.","stack":"./x/**/*.json"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[[]],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"İstanbul","stack":{"$undefined":true}}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"{name} has {count} items","stack":"a..b"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"straße","stack":{"$undefined":true}}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"a.b.c","stack":"a.b.c"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"a😀b😀cé","stack":{"$undefined":true}}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"İstanbul"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"日本語のテキスト"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"ns:key.path","stack":{"$undefined":true}}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"hello worldHELLO"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"ünïcödé.leading","stack":"hello"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"src/a/b.ts","stack":"a"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"emoji 👍🏽 mixΣΊΣΥΦΟΣ","stack":"ns:key.path"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"日本語のテキスト","stack":"a"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"  padded  ","stack":"  padded  é"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"trailing.","stack":{"$undefined":true}}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"straße","stack":"a:b:c"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"{name} has {count} items"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"﻿bom","stack":"a..bhello"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"﻿bom","stack":"key_name-1"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"日本語のテキスト","stack":"  padded  {name} has {count} items"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"a.b.c","stack":"  padded  "}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"line1\nline2","stack":"src/a/b.ts"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"a.b.c","stack":{"$undefined":true}}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"Hello WorldHello World","stack":"ns:key.path"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"tab\tseparated","stack":".leadingab"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"trailing.","stack":{"$undefined":true}}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"./x/**/*.json","stack":"line1\nline2ab"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"ns:key.path"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"é","stack":"straße"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"emoji 👍🏽 mix"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"abab","stack":"hello world"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"tab\tseparated","stack":"abchello world"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"ΣΊΣΥΦΟΣ"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"  padded  ","stack":"﻿boma:b:c"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"src/a/b.tssrc/a/b.ts","stack":{"$undefined":true}}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"a","stack":"trailing."}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":":","stack":{"$undefined":true}}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"a😀b😀c","stack":{"$undefined":true}}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"Hello World","stack":"hello"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"﻿bom{name} has {count} items","stack":{"$undefined":true}}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"abc","stack":"a:b:c"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"abc","stack":"ΣΊΣΥΦΟΣ"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"emoji 👍🏽 mix","stack":{"$undefined":true}}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"hello world","stack":"ab"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"hello world","stack":"abc"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"a.b.c","stack":""}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"İstanbul","stack":"src/a/b.ts  padded  "}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"hello worldhello","stack":{"$undefined":true}}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"😀","stack":"İstanbul"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"a:b:c","stack":"straße"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"  padded  ","stack":"ünïcödé"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"renderer","message":"abc./x/**/*.json","stack":{"$undefined":true}}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":".leading"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticError","args":[{"source":"main","message":"line1\nline2","stack":"é"}],"ok":{"message":"Error"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"reason":true}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":null,"reason":"x"}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":{"a":{"b":"c"}},"reason":{"a":{"b":"c"}}}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":[],"reason":{}}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":"x","reason":[]}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":[]}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":true}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":"x","reason":true}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":0,"reason":{"a":{"b":"c"}}}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":true,"reason":{"a":"b"}}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"reason":[]}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"reason":0}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"reason":null}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":0}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[["a",1]],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":["x"],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":"x","reason":{"a":{"b":"c"}}}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"reason":{}}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":{},"reason":{"a":"b"}}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":["a",1],"reason":true}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":["a",1]}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"reason":{"a":{"b":"c"}}}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":{},"reason":{}}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"reason":["a",1]}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":true,"reason":["a",1]}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":{"a":"b"},"reason":["a",1]}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":{},"reason":{"a":{"b":"c"}}}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[[]],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":{"a":"b"},"reason":{"a":"b"}}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":{},"reason":["a",1]}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":{"a":"b"}}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":{"a":{"b":"c"}},"reason":"x"}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":"x"}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":true,"reason":0}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":{"a":{"b":"c"}},"reason":0}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":{"a":{"b":"c"}},"reason":[]}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":{"a":{"b":"c"}}}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"reason":{"a":"b"}}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":null,"reason":{"a":{"b":"c"}}}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":"x","reason":{"a":"b"}}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":[],"reason":null}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":{},"reason":[]}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":null,"reason":{}}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":0,"reason":"x"}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"a":"b"}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[true],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":{"a":"b"},"reason":"x"}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":[],"reason":0}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":[],"reason":{"a":{"b":"c"}}}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"reason":"x"}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":true,"reason":{"a":{"b":"c"}}}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":null,"reason":0}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"a":{"b":"c"}}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":["a",1],"reason":{"a":"b"}}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":"x","reason":0}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":"x","reason":null}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":["a",1],"reason":{"a":{"b":"c"}}}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":null,"reason":{"a":"b"}}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":{"a":"b"},"reason":{}}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":{"a":"b"},"reason":true}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":0,"reason":0}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":{"a":{"b":"c"}},"reason":{}}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":{},"reason":null}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":[],"reason":["a",1]}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":true,"reason":"x"}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":{}}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":null,"reason":[]}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":{"a":"b"},"reason":0}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":null,"reason":["a",1]}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":0,"reason":[]}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":"x","reason":"x"}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":true,"reason":[]}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":true,"reason":true}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[0],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":["a",1],"reason":0}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":[],"reason":[]}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":"x","reason":["a",1]}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":{},"reason":0}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[null],"error":"Cannot read properties of null (reading 'processType')"}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":["a",1],"reason":[]}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":0,"reason":true}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":true,"reason":null}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":{"a":{"b":"c"}},"reason":{"a":"b"}}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":{"a":"b"},"reason":null}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":["a",1],"reason":null}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":null}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":true,"reason":{}}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":"x","reason":{}}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":{},"reason":true}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":["a",1],"reason":{}}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":0,"reason":null}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":null,"reason":true}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":0,"reason":{"a":"b"}}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":{"a":{"b":"c"}},"reason":null}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":0,"reason":{}}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":{"a":"b"},"reason":{"a":{"b":"c"}}}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":[],"reason":{"a":"b"}}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":["a",1],"reason":"x"}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":["a",1],"reason":["a",1]}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":0,"reason":["a",1]}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":{"a":{"b":"c"}},"reason":["a",1]}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":{},"reason":"x"}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":[],"reason":true}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":{"a":{"b":"c"}},"reason":true}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":[],"reason":"x"}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":null,"reason":null}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"sanitizeDiagnosticCrash","args":[{"processType":{"a":"b"},"reason":[]}],"ok":{"processType":"unknown","reason":"unknown"}}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"日本語のテキスト","stack":{"$undefined":true}}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"日本語のテキスト"}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"a..b","stack":"﻿bom"}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"é","stack":"İstanbul"}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":["x"],"ok":"af8f0d2bb168e57b"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"tab\tseparatedsrc/a/b.ts","stack":"a..b.leading"}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"{name} has {count} items","stack":"hello"}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[["a",1]],"ok":"af8f0d2bb168e57b"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"  padded  "}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[true],"ok":"af8f0d2bb168e57b"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"hello","stack":"{name} has {count} itemsé"}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"emoji 👍🏽 mixünïcödé","stack":"ünïcödé"}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"key_name-1","stack":{"$undefined":true}}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":":"}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"./x/**/*.json"}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"aba:b:c","stack":"a😀b😀ca"}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"{name} has {count} items","stack":"a:b:c"}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{}],"ok":"af8f0d2bb168e57b"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"ns:key.path","stack":{"$undefined":true}}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"日本語のテキスト","stack":{"$undefined":true}}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"😀ünïcödé","stack":{"$undefined":true}}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"HELLO","stack":{"$undefined":true}}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"straße"}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"tab\tseparated日本語のテキスト","stack":{"$undefined":true}}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"a😀b😀c","stack":{"$undefined":true}}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"ΣΊΣΥΦΟΣ","stack":{"$undefined":true}}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"a..b","stack":"./x/**/*.json"}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"straße","stack":{"$undefined":true}}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"İstanbul","stack":"HELLO"}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"emoji 👍🏽 mixHELLO"}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"﻿bom","stack":"İstanbulemoji 👍🏽 mix"}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"abc","stack":"  padded  "}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"HELLO","stack":"tab\tseparated"}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"hello world"}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"hello world","stack":{"$undefined":true}}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"src/a/b.ts","stack":"HELLO"}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"hello","stack":"line1\nline2"}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"HELLO","stack":"abc"}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"tab\tseparated","stack":{"$undefined":true}}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"./x/**/*.json","stack":{"$undefined":true}}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"a","stack":"日本語のテキスト"}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":":","stack":"ns:key.path"}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"hello world","stack":"src/a/b.ts"}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"HELLO"}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"trailing.","stack":"日本語のテキスト"}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"a.b.c","stack":"ns:key.path"}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"","stack":{"$undefined":true}}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"İstanbulhello","stack":"ΣΊΣΥΦΟΣ"}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"﻿bom"}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"trailing."}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"日本語のテキスト"}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"Hello World","stack":{"$undefined":true}}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"a..b","stack":"a.b.c"}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[null],"error":"Cannot read properties of null (reading 'message')"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"a:b:c","stack":"tab\tseparated"}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"abc","stack":"é"}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"trailing.","stack":"ab"}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"é","stack":"src/a/b.ts😀"}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":":","stack":{"$undefined":true}}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"é","stack":"ns:key.path"}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"","stack":"a"}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"  padded  ΣΊΣΥΦΟΣ","stack":{"$undefined":true}}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"a..b"}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"key_name-1"}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"İstanbul"}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[0],"ok":"af8f0d2bb168e57b"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"tab\tseparatedİstanbul","stack":{"$undefined":true}}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"ab","stack":{"$undefined":true}}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"  padded  ","stack":{"$undefined":true}}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"a"}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"Hello World"}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"  padded  ab","stack":"tab\tseparatedkey_name-1"}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"a..b","stack":{"$undefined":true}}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":".leading","stack":"./x/**/*.json"}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"﻿bom","stack":"abc"}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"a.b.c","stack":"ab{name} has {count} items"}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"é"}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"{name} has {count} items"}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"trailing.","stack":"trailing."}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"hello world","stack":{"$undefined":true}}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"hello world","stack":".leading"}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"ünïcödé","stack":{"$undefined":true}}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"a":{"b":"c"}}],"ok":"af8f0d2bb168e57b"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"ΣΊΣΥΦΟΣtab\tseparated"}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"hello world﻿bom","stack":"a..b日本語のテキスト"}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"./x/**/*.json","stack":"hello"}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"😀","stack":{"$undefined":true}}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"a:b:c","stack":"Hello World"}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"a":"b"}],"ok":"af8f0d2bb168e57b"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"","stack":{"$undefined":true}}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"HELLO","stack":"Hello World"}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"a:b:c","stack":""}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"./x/**/*.json","stack":"abc"}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"a😀b😀cabc","stack":"ünïcödé"}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":":ab","stack":{"$undefined":true}}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":""}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"é","stack":{"$undefined":true}}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"ab","stack":"tab\tseparated"}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"key_name-1"}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"hello","stack":{"$undefined":true}}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"hello world"}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"abc","stack":{"$undefined":true}}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"ns:key.pathsrc/a/b.ts"}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"abc","stack":"hello world"}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"tab\tseparated"}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":""}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"HELLO","stack":"./x/**/*.json"}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"a😀b😀c","stack":{"$undefined":true}}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"key_name-1","stack":"a:b:c"}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"a😀b😀c","stack":"abc"}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"aba😀b😀c"}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"a.b.c","stack":"line1\nline2"}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"ab"}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"straße","stack":{"$undefined":true}}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"Hello World","stack":"./x/**/*.jsonns:key.path"}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"line1\nline2key_name-1","stack":{"$undefined":true}}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[[]],"ok":"af8f0d2bb168e57b"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"Hello World","stack":"ab"}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"key_name-1İstanbul","stack":"emoji 👍🏽 mix"}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"ns:key.path","stack":"a"}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"abc","stack":"trailing."}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"./x/**/*.json","stack":"tab\tseparated"}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"src/a/b.ts"}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"😀Hello World"}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"helloa..b","stack":{"$undefined":true}}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"./x/**/*.json","stack":".leading"}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"ΣΊΣΥΦΟΣ"}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"key_name-1trailing.","stack":{"$undefined":true}}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"src/a/b.tsline1\nline2"}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"İstanbul","stack":"a:b:c"}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":".leadingstraße","stack":"a"}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"{name} has {count} itemsünïcödé","stack":"hello world"}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"﻿bom","stack":{"$undefined":true}}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"{name} has {count} items","stack":"HELLO"}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"tab\tseparatedstraße","stack":"a..b"}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"{name} has {count} itemsa..b"}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"﻿bom","stack":{"$undefined":true}}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"","stack":"a.b.c"}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"hellohello world","stack":{"$undefined":true}}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"a😀b😀cİstanbul","stack":{"$undefined":true}}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"line1\nline2:","stack":{"$undefined":true}}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"key_name-1","stack":"trailing."}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"ünïcödé","stack":":"}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"﻿bom","stack":"trailing."}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":".leading"}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"a","stack":":"}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"﻿bom","stack":"./x/**/*.json"}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"a:b:c"}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"tab\tseparated","stack":"tab\tseparated"}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"a.b.c","stack":"  padded  .leading"}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"abc","stack":{"$undefined":true}}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"日本語のテキストsrc/a/b.ts","stack":{"$undefined":true}}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"line1\nline2","stack":{"$undefined":true}}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"ns:key.path"}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"abcabc","stack":{"$undefined":true}}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"abc","stack":"a:b:c"}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"ΣΊΣΥΦΟΣ"}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"emoji 👍🏽 mixé"}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"ünïcödé","stack":"hello world"}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"","stack":"é"}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":".leadingkey_name-1","stack":{"$undefined":true}}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"Hello World"}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"tab\tseparated","stack":{"$undefined":true}}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"{name} has {count} items","stack":{"$undefined":true}}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"hello world","stack":"é"}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"Hello Worldline1\nline2"}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"abc","stack":"a😀b😀c"}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"{name} has {count} itemsemoji 👍🏽 mix","stack":{"$undefined":true}}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"hello"}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"  padded  ","stack":{"$undefined":true}}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"Hello World","stack":{"$undefined":true}}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"straßeHello World","stack":":trailing."}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"hello","stack":{"$undefined":true}}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"line1\nline2"}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"trailing.","stack":{"$undefined":true}}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"ns:key.pathline1\nline2","stack":{"$undefined":true}}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"emoji 👍🏽 mix","stack":"./x/**/*.json"}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"ünïcödé","stack":{"$undefined":true}}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"﻿bom","stack":"İstanbul"}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"a:b:cé","stack":{"$undefined":true}}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"a.b.c","stack":"a:b:c"}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"trailing.a.b.c","stack":{"$undefined":true}}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"😀","stack":{"$undefined":true}}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"İstanbul","stack":"{name} has {count} itemssrc/a/b.ts"}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":":hello","stack":{"$undefined":true}}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"ΣΊΣΥΦΟΣ","stack":"aHELLO"}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"a..b","stack":{"$undefined":true}}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"a"}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"line1\nline2a😀b😀c","stack":{"$undefined":true}}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"tab\tseparated","stack":"tab\tseparated"}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"a","stack":"a"}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"src/a/b.ts","stack":"hello world"}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"İstanbul","stack":"HELLOsrc/a/b.ts"}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"src/a/b.tskey_name-1"}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"ab","stack":""}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"ns:key.path","stack":"  padded  "}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"emoji 👍🏽 mixa😀b😀c","stack":"  padded  "}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"😀","stack":"﻿bom"}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"main","message":"İstanbul","stack":{"$undefined":true}}],"ok":"b747065b2aa63bee"}
+{"fn":"diagnosticErrorFingerprint","args":[{"source":"renderer","message":"abc","stack":"ünïcödé"}],"ok":"0c286d3a7c923960"}
+{"fn":"diagnosticPayloadKind","args":["abc"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["a😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["a:b:c.leading"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["İstanbul"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["😀"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["emoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":[":"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["hello world"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["key_name-1"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":[".leading"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["HELLO"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["a.b.cemoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["straße"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["abca"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["é"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["a"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["Hello World"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["tab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["trailing."],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["line1\nline2"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["{name} has {count} itemsİstanbul"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["ünïcödé"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["src/a/b.ts"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":[""],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["a..b"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["abctrailing."],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["éé"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["a:b:cline1\nline2"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["éns:key.path"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["hello worldİstanbul"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["a:b:cİstanbul"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["hello"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["﻿bom"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["a😀b😀c./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["HELLOİstanbul"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["aa"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["a:b:c"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["  padded  "],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["ab:"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["ns:key.path"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["abc日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":[".leadingünïcödé"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["key_name-1a"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["abchello world"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["ΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["é  padded  "],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["ünïcödéa"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["hellotrailing."],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["tab\tseparatedsrc/a/b.ts"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["Hello World日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["a.b.c"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["a..b:"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["emoji 👍🏽 mixsrc/a/b.ts"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["ΣΊΣΥΦΟΣns:key.path"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["hello world./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["emoji 👍🏽 mixa:b:c"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["abc./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["😀ΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["ΣΊΣΥΦΟΣHello World"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["trailing.ünïcödé"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["ab"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":[":{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["straße日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["﻿bomé"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["  padded  a:b:c"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["a.b.cΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["﻿bomİstanbul"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":[".leadingΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["HELLOΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["./x/**/*.jsonns:key.path"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["  padded  ns:key.path"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["a.b.chello world"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["İstanbulline1\nline2"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["./x/**/*.jsonünïcödé"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["a😀b😀c😀"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["HELLOa..b"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["a.b.ca😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["a😀b😀cline1\nline2"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["😀a😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["hello worldhello world"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":[":a..b"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["hello worldtrailing."],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["ΣΊΣΥΦΟΣline1\nline2"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["{name} has {count} itemsa..b"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["日本語のテキストΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["./x/**/*.jsoné"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["ahello world"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["a😀b😀cé"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["a..b日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["emoji 👍🏽 mix:"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["Hello Worldns:key.path"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["hello worldline1\nline2"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["étab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["hello worldünïcödé"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["key_name-1ab"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["ΣΊΣΥΦΟΣé"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["ns:key.pathline1\nline2"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["emoji 👍🏽 mixa"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["hello worldns:key.path"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["straßeline1\nline2"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["HELLOa"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["ΣΊΣΥΦΟΣsrc/a/b.ts"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":[".leadingns:key.path"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["./x/**/*.jsonsrc/a/b.ts"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["a:b:ca"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["straßeab"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["trailing.abc"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["line1\nline2ab"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["line1\nline2straße"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["Hello Worldtab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["a:b:cHello World"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["Hello Worlda:b:c"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["日本語のテキストa😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["a..b.leading"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["a:b:c日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["tab\tseparated.leading"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["./x/**/*.json﻿bom"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["a.b.c.leading"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":[":tab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":[":.leading"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["﻿bom:"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":[":emoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["./x/**/*.jsona:b:c"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["日本語のテキストline1\nline2"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["tab\tseparated😀"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["HELLOHello World"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["aabc"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["😀./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["tab\tseparatedline1\nline2"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["./x/**/*.jsonkey_name-1"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":[".leadinghello"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["ns:key.pathhello world"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["tab\tseparated:"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["ababc"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["ns:key.patha"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["abstraße"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["key_name-1  padded  "],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["trailing../x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["HELLOé"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["helloHello World"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["line1\nline2trailing."],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":[".leadingHELLO"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["hello worldHello World"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["{name} has {count} items日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["a.b.c😀"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["trailing.a.b.c"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["hello world﻿bom"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":[":hello world"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":[".leadinga.b.c"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["日本語のテキストHello World"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["😀straße"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["ΣΊΣΥΦΟΣhello"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["trailing.a😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["HELLOtrailing."],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["aab"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["İstanbulΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["ns:key.path😀"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["  padded  a.b.c"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["a😀b😀ca..b"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["aba😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["straßetrailing."],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["  padded  ab"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["a.b.csrc/a/b.ts"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["İstanbulab"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["src/a/b.tsİstanbul"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["key_name-1:"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":[".leadingtab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["straßehello world"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["😀é"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["a.leading"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["helloé"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":[".leading﻿bom"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["line1\nline2abc"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["./x/**/*.json./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":[".leadinga😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["emoji 👍🏽 mixemoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["﻿bomemoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["tab\tseparatedİstanbul"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["emoji 👍🏽 mixa😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["  padded    padded  "],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["key_name-1Hello World"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["a..ba😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["emoji 👍🏽 mixline1\nline2"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["İstanbul😀"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["éa.b.c"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["abline1\nline2"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":[":İstanbul"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["{name} has {count} items😀"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["İstanbultrailing."],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["﻿bom﻿bom"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":[":HELLO"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["trailing.  padded  "],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["emoji 👍🏽 mix.leading"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["ΣΊΣΥΦΟΣ.leading"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["hellosrc/a/b.ts"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["helloabc"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["hello日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["héllo wörld"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["👍🏽 thumbs"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["日本語"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["ılık ırmak"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["👨‍👩‍👧 family"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["a b"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["a😀b"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["a²b x½ y①"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["aⅠb Ⅻ"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["a𐐀b 𝐀bc"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["कि ٣٤"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["Iı İi"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["K K k"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["ſ s S"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["x‍y 👨‍👩‍👧"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["a b c　d"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["١٢٣ ٤٥"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["𝟘𝟙 ²³"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["snake_case foo-bar o'neil"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["ǅungla Ǆ"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["one\r\ntwo threefour"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["café café"],"ok":{"$undefined":true}}
+{"fn":"diagnosticPayloadKind","args":["ΣΑΣ σας ς"],"ok":{"$undefined":true}}
+{"fn":"redactDiagnosticText","args":["key_name-1",{"maxLength":-1}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["src/a/b.ts",{"homeDir":{"$undefined":true},"maxLength":1000}],"ok":"src/a/b.ts"}
+{"fn":"redactDiagnosticText","args":["Hello World./x/**/*.json",{"homeDir":{"$undefined":true},"maxLength":0}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["src/a/b.ts",{"maxLength":1000}],"ok":"src/a/b.ts"}
+{"fn":"redactDiagnosticText","args":["ΣΊΣΥΦΟΣ",{"homeDir":{"$undefined":true},"maxLength":100}],"ok":"ΣΊΣΥΦΟΣ"}
+{"fn":"redactDiagnosticText","args":["a😀b😀c",{"homeDir":"ab","maxLength":{"$num":"NaN"}}],"ok":"a😀b😀c"}
+{"fn":"redactDiagnosticText","args":["line1\nline2",{"homeDir":"a😀b😀c","maxLength":100}],"ok":"line1\nline2"}
+{"fn":"redactDiagnosticText","args":["a:b:c",{"homeDir":{"$undefined":true},"maxLength":2147483648}],"ok":"<ip>"}
+{"fn":"redactDiagnosticText","args":["日本語のテキスト",{"maxLength":{"$num":"-0"}}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["a😀b😀c",null],"error":"Cannot read properties of null (reading 'maxLength')"}
+{"fn":"redactDiagnosticText","args":["./x/**/*.json",{"homeDir":{"$undefined":true},"maxLength":9007199254740992}],"ok":"./x/**/*.json"}
+{"fn":"redactDiagnosticText","args":["src/a/b.ts",{"maxLength":0.5}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["﻿bom",{"homeDir":{"$undefined":true},"maxLength":42}],"ok":"﻿bom"}
+{"fn":"redactDiagnosticText","args":["trailing.",{"homeDir":"emoji 👍🏽 mixé","maxLength":2}],"ok":"t…"}
+{"fn":"redactDiagnosticText","args":["src/a/b.ts",{"homeDir":"./x/**/*.json","maxLength":42}],"ok":"src/a/b.ts"}
+{"fn":"redactDiagnosticText","args":["key_name-1  padded  ",{"homeDir":{"$undefined":true},"maxLength":{"$num":"-Infinity"}}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["  padded  😀",{"homeDir":"ab","maxLength":42}],"ok":"  padded  😀"}
+{"fn":"redactDiagnosticText","args":["emoji 👍🏽 mix",{"maxLength":100}],"ok":"emoji 👍🏽 mix"}
+{"fn":"redactDiagnosticText","args":["a..b","x"],"ok":"a..b"}
+{"fn":"redactDiagnosticText","args":["ns:key.path",[]],"ok":"ns:key.path"}
+{"fn":"redactDiagnosticText","args":["key_name-1",{"homeDir":{"$undefined":true},"maxLength":{"$num":"Infinity"}}],"ok":"key_name-1"}
+{"fn":"redactDiagnosticText","args":["./x/**/*.json",{"homeDir":"tab\tseparated","maxLength":100}],"ok":"./x/**/*.json"}
+{"fn":"redactDiagnosticText","args":["abca.b.c",{"maxLength":3}],"ok":"ab…"}
+{"fn":"redactDiagnosticText","args":["tab\tseparated",{"homeDir":"a😀b😀c","maxLength":9007199254740992}],"ok":"tab\tseparated"}
+{"fn":"redactDiagnosticText","args":["ünïcödé",{"homeDir":{"$undefined":true},"maxLength":0.5}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["straße",{"homeDir":"﻿bom","maxLength":100}],"ok":"straße"}
+{"fn":"redactDiagnosticText","args":["a:b:chello",{"maxLength":42}],"ok":"a:b:chello"}
+{"fn":"redactDiagnosticText","args":["{name} has {count} items",{"maxLength":1}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["a..b",{"homeDir":{"$undefined":true},"maxLength":{"$num":"Infinity"}}],"ok":"a..b"}
+{"fn":"redactDiagnosticText","args":["a",{"homeDir":{"$undefined":true},"maxLength":-2.5}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["é",{"homeDir":{"$undefined":true},"maxLength":-2.5}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["./x/**/*.json",{"homeDir":{"$undefined":true},"maxLength":{"$num":"NaN"}}],"ok":"./x/**/*.json"}
+{"fn":"redactDiagnosticText","args":["  padded  ",{"homeDir":{"$undefined":true},"maxLength":-2.5}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["hello",[]],"ok":"hello"}
+{"fn":"redactDiagnosticText","args":[":",{"homeDir":"a😀b😀c","maxLength":1000000}],"ok":":"}
+{"fn":"redactDiagnosticText","args":["😀",{"homeDir":{"$undefined":true},"maxLength":-2.5}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["é",{"homeDir":"a","maxLength":3}],"ok":"é"}
+{"fn":"redactDiagnosticText","args":["日本語のテキスト",{"homeDir":"","maxLength":9007199254740992}],"ok":"日本語のテキスト"}
+{"fn":"redactDiagnosticText","args":["line1\nline2",{"maxLength":2147483648}],"ok":"line1\nline2"}
+{"fn":"redactDiagnosticText","args":["ab",{"homeDir":":","maxLength":{"$num":"-Infinity"}}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["trailing.",{"homeDir":{"$undefined":true},"maxLength":1000000}],"ok":"trailing."}
+{"fn":"redactDiagnosticText","args":["key_name-1",{}],"ok":"key_name-1"}
+{"fn":"redactDiagnosticText","args":["key_name-1",{"homeDir":"line1\nline2","maxLength":-2.5}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["straße",{"homeDir":{"$undefined":true},"maxLength":2}],"ok":"s…"}
+{"fn":"redactDiagnosticText","args":["a.b.c",["a",1]],"ok":"a.b.c"}
+{"fn":"redactDiagnosticText","args":["İstanbul",{"homeDir":"emoji 👍🏽 mix","maxLength":42}],"ok":"İstanbul"}
+{"fn":"redactDiagnosticText","args":["a:b:c",{"homeDir":{"$undefined":true},"maxLength":2}],"ok":"a…"}
+{"fn":"redactDiagnosticText","args":["tab\tseparated",{"homeDir":"ns:key.path","maxLength":10}],"ok":"tab\tsepar…"}
+{"fn":"redactDiagnosticText","args":["emoji 👍🏽 mix",{"homeDir":"😀","maxLength":2147483648}],"ok":"emoji 👍🏽 mix"}
+{"fn":"redactDiagnosticText","args":["Hello World😀",{"homeDir":{"$undefined":true},"maxLength":{"$num":"-0"}}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["a..b",{"homeDir":{"$undefined":true},"maxLength":100}],"ok":"a..b"}
+{"fn":"redactDiagnosticText","args":[":./x/**/*.json",{}],"ok":":./x/**/*.json"}
+{"fn":"redactDiagnosticText","args":["a",{"homeDir":"tab\tseparatedemoji 👍🏽 mix","maxLength":{"$num":"NaN"}}],"ok":"a"}
+{"fn":"redactDiagnosticText","args":[".leading",{}],"ok":".leading"}
+{"fn":"redactDiagnosticText","args":["😀",{"homeDir":{"$undefined":true},"maxLength":100}],"ok":"😀"}
+{"fn":"redactDiagnosticText","args":["ab",{"homeDir":{"$undefined":true},"maxLength":{"$num":"-Infinity"}}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["line1\nline2line1\nline2",{"homeDir":"ΣΊΣΥΦΟΣ","maxLength":1000000}],"ok":"line1\nline2line1\nline2"}
+{"fn":"redactDiagnosticText","args":["tab\tseparated",{"maxLength":{"$num":"-Infinity"}}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["hello",{"homeDir":"HELLO","maxLength":1000}],"ok":"hello"}
+{"fn":"redactDiagnosticText","args":["ab",{"maxLength":{"$num":"NaN"}}],"ok":"ab"}
+{"fn":"redactDiagnosticText","args":["ns:key.path",{"homeDir":{"$undefined":true},"maxLength":{"$num":"-Infinity"}}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["  padded  ",{"homeDir":{"$undefined":true},"maxLength":100}],"ok":"  padded  "}
+{"fn":"redactDiagnosticText","args":["helloHello World",{"maxLength":0.5}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["a.b.c",{"maxLength":100}],"ok":"a.b.c"}
+{"fn":"redactDiagnosticText","args":["ünïcödé:",{"homeDir":"İstanbul","maxLength":1000}],"ok":"ünïcödé:"}
+{"fn":"redactDiagnosticText","args":["./x/**/*.json",{"maxLength":0}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["ΣΊΣΥΦΟΣ",{"homeDir":"İstanbul.leading","maxLength":10}],"ok":"ΣΊΣΥΦΟΣ"}
+{"fn":"redactDiagnosticText","args":["a😀b😀ca",{"homeDir":{"$undefined":true},"maxLength":3}],"ok":{"$utf16":[97,55357,8230]}}
+{"fn":"redactDiagnosticText","args":["a..b",{"homeDir":{"$undefined":true},"maxLength":0.5}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":[".leading",true],"ok":".leading"}
+{"fn":"redactDiagnosticText","args":["ünïcödé",0],"ok":"ünïcödé"}
+{"fn":"redactDiagnosticText","args":["Hello WorldHELLO",{"maxLength":10}],"ok":"Hello Wor…"}
+{"fn":"redactDiagnosticText","args":["Hello World",{"homeDir":{"$undefined":true},"maxLength":9007199254740992}],"ok":"Hello World"}
+{"fn":"redactDiagnosticText","args":["  padded  ",{"homeDir":{"$undefined":true},"maxLength":0.5}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["Hello World",{"maxLength":{"$num":"NaN"}}],"ok":"Hello World"}
+{"fn":"redactDiagnosticText","args":["hello world","x"],"ok":"hello world"}
+{"fn":"redactDiagnosticText","args":["a.b.cns:key.path",{"a":{"b":"c"}}],"ok":"a.b.cns:key.path"}
+{"fn":"redactDiagnosticText","args":["{name} has {count} items  padded  ",{"maxLength":{"$num":"-0"}}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["a",{"homeDir":{"$undefined":true},"maxLength":0}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["İstanbul",{"homeDir":{"$undefined":true},"maxLength":1000000}],"ok":"İstanbul"}
+{"fn":"redactDiagnosticText","args":["./x/**/*.jsonhello world",{"homeDir":{"$undefined":true},"maxLength":100}],"ok":"./x/**/*.jsonhello world"}
+{"fn":"redactDiagnosticText","args":["a..b",{"homeDir":"a","maxLength":{"$num":"NaN"}}],"ok":"~..b"}
+{"fn":"redactDiagnosticText","args":["{name} has {count} items",{"homeDir":{"$undefined":true},"maxLength":2147483648}],"ok":"{name} has {count} items"}
+{"fn":"redactDiagnosticText","args":[".leading",{"a":"b"}],"ok":".leading"}
+{"fn":"redactDiagnosticText","args":["é",{"maxLength":{"$num":"-Infinity"}}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["emoji 👍🏽 mix",{"homeDir":"a:b:c","maxLength":1}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["HELLO",{"homeDir":".leading","maxLength":-1}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":[".leading",{"homeDir":{"$undefined":true},"maxLength":0.5}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["",{"homeDir":"a:b:c","maxLength":{"$num":"-Infinity"}}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["ünïcödéhello",{"maxLength":{"$num":"-Infinity"}}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["  padded  ",{"homeDir":"","maxLength":1000000}],"ok":"  padded  "}
+{"fn":"redactDiagnosticText","args":[":",{"homeDir":{"$undefined":true},"maxLength":{"$num":"Infinity"}}],"ok":":"}
+{"fn":"redactDiagnosticText","args":["a",{"homeDir":{"$undefined":true},"maxLength":{"$num":"-Infinity"}}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["ünïcödé",{"homeDir":{"$undefined":true},"maxLength":100}],"ok":"ünïcödé"}
+{"fn":"redactDiagnosticText","args":[":a😀b😀c",{"homeDir":"😀trailing.","maxLength":10}],"ok":":a😀b😀c"}
+{"fn":"redactDiagnosticText","args":["a😀b😀c",{"homeDir":{"$undefined":true},"maxLength":-2.5}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["./x/**/*.json",{"maxLength":100}],"ok":"./x/**/*.json"}
+{"fn":"redactDiagnosticText","args":["a:b:c",{"a":{"b":"c"}}],"ok":"<ip>"}
+{"fn":"redactDiagnosticText","args":["İstanbul","x"],"ok":"İstanbul"}
+{"fn":"redactDiagnosticText","args":["é",{"maxLength":1000}],"ok":"é"}
+{"fn":"redactDiagnosticText","args":["Hello World",{"homeDir":{"$undefined":true},"maxLength":-2.5}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["﻿bom",{}],"ok":"﻿bom"}
+{"fn":"redactDiagnosticText","args":["日本語のテキストa.b.c",{"homeDir":"hello./x/**/*.json","maxLength":-1}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["日本語のテキスト",{"homeDir":{"$undefined":true},"maxLength":0.5}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["a.b.c",{"homeDir":{"$undefined":true},"maxLength":-1}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["  padded  a..b",{"homeDir":{"$undefined":true},"maxLength":100}],"ok":"  padded  a..b"}
+{"fn":"redactDiagnosticText","args":["a😀b😀c",{"homeDir":"a","maxLength":3}],"ok":{"$utf16":[126,55357,8230]}}
+{"fn":"redactDiagnosticText","args":["😀",{"homeDir":{"$undefined":true},"maxLength":3}],"ok":"😀"}
+{"fn":"redactDiagnosticText","args":["straße",null],"error":"Cannot read properties of null (reading 'maxLength')"}
+{"fn":"redactDiagnosticText","args":["é",{"homeDir":{"$undefined":true},"maxLength":42}],"ok":"é"}
+{"fn":"redactDiagnosticText","args":[":",{"homeDir":"﻿bom","maxLength":0.5}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["trailing.a😀b😀c",{"maxLength":{"$num":"NaN"}}],"ok":"trailing.a😀b😀c"}
+{"fn":"redactDiagnosticText","args":["straße",{"homeDir":{"$undefined":true},"maxLength":-2.5}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["  padded  ",0],"ok":"  padded  "}
+{"fn":"redactDiagnosticText","args":["ünïcödé",{"homeDir":{"$undefined":true},"maxLength":9007199254740992}],"ok":"ünïcödé"}
+{"fn":"redactDiagnosticText","args":["line1\nline2",{"homeDir":{"$undefined":true},"maxLength":100}],"ok":"line1\nline2"}
+{"fn":"redactDiagnosticText","args":["😀tab\tseparated",{"homeDir":{"$undefined":true},"maxLength":10}],"ok":"😀tab\tsep…"}
+{"fn":"redactDiagnosticText","args":[".leading",{"homeDir":{"$undefined":true},"maxLength":0}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["key_name-1",{"homeDir":"  padded  ","maxLength":9007199254740992}],"ok":"key_name-1"}
+{"fn":"redactDiagnosticText","args":["ns:key.path",{"maxLength":42}],"ok":"ns:key.path"}
+{"fn":"redactDiagnosticText","args":["Hello Worldİstanbul",{"homeDir":{"$undefined":true},"maxLength":0}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["line1\nline2",{"homeDir":"ΣΊΣΥΦΟΣ","maxLength":100}],"ok":"line1\nline2"}
+{"fn":"redactDiagnosticText","args":["a:b:cünïcödé",{"homeDir":"ünïcödéé","maxLength":9007199254740992}],"ok":"<ip>ünïcödé"}
+{"fn":"redactDiagnosticText","args":["hello","x"],"ok":"hello"}
+{"fn":"redactDiagnosticText","args":["emoji 👍🏽 mix",{"maxLength":-2.5}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["key_name-1",{"maxLength":9007199254740992}],"ok":"key_name-1"}
+{"fn":"redactDiagnosticText","args":["  padded  ",{"homeDir":{"$undefined":true},"maxLength":{"$num":"NaN"}}],"ok":"  padded  "}
+{"fn":"redactDiagnosticText","args":["éa..b",{"homeDir":"abc","maxLength":-1}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["emoji 👍🏽 mix",{"homeDir":"a..bé","maxLength":2147483648}],"ok":"emoji 👍🏽 mix"}
+{"fn":"redactDiagnosticText","args":["﻿bom",{"homeDir":{"$undefined":true},"maxLength":{"$num":"NaN"}}],"ok":"﻿bom"}
+{"fn":"redactDiagnosticText","args":["日本語のテキスト",0],"ok":"日本語のテキスト"}
+{"fn":"redactDiagnosticText","args":[":",{"homeDir":"ünïcödé😀","maxLength":1000}],"ok":":"}
+{"fn":"redactDiagnosticText","args":["emoji 👍🏽 mix",{"maxLength":2147483648}],"ok":"emoji 👍🏽 mix"}
+{"fn":"redactDiagnosticText","args":["😀İstanbul",{"homeDir":{"$undefined":true},"maxLength":{"$num":"-Infinity"}}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["HELLO",{"homeDir":"Hello World","maxLength":9007199254740992}],"ok":"HELLO"}
+{"fn":"redactDiagnosticText","args":["line1\nline2",{"homeDir":"tab\tseparated","maxLength":2147483648}],"ok":"line1\nline2"}
+{"fn":"redactDiagnosticText","args":[":",{"homeDir":{"$undefined":true},"maxLength":-2.5}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["",{"homeDir":{"$undefined":true},"maxLength":{"$num":"-0"}}],"ok":""}
+{"fn":"redactDiagnosticText","args":["a😀b😀cns:key.path",{"homeDir":"ab","maxLength":0.5}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["a.b.c",{"homeDir":"﻿bom","maxLength":{"$num":"Infinity"}}],"ok":"a.b.c"}
+{"fn":"redactDiagnosticText","args":[":a",{"maxLength":100}],"ok":":a"}
+{"fn":"redactDiagnosticText","args":["a:b:c",{"homeDir":"a","maxLength":3}],"ok":"~:…"}
+{"fn":"redactDiagnosticText","args":["abc",{"homeDir":"hello","maxLength":-1}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["straße",{"homeDir":"HELLO","maxLength":100}],"ok":"straße"}
+{"fn":"redactDiagnosticText","args":["a.b.cstraße",{"homeDir":":","maxLength":3}],"ok":"a.…"}
+{"fn":"redactDiagnosticText","args":["日本語のテキスト",{"homeDir":{"$undefined":true},"maxLength":{"$num":"NaN"}}],"ok":"日本語のテキスト"}
+{"fn":"redactDiagnosticText","args":["a..b",{"homeDir":"tab\tseparated","maxLength":100}],"ok":"a..b"}
+{"fn":"redactDiagnosticText","args":["ab",{"homeDir":"ns:key.path","maxLength":100}],"ok":"ab"}
+{"fn":"redactDiagnosticText","args":["a:b:c","x"],"ok":"<ip>"}
+{"fn":"redactDiagnosticText","args":["trailing.",{"homeDir":{"$undefined":true},"maxLength":1000}],"ok":"trailing."}
+{"fn":"redactDiagnosticText","args":["ünïcödé",{"homeDir":{"$undefined":true},"maxLength":1000}],"ok":"ünïcödé"}
+{"fn":"redactDiagnosticText","args":["{name} has {count} items",{"a":"b"}],"ok":"{name} has {count} items"}
+{"fn":"redactDiagnosticText","args":["é",{"maxLength":-1}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["hello",{"homeDir":{"$undefined":true},"maxLength":{"$num":"-Infinity"}}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["a.b.c",{"homeDir":{"$undefined":true},"maxLength":0}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["hello world",{"homeDir":"ab","maxLength":{"$num":"NaN"}}],"ok":"hello world"}
+{"fn":"redactDiagnosticText","args":["ΣΊΣΥΦΟΣ",{"maxLength":9007199254740992}],"ok":"ΣΊΣΥΦΟΣ"}
+{"fn":"redactDiagnosticText","args":["trailing.",{"homeDir":"Hello World","maxLength":{"$num":"NaN"}}],"ok":"trailing."}
+{"fn":"redactDiagnosticText","args":["key_name-1😀",{"maxLength":42}],"ok":"key_name-1😀"}
+{"fn":"redactDiagnosticText","args":["ns:key.path",{}],"ok":"ns:key.path"}
+{"fn":"redactDiagnosticText","args":["emoji 👍🏽 mixé",{"homeDir":{"$undefined":true},"maxLength":1}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["",{"maxLength":{"$num":"-0"}}],"ok":""}
+{"fn":"redactDiagnosticText","args":["ab",{"homeDir":{"$undefined":true},"maxLength":-2.5}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["atab\tseparated",{"maxLength":9007199254740992}],"ok":"atab\tseparated"}
+{"fn":"redactDiagnosticText","args":["ns:key.path",{"homeDir":{"$undefined":true},"maxLength":0.5}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":[".leading",{"homeDir":{"$undefined":true},"maxLength":1000}],"ok":".leading"}
+{"fn":"redactDiagnosticText","args":["a😀b😀c",{"homeDir":"emoji 👍🏽 mix😀","maxLength":3}],"ok":{"$utf16":[97,55357,8230]}}
+{"fn":"redactDiagnosticText","args":["日本語のテキスト",{"homeDir":"./x/**/*.json","maxLength":{"$num":"-Infinity"}}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["ünïcödé",{"homeDir":"ésrc/a/b.ts","maxLength":-2.5}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["ΣΊΣΥΦΟΣ﻿bom",null],"error":"Cannot read properties of null (reading 'maxLength')"}
+{"fn":"redactDiagnosticText","args":["ΣΊΣΥΦΟΣ",null],"error":"Cannot read properties of null (reading 'maxLength')"}
+{"fn":"redactDiagnosticText","args":["{name} has {count} items",{"maxLength":{"$num":"-Infinity"}}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["ns:key.path",{"homeDir":{"$undefined":true},"maxLength":{"$num":"NaN"}}],"ok":"ns:key.path"}
+{"fn":"redactDiagnosticText","args":["日本語のテキスト",{"maxLength":{"$num":"-Infinity"}}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["﻿bomhello",{"homeDir":"a..bemoji 👍🏽 mix","maxLength":100}],"ok":"﻿bomhello"}
+{"fn":"redactDiagnosticText","args":["ΣΊΣΥΦΟΣline1\nline2",{"homeDir":":","maxLength":2147483648}],"ok":"ΣΊΣΥΦΟΣline1\nline2"}
+{"fn":"redactDiagnosticText","args":["﻿bomline1\nline2",{"homeDir":{"$undefined":true},"maxLength":0.5}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["hello world",{"homeDir":"tab\tseparated","maxLength":1000000}],"ok":"hello world"}
+{"fn":"redactDiagnosticText","args":["日本語のテキスト",{"maxLength":1000}],"ok":"日本語のテキスト"}
+{"fn":"redactDiagnosticText","args":["Hello World",{"maxLength":3}],"ok":"He…"}
+{"fn":"redactDiagnosticText","args":["Hello World",{"homeDir":{"$undefined":true},"maxLength":100}],"ok":"Hello World"}
+{"fn":"redactDiagnosticText","args":["straße",{"homeDir":"src/a/b.ts","maxLength":1000}],"ok":"straße"}
+{"fn":"redactDiagnosticText","args":["ns:key.path",{"maxLength":{"$num":"-0"}}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["{name} has {count} items",{"homeDir":{"$undefined":true},"maxLength":{"$num":"-Infinity"}}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["a",{"homeDir":{"$undefined":true},"maxLength":{"$num":"Infinity"}}],"ok":"a"}
+{"fn":"redactDiagnosticText","args":["a:b:c",{"maxLength":1000}],"ok":"<ip>"}
+{"fn":"redactDiagnosticText","args":["line1\nline2ΣΊΣΥΦΟΣ",{"homeDir":{"$undefined":true},"maxLength":-2.5}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["  padded  ",{"homeDir":{"$undefined":true},"maxLength":10}],"ok":"  padded  "}
+{"fn":"redactDiagnosticText","args":["abc",{"homeDir":{"$undefined":true},"maxLength":1}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":[".leading",{"maxLength":{"$num":"NaN"}}],"ok":".leading"}
+{"fn":"redactDiagnosticText","args":["{name} has {count} items",{"homeDir":"İstanbul","maxLength":-1}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["a.b.c",{"homeDir":"😀","maxLength":10}],"ok":"a.b.c"}
+{"fn":"redactDiagnosticText","args":["a😀b😀c",{"homeDir":":","maxLength":9007199254740992}],"ok":"a😀b😀c"}
+{"fn":"redactDiagnosticText","args":["hello world",{"homeDir":"﻿bom","maxLength":-1}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["a:b:cline1\nline2",{"homeDir":"﻿boma.b.c","maxLength":3}],"ok":"a:…"}
+{"fn":"redactDiagnosticText","args":["hello",{"homeDir":{"$undefined":true},"maxLength":1000000}],"ok":"hello"}
+{"fn":"redactDiagnosticText","args":["line1\nline2",{"homeDir":{"$undefined":true},"maxLength":0}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["a..b",{"homeDir":"a😀b😀c","maxLength":3}],"ok":"a.…"}
+{"fn":"redactDiagnosticText","args":["key_name-1",true],"ok":"key_name-1"}
+{"fn":"redactDiagnosticText","args":["aba.b.c",{"homeDir":{"$undefined":true},"maxLength":0.5}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["héllo wörld",{"maxLength":-1}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["👍🏽 thumbs",{"maxLength":-1}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["日本語",{"maxLength":-1}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["",{"maxLength":-1}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["İstanbul",{"maxLength":-1}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["straße",{"maxLength":-1}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["ılık ırmak",{"maxLength":-1}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["👨‍👩‍👧 family",{"maxLength":-1}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["a b",{"maxLength":-1}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["ΣΊΣΥΦΟΣ",{"maxLength":-1}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["a😀b",{"maxLength":-1}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["﻿bom",{"maxLength":-1}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["a²b x½ y①",{"maxLength":-1}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["aⅠb Ⅻ",{"maxLength":-1}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["a𐐀b 𝐀bc",{"maxLength":-1}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["कि ٣٤",{"maxLength":-1}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["Iı İi",{"maxLength":-1}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["K K k",{"maxLength":-1}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["ſ s S",{"maxLength":-1}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["x‍y 👨‍👩‍👧",{"maxLength":-1}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["a b c　d",{"maxLength":-1}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["١٢٣ ٤٥",{"maxLength":-1}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["𝟘𝟙 ²³",{"maxLength":-1}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["snake_case foo-bar o'neil",{"maxLength":-1}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["ǅungla Ǆ",{"maxLength":-1}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["one\r\ntwo threefour",{"maxLength":-1}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["café café",{"maxLength":-1}],"ok":"…"}
+{"fn":"redactDiagnosticText","args":["ΣΑΣ σας ς",{"maxLength":-1}],"ok":"…"}

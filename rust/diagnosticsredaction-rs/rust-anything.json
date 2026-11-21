@@ -1,0 +1,144 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/diagnosticsRedaction.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "diagnosticsredaction-rs",
+  "exports": [
+    {
+      "name": "sanitizeDesktopUpdateFailureReason",
+      "file": "packages/shared/src/diagnosticsRedaction.ts",
+      "line": 15,
+      "params": [
+        {
+          "name": "reason",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof DesktopUpdateFailureReason.Type.Type.Type.Type | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "classifyDesktopUpdateFailure",
+      "file": "packages/shared/src/diagnosticsRedaction.ts",
+      "line": 22,
+      "params": [
+        {
+          "name": "message",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof DesktopUpdateFailureReason.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "sanitizeDiagnosticError",
+      "file": "packages/shared/src/diagnosticsRedaction.ts",
+      "line": 95,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly source: \"main\" | \"renderer\";\n  readonly message: string;\n  readonly stack?: string | undefined;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "{ message: string; stack?: string }",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "sanitizeDiagnosticCrash",
+      "file": "packages/shared/src/diagnosticsRedaction.ts",
+      "line": 192,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly processType?: unknown;\n  readonly reason?: unknown;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "{ processType: string; reason: string }",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "diagnosticErrorFingerprint",
+      "file": "packages/shared/src/diagnosticsRedaction.ts",
+      "line": 221,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly source: \"main\" | \"renderer\";\n  readonly message: string;\n  readonly stack?: string | undefined;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "diagnosticPayloadKind",
+      "file": "packages/shared/src/diagnosticsRedaction.ts",
+      "line": 237,
+      "params": [
+        {
+          "name": "event",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "redactDiagnosticText",
+      "file": "packages/shared/src/diagnosticsRedaction.ts",
+      "line": 408,
+      "params": [
+        {
+          "name": "text",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "opts",
+          "ts_type": "DiagnosticsRedactionOptions",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

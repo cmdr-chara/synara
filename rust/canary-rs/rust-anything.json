@@ -1,0 +1,144 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "scripts/canary.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "canary-rs",
+  "exports": [
+    {
+      "name": "resolveCanaryPaths",
+      "file": "scripts/canary.ts",
+      "line": 39,
+      "params": [
+        {
+          "name": "env",
+          "ts_type": "NodeJS.ProcessEnv",
+          "optional": true,
+          "rest": false
+        },
+        {
+          "name": "homeDirectory",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "CanaryPaths",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "parseCanaryArgs",
+      "file": "scripts/canary.ts",
+      "line": 59,
+      "params": [
+        {
+          "name": "argv",
+          "ts_type": "ReadonlyArray<string>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ParsedCanaryArgs",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveCanaryRef",
+      "file": "scripts/canary.ts",
+      "line": 83,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "ParsedCanaryArgs",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "trackedRef",
+          "ts_type": "string | null",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "canaryCloneArgs",
+      "file": "scripts/canary.ts",
+      "line": 87,
+      "params": [
+        {
+          "name": "originUrl",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "source",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ReadonlyArray<string>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "canaryAppCommandPattern",
+      "file": "scripts/canary.ts",
+      "line": 191,
+      "params": [
+        {
+          "name": "source",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "runCanaryCommand",
+      "file": "scripts/canary.ts",
+      "line": 522,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "ParsedCanaryArgs",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "paths",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

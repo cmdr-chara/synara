@@ -1,0 +1,1201 @@
+{"fn":"resolveCanaryPaths","args":[{"$undefined":true},["a",1]],"error":"The \"path\" argument must be of type string. Received an instance of Array"}
+{"fn":"resolveCanaryPaths","args":[true,"x"],"ok":{"home":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-4790-0/x/.synara-canary","source":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-4790-0/x/.cache/synara-canary/source","state":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-4790-0/x/.synara-canary/canary-state.json","pid":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-4790-0/x/.synara-canary/canary.pid","log":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-4790-0/x/.synara-canary/canary.log"}}
+{"fn":"resolveCanaryPaths","args":[{"$undefined":true},{}],"error":"The \"path\" argument must be of type string. Received an instance of Object"}
+{"fn":"resolveCanaryPaths","args":[[],null],"error":"The \"path\" argument must be of type string. Received null"}
+{"fn":"resolveCanaryPaths","args":[{"a":"b"},"x"],"ok":{"home":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-4790-0/x/.synara-canary","source":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-4790-0/x/.cache/synara-canary/source","state":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-4790-0/x/.synara-canary/canary-state.json","pid":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-4790-0/x/.synara-canary/canary.pid","log":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-4790-0/x/.synara-canary/canary.log"}}
+{"fn":"resolveCanaryPaths","args":[{"a":"b"},{}],"error":"The \"path\" argument must be of type string. Received an instance of Object"}
+{"fn":"resolveCanaryPaths","args":[null,true],"error":"Cannot read properties of null (reading 'SYNARA_CANARY_HOME')"}
+{"fn":"resolveCanaryPaths","args":[{},{"a":"b"}],"error":"The \"path\" argument must be of type string. Received an instance of Object"}
+{"fn":"resolveCanaryPaths","args":[{"a":"b"},null],"error":"The \"path\" argument must be of type string. Received null"}
+{"fn":"resolveCanaryPaths","args":[{"$undefined":true},{"$undefined":true}],"ok":{"home":"/Users/devin/.synara-canary","source":"/Users/devin/.cache/synara-canary/source","state":"/Users/devin/.synara-canary/canary-state.json","pid":"/Users/devin/.synara-canary/canary.pid","log":"/Users/devin/.synara-canary/canary.log"}}
+{"fn":"resolveCanaryPaths","args":[{"a":{"b":"c"}}],"ok":{"home":"/Users/devin/.synara-canary","source":"/Users/devin/.cache/synara-canary/source","state":"/Users/devin/.synara-canary/canary-state.json","pid":"/Users/devin/.synara-canary/canary.pid","log":"/Users/devin/.synara-canary/canary.log"}}
+{"fn":"resolveCanaryPaths","args":[{"$undefined":true},0],"error":"The \"path\" argument must be of type string. Received type number (0)"}
+{"fn":"resolveCanaryPaths","args":[{"$undefined":true},null],"error":"The \"path\" argument must be of type string. Received null"}
+{"fn":"resolveCanaryPaths","args":[true,["a",1]],"error":"The \"path\" argument must be of type string. Received an instance of Array"}
+{"fn":"resolveCanaryPaths","args":[true,{}],"error":"The \"path\" argument must be of type string. Received an instance of Object"}
+{"fn":"resolveCanaryPaths","args":["x"],"ok":{"home":"/Users/devin/.synara-canary","source":"/Users/devin/.cache/synara-canary/source","state":"/Users/devin/.synara-canary/canary-state.json","pid":"/Users/devin/.synara-canary/canary.pid","log":"/Users/devin/.synara-canary/canary.log"}}
+{"fn":"resolveCanaryPaths","args":[{"a":"b"},true],"error":"The \"path\" argument must be of type string. Received type boolean (true)"}
+{"fn":"resolveCanaryPaths","args":[[],{"$undefined":true}],"ok":{"home":"/Users/devin/.synara-canary","source":"/Users/devin/.cache/synara-canary/source","state":"/Users/devin/.synara-canary/canary-state.json","pid":"/Users/devin/.synara-canary/canary.pid","log":"/Users/devin/.synara-canary/canary.log"}}
+{"fn":"resolveCanaryPaths","args":[{},{"a":{"b":"c"}}],"error":"The \"path\" argument must be of type string. Received an instance of Object"}
+{"fn":"resolveCanaryPaths","args":[{"a":"b"},[]],"error":"The \"path\" argument must be of type string. Received an instance of Array"}
+{"fn":"resolveCanaryPaths","args":[true,[]],"error":"The \"path\" argument must be of type string. Received an instance of Array"}
+{"fn":"resolveCanaryPaths","args":[[],{"a":{"b":"c"}}],"error":"The \"path\" argument must be of type string. Received an instance of Object"}
+{"fn":"resolveCanaryPaths","args":[{},[]],"error":"The \"path\" argument must be of type string. Received an instance of Array"}
+{"fn":"resolveCanaryPaths","args":[true,{"$undefined":true}],"ok":{"home":"/Users/devin/.synara-canary","source":"/Users/devin/.cache/synara-canary/source","state":"/Users/devin/.synara-canary/canary-state.json","pid":"/Users/devin/.synara-canary/canary.pid","log":"/Users/devin/.synara-canary/canary.log"}}
+{"fn":"resolveCanaryPaths","args":[true,true],"error":"The \"path\" argument must be of type string. Received type boolean (true)"}
+{"fn":"resolveCanaryPaths","args":[[],{"a":"b"}],"error":"The \"path\" argument must be of type string. Received an instance of Object"}
+{"fn":"resolveCanaryPaths","args":[true,{"a":{"b":"c"}}],"error":"The \"path\" argument must be of type string. Received an instance of Object"}
+{"fn":"resolveCanaryPaths","args":[{"a":{"b":"c"}},["a",1]],"error":"The \"path\" argument must be of type string. Received an instance of Array"}
+{"fn":"resolveCanaryPaths","args":[0,{}],"error":"The \"path\" argument must be of type string. Received an instance of Object"}
+{"fn":"resolveCanaryPaths","args":[{},"x"],"ok":{"home":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-4790-0/x/.synara-canary","source":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-4790-0/x/.cache/synara-canary/source","state":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-4790-0/x/.synara-canary/canary-state.json","pid":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-4790-0/x/.synara-canary/canary.pid","log":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-4790-0/x/.synara-canary/canary.log"}}
+{"fn":"resolveCanaryPaths","args":[{},null],"error":"The \"path\" argument must be of type string. Received null"}
+{"fn":"resolveCanaryPaths","args":[0,0],"error":"The \"path\" argument must be of type string. Received type number (0)"}
+{"fn":"resolveCanaryPaths","args":[["a",1],0],"error":"The \"path\" argument must be of type string. Received type number (0)"}
+{"fn":"resolveCanaryPaths","args":[["a",1],{}],"error":"The \"path\" argument must be of type string. Received an instance of Object"}
+{"fn":"resolveCanaryPaths","args":[null,0],"error":"Cannot read properties of null (reading 'SYNARA_CANARY_HOME')"}
+{"fn":"resolveCanaryPaths","args":[0,[]],"error":"The \"path\" argument must be of type string. Received an instance of Array"}
+{"fn":"resolveCanaryPaths","args":["x",true],"error":"The \"path\" argument must be of type string. Received type boolean (true)"}
+{"fn":"resolveCanaryPaths","args":[["a",1],["a",1]],"error":"The \"path\" argument must be of type string. Received an instance of Array"}
+{"fn":"resolveCanaryPaths","args":[["a",1],{"$undefined":true}],"ok":{"home":"/Users/devin/.synara-canary","source":"/Users/devin/.cache/synara-canary/source","state":"/Users/devin/.synara-canary/canary-state.json","pid":"/Users/devin/.synara-canary/canary.pid","log":"/Users/devin/.synara-canary/canary.log"}}
+{"fn":"resolveCanaryPaths","args":[[],0],"error":"The \"path\" argument must be of type string. Received type number (0)"}
+{"fn":"resolveCanaryPaths","args":[{"a":{"b":"c"}},0],"error":"The \"path\" argument must be of type string. Received type number (0)"}
+{"fn":"resolveCanaryPaths","args":[["a",1],[]],"error":"The \"path\" argument must be of type string. Received an instance of Array"}
+{"fn":"resolveCanaryPaths","args":[{},{"$undefined":true}],"ok":{"home":"/Users/devin/.synara-canary","source":"/Users/devin/.cache/synara-canary/source","state":"/Users/devin/.synara-canary/canary-state.json","pid":"/Users/devin/.synara-canary/canary.pid","log":"/Users/devin/.synara-canary/canary.log"}}
+{"fn":"resolveCanaryPaths","args":[null,{"a":"b"}],"error":"Cannot read properties of null (reading 'SYNARA_CANARY_HOME')"}
+{"fn":"resolveCanaryPaths","args":[{"$undefined":true},[]],"error":"The \"path\" argument must be of type string. Received an instance of Array"}
+{"fn":"resolveCanaryPaths","args":[0,["a",1]],"error":"The \"path\" argument must be of type string. Received an instance of Array"}
+{"fn":"resolveCanaryPaths","args":[0,{"$undefined":true}],"ok":{"home":"/Users/devin/.synara-canary","source":"/Users/devin/.cache/synara-canary/source","state":"/Users/devin/.synara-canary/canary-state.json","pid":"/Users/devin/.synara-canary/canary.pid","log":"/Users/devin/.synara-canary/canary.log"}}
+{"fn":"resolveCanaryPaths","args":[{"$undefined":true},true],"error":"The \"path\" argument must be of type string. Received type boolean (true)"}
+{"fn":"resolveCanaryPaths","args":[[],[]],"error":"The \"path\" argument must be of type string. Received an instance of Array"}
+{"fn":"resolveCanaryPaths","args":[["a",1],"x"],"ok":{"home":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-4790-0/x/.synara-canary","source":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-4790-0/x/.cache/synara-canary/source","state":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-4790-0/x/.synara-canary/canary-state.json","pid":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-4790-0/x/.synara-canary/canary.pid","log":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-4790-0/x/.synara-canary/canary.log"}}
+{"fn":"resolveCanaryPaths","args":[["a",1],{"a":{"b":"c"}}],"error":"The \"path\" argument must be of type string. Received an instance of Object"}
+{"fn":"resolveCanaryPaths","args":[0,{"a":"b"}],"error":"The \"path\" argument must be of type string. Received an instance of Object"}
+{"fn":"resolveCanaryPaths","args":[{},true],"error":"The \"path\" argument must be of type string. Received type boolean (true)"}
+{"fn":"resolveCanaryPaths","args":[{"a":{"b":"c"}},null],"error":"The \"path\" argument must be of type string. Received null"}
+{"fn":"resolveCanaryPaths","args":[["a",1],true],"error":"The \"path\" argument must be of type string. Received type boolean (true)"}
+{"fn":"resolveCanaryPaths","args":[null,null],"error":"Cannot read properties of null (reading 'SYNARA_CANARY_HOME')"}
+{"fn":"resolveCanaryPaths","args":[{"$undefined":true},{"a":"b"}],"error":"The \"path\" argument must be of type string. Received an instance of Object"}
+{"fn":"resolveCanaryPaths","args":[null,{}],"error":"Cannot read properties of null (reading 'SYNARA_CANARY_HOME')"}
+{"fn":"resolveCanaryPaths","args":[true,null],"error":"The \"path\" argument must be of type string. Received null"}
+{"fn":"resolveCanaryPaths","args":[0],"ok":{"home":"/Users/devin/.synara-canary","source":"/Users/devin/.cache/synara-canary/source","state":"/Users/devin/.synara-canary/canary-state.json","pid":"/Users/devin/.synara-canary/canary.pid","log":"/Users/devin/.synara-canary/canary.log"}}
+{"fn":"resolveCanaryPaths","args":[{"a":{"b":"c"}},[]],"error":"The \"path\" argument must be of type string. Received an instance of Array"}
+{"fn":"resolveCanaryPaths","args":["x",{"a":"b"}],"error":"The \"path\" argument must be of type string. Received an instance of Object"}
+{"fn":"resolveCanaryPaths","args":[null,"x"],"error":"Cannot read properties of null (reading 'SYNARA_CANARY_HOME')"}
+{"fn":"resolveCanaryPaths","args":[[],["a",1]],"error":"The \"path\" argument must be of type string. Received an instance of Array"}
+{"fn":"resolveCanaryPaths","args":[{},0],"error":"The \"path\" argument must be of type string. Received type number (0)"}
+{"fn":"resolveCanaryPaths","args":[[]],"ok":{"home":"/Users/devin/.synara-canary","source":"/Users/devin/.cache/synara-canary/source","state":"/Users/devin/.synara-canary/canary-state.json","pid":"/Users/devin/.synara-canary/canary.pid","log":"/Users/devin/.synara-canary/canary.log"}}
+{"fn":"resolveCanaryPaths","args":[{},["a",1]],"error":"The \"path\" argument must be of type string. Received an instance of Array"}
+{"fn":"resolveCanaryPaths","args":[["a",1],null],"error":"The \"path\" argument must be of type string. Received null"}
+{"fn":"resolveCanaryPaths","args":[{"a":"b"}],"ok":{"home":"/Users/devin/.synara-canary","source":"/Users/devin/.cache/synara-canary/source","state":"/Users/devin/.synara-canary/canary-state.json","pid":"/Users/devin/.synara-canary/canary.pid","log":"/Users/devin/.synara-canary/canary.log"}}
+{"fn":"resolveCanaryPaths","args":[{"a":"b"},0],"error":"The \"path\" argument must be of type string. Received type number (0)"}
+{"fn":"resolveCanaryPaths","args":[{"a":"b"},{"a":{"b":"c"}}],"error":"The \"path\" argument must be of type string. Received an instance of Object"}
+{"fn":"resolveCanaryPaths","args":[[],{}],"error":"The \"path\" argument must be of type string. Received an instance of Object"}
+{"fn":"resolveCanaryPaths","args":[0,null],"error":"The \"path\" argument must be of type string. Received null"}
+{"fn":"resolveCanaryPaths","args":[{"a":{"b":"c"}},{"$undefined":true}],"ok":{"home":"/Users/devin/.synara-canary","source":"/Users/devin/.cache/synara-canary/source","state":"/Users/devin/.synara-canary/canary-state.json","pid":"/Users/devin/.synara-canary/canary.pid","log":"/Users/devin/.synara-canary/canary.log"}}
+{"fn":"resolveCanaryPaths","args":[{}],"ok":{"home":"/Users/devin/.synara-canary","source":"/Users/devin/.cache/synara-canary/source","state":"/Users/devin/.synara-canary/canary-state.json","pid":"/Users/devin/.synara-canary/canary.pid","log":"/Users/devin/.synara-canary/canary.log"}}
+{"fn":"resolveCanaryPaths","args":[{"a":{"b":"c"}},true],"error":"The \"path\" argument must be of type string. Received type boolean (true)"}
+{"fn":"resolveCanaryPaths","args":[],"ok":{"home":"/Users/devin/.synara-canary","source":"/Users/devin/.cache/synara-canary/source","state":"/Users/devin/.synara-canary/canary-state.json","pid":"/Users/devin/.synara-canary/canary.pid","log":"/Users/devin/.synara-canary/canary.log"}}
+{"fn":"resolveCanaryPaths","args":[{"a":{"b":"c"}},{"a":"b"}],"error":"The \"path\" argument must be of type string. Received an instance of Object"}
+{"fn":"resolveCanaryPaths","args":["x","x"],"ok":{"home":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-4790-0/x/.synara-canary","source":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-4790-0/x/.cache/synara-canary/source","state":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-4790-0/x/.synara-canary/canary-state.json","pid":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-4790-0/x/.synara-canary/canary.pid","log":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-4790-0/x/.synara-canary/canary.log"}}
+{"fn":"resolveCanaryPaths","args":[{},{}],"error":"The \"path\" argument must be of type string. Received an instance of Object"}
+{"fn":"resolveCanaryPaths","args":[{"$undefined":true}],"ok":{"home":"/Users/devin/.synara-canary","source":"/Users/devin/.cache/synara-canary/source","state":"/Users/devin/.synara-canary/canary-state.json","pid":"/Users/devin/.synara-canary/canary.pid","log":"/Users/devin/.synara-canary/canary.log"}}
+{"fn":"resolveCanaryPaths","args":[0,{"a":{"b":"c"}}],"error":"The \"path\" argument must be of type string. Received an instance of Object"}
+{"fn":"resolveCanaryPaths","args":[[],"x"],"ok":{"home":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-4790-0/x/.synara-canary","source":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-4790-0/x/.cache/synara-canary/source","state":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-4790-0/x/.synara-canary/canary-state.json","pid":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-4790-0/x/.synara-canary/canary.pid","log":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-4790-0/x/.synara-canary/canary.log"}}
+{"fn":"resolveCanaryPaths","args":["x",{"$undefined":true}],"ok":{"home":"/Users/devin/.synara-canary","source":"/Users/devin/.cache/synara-canary/source","state":"/Users/devin/.synara-canary/canary-state.json","pid":"/Users/devin/.synara-canary/canary.pid","log":"/Users/devin/.synara-canary/canary.log"}}
+{"fn":"resolveCanaryPaths","args":[{"a":{"b":"c"}},"x"],"ok":{"home":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-4790-0/x/.synara-canary","source":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-4790-0/x/.cache/synara-canary/source","state":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-4790-0/x/.synara-canary/canary-state.json","pid":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-4790-0/x/.synara-canary/canary.pid","log":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-4790-0/x/.synara-canary/canary.log"}}
+{"fn":"resolveCanaryPaths","args":[null,{"$undefined":true}],"error":"Cannot read properties of null (reading 'SYNARA_CANARY_HOME')"}
+{"fn":"resolveCanaryPaths","args":[{"a":{"b":"c"}},{"a":{"b":"c"}}],"error":"The \"path\" argument must be of type string. Received an instance of Object"}
+{"fn":"resolveCanaryPaths","args":[["a",1]],"ok":{"home":"/Users/devin/.synara-canary","source":"/Users/devin/.cache/synara-canary/source","state":"/Users/devin/.synara-canary/canary-state.json","pid":"/Users/devin/.synara-canary/canary.pid","log":"/Users/devin/.synara-canary/canary.log"}}
+{"fn":"resolveCanaryPaths","args":[true],"ok":{"home":"/Users/devin/.synara-canary","source":"/Users/devin/.cache/synara-canary/source","state":"/Users/devin/.synara-canary/canary-state.json","pid":"/Users/devin/.synara-canary/canary.pid","log":"/Users/devin/.synara-canary/canary.log"}}
+{"fn":"resolveCanaryPaths","args":[null,[]],"error":"Cannot read properties of null (reading 'SYNARA_CANARY_HOME')"}
+{"fn":"resolveCanaryPaths","args":[{"a":"b"},["a",1]],"error":"The \"path\" argument must be of type string. Received an instance of Array"}
+{"fn":"resolveCanaryPaths","args":["x",["a",1]],"error":"The \"path\" argument must be of type string. Received an instance of Array"}
+{"fn":"resolveCanaryPaths","args":[0,"x"],"ok":{"home":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-4790-0/x/.synara-canary","source":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-4790-0/x/.cache/synara-canary/source","state":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-4790-0/x/.synara-canary/canary-state.json","pid":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-4790-0/x/.synara-canary/canary.pid","log":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-4790-0/x/.synara-canary/canary.log"}}
+{"fn":"resolveCanaryPaths","args":[null],"error":"Cannot read properties of null (reading 'SYNARA_CANARY_HOME')"}
+{"fn":"resolveCanaryPaths","args":[{"$undefined":true},"x"],"ok":{"home":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-4790-0/x/.synara-canary","source":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-4790-0/x/.cache/synara-canary/source","state":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-4790-0/x/.synara-canary/canary-state.json","pid":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-4790-0/x/.synara-canary/canary.pid","log":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-4790-0/x/.synara-canary/canary.log"}}
+{"fn":"resolveCanaryPaths","args":[null,{"a":{"b":"c"}}],"error":"Cannot read properties of null (reading 'SYNARA_CANARY_HOME')"}
+{"fn":"resolveCanaryPaths","args":[{"$undefined":true},{"a":{"b":"c"}}],"error":"The \"path\" argument must be of type string. Received an instance of Object"}
+{"fn":"resolveCanaryPaths","args":[["a",1],{"a":"b"}],"error":"The \"path\" argument must be of type string. Received an instance of Object"}
+{"fn":"resolveCanaryPaths","args":["x",null],"error":"The \"path\" argument must be of type string. Received null"}
+{"fn":"resolveCanaryPaths","args":[[],true],"error":"The \"path\" argument must be of type string. Received type boolean (true)"}
+{"fn":"resolveCanaryPaths","args":["x",{}],"error":"The \"path\" argument must be of type string. Received an instance of Object"}
+{"fn":"resolveCanaryPaths","args":["x",[]],"error":"The \"path\" argument must be of type string. Received an instance of Array"}
+{"fn":"resolveCanaryPaths","args":[null,["a",1]],"error":"Cannot read properties of null (reading 'SYNARA_CANARY_HOME')"}
+{"fn":"resolveCanaryPaths","args":["x",{"a":{"b":"c"}}],"error":"The \"path\" argument must be of type string. Received an instance of Object"}
+{"fn":"resolveCanaryPaths","args":[{"a":"b"},{"a":"b"}],"error":"The \"path\" argument must be of type string. Received an instance of Object"}
+{"fn":"resolveCanaryPaths","args":[0,true],"error":"The \"path\" argument must be of type string. Received type boolean (true)"}
+{"fn":"resolveCanaryPaths","args":["x",0],"error":"The \"path\" argument must be of type string. Received type number (0)"}
+{"fn":"resolveCanaryPaths","args":[{"a":"b"},{"$undefined":true}],"ok":{"home":"/Users/devin/.synara-canary","source":"/Users/devin/.cache/synara-canary/source","state":"/Users/devin/.synara-canary/canary-state.json","pid":"/Users/devin/.synara-canary/canary.pid","log":"/Users/devin/.synara-canary/canary.log"}}
+{"fn":"resolveCanaryPaths","args":[{"a":{"b":"c"}},{}],"error":"The \"path\" argument must be of type string. Received an instance of Object"}
+{"fn":"resolveCanaryPaths","args":[true,{"a":"b"}],"error":"The \"path\" argument must be of type string. Received an instance of Object"}
+{"fn":"resolveCanaryPaths","args":[true,0],"error":"The \"path\" argument must be of type string. Received type number (0)"}
+{"fn":"parseCanaryArgs","args":[["./x/**/*.json","abchello world"]],"error":"Unknown Canary command: ./x/**/*.json"}
+{"fn":"parseCanaryArgs","args":[[".leading","a..b",""]],"error":"Unknown Canary command: .leading"}
+{"fn":"parseCanaryArgs","args":[["Hello World"]],"error":"Unknown Canary command: Hello World"}
+{"fn":"parseCanaryArgs","args":[["ΣΊΣΥΦΟΣ","emoji 👍🏽 mix","ns:key.path"]],"error":"Unknown Canary command: ΣΊΣΥΦΟΣ"}
+{"fn":"parseCanaryArgs","args":[[]],"ok":{"command":"status","ref":null}}
+{"fn":"parseCanaryArgs","args":[["hellokey_name-1","line1\nline2"]],"error":"Unknown Canary command: hellokey_name-1"}
+{"fn":"parseCanaryArgs","args":[["hello world","ab","ab"]],"error":"Unknown Canary command: hello world"}
+{"fn":"parseCanaryArgs","args":[["line1\nline2","{name} has {count} items","line1\nline2"]],"error":"Unknown Canary command: line1\nline2"}
+{"fn":"parseCanaryArgs","args":[["a😀b😀c"]],"error":"Unknown Canary command: a😀b😀c"}
+{"fn":"parseCanaryArgs","args":[["abc"]],"error":"Unknown Canary command: abc"}
+{"fn":"parseCanaryArgs","args":[["HELLO","HELLO","hello world"]],"error":"Unknown Canary command: HELLO"}
+{"fn":"parseCanaryArgs","args":[["ab","é","hello world"]],"error":"Unknown Canary command: ab"}
+{"fn":"parseCanaryArgs","args":[["Hello World","İstanbul","emoji 👍🏽 mix"]],"error":"Unknown Canary command: Hello World"}
+{"fn":"parseCanaryArgs","args":[["HELLO"]],"error":"Unknown Canary command: HELLO"}
+{"fn":"parseCanaryArgs","args":[["./x/**/*.json","日本語のテキスト"]],"error":"Unknown Canary command: ./x/**/*.json"}
+{"fn":"parseCanaryArgs","args":[["trailing.a.b.c"]],"error":"Unknown Canary command: trailing.a.b.c"}
+{"fn":"parseCanaryArgs","args":[["ab",":",""]],"error":"Unknown Canary command: ab"}
+{"fn":"parseCanaryArgs","args":[["trailing."]],"error":"Unknown Canary command: trailing."}
+{"fn":"parseCanaryArgs","args":[["{name} has {count} items"]],"error":"Unknown Canary command: {name} has {count} items"}
+{"fn":"parseCanaryArgs","args":[["a.b.c","tab\tseparated"]],"error":"Unknown Canary command: a.b.c"}
+{"fn":"parseCanaryArgs","args":[["é","","a:b:c"]],"error":"Unknown Canary command: é"}
+{"fn":"parseCanaryArgs","args":[[""]],"error":"Unknown Canary command: "}
+{"fn":"parseCanaryArgs","args":[["tab\tseparated","  padded  "]],"error":"Unknown Canary command: tab\tseparated"}
+{"fn":"parseCanaryArgs","args":[["./x/**/*.jsonhello world","  padded  ","trailing."]],"error":"Unknown Canary command: ./x/**/*.jsonhello world"}
+{"fn":"parseCanaryArgs","args":[["helloemoji 👍🏽 mix"]],"error":"Unknown Canary command: helloemoji 👍🏽 mix"}
+{"fn":"parseCanaryArgs","args":[["a:b:cab","tab\tseparated","HELLO"]],"error":"Unknown Canary command: a:b:cab"}
+{"fn":"parseCanaryArgs","args":[["İstanbul"]],"error":"Unknown Canary command: İstanbul"}
+{"fn":"parseCanaryArgs","args":[["straße","HELLO","line1\nline2"]],"error":"Unknown Canary command: straße"}
+{"fn":"parseCanaryArgs","args":[["﻿bom  padded  ","aba..b"]],"error":"Unknown Canary command: ﻿bom  padded  "}
+{"fn":"parseCanaryArgs","args":[["hello world:","line1\nline2","helloHello World"]],"error":"Unknown Canary command: hello world:"}
+{"fn":"parseCanaryArgs","args":[["HELLO","ab"]],"error":"Unknown Canary command: HELLO"}
+{"fn":"parseCanaryArgs","args":[["a.b.ca😀b😀c","﻿bomab"]],"error":"Unknown Canary command: a.b.ca😀b😀c"}
+{"fn":"parseCanaryArgs","args":[["a:b:cHello World","emoji 👍🏽 mix"]],"error":"Unknown Canary command: a:b:cHello World"}
+{"fn":"parseCanaryArgs","args":[["a😀b😀c","Hello World"]],"error":"Unknown Canary command: a😀b😀c"}
+{"fn":"parseCanaryArgs","args":[["abstraße"]],"error":"Unknown Canary command: abstraße"}
+{"fn":"parseCanaryArgs","args":[["tab\tseparatedHello World","ünïcödé"]],"error":"Unknown Canary command: tab\tseparatedHello World"}
+{"fn":"parseCanaryArgs","args":[["İstanbul","a😀b😀c","日本語のテキスト"]],"error":"Unknown Canary command: İstanbul"}
+{"fn":"parseCanaryArgs","args":[["emoji 👍🏽 mix"]],"error":"Unknown Canary command: emoji 👍🏽 mix"}
+{"fn":"parseCanaryArgs","args":[["{name} has {count} items","ab"]],"error":"Unknown Canary command: {name} has {count} items"}
+{"fn":"parseCanaryArgs","args":[["İstanbul","ns:key.path"]],"error":"Unknown Canary command: İstanbul"}
+{"fn":"parseCanaryArgs","args":[["日本語のテキスト"]],"error":"Unknown Canary command: 日本語のテキスト"}
+{"fn":"parseCanaryArgs","args":[["straße","{name} has {count} items","a😀b😀c"]],"error":"Unknown Canary command: straße"}
+{"fn":"parseCanaryArgs","args":[["a..b","{name} has {count} itemsab","{name} has {count} items"]],"error":"Unknown Canary command: a..b"}
+{"fn":"parseCanaryArgs","args":[["line1\nline2"]],"error":"Unknown Canary command: line1\nline2"}
+{"fn":"parseCanaryArgs","args":[["abc","éhello","./x/**/*.json"]],"error":"Unknown Canary command: abc"}
+{"fn":"parseCanaryArgs","args":[["ns:key.patha","{name} has {count} items","İstanbula..b"]],"error":"Unknown Canary command: ns:key.patha"}
+{"fn":"parseCanaryArgs","args":[["hello","é"]],"error":"Unknown Canary command: hello"}
+{"fn":"parseCanaryArgs","args":[["  padded  "]],"error":"Unknown Canary command:   padded  "}
+{"fn":"parseCanaryArgs","args":[["hello"]],"error":"Unknown Canary command: hello"}
+{"fn":"parseCanaryArgs","args":[["日本語のテキスト","a.b.c","a"]],"error":"Unknown Canary command: 日本語のテキスト"}
+{"fn":"parseCanaryArgs","args":[["straße","helloa😀b😀c"]],"error":"Unknown Canary command: straße"}
+{"fn":"parseCanaryArgs","args":[["﻿boma:b:c","straße","  padded  "]],"error":"Unknown Canary command: ﻿boma:b:c"}
+{"fn":"parseCanaryArgs","args":[["😀src/a/b.ts"]],"error":"Unknown Canary command: 😀src/a/b.ts"}
+{"fn":"parseCanaryArgs","args":[["abc",".leading"]],"error":"Unknown Canary command: abc"}
+{"fn":"parseCanaryArgs","args":[["日本語のテキスト","./x/**/*.json"]],"error":"Unknown Canary command: 日本語のテキスト"}
+{"fn":"parseCanaryArgs","args":[["a","key_name-1"]],"error":"Unknown Canary command: a"}
+{"fn":"parseCanaryArgs","args":[["ΣΊΣΥΦΟΣ","ab"]],"error":"Unknown Canary command: ΣΊΣΥΦΟΣ"}
+{"fn":"parseCanaryArgs","args":[["  padded  ","Hello World","./x/**/*.json"]],"error":"Unknown Canary command:   padded  "}
+{"fn":"parseCanaryArgs","args":[[":"]],"error":"Unknown Canary command: :"}
+{"fn":"parseCanaryArgs","args":[["Hello World","İstanbul"]],"error":"Unknown Canary command: Hello World"}
+{"fn":"parseCanaryArgs","args":[[":","ns:key.path"]],"error":"Unknown Canary command: :"}
+{"fn":"parseCanaryArgs","args":[["ünïcödéa","ab","  padded  "]],"error":"Unknown Canary command: ünïcödéa"}
+{"fn":"parseCanaryArgs","args":[["a"]],"error":"Unknown Canary command: a"}
+{"fn":"parseCanaryArgs","args":[["ΣΊΣΥΦΟΣ","emoji 👍🏽 mix"]],"error":"Unknown Canary command: ΣΊΣΥΦΟΣ"}
+{"fn":"parseCanaryArgs","args":[["﻿bom","trailing.ns:key.path","a..b"]],"error":"Unknown Canary command: ﻿bom"}
+{"fn":"parseCanaryArgs","args":[["src/a/b.ts","ab./x/**/*.json",".leading"]],"error":"Unknown Canary command: src/a/b.ts"}
+{"fn":"parseCanaryArgs","args":[["abc","a..b"]],"error":"Unknown Canary command: abc"}
+{"fn":"parseCanaryArgs","args":[["日本語のテキスト","😀hello","﻿bom"]],"error":"Unknown Canary command: 日本語のテキスト"}
+{"fn":"parseCanaryArgs","args":[["ab","a😀b😀cHello World","emoji 👍🏽 mix"]],"error":"Unknown Canary command: ab"}
+{"fn":"parseCanaryArgs","args":[["src/a/b.ts","./x/**/*.json","a😀b😀c"]],"error":"Unknown Canary command: src/a/b.ts"}
+{"fn":"parseCanaryArgs","args":[[".leading"]],"error":"Unknown Canary command: .leading"}
+{"fn":"parseCanaryArgs","args":[["key_name-1","ΣΊΣΥΦΟΣ:"]],"error":"Unknown Canary command: key_name-1"}
+{"fn":"parseCanaryArgs","args":[["ΣΊΣΥΦΟΣabc"]],"error":"Unknown Canary command: ΣΊΣΥΦΟΣabc"}
+{"fn":"parseCanaryArgs","args":[["key_name-1HELLO"]],"error":"Unknown Canary command: key_name-1HELLO"}
+{"fn":"parseCanaryArgs","args":[["a..b:","a:b:c"]],"error":"Unknown Canary command: a..b:"}
+{"fn":"parseCanaryArgs","args":[["a😀b😀c","ΣΊΣΥΦΟΣ日本語のテキスト","{name} has {count} items"]],"error":"Unknown Canary command: a😀b😀c"}
+{"fn":"parseCanaryArgs","args":[["ns:key.path","abc"]],"error":"Unknown Canary command: ns:key.path"}
+{"fn":"parseCanaryArgs","args":[["😀é",".leading"]],"error":"Unknown Canary command: 😀é"}
+{"fn":"parseCanaryArgs","args":[["é"]],"error":"Unknown Canary command: é"}
+{"fn":"parseCanaryArgs","args":[["HELLO","line1\nline2emoji 👍🏽 mix"]],"error":"Unknown Canary command: HELLO"}
+{"fn":"parseCanaryArgs","args":[["line1\nline2","a.b.c"]],"error":"Unknown Canary command: line1\nline2"}
+{"fn":"parseCanaryArgs","args":[["ns:key.path","Hello World","é"]],"error":"Unknown Canary command: ns:key.path"}
+{"fn":"parseCanaryArgs","args":[["日本語のテキスト﻿bom","a:b:c"]],"error":"Unknown Canary command: 日本語のテキスト﻿bom"}
+{"fn":"parseCanaryArgs","args":[["tab\tseparated"]],"error":"Unknown Canary command: tab\tseparated"}
+{"fn":"parseCanaryArgs","args":[["emoji 👍🏽 mix","﻿bom","a😀b😀c"]],"error":"Unknown Canary command: emoji 👍🏽 mix"}
+{"fn":"parseCanaryArgs","args":[[".leading","ab","ab"]],"error":"Unknown Canary command: .leading"}
+{"fn":"parseCanaryArgs","args":[["src/a/b.ts"]],"error":"Unknown Canary command: src/a/b.ts"}
+{"fn":"parseCanaryArgs","args":[["a","HELLO","a..b"]],"error":"Unknown Canary command: a"}
+{"fn":"parseCanaryArgs","args":[["日本語のテキスト😀","hello","a.b.c"]],"error":"Unknown Canary command: 日本語のテキスト😀"}
+{"fn":"parseCanaryArgs","args":[["","{name} has {count} itemsabc","a:b:c.leading"]],"error":"Unknown Canary command: "}
+{"fn":"parseCanaryArgs","args":[["straße","ünïcödé","ns:key.path"]],"error":"Unknown Canary command: straße"}
+{"fn":"parseCanaryArgs","args":[["src/a/b.ts","﻿bomns:key.path","a.b.c"]],"error":"Unknown Canary command: src/a/b.ts"}
+{"fn":"parseCanaryArgs","args":[["a.b.c"]],"error":"Unknown Canary command: a.b.c"}
+{"fn":"parseCanaryArgs","args":[["Hello World:","😀😀"]],"error":"Unknown Canary command: Hello World:"}
+{"fn":"parseCanaryArgs","args":[["HELLO","trailing.","hello worldHello World"]],"error":"Unknown Canary command: HELLO"}
+{"fn":"parseCanaryArgs","args":[["ns:key.path"]],"error":"Unknown Canary command: ns:key.path"}
+{"fn":"parseCanaryArgs","args":[["a.b.ca😀b😀c","Hello World"]],"error":"Unknown Canary command: a.b.ca😀b😀c"}
+{"fn":"parseCanaryArgs","args":[["emoji 👍🏽 mixa.b.c"]],"error":"Unknown Canary command: emoji 👍🏽 mixa.b.c"}
+{"fn":"parseCanaryArgs","args":[[":","ababc"]],"error":"Unknown Canary command: :"}
+{"fn":"parseCanaryArgs","args":[["ns:key.path","key_name-1.leading","ΣΊΣΥΦΟΣ"]],"error":"Unknown Canary command: ns:key.path"}
+{"fn":"parseCanaryArgs","args":[["line1\nline2","ünïcödéns:key.path","a"]],"error":"Unknown Canary command: line1\nline2"}
+{"fn":"parseCanaryArgs","args":[["﻿bom"]],"error":"Unknown Canary command: ﻿bom"}
+{"fn":"parseCanaryArgs","args":[[".leading","HELLOemoji 👍🏽 mix","straße"]],"error":"Unknown Canary command: .leading"}
+{"fn":"parseCanaryArgs","args":[["a","Hello World"]],"error":"Unknown Canary command: a"}
+{"fn":"parseCanaryArgs","args":[["tab\tseparated","ünïcödé","trailing.a"]],"error":"Unknown Canary command: tab\tseparated"}
+{"fn":"parseCanaryArgs","args":[["﻿bom","helloa..b","a.b.cünïcödé"]],"error":"Unknown Canary command: ﻿bom"}
+{"fn":"parseCanaryArgs","args":[["a","a..b",":"]],"error":"Unknown Canary command: a"}
+{"fn":"parseCanaryArgs","args":[["日本語のテキストtrailing.","a.b.c","abcHELLO"]],"error":"Unknown Canary command: 日本語のテキストtrailing."}
+{"fn":"parseCanaryArgs","args":[["ns:key.path","﻿bom"]],"error":"Unknown Canary command: ns:key.path"}
+{"fn":"parseCanaryArgs","args":[["😀","abc"]],"error":"Unknown Canary command: 😀"}
+{"fn":"parseCanaryArgs","args":[["hello world","abc","./x/**/*.json"]],"error":"Unknown Canary command: hello world"}
+{"fn":"parseCanaryArgs","args":[["İstanbul","./x/**/*.json"]],"error":"Unknown Canary command: İstanbul"}
+{"fn":"parseCanaryArgs","args":[["hello world","é",":﻿bom"]],"error":"Unknown Canary command: hello world"}
+{"fn":"parseCanaryArgs","args":[["😀","hello worldHELLO","emoji 👍🏽 mix"]],"error":"Unknown Canary command: 😀"}
+{"fn":"parseCanaryArgs","args":[["HELLOé"]],"error":"Unknown Canary command: HELLOé"}
+{"fn":"parseCanaryArgs","args":[["ns:key.path","ns:key.path"]],"error":"Unknown Canary command: ns:key.path"}
+{"fn":"parseCanaryArgs","args":[["İstanbul","{name} has {count} items","./x/**/*.json"]],"error":"Unknown Canary command: İstanbul"}
+{"fn":"parseCanaryArgs","args":[["a:b:c","ünïcödé","ab"]],"error":"Unknown Canary command: a:b:c"}
+{"fn":"parseCanaryArgs","args":[["ns:key.path.leading","emoji 👍🏽 mix"]],"error":"Unknown Canary command: ns:key.path.leading"}
+{"fn":"parseCanaryArgs","args":[["emoji 👍🏽 mix",""]],"error":"Unknown Canary command: emoji 👍🏽 mix"}
+{"fn":"parseCanaryArgs","args":[[".leadingΣΊΣΥΦΟΣ","Hello World"]],"error":"Unknown Canary command: .leadingΣΊΣΥΦΟΣ"}
+{"fn":"parseCanaryArgs","args":[["日本語のテキスト","a:b:c","日本語のテキスト"]],"error":"Unknown Canary command: 日本語のテキスト"}
+{"fn":"parseCanaryArgs","args":[["straße"]],"error":"Unknown Canary command: straße"}
+{"fn":"parseCanaryArgs","args":[["abc",".leading","src/a/b.ts"]],"error":"Unknown Canary command: abc"}
+{"fn":"parseCanaryArgs","args":[["hello world","日本語のテキスト"]],"error":"Unknown Canary command: hello world"}
+{"fn":"parseCanaryArgs","args":[["ünïcödé"]],"error":"Unknown Canary command: ünïcödé"}
+{"fn":"parseCanaryArgs","args":[["a:b:c","  padded  "]],"error":"Unknown Canary command: a:b:c"}
+{"fn":"parseCanaryArgs","args":[["a:b:c"]],"error":"Unknown Canary command: a:b:c"}
+{"fn":"parseCanaryArgs","args":[["a😀b😀c","tab\tseparated","./x/**/*.json{name} has {count} items"]],"error":"Unknown Canary command: a😀b😀c"}
+{"fn":"parseCanaryArgs","args":[["tab\tseparatedkey_name-1","日本語のテキスト﻿bom","emoji 👍🏽 mix"]],"error":"Unknown Canary command: tab\tseparatedkey_name-1"}
+{"fn":"parseCanaryArgs","args":[[":","tab\tseparatedns:key.path"]],"error":"Unknown Canary command: :"}
+{"fn":"parseCanaryArgs","args":[["ns:key.pathtrailing.","emoji 👍🏽 mixsrc/a/b.ts","trailing."]],"error":"Unknown Canary command: ns:key.pathtrailing."}
+{"fn":"parseCanaryArgs","args":[["hello","a:b:c","straße"]],"error":"Unknown Canary command: hello"}
+{"fn":"parseCanaryArgs","args":[["﻿bom./x/**/*.json"]],"error":"Unknown Canary command: ﻿bom./x/**/*.json"}
+{"fn":"parseCanaryArgs","args":[["😀","ünïcödé"]],"error":"Unknown Canary command: 😀"}
+{"fn":"parseCanaryArgs","args":[["éünïcödé","ababc","éstraße"]],"error":"Unknown Canary command: éünïcödé"}
+{"fn":"parseCanaryArgs","args":[["Hello World","line1\nline2"]],"error":"Unknown Canary command: Hello World"}
+{"fn":"parseCanaryArgs","args":[["","ns:key.path"]],"error":"Unknown Canary command: "}
+{"fn":"parseCanaryArgs","args":[["trailing.ns:key.path"]],"error":"Unknown Canary command: trailing.ns:key.path"}
+{"fn":"parseCanaryArgs","args":[["./x/**/*.json","İstanbul","é"]],"error":"Unknown Canary command: ./x/**/*.json"}
+{"fn":"parseCanaryArgs","args":[["hello world","trailing."]],"error":"Unknown Canary command: hello world"}
+{"fn":"parseCanaryArgs","args":[["a..b"]],"error":"Unknown Canary command: a..b"}
+{"fn":"parseCanaryArgs","args":[["ns:key.pathabc"]],"error":"Unknown Canary command: ns:key.pathabc"}
+{"fn":"parseCanaryArgs","args":[["  padded  ","tab\tseparated"]],"error":"Unknown Canary command:   padded  "}
+{"fn":"parseCanaryArgs","args":[["abc","tab\tseparated","Hello WorldΣΊΣΥΦΟΣ"]],"error":"Unknown Canary command: abc"}
+{"fn":"parseCanaryArgs","args":[["hello","İstanbul"]],"error":"Unknown Canary command: hello"}
+{"fn":"parseCanaryArgs","args":[["a.b.c","key_name-1"]],"error":"Unknown Canary command: a.b.c"}
+{"fn":"parseCanaryArgs","args":[["a.b.cünïcödé"]],"error":"Unknown Canary command: a.b.cünïcödé"}
+{"fn":"parseCanaryArgs","args":[["a","emoji 👍🏽 mix"]],"error":"Unknown Canary command: a"}
+{"fn":"parseCanaryArgs","args":[["﻿bom","ünïcödéé"]],"error":"Unknown Canary command: ﻿bom"}
+{"fn":"parseCanaryArgs","args":[["a","a:b:c"]],"error":"Unknown Canary command: a"}
+{"fn":"parseCanaryArgs","args":[["ns:key.path","ünïcödé","src/a/b.ts"]],"error":"Unknown Canary command: ns:key.path"}
+{"fn":"parseCanaryArgs","args":[["ünïcödé","hello.leading"]],"error":"Unknown Canary command: ünïcödé"}
+{"fn":"parseCanaryArgs","args":[["straßea😀b😀c"]],"error":"Unknown Canary command: straßea😀b😀c"}
+{"fn":"parseCanaryArgs","args":[["a😀b😀chello world","emoji 👍🏽 mix"]],"error":"Unknown Canary command: a😀b😀chello world"}
+{"fn":"parseCanaryArgs","args":[["a:b:csrc/a/b.ts"]],"error":"Unknown Canary command: a:b:csrc/a/b.ts"}
+{"fn":"parseCanaryArgs","args":[[".leading","ns:key.path"]],"error":"Unknown Canary command: .leading"}
+{"fn":"parseCanaryArgs","args":[["a:b:c","a:b:c","ΣΊΣΥΦΟΣ"]],"error":"Unknown Canary command: a:b:c"}
+{"fn":"parseCanaryArgs","args":[["ΣΊΣΥΦΟΣ","ΣΊΣΥΦΟΣ","trailing."]],"error":"Unknown Canary command: ΣΊΣΥΦΟΣ"}
+{"fn":"parseCanaryArgs","args":[["a😀b😀c",":","key_name-1"]],"error":"Unknown Canary command: a😀b😀c"}
+{"fn":"parseCanaryArgs","args":[["HELLO","a"]],"error":"Unknown Canary command: HELLO"}
+{"fn":"parseCanaryArgs","args":[["HELLO","Hello World",""]],"error":"Unknown Canary command: HELLO"}
+{"fn":"parseCanaryArgs","args":[["ns:key.path","a:b:c"]],"error":"Unknown Canary command: ns:key.path"}
+{"fn":"parseCanaryArgs","args":[["Hello World","abc"]],"error":"Unknown Canary command: Hello World"}
+{"fn":"parseCanaryArgs","args":[["é","abc"]],"error":"Unknown Canary command: é"}
+{"fn":"parseCanaryArgs","args":[["日本語のテキスト","éemoji 👍🏽 mix","abc"]],"error":"Unknown Canary command: 日本語のテキスト"}
+{"fn":"parseCanaryArgs","args":[["a..b","line1\nline2:","ünïcödé"]],"error":"Unknown Canary command: a..b"}
+{"fn":"parseCanaryArgs","args":[["emoji 👍🏽 mix","Hello World","straße"]],"error":"Unknown Canary command: emoji 👍🏽 mix"}
+{"fn":"parseCanaryArgs","args":[["trailing.ünïcödé","ünïcödé"]],"error":"Unknown Canary command: trailing.ünïcödé"}
+{"fn":"parseCanaryArgs","args":[["İstanbul","trailing.","a:b:c"]],"error":"Unknown Canary command: İstanbul"}
+{"fn":"parseCanaryArgs","args":[["a..babc"]],"error":"Unknown Canary command: a..babc"}
+{"fn":"parseCanaryArgs","args":[["﻿bom﻿bom","日本語のテキスト","hellohello"]],"error":"Unknown Canary command: ﻿bom﻿bom"}
+{"fn":"parseCanaryArgs","args":[["tab\tseparated","./x/**/*.jsona:b:c","./x/**/*.json"]],"error":"Unknown Canary command: tab\tseparated"}
+{"fn":"parseCanaryArgs","args":[["abc","Hello Worldsrc/a/b.ts"]],"error":"Unknown Canary command: abc"}
+{"fn":"parseCanaryArgs","args":[["😀","abcİstanbul"]],"error":"Unknown Canary command: 😀"}
+{"fn":"parseCanaryArgs","args":[["é","a..b"]],"error":"Unknown Canary command: é"}
+{"fn":"parseCanaryArgs","args":[["abc","trailing.","日本語のテキスト"]],"error":"Unknown Canary command: abc"}
+{"fn":"parseCanaryArgs","args":[["Hello Worldhello world"]],"error":"Unknown Canary command: Hello Worldhello world"}
+{"fn":"parseCanaryArgs","args":[["./x/**/*.json","line1\nline2","emoji 👍🏽 mix"]],"error":"Unknown Canary command: ./x/**/*.json"}
+{"fn":"parseCanaryArgs","args":[["İstanbulé"]],"error":"Unknown Canary command: İstanbulé"}
+{"fn":"parseCanaryArgs","args":[["src/a/b.ts","a😀b😀c"]],"error":"Unknown Canary command: src/a/b.ts"}
+{"fn":"parseCanaryArgs","args":[["src/a/b.ts","abc","İstanbul"]],"error":"Unknown Canary command: src/a/b.ts"}
+{"fn":"parseCanaryArgs","args":[["./x/**/*.json"]],"error":"Unknown Canary command: ./x/**/*.json"}
+{"fn":"parseCanaryArgs","args":[[":","src/a/b.ts"]],"error":"Unknown Canary command: :"}
+{"fn":"parseCanaryArgs","args":[["trailing.emoji 👍🏽 mix"]],"error":"Unknown Canary command: trailing.emoji 👍🏽 mix"}
+{"fn":"parseCanaryArgs","args":[["key_name-1"]],"error":"Unknown Canary command: key_name-1"}
+{"fn":"parseCanaryArgs","args":[["﻿bom","  padded  ","{name} has {count} items"]],"error":"Unknown Canary command: ﻿bom"}
+{"fn":"parseCanaryArgs","args":[["HELLO","a..b","😀"]],"error":"Unknown Canary command: HELLO"}
+{"fn":"parseCanaryArgs","args":[["é","a..b","straßea😀b😀c"]],"error":"Unknown Canary command: é"}
+{"fn":"parseCanaryArgs","args":[["  padded  ","a😀b😀c"]],"error":"Unknown Canary command:   padded  "}
+{"fn":"parseCanaryArgs","args":[["","a:b:cline1\nline2"]],"error":"Unknown Canary command: "}
+{"fn":"parseCanaryArgs","args":[["HELLO","astraße"]],"error":"Unknown Canary command: HELLO"}
+{"fn":"parseCanaryArgs","args":[["😀","{name} has {count} items","ns:key.path"]],"error":"Unknown Canary command: 😀"}
+{"fn":"parseCanaryArgs","args":[["日本語のテキスト","Hello World"]],"error":"Unknown Canary command: 日本語のテキスト"}
+{"fn":"parseCanaryArgs","args":[["😀﻿bom","😀"]],"error":"Unknown Canary command: 😀﻿bom"}
+{"fn":"parseCanaryArgs","args":[["﻿bom","HELLO"]],"error":"Unknown Canary command: ﻿bom"}
+{"fn":"parseCanaryArgs","args":[["a:b:c","abc"]],"error":"Unknown Canary command: a:b:c"}
+{"fn":"parseCanaryArgs","args":[["hello world","a😀b😀c"]],"error":"Unknown Canary command: hello world"}
+{"fn":"parseCanaryArgs","args":[["ΣΊΣΥΦΟΣ"]],"error":"Unknown Canary command: ΣΊΣΥΦΟΣ"}
+{"fn":"parseCanaryArgs","args":[["./x/**/*.json","line1\nline2"]],"error":"Unknown Canary command: ./x/**/*.json"}
+{"fn":"parseCanaryArgs","args":[["b","a","B","é","10","9","a"]],"error":"Unknown Canary command: b"}
+{"fn":"resolveCanaryRef","args":[{"command":"update","ref":null},"😀"],"ok":"😀"}
+{"fn":"resolveCanaryRef","args":[{"a":"b"},{"$undefined":true}],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"start","ref":null},"hello world"],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"start","ref":"İstanbul"},"{name} has {count} items"],"ok":"İstanbul"}
+{"fn":"resolveCanaryRef","args":[{"command":"setup","ref":"a:b:chello"},"a😀b😀c😀"],"ok":"a:b:chello"}
+{"fn":"resolveCanaryRef","args":[{"command":"stop","ref":"hello world"}],"ok":"hello world"}
+{"fn":"resolveCanaryRef","args":[{"command":"start","ref":null},"﻿bom"],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"status","ref":null},"a.b.c"],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"stop","ref":"ünïcödé"},"ünïcödé"],"ok":"ünïcödé"}
+{"fn":"resolveCanaryRef","args":[{"command":"rollback","ref":"HELLO"},"ns:key.pathé"],"ok":"HELLO"}
+{"fn":"resolveCanaryRef","args":[{"a":{"b":"c"}},"Hello World"],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"status","ref":null},"{name} has {count} items"],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"start","ref":"é"},"trailing."],"ok":"é"}
+{"fn":"resolveCanaryRef","args":[{"command":"rollback","ref":null},"emoji 👍🏽 mix"],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"rollback","ref":":"},"ns:key.patha😀b😀c"],"ok":":"}
+{"fn":"resolveCanaryRef","args":[{"command":"update","ref":"a:b:c"},"ünïcödé"],"ok":"a:b:c"}
+{"fn":"resolveCanaryRef","args":[{"command":"start","ref":null},":"],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"update","ref":"日本語のテキスト"},"tab\tseparatedkey_name-1"],"ok":"日本語のテキスト"}
+{"fn":"resolveCanaryRef","args":[{"command":"setup","ref":null},"{name} has {count} itemsabc"],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"rollback","ref":"tab\tseparated"},"emoji 👍🏽 mix"],"ok":"tab\tseparated"}
+{"fn":"resolveCanaryRef","args":[{"command":"stop","ref":"src/a/b.ts"},"hello world"],"ok":"src/a/b.ts"}
+{"fn":"resolveCanaryRef","args":[{"command":"update","ref":":"},".leading﻿bom"],"ok":":"}
+{"fn":"resolveCanaryRef","args":[{"command":"update","ref":"İstanbul"},"./x/**/*.json"],"ok":"İstanbul"}
+{"fn":"resolveCanaryRef","args":[{"command":"start","ref":"a.b.cns:key.path"},"trailing."],"ok":"a.b.cns:key.path"}
+{"fn":"resolveCanaryRef","args":[{"command":"rollback","ref":null}],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"update","ref":"a.b.cé"},"😀"],"ok":"a.b.cé"}
+{"fn":"resolveCanaryRef","args":[{"command":"stop","ref":null}],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"rollback","ref":"  padded  "},"a"],"ok":"  padded  "}
+{"fn":"resolveCanaryRef","args":[{"command":"status","ref":null},"﻿bom"],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"rollback","ref":""},"key_name-1"],"ok":""}
+{"fn":"resolveCanaryRef","args":[{"command":"setup","ref":"straße"},"Hello World"],"ok":"straße"}
+{"fn":"resolveCanaryRef","args":[{"command":"update","ref":"./x/**/*.json"},"a:b:cHELLO"],"ok":"./x/**/*.json"}
+{"fn":"resolveCanaryRef","args":[{"command":"start","ref":null},"tab\tseparated"],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"a":"b"},"src/a/b.tshello world"],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"stop","ref":"é{name} has {count} items"},"a:b:c"],"ok":"é{name} has {count} items"}
+{"fn":"resolveCanaryRef","args":[{"command":"update","ref":"tab\tseparated"},"a.b.c"],"ok":"tab\tseparated"}
+{"fn":"resolveCanaryRef","args":[{"command":"start","ref":"  padded  "},"ünïcödé"],"ok":"  padded  "}
+{"fn":"resolveCanaryRef","args":[null,"trailing."],"error":"Cannot read properties of null (reading 'ref')"}
+{"fn":"resolveCanaryRef","args":[{"command":"update","ref":"abline1\nline2"},"a"],"ok":"abline1\nline2"}
+{"fn":"resolveCanaryRef","args":["x","straßestraße"],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"rollback","ref":"{name} has {count} items"},"ΣΊΣΥΦΟΣ"],"ok":"{name} has {count} items"}
+{"fn":"resolveCanaryRef","args":[{"command":"status","ref":null},"src/a/b.ts﻿bom"],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"status","ref":"😀"},"  padded  "],"ok":"😀"}
+{"fn":"resolveCanaryRef","args":[{"command":"start","ref":""},"﻿bom"],"ok":""}
+{"fn":"resolveCanaryRef","args":[{"command":"start","ref":null},{"$undefined":true}],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"stop","ref":null},":"],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"status","ref":null},"HELLO"],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"update","ref":"  padded  "},"ünïcödé"],"ok":"  padded  "}
+{"fn":"resolveCanaryRef","args":[{"command":"update","ref":null}],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"stop","ref":"tab\tseparateda..b"},"é"],"ok":"tab\tseparateda..b"}
+{"fn":"resolveCanaryRef","args":[{"command":"setup","ref":":"},"İstanbul"],"ok":":"}
+{"fn":"resolveCanaryRef","args":[{"command":"stop","ref":"hellotab\tseparated"},"hello world"],"ok":"hellotab\tseparated"}
+{"fn":"resolveCanaryRef","args":[{"command":"setup","ref":""}],"ok":""}
+{"fn":"resolveCanaryRef","args":[{"command":"setup","ref":null},"﻿bom"],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"start","ref":"ab"},"ns:key.path"],"ok":"ab"}
+{"fn":"resolveCanaryRef","args":[{"a":"b"},"  padded  straße"],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"setup","ref":"line1\nline2"},"ab"],"ok":"line1\nline2"}
+{"fn":"resolveCanaryRef","args":[{"command":"status","ref":null},{"$undefined":true}],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"status","ref":null},"abca..b"],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"start","ref":":"}],"ok":":"}
+{"fn":"resolveCanaryRef","args":[{"command":"stop","ref":null},"hello world"],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"rollback","ref":null},"é"],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"setup","ref":"ünïcödé"},"a:b:c"],"ok":"ünïcödé"}
+{"fn":"resolveCanaryRef","args":[{"command":"update","ref":"﻿bom"},"Hello World"],"ok":"﻿bom"}
+{"fn":"resolveCanaryRef","args":[{"command":"status","ref":null},"tab\tseparated"],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"setup","ref":null},""],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"a":{"b":"c"}},"hello"],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"update","ref":null},"trailing."],"ok":"trailing."}
+{"fn":"resolveCanaryRef","args":[{"command":"update","ref":"ns:key.patha:b:c"},"a"],"ok":"ns:key.patha:b:c"}
+{"fn":"resolveCanaryRef","args":[0,"a:b:c"],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"stop","ref":"  padded  "},"a"],"ok":"  padded  "}
+{"fn":"resolveCanaryRef","args":[{"command":"start","ref":null},"{name} has {count} items"],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"stop","ref":null},"emoji 👍🏽 mix"],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"stop","ref":"{name} has {count} items"}],"ok":"{name} has {count} items"}
+{"fn":"resolveCanaryRef","args":[{"command":"rollback","ref":"😀"},"HELLO"],"ok":"😀"}
+{"fn":"resolveCanaryRef","args":[{"command":"start","ref":"日本語のテキスト"},"a:b:c"],"ok":"日本語のテキスト"}
+{"fn":"resolveCanaryRef","args":[{"command":"stop","ref":null},"a:b:c"],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"start","ref":null},"abc"],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"stop","ref":null},"./x/**/*.json"],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[0,{"$undefined":true}],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"rollback","ref":"tab\tseparated"},"Hello World"],"ok":"tab\tseparated"}
+{"fn":"resolveCanaryRef","args":[null,{"$undefined":true}],"error":"Cannot read properties of null (reading 'ref')"}
+{"fn":"resolveCanaryRef","args":[{"command":"rollback","ref":null},":"],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"rollback","ref":null},"Hello World"],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"update","ref":"line1\nline2"},".leadinghello world"],"ok":"line1\nline2"}
+{"fn":"resolveCanaryRef","args":[{"command":"status","ref":"a"}],"ok":"a"}
+{"fn":"resolveCanaryRef","args":[{},{"$undefined":true}],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"stop","ref":null},{"$undefined":true}],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"start","ref":""},{"$undefined":true}],"ok":""}
+{"fn":"resolveCanaryRef","args":[null,"ns:key.path"],"error":"Cannot read properties of null (reading 'ref')"}
+{"fn":"resolveCanaryRef","args":[{"command":"update","ref":null},"a.b.c"],"ok":"a.b.c"}
+{"fn":"resolveCanaryRef","args":[{"command":"update","ref":"a.b.c"},"hello"],"ok":"a.b.c"}
+{"fn":"resolveCanaryRef","args":[{"command":"rollback","ref":"😀"},"line1\nline2emoji 👍🏽 mix"],"ok":"😀"}
+{"fn":"resolveCanaryRef","args":[{"command":"update","ref":"emoji 👍🏽 mix"},"ns:key.path"],"ok":"emoji 👍🏽 mix"}
+{"fn":"resolveCanaryRef","args":[{"command":"update","ref":null},"é"],"ok":"é"}
+{"fn":"resolveCanaryRef","args":[{"command":"stop","ref":"key_name-1"},"straße"],"ok":"key_name-1"}
+{"fn":"resolveCanaryRef","args":[{"command":"stop","ref":"tab\tseparated"}],"ok":"tab\tseparated"}
+{"fn":"resolveCanaryRef","args":[{"command":"status","ref":null},"straße"],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"setup","ref":null},"ΣΊΣΥΦΟΣ"],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"setup","ref":".leading"},"straße"],"ok":".leading"}
+{"fn":"resolveCanaryRef","args":[{"a":{"b":"c"}},{"$undefined":true}],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"setup","ref":"./x/**/*.json"},"abc"],"ok":"./x/**/*.json"}
+{"fn":"resolveCanaryRef","args":[{"command":"setup","ref":".leading"},"a.b.cİstanbul"],"ok":".leading"}
+{"fn":"resolveCanaryRef","args":[{"command":"update","ref":"./x/**/*.json"},"HELLO"],"ok":"./x/**/*.json"}
+{"fn":"resolveCanaryRef","args":[{"command":"start","ref":"﻿bom"}],"ok":"﻿bom"}
+{"fn":"resolveCanaryRef","args":[{"command":"start","ref":"Hello World"},"İstanbulns:key.path"],"ok":"Hello World"}
+{"fn":"resolveCanaryRef","args":[{"command":"start","ref":null},".leadinga.b.c"],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"start","ref":"hello"},"hello"],"ok":"hello"}
+{"fn":"resolveCanaryRef","args":[{"command":"setup","ref":"  padded  "},"key_name-1"],"ok":"  padded  "}
+{"fn":"resolveCanaryRef","args":[{"command":"update","ref":null},"a😀b😀c"],"ok":"a😀b😀c"}
+{"fn":"resolveCanaryRef","args":[{"command":"setup","ref":"a"},"Hello World"],"ok":"a"}
+{"fn":"resolveCanaryRef","args":[{"command":"stop","ref":null},"ünïcödé"],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[true,"a😀b😀c"],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"setup","ref":null},"straße"],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[[],"a.b.c"],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"stop","ref":null},"trailing."],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"update","ref":null},"{name} has {count} items"],"ok":"{name} has {count} items"}
+{"fn":"resolveCanaryRef","args":[{"command":"update","ref":"{name} has {count} itemsHello World"},"a.b.c"],"ok":"{name} has {count} itemsHello World"}
+{"fn":"resolveCanaryRef","args":[{}],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"status","ref":"é"},"Hello Worldtrailing."],"ok":"é"}
+{"fn":"resolveCanaryRef","args":[{"command":"setup","ref":"😀"},"a..b"],"ok":"😀"}
+{"fn":"resolveCanaryRef","args":[true,"a.b.c"],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"status","ref":null},"a..b"],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"setup","ref":null},"key_name-1"],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"a":{"b":"c"}},"a.b.c"],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"stop","ref":null},"hello😀"],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"setup","ref":null},"HELLO"],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"rollback","ref":".leading"},"trailing."],"ok":".leading"}
+{"fn":"resolveCanaryRef","args":[{"command":"start","ref":"﻿bom"},"abc"],"ok":"﻿bom"}
+{"fn":"resolveCanaryRef","args":[{"command":"stop","ref":null},"abc"],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"stop","ref":"key_name-1"},"{name} has {count} items./x/**/*.json"],"ok":"key_name-1"}
+{"fn":"resolveCanaryRef","args":[["a",1],"./x/**/*.json"],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"update","ref":""}],"ok":""}
+{"fn":"resolveCanaryRef","args":[{"a":"b"},"  padded  "],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"update","ref":null},":"],"ok":":"}
+{"fn":"resolveCanaryRef","args":[{"command":"stop","ref":"Hello World"}],"ok":"Hello World"}
+{"fn":"resolveCanaryRef","args":[{"command":"setup","ref":null},"{name} has {count} items"],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"start","ref":"日本語のテキストHello World"},"ünïcödé"],"ok":"日本語のテキストHello World"}
+{"fn":"resolveCanaryRef","args":[{"command":"start","ref":null}],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"setup","ref":"abc"},"tab\tseparated"],"ok":"abc"}
+{"fn":"resolveCanaryRef","args":[{"command":"stop","ref":"hello worldhello"},{"$undefined":true}],"ok":"hello worldhello"}
+{"fn":"resolveCanaryRef","args":[{"command":"rollback","ref":null},"./x/**/*.json"],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"update","ref":null},"key_name-1a..b"],"ok":"key_name-1a..b"}
+{"fn":"resolveCanaryRef","args":[{"command":"update","ref":null},"a:b:c./x/**/*.json"],"ok":"a:b:c./x/**/*.json"}
+{"fn":"resolveCanaryRef","args":[{"command":"rollback","ref":"ünïcödé"},"tab\tseparated"],"ok":"ünïcödé"}
+{"fn":"resolveCanaryRef","args":[["a",1],{"$undefined":true}],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"status","ref":null},":"],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"update","ref":"hello"},"{name} has {count} items"],"ok":"hello"}
+{"fn":"resolveCanaryRef","args":[{"command":"setup","ref":null},"a😀b😀cabc"],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"rollback","ref":null},".leading"],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"stop","ref":null},"aba"],"ok":"main"}
+{"fn":"resolveCanaryRef","args":["x","x"],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"start","ref":"trailing.line1\nline2"},"trailing.ab"],"ok":"trailing.line1\nline2"}
+{"fn":"resolveCanaryRef","args":[{"command":"setup","ref":null},"ns:key.path"],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"rollback","ref":null},"a.b.c"],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"rollback","ref":"ünïcödé"},"hello"],"ok":"ünïcödé"}
+{"fn":"resolveCanaryRef","args":[{"command":"rollback","ref":"İstanbul"},":"],"ok":"İstanbul"}
+{"fn":"resolveCanaryRef","args":[{"command":"start","ref":"src/a/b.ts"},{"$undefined":true}],"ok":"src/a/b.ts"}
+{"fn":"resolveCanaryRef","args":[{"command":"update","ref":null},"ünïcödé"],"ok":"ünïcödé"}
+{"fn":"resolveCanaryRef","args":[{"command":"status","ref":"straße"},"a..b"],"ok":"straße"}
+{"fn":"resolveCanaryRef","args":[[],"﻿bomHELLO"],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"start","ref":null},"İstanbul"],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"rollback","ref":"hello"},"{name} has {count} items"],"ok":"hello"}
+{"fn":"resolveCanaryRef","args":[{"command":"rollback","ref":null},"  padded  "],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"status","ref":null},"src/a/b.ts"],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"rollback","ref":"key_name-1"}],"ok":"key_name-1"}
+{"fn":"resolveCanaryRef","args":[{"command":"start","ref":"trailing."},":key_name-1"],"ok":"trailing."}
+{"fn":"resolveCanaryRef","args":[{"command":"status","ref":"straße"},"line1\nline2"],"ok":"straße"}
+{"fn":"resolveCanaryRef","args":[{"command":"update","ref":""},"a😀b😀c"],"ok":""}
+{"fn":"resolveCanaryRef","args":[{"command":"start","ref":"a..b"},"hello"],"ok":"a..b"}
+{"fn":"resolveCanaryRef","args":[{"command":"start","ref":null},"emoji 👍🏽 mix"],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"rollback","ref":"HELLO"},"ab"],"ok":"HELLO"}
+{"fn":"resolveCanaryRef","args":[{"command":"setup","ref":"trailing.line1\nline2"},"ns:key.path"],"ok":"trailing.line1\nline2"}
+{"fn":"resolveCanaryRef","args":[{"command":"status","ref":"src/a/b.ts"}],"ok":"src/a/b.ts"}
+{"fn":"resolveCanaryRef","args":[{"command":"stop","ref":null},"ΣΊΣΥΦΟΣ"],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"rollback","ref":null},"ns:key.path"],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[[],{"$undefined":true}],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"start","ref":"src/a/b.ts{name} has {count} items"},"😀"],"ok":"src/a/b.ts{name} has {count} items"}
+{"fn":"resolveCanaryRef","args":[{"command":"update","ref":"hello"},"a..b"],"ok":"hello"}
+{"fn":"resolveCanaryRef","args":[{"command":"update","ref":null},"a.b.csrc/a/b.ts"],"ok":"a.b.csrc/a/b.ts"}
+{"fn":"resolveCanaryRef","args":[{"command":"stop","ref":":"},"ΣΊΣΥΦΟΣ"],"ok":":"}
+{"fn":"resolveCanaryRef","args":[{"command":"stop","ref":"src/a/b.ts"},"{name} has {count} items"],"ok":"src/a/b.ts"}
+{"fn":"resolveCanaryRef","args":[{"command":"status","ref":null},"line1\nline2"],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"rollback","ref":"Hello Worldhello"},"emoji 👍🏽 mix"],"ok":"Hello Worldhello"}
+{"fn":"resolveCanaryRef","args":[true,".leading"],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"status","ref":null},"abc"],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"stop","ref":"./x/**/*.json"},"ns:key.path"],"ok":"./x/**/*.json"}
+{"fn":"resolveCanaryRef","args":[{"command":"stop","ref":""},"ΣΊΣΥΦΟΣ"],"ok":""}
+{"fn":"resolveCanaryRef","args":[{"command":"stop","ref":"src/a/b.ts./x/**/*.json"},"ünïcödé"],"ok":"src/a/b.ts./x/**/*.json"}
+{"fn":"resolveCanaryRef","args":[{"command":"start","ref":"line1\nline2line1\nline2"},"HELLO"],"ok":"line1\nline2line1\nline2"}
+{"fn":"resolveCanaryRef","args":[{"command":"setup","ref":"Hello World:"},{"$undefined":true}],"ok":"Hello World:"}
+{"fn":"resolveCanaryRef","args":[{"command":"stop","ref":null},"İstanbul"],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"rollback","ref":"line1\nline2"},"  padded  "],"ok":"line1\nline2"}
+{"fn":"resolveCanaryRef","args":[["a",1],"a.b.c"],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"update","ref":null},"  padded  "],"ok":"  padded  "}
+{"fn":"resolveCanaryRef","args":[{"command":"start","ref":"a😀b😀c{name} has {count} items"}],"ok":"a😀b😀c{name} has {count} items"}
+{"fn":"resolveCanaryRef","args":[[],"a😀b😀ctab\tseparated"],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"update","ref":null},"hello"],"ok":"hello"}
+{"fn":"resolveCanaryRef","args":[{"command":"setup","ref":null},{"$undefined":true}],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"stop","ref":"HELLO"},"ns:key.path"],"ok":"HELLO"}
+{"fn":"resolveCanaryRef","args":[{"command":"update","ref":null},{"$undefined":true}],"ok":"main"}
+{"fn":"resolveCanaryRef","args":[{"command":"update","ref":null},"héllo wörld"],"ok":"héllo wörld"}
+{"fn":"resolveCanaryRef","args":[{"command":"update","ref":null},"👍🏽 thumbs"],"ok":"👍🏽 thumbs"}
+{"fn":"resolveCanaryRef","args":[{"command":"update","ref":null},"日本語"],"ok":"日本語"}
+{"fn":"resolveCanaryRef","args":[{"command":"update","ref":null},""],"ok":""}
+{"fn":"resolveCanaryRef","args":[{"command":"update","ref":null},"İstanbul"],"ok":"İstanbul"}
+{"fn":"resolveCanaryRef","args":[{"command":"update","ref":null},"straße"],"ok":"straße"}
+{"fn":"resolveCanaryRef","args":[{"command":"update","ref":null},"ılık ırmak"],"ok":"ılık ırmak"}
+{"fn":"resolveCanaryRef","args":[{"command":"update","ref":null},"👨‍👩‍👧 family"],"ok":"👨‍👩‍👧 family"}
+{"fn":"resolveCanaryRef","args":[{"command":"update","ref":null},"a b"],"ok":"a b"}
+{"fn":"resolveCanaryRef","args":[{"command":"update","ref":null},"ΣΊΣΥΦΟΣ"],"ok":"ΣΊΣΥΦΟΣ"}
+{"fn":"resolveCanaryRef","args":[{"command":"update","ref":null},"a😀b"],"ok":"a😀b"}
+{"fn":"resolveCanaryRef","args":[{"command":"update","ref":null},"﻿bom"],"ok":"﻿bom"}
+{"fn":"resolveCanaryRef","args":[{"command":"update","ref":null},"a²b x½ y①"],"ok":"a²b x½ y①"}
+{"fn":"resolveCanaryRef","args":[{"command":"update","ref":null},"aⅠb Ⅻ"],"ok":"aⅠb Ⅻ"}
+{"fn":"resolveCanaryRef","args":[{"command":"update","ref":null},"a𐐀b 𝐀bc"],"ok":"a𐐀b 𝐀bc"}
+{"fn":"resolveCanaryRef","args":[{"command":"update","ref":null},"कि ٣٤"],"ok":"कि ٣٤"}
+{"fn":"canaryCloneArgs","args":["./x/**/*.json","İstanbul"],"ok":["clone","--","./x/**/*.json","İstanbul"]}
+{"fn":"canaryCloneArgs","args":["  padded  ","ünïcödé"],"ok":["clone","--","  padded  ","ünïcödé"]}
+{"fn":"canaryCloneArgs","args":[".leadingkey_name-1","emoji 👍🏽 mix"],"ok":["clone","--",".leadingkey_name-1","emoji 👍🏽 mix"]}
+{"fn":"canaryCloneArgs","args":["hello",".leading"],"ok":["clone","--","hello",".leading"]}
+{"fn":"canaryCloneArgs","args":["trailing.","ns:key.pathab"],"ok":["clone","--","trailing.","ns:key.pathab"]}
+{"fn":"canaryCloneArgs","args":["﻿bom","line1\nline2"],"ok":["clone","--","﻿bom","line1\nline2"]}
+{"fn":"canaryCloneArgs","args":["line1\nline2","src/a/b.ts"],"ok":["clone","--","line1\nline2","src/a/b.ts"]}
+{"fn":"canaryCloneArgs","args":["","  padded  "],"ok":["clone","--","","  padded  "]}
+{"fn":"canaryCloneArgs","args":["emoji 👍🏽 mixab",""],"ok":["clone","--","emoji 👍🏽 mixab",""]}
+{"fn":"canaryCloneArgs","args":["İstanbul","hello"],"ok":["clone","--","İstanbul","hello"]}
+{"fn":"canaryCloneArgs","args":["ΣΊΣΥΦΟΣ","Φ"],"ok":["clone","--","ΣΊΣΥΦΟΣ","Φ"]}
+{"fn":"canaryCloneArgs","args":["hello world.leading",""],"ok":["clone","--","hello world.leading",""]}
+{"fn":"canaryCloneArgs","args":["./x/**/*.jsoné","*.jso"],"ok":["clone","--","./x/**/*.jsoné","*.jso"]}
+{"fn":"canaryCloneArgs","args":["abc","emoji 👍🏽 mix"],"ok":["clone","--","abc","emoji 👍🏽 mix"]}
+{"fn":"canaryCloneArgs","args":["a:b:c","trailing."],"ok":["clone","--","a:b:c","trailing."]}
+{"fn":"canaryCloneArgs","args":["日本語のテキスト😀","Hello World"],"ok":["clone","--","日本語のテキスト😀","Hello World"]}
+{"fn":"canaryCloneArgs","args":["a😀b😀c","ab"],"ok":["clone","--","a😀b😀c","ab"]}
+{"fn":"canaryCloneArgs","args":["ünïcödé","ünïcödé"],"ok":["clone","--","ünïcödé","ünïcödé"]}
+{"fn":"canaryCloneArgs","args":["straße","ünïcödé"],"ok":["clone","--","straße","ünïcödé"]}
+{"fn":"canaryCloneArgs","args":["iling.","trailing."],"ok":["clone","--","iling.","trailing."]}
+{"fn":"canaryCloneArgs","args":["ΣΊΣΥΦΟΣünïcödé","tab\tseparated"],"ok":["clone","--","ΣΊΣΥΦΟΣünïcödé","tab\tseparated"]}
+{"fn":"canaryCloneArgs","args":["﻿bom","abns:key.path"],"ok":["clone","--","﻿bom","abns:key.path"]}
+{"fn":"canaryCloneArgs","args":["  padded  ","😀"],"ok":["clone","--","  padded  ","😀"]}
+{"fn":"canaryCloneArgs","args":["a.b.c","straße"],"ok":["clone","--","a.b.c","straße"]}
+{"fn":"canaryCloneArgs","args":["😀","😀"],"ok":["clone","--","😀","😀"]}
+{"fn":"canaryCloneArgs","args":["abc","日本語のテキストa"],"ok":["clone","--","abc","日本語のテキストa"]}
+{"fn":"canaryCloneArgs","args":["﻿bom","😀  padded  "],"ok":["clone","--","﻿bom","😀  padded  "]}
+{"fn":"canaryCloneArgs","args":["line1\nline2key_name-1","hello"],"ok":["clone","--","line1\nline2key_name-1","hello"]}
+{"fn":"canaryCloneArgs","args":["HELLOİstanbul","HELLO日本語のテキスト"],"ok":["clone","--","HELLOİstanbul","HELLO日本語のテキスト"]}
+{"fn":"canaryCloneArgs","args":["a","ab"],"ok":["clone","--","a","ab"]}
+{"fn":"canaryCloneArgs","args":["*","./x/**/*.json"],"ok":["clone","--","*","./x/**/*.json"]}
+{"fn":"canaryCloneArgs","args":["  padded  ","padded "],"ok":["clone","--","  padded  ","padded "]}
+{"fn":"canaryCloneArgs","args":["é","a.b.c"],"ok":["clone","--","é","a.b.c"]}
+{"fn":"canaryCloneArgs","args":[" padded","  padded  ab"],"ok":["clone","--"," padded","  padded  ab"]}
+{"fn":"canaryCloneArgs","args":["é","a😀b😀c"],"ok":["clone","--","é","a😀b😀c"]}
+{"fn":"canaryCloneArgs","args":["hello","a.b.chello world"],"ok":["clone","--","hello","a.b.chello world"]}
+{"fn":"canaryCloneArgs","args":["éa😀b😀c","tab\tseparated"],"ok":["clone","--","éa😀b😀c","tab\tseparated"]}
+{"fn":"canaryCloneArgs","args":["a..b",".b"],"ok":["clone","--","a..b",".b"]}
+{"fn":"canaryCloneArgs","args":["a😀b😀c",".leading"],"ok":["clone","--","a😀b😀c",".leading"]}
+{"fn":"canaryCloneArgs","args":["ΣΊΣΥΦΟΣa:b:c","a"],"ok":["clone","--","ΣΊΣΥΦΟΣa:b:c","a"]}
+{"fn":"canaryCloneArgs","args":["﻿bom","om"],"ok":["clone","--","﻿bom","om"]}
+{"fn":"canaryCloneArgs","args":["line1\nline2","hello worldé"],"ok":["clone","--","line1\nline2","hello worldé"]}
+{"fn":"canaryCloneArgs","args":["日本語のテキスト","日本語のテキス"],"ok":["clone","--","日本語のテキスト","日本語のテキス"]}
+{"fn":"canaryCloneArgs","args":["テキストa:","日本語のテキストa:b:c"],"ok":["clone","--","テキストa:","日本語のテキストa:b:c"]}
+{"fn":"canaryCloneArgs","args":[":","ünïcödé"],"ok":["clone","--",":","ünïcödé"]}
+{"fn":"canaryCloneArgs","args":["ünïcödé","./x/**/*.jsonkey_name-1"],"ok":["clone","--","ünïcödé","./x/**/*.jsonkey_name-1"]}
+{"fn":"canaryCloneArgs","args":["atrailing.","key_name-1.leading"],"ok":["clone","--","atrailing.","key_name-1.leading"]}
+{"fn":"canaryCloneArgs","args":["key_name-1","a..b"],"ok":["clone","--","key_name-1","a..b"]}
+{"fn":"canaryCloneArgs","args":["ns:key.path","İstanbul"],"ok":["clone","--","ns:key.path","İstanbul"]}
+{"fn":"canaryCloneArgs","args":["./x/**/*.json","a"],"ok":["clone","--","./x/**/*.json","a"]}
+{"fn":"canaryCloneArgs","args":["key_name-1","é"],"ok":["clone","--","key_name-1","é"]}
+{"fn":"canaryCloneArgs","args":["Hello World",".leading"],"ok":["clone","--","Hello World",".leading"]}
+{"fn":"canaryCloneArgs","args":["{name} has {count} items","Hello Worldemoji 👍🏽 mix"],"ok":["clone","--","{name} has {count} items","Hello Worldemoji 👍🏽 mix"]}
+{"fn":"canaryCloneArgs","args":["a",".leading"],"ok":["clone","--","a",".leading"]}
+{"fn":"canaryCloneArgs","args":["a:b:c","hello"],"ok":["clone","--","a:b:c","hello"]}
+{"fn":"canaryCloneArgs","args":["","key_name-1"],"ok":["clone","--","","key_name-1"]}
+{"fn":"canaryCloneArgs","args":[":",":"],"ok":["clone","--",":",":"]}
+{"fn":"canaryCloneArgs","args":["日本語のテキスト./x/**/*.json","İstanbul"],"ok":["clone","--","日本語のテキスト./x/**/*.json","İstanbul"]}
+{"fn":"canaryCloneArgs","args":["a:b:c","abc"],"ok":["clone","--","a:b:c","abc"]}
+{"fn":"canaryCloneArgs","args":["a😀b😀c{name} has {count} items","trailing."],"ok":["clone","--","a😀b😀c{name} has {count} items","trailing."]}
+{"fn":"canaryCloneArgs","args":["ns:key.path","ΣΊΣΥΦΟΣ😀"],"ok":["clone","--","ns:key.path","ΣΊΣΥΦΟΣ😀"]}
+{"fn":"canaryCloneArgs","args":["é","HELLO"],"ok":["clone","--","é","HELLO"]}
+{"fn":"canaryCloneArgs","args":["😀ab","😀"],"ok":["clone","--","😀ab","😀"]}
+{"fn":"canaryCloneArgs","args":["..","a..b"],"ok":["clone","--","..","a..b"]}
+{"fn":"canaryCloneArgs","args":["😀emoji 👍🏽 mix","a😀b😀c"],"ok":["clone","--","😀emoji 👍🏽 mix","a😀b😀c"]}
+{"fn":"canaryCloneArgs","args":["İstanbul","HELLO"],"ok":["clone","--","İstanbul","HELLO"]}
+{"fn":"canaryCloneArgs","args":["ns:key.path","😀"],"ok":["clone","--","ns:key.path","😀"]}
+{"fn":"canaryCloneArgs","args":["ünïcödé","key_name-1"],"ok":["clone","--","ünïcödé","key_name-1"]}
+{"fn":"canaryCloneArgs","args":["c","key_name-1a:b:c"],"ok":["clone","--","c","key_name-1a:b:c"]}
+{"fn":"canaryCloneArgs","args":["abc","line1\nline2"],"ok":["clone","--","abc","line1\nline2"]}
+{"fn":"canaryCloneArgs","args":["line1\nline2","hello world"],"ok":["clone","--","line1\nline2","hello world"]}
+{"fn":"canaryCloneArgs","args":["ns:key.path.leading","line1\nline2"],"ok":["clone","--","ns:key.path.leading","line1\nline2"]}
+{"fn":"canaryCloneArgs","args":["abc","./x/**/*.json"],"ok":["clone","--","abc","./x/**/*.json"]}
+{"fn":"canaryCloneArgs","args":["hello worlda😀b😀c","é"],"ok":["clone","--","hello worlda😀b😀c","é"]}
+{"fn":"canaryCloneArgs","args":["ünïcödéİstanbul","déİst"],"ok":["clone","--","ünïcödéİstanbul","déİst"]}
+{"fn":"canaryCloneArgs","args":["","Hello World"],"ok":["clone","--","","Hello World"]}
+{"fn":"canaryCloneArgs","args":["trailing.","a..b"],"ok":["clone","--","trailing.","a..b"]}
+{"fn":"canaryCloneArgs","args":["HELLO","ab"],"ok":["clone","--","HELLO","ab"]}
+{"fn":"canaryCloneArgs","args":["a.b.c","é"],"ok":["clone","--","a.b.c","é"]}
+{"fn":"canaryCloneArgs","args":["ΣΊΣΥΦΟΣ","trailing."],"ok":["clone","--","ΣΊΣΥΦΟΣ","trailing."]}
+{"fn":"canaryCloneArgs","args":["a😀b😀c","﻿bom"],"ok":["clone","--","a😀b😀c","﻿bom"]}
+{"fn":"canaryCloneArgs","args":["HELLO","HE"],"ok":["clone","--","HELLO","HE"]}
+{"fn":"canaryCloneArgs","args":["İstanbul","{name} has {count} items.leading"],"ok":["clone","--","İstanbul","{name} has {count} items.leading"]}
+{"fn":"canaryCloneArgs","args":["key_name-1hello","line1\nline2"],"ok":["clone","--","key_name-1hello","line1\nline2"]}
+{"fn":"canaryCloneArgs","args":["a..b","a.."],"ok":["clone","--","a..b","a.."]}
+{"fn":"canaryCloneArgs","args":["key_name-1",".leading"],"ok":["clone","--","key_name-1",".leading"]}
+{"fn":"canaryCloneArgs","args":[":b:c","a:b:c"],"ok":["clone","--",":b:c","a:b:c"]}
+{"fn":"canaryCloneArgs","args":["Hello World","key_name-1"],"ok":["clone","--","Hello World","key_name-1"]}
+{"fn":"canaryCloneArgs","args":[".leading","emoji 👍🏽 mixab"],"ok":["clone","--",".leading","emoji 👍🏽 mixab"]}
+{"fn":"canaryCloneArgs","args":["line1\nline2","Hello World"],"ok":["clone","--","line1\nline2","Hello World"]}
+{"fn":"canaryCloneArgs","args":["{name} has {count} items","ns:key.path"],"ok":["clone","--","{name} has {count} items","ns:key.path"]}
+{"fn":"canaryCloneArgs","args":["straße","a:b:c"],"ok":["clone","--","straße","a:b:c"]}
+{"fn":"canaryCloneArgs","args":["a😀b😀c","ns:key.path"],"ok":["clone","--","a😀b😀c","ns:key.path"]}
+{"fn":"canaryCloneArgs","args":["﻿bom","o"],"ok":["clone","--","﻿bom","o"]}
+{"fn":"canaryCloneArgs","args":["日本語のテキスト{name} has {count} items","İstanbul"],"ok":["clone","--","日本語のテキスト{name} has {count} items","İstanbul"]}
+{"fn":"canaryCloneArgs","args":["﻿bom",".leading"],"ok":["clone","--","﻿bom",".leading"]}
+{"fn":"canaryCloneArgs","args":[" {count}","{name} has {count} items"],"ok":["clone","--"," {count}","{name} has {count} items"]}
+{"fn":"canaryCloneArgs","args":["Hello World","LD"],"ok":["clone","--","Hello World","LD"]}
+{"fn":"canaryCloneArgs","args":["trailing../x/**/*.json","ing../x/**/*.json"],"ok":["clone","--","trailing../x/**/*.json","ing../x/**/*.json"]}
+{"fn":"canaryCloneArgs","args":["a","trailing."],"ok":["clone","--","a","trailing."]}
+{"fn":"canaryCloneArgs","args":["İstanbul","😀"],"ok":["clone","--","İstanbul","😀"]}
+{"fn":"canaryCloneArgs","args":["ünïcödé","line1\nline2"],"ok":["clone","--","ünïcödé","line1\nline2"]}
+{"fn":"canaryCloneArgs","args":["😀  PAD","😀  padded  "],"ok":["clone","--","😀  PAD","😀  padded  "]}
+{"fn":"canaryCloneArgs","args":["Hello World","a😀b😀c"],"ok":["clone","--","Hello World","a😀b😀c"]}
+{"fn":"canaryCloneArgs","args":["ΣΊΣΥΦΟΣns:key.path","hello worldhello world"],"ok":["clone","--","ΣΊΣΥΦΟΣns:key.path","hello worldhello world"]}
+{"fn":"canaryCloneArgs","args":["./x/**/*.json","HELLOhello world"],"ok":["clone","--","./x/**/*.json","HELLOhello world"]}
+{"fn":"canaryCloneArgs","args":["./x/**/*.json","src/a/b.ts"],"ok":["clone","--","./x/**/*.json","src/a/b.ts"]}
+{"fn":"canaryCloneArgs","args":["abc","ab"],"ok":["clone","--","abc","ab"]}
+{"fn":"canaryCloneArgs","args":["a","{name} has {count} items"],"ok":["clone","--","a","{name} has {count} items"]}
+{"fn":"canaryCloneArgs","args":["trailing.hello world","hello world"],"ok":["clone","--","trailing.hello world","hello world"]}
+{"fn":"canaryCloneArgs","args":["key_name-1hello","a:b:c"],"ok":["clone","--","key_name-1hello","a:b:c"]}
+{"fn":"canaryCloneArgs","args":["straße","abcΣΊΣΥΦΟΣ"],"ok":["clone","--","straße","abcΣΊΣΥΦΟΣ"]}
+{"fn":"canaryCloneArgs","args":["İstanbul","emoji 👍🏽 mix"],"ok":["clone","--","İstanbul","emoji 👍🏽 mix"]}
+{"fn":"canaryCloneArgs","args":["ab","é"],"ok":["clone","--","ab","é"]}
+{"fn":"canaryCloneArgs","args":["ünïcödé","İstanbul"],"ok":["clone","--","ünïcödé","İstanbul"]}
+{"fn":"canaryCloneArgs","args":[".leading","ding"],"ok":["clone","--",".leading","ding"]}
+{"fn":"canaryCloneArgs","args":["hello","line1\nline2"],"ok":["clone","--","hello","line1\nline2"]}
+{"fn":"canaryCloneArgs","args":["straße","ße"],"ok":["clone","--","straße","ße"]}
+{"fn":"canaryCloneArgs","args":["HELLO","abca"],"ok":["clone","--","HELLO","abca"]}
+{"fn":"canaryCloneArgs","args":["{name} has {count} items","  padded  line1\nline2"],"ok":["clone","--","{name} has {count} items","  padded  line1\nline2"]}
+{"fn":"canaryCloneArgs","args":["Hello World","ünïcödé"],"ok":["clone","--","Hello World","ünïcödé"]}
+{"fn":"canaryCloneArgs","args":["😀","src/a/b.ts"],"ok":["clone","--","😀","src/a/b.ts"]}
+{"fn":"canaryCloneArgs","args":["./x/**/*.json","abc"],"ok":["clone","--","./x/**/*.json","abc"]}
+{"fn":"canaryCloneArgs","args":["a..bstraße","aß"],"ok":["clone","--","a..bstraße","aß"]}
+{"fn":"canaryCloneArgs","args":["a😀b😀c","./x/**/*.json"],"ok":["clone","--","a😀b😀c","./x/**/*.json"]}
+{"fn":"canaryCloneArgs","args":["é","trailing."],"ok":["clone","--","é","trailing."]}
+{"fn":"canaryCloneArgs","args":["cödé","a😀b😀cünïcödé"],"ok":["clone","--","cödé","a😀b😀cünïcödé"]}
+{"fn":"canaryCloneArgs","args":["ünïcödé","d"],"ok":["clone","--","ünïcödé","d"]}
+{"fn":"canaryCloneArgs","args":["ΣΊΣΥΦΟΣ","aba:b:c"],"ok":["clone","--","ΣΊΣΥΦΟΣ","aba:b:c"]}
+{"fn":"canaryCloneArgs","args":["a:b:c",":"],"ok":["clone","--","a:b:c",":"]}
+{"fn":"canaryCloneArgs","args":["hello","HELLOhello"],"ok":["clone","--","hello","HELLOhello"]}
+{"fn":"canaryCloneArgs","args":[":emoji 👍🏽 mix","./x/**/*.json"],"ok":["clone","--",":emoji 👍🏽 mix","./x/**/*.json"]}
+{"fn":"canaryCloneArgs","args":["tab\tseparated","a.b.c"],"ok":["clone","--","tab\tseparated","a.b.c"]}
+{"fn":"canaryCloneArgs","args":["key_name-1","a:b:c"],"ok":["clone","--","key_name-1","a:b:c"]}
+{"fn":"canaryCloneArgs","args":["﻿bomab","ab"],"ok":["clone","--","﻿bomab","ab"]}
+{"fn":"canaryCloneArgs","args":["","HELLO"],"ok":["clone","--","","HELLO"]}
+{"fn":"canaryCloneArgs","args":["A","a"],"ok":["clone","--","A","a"]}
+{"fn":"canaryCloneArgs","args":["hello world","src/a/b.ts"],"ok":["clone","--","hello world","src/a/b.ts"]}
+{"fn":"canaryCloneArgs","args":["😀","﻿bomkey_name-1"],"ok":["clone","--","😀","﻿bomkey_name-1"]}
+{"fn":"canaryCloneArgs","args":["straßeé","emoji 👍🏽 mixHELLO"],"ok":["clone","--","straßeé","emoji 👍🏽 mixHELLO"]}
+{"fn":"canaryCloneArgs","args":["line1\nline2./x/**/*.json","straße"],"ok":["clone","--","line1\nline2./x/**/*.json","straße"]}
+{"fn":"canaryCloneArgs","args":["ΣΊΣΥΦΟΣ","a.b.c"],"ok":["clone","--","ΣΊΣΥΦΟΣ","a.b.c"]}
+{"fn":"canaryCloneArgs","args":["ns:key.path日本語のテキスト","a😀b😀cünïcödé"],"ok":["clone","--","ns:key.path日本語のテキスト","a😀b😀cünïcödé"]}
+{"fn":"canaryCloneArgs","args":["a:b:c","line1\nline2"],"ok":["clone","--","a:b:c","line1\nline2"]}
+{"fn":"canaryCloneArgs","args":["abc","hello world"],"ok":["clone","--","abc","hello world"]}
+{"fn":"canaryCloneArgs","args":["日本語のテキスト","﻿bom"],"ok":["clone","--","日本語のテキスト","﻿bom"]}
+{"fn":"canaryCloneArgs","args":["a.b.c","a😀b😀c"],"ok":["clone","--","a.b.c","a😀b😀c"]}
+{"fn":"canaryCloneArgs","args":["a😀b😀c","ΣΊΣΥΦΟΣ"],"ok":["clone","--","a😀b😀c","ΣΊΣΥΦΟΣ"]}
+{"fn":"canaryCloneArgs","args":["HELLO","a..b"],"ok":["clone","--","HELLO","a..b"]}
+{"fn":"canaryCloneArgs","args":["line1\nline2","  padded  "],"ok":["clone","--","line1\nline2","  padded  "]}
+{"fn":"canaryCloneArgs","args":["😀","ab"],"ok":["clone","--","😀","ab"]}
+{"fn":"canaryCloneArgs","args":["key_name-1","straße"],"ok":["clone","--","key_name-1","straße"]}
+{"fn":"canaryCloneArgs","args":["key_name-1  padded  ","{name} has {count} items"],"ok":["clone","--","key_name-1  padded  ","{name} has {count} items"]}
+{"fn":"canaryCloneArgs","args":["tab\tseparated","İstanbul"],"ok":["clone","--","tab\tseparated","İstanbul"]}
+{"fn":"canaryCloneArgs","args":["ΥΦΟ","a..bΣΊΣΥΦΟΣ"],"ok":["clone","--","ΥΦΟ","a..bΣΊΣΥΦΟΣ"]}
+{"fn":"canaryCloneArgs","args":["line1\nline2","E1\nLI"],"ok":["clone","--","line1\nline2","E1\nLI"]}
+{"fn":"canaryCloneArgs","args":["HELLO","{name} has {count} items"],"ok":["clone","--","HELLO","{name} has {count} items"]}
+{"fn":"canaryCloneArgs","args":["İstanbul","abhello"],"ok":["clone","--","İstanbul","abhello"]}
+{"fn":"canaryCloneArgs","args":["helloline1\nline2","İstanbul"],"ok":["clone","--","helloline1\nline2","İstanbul"]}
+{"fn":"canaryCloneArgs","args":["ΣΊΣΥΦΟΣ","HELLO"],"ok":["clone","--","ΣΊΣΥΦΟΣ","HELLO"]}
+{"fn":"canaryCloneArgs","args":["a:b:c","ab"],"ok":["clone","--","a:b:c","ab"]}
+{"fn":"canaryCloneArgs","args":["line1\nline2İstanbul","{name} has {count} items"],"ok":["clone","--","line1\nline2İstanbul","{name} has {count} items"]}
+{"fn":"canaryCloneArgs","args":["﻿bom","﻿BO"],"ok":["clone","--","﻿bom","﻿BO"]}
+{"fn":"canaryCloneArgs","args":["🏽 ","﻿bomemoji 👍🏽 mix"],"ok":["clone","--","🏽 ","﻿bomemoji 👍🏽 mix"]}
+{"fn":"canaryCloneArgs","args":["hello world","hello"],"ok":["clone","--","hello world","hello"]}
+{"fn":"canaryCloneArgs","args":["tab\tseparatedtab\tseparated","HELLO"],"ok":["clone","--","tab\tseparatedtab\tseparated","HELLO"]}
+{"fn":"canaryCloneArgs","args":["straße","a"],"ok":["clone","--","straße","a"]}
+{"fn":"canaryCloneArgs","args":["日本語のテキスト","{name} has {count} items"],"ok":["clone","--","日本語のテキスト","{name} has {count} items"]}
+{"fn":"canaryCloneArgs","args":["a..bstraße","a😀b😀c"],"ok":["clone","--","a..bstraße","a😀b😀c"]}
+{"fn":"canaryCloneArgs","args":["trailing.","abckey_name-1"],"ok":["clone","--","trailing.","abckey_name-1"]}
+{"fn":"canaryCloneArgs","args":["İstanbu","İstanbul"],"ok":["clone","--","İstanbu","İstanbul"]}
+{"fn":"canaryCloneArgs","args":[":","ΣΊΣΥΦΟΣ"],"ok":["clone","--",":","ΣΊΣΥΦΟΣ"]}
+{"fn":"canaryCloneArgs","args":["","a"],"ok":["clone","--","","a"]}
+{"fn":"canaryCloneArgs","args":["\nl","abcline1\nline2"],"ok":["clone","--","\nl","abcline1\nline2"]}
+{"fn":"canaryCloneArgs","args":["ab","a😀b😀c"],"ok":["clone","--","ab","a😀b😀c"]}
+{"fn":"canaryCloneArgs","args":[":","ns:key.path"],"ok":["clone","--",":","ns:key.path"]}
+{"fn":"canaryCloneArgs","args":["😀","ababc"],"ok":["clone","--","😀","ababc"]}
+{"fn":"canaryCloneArgs","args":["B","a:b:c"],"ok":["clone","--","B","a:b:c"]}
+{"fn":"canaryCloneArgs","args":["tab\tseparated","é"],"ok":["clone","--","tab\tseparated","é"]}
+{"fn":"canaryCloneArgs","args":["./x/**/*.json","ünïcödé"],"ok":["clone","--","./x/**/*.json","ünïcödé"]}
+{"fn":"canaryCloneArgs","args":["trailing.",""],"ok":["clone","--","trailing.",""]}
+{"fn":"canaryCloneArgs","args":["./x/**/*.json",""],"ok":["clone","--","./x/**/*.json",""]}
+{"fn":"canaryCloneArgs","args":["trailing.","  padded  "],"ok":["clone","--","trailing.","  padded  "]}
+{"fn":"canaryCloneArgs","args":["Hello World","😀"],"ok":["clone","--","Hello World","😀"]}
+{"fn":"canaryCloneArgs","args":["key_name-1","ns:key.path"],"ok":["clone","--","key_name-1","ns:key.path"]}
+{"fn":"canaryCloneArgs","args":["  padded  ","emoji 👍🏽 mix"],"ok":["clone","--","  padded  ","emoji 👍🏽 mix"]}
+{"fn":"canaryCloneArgs","args":["line1\nline2","./x/**/*.jsoné"],"ok":["clone","--","line1\nline2","./x/**/*.jsoné"]}
+{"fn":"canaryCloneArgs","args":[":","  padded  "],"ok":["clone","--",":","  padded  "]}
+{"fn":"canaryCloneArgs","args":["ns:key.pathHELLO","HELLO"],"ok":["clone","--","ns:key.pathHELLO","HELLO"]}
+{"fn":"canaryCloneArgs","args":["./x/**/*.json","é"],"ok":["clone","--","./x/**/*.json","é"]}
+{"fn":"canaryCloneArgs","args":["ünïcödé","ns:key.path"],"ok":["clone","--","ünïcödé","ns:key.path"]}
+{"fn":"canaryCloneArgs","args":["emoji 👍🏽 mix","HELLO"],"ok":["clone","--","emoji 👍🏽 mix","HELLO"]}
+{"fn":"canaryCloneArgs","args":["hello world","worl"],"ok":["clone","--","hello world","worl"]}
+{"fn":"canaryCloneArgs","args":["﻿bom","ΣΊΣΥΦΟΣ"],"ok":["clone","--","﻿bom","ΣΊΣΥΦΟΣ"]}
+{"fn":"canaryCloneArgs","args":["hello","ELLO"],"ok":["clone","--","hello","ELLO"]}
+{"fn":"canaryCloneArgs","args":["ab",""],"ok":["clone","--","ab",""]}
+{"fn":"canaryCloneArgs","args":["","İstanbul"],"ok":["clone","--","","İstanbul"]}
+{"fn":"canaryCloneArgs","args":["tab\tseparated","key_name-1"],"ok":["clone","--","tab\tseparated","key_name-1"]}
+{"fn":"canaryCloneArgs","args":["abc","Hello World"],"ok":["clone","--","abc","Hello World"]}
+{"fn":"canaryCloneArgs","args":["{name} has {count} items","name}"],"ok":["clone","--","{name} has {count} items","name}"]}
+{"fn":"canaryCloneArgs","args":["héllo wörld","İstanbul"],"ok":["clone","--","héllo wörld","İstanbul"]}
+{"fn":"canaryCloneArgs","args":["👍🏽 thumbs","İstanbul"],"ok":["clone","--","👍🏽 thumbs","İstanbul"]}
+{"fn":"canaryCloneArgs","args":["日本語","İstanbul"],"ok":["clone","--","日本語","İstanbul"]}
+{"fn":"canaryCloneArgs","args":["é","İstanbul"],"ok":["clone","--","é","İstanbul"]}
+{"fn":"canaryCloneArgs","args":["İstanbul","İstanbul"],"ok":["clone","--","İstanbul","İstanbul"]}
+{"fn":"canaryCloneArgs","args":["straße","İstanbul"],"ok":["clone","--","straße","İstanbul"]}
+{"fn":"canaryCloneArgs","args":["ılık ırmak","İstanbul"],"ok":["clone","--","ılık ırmak","İstanbul"]}
+{"fn":"canaryCloneArgs","args":["👨‍👩‍👧 family","İstanbul"],"ok":["clone","--","👨‍👩‍👧 family","İstanbul"]}
+{"fn":"canaryCloneArgs","args":["a b","İstanbul"],"ok":["clone","--","a b","İstanbul"]}
+{"fn":"canaryCloneArgs","args":["ΣΊΣΥΦΟΣ","İstanbul"],"ok":["clone","--","ΣΊΣΥΦΟΣ","İstanbul"]}
+{"fn":"canaryCloneArgs","args":["a😀b","İstanbul"],"ok":["clone","--","a😀b","İstanbul"]}
+{"fn":"canaryCloneArgs","args":["﻿bom","İstanbul"],"ok":["clone","--","﻿bom","İstanbul"]}
+{"fn":"canaryCloneArgs","args":["a²b x½ y①","İstanbul"],"ok":["clone","--","a²b x½ y①","İstanbul"]}
+{"fn":"canaryCloneArgs","args":["aⅠb Ⅻ","İstanbul"],"ok":["clone","--","aⅠb Ⅻ","İstanbul"]}
+{"fn":"canaryCloneArgs","args":["a𐐀b 𝐀bc","İstanbul"],"ok":["clone","--","a𐐀b 𝐀bc","İstanbul"]}
+{"fn":"canaryCloneArgs","args":["कि ٣٤","İstanbul"],"ok":["clone","--","कि ٣٤","İstanbul"]}
+{"fn":"canaryCloneArgs","args":["Iı İi","İstanbul"],"ok":["clone","--","Iı İi","İstanbul"]}
+{"fn":"canaryCloneArgs","args":["K K k","İstanbul"],"ok":["clone","--","K K k","İstanbul"]}
+{"fn":"canaryCloneArgs","args":["ſ s S","İstanbul"],"ok":["clone","--","ſ s S","İstanbul"]}
+{"fn":"canaryCloneArgs","args":["x‍y 👨‍👩‍👧","İstanbul"],"ok":["clone","--","x‍y 👨‍👩‍👧","İstanbul"]}
+{"fn":"canaryCloneArgs","args":["a b c　d","İstanbul"],"ok":["clone","--","a b c　d","İstanbul"]}
+{"fn":"canaryCloneArgs","args":["١٢٣ ٤٥","İstanbul"],"ok":["clone","--","١٢٣ ٤٥","İstanbul"]}
+{"fn":"canaryCloneArgs","args":["𝟘𝟙 ²³","İstanbul"],"ok":["clone","--","𝟘𝟙 ²³","İstanbul"]}
+{"fn":"canaryCloneArgs","args":["snake_case foo-bar o'neil","İstanbul"],"ok":["clone","--","snake_case foo-bar o'neil","İstanbul"]}
+{"fn":"canaryCloneArgs","args":["ǅungla Ǆ","İstanbul"],"ok":["clone","--","ǅungla Ǆ","İstanbul"]}
+{"fn":"canaryCloneArgs","args":["one\r\ntwo threefour","İstanbul"],"ok":["clone","--","one\r\ntwo threefour","İstanbul"]}
+{"fn":"canaryCloneArgs","args":["café café","İstanbul"],"ok":["clone","--","café café","İstanbul"]}
+{"fn":"canaryCloneArgs","args":["ΣΑΣ σας ς","İstanbul"],"ok":["clone","--","ΣΑΣ σας ς","İstanbul"]}
+{"fn":"canaryCloneArgs","args":["./x/**/*.json","héllo wörld"],"ok":["clone","--","./x/**/*.json","héllo wörld"]}
+{"fn":"canaryCloneArgs","args":["./x/**/*.json","👍🏽 thumbs"],"ok":["clone","--","./x/**/*.json","👍🏽 thumbs"]}
+{"fn":"canaryCloneArgs","args":["./x/**/*.json","日本語"],"ok":["clone","--","./x/**/*.json","日本語"]}
+{"fn":"canaryCloneArgs","args":["./x/**/*.json","straße"],"ok":["clone","--","./x/**/*.json","straße"]}
+{"fn":"canaryCloneArgs","args":["./x/**/*.json","ılık ırmak"],"ok":["clone","--","./x/**/*.json","ılık ırmak"]}
+{"fn":"canaryCloneArgs","args":["./x/**/*.json","👨‍👩‍👧 family"],"ok":["clone","--","./x/**/*.json","👨‍👩‍👧 family"]}
+{"fn":"canaryCloneArgs","args":["./x/**/*.json","a b"],"ok":["clone","--","./x/**/*.json","a b"]}
+{"fn":"canaryCloneArgs","args":["./x/**/*.json","ΣΊΣΥΦΟΣ"],"ok":["clone","--","./x/**/*.json","ΣΊΣΥΦΟΣ"]}
+{"fn":"canaryCloneArgs","args":["./x/**/*.json","a😀b"],"ok":["clone","--","./x/**/*.json","a😀b"]}
+{"fn":"canaryCloneArgs","args":["./x/**/*.json","﻿bom"],"ok":["clone","--","./x/**/*.json","﻿bom"]}
+{"fn":"canaryCloneArgs","args":["./x/**/*.json","a²b x½ y①"],"ok":["clone","--","./x/**/*.json","a²b x½ y①"]}
+{"fn":"canaryCloneArgs","args":["./x/**/*.json","aⅠb Ⅻ"],"ok":["clone","--","./x/**/*.json","aⅠb Ⅻ"]}
+{"fn":"canaryCloneArgs","args":["./x/**/*.json","a𐐀b 𝐀bc"],"ok":["clone","--","./x/**/*.json","a𐐀b 𝐀bc"]}
+{"fn":"canaryCloneArgs","args":["./x/**/*.json","कि ٣٤"],"ok":["clone","--","./x/**/*.json","कि ٣٤"]}
+{"fn":"canaryCloneArgs","args":["./x/**/*.json","Iı İi"],"ok":["clone","--","./x/**/*.json","Iı İi"]}
+{"fn":"canaryCloneArgs","args":["./x/**/*.json","K K k"],"ok":["clone","--","./x/**/*.json","K K k"]}
+{"fn":"canaryCloneArgs","args":["./x/**/*.json","ſ s S"],"ok":["clone","--","./x/**/*.json","ſ s S"]}
+{"fn":"canaryCloneArgs","args":["./x/**/*.json","x‍y 👨‍👩‍👧"],"ok":["clone","--","./x/**/*.json","x‍y 👨‍👩‍👧"]}
+{"fn":"canaryCloneArgs","args":["./x/**/*.json","a b c　d"],"ok":["clone","--","./x/**/*.json","a b c　d"]}
+{"fn":"canaryCloneArgs","args":["./x/**/*.json","١٢٣ ٤٥"],"ok":["clone","--","./x/**/*.json","١٢٣ ٤٥"]}
+{"fn":"canaryCloneArgs","args":["./x/**/*.json","𝟘𝟙 ²³"],"ok":["clone","--","./x/**/*.json","𝟘𝟙 ²³"]}
+{"fn":"canaryCloneArgs","args":["./x/**/*.json","snake_case foo-bar o'neil"],"ok":["clone","--","./x/**/*.json","snake_case foo-bar o'neil"]}
+{"fn":"canaryCloneArgs","args":["./x/**/*.json","ǅungla Ǆ"],"ok":["clone","--","./x/**/*.json","ǅungla Ǆ"]}
+{"fn":"canaryCloneArgs","args":["./x/**/*.json","one\r\ntwo threefour"],"ok":["clone","--","./x/**/*.json","one\r\ntwo threefour"]}
+{"fn":"canaryCloneArgs","args":["./x/**/*.json","café café"],"ok":["clone","--","./x/**/*.json","café café"]}
+{"fn":"canaryCloneArgs","args":["./x/**/*.json","ΣΑΣ σας ς"],"ok":["clone","--","./x/**/*.json","ΣΑΣ σας ς"]}
+{"fn":"canaryAppCommandPattern","args":["HELLO"],"ok":"^HELLO/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron HELLO/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["ΣΊΣΥΦΟΣ"],"ok":"^ΣΊΣΥΦΟΣ/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron ΣΊΣΥΦΟΣ/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["a😀b😀c"],"ok":"^a😀b😀c/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron a😀b😀c/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["src/a/b.ts"],"ok":"^src/a/b\\.ts/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron src/a/b\\.ts/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["  padded  "],"ok":"^  padded  /apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron   padded  /apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["ünïcödé"],"ok":"^ünïcödé/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron ünïcödé/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["HELLOab"],"ok":"^HELLOab/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron HELLOab/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["a.b.c"],"ok":"^a\\.b\\.c/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron a\\.b\\.c/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["Hello World"],"ok":"^Hello World/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron Hello World/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["abc"],"ok":"^abc/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron abc/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["straße"],"ok":"^straße/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron straße/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["ns:key.pathünïcödé"],"ok":"^ns:key\\.pathünïcödé/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron ns:key\\.pathünïcödé/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["é"],"ok":"^é/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron é/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["İstanbul"],"ok":"^İstanbul/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron İstanbul/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":[":"],"ok":"^:/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron :/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["a:b:c"],"ok":"^a:b:c/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron a:b:c/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["emoji 👍🏽 mix"],"ok":"^emoji 👍🏽 mix/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron emoji 👍🏽 mix/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":[":ΣΊΣΥΦΟΣ"],"ok":"^:ΣΊΣΥΦΟΣ/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron :ΣΊΣΥΦΟΣ/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["  padded  key_name-1"],"ok":"^  padded  key_name-1/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron   padded  key_name-1/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["a😀b😀c  padded  "],"ok":"^a😀b😀c  padded  /apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron a😀b😀c  padded  /apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["😀"],"ok":"^😀/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron 😀/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["trailing.hello world"],"ok":"^trailing\\.hello world/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron trailing\\.hello world/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["hello"],"ok":"^hello/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron hello/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["line1\nline2./x/**/*.json"],"ok":"^line1\nline2\\./x/\\*\\*/\\*\\.json/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron line1\nline2\\./x/\\*\\*/\\*\\.json/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["helloa:b:c"],"ok":"^helloa:b:c/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron helloa:b:c/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["line1\nline2"],"ok":"^line1\nline2/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron line1\nline2/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["a"],"ok":"^a/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron a/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["HELLOa😀b😀c"],"ok":"^HELLOa😀b😀c/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron HELLOa😀b😀c/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":[".leading"],"ok":"^\\.leading/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron \\.leading/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["a..b"],"ok":"^a\\.\\.b/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron a\\.\\.b/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["trailing.hello"],"ok":"^trailing\\.hello/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron trailing\\.hello/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["ns:key.path"],"ok":"^ns:key\\.path/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron ns:key\\.path/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["﻿bom"],"ok":"^﻿bom/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron ﻿bom/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["./x/**/*.json  padded  "],"ok":"^x/\\*\\*/\\*\\.json  padded  /apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron x/\\*\\*/\\*\\.json  padded  /apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["hello world"],"ok":"^hello world/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron hello world/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["Hello Worldline1\nline2"],"ok":"^Hello Worldline1\nline2/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron Hello Worldline1\nline2/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["akey_name-1"],"ok":"^akey_name-1/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron akey_name-1/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["tab\tseparated"],"ok":"^tab\tseparated/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron tab\tseparated/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["ΣΊΣΥΦΟΣİstanbul"],"ok":"^ΣΊΣΥΦΟΣİstanbul/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron ΣΊΣΥΦΟΣİstanbul/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["trailing."],"ok":"^trailing\\./apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron trailing\\./apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["ab"],"ok":"^ab/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron ab/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["./x/**/*.jsona"],"ok":"^x/\\*\\*/\\*\\.jsona/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron x/\\*\\*/\\*\\.jsona/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["{name} has {count} items"],"ok":"^\\{name\\} has \\{count\\} items/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron \\{name\\} has \\{count\\} items/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["Hello World.leading"],"ok":"^Hello World\\.leading/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron Hello World\\.leading/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["./x/**/*.json"],"ok":"^x/\\*\\*/\\*\\.json/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron x/\\*\\*/\\*\\.json/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["日本語のテキスト"],"ok":"^日本語のテキスト/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron 日本語のテキスト/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["a日本語のテキスト"],"ok":"^a日本語のテキスト/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron a日本語のテキスト/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":[""],"ok":"^apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["日本語のテキストa"],"ok":"^日本語のテキストa/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron 日本語のテキストa/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["key_name-1"],"ok":"^key_name-1/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron key_name-1/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":[":a..b"],"ok":"^:a\\.\\.b/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron :a\\.\\.b/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["HELLOhello"],"ok":"^HELLOhello/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron HELLOhello/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":[":a:b:c"],"ok":"^:a:b:c/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron :a:b:c/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["tab\tseparatedkey_name-1"],"ok":"^tab\tseparatedkey_name-1/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron tab\tseparatedkey_name-1/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["tab\tseparateda😀b😀c"],"ok":"^tab\tseparateda😀b😀c/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron tab\tseparateda😀b😀c/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["a😀b😀cstraße"],"ok":"^a😀b😀cstraße/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron a😀b😀cstraße/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["ünïcödé😀"],"ok":"^ünïcödé😀/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron ünïcödé😀/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":[".leading日本語のテキスト"],"ok":"^\\.leading日本語のテキスト/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron \\.leading日本語のテキスト/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["Hello Worldünïcödé"],"ok":"^Hello Worldünïcödé/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron Hello Worldünïcödé/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["ΣΊΣΥΦΟΣ:"],"ok":"^ΣΊΣΥΦΟΣ:/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron ΣΊΣΥΦΟΣ:/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["{name} has {count} itemsHELLO"],"ok":"^\\{name\\} has \\{count\\} itemsHELLO/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron \\{name\\} has \\{count\\} itemsHELLO/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["aé"],"ok":"^aé/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron aé/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["a..bünïcödé"],"ok":"^a\\.\\.bünïcödé/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron a\\.\\.bünïcödé/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["  padded  .leading"],"ok":"^  padded  \\.leading/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron   padded  \\.leading/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["trailing.:"],"ok":"^trailing\\.:/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron trailing\\.:/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["src/a/b.ts./x/**/*.json"],"ok":"^src/a/b\\.ts\\./x/\\*\\*/\\*\\.json/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron src/a/b\\.ts\\./x/\\*\\*/\\*\\.json/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["ns:key.pathtab\tseparated"],"ok":"^ns:key\\.pathtab\tseparated/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron ns:key\\.pathtab\tseparated/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["line1\nline2trailing."],"ok":"^line1\nline2trailing\\./apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron line1\nline2trailing\\./apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["{name} has {count} itemsé"],"ok":"^\\{name\\} has \\{count\\} itemsé/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron \\{name\\} has \\{count\\} itemsé/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["ünïcödéΣΊΣΥΦΟΣ"],"ok":"^ünïcödéΣΊΣΥΦΟΣ/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron ünïcödéΣΊΣΥΦΟΣ/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["日本語のテキスト.leading"],"ok":"^日本語のテキスト\\.leading/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron 日本語のテキスト\\.leading/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":[".leadinga😀b😀c"],"ok":"^\\.leadinga😀b😀c/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron \\.leadinga😀b😀c/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["  padded  ΣΊΣΥΦΟΣ"],"ok":"^  padded  ΣΊΣΥΦΟΣ/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron   padded  ΣΊΣΥΦΟΣ/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["a..b﻿bom"],"ok":"^a\\.\\.b﻿bom/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron a\\.\\.b﻿bom/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["tab\tseparateda.b.c"],"ok":"^tab\tseparateda\\.b\\.c/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron tab\tseparateda\\.b\\.c/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["key_name-1日本語のテキスト"],"ok":"^key_name-1日本語のテキスト/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron key_name-1日本語のテキスト/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["emoji 👍🏽 mixns:key.path"],"ok":"^emoji 👍🏽 mixns:key\\.path/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron emoji 👍🏽 mixns:key\\.path/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["a..bsrc/a/b.ts"],"ok":"^a\\.\\.bsrc/a/b\\.ts/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron a\\.\\.bsrc/a/b\\.ts/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["hello worldhello"],"ok":"^hello worldhello/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron hello worldhello/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["a.b.ca"],"ok":"^a\\.b\\.ca/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron a\\.b\\.ca/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["straßeΣΊΣΥΦΟΣ"],"ok":"^straßeΣΊΣΥΦΟΣ/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron straßeΣΊΣΥΦΟΣ/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["ns:key.pathline1\nline2"],"ok":"^ns:key\\.pathline1\nline2/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron ns:key\\.pathline1\nline2/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":[".leading:"],"ok":"^\\.leading:/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron \\.leading:/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["Hello Worldhello world"],"ok":"^Hello Worldhello world/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron Hello Worldhello world/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["Hello WorldHELLO"],"ok":"^Hello WorldHELLO/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron Hello WorldHELLO/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["日本語のテキストİstanbul"],"ok":"^日本語のテキストİstanbul/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron 日本語のテキストİstanbul/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["key_name-1é"],"ok":"^key_name-1é/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron key_name-1é/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["ΣΊΣΥΦΟΣa"],"ok":"^ΣΊΣΥΦΟΣa/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron ΣΊΣΥΦΟΣa/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["hello worldtab\tseparated"],"ok":"^hello worldtab\tseparated/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron hello worldtab\tseparated/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["./x/**/*.jsonemoji 👍🏽 mix"],"ok":"^x/\\*\\*/\\*\\.jsonemoji 👍🏽 mix/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron x/\\*\\*/\\*\\.jsonemoji 👍🏽 mix/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["straßeé"],"ok":"^straßeé/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron straßeé/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["line1\nline2HELLO"],"ok":"^line1\nline2HELLO/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron line1\nline2HELLO/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["ünïcödéé"],"ok":"^ünïcödéé/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron ünïcödéé/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["  padded  emoji 👍🏽 mix"],"ok":"^  padded  emoji 👍🏽 mix/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron   padded  emoji 👍🏽 mix/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["hello worldstraße"],"ok":"^hello worldstraße/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron hello worldstraße/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["ΣΊΣΥΦΟΣabc"],"ok":"^ΣΊΣΥΦΟΣabc/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron ΣΊΣΥΦΟΣabc/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["abc日本語のテキスト"],"ok":"^abc日本語のテキスト/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron abc日本語のテキスト/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["a.b.cé"],"ok":"^a\\.b\\.cé/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron a\\.b\\.cé/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["ns:key.pathhello world"],"ok":"^ns:key\\.pathhello world/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron ns:key\\.pathhello world/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["trailing.é"],"ok":"^trailing\\.é/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron trailing\\.é/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["{name} has {count} itemsemoji 👍🏽 mix"],"ok":"^\\{name\\} has \\{count\\} itemsemoji 👍🏽 mix/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron \\{name\\} has \\{count\\} itemsemoji 👍🏽 mix/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["a:b:ca:b:c"],"ok":"^a:b:ca:b:c/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron a:b:ca:b:c/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["straßetab\tseparated"],"ok":"^straßetab\tseparated/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron straßetab\tseparated/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["a.b.c:"],"ok":"^a\\.b\\.c:/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron a\\.b\\.c:/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["trailing.ΣΊΣΥΦΟΣ"],"ok":"^trailing\\.ΣΊΣΥΦΟΣ/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron trailing\\.ΣΊΣΥΦΟΣ/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["tab\tseparated.leading"],"ok":"^tab\tseparated\\.leading/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron tab\tseparated\\.leading/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["./x/**/*.jsona.b.c"],"ok":"^x/\\*\\*/\\*\\.jsona\\.b\\.c/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron x/\\*\\*/\\*\\.jsona\\.b\\.c/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["﻿boma"],"ok":"^﻿boma/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron ﻿boma/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["😀﻿bom"],"ok":"^😀﻿bom/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron 😀﻿bom/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["straße:"],"ok":"^straße:/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron straße:/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":[".leadingabc"],"ok":"^\\.leadingabc/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron \\.leadingabc/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["line1\nline2src/a/b.ts"],"ok":"^line1\nline2src/a/b\\.ts/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron line1\nline2src/a/b\\.ts/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["hello worldHELLO"],"ok":"^hello worldHELLO/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron hello worldHELLO/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["﻿bom日本語のテキスト"],"ok":"^﻿bom日本語のテキスト/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron ﻿bom日本語のテキスト/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["HELLO😀"],"ok":"^HELLO😀/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron HELLO😀/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["tab\tseparatedline1\nline2"],"ok":"^tab\tseparatedline1\nline2/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron tab\tseparatedline1\nline2/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["a😀b😀csrc/a/b.ts"],"ok":"^a😀b😀csrc/a/b\\.ts/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron a😀b😀csrc/a/b\\.ts/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["ünïcödékey_name-1"],"ok":"^ünïcödékey_name-1/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron ünïcödékey_name-1/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["src/a/b.tshello"],"ok":"^src/a/b\\.tshello/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron src/a/b\\.tshello/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["ns:key.pathns:key.path"],"ok":"^ns:key\\.pathns:key\\.path/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron ns:key\\.pathns:key\\.path/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["a😀b😀c😀"],"ok":"^a😀b😀c😀/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron a😀b😀c😀/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["hello world  padded  "],"ok":"^hello world  padded  /apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron hello world  padded  /apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["a.b.ctrailing."],"ok":"^a\\.b\\.ctrailing\\./apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron a\\.b\\.ctrailing\\./apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["abca.b.c"],"ok":"^abca\\.b\\.c/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron abca\\.b\\.c/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":[":a😀b😀c"],"ok":"^:a😀b😀c/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron :a😀b😀c/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["trailing.ab"],"ok":"^trailing\\.ab/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron trailing\\.ab/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["trailing.src/a/b.ts"],"ok":"^trailing\\.src/a/b\\.ts/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron trailing\\.src/a/b\\.ts/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["a:b:c﻿bom"],"ok":"^a:b:c﻿bom/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron a:b:c﻿bom/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["😀hello"],"ok":"^😀hello/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron 😀hello/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["hello world:"],"ok":"^hello world:/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron hello world:/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["a..ba😀b😀c"],"ok":"^a\\.\\.ba😀b😀c/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron a\\.\\.ba😀b😀c/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["a.b.cabc"],"ok":"^a\\.b\\.cabc/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron a\\.b\\.cabc/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["  padded  trailing."],"ok":"^  padded  trailing\\./apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron   padded  trailing\\./apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["trailing.key_name-1"],"ok":"^trailing\\.key_name-1/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron trailing\\.key_name-1/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["HELLOünïcödé"],"ok":"^HELLOünïcödé/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron HELLOünïcödé/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["src/a/b.tsHello World"],"ok":"^src/a/b\\.tsHello World/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron src/a/b\\.tsHello World/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["src/a/b.tsΣΊΣΥΦΟΣ"],"ok":"^src/a/b\\.tsΣΊΣΥΦΟΣ/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron src/a/b\\.tsΣΊΣΥΦΟΣ/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["ΣΊΣΥΦΟΣstraße"],"ok":"^ΣΊΣΥΦΟΣstraße/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron ΣΊΣΥΦΟΣstraße/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["HELLO  padded  "],"ok":"^HELLO  padded  /apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron HELLO  padded  /apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["HELLOa:b:c"],"ok":"^HELLOa:b:c/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron HELLOa:b:c/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["line1\nline2ns:key.path"],"ok":"^line1\nline2ns:key\\.path/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron line1\nline2ns:key\\.path/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["﻿bomline1\nline2"],"ok":"^﻿bomline1\nline2/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron ﻿bomline1\nline2/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["aba😀b😀c"],"ok":"^aba😀b😀c/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron aba😀b😀c/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["ünïcödéab"],"ok":"^ünïcödéab/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron ünïcödéab/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["a..bİstanbul"],"ok":"^a\\.\\.bİstanbul/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron a\\.\\.bİstanbul/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["key_name-1ünïcödé"],"ok":"^key_name-1ünïcödé/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron key_name-1ünïcödé/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["  padded  line1\nline2"],"ok":"^  padded  line1\nline2/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron   padded  line1\nline2/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["a😀b😀ctrailing."],"ok":"^a😀b😀ctrailing\\./apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron a😀b😀ctrailing\\./apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["tab\tseparatedemoji 👍🏽 mix"],"ok":"^tab\tseparatedemoji 👍🏽 mix/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron tab\tseparatedemoji 👍🏽 mix/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["Hello Worlda😀b😀c"],"ok":"^Hello Worlda😀b😀c/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron Hello Worlda😀b😀c/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":[".leading.leading"],"ok":"^\\.leading\\.leading/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron \\.leading\\.leading/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["a😀"],"ok":"^a😀/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron a😀/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["src/a/b.tsİstanbul"],"ok":"^src/a/b\\.tsİstanbul/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron src/a/b\\.tsİstanbul/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["{name} has {count} itemsline1\nline2"],"ok":"^\\{name\\} has \\{count\\} itemsline1\nline2/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron \\{name\\} has \\{count\\} itemsline1\nline2/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["é.leading"],"ok":"^é\\.leading/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron é\\.leading/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["straße﻿bom"],"ok":"^straße﻿bom/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron straße﻿bom/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["abab"],"ok":"^abab/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron abab/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["aba..b"],"ok":"^aba\\.\\.b/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron aba\\.\\.b/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["absrc/a/b.ts"],"ok":"^absrc/a/b\\.ts/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron absrc/a/b\\.ts/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["İstanbula:b:c"],"ok":"^İstanbula:b:c/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron İstanbula:b:c/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["src/a/b.tsab"],"ok":"^src/a/b\\.tsab/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron src/a/b\\.tsab/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["./x/**/*.jsontab\tseparated"],"ok":"^x/\\*\\*/\\*\\.jsontab\tseparated/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron x/\\*\\*/\\*\\.jsontab\tseparated/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["ünïcödésrc/a/b.ts"],"ok":"^ünïcödésrc/a/b\\.ts/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron ünïcödésrc/a/b\\.ts/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["  padded  a..b"],"ok":"^  padded  a\\.\\.b/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron   padded  a\\.\\.b/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["ahello world"],"ok":"^ahello world/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron ahello world/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["﻿bom😀"],"ok":"^﻿bom😀/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron ﻿bom😀/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["key_name-1😀"],"ok":"^key_name-1😀/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron key_name-1😀/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["ünïcödéa..b"],"ok":"^ünïcödéa\\.\\.b/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron ünïcödéa\\.\\.b/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["key_name-1tab\tseparated"],"ok":"^key_name-1tab\tseparated/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron key_name-1tab\tseparated/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["ab{name} has {count} items"],"ok":"^ab\\{name\\} has \\{count\\} items/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron ab\\{name\\} has \\{count\\} items/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["a:b:cHELLO"],"ok":"^a:b:cHELLO/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron a:b:cHELLO/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["😀straße"],"ok":"^😀straße/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron 😀straße/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":[":abc"],"ok":"^:abc/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron :abc/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["{name} has {count} itemsünïcödé"],"ok":"^\\{name\\} has \\{count\\} itemsünïcödé/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron \\{name\\} has \\{count\\} itemsünïcödé/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["😀src/a/b.ts"],"ok":"^😀src/a/b\\.ts/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron 😀src/a/b\\.ts/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["aİstanbul"],"ok":"^aİstanbul/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron aİstanbul/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["Hello Worlda..b"],"ok":"^Hello Worlda\\.\\.b/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron Hello Worlda\\.\\.b/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["abhello world"],"ok":"^abhello world/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron abhello world/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["hello world./x/**/*.json"],"ok":"^hello world\\./x/\\*\\*/\\*\\.json/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron hello world\\./x/\\*\\*/\\*\\.json/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["ΣΊΣΥΦΟΣa..b"],"ok":"^ΣΊΣΥΦΟΣa\\.\\.b/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron ΣΊΣΥΦΟΣa\\.\\.b/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["aabc"],"ok":"^aabc/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron aabc/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["helloa😀b😀c"],"ok":"^helloa😀b😀c/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron helloa😀b😀c/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["src/a/b.tskey_name-1"],"ok":"^src/a/b\\.tskey_name-1/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron src/a/b\\.tskey_name-1/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["a:b:cΣΊΣΥΦΟΣ"],"ok":"^a:b:cΣΊΣΥΦΟΣ/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron a:b:cΣΊΣΥΦΟΣ/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["emoji 👍🏽 mixa:b:c"],"ok":"^emoji 👍🏽 mixa:b:c/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron emoji 👍🏽 mixa:b:c/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["tab\tseparated{name} has {count} items"],"ok":"^tab\tseparated\\{name\\} has \\{count\\} items/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron tab\tseparated\\{name\\} has \\{count\\} items/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":[":src/a/b.ts"],"ok":"^:src/a/b\\.ts/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron :src/a/b\\.ts/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["tab\tseparatedhello"],"ok":"^tab\tseparatedhello/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron tab\tseparatedhello/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["emoji 👍🏽 mixa😀b😀c"],"ok":"^emoji 👍🏽 mixa😀b😀c/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron emoji 👍🏽 mixa😀b😀c/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":[".leadingHELLO"],"ok":"^\\.leadingHELLO/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron \\.leadingHELLO/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["﻿bomemoji 👍🏽 mix"],"ok":"^﻿bomemoji 👍🏽 mix/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron ﻿bomemoji 👍🏽 mix/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["trailing.😀"],"ok":"^trailing\\.😀/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron trailing\\.😀/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["abcstraße"],"ok":"^abcstraße/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron abcstraße/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["line1\nline2ab"],"ok":"^line1\nline2ab/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron line1\nline2ab/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["İstanbul.leading"],"ok":"^İstanbul\\.leading/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron İstanbul\\.leading/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["Hello Worlda"],"ok":"^Hello Worlda/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron Hello Worlda/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["﻿bom  padded  "],"ok":"^﻿bom  padded  /apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron ﻿bom  padded  /apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["İstanbula..b"],"ok":"^İstanbula\\.\\.b/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron İstanbula\\.\\.b/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["abcabc"],"ok":"^abcabc/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron abcabc/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["😀ünïcödé"],"ok":"^😀ünïcödé/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron 😀ünïcödé/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["héllo wörld"],"ok":"^héllo wörld/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron héllo wörld/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["👍🏽 thumbs"],"ok":"^👍🏽 thumbs/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron 👍🏽 thumbs/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["日本語"],"ok":"^日本語/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron 日本語/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["ılık ırmak"],"ok":"^ılık ırmak/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron ılık ırmak/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["👨‍👩‍👧 family"],"ok":"^👨‍👩‍👧 family/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron 👨‍👩‍👧 family/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["a b"],"ok":"^a b/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron a b/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["a😀b"],"ok":"^a😀b/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron a😀b/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["a²b x½ y①"],"ok":"^a²b x½ y①/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron a²b x½ y①/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["aⅠb Ⅻ"],"ok":"^aⅠb Ⅻ/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron aⅠb Ⅻ/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["a𐐀b 𝐀bc"],"ok":"^a𐐀b 𝐀bc/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron a𐐀b 𝐀bc/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["कि ٣٤"],"ok":"^कि ٣٤/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron कि ٣٤/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["Iı İi"],"ok":"^Iı İi/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron Iı İi/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["K K k"],"ok":"^K K k/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron K K k/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["ſ s S"],"ok":"^ſ s S/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron ſ s S/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["x‍y 👨‍👩‍👧"],"ok":"^x‍y 👨‍👩‍👧/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron x‍y 👨‍👩‍👧/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["a b c　d"],"ok":"^a b c　d/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron a b c　d/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["١٢٣ ٤٥"],"ok":"^١٢٣ ٤٥/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron ١٢٣ ٤٥/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["𝟘𝟙 ²³"],"ok":"^𝟘𝟙 ²³/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron 𝟘𝟙 ²³/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["snake_case foo-bar o'neil"],"ok":"^snake_case foo-bar o'neil/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron snake_case foo-bar o'neil/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["ǅungla Ǆ"],"ok":"^ǅungla Ǆ/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron ǅungla Ǆ/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["one\r\ntwo threefour"],"ok":"^one\r\ntwo threefour/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron one\r\ntwo threefour/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["café café"],"ok":"^café café/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron café café/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"canaryAppCommandPattern","args":["ΣΑΣ σας ς"],"ok":"^ΣΑΣ σας ς/apps/desktop/\\.electron-runtime/[^/]+\\.app/Contents/MacOS/Electron ΣΑΣ σας ς/apps/desktop/dist-electron/main\\.js( |$)"}
+{"fn":"runCanaryCommand","args":[{"command":"stop","ref":null},{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"runCanaryCommand","args":[{"command":"stop","ref":null},"x"],"error":"The \"path\" argument must be of type string or an instance of Buffer or URL. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"update","ref":"﻿bom"},0],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"start","ref":"ns:key.path"},{}],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"start","ref":"Hello World"},true],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"start","ref":"key_name-1"}],"error":"Synara Canary is not built. Run `bun run canary:setup` first."}
+{"fn":"runCanaryCommand","args":[{"command":"status","ref":null},"x"],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"rollback","ref":null},{"$undefined":true}],"error":"Synara Canary has no previous successful commit to restore."}
+{"fn":"runCanaryCommand","args":[{"command":"setup","ref":null},{"a":"b"}],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"update","ref":null},{"a":{"b":"c"}}],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"rollback","ref":"a.b.c"}],"error":"Synara Canary has no previous successful commit to restore."}
+{"fn":"runCanaryCommand","args":[{"command":"rollback","ref":null},"x"],"error":"Synara Canary has no previous successful commit to restore."}
+{"fn":"runCanaryCommand","args":[{"command":"rollback","ref":"a..b"},null],"error":"Synara Canary has no previous successful commit to restore."}
+{"fn":"runCanaryCommand","args":[{"command":"stop","ref":null},null],"error":"Cannot read properties of null (reading 'source')"}
+{"fn":"runCanaryCommand","args":[{"command":"update","ref":"ab"},["a",1]],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"update","ref":null},{"a":"b"}],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[[],true],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"status","ref":"hello world"},{"a":{"b":"c"}}],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"stop","ref":null},{}],"error":"The \"path\" argument must be of type string or an instance of Buffer or URL. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"start","ref":null},[]],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"start","ref":"Hello World"},["a",1]],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"status","ref":null},true],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"setup","ref":"key_name-1"},{"a":{"b":"c"}}],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[["a",1],0],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"setup","ref":null},0],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"start","ref":null},true],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"setup","ref":"emoji 👍🏽 mix"},{"a":{"b":"c"}}],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"stop","ref":"é"},{}],"error":"The \"path\" argument must be of type string or an instance of Buffer or URL. Received undefined"}
+{"fn":"runCanaryCommand","args":["x",{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"runCanaryCommand","args":[{"command":"update","ref":null},["a",1]],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"stop","ref":null},[]],"error":"The \"path\" argument must be of type string or an instance of Buffer or URL. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"rollback","ref":""},null],"error":"Synara Canary has no previous successful commit to restore."}
+{"fn":"runCanaryCommand","args":[{"a":{"b":"c"}},"x"],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"setup","ref":"日本語のテキスト"},["a",1]],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"status","ref":null},null],"error":"Cannot read properties of null (reading 'source')"}
+{"fn":"runCanaryCommand","args":[null,[]],"error":"Cannot read properties of null (reading 'command')"}
+{"fn":"runCanaryCommand","args":[{"command":"status","ref":"HELLO"},{"a":{"b":"c"}}],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[["a",1],{"a":"b"}],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"start","ref":null},{"a":{"b":"c"}}],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[[],[]],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"rollback","ref":"abcabc"},["a",1]],"error":"Synara Canary has no previous successful commit to restore."}
+{"fn":"runCanaryCommand","args":[{"a":{"b":"c"}},{"a":"b"}],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"start","ref":null},["a",1]],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"setup","ref":"a😀b😀c"},{}],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"status","ref":"Hello World"},{"a":"b"}],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[null],"error":"Cannot read properties of null (reading 'command')"}
+{"fn":"runCanaryCommand","args":[true,["a",1]],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"stop","ref":"a:b:c"},["a",1]],"error":"The \"path\" argument must be of type string or an instance of Buffer or URL. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"update","ref":"İstanbul./x/**/*.json"},true],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"status","ref":"a.b.c"},["a",1]],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"start","ref":"./x/**/*.jsontrailing."},"x"],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"start","ref":"./x/**/*.json"},true],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"rollback","ref":"key_name-1"},null],"error":"Synara Canary has no previous successful commit to restore."}
+{"fn":"runCanaryCommand","args":[{"a":"b"},"x"],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"rollback","ref":"src/a/b.ts"},{"a":{"b":"c"}}],"error":"Synara Canary has no previous successful commit to restore."}
+{"fn":"runCanaryCommand","args":[null,{}],"error":"Cannot read properties of null (reading 'command')"}
+{"fn":"runCanaryCommand","args":[{},null],"error":"Cannot read properties of null (reading 'source')"}
+{"fn":"runCanaryCommand","args":[{"command":"rollback","ref":"日本語のテキスト{name} has {count} items"},true],"error":"Synara Canary has no previous successful commit to restore."}
+{"fn":"runCanaryCommand","args":[{"command":"stop","ref":"日本語のテキスト"},{"a":"b"}],"error":"The \"path\" argument must be of type string or an instance of Buffer or URL. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"start","ref":"日本語のテキスト"}],"error":"Synara Canary is not built. Run `bun run canary:setup` first."}
+{"fn":"runCanaryCommand","args":[{"command":"update","ref":null},[]],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"status","ref":"ns:key.pathstraße"},{"a":{"b":"c"}}],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"stop","ref":"hello world"},{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"runCanaryCommand","args":[{"a":"b"},["a",1]],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"stop","ref":null}],"ok":{"$undefined":true}}
+{"fn":"runCanaryCommand","args":[{"command":"start","ref":".leading"},null],"error":"Cannot read properties of null (reading 'source')"}
+{"fn":"runCanaryCommand","args":[{"command":"status","ref":"trailing."},{"a":"b"}],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"rollback","ref":null},{}],"error":"Synara Canary has no previous successful commit to restore."}
+{"fn":"runCanaryCommand","args":[{"command":"start","ref":null},0],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":["x",{"a":"b"}],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"update","ref":"İstanbul日本語のテキスト"},0],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"start","ref":"a:b:c"},{}],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"rollback","ref":null},{"a":"b"}],"error":"Synara Canary has no previous successful commit to restore."}
+{"fn":"runCanaryCommand","args":[{"a":"b"},{"a":{"b":"c"}}],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"a":"b"},[]],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[["a",1],"x"],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"status","ref":null},{"a":"b"}],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"start","ref":"HELLO"},["a",1]],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"status","ref":null},{"a":{"b":"c"}}],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"a":"b"},0],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"stop","ref":"src/a/b.ts"},0],"error":"The \"path\" argument must be of type string or an instance of Buffer or URL. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"start","ref":"{name} has {count} items"},["a",1]],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"status","ref":"hello"},{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"runCanaryCommand","args":[{"command":"stop","ref":"straßetab\tseparated"},{"a":{"b":"c"}}],"error":"The \"path\" argument must be of type string or an instance of Buffer or URL. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"stop","ref":"src/a/b.ts"},{"a":"b"}],"error":"The \"path\" argument must be of type string or an instance of Buffer or URL. Received undefined"}
+{"fn":"runCanaryCommand","args":[true,null],"error":"Cannot read properties of null (reading 'source')"}
+{"fn":"runCanaryCommand","args":[{"command":"update","ref":"a😀b😀c"},{"$undefined":true}],"error":"git fetch --prune origin a😀b😀c exited with 128."}
+{"fn":"runCanaryCommand","args":[{"command":"status","ref":"src/a/b.ts"}],"ok":{"$undefined":true}}
+{"fn":"runCanaryCommand","args":[{"a":"b"},{"a":"b"}],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[[],null],"error":"Cannot read properties of null (reading 'source')"}
+{"fn":"runCanaryCommand","args":[{"command":"start","ref":null},{"a":"b"}],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"start","ref":null},null],"error":"Cannot read properties of null (reading 'source')"}
+{"fn":"runCanaryCommand","args":[[],"x"],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"stop","ref":null},{"a":"b"}],"error":"The \"path\" argument must be of type string or an instance of Buffer or URL. Received undefined"}
+{"fn":"runCanaryCommand","args":["x",["a",1]],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"setup","ref":"line1\nline2"},["a",1]],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"stop","ref":null},["a",1]],"error":"The \"path\" argument must be of type string or an instance of Buffer or URL. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"a":{"b":"c"}},0],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"setup","ref":"  padded  "},null],"error":"Cannot read properties of null (reading 'source')"}
+{"fn":"runCanaryCommand","args":[0,["a",1]],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"update","ref":null},null],"error":"Cannot read properties of null (reading 'source')"}
+{"fn":"runCanaryCommand","args":[[],{}],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"status","ref":"é"},{}],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"status","ref":"ünïcödé"},"x"],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"start","ref":"straße"},{}],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"status","ref":"a"},0],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"rollback","ref":"😀"},0],"error":"Synara Canary has no previous successful commit to restore."}
+{"fn":"runCanaryCommand","args":[{"command":"stop","ref":"日本語のテキスト日本語のテキスト"},[]],"error":"The \"path\" argument must be of type string or an instance of Buffer or URL. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"start","ref":"ns:key.path"},[]],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"rollback","ref":"a:b:c"},["a",1]],"error":"Synara Canary has no previous successful commit to restore."}
+{"fn":"runCanaryCommand","args":[{"command":"rollback","ref":"é"},["a",1]],"error":"Synara Canary has no previous successful commit to restore."}
+{"fn":"runCanaryCommand","args":[{"command":"stop","ref":"HELLO"},{"a":"b"}],"error":"The \"path\" argument must be of type string or an instance of Buffer or URL. Received undefined"}
+{"fn":"runCanaryCommand","args":["x",0],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"start","ref":null},"x"],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"stop","ref":"a..b{name} has {count} items"},{}],"error":"The \"path\" argument must be of type string or an instance of Buffer or URL. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"setup","ref":""},{"a":"b"}],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":["x",{"a":{"b":"c"}}],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"status","ref":""},{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"runCanaryCommand","args":[{"command":"status","ref":"  padded  "},0],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"a":"b"},null],"error":"Cannot read properties of null (reading 'source')"}
+{"fn":"runCanaryCommand","args":[{"command":"update","ref":null},{}],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"rollback","ref":"line1\nline2./x/**/*.json"}],"error":"Synara Canary has no previous successful commit to restore."}
+{"fn":"runCanaryCommand","args":[{"command":"start","ref":"./x/**/*.json.leading"},"x"],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"rollback","ref":null},[]],"error":"Synara Canary has no previous successful commit to restore."}
+{"fn":"runCanaryCommand","args":[true,{"a":"b"}],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"setup","ref":"src/a/b.ts"},null],"error":"Cannot read properties of null (reading 'source')"}
+{"fn":"runCanaryCommand","args":[{"command":"start","ref":null},{"$undefined":true}],"error":"Synara Canary is not built. Run `bun run canary:setup` first."}
+{"fn":"runCanaryCommand","args":[true,{}],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"setup","ref":"😀"},true],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"start","ref":"emoji 👍🏽 mix"},null],"error":"Cannot read properties of null (reading 'source')"}
+{"fn":"runCanaryCommand","args":[{"command":"stop","ref":"hello"},"x"],"error":"The \"path\" argument must be of type string or an instance of Buffer or URL. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"rollback","ref":null}],"error":"Synara Canary has no previous successful commit to restore."}
+{"fn":"runCanaryCommand","args":[{"command":"rollback","ref":null},["a",1]],"error":"Synara Canary has no previous successful commit to restore."}
+{"fn":"runCanaryCommand","args":[{"command":"setup","ref":"é"},true],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"rollback","ref":null},true],"error":"Synara Canary has no previous successful commit to restore."}
+{"fn":"runCanaryCommand","args":[["a",1]],"ok":{"$undefined":true}}
+{"fn":"runCanaryCommand","args":[0,true],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"setup","ref":null},null],"error":"Cannot read properties of null (reading 'source')"}
+{"fn":"runCanaryCommand","args":[0],"ok":{"$undefined":true}}
+{"fn":"runCanaryCommand","args":[{"command":"stop","ref":"  padded  "},{"a":"b"}],"error":"The \"path\" argument must be of type string or an instance of Buffer or URL. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"update","ref":"trailing.HELLO"},["a",1]],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"stop","ref":"src/a/b.ts"},{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"runCanaryCommand","args":[0,{"a":{"b":"c"}}],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"status","ref":":"},["a",1]],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"start","ref":"key_name-1emoji 👍🏽 mix"},"x"],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"stop","ref":"line1\nline2"},"x"],"error":"The \"path\" argument must be of type string or an instance of Buffer or URL. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"start","ref":"😀"}],"error":"Synara Canary is not built. Run `bun run canary:setup` first."}
+{"fn":"runCanaryCommand","args":[{"command":"status","ref":null},0],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"rollback","ref":"{name} has {count} items"},["a",1]],"error":"Synara Canary has no previous successful commit to restore."}
+{"fn":"runCanaryCommand","args":[{"command":"rollback","ref":"﻿bomtrailing."},[]],"error":"Synara Canary has no previous successful commit to restore."}
+{"fn":"runCanaryCommand","args":[{"command":"update","ref":"Hello World"},["a",1]],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"setup","ref":"😀"},{"$undefined":true}],"error":"git fetch --prune origin 😀 exited with 128."}
+{"fn":"runCanaryCommand","args":[{"command":"stop","ref":"ab"},{"a":{"b":"c"}}],"error":"The \"path\" argument must be of type string or an instance of Buffer or URL. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"rollback","ref":"日本語のテキストa"},[]],"error":"Synara Canary has no previous successful commit to restore."}
+{"fn":"runCanaryCommand","args":[{"command":"rollback","ref":"hello worldHello World"},[]],"error":"Synara Canary has no previous successful commit to restore."}
+{"fn":"runCanaryCommand","args":[{"command":"start","ref":"é"},[]],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"status","ref":"key_name-1./x/**/*.json"},{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"runCanaryCommand","args":[{"command":"setup","ref":"İstanbul"},true],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"stop","ref":"ünïcödé"},{"a":"b"}],"error":"The \"path\" argument must be of type string or an instance of Buffer or URL. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"start","ref":"aba😀b😀c"},{"a":"b"}],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"start","ref":"abc"}],"error":"Synara Canary is not built. Run `bun run canary:setup` first."}
+{"fn":"runCanaryCommand","args":[{"command":"rollback","ref":"İstanbul"},{"a":"b"}],"error":"Synara Canary has no previous successful commit to restore."}
+{"fn":"runCanaryCommand","args":[{"command":"rollback","ref":"😀"},["a",1]],"error":"Synara Canary has no previous successful commit to restore."}
+{"fn":"runCanaryCommand","args":[{"command":"status","ref":null},{}],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[null,{"a":{"b":"c"}}],"error":"Cannot read properties of null (reading 'command')"}
+{"fn":"runCanaryCommand","args":[{"command":"status","ref":"tab\tseparated"},true],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"rollback","ref":"key_name-1"},[]],"error":"Synara Canary has no previous successful commit to restore."}
+{"fn":"runCanaryCommand","args":[{"command":"status","ref":"ΣΊΣΥΦΟΣ"}],"ok":{"$undefined":true}}
+{"fn":"runCanaryCommand","args":[{"command":"stop","ref":"😀"},0],"error":"The \"path\" argument must be of type string or an instance of Buffer or URL. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"setup","ref":"abHello World"},{"a":{"b":"c"}}],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"rollback","ref":"hello world"},[]],"error":"Synara Canary has no previous successful commit to restore."}
+{"fn":"runCanaryCommand","args":[{},{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"runCanaryCommand","args":[{"command":"stop","ref":"Hello World"},{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"runCanaryCommand","args":[{"command":"update","ref":null},"x"],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"update","ref":null},true],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"stop","ref":"abc"}],"ok":{"$undefined":true}}
+{"fn":"runCanaryCommand","args":[{"command":"rollback","ref":"straße"},[]],"error":"Synara Canary has no previous successful commit to restore."}
+{"fn":"runCanaryCommand","args":[{"command":"status","ref":"ünïcödé"}],"ok":{"$undefined":true}}
+{"fn":"runCanaryCommand","args":[{"command":"rollback","ref":"a😀b😀c"},0],"error":"Synara Canary has no previous successful commit to restore."}
+{"fn":"runCanaryCommand","args":[["a",1],null],"error":"Cannot read properties of null (reading 'source')"}
+{"fn":"runCanaryCommand","args":[{"command":"start","ref":"a.b.c"},{"$undefined":true}],"error":"Synara Canary is not built. Run `bun run canary:setup` first."}
+{"fn":"runCanaryCommand","args":[{"command":"status","ref":"ünïcödé"},[]],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{},0],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"setup","ref":"hello world"}],"error":"git fetch --prune origin hello world exited with 128."}
+{"fn":"runCanaryCommand","args":[{"command":"update","ref":"line1\nline2"},{}],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"start","ref":null},{}],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"status","ref":"a..b"},"x"],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"setup","ref":null},true],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"rollback","ref":null},null],"error":"Synara Canary has no previous successful commit to restore."}
+{"fn":"runCanaryCommand","args":[{"command":"setup","ref":null},{"a":{"b":"c"}}],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"stop","ref":null},0],"error":"The \"path\" argument must be of type string or an instance of Buffer or URL. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"start","ref":"ab"}],"error":"Synara Canary is not built. Run `bun run canary:setup` first."}
+{"fn":"runCanaryCommand","args":[{"command":"setup","ref":null},[]],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"setup","ref":"a"},{"a":{"b":"c"}}],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"runCanaryCommand","args":[{"command":"setup","ref":"日本語のテキスト"}],"error":"git fetch --prune origin 日本語のテキスト exited with 128."}

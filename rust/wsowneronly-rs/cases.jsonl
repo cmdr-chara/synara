@@ -1,0 +1,220 @@
+{"fn":"isOwnerRole","args":["line1\nline2"],"ok":false}
+{"fn":"isOwnerRole","args":["HELLO"],"ok":false}
+{"fn":"isOwnerRole","args":["ab"],"ok":false}
+{"fn":"isOwnerRole","args":["abc"],"ok":false}
+{"fn":"isOwnerRole","args":["ns:key.pathé"],"ok":false}
+{"fn":"isOwnerRole","args":["{name} has {count} items"],"ok":false}
+{"fn":"isOwnerRole","args":["İstanbul"],"ok":false}
+{"fn":"isOwnerRole","args":["hello"],"ok":false}
+{"fn":"isOwnerRole","args":["😀"],"ok":false}
+{"fn":"isOwnerRole","args":["ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isOwnerRole","args":["ns:key.path"],"ok":false}
+{"fn":"isOwnerRole","args":["ünïcödé"],"ok":false}
+{"fn":"isOwnerRole","args":["hello worldünïcödé"],"ok":false}
+{"fn":"isOwnerRole","args":["tab\tseparated"],"ok":false}
+{"fn":"isOwnerRole","args":["key_name-1"],"ok":false}
+{"fn":"isOwnerRole","args":["﻿bom"],"ok":false}
+{"fn":"isOwnerRole","args":["./x/**/*.json"],"ok":false}
+{"fn":"isOwnerRole","args":["a:b:c"],"ok":false}
+{"fn":"isOwnerRole","args":["src/a/b.ts"],"ok":false}
+{"fn":"isOwnerRole","args":["a..b"],"ok":false}
+{"fn":"isOwnerRole","args":["a😀b😀c"],"ok":false}
+{"fn":"isOwnerRole","args":["trailing."],"ok":false}
+{"fn":"isOwnerRole","args":[""],"ok":false}
+{"fn":"isOwnerRole","args":["  padded  "],"ok":false}
+{"fn":"isOwnerRole","args":["src/a/b.ts  padded  "],"ok":false}
+{"fn":"isOwnerRole","args":["straße"],"ok":false}
+{"fn":"isOwnerRole","args":["{name} has {count} itemsa..b"],"ok":false}
+{"fn":"isOwnerRole","args":["ünïcödétrailing."],"ok":false}
+{"fn":"isOwnerRole","args":["Hello World"],"ok":false}
+{"fn":"isOwnerRole","args":[".leadinga..b"],"ok":false}
+{"fn":"isOwnerRole","args":["emoji 👍🏽 mix"],"ok":false}
+{"fn":"isOwnerRole","args":[".leading"],"ok":false}
+{"fn":"isOwnerRole","args":["İstanbulab"],"ok":false}
+{"fn":"isOwnerRole","args":["{name} has {count} itemsabc"],"ok":false}
+{"fn":"isOwnerRole","args":["a.b.c"],"ok":false}
+{"fn":"isOwnerRole","args":["a.b.cns:key.path"],"ok":false}
+{"fn":"isOwnerRole","args":["é"],"ok":false}
+{"fn":"isOwnerRole","args":["hello world.leading"],"ok":false}
+{"fn":"isOwnerRole","args":["hello worldtab\tseparated"],"ok":false}
+{"fn":"isOwnerRole","args":["日本語のテキスト"],"ok":false}
+{"fn":"isOwnerRole","args":["aé"],"ok":false}
+{"fn":"isOwnerRole","args":["hello world:"],"ok":false}
+{"fn":"isOwnerRole","args":["a"],"ok":false}
+{"fn":"isOwnerRole","args":["a😀b😀c{name} has {count} items"],"ok":false}
+{"fn":"isOwnerRole","args":["HELLOa..b"],"ok":false}
+{"fn":"isOwnerRole","args":["src/a/b.tsa.b.c"],"ok":false}
+{"fn":"isOwnerRole","args":["a😀b😀ckey_name-1"],"ok":false}
+{"fn":"isOwnerRole","args":["aba..b"],"ok":false}
+{"fn":"isOwnerRole","args":["日本語のテキスト﻿bom"],"ok":false}
+{"fn":"isOwnerRole","args":["hello world"],"ok":false}
+{"fn":"isOwnerRole","args":["éa😀b😀c"],"ok":false}
+{"fn":"isOwnerRole","args":[":"],"ok":false}
+{"fn":"isOwnerRole","args":["line1\nline2﻿bom"],"ok":false}
+{"fn":"isOwnerRole","args":["hello world{name} has {count} items"],"ok":false}
+{"fn":"isOwnerRole","args":["日本語のテキストa.b.c"],"ok":false}
+{"fn":"isOwnerRole","args":["./x/**/*.jsonHELLO"],"ok":false}
+{"fn":"isOwnerRole","args":["straßehello"],"ok":false}
+{"fn":"isOwnerRole","args":["ΣΊΣΥΦΟΣkey_name-1"],"ok":false}
+{"fn":"isOwnerRole","args":["line1\nline2straße"],"ok":false}
+{"fn":"isOwnerRole","args":["straßea.b.c"],"ok":false}
+{"fn":"isOwnerRole","args":["ns:key.path  padded  "],"ok":false}
+{"fn":"isOwnerRole","args":["  padded  İstanbul"],"ok":false}
+{"fn":"isOwnerRole","args":["abtrailing."],"ok":false}
+{"fn":"isOwnerRole","args":[":emoji 👍🏽 mix"],"ok":false}
+{"fn":"isOwnerRole","args":["./x/**/*.jsonns:key.path"],"ok":false}
+{"fn":"isOwnerRole","args":["HELLOé"],"ok":false}
+{"fn":"isOwnerRole","args":["atrailing."],"ok":false}
+{"fn":"isOwnerRole","args":["Hello World日本語のテキスト"],"ok":false}
+{"fn":"isOwnerRole","args":["aline1\nline2"],"ok":false}
+{"fn":"isOwnerRole","args":["emoji 👍🏽 mixhello"],"ok":false}
+{"fn":"isOwnerRole","args":["abΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isOwnerRole","args":["aHELLO"],"ok":false}
+{"fn":"isOwnerRole","args":["ΣΊΣΥΦΟΣabc"],"ok":false}
+{"fn":"isOwnerRole","args":["ünïcödéHELLO"],"ok":false}
+{"fn":"isOwnerRole","args":["trailing.ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isOwnerRole","args":["a..b  padded  "],"ok":false}
+{"fn":"isOwnerRole","args":[":ab"],"ok":false}
+{"fn":"isOwnerRole","args":["line1\nline2😀"],"ok":false}
+{"fn":"isOwnerRole","args":["a:"],"ok":false}
+{"fn":"isOwnerRole","args":["a😀b😀cline1\nline2"],"ok":false}
+{"fn":"isOwnerRole","args":["İstanbul./x/**/*.json"],"ok":false}
+{"fn":"isOwnerRole","args":["hello worldab"],"ok":false}
+{"fn":"isOwnerRole","args":["aa.b.c"],"ok":false}
+{"fn":"isOwnerRole","args":["ΣΊΣΥΦΟΣhello world"],"ok":false}
+{"fn":"isOwnerRole","args":["src/a/b.tsa"],"ok":false}
+{"fn":"isOwnerRole","args":["日本語のテキスト.leading"],"ok":false}
+{"fn":"isOwnerRole","args":["asrc/a/b.ts"],"ok":false}
+{"fn":"isOwnerRole","args":["helloİstanbul"],"ok":false}
+{"fn":"isOwnerRole","args":["straßehello world"],"ok":false}
+{"fn":"isOwnerRole","args":["tab\tseparateda.b.c"],"ok":false}
+{"fn":"isOwnerRole","args":["abns:key.path"],"ok":false}
+{"fn":"isOwnerRole","args":["./x/**/*.json./x/**/*.json"],"ok":false}
+{"fn":"isOwnerRole","args":["aa:b:c"],"ok":false}
+{"fn":"isOwnerRole","args":["a😀b😀ca:b:c"],"ok":false}
+{"fn":"isOwnerRole","args":["./x/**/*.json:"],"ok":false}
+{"fn":"isOwnerRole","args":["ΣΊΣΥΦΟΣΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isOwnerRole","args":["ΣΊΣΥΦΟΣtrailing."],"ok":false}
+{"fn":"isOwnerRole","args":["a..b./x/**/*.json"],"ok":false}
+{"fn":"isOwnerRole","args":["İstanbulsrc/a/b.ts"],"ok":false}
+{"fn":"isOwnerRole","args":["tab\tseparated﻿bom"],"ok":false}
+{"fn":"isOwnerRole","args":["日本語のテキスト  padded  "],"ok":false}
+{"fn":"isOwnerRole","args":["ΣΊΣΥΦΟΣHELLO"],"ok":false}
+{"fn":"isOwnerRole","args":["😀straße"],"ok":false}
+{"fn":"isOwnerRole","args":["atab\tseparated"],"ok":false}
+{"fn":"isOwnerRole","args":[".leadingkey_name-1"],"ok":false}
+{"fn":"isOwnerRole","args":["{name} has {count} items{name} has {count} items"],"ok":false}
+{"fn":"isOwnerRole","args":[".leadingns:key.path"],"ok":false}
+{"fn":"isOwnerRole","args":["  padded  a.b.c"],"ok":false}
+{"fn":"isOwnerRole","args":["a..bemoji 👍🏽 mix"],"ok":false}
+{"fn":"isOwnerRole","args":["emoji 👍🏽 mixHELLO"],"ok":false}
+{"fn":"isOwnerRole","args":["😀HELLO"],"ok":false}
+{"fn":"isOwnerRole","args":["hello worldkey_name-1"],"ok":false}
+{"fn":"isOwnerRole","args":["hello😀"],"ok":false}
+{"fn":"isOwnerRole","args":["straße  padded  "],"ok":false}
+{"fn":"isOwnerRole","args":["line1\nline2ab"],"ok":false}
+{"fn":"isOwnerRole","args":["{name} has {count} itemsHello World"],"ok":false}
+{"fn":"isOwnerRole","args":[":﻿bom"],"ok":false}
+{"fn":"isOwnerRole","args":["line1\nline2ns:key.path"],"ok":false}
+{"fn":"isOwnerRole","args":["﻿bom﻿bom"],"ok":false}
+{"fn":"isOwnerRole","args":["./x/**/*.json.leading"],"ok":false}
+{"fn":"isOwnerRole","args":["key_name-1line1\nline2"],"ok":false}
+{"fn":"isOwnerRole","args":["a:b:c./x/**/*.json"],"ok":false}
+{"fn":"isOwnerRole","args":["HELLOa"],"ok":false}
+{"fn":"isOwnerRole","args":["  padded  日本語のテキスト"],"ok":false}
+{"fn":"isOwnerRole","args":["a😀b😀cabc"],"ok":false}
+{"fn":"isOwnerRole","args":["key_name-1a"],"ok":false}
+{"fn":"isOwnerRole","args":["ns:key.pathab"],"ok":false}
+{"fn":"isOwnerRole","args":[":é"],"ok":false}
+{"fn":"isOwnerRole","args":["a.b.cline1\nline2"],"ok":false}
+{"fn":"isOwnerRole","args":[":a.b.c"],"ok":false}
+{"fn":"isOwnerRole","args":["Hello Worldtrailing."],"ok":false}
+{"fn":"isOwnerRole","args":["a..ba..b"],"ok":false}
+{"fn":"isOwnerRole","args":["a.b.chello world"],"ok":false}
+{"fn":"isOwnerRole","args":["İstanbulHELLO"],"ok":false}
+{"fn":"isOwnerRole","args":["İstanbulİstanbul"],"ok":false}
+{"fn":"isOwnerRole","args":["ünïcödétab\tseparated"],"ok":false}
+{"fn":"isOwnerRole","args":["straßeabc"],"ok":false}
+{"fn":"isOwnerRole","args":["  padded  é"],"ok":false}
+{"fn":"isOwnerRole","args":["{name} has {count} itemskey_name-1"],"ok":false}
+{"fn":"isOwnerRole","args":["a:b:ctab\tseparated"],"ok":false}
+{"fn":"isOwnerRole","args":["日本語のテキストns:key.path"],"ok":false}
+{"fn":"isOwnerRole","args":["ünïcödéab"],"ok":false}
+{"fn":"isOwnerRole","args":["line1\nline2ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isOwnerRole","args":["{name} has {count} itemshello world"],"ok":false}
+{"fn":"isOwnerRole","args":["ns:key.pathtrailing."],"ok":false}
+{"fn":"isOwnerRole","args":[".leadingsrc/a/b.ts"],"ok":false}
+{"fn":"isOwnerRole","args":["İstanbulline1\nline2"],"ok":false}
+{"fn":"isOwnerRole","args":["trailing.😀"],"ok":false}
+{"fn":"isOwnerRole","args":["aba:b:c"],"ok":false}
+{"fn":"isOwnerRole","args":["./x/**/*.jsona.b.c"],"ok":false}
+{"fn":"isOwnerRole","args":["éa:b:c"],"ok":false}
+{"fn":"isOwnerRole","args":["日本語のテキストa..b"],"ok":false}
+{"fn":"isOwnerRole","args":["ünïcödésrc/a/b.ts"],"ok":false}
+{"fn":"isOwnerRole","args":["😀hello"],"ok":false}
+{"fn":"isOwnerRole","args":["İstanbul﻿bom"],"ok":false}
+{"fn":"isOwnerRole","args":["straßea😀b😀c"],"ok":false}
+{"fn":"isOwnerRole","args":["İstanbulstraße"],"ok":false}
+{"fn":"isOwnerRole","args":["emoji 👍🏽 mix.leading"],"ok":false}
+{"fn":"isOwnerRole","args":["日本語のテキストΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isOwnerRole","args":["aba"],"ok":false}
+{"fn":"isOwnerRole","args":["İstanbulhello"],"ok":false}
+{"fn":"isOwnerRole","args":["  padded  ./x/**/*.json"],"ok":false}
+{"fn":"isOwnerRole","args":["abcİstanbul"],"ok":false}
+{"fn":"isOwnerRole","args":["  padded  .leading"],"ok":false}
+{"fn":"isOwnerRole","args":["aabc"],"ok":false}
+{"fn":"isOwnerRole","args":["straße./x/**/*.json"],"ok":false}
+{"fn":"isOwnerRole","args":["tab\tseparatedkey_name-1"],"ok":false}
+{"fn":"isOwnerRole","args":["hello world./x/**/*.json"],"ok":false}
+{"fn":"isOwnerRole","args":["日本語のテキスト:"],"ok":false}
+{"fn":"isOwnerRole","args":["ΣΊΣΥΦΟΣtab\tseparated"],"ok":false}
+{"fn":"isOwnerRole","args":["straße.leading"],"ok":false}
+{"fn":"isOwnerRole","args":["hello worldé"],"ok":false}
+{"fn":"isOwnerRole","args":["😀ab"],"ok":false}
+{"fn":"isOwnerRole","args":["{name} has {count} itemsa😀b😀c"],"ok":false}
+{"fn":"isOwnerRole","args":["tab\tseparatedns:key.path"],"ok":false}
+{"fn":"isOwnerRole","args":["ns:key.pathkey_name-1"],"ok":false}
+{"fn":"isOwnerRole","args":["a😀b😀ca😀b😀c"],"ok":false}
+{"fn":"isOwnerRole","args":["emoji 👍🏽 mixkey_name-1"],"ok":false}
+{"fn":"isOwnerRole","args":["key_name-1./x/**/*.json"],"ok":false}
+{"fn":"isOwnerRole","args":["a😀b😀cab"],"ok":false}
+{"fn":"isOwnerRole","args":["  padded  trailing."],"ok":false}
+{"fn":"isOwnerRole","args":["emoji 👍🏽 mixtab\tseparated"],"ok":false}
+{"fn":"isOwnerRole","args":[".leading  padded  "],"ok":false}
+{"fn":"isOwnerRole","args":["a:b:cünïcödé"],"ok":false}
+{"fn":"isOwnerRole","args":["ΣΊΣΥΦΟΣa.b.c"],"ok":false}
+{"fn":"isOwnerRole","args":["emoji 👍🏽 mixa..b"],"ok":false}
+{"fn":"isOwnerRole","args":["Hello Worldhello"],"ok":false}
+{"fn":"isOwnerRole","args":["ünïcödé.leading"],"ok":false}
+{"fn":"isOwnerRole","args":["İstanbula.b.c"],"ok":false}
+{"fn":"isOwnerRole","args":["ns:key.patha..b"],"ok":false}
+{"fn":"isOwnerRole","args":["ns:key.pathemoji 👍🏽 mix"],"ok":false}
+{"fn":"isOwnerRole","args":["abcstraße"],"ok":false}
+{"fn":"isOwnerRole","args":["abca..b"],"ok":false}
+{"fn":"isOwnerRole","args":["emoji 👍🏽 mix  padded  "],"ok":false}
+{"fn":"isOwnerRole","args":["éHello World"],"ok":false}
+{"fn":"isOwnerRole","args":["  padded  src/a/b.ts"],"ok":false}
+{"fn":"isOwnerRole","args":[".leading./x/**/*.json"],"ok":false}
+{"fn":"isOwnerRole","args":["😀hello world"],"ok":false}
+{"fn":"isOwnerRole","args":["﻿boma:b:c"],"ok":false}
+{"fn":"isOwnerRole","args":["ns:key.pathstraße"],"ok":false}
+{"fn":"isOwnerRole","args":["héllo wörld"],"ok":false}
+{"fn":"isOwnerRole","args":["👍🏽 thumbs"],"ok":false}
+{"fn":"isOwnerRole","args":["日本語"],"ok":false}
+{"fn":"isOwnerRole","args":["ılık ırmak"],"ok":false}
+{"fn":"isOwnerRole","args":["👨‍👩‍👧 family"],"ok":false}
+{"fn":"isOwnerRole","args":["a b"],"ok":false}
+{"fn":"isOwnerRole","args":["a😀b"],"ok":false}
+{"fn":"isOwnerRole","args":["a²b x½ y①"],"ok":false}
+{"fn":"isOwnerRole","args":["aⅠb Ⅻ"],"ok":false}
+{"fn":"isOwnerRole","args":["a𐐀b 𝐀bc"],"ok":false}
+{"fn":"isOwnerRole","args":["कि ٣٤"],"ok":false}
+{"fn":"projectProviderStatusesForWsSession","args":[0],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"projectProviderStatusesForWsSession","args":[null],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"projectProviderStatusesForWsSession","args":[[]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"projectProviderStatusesForWsSession","args":[{"a":"b"}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"projectProviderStatusesForWsSession","args":[true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"projectProviderStatusesForWsSession","args":[["a",1]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"projectProviderStatusesForWsSession","args":["x"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"projectProviderStatusesForWsSession","args":[{"a":{"b":"c"}}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"projectProviderStatusesForWsSession","args":[{}],"ok":{"~effect/Effect/args":{"$function":""}}}

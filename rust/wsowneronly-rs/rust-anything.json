@@ -1,0 +1,48 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/wsOwnerOnly.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "wsowneronly-rs",
+  "exports": [
+    {
+      "name": "isOwnerRole",
+      "file": "apps/server/src/wsOwnerOnly.ts",
+      "line": 16,
+      "params": [
+        {
+          "name": "role",
+          "ts_type": "(\"owner\" | \"client\")",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "projectProviderStatusesForWsSession",
+      "file": "apps/server/src/wsOwnerOnly.ts",
+      "line": 21,
+      "params": [
+        {
+          "name": "statuses",
+          "ts_type": "ReadonlyArray<typeof typeof typeof typeof ServerProviderStatus.Type.Type.Type.Type>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

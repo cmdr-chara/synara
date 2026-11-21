@@ -1,0 +1,66 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/installerDownloads.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "installerdownloads-rs",
+  "exports": [
+    {
+      "name": "installerPlatform",
+      "file": "packages/shared/src/installerDownloads.ts",
+      "line": 8,
+      "params": [
+        {
+          "name": "name",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(\"darwin\" | \"win32\" | \"linux\") | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "installerDownloadCount",
+      "file": "packages/shared/src/installerDownloads.ts",
+      "line": 16,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "number | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "countInstallerDownloads",
+      "file": "packages/shared/src/installerDownloads.ts",
+      "line": 21,
+      "params": [
+        {
+          "name": "releases",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "number",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

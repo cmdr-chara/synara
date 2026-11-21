@@ -1,0 +1,17 @@
+{
+  "unit": "packages/shared/src/installerDownloads.ts",
+  "files": 1,
+  "fingerprint": "0a27d8626f335e7d",
+  "coverage": {
+    "lines": 31,
+    "reached": 31,
+    "files": [
+      {
+        "file": "packages/shared/src/installerDownloads.ts",
+        "lines": 31,
+        "reached": 31,
+        "missed": ""
+      }
+    ]
+  }
+}

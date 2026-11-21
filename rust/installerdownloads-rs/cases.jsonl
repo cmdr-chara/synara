@@ -1,0 +1,57 @@
+{"fn":"installerPlatform","args":[[]],"ok":null}
+{"fn":"installerPlatform","args":[{"a":{"b":"c"}}],"ok":null}
+{"fn":"installerPlatform","args":[null],"ok":null}
+{"fn":"installerPlatform","args":[true],"ok":null}
+{"fn":"installerPlatform","args":[{"a":"b"}],"ok":null}
+{"fn":"installerPlatform","args":[{}],"ok":null}
+{"fn":"installerPlatform","args":[0],"ok":null}
+{"fn":"installerPlatform","args":[["a",1]],"ok":null}
+{"fn":"installerPlatform","args":["x"],"ok":null}
+{"fn":"installerPlatform","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6}],"ok":null}
+{"fn":"installerPlatform","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7}],"ok":null}
+{"fn":"installerPlatform","args":[[3,1,2]],"ok":null}
+{"fn":"installerDownloadCount","args":[true],"ok":null}
+{"fn":"installerDownloadCount","args":["x"],"ok":null}
+{"fn":"installerDownloadCount","args":[0],"ok":0}
+{"fn":"installerDownloadCount","args":[null],"ok":null}
+{"fn":"installerDownloadCount","args":[["a",1]],"ok":null}
+{"fn":"installerDownloadCount","args":[{}],"ok":null}
+{"fn":"installerDownloadCount","args":[{"a":{"b":"c"}}],"ok":null}
+{"fn":"installerDownloadCount","args":[[]],"ok":null}
+{"fn":"installerDownloadCount","args":[{"a":"b"}],"ok":null}
+{"fn":"installerDownloadCount","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6}],"ok":null}
+{"fn":"installerDownloadCount","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7}],"ok":null}
+{"fn":"installerDownloadCount","args":[[3,1,2]],"ok":null}
+{"fn":"countInstallerDownloads","args":[0],"error":"Invalid GitHub releases"}
+{"fn":"countInstallerDownloads","args":[true],"error":"Invalid GitHub releases"}
+{"fn":"countInstallerDownloads","args":[{}],"error":"Invalid GitHub releases"}
+{"fn":"countInstallerDownloads","args":["x"],"error":"Invalid GitHub releases"}
+{"fn":"countInstallerDownloads","args":[[]],"ok":0}
+{"fn":"countInstallerDownloads","args":[{"a":"b"}],"error":"Invalid GitHub releases"}
+{"fn":"countInstallerDownloads","args":[["a",1]],"ok":0}
+{"fn":"countInstallerDownloads","args":[null],"error":"Invalid GitHub releases"}
+{"fn":"countInstallerDownloads","args":[{"a":{"b":"c"}}],"error":"Invalid GitHub releases"}
+{"fn":"countInstallerDownloads","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6}],"error":"Invalid GitHub releases"}
+{"fn":"countInstallerDownloads","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7}],"error":"Invalid GitHub releases"}
+{"fn":"countInstallerDownloads","args":[[3,1,2]],"ok":0}
+{"fn":"countInstallerDownloads","args":[[{"assets":[{"name":"Synara.dmg","download_count":10},{"name":"Synara.EXE","download_count":2},{"name":"Synara.AppImage","download_count":0},{"name":"Synara.exe.blockmap","download_count":999},{"name":"latest.yml","download_count":999}]}]],"ok":12}
+{"fn":"installerPlatform","args":["Synara.dmg"],"ok":"darwin"}
+{"fn":"installerDownloadCount","args":[10],"ok":10}
+{"fn":"installerPlatform","args":["Synara.EXE"],"ok":"win32"}
+{"fn":"installerDownloadCount","args":[2],"ok":2}
+{"fn":"installerPlatform","args":["Synara.AppImage"],"ok":"linux"}
+{"fn":"installerDownloadCount","args":[0],"ok":0}
+{"fn":"installerPlatform","args":["Synara.exe.blockmap"],"ok":null}
+{"fn":"installerPlatform","args":["latest.yml"],"ok":null}
+{"fn":"countInstallerDownloads","args":[[{"assets":[{"name":"Synara.dmg","download_count":-1}]}]],"error":"Invalid GitHub installer counter"}
+{"fn":"installerDownloadCount","args":[-1],"ok":null}
+{"fn":"countInstallerDownloads","args":[[{"assets":[{"name":"Synara.dmg","download_count":{"$num":"Infinity"}}]}]],"error":"Invalid GitHub installer counter"}
+{"fn":"installerDownloadCount","args":[{"$num":"Infinity"}],"ok":null}
+{"fn":"countInstallerDownloads","args":[[{"assets":[{"name":"Synara.dmg","download_count":{"$num":"NaN"}}]}]],"error":"Invalid GitHub installer counter"}
+{"fn":"installerDownloadCount","args":[{"$num":"NaN"}],"ok":null}
+{"fn":"countInstallerDownloads","args":[[{"assets":[{"name":"Synara.dmg","download_count":0.5}]}]],"error":"Invalid GitHub installer counter"}
+{"fn":"installerDownloadCount","args":[0.5],"ok":null}
+{"fn":"countInstallerDownloads","args":[[{"assets":[{"name":"Synara.dmg","download_count":9007199254740992}]}]],"error":"Invalid GitHub installer counter"}
+{"fn":"installerDownloadCount","args":[9007199254740992],"ok":null}
+{"fn":"countInstallerDownloads","args":[[{"assets":[{"name":"Synara.dmg","download_count":{"$undefined":true}}]}]],"error":"Invalid GitHub installer counter"}
+{"fn":"installerDownloadCount","args":[{"$undefined":true}],"ok":null}

@@ -1,0 +1,434 @@
+{"fn":"isBackgroundTaskActivity","args":[true],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"hello","payload":{"a":"b"}}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"é","payload":"x"}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"emoji 👍🏽 mix","payload":["a",1]}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"Hello World","payload":0}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"emoji 👍🏽 mix","payload":[]}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"straße","payload":null}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"straße","payload":"x"}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"ΣΊΣΥΦΟΣ","payload":{"a":"b"}}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"a😀b😀c","payload":{}}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"{name} has {count} items","payload":{}}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"ΣΊΣΥΦΟΣ","payload":true}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"ab","payload":"x"}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"﻿bom","payload":{"a":"b"}}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"abc","payload":{"a":"b"}}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"﻿bom","payload":null}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"","payload":{"a":"b"}}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"﻿bom","payload":"x"}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"é","payload":{"a":{"b":"c"}}}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"HELLO","payload":{"a":"b"}}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"a..b","payload":null}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"a:b:c","payload":"x"}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"src/a/b.ts","payload":null}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"ΣΊΣΥΦΟΣ","payload":{"a":{"b":"c"}}}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"é","payload":[]}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"éabc","payload":true}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"HELLO","payload":{"a":{"b":"c"}}}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"a":"b"}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"a.b.c","payload":[]}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"trailing.","payload":"x"}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"HELLO","payload":null}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"Hello World","payload":{"a":"b"}}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"{name} has {count} itemskey_name-1","payload":0}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"./x/**/*.jsoné","payload":[]}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"hello world","payload":0}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"","payload":0}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"日本語のテキスト","payload":{}}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"ab","payload":["a",1]}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"emoji 👍🏽 mix","payload":{"a":{"b":"c"}}}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"abc","payload":[]}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"straße","payload":{}}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"hello","payload":["a",1]}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"Hello World","payload":"x"}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"a":{"b":"c"}}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"日本語のテキスト","payload":{"a":"b"}}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"a","payload":{"a":{"b":"c"}}}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"Hello World","payload":["a",1]}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"{name} has {count} items","payload":["a",1]}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"src/a/b.tsabc","payload":[]}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":":","payload":[]}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"﻿bom","payload":[]}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"Hello World","payload":{}}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"a..b","payload":"x"}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":["x"],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"line1\nline2.leading","payload":null}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"日本語のテキスト","payload":["a",1]}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":".leading","payload":null}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"ΣΊΣΥΦΟΣ","payload":0}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[[]],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"{name} has {count} itemsé","payload":null}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[["a",1]],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"tab\tseparated","payload":{}}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"abc","payload":{}}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":".leading","payload":0}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"İstanbul","payload":"x"}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"  padded  line1\nline2","payload":{"a":{"b":"c"}}}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":".leading","payload":true}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"a:b:c","payload":true}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"é","payload":{"a":"b"}}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"trailing.line1\nline2","payload":0}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":":","payload":{"a":"b"}}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"straße  padded  ","payload":0}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"emoji 👍🏽 mix","payload":true}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"{name} has {count} items","payload":true}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"src/a/b.ts","payload":0}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"straße","payload":{"a":{"b":"c"}}}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"","payload":{"a":{"b":"c"}}}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"İstanbulé","payload":{"a":{"b":"c"}}}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"  padded  hello world","payload":{}}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"日本語のテキスト","payload":"x"}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"tab\tseparatedünïcödé","payload":[]}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"ΣΊΣΥΦΟΣhello world","payload":0}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"HELLO","payload":0}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"ns:key.pathHello World","payload":{"a":{"b":"c"}}}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"日本語のテキスト","payload":null}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"tab\tseparated  padded  ","payload":{}}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"./x/**/*.json","payload":["a",1]}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"a:b:c","payload":null}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"tab\tseparated","payload":[]}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"Hello Worldkey_name-1","payload":{"a":"b"}}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":":","payload":["a",1]}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"","payload":true}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"ab","payload":[]}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"ΣΊΣΥΦΟΣ","payload":[]}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"tab\tseparatedns:key.path","payload":{"a":{"b":"c"}}}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"﻿boma:b:c","payload":{"a":{"b":"c"}}}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"ab","payload":{}}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"tab\tseparated","payload":["a",1]}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"😀","payload":"x"}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[0],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"./x/**/*.json","payload":0}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"key_name-1","payload":0}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"a.b.c","payload":true}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"ab","payload":true}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"Hello World","payload":true}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"İstanbul","payload":[]}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"tab\tseparated","payload":null}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"a😀b😀c","payload":{"a":{"b":"c"}}}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"straßea..b","payload":{"a":"b"}}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"key_name-1","payload":{"a":{"b":"c"}}}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":".leading","payload":{"a":"b"}}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"﻿bom","payload":true}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"straße","payload":true}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"ΣΊΣΥΦΟΣns:key.path","payload":null}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":".leading","payload":{"a":{"b":"c"}}}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"ΣΊΣΥΦΟΣ","payload":"x"}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"line1\nline2","payload":null}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"src/a/b.tsemoji 👍🏽 mix","payload":{}}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"ns:key.pathtab\tseparated","payload":null}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"ab","payload":{"a":{"b":"c"}}}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"ΣΊΣΥΦΟΣ","payload":{}}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"  padded  ","payload":true}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"日本語のテキスト日本語のテキスト","payload":0}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"","payload":null}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"hello","payload":{"a":{"b":"c"}}}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"İstanbul.leading","payload":null}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[null],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"trailing.","payload":true}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"straße","payload":[]}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"ns:key.path","payload":{"a":"b"}}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"straße","payload":{"a":"b"}}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"a😀b😀c","payload":null}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"a.b.c","payload":{}}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"hello","payload":null}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"hello world","payload":{}}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"hello","payload":[]}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"ns:key.path","payload":"x"}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"ab","payload":null}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"emoji 👍🏽 mix","payload":null}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"straßeHello World","payload":0}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"src/a/b.ts","payload":"x"}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"日本語のテキスト","payload":true}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"line1\nline2","payload":[]}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"日本語のテキスト","payload":[]}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"a..b","payload":true}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"a:b:c","payload":{}}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"İstanbul","payload":{"a":"b"}}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"Hello World","payload":[]}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"key_name-1","payload":["a",1]}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"  padded  ","payload":{"a":{"b":"c"}}}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"emoji 👍🏽 mix","payload":"x"}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"a","payload":[]}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"hello world","payload":{"a":"b"}}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"  padded  ","payload":"x"}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"ünïcödé","payload":{}}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":":key_name-1","payload":{}}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"İstanbulemoji 👍🏽 mix","payload":"x"}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"key_name-1straße","payload":true}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"src/a/b.ts","payload":{}}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"hello world","payload":"x"}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"aba.b.c","payload":null}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"src/a/b.ts","payload":["a",1]}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"a:b:cünïcödé","payload":{"a":{"b":"c"}}}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"hello","payload":true}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"a😀b😀c","payload":["a",1]}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"hello world","payload":{"a":{"b":"c"}}}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"{name} has {count} items","payload":{"a":{"b":"c"}}}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"trailing.","payload":0}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"a:b:c","payload":{"a":{"b":"c"}}}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"a😀b😀ca:b:c","payload":true}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"a:b:cHELLO","payload":0}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"abc","payload":["a",1]}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"Hello World","payload":null}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"ΣΊΣΥΦΟΣns:key.path","payload":{"a":{"b":"c"}}}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"emoji 👍🏽 mix{name} has {count} items","payload":{"a":"b"}}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"a.b.c","payload":["a",1]}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"tab\tseparated","payload":true}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"emoji 👍🏽 mix","payload":{}}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"./x/**/*.jsonab","payload":"x"}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"{name} has {count} itemsab","payload":"x"}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"a:b:c","payload":0}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"line1\nline2﻿bom","payload":[]}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"straßehello world","payload":{}}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"ünïcödéHELLO","payload":true}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"","payload":["a",1]}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"HELLOa","payload":[]}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"a./x/**/*.json","payload":{"a":"b"}}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"key_name-1","payload":{"a":"b"}}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"a","payload":"x"}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"a😀b😀c","payload":"x"}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"src/a/b.tsns:key.path","payload":["a",1]}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"😀","payload":["a",1]}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"key_name-1","payload":true}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"  padded  ","payload":[]}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"😀","payload":0}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"hello worlda:b:c","payload":true}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"﻿bom","payload":["a",1]}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"é","payload":0}],"ok":false}
+{"fn":"isBackgroundTaskActivity","args":[{"kind":"{name} has {count} items","payload":{"a":"b"}}],"ok":false}
+{"fn":"foldOutstandingBackgroundTaskIds","args":[[]],"ok":[]}
+{"fn":"foldOutstandingBackgroundTaskIds","args":[null],"error":"activities is not iterable"}
+{"fn":"foldOutstandingBackgroundTaskIds","args":["x"],"ok":[]}
+{"fn":"foldOutstandingBackgroundTaskIds","args":[0],"error":"activities is not iterable"}
+{"fn":"foldOutstandingBackgroundTaskIds","args":[{"a":{"b":"c"}}],"error":"activities is not iterable"}
+{"fn":"foldOutstandingBackgroundTaskIds","args":[{"a":"b"}],"error":"activities is not iterable"}
+{"fn":"foldOutstandingBackgroundTaskIds","args":[["a",1]],"ok":[]}
+{"fn":"foldOutstandingBackgroundTaskIds","args":[{}],"error":"activities is not iterable"}
+{"fn":"foldOutstandingBackgroundTaskIds","args":[true],"error":"activities is not iterable"}
+{"fn":"canSessionFinishBackgroundTasks","args":["a😀b😀cé"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":[""],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["é"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["a..b"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":[".leading"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["trailing."],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["src/a/b.ts"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["abc"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["  padded  "],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":[{"$undefined":true}],"ok":false}
+{"fn":"canSessionFinishBackgroundTasks","args":["İstanbul"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["./x/**/*.json"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["a.b.c"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["ünïcödé😀"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":[],"ok":false}
+{"fn":"canSessionFinishBackgroundTasks","args":["tab\tseparatedkey_name-1"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["ab"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["a"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["line1\nline2"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["Hello Worldtab\tseparated"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["ΣΊΣΥΦΟΣ"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["a..btrailing."],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["HELLO"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":[":"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["a:b:c"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["﻿bom"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["日本語のテキスト"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["abcé"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["a😀b😀c{name} has {count} items"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["straße"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["emoji 👍🏽 mixa.b.c"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["hello worldstraße"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["helloline1\nline2"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["Hello World"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["hello world"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["key_name-1"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":[".leadinga..b"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["tab\tseparated"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["straße﻿bom"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["Hello Worldabc"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["éhello"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["ΣΊΣΥΦΟΣ.leading"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["aline1\nline2"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["ns:key.path"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["./x/**/*.jsona.b.c"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["a😀b😀c"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["ünïcödé"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["hello"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["emoji 👍🏽 mix"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["日本語のテキストtrailing."],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["key_name-1.leading"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["a.b.cline1\nline2"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["hello world./x/**/*.json"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["İstanbul日本語のテキスト"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["abkey_name-1"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["éé"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["key_name-1ab"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["a:b:cns:key.path"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":[".leadingünïcödé"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["{name} has {count} items"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["./x/**/*.jsonab"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["﻿bomHELLO"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["😀"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["src/a/b.ts:"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["{name} has {count} items:"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["éa"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["tab\tseparated{name} has {count} items"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":[".leadingns:key.path"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":[".leadingkey_name-1"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["HELLO.leading"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["😀hello world"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["😀tab\tseparated"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["  padded  a"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["a😀b😀ctab\tseparated"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["straßesrc/a/b.ts"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["日本語のテキスト./x/**/*.json"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["tab\tseparated﻿bom"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["line1\nline2.leading"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["HELLOHELLO"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["ünïcödéHello World"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["﻿bomab"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["{name} has {count} itemstab\tseparated"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["ünïcödéa"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["Hello WorldHELLO"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["hello﻿bom"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["a.b.c.leading"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["  padded    padded  "],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["hello world😀"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["aΣΊΣΥΦΟΣ"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["tab\tseparateda😀b😀c"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":[":😀"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["aab"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["﻿bomkey_name-1"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["trailing.é"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["İstanbulHello World"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":[":emoji 👍🏽 mix"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["  padded  😀"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["hellotab\tseparated"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["İstanbul😀"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["a..bab"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["日本語のテキスト﻿bom"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["a..b./x/**/*.json"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["a.leading"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["Hello Worlda😀b😀c"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":[":İstanbul"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["emoji 👍🏽 mix./x/**/*.json"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["./x/**/*.jsonline1\nline2"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["abc﻿bom"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["  padded  İstanbul"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["a..bsrc/a/b.ts"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["﻿bomns:key.path"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["İstanbul﻿bom"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["key_name-1ns:key.path"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["ns:key.pathİstanbul"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["emoji 👍🏽 mixa😀b😀c"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["ΣΊΣΥΦΟΣ😀"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["helloHELLO"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["😀straße"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["HELLO日本語のテキスト"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["emoji 👍🏽 mixa..b"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["tab\tseparated😀"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["src/a/b.tsabc"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["src/a/b.tsa😀b😀c"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["straßeemoji 👍🏽 mix"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["./x/**/*.jsona..b"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":[".leading:"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["{name} has {count} items日本語のテキスト"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["😀HELLO"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["﻿bomΣΊΣΥΦΟΣ"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["abc😀"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["a..b日本語のテキスト"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["a:b:cİstanbul"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["emoji 👍🏽 mix﻿bom"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["abhello world"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["aa:b:c"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["éa:b:c"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["emoji 👍🏽 mixHELLO"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["key_name-1:"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["hello world﻿bom"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["trailing.HELLO"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["  padded  straße"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["İstanbulabc"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["hello worlda.b.c"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["étrailing."],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["./x/**/*.jsontrailing."],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["ΣΊΣΥΦΟΣ{name} has {count} items"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["İstanbul:"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["a..bhello"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["a:b:cHELLO"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":[".leading./x/**/*.json"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["abtrailing."],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["a😀b😀c﻿bom"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["{name} has {count} items./x/**/*.json"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["ünïcödéns:key.path"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["src/a/b.tsΣΊΣΥΦΟΣ"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["a:b:cabc"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["line1\nline2emoji 👍🏽 mix"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["﻿boma😀b😀c"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["hello日本語のテキスト"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["a..b😀"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":[":./x/**/*.json"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["abab"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["a.b.c﻿bom"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["trailing.:"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["line1\nline2hello"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["ns:key.path﻿bom"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["éab"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["helloab"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["éstraße"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":[".leadingHello World"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["ns:key.path😀"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["straße  padded  "],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["İstanbula😀b😀c"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["key_name-1é"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["İstanbulstraße"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["ns:key.patha.b.c"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["hello worlda"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["日本語のテキストa:b:c"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["ékey_name-1"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["  padded  hello"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["a:b:cHello World"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["straßea😀b😀c"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["straßeİstanbul"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["😀ns:key.path"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["ésrc/a/b.ts"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["emoji 👍🏽 mixab"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["﻿bom  padded  "],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["a😀b😀c:"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["a.b.cstraße"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["hello worldsrc/a/b.ts"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":[":a.b.c"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["abemoji 👍🏽 mix"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["line1\nline2é"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["﻿boma"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["abckey_name-1"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["﻿bomsrc/a/b.ts"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["a:b:c日本語のテキスト"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["a..bhello world"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["İstanbulİstanbul"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["abctrailing."],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["héllo wörld"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["👍🏽 thumbs"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["日本語"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["ılık ırmak"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["👨‍👩‍👧 family"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["a b"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["a😀b"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["a²b x½ y①"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["aⅠb Ⅻ"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["a𐐀b 𝐀bc"],"ok":true}
+{"fn":"canSessionFinishBackgroundTasks","args":["कि ٣٤"],"ok":true}
+{"fn":"foldOutstandingBackgroundTaskIds","args":[[{"kind":"task.updated","payload":{"taskId":"a","isBackgrounded":true}},{"kind":"task.updated","payload":{"taskId":"a","isBackgrounded":1}}]],"ok":["a"]}
+{"fn":"foldOutstandingBackgroundTaskIds","args":[[{"kind":"task.updated","payload":{"taskId":"a","isBackgrounded":true}},{"kind":"task.updated","payload":{"taskId":"a","isBackgrounded":"no"}}]],"ok":["a"]}
+{"fn":"foldOutstandingBackgroundTaskIds","args":[[{"kind":"task.updated","payload":{"taskId":"a","isBackgrounded":true}},{"kind":"task.updated","payload":{"taskId":"a","isBackgrounded":null}}]],"ok":["a"]}
+{"fn":"foldOutstandingBackgroundTaskIds","args":[[{"kind":"task.updated","payload":{"taskId":"a","isBackgrounded":true}},{"kind":"task.updated","payload":{"taskId":"a","isBackgrounded":[]}}]],"ok":["a"]}
+{"fn":"foldOutstandingBackgroundTaskIds","args":[[{"kind":"task.updated","payload":{"taskId":"a","isBackgrounded":true}},{"kind":"task.updated","payload":{"taskId":"a","isBackgrounded":{}}}]],"ok":["a"]}
+{"fn":"foldOutstandingBackgroundTaskIds","args":[[{"kind":"task.updated","payload":{"taskId":"a","isBackgrounded":true}},{"kind":"task.updated","payload":{"taskId":"a","status":"pending"}}]],"ok":["a"]}
+{"fn":"foldOutstandingBackgroundTaskIds","args":[[{"kind":"task.updated","payload":{"taskId":"a","isBackgrounded":true}},{"kind":"task.updated","payload":{"taskId":"a","status":"weird"}}]],"ok":["a"]}
+{"fn":"foldOutstandingBackgroundTaskIds","args":[[{"kind":"task.updated","payload":{"taskId":"a","isBackgrounded":true}},{"kind":"task.updated","payload":{"taskId":"a","status":5}}]],"ok":["a"]}
+{"fn":"foldOutstandingBackgroundTaskIds","args":[[{"kind":"task.updated","payload":{"taskId":"a","isBackgrounded":true}},{"kind":"task.updated","payload":{"taskId":"a","status":"stopped"}}]],"ok":["a"]}
+{"fn":"foldOutstandingBackgroundTaskIds","args":[[{"kind":"task.updated","payload":{"taskId":"a","isBackgrounded":true}},{"kind":"task.updated","payload":{"taskId":"a","status":null}}]],"ok":["a"]}
+{"fn":"foldOutstandingBackgroundTaskIds","args":[[{"kind":"task.updated","payload":{"taskId":"a","isBackgrounded":true}},{"kind":"task.updated","payload":{"taskId":"a","status":"paused"}}]],"ok":[]}
+{"fn":"foldOutstandingBackgroundTaskIds","args":[[{"kind":"task.updated","payload":{"taskId":"a","isBackgrounded":true}},{"kind":"task.updated","payload":{"taskId":"a","status":""}}]],"ok":["a"]}
+{"fn":"foldOutstandingBackgroundTaskIds","args":[[{"kind":"task.updated","payload":{"taskId":"a","isBackgrounded":true}},{"kind":"task.updated","payload":{"taskId":"a","isBackgrounded":false,"status":"pending"}}]],"ok":[]}
+{"fn":"foldOutstandingBackgroundTaskIds","args":[[{"kind":"task.updated","payload":{"taskId":"a","isBackgrounded":true}},{"kind":"task.updated","payload":{"taskId":"a","isBackgrounded":1,"status":"completed"}}]],"ok":[]}

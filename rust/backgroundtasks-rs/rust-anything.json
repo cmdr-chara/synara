@@ -1,0 +1,66 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/backgroundTasks.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "backgroundtasks-rs",
+  "exports": [
+    {
+      "name": "isBackgroundTaskActivity",
+      "file": "packages/shared/src/backgroundTasks.ts",
+      "line": 26,
+      "params": [
+        {
+          "name": "activity",
+          "ts_type": "BackgroundTaskActivity",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "foldOutstandingBackgroundTaskIds",
+      "file": "packages/shared/src/backgroundTasks.ts",
+      "line": 45,
+      "params": [
+        {
+          "name": "activities",
+          "ts_type": "Iterable<BackgroundTaskActivity>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "canSessionFinishBackgroundTasks",
+      "file": "packages/shared/src/backgroundTasks.ts",
+      "line": 88,
+      "params": [
+        {
+          "name": "status",
+          "ts_type": "string | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

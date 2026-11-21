@@ -1,0 +1,17 @@
+{
+  "unit": "packages/shared/src/backgroundTasks.ts",
+  "files": 1,
+  "fingerprint": "cc6748bfc14f0a2d",
+  "coverage": {
+    "lines": 84,
+    "reached": 71,
+    "files": [
+      {
+        "file": "packages/shared/src/backgroundTasks.ts",
+        "lines": 84,
+        "reached": 71,
+        "missed": "28-29, 32, 52-60, 64"
+      }
+    ]
+  }
+}

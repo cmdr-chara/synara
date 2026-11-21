@@ -1,0 +1,201 @@
+{"fn":"embeddedDesktopMigrationRuntimeSourceDigest","args":[],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":":","isPackaged":true,"embeddedDigest":"a.b.c"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"日本語のテキスト","isPackaged":true,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"abc","isPackaged":true,"embeddedDigest":"Hello World"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"./x/**/*.json","isPackaged":false,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"ab","isPackaged":true,"embeddedDigest":"  padded  "}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"tab\tseparated","isPackaged":true,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[[]],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"  padded  ","isPackaged":false,"embeddedDigest":"emoji 👍🏽 mix"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"a":"b"}],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"straßeHello World","isPackaged":false,"embeddedDigest":"a😀b😀c"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":".leading","isPackaged":true,"embeddedDigest":"line1\nline2"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"","isPackaged":true,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"HELLOab","isPackaged":true,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"a":{"b":"c"}}],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"  padded  ","isPackaged":false,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"hello world","isPackaged":false,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"trailing.","isPackaged":false,"embeddedDigest":"ünïcödé"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"abc","isPackaged":true,"embeddedDigest":"ΣΊΣΥΦΟΣ"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"İstanbul","isPackaged":false,"embeddedDigest":"tab\tseparated"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"tab\tseparated","isPackaged":false,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"  padded  ","isPackaged":true,"embeddedDigest":"{name} has {count} items😀"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{}],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"a.b.c","isPackaged":true,"embeddedDigest":"HELLO"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"trailing.","isPackaged":true,"embeddedDigest":"hello world"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":".leading","isPackaged":true,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"ns:key.path","isPackaged":true,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"日本語のテキスト","isPackaged":false,"embeddedDigest":"straßeé"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"日本語のテキスト","isPackaged":false,"embeddedDigest":"aünïcödé"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"","isPackaged":false,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"﻿bom","isPackaged":true,"embeddedDigest":":"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"ab","isPackaged":false,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"hello","isPackaged":true,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"trailing.","isPackaged":false,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"a😀b😀c","isPackaged":false,"embeddedDigest":"HELLOHELLO"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"İstanbul","isPackaged":false,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"ΣΊΣΥΦΟΣ","isPackaged":false,"embeddedDigest":"Hello World"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"key_name-1","isPackaged":true,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"trailing.src/a/b.ts","isPackaged":true,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"hello world","isPackaged":true,"embeddedDigest":"hello world"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"","isPackaged":false,"embeddedDigest":"a..b"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"Hello World","isPackaged":false,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"a..b","isPackaged":false,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":":","isPackaged":true,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"a.b.c","isPackaged":false,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"İstanbul","isPackaged":true,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"key_name-1","isPackaged":true,"embeddedDigest":"İstanbulhello"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"emoji 👍🏽 mix","isPackaged":false,"embeddedDigest":"HELLO"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"ΣΊΣΥΦΟΣHELLO","isPackaged":true,"embeddedDigest":"ns:key.path"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[null],"error":"Cannot read properties of null (reading 'embeddedDigest')"}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"ab","isPackaged":true,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"ab","isPackaged":true,"embeddedDigest":"emoji 👍🏽 mix"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"key_name-1","isPackaged":false,"embeddedDigest":"hello"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":["x"],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":":src/a/b.ts","isPackaged":true,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"  padded  ","isPackaged":false,"embeddedDigest":"abc"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"HELLO","isPackaged":false,"embeddedDigest":"trailing."}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"ΣΊΣΥΦΟΣ","isPackaged":false,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":".leading","isPackaged":false,"embeddedDigest":"straße"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"ΣΊΣΥΦΟΣ./x/**/*.json","isPackaged":false,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"a.b.c","isPackaged":true,"embeddedDigest":"key_name-1line1\nline2"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"a😀b😀c","isPackaged":false,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":".leading","isPackaged":false,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"aa.b.c","isPackaged":true,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"  padded  tab\tseparated","isPackaged":false,"embeddedDigest":"trailing."}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"abİstanbul","isPackaged":true,"embeddedDigest":"a.b.c"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"key_name-1","isPackaged":false,"embeddedDigest":"a.b.c"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"emoji 👍🏽 mix","isPackaged":true,"embeddedDigest":"  padded  trailing."}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"straße","isPackaged":false,"embeddedDigest":"{name} has {count} items"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"İstanbul","isPackaged":false,"embeddedDigest":"hello world"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"a:b:c","isPackaged":true,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[0],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"line1\nline2","isPackaged":true,"embeddedDigest":"﻿bom  padded  "}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"hello world","isPackaged":true,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"line1\nline2","isPackaged":false,"embeddedDigest":"src/a/b.ts"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"😀","isPackaged":false,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"emoji 👍🏽 mix","isPackaged":true,"embeddedDigest":"abc"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"ns:key.path","isPackaged":false,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"a:b:c","isPackaged":false,"embeddedDigest":"😀"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"Hello World","isPackaged":true,"embeddedDigest":"﻿bom"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"line1\nline2","isPackaged":true,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"a","isPackaged":true,"embeddedDigest":"abc"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"line1\nline2","isPackaged":false,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"./x/**/*.json","isPackaged":false,"embeddedDigest":"  padded  "}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"hello","isPackaged":true,"embeddedDigest":"ab"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"a","isPackaged":false,"embeddedDigest":"{name} has {count} items"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"","isPackaged":false,"embeddedDigest":"ΣΊΣΥΦΟΣhello"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"a:b:c","isPackaged":true,"embeddedDigest":"a😀b😀c"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"tab\tseparated","isPackaged":true,"embeddedDigest":"hello worlda.b.c"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"","isPackaged":false,"embeddedDigest":"a:b:c"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":":a.b.c","isPackaged":false,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"é","isPackaged":true,"embeddedDigest":"tab\tseparated"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[["a",1]],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"src/a/b.ts","isPackaged":true,"embeddedDigest":"  padded  "}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"a..b","isPackaged":true,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"{name} has {count} items","isPackaged":true,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"😀","isPackaged":true,"embeddedDigest":"a:b:c"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"./x/**/*.json","isPackaged":true,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"a","isPackaged":true,"embeddedDigest":":"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"hello","isPackaged":false,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"key_name-1","isPackaged":false,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"﻿bom","isPackaged":true,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"ab","isPackaged":false,"embeddedDigest":"é"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"emoji 👍🏽 mix","isPackaged":false,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"😀","isPackaged":true,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"İstanbul","isPackaged":false,"embeddedDigest":"İstanbul"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"é","isPackaged":true,"embeddedDigest":"a.b.c"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":":","isPackaged":false,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"HELLO","isPackaged":true,"embeddedDigest":"HELLO"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"straßeİstanbul","isPackaged":false,"embeddedDigest":"a.b.c"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"  padded  ","isPackaged":false,"embeddedDigest":"tab\tseparated"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"a:b:c","isPackaged":true,"embeddedDigest":"ab"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"hello world","isPackaged":true,"embeddedDigest":"ünïcödé./x/**/*.json"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"key_name-1line1\nline2","isPackaged":true,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"﻿bomline1\nline2","isPackaged":false,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"abc","isPackaged":true,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"éemoji 👍🏽 mix","isPackaged":false,"embeddedDigest":"ΣΊΣΥΦΟΣ"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"emoji 👍🏽 mix","isPackaged":true,"embeddedDigest":""}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"a:b:c","isPackaged":false,"embeddedDigest":"tab\tseparated"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"straße","isPackaged":true,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"a..b﻿bom","isPackaged":false,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"emoji 👍🏽 mixkey_name-1","isPackaged":false,"embeddedDigest":"ns:key.path"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"key_name-1","isPackaged":false,"embeddedDigest":"  padded  "}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"line1\nline2","isPackaged":true,"embeddedDigest":"straße"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"ünïcödéé","isPackaged":false,"embeddedDigest":"ΣΊΣΥΦΟΣ"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"abc","isPackaged":false,"embeddedDigest":"trailing."}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"./x/**/*.json","isPackaged":true,"embeddedDigest":"ΣΊΣΥΦΟΣ"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"{name} has {count} items","isPackaged":false,"embeddedDigest":"hello"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"abc","isPackaged":true,"embeddedDigest":"./x/**/*.json"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"hello world","isPackaged":true,"embeddedDigest":"key_name-1"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"trailing.","isPackaged":true,"embeddedDigest":"😀"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"key_name-1","isPackaged":false,"embeddedDigest":"Hello World"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"ünïcödé","isPackaged":true,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"","isPackaged":true,"embeddedDigest":"hello world  padded  "}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"é😀","isPackaged":true,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"a😀b😀cns:key.path","isPackaged":false,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"ΣΊΣΥΦΟΣ","isPackaged":true,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"  padded  ","isPackaged":true,"embeddedDigest":"a"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"a😀b😀c","isPackaged":true,"embeddedDigest":"./x/**/*.json"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"{name} has {count} items","isPackaged":true,"embeddedDigest":"tab\tseparated"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"é","isPackaged":false,"embeddedDigest":"ünïcödétab\tseparated"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"./x/**/*.json","isPackaged":true,"embeddedDigest":"Hello World"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"a..b","isPackaged":true,"embeddedDigest":"a..b"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"emoji 👍🏽 mix","isPackaged":false,"embeddedDigest":"﻿bomsrc/a/b.ts"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"ünïcödéünïcödé","isPackaged":false,"embeddedDigest":":"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"tab\tseparated","isPackaged":true,"embeddedDigest":"aa"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"src/a/b.ts","isPackaged":false,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":":﻿bom","isPackaged":true,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"emoji 👍🏽 mix","isPackaged":true,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"ünïcödé","isPackaged":true,"embeddedDigest":"ΣΊΣΥΦΟΣline1\nline2"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"  padded  ","isPackaged":true,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"日本語のテキスト","isPackaged":false,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"  padded  .leading","isPackaged":true,"embeddedDigest":"src/a/b.ts"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"{name} has {count} items","isPackaged":true,"embeddedDigest":"a😀b😀c"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"é","isPackaged":true,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"./x/**/*.json😀","isPackaged":true,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"Hello Worlda.b.c","isPackaged":true,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"trailing.a","isPackaged":true,"embeddedDigest":"src/a/b.ts"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"😀","isPackaged":false,"embeddedDigest":"emoji 👍🏽 mix"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"line1\nline2","isPackaged":true,"embeddedDigest":"abc"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"emoji 👍🏽 mix","isPackaged":true,"embeddedDigest":"a.b.c"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"ΣΊΣΥΦΟΣ","isPackaged":true,"embeddedDigest":"hello worldline1\nline2"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"trailing.","isPackaged":true,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"hello world","isPackaged":false,"embeddedDigest":"hello world"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"a.b.c","isPackaged":false,"embeddedDigest":".leading"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"Hello World","isPackaged":true,"embeddedDigest":"helloab"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"tab\tseparated","isPackaged":true,"embeddedDigest":"a:b:ctrailing."}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"a","isPackaged":false,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"ünïcödé","isPackaged":false,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"trailing.","isPackaged":false,"embeddedDigest":"emoji 👍🏽 mix"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":".leadinga","isPackaged":false,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"HELLO","isPackaged":false,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"aa","isPackaged":true,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"İstanbul","isPackaged":false,"embeddedDigest":"trailing."}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"src/a/b.ts","isPackaged":true,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"{name} has {count} items","isPackaged":false,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"  padded  ","isPackaged":true,"embeddedDigest":"﻿bom"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"﻿bomstraße","isPackaged":false,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"a","isPackaged":true,"embeddedDigest":"trailing."}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"ns:key.path","isPackaged":true,"embeddedDigest":"{name} has {count} items"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"ünïcödéhello","isPackaged":true,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"  padded    padded  ","isPackaged":false,"embeddedDigest":"aba😀b😀c"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"emoji 👍🏽 mix","isPackaged":true,"embeddedDigest":"hello world"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"straße","isPackaged":true,"embeddedDigest":"ünïcödé"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"İstanbul","isPackaged":false,"embeddedDigest":"a:b:c"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":".leadingline1\nline2","isPackaged":true,"embeddedDigest":"a😀b😀c"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"line1\nline2","isPackaged":false,"embeddedDigest":"emoji 👍🏽 mix"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"a:b:ca","isPackaged":false,"embeddedDigest":"HELLO"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"hello world","isPackaged":true,"embeddedDigest":"./x/**/*.json"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"İstanbulünïcödé","isPackaged":true,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"  padded  ","isPackaged":false,"embeddedDigest":"ΣΊΣΥΦΟΣ"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"ΣΊΣΥΦΟΣ","isPackaged":true,"embeddedDigest":"straße"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":".leading","isPackaged":true,"embeddedDigest":"ab"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"😀hello world","isPackaged":false,"embeddedDigest":"tab\tseparated"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"😀","isPackaged":false,"embeddedDigest":"key_name-1"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":".leading","isPackaged":true,"embeddedDigest":"İstanbul"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":":","isPackaged":true,"embeddedDigest":"./x/**/*.json"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"HELLO","isPackaged":false,"embeddedDigest":"ab"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"éa..b","isPackaged":true,"embeddedDigest":null}],"error":"The desktop bundle has no embedded migration source identity."}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"src/a/b.ts","isPackaged":true,"embeddedDigest":"emoji 👍🏽 mix"}],"ok":null}
+{"fn":"inspectDesktopMigrationRuntimeIdentity","args":[{"appRoot":"ns:key.path","isPackaged":false,"embeddedDigest":"é"}],"ok":null}

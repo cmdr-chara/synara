@@ -1,0 +1,41 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/desktop/src/migrationBundleIdentity.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "migrationbundleidentity-desktop-rs",
+  "exports": [
+    {
+      "name": "embeddedDesktopMigrationRuntimeSourceDigest",
+      "file": "apps/desktop/src/migrationBundleIdentity.ts",
+      "line": 12,
+      "params": [],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "inspectDesktopMigrationRuntimeIdentity",
+      "file": "apps/desktop/src/migrationBundleIdentity.ts",
+      "line": 18,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly appRoot: string;\n  readonly isPackaged: boolean;\n  readonly embeddedDigest: string | null;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "MigrationRuntimeIdentityMismatch | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

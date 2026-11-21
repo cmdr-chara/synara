@@ -1,0 +1,54 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/contracts/src/browserAutomationJson.ts",
+  "language": "ts",
+  "kind": "wasm",
+  "crate_name": "browserautomationjson-rs",
+  "exports": [
+    {
+      "name": "browserJsonDepth",
+      "file": "packages/contracts/src/browserAutomationJson.ts",
+      "line": 5,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "depth",
+          "ts_type": "number",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "number",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "browserJsonBytes",
+      "file": "packages/contracts/src/browserAutomationJson.ts",
+      "line": 20,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "number",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

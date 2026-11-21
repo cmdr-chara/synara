@@ -1,0 +1,54 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/appSnapIntake.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "appsnapintake-rs",
+  "exports": [
+    {
+      "name": "sourceWithCachedIcon",
+      "file": "apps/web/src/appSnapIntake.ts",
+      "line": 17,
+      "params": [
+        {
+          "name": "source",
+          "ts_type": "ComposerAppSnapSource",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<ComposerAppSnapSource>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "insertAppSnapCaptureIntoDraft",
+      "file": "apps/web/src/appSnapIntake.ts",
+      "line": 36,
+      "params": [
+        {
+          "name": "threadId",
+          "ts_type": "typeof typeof typeof typeof ThreadId.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "capture",
+          "ts_type": "DesktopAppSnapCapture",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<\"persisted\" | \"unverified\">",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

@@ -1,0 +1,9 @@
+{"fn":"parseAgentMentionInvocations","args":["Check @spark(find the regression)","codex"]}
+{"fn":"parseAgentMentionInvocations","args":["Please @review(check fn(a, b) and the SQL migration)","claudeAgent"]}
+{"fn":"parseAgentMentionInvocations","args":["Please @review()","claudeAgent"]}
+{"fn":"parseAgentMentionInvocations","args":["Please @review(   )","claudeAgent"]}
+{"fn":"buildClaudeSubagentPrompt","args":["Just answer directly"]}
+{"fn":"parseAgentMentionInvocations","args":["Just answer directly","claudeAgent"]}
+{"fn":"buildClaudeSubagentPrompt","args":["Please @review()"]}
+{"fn":"buildClaudeSubagentPrompt","args":["Compare these changes and @review(check for regressions) then @explore(find related files)"]}
+{"fn":"parseAgentMentionInvocations","args":["Compare these changes and @review(check for regressions) then @explore(find related files)","claudeAgent"]}

@@ -1,0 +1,54 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/agentMentions.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "agentmentions-rs",
+  "exports": [
+    {
+      "name": "parseAgentMentionInvocations",
+      "file": "packages/shared/src/agentMentions.ts",
+      "line": 51,
+      "params": [
+        {
+          "name": "text",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "provider",
+          "ts_type": "typeof typeof typeof typeof ProviderKind.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ReadonlyArray<ParsedAgentMentionInvocation>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "buildClaudeSubagentPrompt",
+      "file": "packages/shared/src/agentMentions.ts",
+      "line": 108,
+      "params": [
+        {
+          "name": "text",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "{\n  readonly prompt: string;\n  readonly invocations: ReadonlyArray<\n    ParsedAgentMentionInvocation & {\n      readonly definition: (CodexAgentAliasDefinition | ClaudeSubagentAliasDefinition) & {\n  readonly alias: string;\n} & ClaudeSubagentAliasDefinition;\n    }\n  >;\n}",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

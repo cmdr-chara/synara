@@ -1,0 +1,727 @@
+{"fn":"parseAgentMentionInvocations","args":["ab",["a",1]],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["x","x"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["line1\nline2",{}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["Hello World","x"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["a:b:c",{}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["a.b.c",[]],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["Hello World",["a",1]],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["src/a/b.ts",{}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":[":",null],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["a😀b😀c",null],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["ΣΊΣΥΦΟΣ",true],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["{name} has {count} items",{"a":{"b":"c"}}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["line1\nline2hello",["a",1]],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["X","x"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["ΣΊΣΥΦΟΣ",{"a":{"b":"c"}}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["emoji 👍🏽 mix",{}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["tab\tseparated",[]],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["ΣΊΣΥΦΟΣ","x"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["😀ünïcödé",{}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["line1\nline2",[]],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":[":",{}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":[".leading",{}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["ab",{"a":"b"}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["a:b:c",["a",1]],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["ünïcödé",{"a":"b"}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["a:b:c",null],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["a..bsrc/a/b.ts",null],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["tab\tseparated",true],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["日本語のテキスト",0],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["ab",true],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["ünïcödé",true],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["a.b.cab",[]],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["./x/**/*.json",{}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["Hello World",0],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["emoji 👍🏽 mix",["a",1]],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["a.b.c",{"a":{"b":"c"}}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["İstanbul",{}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["a..b",null],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["./x/**/*.jsonİstanbul",{}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["straße",{"a":"b"}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["src/a/b.ts",{"a":{"b":"c"}}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["日本語のテキスト",{}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["hello worlda..b",["a",1]],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["ns:key.pathtrailing.",0],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["ab",[]],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["a😀b😀c","x"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["﻿bom",{}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["a..b",{"a":"b"}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["{name} has {count} items",0],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["  padded  ",[]],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["日本語のテキスト",{"a":{"b":"c"}}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["日本語のテキスト",{"a":"b"}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["ünïcödé",{}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["  padded  ",0],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["ab",0],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["hello world",[]],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["key_name-1",[]],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["a",[]],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["  padded  ",true],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["straße",{"a":{"b":"c"}}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["tab\tseparated",{"a":{"b":"c"}}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["ΣΊΣΥΦΟΣns:key.path",["a",1]],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["a",0],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["  padded  ",{}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["ns:key.path",["a",1]],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["a.b.c",0],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["﻿bom",["a",1]],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["key_name-1emoji 👍🏽 mix",{}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["ns:key.path",{}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["abc",["a",1]],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["é",{"a":{"b":"c"}}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["HELLO","x"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["ünïcödé",{"a":{"b":"c"}}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["a..ba.b.c",[]],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":[".leading",[]],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["key_name-1","x"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":[".leading",0],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["line1\nline2",{"a":"b"}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["a.b.c",["a",1]],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["straße",["a",1]],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["a:b:c",[]],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["straße",[]],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["a.b.c",null],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["a:b:c",0],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["ns:key.path",true],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["abc",{"a":{"b":"c"}}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["﻿bom",true],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["abc",{"a":"b"}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["ns:key.path",".path"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["./x/**/*.json",0],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["{name} has {count} items",{"a":"b"}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["a..b",0],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["src/a/b.ts","x"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["a😀b😀c",{"a":{"b":"c"}}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["line1\nline2",true],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["😀",[]],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["HELLOkey_name-1",[]],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["abhello",null],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["HELLO",{}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["ns:key.path",0],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":[":trailing.",[]],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["é日本語のテキスト",[]],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["é",{}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["a😀b😀c",{}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["﻿bom",{"a":{"b":"c"}}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["emoji 👍🏽 mix",null],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["src/a/b.ts",0],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["aΣΊΣΥΦΟΣ",[]],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["hello world",{"a":{"b":"c"}}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["a..b",{"a":{"b":"c"}}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["abc",null],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["😀",{"a":"b"}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["ünïcödé",0],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["a😀b😀c",true],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["İstanbul",{"a":{"b":"c"}}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["HELLO",[]],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["straßens:key.path",{}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["İstanbul",[]],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["😀",0],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["key_name-1",{}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":[":",[]],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["",null],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["😀日本語のテキスト",{}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["straße",true],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["😀",null],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["hello",null],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["tab\tseparated",{"a":"b"}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["a😀b😀ctrailing.",{"a":"b"}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":[":",true],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["straßehello world",true],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["hello worldemoji 👍🏽 mix",true],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["HELLO",["a",1]],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["ΣΊΣΥΦΟΣa..b",[]],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["tab\tseparated",null],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["abcHello World",{}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["a.b.c",{}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["straße",{}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["a",{"a":"b"}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["Hello World",{"a":{"b":"c"}}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["hello world","x"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["﻿bom",0],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["tab\tseparated",0],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["HELLO",0],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["ΣΊΣΥΦΟΣ",[]],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["hello",[]],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["  padded  a😀b😀c",{}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["İstanbul",{"a":"b"}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["trailing.",{"a":{"b":"c"}}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":[".leading","x"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["./x/**/*.json","x"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["hello world",0],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["Hello World","l"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["tab\tseparateda..b",{}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["ünïcödé",null],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["hello",0],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["emoji 👍🏽 mix",{"a":"b"}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["hello world",{"a":"b"}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["é",{"a":"b"}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["abc",0],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["HELLOtrailing.",0],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["line1\nline2",["a",1]],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["{name} has {count} items",{}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["Hello World",true],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["hello",true],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["a",{"a":{"b":"c"}}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["trailing.",{}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["é:",0],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["ΣΊΣΥΦΟΣemoji 👍🏽 mix","x"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["日本語のテキスト",["a",1]],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["key_name-1",{"a":"b"}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["a😀b😀c",{"a":"b"}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["ünïcödékey_name-1",null],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["a","x"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["  padded  ",null],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["Hello World",{}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":[".leading",true],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["trailing.","x"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["a.b.c",{"a":"b"}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["emoji 👍🏽 mix﻿bom",[]],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["key_name-1","_"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["ns:key.path",{"a":{"b":"c"}}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["emoji 👍🏽 mix",true],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["aba..b",{"a":{"b":"c"}}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["a😀b😀cHello World",{"a":"b"}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["trailing.",null],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["abé",0],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["a..b",[]],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["hello😀",{"a":{"b":"c"}}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["😀ab",true],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["日本語のテキスト",[]],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["a:b:chello",["a",1]],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["line1\nline2a",{"a":"b"}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["ΣΊΣΥΦΟΣ",{"a":"b"}],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["日本語のテキスト",true],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["é","x"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["﻿bomHello World",true],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["a..b",true],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["😀",["a",1]],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["./x/**/*.json",true],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["aa..b",null],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["héllo wörld",["a",1]],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["👍🏽 thumbs",["a",1]],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["日本語",["a",1]],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["",["a",1]],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["é",["a",1]],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["İstanbul",["a",1]],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["ılık ırmak",["a",1]],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["👨‍👩‍👧 family",["a",1]],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["a b",["a",1]],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["ΣΊΣΥΦΟΣ",["a",1]],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["a😀b",["a",1]],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["a²b x½ y①",["a",1]],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["aⅠb Ⅻ",["a",1]],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["a𐐀b 𝐀bc",["a",1]],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["कि ٣٤",["a",1]],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["Iı İi",["a",1]],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["K K k",["a",1]],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["ſ s S",["a",1]],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["x‍y 👨‍👩‍👧",["a",1]],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["a b c　d",["a",1]],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["١٢٣ ٤٥",["a",1]],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["𝟘𝟙 ²³",["a",1]],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["snake_case foo-bar o'neil",["a",1]],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["ǅungla Ǆ",["a",1]],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["one\r\ntwo threefour",["a",1]],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["café café",["a",1]],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["ΣΑΣ σας ς",["a",1]],"ok":[]}
+{"fn":"buildClaudeSubagentPrompt","args":[""],"ok":{"prompt":"","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["HELLO./x/**/*.json"],"ok":{"prompt":"HELLO./x/**/*.json","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["./x/**/*.json"],"ok":{"prompt":"./x/**/*.json","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["trailing."],"ok":{"prompt":"trailing.","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["日本語のテキスト"],"ok":{"prompt":"日本語のテキスト","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["ns:key.path"],"ok":{"prompt":"ns:key.path","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["ab"],"ok":{"prompt":"ab","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":[".leading"],"ok":{"prompt":".leading","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["line1\nline2trailing."],"ok":{"prompt":"line1\nline2trailing.","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["ΣΊΣΥΦΟΣ"],"ok":{"prompt":"ΣΊΣΥΦΟΣ","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["é"],"ok":{"prompt":"é","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["emoji 👍🏽 mix"],"ok":{"prompt":"emoji 👍🏽 mix","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["a😀b😀ca😀b😀c"],"ok":{"prompt":"a😀b😀ca😀b😀c","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["a..b"],"ok":{"prompt":"a..b","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["Hello World"],"ok":{"prompt":"Hello World","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["a:b:c"],"ok":{"prompt":"a:b:c","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["tab\tseparated"],"ok":{"prompt":"tab\tseparated","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":[".leadingé"],"ok":{"prompt":".leadingé","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["ns:key.pathab"],"ok":{"prompt":"ns:key.pathab","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["abc"],"ok":{"prompt":"abc","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["hello"],"ok":{"prompt":"hello","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["﻿bom"],"ok":{"prompt":"﻿bom","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["{name} has {count} items"],"ok":{"prompt":"{name} has {count} items","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["ab😀"],"ok":{"prompt":"ab😀","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["a😀b😀c"],"ok":{"prompt":"a😀b😀c","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["src/a/b.ts"],"ok":{"prompt":"src/a/b.ts","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["日本語のテキストé"],"ok":{"prompt":"日本語のテキストé","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["ünïcödé"],"ok":{"prompt":"ünïcödé","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["abcünïcödé"],"ok":{"prompt":"abcünïcödé","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":[":"],"ok":{"prompt":":","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["a.b.c"],"ok":{"prompt":"a.b.c","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["HELLO"],"ok":{"prompt":"HELLO","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["İstanbul"],"ok":{"prompt":"İstanbul","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":[".leadingtrailing."],"ok":{"prompt":".leadingtrailing.","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["line1\nline2"],"ok":{"prompt":"line1\nline2","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["a"],"ok":{"prompt":"a","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["trailing.emoji 👍🏽 mix"],"ok":{"prompt":"trailing.emoji 👍🏽 mix","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["  padded  "],"ok":{"prompt":"  padded  ","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["straße  padded  "],"ok":{"prompt":"straße  padded  ","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["a😀b😀cstraße"],"ok":{"prompt":"a😀b😀cstraße","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["  padded  日本語のテキスト"],"ok":{"prompt":"  padded  日本語のテキスト","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["😀"],"ok":{"prompt":"😀","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["key_name-1Hello World"],"ok":{"prompt":"key_name-1Hello World","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["a:b:cHELLO"],"ok":{"prompt":"a:b:cHELLO","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["tab\tseparatedab"],"ok":{"prompt":"tab\tseparatedab","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["é./x/**/*.json"],"ok":{"prompt":"é./x/**/*.json","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["straße"],"ok":{"prompt":"straße","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":[".leadingΣΊΣΥΦΟΣ"],"ok":{"prompt":".leadingΣΊΣΥΦΟΣ","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["key_name-1"],"ok":{"prompt":"key_name-1","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["İstanbula😀b😀c"],"ok":{"prompt":"İstanbula😀b😀c","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["a..b﻿bom"],"ok":{"prompt":"a..b﻿bom","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["ünïcödé:"],"ok":{"prompt":"ünïcödé:","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":[":a"],"ok":{"prompt":":a","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["hello worldemoji 👍🏽 mix"],"ok":{"prompt":"hello worldemoji 👍🏽 mix","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["line1\nline2Hello World"],"ok":{"prompt":"line1\nline2Hello World","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["😀a:b:c"],"ok":{"prompt":"😀a:b:c","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["src/a/b.tsHello World"],"ok":{"prompt":"src/a/b.tsHello World","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":[".leadingns:key.path"],"ok":{"prompt":".leadingns:key.path","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["hello world"],"ok":{"prompt":"hello world","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["emoji 👍🏽 mixsrc/a/b.ts"],"ok":{"prompt":"emoji 👍🏽 mixsrc/a/b.ts","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["src/a/b.tskey_name-1"],"ok":{"prompt":"src/a/b.tskey_name-1","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["İstanbulns:key.path"],"ok":{"prompt":"İstanbulns:key.path","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["Hello Worldns:key.path"],"ok":{"prompt":"Hello Worldns:key.path","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["key_name-1İstanbul"],"ok":{"prompt":"key_name-1İstanbul","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["key_name-1hello world"],"ok":{"prompt":"key_name-1hello world","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["trailing.a.b.c"],"ok":{"prompt":"trailing.a.b.c","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["ünïcödéemoji 👍🏽 mix"],"ok":{"prompt":"ünïcödéemoji 👍🏽 mix","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["éİstanbul"],"ok":{"prompt":"éİstanbul","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["a😀b😀c日本語のテキスト"],"ok":{"prompt":"a😀b😀c日本語のテキスト","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["﻿boma"],"ok":{"prompt":"﻿boma","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["./x/**/*.jsontrailing."],"ok":{"prompt":"./x/**/*.jsontrailing.","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["a.b.csrc/a/b.ts"],"ok":{"prompt":"a.b.csrc/a/b.ts","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["helloİstanbul"],"ok":{"prompt":"helloİstanbul","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["a..bline1\nline2"],"ok":{"prompt":"a..bline1\nline2","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["./x/**/*.jsona:b:c"],"ok":{"prompt":"./x/**/*.jsona:b:c","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["tab\tseparated./x/**/*.json"],"ok":{"prompt":"tab\tseparated./x/**/*.json","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["hello😀"],"ok":{"prompt":"hello😀","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["ΣΊΣΥΦΟΣemoji 👍🏽 mix"],"ok":{"prompt":"ΣΊΣΥΦΟΣemoji 👍🏽 mix","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["{name} has {count} itemsHello World"],"ok":{"prompt":"{name} has {count} itemsHello World","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["key_name-1abc"],"ok":{"prompt":"key_name-1abc","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["a..bHello World"],"ok":{"prompt":"a..bHello World","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["key_name-1tab\tseparated"],"ok":{"prompt":"key_name-1tab\tseparated","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["ünïcödé  padded  "],"ok":{"prompt":"ünïcödé  padded  ","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":[":a.b.c"],"ok":{"prompt":":a.b.c","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":[".leadinga.b.c"],"ok":{"prompt":".leadinga.b.c","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["trailing.tab\tseparated"],"ok":{"prompt":"trailing.tab\tseparated","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["ünïcödé😀"],"ok":{"prompt":"ünïcödé😀","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["İstanbulsrc/a/b.ts"],"ok":{"prompt":"İstanbulsrc/a/b.ts","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["😀{name} has {count} items"],"ok":{"prompt":"😀{name} has {count} items","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["abtrailing."],"ok":{"prompt":"abtrailing.","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["a.b.c.leading"],"ok":{"prompt":"a.b.c.leading","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["a😀b😀c:"],"ok":{"prompt":"a😀b😀c:","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["helloline1\nline2"],"ok":{"prompt":"helloline1\nline2","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["a😀b😀chello"],"ok":{"prompt":"a😀b😀chello","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["tab\tseparatedhello"],"ok":{"prompt":"tab\tseparatedhello","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["ns:key.patha"],"ok":{"prompt":"ns:key.patha","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":[".leadinga"],"ok":{"prompt":".leadinga","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["HELLOabc"],"ok":{"prompt":"HELLOabc","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["trailing.﻿bom"],"ok":{"prompt":"trailing.﻿bom","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["﻿bom{name} has {count} items"],"ok":{"prompt":"﻿bom{name} has {count} items","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":[":tab\tseparated"],"ok":{"prompt":":tab\tseparated","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["aa..b"],"ok":{"prompt":"aa..b","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["HELLOünïcödé"],"ok":{"prompt":"HELLOünïcödé","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["helloΣΊΣΥΦΟΣ"],"ok":{"prompt":"helloΣΊΣΥΦΟΣ","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["😀a.b.c"],"ok":{"prompt":"😀a.b.c","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["abcHELLO"],"ok":{"prompt":"abcHELLO","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["absrc/a/b.ts"],"ok":{"prompt":"absrc/a/b.ts","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["ΣΊΣΥΦΟΣİstanbul"],"ok":{"prompt":"ΣΊΣΥΦΟΣİstanbul","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["trailing.line1\nline2"],"ok":{"prompt":"trailing.line1\nline2","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["ΣΊΣΥΦΟΣhello world"],"ok":{"prompt":"ΣΊΣΥΦΟΣhello world","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["key_name-1.leading"],"ok":{"prompt":"key_name-1.leading","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["line1\nline2😀"],"ok":{"prompt":"line1\nline2😀","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["ünïcödé./x/**/*.json"],"ok":{"prompt":"ünïcödé./x/**/*.json","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":[":ünïcödé"],"ok":{"prompt":":ünïcödé","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["{name} has {count} itemstrailing."],"ok":{"prompt":"{name} has {count} itemstrailing.","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["key_name-1HELLO"],"ok":{"prompt":"key_name-1HELLO","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["a.b.ctrailing."],"ok":{"prompt":"a.b.ctrailing.","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["a..bemoji 👍🏽 mix"],"ok":{"prompt":"a..bemoji 👍🏽 mix","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["HELLO😀"],"ok":{"prompt":"HELLO😀","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["straßetab\tseparated"],"ok":{"prompt":"straßetab\tseparated","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["a.b.ctab\tseparated"],"ok":{"prompt":"a.b.ctab\tseparated","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["{name} has {count} itemstab\tseparated"],"ok":{"prompt":"{name} has {count} itemstab\tseparated","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["hello﻿bom"],"ok":{"prompt":"hello﻿bom","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["hello worldtrailing."],"ok":{"prompt":"hello worldtrailing.","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["abünïcödé"],"ok":{"prompt":"abünïcödé","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["日本語のテキスト:"],"ok":{"prompt":"日本語のテキスト:","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["trailing.ünïcödé"],"ok":{"prompt":"trailing.ünïcödé","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["trailing.{name} has {count} items"],"ok":{"prompt":"trailing.{name} has {count} items","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["abcHello World"],"ok":{"prompt":"abcHello World","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["😀ΣΊΣΥΦΟΣ"],"ok":{"prompt":"😀ΣΊΣΥΦΟΣ","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["aba"],"ok":{"prompt":"aba","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["a.b.cemoji 👍🏽 mix"],"ok":{"prompt":"a.b.cemoji 👍🏽 mix","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":[".leadinga..b"],"ok":{"prompt":".leadinga..b","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["./x/**/*.jsonab"],"ok":{"prompt":"./x/**/*.jsonab","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["ns:key.pathkey_name-1"],"ok":{"prompt":"ns:key.pathkey_name-1","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["ns:key.pathİstanbul"],"ok":{"prompt":"ns:key.pathİstanbul","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["﻿bomtrailing."],"ok":{"prompt":"﻿bomtrailing.","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["abΣΊΣΥΦΟΣ"],"ok":{"prompt":"abΣΊΣΥΦΟΣ","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["  padded  😀"],"ok":{"prompt":"  padded  😀","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["abc日本語のテキスト"],"ok":{"prompt":"abc日本語のテキスト","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["key_name-1a😀b😀c"],"ok":{"prompt":"key_name-1a😀b😀c","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["key_name-1  padded  "],"ok":{"prompt":"key_name-1  padded  ","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["{name} has {count} itemsünïcödé"],"ok":{"prompt":"{name} has {count} itemsünïcödé","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["line1\nline2:"],"ok":{"prompt":"line1\nline2:","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["::"],"ok":{"prompt":"::","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["line1\nline2ab"],"ok":{"prompt":"line1\nline2ab","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["line1\nline2İstanbul"],"ok":{"prompt":"line1\nline2İstanbul","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["./x/**/*.json日本語のテキスト"],"ok":{"prompt":"./x/**/*.json日本語のテキスト","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["😀a..b"],"ok":{"prompt":"😀a..b","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["ns:key.pathsrc/a/b.ts"],"ok":{"prompt":"ns:key.pathsrc/a/b.ts","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["HELLO{name} has {count} items"],"ok":{"prompt":"HELLO{name} has {count} items","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["tab\tseparatedİstanbul"],"ok":{"prompt":"tab\tseparatedİstanbul","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["key_name-1﻿bom"],"ok":{"prompt":"key_name-1﻿bom","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":[".leadinga:b:c"],"ok":{"prompt":".leadinga:b:c","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["ékey_name-1"],"ok":{"prompt":"ékey_name-1","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["a..bİstanbul"],"ok":{"prompt":"a..bİstanbul","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["a😀b😀chello world"],"ok":{"prompt":"a😀b😀chello world","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["  padded  hello"],"ok":{"prompt":"  padded  hello","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["helloa:b:c"],"ok":{"prompt":"helloa:b:c","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["ns:key.path😀"],"ok":{"prompt":"ns:key.path😀","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["HELLO.leading"],"ok":{"prompt":"HELLO.leading","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["ababc"],"ok":{"prompt":"ababc","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["a..bΣΊΣΥΦΟΣ"],"ok":{"prompt":"a..bΣΊΣΥΦΟΣ","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["a:b:cé"],"ok":{"prompt":"a:b:cé","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["ab  padded  "],"ok":{"prompt":"ab  padded  ","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["key_name-1{name} has {count} items"],"ok":{"prompt":"key_name-1{name} has {count} items","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["hello.leading"],"ok":{"prompt":"hello.leading","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["emoji 👍🏽 mixa😀b😀c"],"ok":{"prompt":"emoji 👍🏽 mixa😀b😀c","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["😀trailing."],"ok":{"prompt":"😀trailing.","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["hello worlda"],"ok":{"prompt":"hello worlda","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["abcns:key.path"],"ok":{"prompt":"abcns:key.path","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["HELLO日本語のテキスト"],"ok":{"prompt":"HELLO日本語のテキスト","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["{name} has {count} itemsa.b.c"],"ok":{"prompt":"{name} has {count} itemsa.b.c","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["aa:b:c"],"ok":{"prompt":"aa:b:c","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["src/a/b.tshello world"],"ok":{"prompt":"src/a/b.tshello world","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["  padded  trailing."],"ok":{"prompt":"  padded  trailing.","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["straßestraße"],"ok":{"prompt":"straßestraße","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["hello world{name} has {count} items"],"ok":{"prompt":"hello world{name} has {count} items","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["emoji 👍🏽 mixline1\nline2"],"ok":{"prompt":"emoji 👍🏽 mixline1\nline2","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["hello worlda:b:c"],"ok":{"prompt":"hello worlda:b:c","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["src/a/b.tstab\tseparated"],"ok":{"prompt":"src/a/b.tstab\tseparated","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["tab\tseparateda.b.c"],"ok":{"prompt":"tab\tseparateda.b.c","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["helloab"],"ok":{"prompt":"helloab","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["😀src/a/b.ts"],"ok":{"prompt":"😀src/a/b.ts","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["日本語のテキスト  padded  "],"ok":{"prompt":"日本語のテキスト  padded  ","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["ΣΊΣΥΦΟΣ😀"],"ok":{"prompt":"ΣΊΣΥΦΟΣ😀","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["😀  padded  "],"ok":{"prompt":"😀  padded  ","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["line1\nline2ünïcödé"],"ok":{"prompt":"line1\nline2ünïcödé","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["abctrailing."],"ok":{"prompt":"abctrailing.","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["Hello Worlda"],"ok":{"prompt":"Hello Worlda","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["tab\tseparatedtrailing."],"ok":{"prompt":"tab\tseparatedtrailing.","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["straße{name} has {count} items"],"ok":{"prompt":"straße{name} has {count} items","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["src/a/b.tssrc/a/b.ts"],"ok":{"prompt":"src/a/b.tssrc/a/b.ts","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["trailing.日本語のテキスト"],"ok":{"prompt":"trailing.日本語のテキスト","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["helloa..b"],"ok":{"prompt":"helloa..b","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["ΣΊΣΥΦΟΣabc"],"ok":{"prompt":"ΣΊΣΥΦΟΣabc","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["key_name-1日本語のテキスト"],"ok":{"prompt":"key_name-1日本語のテキスト","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["ab:"],"ok":{"prompt":"ab:","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["日本語のテキストa😀b😀c"],"ok":{"prompt":"日本語のテキストa😀b😀c","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["hello worldstraße"],"ok":{"prompt":"hello worldstraße","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["héllo wörld"],"ok":{"prompt":"héllo wörld","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["👍🏽 thumbs"],"ok":{"prompt":"👍🏽 thumbs","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["日本語"],"ok":{"prompt":"日本語","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["ılık ırmak"],"ok":{"prompt":"ılık ırmak","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["👨‍👩‍👧 family"],"ok":{"prompt":"👨‍👩‍👧 family","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["a b"],"ok":{"prompt":"a b","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["a😀b"],"ok":{"prompt":"a😀b","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["a²b x½ y①"],"ok":{"prompt":"a²b x½ y①","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["aⅠb Ⅻ"],"ok":{"prompt":"aⅠb Ⅻ","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["a𐐀b 𝐀bc"],"ok":{"prompt":"a𐐀b 𝐀bc","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["कि ٣٤"],"ok":{"prompt":"कि ٣٤","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["Iı İi"],"ok":{"prompt":"Iı İi","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["K K k"],"ok":{"prompt":"K K k","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["ſ s S"],"ok":{"prompt":"ſ s S","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["x‍y 👨‍👩‍👧"],"ok":{"prompt":"x‍y 👨‍👩‍👧","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["a b c　d"],"ok":{"prompt":"a b c　d","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["١٢٣ ٤٥"],"ok":{"prompt":"١٢٣ ٤٥","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["𝟘𝟙 ²³"],"ok":{"prompt":"𝟘𝟙 ²³","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["snake_case foo-bar o'neil"],"ok":{"prompt":"snake_case foo-bar o'neil","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["ǅungla Ǆ"],"ok":{"prompt":"ǅungla Ǆ","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["one\r\ntwo threefour"],"ok":{"prompt":"one\r\ntwo threefour","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["café café"],"ok":{"prompt":"café café","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["ΣΑΣ σας ς"],"ok":{"prompt":"ΣΑΣ σας ς","invocations":[]}}
+{"fn":"parseAgentMentionInvocations","args":["@review(t)","claudeAgent"],"ok":[{"alias":"review","task":"t","raw":"@review(t)","start":0,"end":10,"definition":{"alias":"review","provider":"claudeAgent","kind":"claude-subagent","agentName":"review","displayName":"Code Review","color":"amber","description":"Bug and risk reviewer. Use for code review, regression hunting, and edge-case analysis.","prompt":"You are a senior code reviewer. Focus on behavioral regressions, correctness bugs, edge cases, and missing tests. Return findings first, then open questions, then a brief summary.","tools":["Read","Grep","Glob"],"model":"sonnet"}}]}
+{"fn":"parseAgentMentionInvocations","args":["@REVIEWER(x y)","claudeAgent"],"ok":[{"alias":"REVIEWER","task":"x y","raw":"@REVIEWER(x y)","start":0,"end":14,"definition":{"alias":"REVIEWER","provider":"claudeAgent","kind":"claude-subagent","agentName":"review","displayName":"Code Review","color":"amber","description":"Bug and risk reviewer. Use for code review, regression hunting, and edge-case analysis.","prompt":"You are a senior code reviewer. Focus on behavioral regressions, correctness bugs, edge cases, and missing tests. Return findings first, then open questions, then a brief summary.","tools":["Read","Grep","Glob"],"model":"sonnet"}}]}
+{"fn":"parseAgentMentionInvocations","args":["@implement(deep (nested) task)","claudeAgent"],"ok":[{"alias":"implement","task":"deep (nested) task","raw":"@implement(deep (nested) task)","start":0,"end":30,"definition":{"alias":"implement","provider":"claudeAgent","kind":"claude-subagent","agentName":"build","displayName":"Implementer","color":"violet","description":"Implementation teammate. Use for scoped code changes, debugging, and hands-on execution tasks.","prompt":"You are an implementation-focused coding teammate. Make targeted changes, validate assumptions with the available tools, and return a short implementation summary plus any remaining risks.","tools":["Read","Grep","Glob","Bash","Edit","Write","MultiEdit"],"model":"sonnet"}}]}
+{"fn":"parseAgentMentionInvocations","args":["@spark(go)","claudeAgent"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@mini(m)","claudeAgent"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@codex(c)","claudeAgent"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@explore(e)","claudeAgent"],"ok":[{"alias":"explore","task":"e","raw":"@explore(e)","start":0,"end":11,"definition":{"alias":"explore","provider":"claudeAgent","kind":"claude-subagent","agentName":"explore","displayName":"Explore","color":"cyan","description":"Read-only codebase explorer. Use for file discovery, code search, and gathering context before implementation.","prompt":"You are a focused codebase exploration specialist. Search broadly, gather the most relevant findings, and return a concise summary with the key files, evidence, and risks. Do not make code changes.","tools":["Read","Grep","Glob"],"model":"haiku"}}]}
+{"fn":"parseAgentMentionInvocations","args":["@plan(p)","claudeAgent"],"ok":[{"alias":"plan","task":"p","raw":"@plan(p)","start":0,"end":8,"definition":{"alias":"plan","provider":"claudeAgent","kind":"claude-subagent","agentName":"plan","displayName":"Planner","color":"fuchsia","description":"Planning specialist. Use for breaking work into steps, evaluating approaches, and preparing execution plans.","prompt":"You are a planning specialist. Clarify goals, evaluate tradeoffs, identify edge cases, and return a concrete ordered plan with the main risks called out explicitly.","tools":["Read","Grep","Glob","TodoWrite"],"model":"sonnet"}}]}
+{"fn":"parseAgentMentionInvocations","args":["@planner(q)","claudeAgent"],"ok":[{"alias":"planner","task":"q","raw":"@planner(q)","start":0,"end":11,"definition":{"alias":"planner","provider":"claudeAgent","kind":"claude-subagent","agentName":"plan","displayName":"Planner","color":"fuchsia","description":"Planning specialist. Use for breaking work into steps, evaluating approaches, and preparing execution plans.","prompt":"You are a planning specialist. Clarify goals, evaluate tradeoffs, identify edge cases, and return a concrete ordered plan with the main risks called out explicitly.","tools":["Read","Grep","Glob","TodoWrite"],"model":"sonnet"}}]}
+{"fn":"parseAgentMentionInvocations","args":["@build(b)","claudeAgent"],"ok":[{"alias":"build","task":"b","raw":"@build(b)","start":0,"end":9,"definition":{"alias":"build","provider":"claudeAgent","kind":"claude-subagent","agentName":"build","displayName":"Implementer","color":"violet","description":"Implementation teammate. Use for scoped code changes, debugging, and hands-on execution tasks.","prompt":"You are an implementation-focused coding teammate. Make targeted changes, validate assumptions with the available tools, and return a short implementation summary plus any remaining risks.","tools":["Read","Grep","Glob","Bash","Edit","Write","MultiEdit"],"model":"sonnet"}}]}
+{"fn":"parseAgentMentionInvocations","args":["@unknown(t)","claudeAgent"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@unknown(t) @review(x)","claudeAgent"],"ok":[{"alias":"review","task":"x","raw":"@review(x)","start":12,"end":22,"definition":{"alias":"review","provider":"claudeAgent","kind":"claude-subagent","agentName":"review","displayName":"Code Review","color":"amber","description":"Bug and risk reviewer. Use for code review, regression hunting, and edge-case analysis.","prompt":"You are a senior code reviewer. Focus on behavioral regressions, correctness bugs, edge cases, and missing tests. Return findings first, then open questions, then a brief summary.","tools":["Read","Grep","Glob"],"model":"sonnet"}}]}
+{"fn":"parseAgentMentionInvocations","args":["pre@review(y)","claudeAgent"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review(t)@plan(u) rest @build(v)","claudeAgent"],"ok":[{"alias":"review","task":"t","raw":"@review(t)","start":0,"end":10,"definition":{"alias":"review","provider":"claudeAgent","kind":"claude-subagent","agentName":"review","displayName":"Code Review","color":"amber","description":"Bug and risk reviewer. Use for code review, regression hunting, and edge-case analysis.","prompt":"You are a senior code reviewer. Focus on behavioral regressions, correctness bugs, edge cases, and missing tests. Return findings first, then open questions, then a brief summary.","tools":["Read","Grep","Glob"],"model":"sonnet"}},{"alias":"build","task":"v","raw":"@build(v)","start":24,"end":33,"definition":{"alias":"build","provider":"claudeAgent","kind":"claude-subagent","agentName":"build","displayName":"Implementer","color":"violet","description":"Implementation teammate. Use for scoped code changes, debugging, and hands-on execution tasks.","prompt":"You are an implementation-focused coding teammate. Make targeted changes, validate assumptions with the available tools, and return a short implementation summary plus any remaining risks.","tools":["Read","Grep","Glob","Bash","Edit","Write","MultiEdit"],"model":"sonnet"}}]}
+{"fn":"parseAgentMentionInvocations","args":["@review( a )","claudeAgent"],"ok":[{"alias":"review","task":"a","raw":"@review( a )","start":0,"end":12,"definition":{"alias":"review","provider":"claudeAgent","kind":"claude-subagent","agentName":"review","displayName":"Code Review","color":"amber","description":"Bug and risk reviewer. Use for code review, regression hunting, and edge-case analysis.","prompt":"You are a senior code reviewer. Focus on behavioral regressions, correctness bugs, edge cases, and missing tests. Return findings first, then open questions, then a brief summary.","tools":["Read","Grep","Glob"],"model":"sonnet"}}]}
+{"fn":"parseAgentMentionInvocations","args":["@review()","claudeAgent"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review( )","claudeAgent"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review((a))","claudeAgent"],"ok":[{"alias":"review","task":"(a)","raw":"@review((a))","start":0,"end":12,"definition":{"alias":"review","provider":"claudeAgent","kind":"claude-subagent","agentName":"review","displayName":"Code Review","color":"amber","description":"Bug and risk reviewer. Use for code review, regression hunting, and edge-case analysis.","prompt":"You are a senior code reviewer. Focus on behavioral regressions, correctness bugs, edge cases, and missing tests. Return findings first, then open questions, then a brief summary.","tools":["Read","Grep","Glob"],"model":"sonnet"}}]}
+{"fn":"parseAgentMentionInvocations","args":["@review(a)b","claudeAgent"],"ok":[{"alias":"review","task":"a","raw":"@review(a)","start":0,"end":10,"definition":{"alias":"review","provider":"claudeAgent","kind":"claude-subagent","agentName":"review","displayName":"Code Review","color":"amber","description":"Bug and risk reviewer. Use for code review, regression hunting, and edge-case analysis.","prompt":"You are a senior code reviewer. Focus on behavioral regressions, correctness bugs, edge cases, and missing tests. Return findings first, then open questions, then a brief summary.","tools":["Read","Grep","Glob"],"model":"sonnet"}}]}
+{"fn":"parseAgentMentionInvocations","args":["@@review(t)","claudeAgent"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@x(t)","claudeAgent"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["no mentions","claudeAgent"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["  @review(t2)  ","claudeAgent"],"ok":[{"alias":"review","task":"t2","raw":"@review(t2)","start":2,"end":13,"definition":{"alias":"review","provider":"claudeAgent","kind":"claude-subagent","agentName":"review","displayName":"Code Review","color":"amber","description":"Bug and risk reviewer. Use for code review, regression hunting, and edge-case analysis.","prompt":"You are a senior code reviewer. Focus on behavioral regressions, correctness bugs, edge cases, and missing tests. Return findings first, then open questions, then a brief summary.","tools":["Read","Grep","Glob"],"model":"sonnet"}}]}
+{"fn":"parseAgentMentionInvocations","args":["@REVIEW(u)","claudeAgent"],"ok":[{"alias":"REVIEW","task":"u","raw":"@REVIEW(u)","start":0,"end":10,"definition":{"alias":"REVIEW","provider":"claudeAgent","kind":"claude-subagent","agentName":"review","displayName":"Code Review","color":"amber","description":"Bug and risk reviewer. Use for code review, regression hunting, and edge-case analysis.","prompt":"You are a senior code reviewer. Focus on behavioral regressions, correctness bugs, edge cases, and missing tests. Return findings first, then open questions, then a brief summary.","tools":["Read","Grep","Glob"],"model":"sonnet"}}]}
+{"fn":"parseAgentMentionInvocations","args":["é @review(a) x @plan(b) 😀","claudeAgent"],"ok":[{"alias":"review","task":"a","raw":"@review(a)","start":2,"end":12,"definition":{"alias":"review","provider":"claudeAgent","kind":"claude-subagent","agentName":"review","displayName":"Code Review","color":"amber","description":"Bug and risk reviewer. Use for code review, regression hunting, and edge-case analysis.","prompt":"You are a senior code reviewer. Focus on behavioral regressions, correctness bugs, edge cases, and missing tests. Return findings first, then open questions, then a brief summary.","tools":["Read","Grep","Glob"],"model":"sonnet"}},{"alias":"plan","task":"b","raw":"@plan(b)","start":15,"end":23,"definition":{"alias":"plan","provider":"claudeAgent","kind":"claude-subagent","agentName":"plan","displayName":"Planner","color":"fuchsia","description":"Planning specialist. Use for breaking work into steps, evaluating approaches, and preparing execution plans.","prompt":"You are a planning specialist. Clarify goals, evaluate tradeoffs, identify edge cases, and return a concrete ordered plan with the main risks called out explicitly.","tools":["Read","Grep","Glob","TodoWrite"],"model":"sonnet"}}]}
+{"fn":"parseAgentMentionInvocations","args":["@review😀(x)","claudeAgent"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review\ttab","claudeAgent"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review\nnl","claudeAgent"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review x(y)","claudeAgent"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review(t)","codex"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@REVIEWER(x y)","codex"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@implement(deep (nested) task)","codex"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@spark(go)","codex"],"ok":[{"alias":"spark","task":"go","raw":"@spark(go)","start":0,"end":10,"definition":{"alias":"spark","provider":"codex","kind":"model","model":"gpt-5.3-codex-spark","displayName":"GPT-5.3 Codex Spark","color":"cyan"}}]}
+{"fn":"parseAgentMentionInvocations","args":["@mini(m)","codex"],"ok":[{"alias":"mini","task":"m","raw":"@mini(m)","start":0,"end":8,"definition":{"alias":"mini","provider":"codex","kind":"model","model":"gpt-5.4-mini","displayName":"GPT-5.4 Mini","color":"fuchsia"}}]}
+{"fn":"parseAgentMentionInvocations","args":["@codex(c)","codex"],"ok":[{"alias":"codex","task":"c","raw":"@codex(c)","start":0,"end":9,"definition":{"alias":"codex","provider":"codex","kind":"model","model":"gpt-5.3-codex","displayName":"GPT-5.3 Codex","color":"teal"}}]}
+{"fn":"parseAgentMentionInvocations","args":["@explore(e)","codex"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@plan(p)","codex"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@planner(q)","codex"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@build(b)","codex"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@unknown(t)","codex"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@unknown(t) @review(x)","codex"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["pre@review(y)","codex"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review(t)@plan(u) rest @build(v)","codex"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review( a )","codex"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review()","codex"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review( )","codex"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review((a))","codex"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review(a)b","codex"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@@review(t)","codex"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@x(t)","codex"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["no mentions","codex"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["  @review(t2)  ","codex"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@REVIEW(u)","codex"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["é @review(a) x @plan(b) 😀","codex"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review😀(x)","codex"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review\ttab","codex"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review\nnl","codex"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review x(y)","codex"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review(t)","opencode"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@REVIEWER(x y)","opencode"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@implement(deep (nested) task)","opencode"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@spark(go)","opencode"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@mini(m)","opencode"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@codex(c)","opencode"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@explore(e)","opencode"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@plan(p)","opencode"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@planner(q)","opencode"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@build(b)","opencode"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@unknown(t)","opencode"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@unknown(t) @review(x)","opencode"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["pre@review(y)","opencode"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review(t)@plan(u) rest @build(v)","opencode"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review( a )","opencode"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review()","opencode"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review( )","opencode"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review((a))","opencode"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review(a)b","opencode"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@@review(t)","opencode"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@x(t)","opencode"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["no mentions","opencode"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["  @review(t2)  ","opencode"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@REVIEW(u)","opencode"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["é @review(a) x @plan(b) 😀","opencode"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review😀(x)","opencode"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review\ttab","opencode"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review\nnl","opencode"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review x(y)","opencode"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review(t)","cursor"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@REVIEWER(x y)","cursor"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@implement(deep (nested) task)","cursor"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@spark(go)","cursor"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@mini(m)","cursor"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@codex(c)","cursor"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@explore(e)","cursor"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@plan(p)","cursor"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@planner(q)","cursor"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@build(b)","cursor"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@unknown(t)","cursor"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@unknown(t) @review(x)","cursor"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["pre@review(y)","cursor"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review(t)@plan(u) rest @build(v)","cursor"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review( a )","cursor"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review()","cursor"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review( )","cursor"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review((a))","cursor"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review(a)b","cursor"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@@review(t)","cursor"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@x(t)","cursor"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["no mentions","cursor"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["  @review(t2)  ","cursor"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@REVIEW(u)","cursor"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["é @review(a) x @plan(b) 😀","cursor"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review😀(x)","cursor"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review\ttab","cursor"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review\nnl","cursor"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review x(y)","cursor"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review(t)","droid"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@REVIEWER(x y)","droid"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@implement(deep (nested) task)","droid"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@spark(go)","droid"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@mini(m)","droid"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@codex(c)","droid"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@explore(e)","droid"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@plan(p)","droid"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@planner(q)","droid"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@build(b)","droid"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@unknown(t)","droid"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@unknown(t) @review(x)","droid"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["pre@review(y)","droid"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review(t)@plan(u) rest @build(v)","droid"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review( a )","droid"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review()","droid"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review( )","droid"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review((a))","droid"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review(a)b","droid"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@@review(t)","droid"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@x(t)","droid"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["no mentions","droid"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["  @review(t2)  ","droid"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@REVIEW(u)","droid"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["é @review(a) x @plan(b) 😀","droid"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review😀(x)","droid"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review\ttab","droid"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review\nnl","droid"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review x(y)","droid"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review(t)","pi"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@REVIEWER(x y)","pi"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@implement(deep (nested) task)","pi"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@spark(go)","pi"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@mini(m)","pi"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@codex(c)","pi"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@explore(e)","pi"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@plan(p)","pi"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@planner(q)","pi"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@build(b)","pi"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@unknown(t)","pi"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@unknown(t) @review(x)","pi"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["pre@review(y)","pi"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review(t)@plan(u) rest @build(v)","pi"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review( a )","pi"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review()","pi"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review( )","pi"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review((a))","pi"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review(a)b","pi"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@@review(t)","pi"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@x(t)","pi"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["no mentions","pi"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["  @review(t2)  ","pi"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@REVIEW(u)","pi"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["é @review(a) x @plan(b) 😀","pi"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review😀(x)","pi"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review\ttab","pi"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review\nnl","pi"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review x(y)","pi"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review(t)","bogus"],"error":"Cannot read properties of undefined (reading 'review')"}
+{"fn":"parseAgentMentionInvocations","args":["@REVIEWER(x y)","bogus"],"error":"Cannot read properties of undefined (reading 'reviewer')"}
+{"fn":"parseAgentMentionInvocations","args":["@implement(deep (nested) task)","bogus"],"error":"Cannot read properties of undefined (reading 'implement')"}
+{"fn":"parseAgentMentionInvocations","args":["@spark(go)","bogus"],"error":"Cannot read properties of undefined (reading 'spark')"}
+{"fn":"parseAgentMentionInvocations","args":["@mini(m)","bogus"],"error":"Cannot read properties of undefined (reading 'mini')"}
+{"fn":"parseAgentMentionInvocations","args":["@codex(c)","bogus"],"error":"Cannot read properties of undefined (reading 'codex')"}
+{"fn":"parseAgentMentionInvocations","args":["@explore(e)","bogus"],"error":"Cannot read properties of undefined (reading 'explore')"}
+{"fn":"parseAgentMentionInvocations","args":["@plan(p)","bogus"],"error":"Cannot read properties of undefined (reading 'plan')"}
+{"fn":"parseAgentMentionInvocations","args":["@planner(q)","bogus"],"error":"Cannot read properties of undefined (reading 'planner')"}
+{"fn":"parseAgentMentionInvocations","args":["@build(b)","bogus"],"error":"Cannot read properties of undefined (reading 'build')"}
+{"fn":"parseAgentMentionInvocations","args":["@unknown(t)","bogus"],"error":"Cannot read properties of undefined (reading 'unknown')"}
+{"fn":"parseAgentMentionInvocations","args":["@unknown(t) @review(x)","bogus"],"error":"Cannot read properties of undefined (reading 'unknown')"}
+{"fn":"parseAgentMentionInvocations","args":["pre@review(y)","bogus"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review(t)@plan(u) rest @build(v)","bogus"],"error":"Cannot read properties of undefined (reading 'review')"}
+{"fn":"parseAgentMentionInvocations","args":["@review( a )","bogus"],"error":"Cannot read properties of undefined (reading 'review')"}
+{"fn":"parseAgentMentionInvocations","args":["@review()","bogus"],"error":"Cannot read properties of undefined (reading 'review')"}
+{"fn":"parseAgentMentionInvocations","args":["@review( )","bogus"],"error":"Cannot read properties of undefined (reading 'review')"}
+{"fn":"parseAgentMentionInvocations","args":["@review((a))","bogus"],"error":"Cannot read properties of undefined (reading 'review')"}
+{"fn":"parseAgentMentionInvocations","args":["@review(a)b","bogus"],"error":"Cannot read properties of undefined (reading 'review')"}
+{"fn":"parseAgentMentionInvocations","args":["@@review(t)","bogus"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@x(t)","bogus"],"error":"Cannot read properties of undefined (reading 'x')"}
+{"fn":"parseAgentMentionInvocations","args":["no mentions","bogus"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["  @review(t2)  ","bogus"],"error":"Cannot read properties of undefined (reading 'review')"}
+{"fn":"parseAgentMentionInvocations","args":["@REVIEW(u)","bogus"],"error":"Cannot read properties of undefined (reading 'review')"}
+{"fn":"parseAgentMentionInvocations","args":["é @review(a) x @plan(b) 😀","bogus"],"error":"Cannot read properties of undefined (reading 'review')"}
+{"fn":"parseAgentMentionInvocations","args":["@review😀(x)","bogus"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review\ttab","bogus"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review\nnl","bogus"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review x(y)","bogus"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review(t)","CLAUDEAGENT"],"error":"Cannot read properties of undefined (reading 'review')"}
+{"fn":"parseAgentMentionInvocations","args":["@REVIEWER(x y)","CLAUDEAGENT"],"error":"Cannot read properties of undefined (reading 'reviewer')"}
+{"fn":"parseAgentMentionInvocations","args":["@implement(deep (nested) task)","CLAUDEAGENT"],"error":"Cannot read properties of undefined (reading 'implement')"}
+{"fn":"parseAgentMentionInvocations","args":["@spark(go)","CLAUDEAGENT"],"error":"Cannot read properties of undefined (reading 'spark')"}
+{"fn":"parseAgentMentionInvocations","args":["@mini(m)","CLAUDEAGENT"],"error":"Cannot read properties of undefined (reading 'mini')"}
+{"fn":"parseAgentMentionInvocations","args":["@codex(c)","CLAUDEAGENT"],"error":"Cannot read properties of undefined (reading 'codex')"}
+{"fn":"parseAgentMentionInvocations","args":["@explore(e)","CLAUDEAGENT"],"error":"Cannot read properties of undefined (reading 'explore')"}
+{"fn":"parseAgentMentionInvocations","args":["@plan(p)","CLAUDEAGENT"],"error":"Cannot read properties of undefined (reading 'plan')"}
+{"fn":"parseAgentMentionInvocations","args":["@planner(q)","CLAUDEAGENT"],"error":"Cannot read properties of undefined (reading 'planner')"}
+{"fn":"parseAgentMentionInvocations","args":["@build(b)","CLAUDEAGENT"],"error":"Cannot read properties of undefined (reading 'build')"}
+{"fn":"parseAgentMentionInvocations","args":["@unknown(t)","CLAUDEAGENT"],"error":"Cannot read properties of undefined (reading 'unknown')"}
+{"fn":"parseAgentMentionInvocations","args":["@unknown(t) @review(x)","CLAUDEAGENT"],"error":"Cannot read properties of undefined (reading 'unknown')"}
+{"fn":"parseAgentMentionInvocations","args":["pre@review(y)","CLAUDEAGENT"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review(t)@plan(u) rest @build(v)","CLAUDEAGENT"],"error":"Cannot read properties of undefined (reading 'review')"}
+{"fn":"parseAgentMentionInvocations","args":["@review( a )","CLAUDEAGENT"],"error":"Cannot read properties of undefined (reading 'review')"}
+{"fn":"parseAgentMentionInvocations","args":["@review()","CLAUDEAGENT"],"error":"Cannot read properties of undefined (reading 'review')"}
+{"fn":"parseAgentMentionInvocations","args":["@review( )","CLAUDEAGENT"],"error":"Cannot read properties of undefined (reading 'review')"}
+{"fn":"parseAgentMentionInvocations","args":["@review((a))","CLAUDEAGENT"],"error":"Cannot read properties of undefined (reading 'review')"}
+{"fn":"parseAgentMentionInvocations","args":["@review(a)b","CLAUDEAGENT"],"error":"Cannot read properties of undefined (reading 'review')"}
+{"fn":"parseAgentMentionInvocations","args":["@@review(t)","CLAUDEAGENT"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@x(t)","CLAUDEAGENT"],"error":"Cannot read properties of undefined (reading 'x')"}
+{"fn":"parseAgentMentionInvocations","args":["no mentions","CLAUDEAGENT"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["  @review(t2)  ","CLAUDEAGENT"],"error":"Cannot read properties of undefined (reading 'review')"}
+{"fn":"parseAgentMentionInvocations","args":["@REVIEW(u)","CLAUDEAGENT"],"error":"Cannot read properties of undefined (reading 'review')"}
+{"fn":"parseAgentMentionInvocations","args":["é @review(a) x @plan(b) 😀","CLAUDEAGENT"],"error":"Cannot read properties of undefined (reading 'review')"}
+{"fn":"parseAgentMentionInvocations","args":["@review😀(x)","CLAUDEAGENT"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review\ttab","CLAUDEAGENT"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review\nnl","CLAUDEAGENT"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review x(y)","CLAUDEAGENT"],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review(t)",""],"ok":[{"alias":"review","task":"t","raw":"@review(t)","start":0,"end":10,"definition":{"alias":"review","provider":"claudeAgent","kind":"claude-subagent","agentName":"review","displayName":"Code Review","color":"amber","description":"Bug and risk reviewer. Use for code review, regression hunting, and edge-case analysis.","prompt":"You are a senior code reviewer. Focus on behavioral regressions, correctness bugs, edge cases, and missing tests. Return findings first, then open questions, then a brief summary.","tools":["Read","Grep","Glob"],"model":"sonnet"}}]}
+{"fn":"parseAgentMentionInvocations","args":["@REVIEWER(x y)",""],"ok":[{"alias":"REVIEWER","task":"x y","raw":"@REVIEWER(x y)","start":0,"end":14,"definition":{"alias":"REVIEWER","provider":"claudeAgent","kind":"claude-subagent","agentName":"review","displayName":"Code Review","color":"amber","description":"Bug and risk reviewer. Use for code review, regression hunting, and edge-case analysis.","prompt":"You are a senior code reviewer. Focus on behavioral regressions, correctness bugs, edge cases, and missing tests. Return findings first, then open questions, then a brief summary.","tools":["Read","Grep","Glob"],"model":"sonnet"}}]}
+{"fn":"parseAgentMentionInvocations","args":["@implement(deep (nested) task)",""],"ok":[{"alias":"implement","task":"deep (nested) task","raw":"@implement(deep (nested) task)","start":0,"end":30,"definition":{"alias":"implement","provider":"claudeAgent","kind":"claude-subagent","agentName":"build","displayName":"Implementer","color":"violet","description":"Implementation teammate. Use for scoped code changes, debugging, and hands-on execution tasks.","prompt":"You are an implementation-focused coding teammate. Make targeted changes, validate assumptions with the available tools, and return a short implementation summary plus any remaining risks.","tools":["Read","Grep","Glob","Bash","Edit","Write","MultiEdit"],"model":"sonnet"}}]}
+{"fn":"parseAgentMentionInvocations","args":["@spark(go)",""],"ok":[{"alias":"spark","task":"go","raw":"@spark(go)","start":0,"end":10,"definition":{"alias":"spark","provider":"codex","kind":"model","model":"gpt-5.3-codex-spark","displayName":"GPT-5.3 Codex Spark","color":"cyan"}}]}
+{"fn":"parseAgentMentionInvocations","args":["@mini(m)",""],"ok":[{"alias":"mini","task":"m","raw":"@mini(m)","start":0,"end":8,"definition":{"alias":"mini","provider":"codex","kind":"model","model":"gpt-5.4-mini","displayName":"GPT-5.4 Mini","color":"fuchsia"}}]}
+{"fn":"parseAgentMentionInvocations","args":["@codex(c)",""],"ok":[{"alias":"codex","task":"c","raw":"@codex(c)","start":0,"end":9,"definition":{"alias":"codex","provider":"codex","kind":"model","model":"gpt-5.3-codex","displayName":"GPT-5.3 Codex","color":"teal"}}]}
+{"fn":"parseAgentMentionInvocations","args":["@explore(e)",""],"ok":[{"alias":"explore","task":"e","raw":"@explore(e)","start":0,"end":11,"definition":{"alias":"explore","provider":"claudeAgent","kind":"claude-subagent","agentName":"explore","displayName":"Explore","color":"cyan","description":"Read-only codebase explorer. Use for file discovery, code search, and gathering context before implementation.","prompt":"You are a focused codebase exploration specialist. Search broadly, gather the most relevant findings, and return a concise summary with the key files, evidence, and risks. Do not make code changes.","tools":["Read","Grep","Glob"],"model":"haiku"}}]}
+{"fn":"parseAgentMentionInvocations","args":["@plan(p)",""],"ok":[{"alias":"plan","task":"p","raw":"@plan(p)","start":0,"end":8,"definition":{"alias":"plan","provider":"claudeAgent","kind":"claude-subagent","agentName":"plan","displayName":"Planner","color":"fuchsia","description":"Planning specialist. Use for breaking work into steps, evaluating approaches, and preparing execution plans.","prompt":"You are a planning specialist. Clarify goals, evaluate tradeoffs, identify edge cases, and return a concrete ordered plan with the main risks called out explicitly.","tools":["Read","Grep","Glob","TodoWrite"],"model":"sonnet"}}]}
+{"fn":"parseAgentMentionInvocations","args":["@planner(q)",""],"ok":[{"alias":"planner","task":"q","raw":"@planner(q)","start":0,"end":11,"definition":{"alias":"planner","provider":"claudeAgent","kind":"claude-subagent","agentName":"plan","displayName":"Planner","color":"fuchsia","description":"Planning specialist. Use for breaking work into steps, evaluating approaches, and preparing execution plans.","prompt":"You are a planning specialist. Clarify goals, evaluate tradeoffs, identify edge cases, and return a concrete ordered plan with the main risks called out explicitly.","tools":["Read","Grep","Glob","TodoWrite"],"model":"sonnet"}}]}
+{"fn":"parseAgentMentionInvocations","args":["@build(b)",""],"ok":[{"alias":"build","task":"b","raw":"@build(b)","start":0,"end":9,"definition":{"alias":"build","provider":"claudeAgent","kind":"claude-subagent","agentName":"build","displayName":"Implementer","color":"violet","description":"Implementation teammate. Use for scoped code changes, debugging, and hands-on execution tasks.","prompt":"You are an implementation-focused coding teammate. Make targeted changes, validate assumptions with the available tools, and return a short implementation summary plus any remaining risks.","tools":["Read","Grep","Glob","Bash","Edit","Write","MultiEdit"],"model":"sonnet"}}]}
+{"fn":"parseAgentMentionInvocations","args":["@unknown(t)",""],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@unknown(t) @review(x)",""],"ok":[{"alias":"review","task":"x","raw":"@review(x)","start":12,"end":22,"definition":{"alias":"review","provider":"claudeAgent","kind":"claude-subagent","agentName":"review","displayName":"Code Review","color":"amber","description":"Bug and risk reviewer. Use for code review, regression hunting, and edge-case analysis.","prompt":"You are a senior code reviewer. Focus on behavioral regressions, correctness bugs, edge cases, and missing tests. Return findings first, then open questions, then a brief summary.","tools":["Read","Grep","Glob"],"model":"sonnet"}}]}
+{"fn":"parseAgentMentionInvocations","args":["pre@review(y)",""],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review(t)@plan(u) rest @build(v)",""],"ok":[{"alias":"review","task":"t","raw":"@review(t)","start":0,"end":10,"definition":{"alias":"review","provider":"claudeAgent","kind":"claude-subagent","agentName":"review","displayName":"Code Review","color":"amber","description":"Bug and risk reviewer. Use for code review, regression hunting, and edge-case analysis.","prompt":"You are a senior code reviewer. Focus on behavioral regressions, correctness bugs, edge cases, and missing tests. Return findings first, then open questions, then a brief summary.","tools":["Read","Grep","Glob"],"model":"sonnet"}},{"alias":"build","task":"v","raw":"@build(v)","start":24,"end":33,"definition":{"alias":"build","provider":"claudeAgent","kind":"claude-subagent","agentName":"build","displayName":"Implementer","color":"violet","description":"Implementation teammate. Use for scoped code changes, debugging, and hands-on execution tasks.","prompt":"You are an implementation-focused coding teammate. Make targeted changes, validate assumptions with the available tools, and return a short implementation summary plus any remaining risks.","tools":["Read","Grep","Glob","Bash","Edit","Write","MultiEdit"],"model":"sonnet"}}]}
+{"fn":"parseAgentMentionInvocations","args":["@review( a )",""],"ok":[{"alias":"review","task":"a","raw":"@review( a )","start":0,"end":12,"definition":{"alias":"review","provider":"claudeAgent","kind":"claude-subagent","agentName":"review","displayName":"Code Review","color":"amber","description":"Bug and risk reviewer. Use for code review, regression hunting, and edge-case analysis.","prompt":"You are a senior code reviewer. Focus on behavioral regressions, correctness bugs, edge cases, and missing tests. Return findings first, then open questions, then a brief summary.","tools":["Read","Grep","Glob"],"model":"sonnet"}}]}
+{"fn":"parseAgentMentionInvocations","args":["@review()",""],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review( )",""],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review((a))",""],"ok":[{"alias":"review","task":"(a)","raw":"@review((a))","start":0,"end":12,"definition":{"alias":"review","provider":"claudeAgent","kind":"claude-subagent","agentName":"review","displayName":"Code Review","color":"amber","description":"Bug and risk reviewer. Use for code review, regression hunting, and edge-case analysis.","prompt":"You are a senior code reviewer. Focus on behavioral regressions, correctness bugs, edge cases, and missing tests. Return findings first, then open questions, then a brief summary.","tools":["Read","Grep","Glob"],"model":"sonnet"}}]}
+{"fn":"parseAgentMentionInvocations","args":["@review(a)b",""],"ok":[{"alias":"review","task":"a","raw":"@review(a)","start":0,"end":10,"definition":{"alias":"review","provider":"claudeAgent","kind":"claude-subagent","agentName":"review","displayName":"Code Review","color":"amber","description":"Bug and risk reviewer. Use for code review, regression hunting, and edge-case analysis.","prompt":"You are a senior code reviewer. Focus on behavioral regressions, correctness bugs, edge cases, and missing tests. Return findings first, then open questions, then a brief summary.","tools":["Read","Grep","Glob"],"model":"sonnet"}}]}
+{"fn":"parseAgentMentionInvocations","args":["@@review(t)",""],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@x(t)",""],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["no mentions",""],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["  @review(t2)  ",""],"ok":[{"alias":"review","task":"t2","raw":"@review(t2)","start":2,"end":13,"definition":{"alias":"review","provider":"claudeAgent","kind":"claude-subagent","agentName":"review","displayName":"Code Review","color":"amber","description":"Bug and risk reviewer. Use for code review, regression hunting, and edge-case analysis.","prompt":"You are a senior code reviewer. Focus on behavioral regressions, correctness bugs, edge cases, and missing tests. Return findings first, then open questions, then a brief summary.","tools":["Read","Grep","Glob"],"model":"sonnet"}}]}
+{"fn":"parseAgentMentionInvocations","args":["@REVIEW(u)",""],"ok":[{"alias":"REVIEW","task":"u","raw":"@REVIEW(u)","start":0,"end":10,"definition":{"alias":"REVIEW","provider":"claudeAgent","kind":"claude-subagent","agentName":"review","displayName":"Code Review","color":"amber","description":"Bug and risk reviewer. Use for code review, regression hunting, and edge-case analysis.","prompt":"You are a senior code reviewer. Focus on behavioral regressions, correctness bugs, edge cases, and missing tests. Return findings first, then open questions, then a brief summary.","tools":["Read","Grep","Glob"],"model":"sonnet"}}]}
+{"fn":"parseAgentMentionInvocations","args":["é @review(a) x @plan(b) 😀",""],"ok":[{"alias":"review","task":"a","raw":"@review(a)","start":2,"end":12,"definition":{"alias":"review","provider":"claudeAgent","kind":"claude-subagent","agentName":"review","displayName":"Code Review","color":"amber","description":"Bug and risk reviewer. Use for code review, regression hunting, and edge-case analysis.","prompt":"You are a senior code reviewer. Focus on behavioral regressions, correctness bugs, edge cases, and missing tests. Return findings first, then open questions, then a brief summary.","tools":["Read","Grep","Glob"],"model":"sonnet"}},{"alias":"plan","task":"b","raw":"@plan(b)","start":15,"end":23,"definition":{"alias":"plan","provider":"claudeAgent","kind":"claude-subagent","agentName":"plan","displayName":"Planner","color":"fuchsia","description":"Planning specialist. Use for breaking work into steps, evaluating approaches, and preparing execution plans.","prompt":"You are a planning specialist. Clarify goals, evaluate tradeoffs, identify edge cases, and return a concrete ordered plan with the main risks called out explicitly.","tools":["Read","Grep","Glob","TodoWrite"],"model":"sonnet"}}]}
+{"fn":"parseAgentMentionInvocations","args":["@review😀(x)",""],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review\ttab",""],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review\nnl",""],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review x(y)",""],"ok":[]}
+{"fn":"parseAgentMentionInvocations","args":["@review(t)",null],"ok":[{"alias":"review","task":"t","raw":"@review(t)","start":0,"end":10,"definition":{"alias":"review","provider":"claudeAgent","kind":"claude-subagent","agentName":"review","displayName":"Code Review","color":"amber","description":"Bug and risk reviewer. Use for code review, regression hunting, and edge-case analysis.","prompt":"You are a senior code reviewer. Focus on behavioral regressions, correctness bugs, edge cases, and missing tests. Return findings first, then open questions, then a brief summary.","tools":["Read","Grep","Glob"],"model":"sonnet"}}]}
+{"fn":"parseAgentMentionInvocations","args":["@review(t)",null],"ok":[{"alias":"review","task":"t","raw":"@review(t)","start":0,"end":10,"definition":{"alias":"review","provider":"claudeAgent","kind":"claude-subagent","agentName":"review","displayName":"Code Review","color":"amber","description":"Bug and risk reviewer. Use for code review, regression hunting, and edge-case analysis.","prompt":"You are a senior code reviewer. Focus on behavioral regressions, correctness bugs, edge cases, and missing tests. Return findings first, then open questions, then a brief summary.","tools":["Read","Grep","Glob"],"model":"sonnet"}}]}
+{"fn":"parseAgentMentionInvocations","args":["@review(t)",0],"ok":[{"alias":"review","task":"t","raw":"@review(t)","start":0,"end":10,"definition":{"alias":"review","provider":"claudeAgent","kind":"claude-subagent","agentName":"review","displayName":"Code Review","color":"amber","description":"Bug and risk reviewer. Use for code review, regression hunting, and edge-case analysis.","prompt":"You are a senior code reviewer. Focus on behavioral regressions, correctness bugs, edge cases, and missing tests. Return findings first, then open questions, then a brief summary.","tools":["Read","Grep","Glob"],"model":"sonnet"}}]}
+{"fn":"parseAgentMentionInvocations","args":["@review(t)",false],"ok":[{"alias":"review","task":"t","raw":"@review(t)","start":0,"end":10,"definition":{"alias":"review","provider":"claudeAgent","kind":"claude-subagent","agentName":"review","displayName":"Code Review","color":"amber","description":"Bug and risk reviewer. Use for code review, regression hunting, and edge-case analysis.","prompt":"You are a senior code reviewer. Focus on behavioral regressions, correctness bugs, edge cases, and missing tests. Return findings first, then open questions, then a brief summary.","tools":["Read","Grep","Glob"],"model":"sonnet"}}]}
+{"fn":"parseAgentMentionInvocations","args":["@review(t)",true],"error":"Cannot read properties of undefined (reading 'review')"}
+{"fn":"parseAgentMentionInvocations","args":["@review(t)",{}],"error":"Cannot read properties of undefined (reading 'review')"}
+{"fn":"parseAgentMentionInvocations","args":["@review(t)",[]],"error":"Cannot read properties of undefined (reading 'review')"}
+{"fn":"parseAgentMentionInvocations","args":["@review(t)","x"],"error":"Cannot read properties of undefined (reading 'review')"}
+{"fn":"buildClaudeSubagentPrompt","args":["@review(r1)"],"ok":{"prompt":"The user included inline subagent directives in the form @alias(task).\nExecute each directive explicitly via the Agent tool using the named subagent below.\nAfter the delegated work completes, continue with the overall request and synthesize the results.\nDo not echo the literal @alias(task) syntax back to the user unless it is directly relevant.\n\nInline directives:\n1. Use the \"review\" agent for this task:\nr1\n\nOriginal user prompt:\n@review(r1)","invocations":[{"alias":"review","task":"r1","raw":"@review(r1)","start":0,"end":11,"definition":{"alias":"review","provider":"claudeAgent","kind":"claude-subagent","agentName":"review","displayName":"Code Review","color":"amber","description":"Bug and risk reviewer. Use for code review, regression hunting, and edge-case analysis.","prompt":"You are a senior code reviewer. Focus on behavioral regressions, correctness bugs, edge cases, and missing tests. Return findings first, then open questions, then a brief summary.","tools":["Read","Grep","Glob"],"model":"sonnet"}}]}}
+{"fn":"buildClaudeSubagentPrompt","args":["two @review(a) and @explore(b)"],"ok":{"prompt":"The user included inline subagent directives in the form @alias(task).\nExecute each directive explicitly via the Agent tool using the named subagent below.\nAfter the delegated work completes, continue with the overall request and synthesize the results.\nDo not echo the literal @alias(task) syntax back to the user unless it is directly relevant.\n\nInline directives:\n1. Use the \"review\" agent for this task:\na\n\n2. Use the \"explore\" agent for this task:\nb\n\nOriginal user prompt:\ntwo @review(a) and @explore(b)","invocations":[{"alias":"review","task":"a","raw":"@review(a)","start":4,"end":14,"definition":{"alias":"review","provider":"claudeAgent","kind":"claude-subagent","agentName":"review","displayName":"Code Review","color":"amber","description":"Bug and risk reviewer. Use for code review, regression hunting, and edge-case analysis.","prompt":"You are a senior code reviewer. Focus on behavioral regressions, correctness bugs, edge cases, and missing tests. Return findings first, then open questions, then a brief summary.","tools":["Read","Grep","Glob"],"model":"sonnet"}},{"alias":"explore","task":"b","raw":"@explore(b)","start":19,"end":30,"definition":{"alias":"explore","provider":"claudeAgent","kind":"claude-subagent","agentName":"explore","displayName":"Explore","color":"cyan","description":"Read-only codebase explorer. Use for file discovery, code search, and gathering context before implementation.","prompt":"You are a focused codebase exploration specialist. Search broadly, gather the most relevant findings, and return a concise summary with the key files, evidence, and risks. Do not make code changes.","tools":["Read","Grep","Glob"],"model":"haiku"}}]}}
+{"fn":"buildClaudeSubagentPrompt","args":["@implement(i1)"],"ok":{"prompt":"The user included inline subagent directives in the form @alias(task).\nExecute each directive explicitly via the Agent tool using the named subagent below.\nAfter the delegated work completes, continue with the overall request and synthesize the results.\nDo not echo the literal @alias(task) syntax back to the user unless it is directly relevant.\n\nInline directives:\n1. Use the \"build\" agent for this task:\ni1\n\nOriginal user prompt:\n@implement(i1)","invocations":[{"alias":"implement","task":"i1","raw":"@implement(i1)","start":0,"end":14,"definition":{"alias":"implement","provider":"claudeAgent","kind":"claude-subagent","agentName":"build","displayName":"Implementer","color":"violet","description":"Implementation teammate. Use for scoped code changes, debugging, and hands-on execution tasks.","prompt":"You are an implementation-focused coding teammate. Make targeted changes, validate assumptions with the available tools, and return a short implementation summary plus any remaining risks.","tools":["Read","Grep","Glob","Bash","Edit","Write","MultiEdit"],"model":"sonnet"}}]}}
+{"fn":"buildClaudeSubagentPrompt","args":["@spark(s)"],"ok":{"prompt":"@spark(s)","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["plain"],"ok":{"prompt":"plain","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":[" @planner(x) end"],"ok":{"prompt":"The user included inline subagent directives in the form @alias(task).\nExecute each directive explicitly via the Agent tool using the named subagent below.\nAfter the delegated work completes, continue with the overall request and synthesize the results.\nDo not echo the literal @alias(task) syntax back to the user unless it is directly relevant.\n\nInline directives:\n1. Use the \"plan\" agent for this task:\nx\n\nOriginal user prompt:\n @planner(x) end","invocations":[{"alias":"planner","task":"x","raw":"@planner(x)","start":1,"end":12,"definition":{"alias":"planner","provider":"claudeAgent","kind":"claude-subagent","agentName":"plan","displayName":"Planner","color":"fuchsia","description":"Planning specialist. Use for breaking work into steps, evaluating approaches, and preparing execution plans.","prompt":"You are a planning specialist. Clarify goals, evaluate tradeoffs, identify edge cases, and return a concrete ordered plan with the main risks called out explicitly.","tools":["Read","Grep","Glob","TodoWrite"],"model":"sonnet"}}]}}
+{"fn":"buildClaudeSubagentPrompt","args":["@unknown(t)"],"ok":{"prompt":"@unknown(t)","invocations":[]}}
+{"fn":"buildClaudeSubagentPrompt","args":["@build((n(e)s)t)"],"ok":{"prompt":"The user included inline subagent directives in the form @alias(task).\nExecute each directive explicitly via the Agent tool using the named subagent below.\nAfter the delegated work completes, continue with the overall request and synthesize the results.\nDo not echo the literal @alias(task) syntax back to the user unless it is directly relevant.\n\nInline directives:\n1. Use the \"build\" agent for this task:\n(n(e)s)t\n\nOriginal user prompt:\n@build((n(e)s)t)","invocations":[{"alias":"build","task":"(n(e)s)t","raw":"@build((n(e)s)t)","start":0,"end":16,"definition":{"alias":"build","provider":"claudeAgent","kind":"claude-subagent","agentName":"build","displayName":"Implementer","color":"violet","description":"Implementation teammate. Use for scoped code changes, debugging, and hands-on execution tasks.","prompt":"You are an implementation-focused coding teammate. Make targeted changes, validate assumptions with the available tools, and return a short implementation summary plus any remaining risks.","tools":["Read","Grep","Glob","Bash","Edit","Write","MultiEdit"],"model":"sonnet"}}]}}

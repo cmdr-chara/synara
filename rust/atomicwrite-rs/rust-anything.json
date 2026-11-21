@@ -1,0 +1,48 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/atomicWrite.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "atomicwrite-rs",
+  "exports": [
+    {
+      "name": "writeFileStringAtomically",
+      "file": "apps/server/src/atomicWrite.ts",
+      "line": 141,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly filePath: string;\n  readonly contents: string | Uint8Array;\n  readonly mode?: number;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "createFileStringExclusively",
+      "file": "apps/server/src/atomicWrite.ts",
+      "line": 165,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly filePath: string;\n  readonly contents: string | Uint8Array;\n  readonly mode?: number;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

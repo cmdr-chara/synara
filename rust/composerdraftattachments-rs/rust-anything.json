@@ -1,0 +1,294 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/composerDraftAttachments.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "composerdraftattachments-rs",
+  "exports": [
+    {
+      "name": "pendingComposerAttachmentSyncGenerationCount",
+      "file": "apps/web/src/composerDraftAttachments.ts",
+      "line": 34,
+      "params": [],
+      "returns": "number",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "mergeComposerImages",
+      "file": "apps/web/src/composerDraftAttachments.ts",
+      "line": 72,
+      "params": [
+        {
+          "name": "existingImages",
+          "ts_type": "ReadonlyArray<ComposerImageAttachment>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "incomingImages",
+          "ts_type": "ReadonlyArray<ComposerImageAttachment>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ComposerImageAttachment[] | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "composerFileDedupKey",
+      "file": "apps/web/src/composerDraftAttachments.ts",
+      "line": 96,
+      "params": [
+        {
+          "name": "file",
+          "ts_type": "ComposerFileAttachment",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "revokeObjectPreviewUrl",
+      "file": "apps/web/src/composerDraftAttachments.ts",
+      "line": 100,
+      "params": [
+        {
+          "name": "previewUrl",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "revokeQueuedTurnPreviewUrls",
+      "file": "apps/web/src/composerDraftAttachments.ts",
+      "line": 110,
+      "params": [
+        {
+          "name": "queuedTurn",
+          "ts_type": "(QueuedComposerChatTurn | QueuedComposerPlanFollowUp)",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "revokePromptHistorySavedDraftPreviewUrls",
+      "file": "apps/web/src/composerDraftAttachments.ts",
+      "line": 119,
+      "params": [
+        {
+          "name": "savedDraft",
+          "ts_type": "ComposerPromptHistorySavedDraft | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "revokeDraftPreviewUrls",
+      "file": "apps/web/src/composerDraftAttachments.ts",
+      "line": 130,
+      "params": [
+        {
+          "name": "draft",
+          "ts_type": "ComposerThreadDraftState | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "revokeDraftComposerImagePreviewUrls",
+      "file": "apps/web/src/composerDraftAttachments.ts",
+      "line": 143,
+      "params": [
+        {
+          "name": "draft",
+          "ts_type": "ComposerThreadDraftState | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isComposerImageBlobReferenced",
+      "file": "apps/web/src/composerDraftAttachments.ts",
+      "line": 155,
+      "params": [
+        {
+          "name": "draftsByThreadId",
+          "ts_type": "Readonly<Record<string, ComposerThreadDraftState | undefined>>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "blobKey",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "findSupersededComposerImageBlobAttachments",
+      "file": "apps/web/src/composerDraftAttachments.ts",
+      "line": 176,
+      "params": [
+        {
+          "name": "previousAttachments",
+          "ts_type": "ReadonlyArray<typeof typeof typeof typeof PersistedComposerImageAttachment.Type.Type.Type.Type>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "nextAttachments",
+          "ts_type": "ReadonlyArray<typeof typeof typeof typeof PersistedComposerImageAttachment.Type.Type.Type.Type>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof PersistedComposerImageAttachment.Type.Type.Type.Type[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "normalizePersistedAttachment",
+      "file": "apps/web/src/composerDraftAttachments.ts",
+      "line": 226,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof PersistedComposerImageAttachment.Type.Type.Type.Type | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "toStorageSafePersistedAttachment",
+      "file": "apps/web/src/composerDraftAttachments.ts",
+      "line": 265,
+      "params": [
+        {
+          "name": "attachment",
+          "ts_type": "typeof typeof typeof typeof PersistedComposerImageAttachment.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof PersistedComposerImageAttachment.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "persistQueuedComposerImages",
+      "file": "apps/web/src/composerDraftAttachments.ts",
+      "line": 286,
+      "params": [
+        {
+          "name": "images",
+          "ts_type": "ReadonlyArray<ComposerImageAttachment>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof PersistedComposerImageAttachment.Type.Type.Type.Type[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "hydrateImagesFromPersisted",
+      "file": "apps/web/src/composerDraftAttachments.ts",
+      "line": 592,
+      "params": [
+        {
+          "name": "attachments",
+          "ts_type": "ReadonlyArray<typeof typeof typeof typeof PersistedComposerImageAttachment.Type.Type.Type.Type>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ComposerImageAttachment[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "deletePersistedComposerImageBlobs",
+      "file": "apps/web/src/composerDraftAttachments.ts",
+      "line": 189,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "deleteDraftComposerImageBlobs",
+      "file": "apps/web/src/composerDraftAttachments.ts",
+      "line": 212,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "syncPersistedAttachmentsForSlot",
+      "file": "apps/web/src/composerDraftAttachments.ts",
+      "line": 486,
+      "reason": "takes or returns a function"
+    }
+  ]
+}

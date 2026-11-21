@@ -1,0 +1,17 @@
+{
+  "unit": "packages/shared/src/desktopChrome.ts",
+  "files": 1,
+  "fingerprint": "e66c5206e1ad8ff3",
+  "coverage": {
+    "lines": 105,
+    "reached": 105,
+    "files": [
+      {
+        "file": "packages/shared/src/desktopChrome.ts",
+        "lines": 105,
+        "reached": 105,
+        "missed": ""
+      }
+    ]
+  }
+}

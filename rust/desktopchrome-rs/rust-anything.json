@@ -1,0 +1,83 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/desktopChrome.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "desktopchrome-rs",
+  "exports": [
+    {
+      "name": "getMacTrafficLightPosition",
+      "file": "packages/shared/src/desktopChrome.ts",
+      "line": 43,
+      "params": [],
+      "returns": "{ x: number; y: number }",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "normalizeDesktopZoomFactor",
+      "file": "packages/shared/src/desktopChrome.ts",
+      "line": 66,
+      "params": [
+        {
+          "name": "zoomFactor",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "number",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveMacDesktopTopBarTrafficLightGutterCssPx",
+      "file": "packages/shared/src/desktopChrome.ts",
+      "line": 76,
+      "params": [
+        {
+          "name": "zoomFactor",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "number",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveDesktopDipRectFromCssRect",
+      "file": "packages/shared/src/desktopChrome.ts",
+      "line": 101,
+      "params": [
+        {
+          "name": "rect",
+          "ts_type": "DesktopRect",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "zoomFactor",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "DesktopRect",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

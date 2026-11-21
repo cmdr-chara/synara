@@ -1,0 +1,12 @@
+{"fn":"resolveMacDesktopTopBarTrafficLightGutterCssPx","args":[1.1]}
+{"fn":"normalizeDesktopZoomFactor","args":[1.1]}
+{"fn":"resolveMacDesktopTopBarTrafficLightGutterCssPx","args":[2]}
+{"fn":"normalizeDesktopZoomFactor","args":[2]}
+{"fn":"resolveMacDesktopTopBarTrafficLightGutterCssPx","args":[0]}
+{"fn":"normalizeDesktopZoomFactor","args":[0]}
+{"fn":"resolveMacDesktopTopBarTrafficLightGutterCssPx","args":[{"$num":"NaN"}]}
+{"fn":"normalizeDesktopZoomFactor","args":[{"$num":"NaN"}]}
+{"fn":"resolveDesktopDipRectFromCssRect","args":[{"x":320,"y":46,"width":800,"height":600},0.5]}
+{"fn":"normalizeDesktopZoomFactor","args":[0.5]}
+{"fn":"resolveDesktopDipRectFromCssRect","args":[{"x":320,"y":46,"width":800,"height":600},0]}
+{"fn":"resolveDesktopDipRectFromCssRect","args":[{"x":320,"y":46,"width":800,"height":600},{"$num":"NaN"}]}

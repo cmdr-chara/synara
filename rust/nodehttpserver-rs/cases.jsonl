@@ -1,0 +1,434 @@
+{"fn":"upgradeNativeWebSocket","args":[{"a":"b"}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"upgradeNativeWebSocket","args":["x"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"upgradeNativeWebSocket","args":[true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"upgradeNativeWebSocket","args":[null],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"upgradeNativeWebSocket","args":[{"a":{"b":"c"}}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"upgradeNativeWebSocket","args":[{}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"upgradeNativeWebSocket","args":[0],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"upgradeNativeWebSocket","args":[[]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"upgradeNativeWebSocket","args":[["a",1]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"upgradeNativeWebSocket","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"upgradeNativeWebSocket","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"upgradeNativeWebSocket","args":[[3,1,2]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"upgradePathAllowsCompression","args":[{"$undefined":true}],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["é"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["a:b:c"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["Hello World"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["emoji 👍🏽 mix"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["﻿bom"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":[],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["straße"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":[":ab"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["trailing.ns:key.path"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["HELLO"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["hello world"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":[":HELLO"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["{name} has {count} items"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["ns:key.path"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["./x/**/*.json"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["hello"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["ab"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["a.b.c"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["HELLOa😀b😀c"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["abc"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["éé"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["ünïcödé"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["İstanbul"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["tab\tseparated"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["HELLOa:b:c"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["a😀b😀cünïcödé"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["a.b.c日本語のテキスト"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["key_name-1"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["a"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["a.b.cHELLO"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":[""],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["ünïcödéemoji 👍🏽 mix"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["line1\nline2abc"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["ünïcödéHELLO"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":[":"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["./x/**/*.jsonΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["日本語のテキスト"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["ünïcödéabc"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["key_name-1ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["trailing."],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["tab\tseparatedHello World"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["aa.b.c"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["﻿bom😀"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["😀"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["a😀b😀c"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["::"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":[".leadinga.b.c"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["line1\nline2"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["ΣΊΣΥΦΟΣé"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["atrailing."],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["a..b"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["  padded  trailing."],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["éİstanbul"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":[".leadingé"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["a:b:ctab\tseparated"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":[".leading"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["src/a/b.ts"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["a:b:cemoji 👍🏽 mix"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["emoji 👍🏽 mixtab\tseparated"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["﻿boma..b"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["src/a/b.tssrc/a/b.ts"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":[":a😀b😀c"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["HELLOab"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["key_name-1./x/**/*.json"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["straßeabc"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["abab"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["hello worldé"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["a.b.c{name} has {count} items"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["trailing.Hello World"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["aline1\nline2"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["line1\nline2straße"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["{name} has {count} items:"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["ΣΊΣΥΦΟΣkey_name-1"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["abchello world"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["hellons:key.path"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["straßehello"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["﻿bom  padded  "],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["straßekey_name-1"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["  padded  "],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["key_name-1straße"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["hello worldünïcödé"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["  padded  ./x/**/*.json"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["emoji 👍🏽 mixhello"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["a﻿bom"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["tab\tseparatedsrc/a/b.ts"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["﻿bomhello world"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["line1\nline2a:b:c"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["straße.leading"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["é﻿bom"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["straße😀"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["ababc"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["line1\nline2İstanbul"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":[".leadingHELLO"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["emoji 👍🏽 mix:"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["helloa.b.c"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["line1\nline2trailing."],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["éünïcödé"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["tab\tseparated:"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["a.b.cé"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["  padded  ünïcödé"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["key_name-1a..b"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["日本語のテキストa:b:c"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["aab"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["key_name-1﻿bom"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["hello worldtab\tseparated"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["trailing.abc"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["abchello"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["ΣΊΣΥΦΟΣsrc/a/b.ts"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["{name} has {count} itemskey_name-1"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["tab\tseparated﻿bom"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["emoji 👍🏽 mixhello world"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["ns:key.pathHELLO"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["ünïcödé{name} has {count} items"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["line1\nline2日本語のテキスト"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["straßeé"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["abns:key.path"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["a:b:ckey_name-1"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["aa:b:c"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["trailing.src/a/b.ts"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["a..btab\tseparated"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["hello worlda.b.c"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["日本語のテキストemoji 👍🏽 mix"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["key_name-1.leading"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":[":﻿bom"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["tab\tseparatedabc"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["{name} has {count} itemsΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["{name} has {count} items日本語のテキスト"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":[".leadingİstanbul"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["ahello"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["ünïcödé😀"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["ünïcödéhello world"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["./x/**/*.jsonHello World"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["  padded  hello"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["helloé"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["src/a/b.tsline1\nline2"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["hello:"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["{name} has {count} itemsa"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["😀HELLO"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["trailing.straße"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["étrailing."],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["日本語のテキストline1\nline2"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["src/a/b.ts﻿bom"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["日本語のテキストünïcödé"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["İstanbulΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["aİstanbul"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["HELLOünïcödé"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["straßea.b.c"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["./x/**/*.jsonabc"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["ab:"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["a😀"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["Hello Worldab"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["key_name-1😀"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["İstanbul:"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["src/a/b.tstab\tseparated"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["aabc"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["key_name-1{name} has {count} items"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["src/a/b.tsemoji 👍🏽 mix"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["a.b.cab"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["  padded  a..b"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["a./x/**/*.json"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["hello worldns:key.path"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["abc日本語のテキスト"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["hellotab\tseparated"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["a😀b😀cHELLO"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":[".leadinghello"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["Hello World日本語のテキスト"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["a:b:cab"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["straße  padded  "],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["HELLOa..b"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["line1\nline2😀"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["helloünïcödé"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["ünïcödéa.b.c"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["﻿bomns:key.path"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["./x/**/*.jsoné"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["éns:key.path"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":[".leadingemoji 👍🏽 mix"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["./x/**/*.jsonstraße"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["ns:key.pathab"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["a😀b😀cab"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":[".leadingab"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["ab./x/**/*.json"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["emoji 👍🏽 mixé"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["﻿bomkey_name-1"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["日本語のテキストé"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["ékey_name-1"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["  padded  ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["İstanbultrailing."],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["ΣΊΣΥΦΟΣab"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["😀:"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["tab\tseparatedΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["  padded  ab"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["emoji 👍🏽 mixHELLO"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["étab\tseparated"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["HELLO.leading"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["abckey_name-1"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":[".leading😀"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["ΣΊΣΥΦΟΣns:key.path"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":[":İstanbul"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["héllo wörld"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["👍🏽 thumbs"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["日本語"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["ılık ırmak"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["👨‍👩‍👧 family"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["a b"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["a😀b"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["a²b x½ y①"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["aⅠb Ⅻ"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["a𐐀b 𝐀bc"],"ok":false}
+{"fn":"upgradePathAllowsCompression","args":["कि ٣٤"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["Hello Worldkey_name-1"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":[{"$undefined":true}],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["ns:key.pathtab\tseparated"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["emoji 👍🏽 mix"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["İstanbul"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":[],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["hello"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["ns:key.path"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["😀"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["﻿bom"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["  padded  "],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["ns:key.patha"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["src/a/b.ts"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["日本語のテキスト"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":[":"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["a"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["a.b.c  padded  "],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["a.b.c"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["aa😀b😀c"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["key_name-1{name} has {count} items"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":[""],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":[".leading"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["a:b:c"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["﻿bomHELLO"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["Hello Worlda"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["HELLO"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["a:b:chello world"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["./x/**/*.json"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["hello worldHello World"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["a..bİstanbul"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["a😀b😀c"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["trailing."],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["src/a/b.tsa"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["ab"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["ns:key.pathünïcödé"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["é"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":[".leadingtrailing."],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["src/a/b.tshello"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["hello world"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["ünïcödékey_name-1"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["{name} has {count} items"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["İstanbul日本語のテキスト"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["Hello World"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["İstanbulkey_name-1"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["ünïcödé"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["straßens:key.path"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":[".leadinga😀b😀c"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["straße"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["ns:key.pathtrailing."],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["HELLOİstanbul"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["emoji 👍🏽 mixa..b"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["key_name-1"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["emoji 👍🏽 mixhello"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["﻿bomΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["line1\nline2"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["trailing.a😀b😀c"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["straße  padded  "],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["tab\tseparated"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["src/a/b.tsa.b.c"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["straßeline1\nline2"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["line1\nline2a..b"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["./x/**/*.jsonsrc/a/b.ts"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["{name} has {count} itemssrc/a/b.ts"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["hello worldsrc/a/b.ts"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["  padded  ./x/**/*.json"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["hello😀"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["  padded  key_name-1"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["  padded  {name} has {count} items"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["a..b"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["abc"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["hello worldns:key.path"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["a:b:cab"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["ünïcödé{name} has {count} items"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["ababc"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["tab\tseparatedabc"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["emoji 👍🏽 mix﻿bom"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["aba😀b😀c"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["HELLOHello World"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["Hello WorldHello World"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["a..ba😀b😀c"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["a..ba..b"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["  padded  a.b.c"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["Hello Worldab"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["a😀b😀csrc/a/b.ts"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["日本語のテキストé"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["﻿bomemoji 👍🏽 mix"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["日本語のテキストΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["İstanbulline1\nline2"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["trailing.a..b"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["HELLOa😀b😀c"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["hello world{name} has {count} items"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["ΣΊΣΥΦΟΣ{name} has {count} items"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["src/a/b.tsemoji 👍🏽 mix"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["日本語のテキスト.leading"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["😀Hello World"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["a日本語のテキスト"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":[".leading{name} has {count} items"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["trailing.emoji 👍🏽 mix"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["日本語のテキストtab\tseparated"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["{name} has {count} itemsns:key.path"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["ΣΊΣΥΦΟΣa"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["key_name-1ns:key.path"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["a😀b😀cHELLO"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["  padded  ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["  padded  abc"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["﻿bomé"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":[".leadingsrc/a/b.ts"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["İstanbulsrc/a/b.ts"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["abca:b:c"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["{name} has {count} items{name} has {count} items"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":[":emoji 👍🏽 mix"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["a.b.c日本語のテキスト"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["a..bHELLO"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":[":abc"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["hello worldhello world"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["emoji 👍🏽 mixhello world"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["  padded  ab"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["HELLOé"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["aba:b:c"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["a..b日本語のテキスト"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["tab\tseparatedhello world"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["日本語のテキスト😀"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["line1\nline2{name} has {count} items"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["日本語のテキストa:b:c"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["ΣΊΣΥΦΟΣab"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["éHello World"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["日本語のテキストtrailing."],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["{name} has {count} itemsünïcödé"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["emoji 👍🏽 mix😀"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["HELLOünïcödé"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["a.b.cİstanbul"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["tab\tseparatedkey_name-1"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["ΣΊΣΥΦΟΣline1\nline2"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["emoji 👍🏽 mix.leading"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["HELLOemoji 👍🏽 mix"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["src/a/b.tstrailing."],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["line1\nline2a.b.c"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["key_name-1ünïcödé"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["﻿bom:"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["hello worlda😀b😀c"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["a.b.cns:key.path"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["line1\nline2a:b:c"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["src/a/b.ts:"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["日本語のテキスト./x/**/*.json"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["İstanbula😀b😀c"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["helloΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["src/a/b.ts{name} has {count} items"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["😀tab\tseparated"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["emoji 👍🏽 mix日本語のテキスト"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["::"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["éa.b.c"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["İstanbulabc"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["tab\tseparated./x/**/*.json"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["abcΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["tab\tseparateda😀b😀c"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["é😀"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["  padded  hello"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":[":a"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["aba.b.c"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["hellohello world"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["key_name-1trailing."],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["abtrailing."],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["aünïcödé"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["{name} has {count} itemsa..b"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["日本語のテキストemoji 👍🏽 mix"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["a:b:c﻿bom"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["emoji 👍🏽 mixemoji 👍🏽 mix"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["line1\nline2.leading"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["ΣΊΣΥΦΟΣ😀"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["😀a:b:c"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["a.b.chello"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["ns:key.path./x/**/*.json"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["  padded  ﻿bom"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["ünïcödéab"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["ΣΊΣΥΦΟΣ  padded  "],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["src/a/b.tsa😀b😀c"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["src/a/b.tsHELLO"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["日本語のテキストab"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["a😀b😀ca..b"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["ünïcödé﻿bom"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["a😀b😀chello world"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["line1\nline2HELLO"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["日本語のテキスト{name} has {count} items"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":[".leading.leading"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["./x/**/*.jsonHELLO"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["a.b.cHello World"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["abhello"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["😀ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["src/a/b.tsa..b"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["a.b.ca.b.c"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["Hello World.leading"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["straßeΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["a:b:ckey_name-1"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["abünïcödé"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["helloa.b.c"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":[":Hello World"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["hello worldstraße"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["﻿bomabc"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["HELLO日本語のテキスト"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["héllo wörld"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["👍🏽 thumbs"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["日本語"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["ılık ırmak"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["👨‍👩‍👧 family"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["a b"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["a😀b"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["a²b x½ y①"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["aⅠb Ⅻ"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["a𐐀b 𝐀bc"],"ok":false}
+{"fn":"upgradeOptsOutOfCompression","args":["कि ٣٤"],"ok":false}

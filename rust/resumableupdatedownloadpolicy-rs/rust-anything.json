@@ -1,0 +1,168 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/desktop/src/resumableUpdateDownloadPolicy.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "resumableupdatedownloadpolicy-rs",
+  "exports": [
+    {
+      "name": "computeProgressInfo",
+      "file": "apps/desktop/src/resumableUpdateDownloadPolicy.ts",
+      "line": 42,
+      "params": [
+        {
+          "name": "args",
+          "ts_type": "{\n  readonly transferred: number;\n  readonly total: number;\n  readonly delta: number;\n  readonly elapsedMs: number;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ResumableProgressInfo",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "parseContentRangeTotal",
+      "file": "apps/desktop/src/resumableUpdateDownloadPolicy.ts",
+      "line": 59,
+      "params": [
+        {
+          "name": "headerValue",
+          "ts_type": "string | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "number | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "selectSha512Encoding",
+      "file": "apps/desktop/src/resumableUpdateDownloadPolicy.ts",
+      "line": 73,
+      "params": [
+        {
+          "name": "sha512",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "\"hex\" | \"base64\"",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "classifyDownloadResponse",
+      "file": "apps/desktop/src/resumableUpdateDownloadPolicy.ts",
+      "line": 94,
+      "params": [
+        {
+          "name": "args",
+          "ts_type": "{\n  readonly statusCode: number;\n  readonly contentRange: string | null;\n  readonly contentLength: number | null;\n  readonly bytesAlreadyDownloaded: number;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(| { readonly kind: \"append\"; readonly total: number | null }\n  // 200 OK: body starts at byte 0 (first attempt, or server ignored Range).\n  | { readonly kind: \"fromStart\"; readonly total: number | null }\n  // 416: range not satisfiable — we already hold every byte.\n  | { readonly kind: \"complete\" }\n  // 429 / 5xx: transient, worth retrying.\n  | { readonly kind: \"retryable\"; readonly statusCode: number }\n  // Anything else (e.g. 403/404): not recoverable by retrying.\n  | { readonly kind: \"fatal\"; readonly statusCode: number })",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "computeRetryDelayMs",
+      "file": "apps/desktop/src/resumableUpdateDownloadPolicy.ts",
+      "line": 119,
+      "params": [
+        {
+          "name": "consecutiveStallCount",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "config",
+          "ts_type": "Pick<ResumableDownloadConfig, \"retryBaseDelayMs\" | \"retryMaxDelayMs\">",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "number",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "shouldGiveUp",
+      "file": "apps/desktop/src/resumableUpdateDownloadPolicy.ts",
+      "line": 131,
+      "params": [
+        {
+          "name": "args",
+          "ts_type": "{\n  readonly consecutiveStallCount: number;\n  readonly totalAttempts: number;\n  readonly elapsedMs: number;\n  readonly config: ResumableDownloadConfig;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isCrossOrigin",
+      "file": "apps/desktop/src/resumableUpdateDownloadPolicy.ts",
+      "line": 159,
+      "params": [
+        {
+          "name": "a",
+          "ts_type": "URL",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "b",
+          "ts_type": "URL",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "buildDownloadHeaders",
+      "file": "apps/desktop/src/resumableUpdateDownloadPolicy.ts",
+      "line": 170,
+      "params": [
+        {
+          "name": "args",
+          "ts_type": "{\n  readonly callHeaders: Record<string, string> | null | undefined;\n  readonly startOffset: number;\n  readonly attachAuth: boolean;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Record<string, string>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

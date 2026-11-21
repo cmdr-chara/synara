@@ -1,0 +1,17 @@
+{
+  "unit": "apps/desktop/src/resumableUpdateDownloadPolicy.ts",
+  "files": 1,
+  "fingerprint": "170c681ecfeab653",
+  "coverage": {
+    "lines": 178,
+    "reached": 147,
+    "files": [
+      {
+        "file": "apps/desktop/src/resumableUpdateDownloadPolicy.ts",
+        "lines": 178,
+        "reached": 147,
+        "missed": "67, 75-78, 102-106, 108-109, 111-112, 114-115, 144-155, 163, 179-180"
+      }
+    ]
+  }
+}

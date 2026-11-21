@@ -1,0 +1,145 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "scripts/check-migration-lineage.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "check-migration-lineage-rs",
+  "exports": [
+    {
+      "name": "parseMigrationLineage",
+      "file": "scripts/check-migration-lineage.ts",
+      "line": 78,
+      "params": [
+        {
+          "name": "source",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "MigrationLineageEntry[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "parseMigrationLineageAllowances",
+      "file": "scripts/check-migration-lineage.ts",
+      "line": 98,
+      "params": [
+        {
+          "name": "source",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "MigrationLineageAllowance[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "findLineageStructureViolations",
+      "file": "scripts/check-migration-lineage.ts",
+      "line": 114,
+      "params": [
+        {
+          "name": "entries",
+          "ts_type": "readonly MigrationLineageEntry[]",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "findReleasedLineageViolations",
+      "file": "scripts/check-migration-lineage.ts",
+      "line": 136,
+      "params": [
+        {
+          "name": "released",
+          "ts_type": "readonly MigrationLineageEntry[]",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "current",
+          "ts_type": "readonly MigrationLineageEntry[]",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "allowances",
+          "ts_type": "readonly MigrationLineageAllowance[]",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "MigrationLineageViolation[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveMigrationLineageFamily",
+      "file": "scripts/check-migration-lineage.ts",
+      "line": 177,
+      "params": [
+        {
+          "name": "serverVersion",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "desktopVersion",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(\"shared\" | \"remote\")",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "groupViolationsByPair",
+      "file": "scripts/check-migration-lineage.ts",
+      "line": 225,
+      "params": [
+        {
+          "name": "perTag",
+          "ts_type": "ReadonlyArray<{\n    readonly tag: string;\n    readonly violations: readonly MigrationLineageViolation[];\n  }>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "TaggedViolation[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "resolveReleaseTags",
+      "file": "scripts/check-migration-lineage.ts",
+      "line": 207,
+      "reason": "takes or returns a function"
+    }
+  ]
+}

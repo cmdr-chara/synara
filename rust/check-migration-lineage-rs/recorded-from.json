@@ -1,0 +1,23 @@
+{
+  "unit": "scripts/check-migration-lineage.ts",
+  "files": 1,
+  "fingerprint": "50fb1faa88a381fb",
+  "coverage": {
+    "lines": 438,
+    "reached": 255,
+    "files": [
+      {
+        "file": "apps/server/src/persistence/AccountMigrationLineage.ts",
+        "lines": 133,
+        "reached": 68,
+        "missed": "67-68, 72-108, 112-137"
+      },
+      {
+        "file": "scripts/check-migration-lineage.ts",
+        "lines": 305,
+        "reached": 187,
+        "missed": "83-90, 103-106, 157-160, 163-169, 193-200, 208-214, 246-252, 254-260, 262-270, 272-295, 297-303, 305-313, 315-331"
+      }
+    ]
+  }
+}

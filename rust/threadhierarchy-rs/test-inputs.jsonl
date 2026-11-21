@@ -1,0 +1,2 @@
+{"fn":"collectSubagentDescendants","args":[[{"id":"root","parentThreadId":null},{"id":"child-a","parentThreadId":"root"},{"id":"grandchild","parentThreadId":"child-a"},{"id":"child-b","parentThreadId":"root"},{"id":"unrelated","parentThreadId":null},{"id":"unrelated-child","parentThreadId":"unrelated"}],"root"]}
+{"fn":"collectSubagentDescendants","args":[[{"id":"root","parentThreadId":null},{"id":"child","parentThreadId":"root"},{"id":"root","parentThreadId":"child"},{"id":"self","parentThreadId":"self"}],"root"]}

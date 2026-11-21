@@ -1,0 +1,36 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/threadHierarchy.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "threadhierarchy-rs",
+  "exports": [
+    {
+      "name": "collectSubagentDescendants",
+      "file": "packages/shared/src/threadHierarchy.ts",
+      "line": 15,
+      "params": [
+        {
+          "name": "threads",
+          "ts_type": "readonly (HierarchyThread)[]",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "rootThreadId",
+          "ts_type": "(HierarchyThread)[\"id\"]",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(HierarchyThread)[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

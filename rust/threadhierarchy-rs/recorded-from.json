@@ -1,0 +1,17 @@
+{
+  "unit": "packages/shared/src/threadHierarchy.ts",
+  "files": 1,
+  "fingerprint": "8af8b59142d67bea",
+  "coverage": {
+    "lines": 48,
+    "reached": 46,
+    "files": [
+      {
+        "file": "packages/shared/src/threadHierarchy.ts",
+        "lines": 48,
+        "reached": 46,
+        "missed": "39-40"
+      }
+    ]
+  }
+}

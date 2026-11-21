@@ -1,0 +1,30 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/contracts/src/browserAutomationCssSelector.ts",
+  "language": "ts",
+  "kind": "wasm",
+  "crate_name": "browserautomationcssselector-rs",
+  "exports": [
+    {
+      "name": "isBrowserCssSelector",
+      "file": "packages/contracts/src/browserAutomationCssSelector.ts",
+      "line": 352,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

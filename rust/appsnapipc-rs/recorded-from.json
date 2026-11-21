@@ -1,0 +1,23 @@
+{
+  "unit": "apps/desktop/src/appSnapIpc.ts",
+  "files": 1,
+  "fingerprint": "12cccc185fce3a25",
+  "coverage": {
+    "lines": 323,
+    "reached": 213,
+    "files": [
+      {
+        "file": "apps/desktop/src/appSnapIpc.ts",
+        "lines": 162,
+        "reached": 52,
+        "missed": "34-38, 40-53, 84-98, 100-103, 105-108, 110-113, 115-118, 120-123, 125-133, 135-138, 140-143, 145-146, 148-163, 165-170, 172-175, 177-182, 184-188"
+      },
+      {
+        "file": "apps/desktop/src/ipcChannels.ts",
+        "lines": 161,
+        "reached": 161,
+        "missed": ""
+      }
+    ]
+  }
+}

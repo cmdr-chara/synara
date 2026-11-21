@@ -1,0 +1,115 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/desktop/src/appSnapIpc.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "appsnapipc-rs",
+  "exports": [
+    {
+      "name": "sendAppSnapState",
+      "file": "apps/desktop/src/appSnapIpc.ts",
+      "line": 55,
+      "params": [
+        {
+          "name": "webContents",
+          "ts_type": "WebContents | null | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "state",
+          "ts_type": "DesktopAppSnapState",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "sendAppSnapCaptured",
+      "file": "apps/desktop/src/appSnapIpc.ts",
+      "line": 62,
+      "params": [
+        {
+          "name": "webContents",
+          "ts_type": "WebContents | null | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "capture",
+          "ts_type": "DesktopAppSnapCapture",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "sendAppSnapError",
+      "file": "apps/desktop/src/appSnapIpc.ts",
+      "line": 69,
+      "params": [
+        {
+          "name": "webContents",
+          "ts_type": "WebContents | null | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "error",
+          "ts_type": "DesktopAppSnapErrorEvent",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "sendAppSnapPermissionGuideState",
+      "file": "apps/desktop/src/appSnapIpc.ts",
+      "line": 76,
+      "params": [
+        {
+          "name": "webContents",
+          "ts_type": "WebContents | null | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "state",
+          "ts_type": "(\"closed\" | \"granted\")",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "registerAppSnapIpcHandlers",
+      "file": "apps/desktop/src/appSnapIpc.ts",
+      "line": 83,
+      "reason": "uses `AppSnapIpcHandlerOptions`, which has function members"
+    }
+  ]
+}

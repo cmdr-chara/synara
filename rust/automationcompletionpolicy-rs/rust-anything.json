@@ -1,0 +1,48 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/automationCompletionPolicy.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "automationcompletionpolicy-rs",
+  "exports": [
+    {
+      "name": "completionPolicyFromStopWhen",
+      "file": "packages/shared/src/automationCompletionPolicy.ts",
+      "line": 16,
+      "params": [
+        {
+          "name": "stopWhen",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof AutomationCompletionPolicy.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "stopWhenFromCompletionPolicy",
+      "file": "packages/shared/src/automationCompletionPolicy.ts",
+      "line": 27,
+      "params": [
+        {
+          "name": "policy",
+          "ts_type": "typeof typeof typeof typeof AutomationCompletionPolicy.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

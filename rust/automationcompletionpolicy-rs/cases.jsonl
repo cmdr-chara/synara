@@ -1,0 +1,233 @@
+{"fn":"completionPolicyFromStopWhen","args":["日本語のテキスト"],"ok":{"type":"ai-evaluated","stopWhen":"日本語のテキスト","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["a..bHELLO"],"ok":{"type":"ai-evaluated","stopWhen":"a..bHELLO","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["a"],"ok":{"type":"ai-evaluated","stopWhen":"a","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["a.b.c"],"ok":{"type":"ai-evaluated","stopWhen":"a.b.c","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["ünïcödé"],"ok":{"type":"ai-evaluated","stopWhen":"ünïcödé","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["ns:key.path"],"ok":{"type":"ai-evaluated","stopWhen":"ns:key.path","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["﻿bom"],"ok":{"type":"ai-evaluated","stopWhen":"bom","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["src/a/b.ts"],"ok":{"type":"ai-evaluated","stopWhen":"src/a/b.ts","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":[".leading"],"ok":{"type":"ai-evaluated","stopWhen":".leading","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["İstanbul"],"ok":{"type":"ai-evaluated","stopWhen":"İstanbul","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["trailing."],"ok":{"type":"ai-evaluated","stopWhen":"trailing.","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["line1\nline2"],"ok":{"type":"ai-evaluated","stopWhen":"line1\nline2","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["aİstanbul"],"ok":{"type":"ai-evaluated","stopWhen":"aİstanbul","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["﻿bom﻿bom"],"ok":{"type":"ai-evaluated","stopWhen":"bom﻿bom","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["straße"],"ok":{"type":"ai-evaluated","stopWhen":"straße","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["abca:b:c"],"ok":{"type":"ai-evaluated","stopWhen":"abca:b:c","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["HELLO"],"ok":{"type":"ai-evaluated","stopWhen":"HELLO","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["a😀b😀c"],"ok":{"type":"ai-evaluated","stopWhen":"a😀b😀c","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":[""],"ok":{"type":"none"}}
+{"fn":"completionPolicyFromStopWhen","args":["hello"],"ok":{"type":"ai-evaluated","stopWhen":"hello","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":[":"],"ok":{"type":"ai-evaluated","stopWhen":":","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["  padded  "],"ok":{"type":"ai-evaluated","stopWhen":"padded","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["ns:key.pathhello"],"ok":{"type":"ai-evaluated","stopWhen":"ns:key.pathhello","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["tab\tseparated"],"ok":{"type":"ai-evaluated","stopWhen":"tab\tseparated","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["./x/**/*.json"],"ok":{"type":"ai-evaluated","stopWhen":"./x/**/*.json","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["😀é"],"ok":{"type":"ai-evaluated","stopWhen":"😀é","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["emoji 👍🏽 mix"],"ok":{"type":"ai-evaluated","stopWhen":"emoji 👍🏽 mix","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["ünïcödé{name} has {count} items"],"ok":{"type":"ai-evaluated","stopWhen":"ünïcödé{name} has {count} items","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["é"],"ok":{"type":"ai-evaluated","stopWhen":"é","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["ΣΊΣΥΦΟΣ"],"ok":{"type":"ai-evaluated","stopWhen":"ΣΊΣΥΦΟΣ","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["Hello World"],"ok":{"type":"ai-evaluated","stopWhen":"Hello World","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["ns:key.path﻿bom"],"ok":{"type":"ai-evaluated","stopWhen":"ns:key.path﻿bom","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["éHello World"],"ok":{"type":"ai-evaluated","stopWhen":"éHello World","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["İstanbulünïcödé"],"ok":{"type":"ai-evaluated","stopWhen":"İstanbulünïcödé","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["tab\tseparated./x/**/*.json"],"ok":{"type":"ai-evaluated","stopWhen":"tab\tseparated./x/**/*.json","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["😀ns:key.path"],"ok":{"type":"ai-evaluated","stopWhen":"😀ns:key.path","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["ab"],"ok":{"type":"ai-evaluated","stopWhen":"ab","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["./x/**/*.jsonabc"],"ok":{"type":"ai-evaluated","stopWhen":"./x/**/*.jsonabc","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["a..b"],"ok":{"type":"ai-evaluated","stopWhen":"a..b","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["😀"],"ok":{"type":"ai-evaluated","stopWhen":"😀","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["./x/**/*.json  padded  "],"ok":{"type":"ai-evaluated","stopWhen":"./x/**/*.json  padded","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["{name} has {count} items"],"ok":{"type":"ai-evaluated","stopWhen":"{name} has {count} items","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["a.b.cns:key.path"],"ok":{"type":"ai-evaluated","stopWhen":"a.b.cns:key.path","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["a😀b😀ca:b:c"],"ok":{"type":"ai-evaluated","stopWhen":"a😀b😀ca:b:c","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["hello worlda.b.c"],"ok":{"type":"ai-evaluated","stopWhen":"hello worlda.b.c","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["key_name-1"],"ok":{"type":"ai-evaluated","stopWhen":"key_name-1","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["straße😀"],"ok":{"type":"ai-evaluated","stopWhen":"straße😀","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":[":😀"],"ok":{"type":"ai-evaluated","stopWhen":":😀","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["line1\nline2HELLO"],"ok":{"type":"ai-evaluated","stopWhen":"line1\nline2HELLO","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["hello world"],"ok":{"type":"ai-evaluated","stopWhen":"hello world","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["a:b:c"],"ok":{"type":"ai-evaluated","stopWhen":"a:b:c","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["emoji 👍🏽 mixab"],"ok":{"type":"ai-evaluated","stopWhen":"emoji 👍🏽 mixab","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["a..btab\tseparated"],"ok":{"type":"ai-evaluated","stopWhen":"a..btab\tseparated","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["İstanbul{name} has {count} items"],"ok":{"type":"ai-evaluated","stopWhen":"İstanbul{name} has {count} items","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["key_name-1{name} has {count} items"],"ok":{"type":"ai-evaluated","stopWhen":"key_name-1{name} has {count} items","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["trailing.line1\nline2"],"ok":{"type":"ai-evaluated","stopWhen":"trailing.line1\nline2","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["  padded  ns:key.path"],"ok":{"type":"ai-evaluated","stopWhen":"padded  ns:key.path","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["tab\tseparatedabc"],"ok":{"type":"ai-evaluated","stopWhen":"tab\tseparatedabc","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["./x/**/*.jsonkey_name-1"],"ok":{"type":"ai-evaluated","stopWhen":"./x/**/*.jsonkey_name-1","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["İstanbulİstanbul"],"ok":{"type":"ai-evaluated","stopWhen":"İstanbulİstanbul","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["abc"],"ok":{"type":"ai-evaluated","stopWhen":"abc","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["a.b.cHello World"],"ok":{"type":"ai-evaluated","stopWhen":"a.b.cHello World","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":[".leading日本語のテキスト"],"ok":{"type":"ai-evaluated","stopWhen":".leading日本語のテキスト","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["日本語のテキストemoji 👍🏽 mix"],"ok":{"type":"ai-evaluated","stopWhen":"日本語のテキストemoji 👍🏽 mix","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["Hello Worldline1\nline2"],"ok":{"type":"ai-evaluated","stopWhen":"Hello Worldline1\nline2","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["HELLOabc"],"ok":{"type":"ai-evaluated","stopWhen":"HELLOabc","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["a.b.csrc/a/b.ts"],"ok":{"type":"ai-evaluated","stopWhen":"a.b.csrc/a/b.ts","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["é😀"],"ok":{"type":"ai-evaluated","stopWhen":"é😀","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["key_name-1hello world"],"ok":{"type":"ai-evaluated","stopWhen":"key_name-1hello world","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["a😀b😀ca..b"],"ok":{"type":"ai-evaluated","stopWhen":"a😀b😀ca..b","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["helloa😀b😀c"],"ok":{"type":"ai-evaluated","stopWhen":"helloa😀b😀c","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["ünïcödé😀"],"ok":{"type":"ai-evaluated","stopWhen":"ünïcödé😀","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["a😀b😀c日本語のテキスト"],"ok":{"type":"ai-evaluated","stopWhen":"a😀b😀c日本語のテキスト","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["日本語のテキスト:"],"ok":{"type":"ai-evaluated","stopWhen":"日本語のテキスト:","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["abcemoji 👍🏽 mix"],"ok":{"type":"ai-evaluated","stopWhen":"abcemoji 👍🏽 mix","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["hellotab\tseparated"],"ok":{"type":"ai-evaluated","stopWhen":"hellotab\tseparated","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["ünïcödékey_name-1"],"ok":{"type":"ai-evaluated","stopWhen":"ünïcödékey_name-1","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["a.b.ca😀b😀c"],"ok":{"type":"ai-evaluated","stopWhen":"a.b.ca😀b😀c","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["ΣΊΣΥΦΟΣ日本語のテキスト"],"ok":{"type":"ai-evaluated","stopWhen":"ΣΊΣΥΦΟΣ日本語のテキスト","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["abckey_name-1"],"ok":{"type":"ai-evaluated","stopWhen":"abckey_name-1","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["ΣΊΣΥΦΟΣHello World"],"ok":{"type":"ai-evaluated","stopWhen":"ΣΊΣΥΦΟΣHello World","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["line1\nline2straße"],"ok":{"type":"ai-evaluated","stopWhen":"line1\nline2straße","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["straße﻿bom"],"ok":{"type":"ai-evaluated","stopWhen":"straße﻿bom","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["😀.leading"],"ok":{"type":"ai-evaluated","stopWhen":"😀.leading","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["ababc"],"ok":{"type":"ai-evaluated","stopWhen":"ababc","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["abcİstanbul"],"ok":{"type":"ai-evaluated","stopWhen":"abcİstanbul","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["a:b:c./x/**/*.json"],"ok":{"type":"ai-evaluated","stopWhen":"a:b:c./x/**/*.json","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["a:b:cHELLO"],"ok":{"type":"ai-evaluated","stopWhen":"a:b:cHELLO","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["ab{name} has {count} items"],"ok":{"type":"ai-evaluated","stopWhen":"ab{name} has {count} items","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["abca"],"ok":{"type":"ai-evaluated","stopWhen":"abca","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["  padded  ünïcödé"],"ok":{"type":"ai-evaluated","stopWhen":"padded  ünïcödé","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["İstanbulns:key.path"],"ok":{"type":"ai-evaluated","stopWhen":"İstanbulns:key.path","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["{name} has {count} items日本語のテキスト"],"ok":{"type":"ai-evaluated","stopWhen":"{name} has {count} items日本語のテキスト","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":[":İstanbul"],"ok":{"type":"ai-evaluated","stopWhen":":İstanbul","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["./x/**/*.jsona..b"],"ok":{"type":"ai-evaluated","stopWhen":"./x/**/*.jsona..b","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["straßeabc"],"ok":{"type":"ai-evaluated","stopWhen":"straßeabc","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["Hello World  padded  "],"ok":{"type":"ai-evaluated","stopWhen":"Hello World  padded","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["  padded  src/a/b.ts"],"ok":{"type":"ai-evaluated","stopWhen":"padded  src/a/b.ts","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["a😀b😀c:"],"ok":{"type":"ai-evaluated","stopWhen":"a😀b😀c:","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["./x/**/*.jsona.b.c"],"ok":{"type":"ai-evaluated","stopWhen":"./x/**/*.jsona.b.c","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["a😀b😀cHello World"],"ok":{"type":"ai-evaluated","stopWhen":"a😀b😀cHello World","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["ΣΊΣΥΦΟΣ﻿bom"],"ok":{"type":"ai-evaluated","stopWhen":"ΣΊΣΥΦΟΣ﻿bom","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["emoji 👍🏽 mixhello"],"ok":{"type":"ai-evaluated","stopWhen":"emoji 👍🏽 mixhello","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["a:b:cabc"],"ok":{"type":"ai-evaluated","stopWhen":"a:b:cabc","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["straßea..b"],"ok":{"type":"ai-evaluated","stopWhen":"straßea..b","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["a..bstraße"],"ok":{"type":"ai-evaluated","stopWhen":"a..bstraße","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["hello worldΣΊΣΥΦΟΣ"],"ok":{"type":"ai-evaluated","stopWhen":"hello worldΣΊΣΥΦΟΣ","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["src/a/b.ts./x/**/*.json"],"ok":{"type":"ai-evaluated","stopWhen":"src/a/b.ts./x/**/*.json","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["é./x/**/*.json"],"ok":{"type":"ai-evaluated","stopWhen":"é./x/**/*.json","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["a😀b😀chello"],"ok":{"type":"ai-evaluated","stopWhen":"a😀b😀chello","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["éhello world"],"ok":{"type":"ai-evaluated","stopWhen":"éhello world","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["ns:key.pathns:key.path"],"ok":{"type":"ai-evaluated","stopWhen":"ns:key.pathns:key.path","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["éstraße"],"ok":{"type":"ai-evaluated","stopWhen":"éstraße","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["ns:key.path{name} has {count} items"],"ok":{"type":"ai-evaluated","stopWhen":"ns:key.path{name} has {count} items","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["abünïcödé"],"ok":{"type":"ai-evaluated","stopWhen":"abünïcödé","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["ΣΊΣΥΦΟΣa:b:c"],"ok":{"type":"ai-evaluated","stopWhen":"ΣΊΣΥΦΟΣa:b:c","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["aa"],"ok":{"type":"ai-evaluated","stopWhen":"aa","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["a..b日本語のテキスト"],"ok":{"type":"ai-evaluated","stopWhen":"a..b日本語のテキスト","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["a..bhello"],"ok":{"type":"ai-evaluated","stopWhen":"a..bhello","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":[":a"],"ok":{"type":"ai-evaluated","stopWhen":":a","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["trailing.a"],"ok":{"type":"ai-evaluated","stopWhen":"trailing.a","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["ns:key.patha.b.c"],"ok":{"type":"ai-evaluated","stopWhen":"ns:key.patha.b.c","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["ab./x/**/*.json"],"ok":{"type":"ai-evaluated","stopWhen":"ab./x/**/*.json","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["./x/**/*.jsonünïcödé"],"ok":{"type":"ai-evaluated","stopWhen":"./x/**/*.jsonünïcödé","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["a.b.cé"],"ok":{"type":"ai-evaluated","stopWhen":"a.b.cé","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":[":{name} has {count} items"],"ok":{"type":"ai-evaluated","stopWhen":":{name} has {count} items","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":[".leadingHello World"],"ok":{"type":"ai-evaluated","stopWhen":".leadingHello World","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["ünïcödéHello World"],"ok":{"type":"ai-evaluated","stopWhen":"ünïcödéHello World","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["a.b.chello world"],"ok":{"type":"ai-evaluated","stopWhen":"a.b.chello world","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":[":﻿bom"],"ok":{"type":"ai-evaluated","stopWhen":":﻿bom","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["a:b:ctab\tseparated"],"ok":{"type":"ai-evaluated","stopWhen":"a:b:ctab\tseparated","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["hello worldHello World"],"ok":{"type":"ai-evaluated","stopWhen":"hello worldHello World","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["hello world日本語のテキスト"],"ok":{"type":"ai-evaluated","stopWhen":"hello world日本語のテキスト","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["./x/**/*.jsonHello World"],"ok":{"type":"ai-evaluated","stopWhen":"./x/**/*.jsonHello World","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["src/a/b.tsa😀b😀c"],"ok":{"type":"ai-evaluated","stopWhen":"src/a/b.tsa😀b😀c","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["ünïcödéa..b"],"ok":{"type":"ai-evaluated","stopWhen":"ünïcödéa..b","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["a:b:ca..b"],"ok":{"type":"ai-evaluated","stopWhen":"a:b:ca..b","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["a{name} has {count} items"],"ok":{"type":"ai-evaluated","stopWhen":"a{name} has {count} items","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["a.b.cHELLO"],"ok":{"type":"ai-evaluated","stopWhen":"a.b.cHELLO","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["a..btrailing."],"ok":{"type":"ai-evaluated","stopWhen":"a..btrailing.","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["Hello Worldemoji 👍🏽 mix"],"ok":{"type":"ai-evaluated","stopWhen":"Hello Worldemoji 👍🏽 mix","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["straßeé"],"ok":{"type":"ai-evaluated","stopWhen":"straßeé","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["./x/**/*.json./x/**/*.json"],"ok":{"type":"ai-evaluated","stopWhen":"./x/**/*.json./x/**/*.json","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["straße  padded  "],"ok":{"type":"ai-evaluated","stopWhen":"straße  padded","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["emoji 👍🏽 mixa.b.c"],"ok":{"type":"ai-evaluated","stopWhen":"emoji 👍🏽 mixa.b.c","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["Hello Worldé"],"ok":{"type":"ai-evaluated","stopWhen":"Hello Worldé","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":[".leadinghello"],"ok":{"type":"ai-evaluated","stopWhen":".leadinghello","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["./x/**/*.jsonline1\nline2"],"ok":{"type":"ai-evaluated","stopWhen":"./x/**/*.jsonline1\nline2","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["src/a/b.ts﻿bom"],"ok":{"type":"ai-evaluated","stopWhen":"src/a/b.ts﻿bom","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["ns:key.pathHELLO"],"ok":{"type":"ai-evaluated","stopWhen":"ns:key.pathHELLO","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":[".leadingİstanbul"],"ok":{"type":"ai-evaluated","stopWhen":".leadingİstanbul","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["é  padded  "],"ok":{"type":"ai-evaluated","stopWhen":"é  padded","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["ab😀"],"ok":{"type":"ai-evaluated","stopWhen":"ab😀","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["a😀b😀c😀"],"ok":{"type":"ai-evaluated","stopWhen":"a😀b😀c😀","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["line1\nline2./x/**/*.json"],"ok":{"type":"ai-evaluated","stopWhen":"line1\nline2./x/**/*.json","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["line1\nline2ΣΊΣΥΦΟΣ"],"ok":{"type":"ai-evaluated","stopWhen":"line1\nline2ΣΊΣΥΦΟΣ","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":[".leadinga😀b😀c"],"ok":{"type":"ai-evaluated","stopWhen":".leadinga😀b😀c","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["a..ba:b:c"],"ok":{"type":"ai-evaluated","stopWhen":"a..ba:b:c","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["日本語のテキストns:key.path"],"ok":{"type":"ai-evaluated","stopWhen":"日本語のテキストns:key.path","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["HELLOa..b"],"ok":{"type":"ai-evaluated","stopWhen":"HELLOa..b","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["abc日本語のテキスト"],"ok":{"type":"ai-evaluated","stopWhen":"abc日本語のテキスト","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["trailing.Hello World"],"ok":{"type":"ai-evaluated","stopWhen":"trailing.Hello World","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["  padded  日本語のテキスト"],"ok":{"type":"ai-evaluated","stopWhen":"padded  日本語のテキスト","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["ünïcödéhello"],"ok":{"type":"ai-evaluated","stopWhen":"ünïcödéhello","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["tab\tseparatedhello"],"ok":{"type":"ai-evaluated","stopWhen":"tab\tseparatedhello","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["😀日本語のテキスト"],"ok":{"type":"ai-evaluated","stopWhen":"😀日本語のテキスト","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["éns:key.path"],"ok":{"type":"ai-evaluated","stopWhen":"éns:key.path","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["ns:key.pathabc"],"ok":{"type":"ai-evaluated","stopWhen":"ns:key.pathabc","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["straßehello"],"ok":{"type":"ai-evaluated","stopWhen":"straßehello","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["İstanbul./x/**/*.json"],"ok":{"type":"ai-evaluated","stopWhen":"İstanbul./x/**/*.json","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["ab.leading"],"ok":{"type":"ai-evaluated","stopWhen":"ab.leading","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["a😀b😀c.leading"],"ok":{"type":"ai-evaluated","stopWhen":"a😀b😀c.leading","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["ünïcödéstraße"],"ok":{"type":"ai-evaluated","stopWhen":"ünïcödéstraße","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["abcünïcödé"],"ok":{"type":"ai-evaluated","stopWhen":"abcünïcödé","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["日本語のテキストstraße"],"ok":{"type":"ai-evaluated","stopWhen":"日本語のテキストstraße","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["a.b.ca..b"],"ok":{"type":"ai-evaluated","stopWhen":"a.b.ca..b","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["Hello Worldtrailing."],"ok":{"type":"ai-evaluated","stopWhen":"Hello Worldtrailing.","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["tab\tseparatedns:key.path"],"ok":{"type":"ai-evaluated","stopWhen":"tab\tseparatedns:key.path","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["  padded  hello world"],"ok":{"type":"ai-evaluated","stopWhen":"padded  hello world","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["helloa"],"ok":{"type":"ai-evaluated","stopWhen":"helloa","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["Hello World:"],"ok":{"type":"ai-evaluated","stopWhen":"Hello World:","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["emoji 👍🏽 mixa😀b😀c"],"ok":{"type":"ai-evaluated","stopWhen":"emoji 👍🏽 mixa😀b😀c","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["aa.b.c"],"ok":{"type":"ai-evaluated","stopWhen":"aa.b.c","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["﻿bom{name} has {count} items"],"ok":{"type":"ai-evaluated","stopWhen":"bom{name} has {count} items","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["İstanbula:b:c"],"ok":{"type":"ai-evaluated","stopWhen":"İstanbula:b:c","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["trailing.a.b.c"],"ok":{"type":"ai-evaluated","stopWhen":"trailing.a.b.c","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["a.b.c:"],"ok":{"type":"ai-evaluated","stopWhen":"a.b.c:","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["trailing.😀"],"ok":{"type":"ai-evaluated","stopWhen":"trailing.😀","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":[".leading{name} has {count} items"],"ok":{"type":"ai-evaluated","stopWhen":".leading{name} has {count} items","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["ns:key.patha"],"ok":{"type":"ai-evaluated","stopWhen":"ns:key.patha","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["aba😀b😀c"],"ok":{"type":"ai-evaluated","stopWhen":"aba😀b😀c","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["😀a😀b😀c"],"ok":{"type":"ai-evaluated","stopWhen":"😀a😀b😀c","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["ΣΊΣΥΦΟΣ😀"],"ok":{"type":"ai-evaluated","stopWhen":"ΣΊΣΥΦΟΣ😀","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["ns:key.pathtab\tseparated"],"ok":{"type":"ai-evaluated","stopWhen":"ns:key.pathtab\tseparated","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["a..bünïcödé"],"ok":{"type":"ai-evaluated","stopWhen":"a..bünïcödé","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["a:b:c  padded  "],"ok":{"type":"ai-evaluated","stopWhen":"a:b:c  padded","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["日本語のテキストhello"],"ok":{"type":"ai-evaluated","stopWhen":"日本語のテキストhello","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["src/a/b.tsab"],"ok":{"type":"ai-evaluated","stopWhen":"src/a/b.tsab","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["ns:key.patha..b"],"ok":{"type":"ai-evaluated","stopWhen":"ns:key.patha..b","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["./x/**/*.jsonsrc/a/b.ts"],"ok":{"type":"ai-evaluated","stopWhen":"./x/**/*.jsonsrc/a/b.ts","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["héllo wörld"],"ok":{"type":"ai-evaluated","stopWhen":"héllo wörld","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["👍🏽 thumbs"],"ok":{"type":"ai-evaluated","stopWhen":"👍🏽 thumbs","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["日本語"],"ok":{"type":"ai-evaluated","stopWhen":"日本語","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["ılık ırmak"],"ok":{"type":"ai-evaluated","stopWhen":"ılık ırmak","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["👨‍👩‍👧 family"],"ok":{"type":"ai-evaluated","stopWhen":"👨‍👩‍👧 family","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["a b"],"ok":{"type":"ai-evaluated","stopWhen":"a b","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["a😀b"],"ok":{"type":"ai-evaluated","stopWhen":"a😀b","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["a²b x½ y①"],"ok":{"type":"ai-evaluated","stopWhen":"a²b x½ y①","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["aⅠb Ⅻ"],"ok":{"type":"ai-evaluated","stopWhen":"aⅠb Ⅻ","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["a𐐀b 𝐀bc"],"ok":{"type":"ai-evaluated","stopWhen":"a𐐀b 𝐀bc","confidenceThreshold":0.8}}
+{"fn":"completionPolicyFromStopWhen","args":["कि ٣٤"],"ok":{"type":"ai-evaluated","stopWhen":"कि ٣٤","confidenceThreshold":0.8}}
+{"fn":"stopWhenFromCompletionPolicy","args":[true],"ok":""}
+{"fn":"stopWhenFromCompletionPolicy","args":[["a",1]],"ok":""}
+{"fn":"stopWhenFromCompletionPolicy","args":[{"a":"b"}],"ok":""}
+{"fn":"stopWhenFromCompletionPolicy","args":[{"a":{"b":"c"}}],"ok":""}
+{"fn":"stopWhenFromCompletionPolicy","args":[0],"ok":""}
+{"fn":"stopWhenFromCompletionPolicy","args":[null],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"stopWhenFromCompletionPolicy","args":[[]],"ok":""}
+{"fn":"stopWhenFromCompletionPolicy","args":[{}],"ok":""}
+{"fn":"stopWhenFromCompletionPolicy","args":["x"],"ok":""}
+{"fn":"stopWhenFromCompletionPolicy","args":[{"type":"ai-evaluated","stopWhen":123}],"ok":123}
+{"fn":"stopWhenFromCompletionPolicy","args":[{"type":"ai-evaluated","stopWhen":null}],"ok":null}
+{"fn":"stopWhenFromCompletionPolicy","args":[{"type":"ai-evaluated","stopWhen":{"a":1}}],"ok":{"a":1}}
+{"fn":"stopWhenFromCompletionPolicy","args":[{"type":"ai-evaluated","stopWhen":[1,2]}],"ok":[1,2]}
+{"fn":"stopWhenFromCompletionPolicy","args":[{"type":"ai-evaluated","stopWhen":true}],"ok":true}
+{"fn":"stopWhenFromCompletionPolicy","args":[{"type":"ai-evaluated","stopWhen":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"stopWhenFromCompletionPolicy","args":[null],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"stopWhenFromCompletionPolicy","args":[{"$undefined":true}],"error":"Cannot read properties of undefined (reading 'type')"}
+{"fn":"stopWhenFromCompletionPolicy","args":[{"type":"none","stopWhen":"x"}],"ok":""}
+{"fn":"stopWhenFromCompletionPolicy","args":[{"type":"ai-evaluated","stopWhen":"done","extra":"y"}],"ok":"done"}
+{"fn":"completionPolicyFromStopWhen","args":["   "],"ok":{"type":"none"}}
+{"fn":"completionPolicyFromStopWhen","args":["﻿"],"ok":{"type":"none"}}
+{"fn":"completionPolicyFromStopWhen","args":[" "],"ok":{"type":"none"}}

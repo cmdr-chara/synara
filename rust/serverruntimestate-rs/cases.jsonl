@@ -1,0 +1,320 @@
+{"fn":"makePersistedServerRuntimeState","args":[{"config":{"a":"b"},"port":1000}],"ok":{"version":1,"pid":424242,"port":1000,"origin":"http://127.0.0.1:1000","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[["a",1]],"error":"Cannot read properties of undefined (reading 'host')"}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":{"a":"b"},"port":9007199254740992}],"ok":{"version":1,"pid":424242,"port":9007199254740992,"origin":"http://127.0.0.1:9007199254740992","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":0,"port":2}],"ok":{"version":1,"pid":424242,"port":2,"origin":"http://127.0.0.1:2","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":"x","port":10}],"ok":{"version":1,"pid":424242,"port":10,"origin":"http://127.0.0.1:10","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[0],"error":"Cannot read properties of undefined (reading 'host')"}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":0,"port":42}],"ok":{"version":1,"pid":424242,"port":42,"origin":"http://127.0.0.1:42","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":true,"port":1}],"ok":{"version":1,"pid":424242,"port":1,"origin":"http://127.0.0.1:1","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":["a",1],"port":2147483648}],"ok":{"version":1,"pid":424242,"port":2147483648,"origin":"http://127.0.0.1:2147483648","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":{"a":{"b":"c"}},"port":{"$num":"-0"}}],"ok":{"version":1,"pid":424242,"port":{"$num":"-0"},"origin":"http://127.0.0.1:0","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":[],"port":1000000}],"ok":{"version":1,"pid":424242,"port":1000000,"origin":"http://127.0.0.1:1000000","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":{},"port":-2.5}],"ok":{"version":1,"pid":424242,"port":-2.5,"origin":"http://127.0.0.1:-2.5","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":["a",1],"port":1000}],"ok":{"version":1,"pid":424242,"port":1000,"origin":"http://127.0.0.1:1000","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":["x"],"error":"Cannot read properties of undefined (reading 'host')"}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":true,"port":-1}],"ok":{"version":1,"pid":424242,"port":-1,"origin":"http://127.0.0.1:-1","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":0,"port":1000000}],"ok":{"version":1,"pid":424242,"port":1000000,"origin":"http://127.0.0.1:1000000","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":{"a":"b"},"port":{"$num":"-0"}}],"ok":{"version":1,"pid":424242,"port":{"$num":"-0"},"origin":"http://127.0.0.1:0","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'host')"}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":[],"port":{"$num":"-Infinity"}}],"ok":{"version":1,"pid":424242,"port":{"$num":"-Infinity"},"origin":"http://127.0.0.1:-Infinity","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":{"a":{"b":"c"}},"port":1}],"ok":{"version":1,"pid":424242,"port":1,"origin":"http://127.0.0.1:1","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":{},"port":{"$num":"NaN"}}],"ok":{"version":1,"pid":424242,"port":{"$num":"NaN"},"origin":"http://127.0.0.1:NaN","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":["a",1],"port":1000000}],"ok":{"version":1,"pid":424242,"port":1000000,"origin":"http://127.0.0.1:1000000","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":"x","port":1}],"ok":{"version":1,"pid":424242,"port":1,"origin":"http://127.0.0.1:1","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":null,"port":1}],"error":"Cannot read properties of null (reading 'host')"}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":["a",1],"port":3}],"ok":{"version":1,"pid":424242,"port":3,"origin":"http://127.0.0.1:3","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":{"a":"b"},"port":{"$num":"-Infinity"}}],"ok":{"version":1,"pid":424242,"port":{"$num":"-Infinity"},"origin":"http://127.0.0.1:-Infinity","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":{},"port":-1}],"ok":{"version":1,"pid":424242,"port":-1,"origin":"http://127.0.0.1:-1","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":{},"port":1}],"ok":{"version":1,"pid":424242,"port":1,"origin":"http://127.0.0.1:1","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":[],"port":2147483648}],"ok":{"version":1,"pid":424242,"port":2147483648,"origin":"http://127.0.0.1:2147483648","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":null,"port":100}],"error":"Cannot read properties of null (reading 'host')"}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":"x","port":42}],"ok":{"version":1,"pid":424242,"port":42,"origin":"http://127.0.0.1:42","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":"x","port":9007199254740992}],"ok":{"version":1,"pid":424242,"port":9007199254740992,"origin":"http://127.0.0.1:9007199254740992","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":["a",1],"port":{"$num":"NaN"}}],"ok":{"version":1,"pid":424242,"port":{"$num":"NaN"},"origin":"http://127.0.0.1:NaN","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":true,"port":0}],"ok":{"version":1,"pid":424242,"port":0,"origin":"http://127.0.0.1:0","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":{"a":{"b":"c"}},"port":3}],"ok":{"version":1,"pid":424242,"port":3,"origin":"http://127.0.0.1:3","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":null,"port":{"$num":"NaN"}}],"error":"Cannot read properties of null (reading 'host')"}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":[],"port":100}],"ok":{"version":1,"pid":424242,"port":100,"origin":"http://127.0.0.1:100","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":{"a":"b"},"port":2}],"ok":{"version":1,"pid":424242,"port":2,"origin":"http://127.0.0.1:2","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":true,"port":9007199254740992}],"ok":{"version":1,"pid":424242,"port":9007199254740992,"origin":"http://127.0.0.1:9007199254740992","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":{"a":"b"},"port":2147483648}],"ok":{"version":1,"pid":424242,"port":2147483648,"origin":"http://127.0.0.1:2147483648","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":0,"port":2147483648}],"ok":{"version":1,"pid":424242,"port":2147483648,"origin":"http://127.0.0.1:2147483648","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":[],"port":3}],"ok":{"version":1,"pid":424242,"port":3,"origin":"http://127.0.0.1:3","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":true,"port":3}],"ok":{"version":1,"pid":424242,"port":3,"origin":"http://127.0.0.1:3","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":{},"port":42}],"ok":{"version":1,"pid":424242,"port":42,"origin":"http://127.0.0.1:42","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":{"a":"b"},"port":{"$num":"NaN"}}],"ok":{"version":1,"pid":424242,"port":{"$num":"NaN"},"origin":"http://127.0.0.1:NaN","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":"x","port":1000}],"ok":{"version":1,"pid":424242,"port":1000,"origin":"http://127.0.0.1:1000","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":["a",1],"port":-1}],"ok":{"version":1,"pid":424242,"port":-1,"origin":"http://127.0.0.1:-1","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":"x","port":{"$num":"-Infinity"}}],"ok":{"version":1,"pid":424242,"port":{"$num":"-Infinity"},"origin":"http://127.0.0.1:-Infinity","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":true,"port":0.5}],"ok":{"version":1,"pid":424242,"port":0.5,"origin":"http://127.0.0.1:0.5","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":"x","port":0.5}],"ok":{"version":1,"pid":424242,"port":0.5,"origin":"http://127.0.0.1:0.5","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":["a",1],"port":{"$num":"Infinity"}}],"ok":{"version":1,"pid":424242,"port":{"$num":"Infinity"},"origin":"http://127.0.0.1:Infinity","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":true,"port":{"$num":"-Infinity"}}],"ok":{"version":1,"pid":424242,"port":{"$num":"-Infinity"},"origin":"http://127.0.0.1:-Infinity","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"a":"b"}],"error":"Cannot read properties of undefined (reading 'host')"}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":{"a":"b"},"port":10}],"ok":{"version":1,"pid":424242,"port":10,"origin":"http://127.0.0.1:10","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":[],"port":1000}],"ok":{"version":1,"pid":424242,"port":1000,"origin":"http://127.0.0.1:1000","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":{"a":"b"},"port":-2.5}],"ok":{"version":1,"pid":424242,"port":-2.5,"origin":"http://127.0.0.1:-2.5","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":{},"port":0.5}],"ok":{"version":1,"pid":424242,"port":0.5,"origin":"http://127.0.0.1:0.5","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":null,"port":{"$num":"-Infinity"}}],"error":"Cannot read properties of null (reading 'host')"}
+{"fn":"makePersistedServerRuntimeState","args":[{}],"error":"Cannot read properties of undefined (reading 'host')"}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":0,"port":-2.5}],"ok":{"version":1,"pid":424242,"port":-2.5,"origin":"http://127.0.0.1:-2.5","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":[],"port":1}],"ok":{"version":1,"pid":424242,"port":1,"origin":"http://127.0.0.1:1","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":{"a":{"b":"c"}},"port":{"$num":"-Infinity"}}],"ok":{"version":1,"pid":424242,"port":{"$num":"-Infinity"},"origin":"http://127.0.0.1:-Infinity","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":{},"port":3}],"ok":{"version":1,"pid":424242,"port":3,"origin":"http://127.0.0.1:3","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[true],"error":"Cannot read properties of undefined (reading 'host')"}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":"x","port":-2.5}],"ok":{"version":1,"pid":424242,"port":-2.5,"origin":"http://127.0.0.1:-2.5","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":{"a":{"b":"c"}},"port":42}],"ok":{"version":1,"pid":424242,"port":42,"origin":"http://127.0.0.1:42","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":0,"port":100}],"ok":{"version":1,"pid":424242,"port":100,"origin":"http://127.0.0.1:100","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":[],"port":-1}],"ok":{"version":1,"pid":424242,"port":-1,"origin":"http://127.0.0.1:-1","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":{"a":{"b":"c"}},"port":100}],"ok":{"version":1,"pid":424242,"port":100,"origin":"http://127.0.0.1:100","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":{"a":"b"},"port":0}],"ok":{"version":1,"pid":424242,"port":0,"origin":"http://127.0.0.1:0","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":null,"port":1000}],"error":"Cannot read properties of null (reading 'host')"}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":null,"port":{"$num":"-0"}}],"error":"Cannot read properties of null (reading 'host')"}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":{"a":"b"},"port":100}],"ok":{"version":1,"pid":424242,"port":100,"origin":"http://127.0.0.1:100","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":{},"port":100}],"ok":{"version":1,"pid":424242,"port":100,"origin":"http://127.0.0.1:100","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":{},"port":10}],"ok":{"version":1,"pid":424242,"port":10,"origin":"http://127.0.0.1:10","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":[],"port":10}],"ok":{"version":1,"pid":424242,"port":10,"origin":"http://127.0.0.1:10","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":{"a":"b"},"port":{"$num":"Infinity"}}],"ok":{"version":1,"pid":424242,"port":{"$num":"Infinity"},"origin":"http://127.0.0.1:Infinity","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":{},"port":9007199254740992}],"ok":{"version":1,"pid":424242,"port":9007199254740992,"origin":"http://127.0.0.1:9007199254740992","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":true,"port":2147483648}],"ok":{"version":1,"pid":424242,"port":2147483648,"origin":"http://127.0.0.1:2147483648","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":{},"port":{"$num":"-0"}}],"ok":{"version":1,"pid":424242,"port":{"$num":"-0"},"origin":"http://127.0.0.1:0","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":0,"port":{"$num":"NaN"}}],"ok":{"version":1,"pid":424242,"port":{"$num":"NaN"},"origin":"http://127.0.0.1:NaN","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":true,"port":{"$num":"-0"}}],"ok":{"version":1,"pid":424242,"port":{"$num":"-0"},"origin":"http://127.0.0.1:0","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":["a",1],"port":2}],"ok":{"version":1,"pid":424242,"port":2,"origin":"http://127.0.0.1:2","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":{},"port":1000}],"ok":{"version":1,"pid":424242,"port":1000,"origin":"http://127.0.0.1:1000","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":"x","port":{"$num":"-0"}}],"ok":{"version":1,"pid":424242,"port":{"$num":"-0"},"origin":"http://127.0.0.1:0","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":null,"port":1000000}],"error":"Cannot read properties of null (reading 'host')"}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":{"a":{"b":"c"}},"port":1000000}],"ok":{"version":1,"pid":424242,"port":1000000,"origin":"http://127.0.0.1:1000000","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":{"a":{"b":"c"}},"port":2}],"ok":{"version":1,"pid":424242,"port":2,"origin":"http://127.0.0.1:2","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":0,"port":{"$num":"-Infinity"}}],"ok":{"version":1,"pid":424242,"port":{"$num":"-Infinity"},"origin":"http://127.0.0.1:-Infinity","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[[]],"error":"Cannot read properties of undefined (reading 'host')"}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":"x","port":0}],"ok":{"version":1,"pid":424242,"port":0,"origin":"http://127.0.0.1:0","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":{"a":{"b":"c"}},"port":1000}],"ok":{"version":1,"pid":424242,"port":1000,"origin":"http://127.0.0.1:1000","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":null,"port":42}],"error":"Cannot read properties of null (reading 'host')"}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":true,"port":1000000}],"ok":{"version":1,"pid":424242,"port":1000000,"origin":"http://127.0.0.1:1000000","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":true,"port":{"$num":"NaN"}}],"ok":{"version":1,"pid":424242,"port":{"$num":"NaN"},"origin":"http://127.0.0.1:NaN","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":[],"port":2}],"ok":{"version":1,"pid":424242,"port":2,"origin":"http://127.0.0.1:2","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[null],"error":"Cannot read properties of null (reading 'config')"}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":{"a":"b"},"port":1}],"ok":{"version":1,"pid":424242,"port":1,"origin":"http://127.0.0.1:1","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":null,"port":3}],"error":"Cannot read properties of null (reading 'host')"}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":null,"port":0}],"error":"Cannot read properties of null (reading 'host')"}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":[],"port":{"$num":"-0"}}],"ok":{"version":1,"pid":424242,"port":{"$num":"-0"},"origin":"http://127.0.0.1:0","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":"x","port":-1}],"ok":{"version":1,"pid":424242,"port":-1,"origin":"http://127.0.0.1:-1","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":null,"port":0.5}],"error":"Cannot read properties of null (reading 'host')"}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":{"a":"b"},"port":-1}],"ok":{"version":1,"pid":424242,"port":-1,"origin":"http://127.0.0.1:-1","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":[],"port":{"$num":"Infinity"}}],"ok":{"version":1,"pid":424242,"port":{"$num":"Infinity"},"origin":"http://127.0.0.1:Infinity","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":0,"port":-1}],"ok":{"version":1,"pid":424242,"port":-1,"origin":"http://127.0.0.1:-1","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":{"a":{"b":"c"}},"port":{"$num":"NaN"}}],"ok":{"version":1,"pid":424242,"port":{"$num":"NaN"},"origin":"http://127.0.0.1:NaN","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":0,"port":9007199254740992}],"ok":{"version":1,"pid":424242,"port":9007199254740992,"origin":"http://127.0.0.1:9007199254740992","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":{"a":{"b":"c"}},"port":{"$num":"Infinity"}}],"ok":{"version":1,"pid":424242,"port":{"$num":"Infinity"},"origin":"http://127.0.0.1:Infinity","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":{"a":{"b":"c"}},"port":-2.5}],"ok":{"version":1,"pid":424242,"port":-2.5,"origin":"http://127.0.0.1:-2.5","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":["a",1],"port":9007199254740992}],"ok":{"version":1,"pid":424242,"port":9007199254740992,"origin":"http://127.0.0.1:9007199254740992","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":[],"port":9007199254740992}],"ok":{"version":1,"pid":424242,"port":9007199254740992,"origin":"http://127.0.0.1:9007199254740992","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":"x","port":{"$num":"Infinity"}}],"ok":{"version":1,"pid":424242,"port":{"$num":"Infinity"},"origin":"http://127.0.0.1:Infinity","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":true,"port":10}],"ok":{"version":1,"pid":424242,"port":10,"origin":"http://127.0.0.1:10","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":{"a":{"b":"c"}},"port":9007199254740992}],"ok":{"version":1,"pid":424242,"port":9007199254740992,"origin":"http://127.0.0.1:9007199254740992","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":{"a":"b"},"port":3}],"ok":{"version":1,"pid":424242,"port":3,"origin":"http://127.0.0.1:3","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":{},"port":{"$num":"-Infinity"}}],"ok":{"version":1,"pid":424242,"port":{"$num":"-Infinity"},"origin":"http://127.0.0.1:-Infinity","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":0,"port":0.5}],"ok":{"version":1,"pid":424242,"port":0.5,"origin":"http://127.0.0.1:0.5","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":{},"port":2}],"ok":{"version":1,"pid":424242,"port":2,"origin":"http://127.0.0.1:2","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":{},"port":0}],"ok":{"version":1,"pid":424242,"port":0,"origin":"http://127.0.0.1:0","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":true,"port":42}],"ok":{"version":1,"pid":424242,"port":42,"origin":"http://127.0.0.1:42","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":{"a":"b"},"port":42}],"ok":{"version":1,"pid":424242,"port":42,"origin":"http://127.0.0.1:42","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":[],"port":0}],"ok":{"version":1,"pid":424242,"port":0,"origin":"http://127.0.0.1:0","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":null,"port":2}],"error":"Cannot read properties of null (reading 'host')"}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":"x","port":{"$num":"NaN"}}],"ok":{"version":1,"pid":424242,"port":{"$num":"NaN"},"origin":"http://127.0.0.1:NaN","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":0,"port":0}],"ok":{"version":1,"pid":424242,"port":0,"origin":"http://127.0.0.1:0","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":"x","port":2147483648}],"ok":{"version":1,"pid":424242,"port":2147483648,"origin":"http://127.0.0.1:2147483648","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":[],"port":42}],"ok":{"version":1,"pid":424242,"port":42,"origin":"http://127.0.0.1:42","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":[],"port":{"$num":"NaN"}}],"ok":{"version":1,"pid":424242,"port":{"$num":"NaN"},"origin":"http://127.0.0.1:NaN","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":{"a":{"b":"c"}},"port":2147483648}],"ok":{"version":1,"pid":424242,"port":2147483648,"origin":"http://127.0.0.1:2147483648","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":{"a":{"b":"c"}},"port":-1}],"ok":{"version":1,"pid":424242,"port":-1,"origin":"http://127.0.0.1:-1","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":{"a":{"b":"c"}},"port":0.5}],"ok":{"version":1,"pid":424242,"port":0.5,"origin":"http://127.0.0.1:0.5","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":["a",1],"port":0.5}],"ok":{"version":1,"pid":424242,"port":0.5,"origin":"http://127.0.0.1:0.5","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":{},"port":{"$num":"Infinity"}}],"ok":{"version":1,"pid":424242,"port":{"$num":"Infinity"},"origin":"http://127.0.0.1:Infinity","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":true,"port":2}],"ok":{"version":1,"pid":424242,"port":2,"origin":"http://127.0.0.1:2","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":true,"port":1000}],"ok":{"version":1,"pid":424242,"port":1000,"origin":"http://127.0.0.1:1000","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":"x","port":3}],"ok":{"version":1,"pid":424242,"port":3,"origin":"http://127.0.0.1:3","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":null,"port":10}],"error":"Cannot read properties of null (reading 'host')"}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":"x","port":1000000}],"ok":{"version":1,"pid":424242,"port":1000000,"origin":"http://127.0.0.1:1000000","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":"x","port":2}],"ok":{"version":1,"pid":424242,"port":2,"origin":"http://127.0.0.1:2","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":[],"port":-2.5}],"ok":{"version":1,"pid":424242,"port":-2.5,"origin":"http://127.0.0.1:-2.5","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":{"a":"b"},"port":1000000}],"ok":{"version":1,"pid":424242,"port":1000000,"origin":"http://127.0.0.1:1000000","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":null,"port":-1}],"error":"Cannot read properties of null (reading 'host')"}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":null,"port":-2.5}],"error":"Cannot read properties of null (reading 'host')"}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":["a",1],"port":-2.5}],"ok":{"version":1,"pid":424242,"port":-2.5,"origin":"http://127.0.0.1:-2.5","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":["a",1],"port":{"$num":"-Infinity"}}],"ok":{"version":1,"pid":424242,"port":{"$num":"-Infinity"},"origin":"http://127.0.0.1:-Infinity","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":true,"port":100}],"ok":{"version":1,"pid":424242,"port":100,"origin":"http://127.0.0.1:100","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":["a",1],"port":0}],"ok":{"version":1,"pid":424242,"port":0,"origin":"http://127.0.0.1:0","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":{},"port":2147483648}],"ok":{"version":1,"pid":424242,"port":2147483648,"origin":"http://127.0.0.1:2147483648","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"makePersistedServerRuntimeState","args":[{"config":0,"port":10}],"ok":{"version":1,"pid":424242,"port":10,"origin":"http://127.0.0.1:10","startedAt":"2000-01-01T00:00:00.000Z","externalMcpRuntimeSecret":"volatile-secret-xxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"fn":"persistServerRuntimeState","args":["x"],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"persistServerRuntimeState","args":[["a",1]],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"persistServerRuntimeState","args":[{"a":{"b":"c"}}],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"persistServerRuntimeState","args":[{"a":"b"}],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"persistServerRuntimeState","args":[0],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"persistServerRuntimeState","args":[null],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"persistServerRuntimeState","args":[true],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"persistServerRuntimeState","args":[[]],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"persistServerRuntimeState","args":[{}],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"clearPersistedServerRuntimeState","args":["hello"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["./x/**/*.jsonHELLO"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["a😀b😀c"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["emoji 👍🏽 mix"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["a"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["tab\tseparated"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["  padded  "],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["a..b"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["line1\nline2"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":[":"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["a.b.ca:b:c"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["HELLO"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["straße"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["key_name-1"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["src/a/b.ts"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["Hello World"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["HELLO😀"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["{name} has {count} items"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["a.b.c"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["line1\nline2hello"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["ab./x/**/*.json"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["ab"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["src/a/b.tsΣΊΣΥΦΟΣ"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["ΣΊΣΥΦΟΣns:key.path"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["a:b:c"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["İstanbul"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["﻿bom"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["﻿bomemoji 👍🏽 mix"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["ns:key.path"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["a..btab\tseparated"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["./x/**/*.json"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":[".leading"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["trailing."],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["日本語のテキスト"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["ünïcödé"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":[""],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["😀"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["ns:key.path:"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["ΣΊΣΥΦΟΣ"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["éİstanbul"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["abc"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["é"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["a.b.c日本語のテキスト"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["abca:b:c"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["hello world"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["ΣΊΣΥΦΟΣ﻿bom"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["trailing../x/**/*.json"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["ababc"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["straßeünïcödé"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["İstanbulstraße"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["  padded  ΣΊΣΥΦΟΣ"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["a.leading"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":[":hello"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["  padded  :"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["a..bhello"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["HELLOtab\tseparated"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["hello{name} has {count} items"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["{name} has {count} itemsa.b.c"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["İstanbulline1\nline2"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["ünïcödéa😀b😀c"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["aa.b.c"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["abİstanbul"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["ΣΊΣΥΦΟΣab"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":[".leadingemoji 👍🏽 mix"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":[":straße"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["﻿boma"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["emoji 👍🏽 mixabc"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["straße.leading"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["emoji 👍🏽 mixa.b.c"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["Hello World﻿bom"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["ΣΊΣΥΦΟΣemoji 👍🏽 mix"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["ΣΊΣΥΦΟΣHello World"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["Hello Worldsrc/a/b.ts"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["abtab\tseparated"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["﻿bomΣΊΣΥΦΟΣ"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["éünïcödé"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["é{name} has {count} items"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["hello worldHello World"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["ΣΊΣΥΦΟΣé"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["helloΣΊΣΥΦΟΣ"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["a.b.c😀"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["./x/**/*.json.leading"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["ékey_name-1"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["😀{name} has {count} items"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["abhello world"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["line1\nline2Hello World"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["tab\tseparatedstraße"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["key_name-1ns:key.path"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["Hello Worldtab\tseparated"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["日本語のテキスト./x/**/*.json"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["日本語のテキストhello world"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["trailing.hello"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["src/a/b.tsünïcödé"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["HELLO  padded  "],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["﻿bomHELLO"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["a:b:c  padded  "],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["line1\nline2a.b.c"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["emoji 👍🏽 mixns:key.path"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["日本語のテキストé"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["emoji 👍🏽 mixemoji 👍🏽 mix"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["İstanbul﻿bom"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":[":tab\tseparated"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["a:b:cé"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["﻿boma😀b😀c"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["aünïcödé"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["İstanbul  padded  "],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":[":a"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["ns:key.pathİstanbul"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["{name} has {count} items  padded  "],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":[".leadingns:key.path"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":[":HELLO"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["  padded  emoji 👍🏽 mix"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["ns:key.path./x/**/*.json"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["Hello World  padded  "],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["trailing.a😀b😀c"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["aa😀b😀c"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["line1\nline2﻿bom"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["ΣΊΣΥΦΟΣ😀"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["ünïcödé:"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["ünïcödéHello World"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["abcstraße"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["abc﻿bom"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["a😀b😀ca😀b😀c"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["{name} has {count} items:"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["trailing.abc"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["ünïcödéline1\nline2"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["abab"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["emoji 👍🏽 mixé"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["emoji 👍🏽 mix﻿bom"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["ΣΊΣΥΦΟΣ{name} has {count} items"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["straßeab"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["key_name-1a"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["Hello Worldkey_name-1"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["éhello"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["abca.b.c"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["Hello WorldHello World"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["{name} has {count} items日本語のテキスト"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["﻿bomtab\tseparated"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":[":a..b"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["  padded  a"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["a:b:cünïcödé"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["İstanbulhello"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["a..bhello world"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["ns:key.pathabc"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["日本語のテキスト😀"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["ΣΊΣΥΦΟΣünïcödé"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["ns:key.pathé"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["akey_name-1"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["src/a/b.tsa😀b😀c"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["line1\nline2HELLO"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["héllo wörld"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["👍🏽 thumbs"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["日本語"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["ılık ırmak"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["👨‍👩‍👧 family"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["a b"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["a😀b"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["a²b x½ y①"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["aⅠb Ⅻ"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["a𐐀b 𝐀bc"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"clearPersistedServerRuntimeState","args":["कि ٣٤"],"ok":{"~effect/Effect/args":{"$function":""}}}

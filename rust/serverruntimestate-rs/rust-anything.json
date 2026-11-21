@@ -1,0 +1,66 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/serverRuntimeState.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "serverruntimestate-rs",
+  "exports": [
+    {
+      "name": "makePersistedServerRuntimeState",
+      "file": "apps/server/src/serverRuntimeState.ts",
+      "line": 28,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly config: Pick<ServerConfigShape, \"host\">;\n  readonly port: number;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof PersistedServerRuntimeState.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "persistServerRuntimeState",
+      "file": "apps/server/src/serverRuntimeState.ts",
+      "line": 41,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly path: string;\n  readonly state: typeof typeof typeof typeof PersistedServerRuntimeState.Type.Type.Type.Type;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "clearPersistedServerRuntimeState",
+      "file": "apps/server/src/serverRuntimeState.ts",
+      "line": 50,
+      "params": [
+        {
+          "name": "path",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

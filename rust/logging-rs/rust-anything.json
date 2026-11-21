@@ -1,0 +1,57 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/logging.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "logging-rs",
+  "exports": [],
+  "classes": [
+    {
+      "name": "RotatingFileSink",
+      "file": "packages/shared/src/logging.ts",
+      "line": 18,
+      "constructor": [
+        {
+          "name": "options",
+          "ts_type": "RotatingFileSinkOptions",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "methods": [
+        {
+          "name": "write",
+          "file": "packages/shared/src/logging.ts",
+          "line": 48,
+          "params": [
+            {
+              "name": "chunk",
+              "ts_type": "string | Buffer",
+              "optional": false,
+              "rest": false
+            }
+          ],
+          "returns": "void",
+          "is_async": false,
+          "is_generator": false,
+          "type_params": [],
+          "uses_instanceof": false
+        },
+        {
+          "name": "close",
+          "file": "packages/shared/src/logging.ts",
+          "line": 79,
+          "params": [],
+          "returns": "void",
+          "is_async": false,
+          "is_generator": false,
+          "type_params": [],
+          "uses_instanceof": false
+        }
+      ],
+      "blocker": null
+    }
+  ],
+  "js_only": []
+}

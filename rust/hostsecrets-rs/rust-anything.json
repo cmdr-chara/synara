@@ -1,0 +1,185 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/hostSecrets.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "hostsecrets-rs",
+  "exports": [
+    {
+      "name": "encodeBase64Url",
+      "file": "packages/shared/src/hostSecrets.ts",
+      "line": 157,
+      "params": [
+        {
+          "name": "bytes",
+          "ts_type": "Uint8Array",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "decodeBase64Url",
+      "file": "packages/shared/src/hostSecrets.ts",
+      "line": 171,
+      "params": [
+        {
+          "name": "text",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Uint8Array<ArrayBuffer>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "generateSyncKey",
+      "file": "packages/shared/src/hostSecrets.ts",
+      "line": 225,
+      "params": [],
+      "returns": "Promise<CryptoKey>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "sealHostSecret",
+      "file": "packages/shared/src/hostSecrets.ts",
+      "line": 240,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  syncKey: CryptoKey;\n  hostId: string;\n  ownerUserId: string;\n  version: number;\n  secret: unknown;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<typeof typeof typeof typeof HostSecretEnvelope.Type.Type.Type.Type>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "openHostSecret",
+      "file": "packages/shared/src/hostSecrets.ts",
+      "line": 284,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  syncKey: CryptoKey;\n  hostId: string;\n  ownerUserId: string;\n  version: number;\n  envelope: typeof typeof typeof typeof HostSecretEnvelope.Type.Type.Type.Type;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<unknown>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "generatePairingKeyPair",
+      "file": "packages/shared/src/hostSecrets.ts",
+      "line": 399,
+      "params": [],
+      "returns": "Promise<PairingKeyPair>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "wrapSyncKey",
+      "file": "packages/shared/src/hostSecrets.ts",
+      "line": 473,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  syncKey: CryptoKey;\n  recipientPublicJwk: PairingPublicJwk;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<WrappedSyncKey>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "unwrapSyncKey",
+      "file": "packages/shared/src/hostSecrets.ts",
+      "line": 515,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  wrapped: WrappedSyncKey;\n  recipientPrivateKey: CryptoKey;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<CryptoKey>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "pairingVerificationCode",
+      "file": "packages/shared/src/hostSecrets.ts",
+      "line": 564,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  senderPublicJwk: PairingPublicJwk;\n  recipientPublicJwk: PairingPublicJwk;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<string>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "rotateHostSecrets",
+      "file": "packages/shared/src/hostSecrets.ts",
+      "line": 620,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  oldSyncKey: CryptoKey;\n  newSyncKey: CryptoKey;\n  entries: readonly HostSecretEntry[];\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<readonly HostSecretEntry[]>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "HostSecretsError",
+      "file": "packages/shared/src/hostSecrets.ts",
+      "line": 53,
+      "reason": "class: extends another class, public field `reason`"
+    }
+  ]
+}

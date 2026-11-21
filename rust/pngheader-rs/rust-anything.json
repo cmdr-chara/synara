@@ -1,0 +1,30 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/pngHeader.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "pngheader-rs",
+  "exports": [
+    {
+      "name": "pngDimensions",
+      "file": "apps/server/src/pngHeader.ts",
+      "line": 29,
+      "params": [
+        {
+          "name": "bytes",
+          "ts_type": "Uint8Array",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "PngDimensions | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

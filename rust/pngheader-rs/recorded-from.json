@@ -1,0 +1,17 @@
+{
+  "unit": "apps/server/src/pngHeader.ts",
+  "files": 1,
+  "fingerprint": "c44dd72fd87c6d16",
+  "coverage": {
+    "lines": 34,
+    "reached": 30,
+    "files": [
+      {
+        "file": "apps/server/src/pngHeader.ts",
+        "lines": 34,
+        "reached": 30,
+        "missed": "32-35"
+      }
+    ]
+  }
+}

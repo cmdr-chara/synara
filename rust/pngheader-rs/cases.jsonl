@@ -1,0 +1,9 @@
+{"fn":"pngDimensions","args":[["a",1]],"ok":null}
+{"fn":"pngDimensions","args":["x"],"ok":null}
+{"fn":"pngDimensions","args":[0],"ok":null}
+{"fn":"pngDimensions","args":[[]],"ok":null}
+{"fn":"pngDimensions","args":[null],"error":"Cannot read properties of null (reading 'byteLength')"}
+{"fn":"pngDimensions","args":[true],"ok":null}
+{"fn":"pngDimensions","args":[{"a":{"b":"c"}}],"ok":null}
+{"fn":"pngDimensions","args":[{"a":"b"}],"ok":null}
+{"fn":"pngDimensions","args":[{}],"ok":null}

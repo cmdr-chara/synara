@@ -1,0 +1,582 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/keybindings.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "keybindings-rs",
+  "exports": [
+    {
+      "name": "shortcutKeyFromEventCode",
+      "file": "apps/web/src/keybindings.ts",
+      "line": 448,
+      "params": [
+        {
+          "name": "code",
+          "ts_type": "string | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isUnassignedKeybinding",
+      "file": "apps/web/src/keybindings.ts",
+      "line": 457,
+      "params": [
+        {
+          "name": "binding",
+          "ts_type": "Pick<typeof typeof typeof typeof ResolvedKeybindingRule.Type.Type.Type.Type, \"shortcut\">",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isShortcutDispatchSuspended",
+      "file": "apps/web/src/keybindings.ts",
+      "line": 479,
+      "params": [],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "matchesShortcut",
+      "file": "apps/web/src/keybindings.ts",
+      "line": 528,
+      "params": [
+        {
+          "name": "event",
+          "ts_type": "ShortcutEventLike",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "shortcut",
+          "ts_type": "typeof typeof typeof typeof KeybindingShortcut.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "platform",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "evaluateWhenNode",
+      "file": "apps/web/src/keybindings.ts",
+      "line": 553,
+      "params": [
+        {
+          "name": "node",
+          "ts_type": "(| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"and\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"or\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }) }\n  | { type: \"and\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"and\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"or\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"and\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"or\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }) }\n  | { type: \"or\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"and\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"or\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"and\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"or\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }) }) }\n  | { type: \"and\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"and\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"or\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }) }\n  | { type: \"and\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"and\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"or\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"and\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"or\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }) }\n  | { type: \"or\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"and\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"or\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"and\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"or\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }) }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"and\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"or\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }) }\n  | { type: \"and\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"and\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"or\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"and\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"or\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }) }\n  | { type: \"or\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"and\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"or\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"and\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"or\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }) }) }\n  | { type: \"or\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"and\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"or\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }) }\n  | { type: \"and\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"and\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"or\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"and\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"or\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }) }\n  | { type: \"or\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"and\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"or\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"and\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"or\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }) }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"and\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"or\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }) }\n  | { type: \"and\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"and\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"or\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"and\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"or\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }) }\n  | { type: \"or\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"and\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"or\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"and\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"or\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }) }) })",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "context",
+          "ts_type": "Readonly<Record<string, boolean>>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "shortcutConflictKey",
+      "file": "apps/web/src/keybindings.ts",
+      "line": 580,
+      "params": [
+        {
+          "name": "shortcut",
+          "ts_type": "typeof typeof typeof typeof KeybindingShortcut.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "platform",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "findEffectiveKeybindingForCommand",
+      "file": "apps/web/src/keybindings.ts",
+      "line": 605,
+      "params": [
+        {
+          "name": "keybindings",
+          "ts_type": "typeof typeof typeof typeof ResolvedKeybindingsConfig.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "command",
+          "ts_type": "typeof typeof typeof typeof KeybindingCommand.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "options",
+          "ts_type": "ShortcutMatchOptions",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ResolvedKeybindingRule.Type.Type.Type.Type | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveKeybindingForCommand",
+      "file": "apps/web/src/keybindings.ts",
+      "line": 635,
+      "params": [
+        {
+          "name": "keybindings",
+          "ts_type": "typeof typeof typeof typeof ResolvedKeybindingsConfig.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "command",
+          "ts_type": "typeof typeof typeof typeof KeybindingCommand.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "options",
+          "ts_type": "ShortcutMatchOptions",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ResolvedKeybindingRule.Type.Type.Type.Type | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "formatKeybindingWhenExpression",
+      "file": "apps/web/src/keybindings.ts",
+      "line": 646,
+      "params": [
+        {
+          "name": "node",
+          "ts_type": "(| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"and\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"or\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }) }\n  | { type: \"and\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"and\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"or\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"and\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"or\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }) }\n  | { type: \"or\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"and\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"or\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"and\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"or\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }) }) }\n  | { type: \"and\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"and\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"or\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }) }\n  | { type: \"and\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"and\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"or\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"and\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"or\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }) }\n  | { type: \"or\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"and\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"or\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"and\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"or\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }) }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"and\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"or\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }) }\n  | { type: \"and\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"and\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"or\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"and\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"or\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }) }\n  | { type: \"or\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"and\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"or\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"and\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"or\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }) }) }\n  | { type: \"or\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"and\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"or\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }) }\n  | { type: \"and\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"and\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"or\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"and\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"or\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }) }\n  | { type: \"or\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"and\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"or\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"and\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"or\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }) }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"and\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"or\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }) }\n  | { type: \"and\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"and\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"or\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"and\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"or\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }) }\n  | { type: \"or\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"and\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"or\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"and\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }\n  | { type: \"or\"; left: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }); right: (| { type: \"identifier\"; name: string }\n  | { type: \"not\"; node: KeybindingWhenNode }\n  | { type: \"and\"; left: KeybindingWhenNode; right: KeybindingWhenNode }\n  | { type: \"or\"; left: KeybindingWhenNode; right: KeybindingWhenNode }) }) }) }) | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveShortcutCommand",
+      "file": "apps/web/src/keybindings.ts",
+      "line": 701,
+      "params": [
+        {
+          "name": "event",
+          "ts_type": "ShortcutEventLike",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "keybindings",
+          "ts_type": "typeof typeof typeof typeof ResolvedKeybindingsConfig.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "options",
+          "ts_type": "ShortcutMatchOptions",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "formatShortcutLabel",
+      "file": "apps/web/src/keybindings.ts",
+      "line": 745,
+      "params": [
+        {
+          "name": "shortcut",
+          "ts_type": "typeof typeof typeof typeof KeybindingShortcut.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "platform",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "splitShortcutLabel",
+      "file": "apps/web/src/keybindings.ts",
+      "line": 771,
+      "params": [
+        {
+          "name": "shortcutLabel",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "shortcutLabelForCommand",
+      "file": "apps/web/src/keybindings.ts",
+      "line": 799,
+      "params": [
+        {
+          "name": "keybindings",
+          "ts_type": "typeof typeof typeof typeof ResolvedKeybindingsConfig.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "command",
+          "ts_type": "typeof typeof typeof typeof KeybindingCommand.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "options",
+          "ts_type": "string | ResolvedShortcutLabelOptions",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "threadJumpCommandForIndex",
+      "file": "apps/web/src/keybindings.ts",
+      "line": 845,
+      "params": [
+        {
+          "name": "index",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(typeof THREAD_JUMP_KEYBINDING_COMMANDS)[number] | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "threadJumpIndexFromCommand",
+      "file": "apps/web/src/keybindings.ts",
+      "line": 849,
+      "params": [
+        {
+          "name": "command",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "number | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "spaceJumpCommandForIndex",
+      "file": "apps/web/src/keybindings.ts",
+      "line": 854,
+      "params": [
+        {
+          "name": "index",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(typeof SPACE_JUMP_KEYBINDING_COMMANDS)[number] | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "spaceJumpIndexFromCommand",
+      "file": "apps/web/src/keybindings.ts",
+      "line": 858,
+      "params": [
+        {
+          "name": "command",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "number | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "shouldShowThreadJumpHints",
+      "file": "apps/web/src/keybindings.ts",
+      "line": 863,
+      "params": [
+        {
+          "name": "event",
+          "ts_type": "ShortcutEventLike",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "keybindings",
+          "ts_type": "typeof typeof typeof typeof ResolvedKeybindingsConfig.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "options",
+          "ts_type": "ShortcutMatchOptions",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isOpenFavoriteEditorShortcut",
+      "file": "apps/web/src/keybindings.ts",
+      "line": 885,
+      "params": [
+        {
+          "name": "event",
+          "ts_type": "ShortcutEventLike",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "keybindings",
+          "ts_type": "typeof typeof typeof typeof ResolvedKeybindingsConfig.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "options",
+          "ts_type": "ShortcutMatchOptions",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isEditorFileSaveShortcut",
+      "file": "apps/web/src/keybindings.ts",
+      "line": 893,
+      "params": [
+        {
+          "name": "event",
+          "ts_type": "ShortcutEventLike",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "keybindings",
+          "ts_type": "typeof typeof typeof typeof ResolvedKeybindingsConfig.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "options",
+          "ts_type": "ShortcutMatchOptions",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveEditorShortcutCommand",
+      "file": "apps/web/src/keybindings.ts",
+      "line": 927,
+      "params": [
+        {
+          "name": "event",
+          "ts_type": "ShortcutEventLike",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "keybindings",
+          "ts_type": "typeof typeof typeof typeof ResolvedKeybindingsConfig.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "options",
+          "ts_type": "ShortcutMatchOptions",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "(typeof EDITOR_SHORTCUT_COMMANDS)[number] | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isTerminalClearShortcut",
+      "file": "apps/web/src/keybindings.ts",
+      "line": 938,
+      "params": [
+        {
+          "name": "event",
+          "ts_type": "ShortcutEventLike",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isKeyboardShortcutsHelpShortcut",
+      "file": "apps/web/src/keybindings.ts",
+      "line": 948,
+      "params": [
+        {
+          "name": "event",
+          "ts_type": "ShortcutEventLike",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "platform",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "terminalNavigationShortcutData",
+      "file": "apps/web/src/keybindings.ts",
+      "line": 971,
+      "params": [
+        {
+          "name": "event",
+          "ts_type": "ShortcutEventLike",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "platform",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "suspendShortcutDispatch",
+      "file": "apps/web/src/keybindings.ts",
+      "line": 468,
+      "reason": "takes or returns a function"
+    }
+  ]
+}

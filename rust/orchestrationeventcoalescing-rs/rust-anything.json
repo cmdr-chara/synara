@@ -1,0 +1,30 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/orchestrationEventCoalescing.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "orchestrationeventcoalescing-rs",
+  "exports": [
+    {
+      "name": "coalesceOrchestrationUiEvents",
+      "file": "apps/web/src/orchestrationEventCoalescing.ts",
+      "line": 42,
+      "params": [
+        {
+          "name": "events",
+          "ts_type": "ReadonlyArray<typeof typeof typeof typeof OrchestrationEvent.Type.Type.Type.Type>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof OrchestrationEvent.Type.Type.Type.Type[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

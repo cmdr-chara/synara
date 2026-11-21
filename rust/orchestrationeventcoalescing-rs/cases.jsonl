@@ -1,0 +1,9 @@
+{"fn":"coalesceOrchestrationUiEvents","args":["x"],"error":"Cannot use 'in' operator to search for 'threadId' in undefined"}
+{"fn":"coalesceOrchestrationUiEvents","args":[{"a":{"b":"c"}}],"error":"events is not iterable"}
+{"fn":"coalesceOrchestrationUiEvents","args":[0],"error":"events is not iterable"}
+{"fn":"coalesceOrchestrationUiEvents","args":[["a",1]],"error":"Cannot use 'in' operator to search for 'threadId' in undefined"}
+{"fn":"coalesceOrchestrationUiEvents","args":[null],"error":"events is not iterable"}
+{"fn":"coalesceOrchestrationUiEvents","args":[[]],"ok":[]}
+{"fn":"coalesceOrchestrationUiEvents","args":[{}],"error":"events is not iterable"}
+{"fn":"coalesceOrchestrationUiEvents","args":[true],"error":"events is not iterable"}
+{"fn":"coalesceOrchestrationUiEvents","args":[{"a":"b"}],"error":"events is not iterable"}

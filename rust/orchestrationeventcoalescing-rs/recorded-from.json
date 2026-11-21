@@ -1,0 +1,17 @@
+{
+  "unit": "apps/web/src/orchestrationEventCoalescing.ts",
+  "files": 1,
+  "fingerprint": "c2eeb8a843d7cdb4",
+  "coverage": {
+    "lines": 70,
+    "reached": 27,
+    "files": [
+      {
+        "file": "apps/web/src/orchestrationEventCoalescing.ts",
+        "lines": 70,
+        "reached": 27,
+        "missed": "17-35, 49-72"
+      }
+    ]
+  }
+}

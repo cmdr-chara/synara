@@ -1,0 +1,800 @@
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"hello world","threadId":"Hello World"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/hello world/visuals/a591a6d40bf420404a011733cfb7b190d62c65bf0bcda32b57b277d9ad9f146e"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"Hello World","threadId":"ab"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/Hello World/visuals/fb8e20fc2e4c3f248c60c39bd652f3c1347298bb977b8b4d5903b85055620603"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":".leading","threadId":"hello"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/.leading/visuals/2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"straße","threadId":"hello"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/straße/visuals/2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824"}
+{"fn":"inlineVisualThreadDirectory","args":[true],"error":"Cannot read properties of undefined (reading 'trim')"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"  padded  ","threadId":"abc"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/  padded  /visuals/ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"a.b.c","threadId":"a:b:c"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/a.b.c/visuals/b0ee04f880c4ff4261479e2e7822b7410aee4c7159f4185ad5b0d88a312b495e"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"é","threadId":".leading"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/é/visuals/9c74491a21e8fc7a9b48d53d4432be058b3ae9771f0d6ce92881805dc8947feb"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"😀:","threadId":"a..b"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/😀:/visuals/f62b42414c514fa689d3e087ba397c602a4ba2c897f0ac2cb32cf770c3442bf2"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"tab\tseparated","threadId":"é"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/tab\tseparated/visuals/bf12767b0f2a56b2190075bae8169f656e3ce8d6357d4aff184bc6c7ea48f9f6"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"abc","threadId":"é"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/abc/visuals/bf12767b0f2a56b2190075bae8169f656e3ce8d6357d4aff184bc6c7ea48f9f6"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"  padded  ","threadId":"key_name-1"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/  padded  /visuals/4184db5447df2761afdd05c964791a1e85947449b0c6011b4c013245b7f065b3"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"emoji 👍🏽 mix","threadId":"日本語のテキスト"}],"ok":null}
+{"fn":"inlineVisualThreadDirectory","args":[{}],"error":"Cannot read properties of undefined (reading 'trim')"}
+{"fn":"inlineVisualThreadDirectory","args":[[]],"error":"Cannot read properties of undefined (reading 'trim')"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"hello","threadId":"a"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/hello/visuals/ca978112ca1bbdcafac231b39a23dc4da786eff8147c4e72b9807785afee48bb"}
+{"fn":"inlineVisualThreadDirectory","args":[0],"error":"Cannot read properties of undefined (reading 'trim')"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"a..b日本語のテキスト","threadId":"a.b.c"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/a..b日本語のテキスト/visuals/845e30448809e2bc8958eb025bfc795235d13b077a53d0c3abbd2385170dc9b8"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"😀","threadId":"./x/**/*.json"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/😀/visuals/018071a777fc8b5655cf853a244fa7e3e4016e259f348d4cd4a25f30831dc6f0"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"{name} has {count} items:","threadId":"﻿bom"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/{name} has {count} items:/visuals/2623148f0d047ef6feae63422c0d60741888ae7f45fd979ba232e1c975c14702"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"tab\tseparated","threadId":"  padded  "}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/tab\tseparated/visuals/3d4a55719d2ebc89e0e90d5c6ca663ba4871cb0aa98603cf716bf343db149465"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"ab","threadId":"é"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/ab/visuals/bf12767b0f2a56b2190075bae8169f656e3ce8d6357d4aff184bc6c7ea48f9f6"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"HELLO","threadId":"日本語のテキスト"}],"ok":null}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"hello worldé","threadId":".leading"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/hello worldé/visuals/9c74491a21e8fc7a9b48d53d4432be058b3ae9771f0d6ce92881805dc8947feb"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"emoji 👍🏽 mix","threadId":"./x/**/*.json"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/emoji 👍🏽 mix/visuals/018071a777fc8b5655cf853a244fa7e3e4016e259f348d4cd4a25f30831dc6f0"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"key_name-1","threadId":"Hello World"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/key_name-1/visuals/a591a6d40bf420404a011733cfb7b190d62c65bf0bcda32b57b277d9ad9f146e"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"ns:key.path","threadId":"{name} has {count} items"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/ns:key.path/visuals/42ff2ad309da81ff6c5bab2538b35b5e9561d56f9ee93b7e9a5af1d03b28c40a"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"İstanbulé","threadId":"ΣΊΣΥΦΟΣ"}],"ok":null}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"a.b.cHello World","threadId":"ab"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/a.b.cHello World/visuals/fb8e20fc2e4c3f248c60c39bd652f3c1347298bb977b8b4d5903b85055620603"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"./x/**/*.json","threadId":"a😀b😀cHello World"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/x/**/*.json/visuals/55a3f85d63f37d3ebbd2065884dc14aa4cb85c62214eb0a53145db929a17668a"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"ünïcödé","threadId":"abc"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/ünïcödé/visuals/ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"ΣΊΣΥΦΟΣ","threadId":"a"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/ΣΊΣΥΦΟΣ/visuals/ca978112ca1bbdcafac231b39a23dc4da786eff8147c4e72b9807785afee48bb"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"trailing.","threadId":"line1\nline2a😀b😀c"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/trailing./visuals/b37ce1a0d7eae2e726b52ced7b94984d189ef1403f1a0fc9300019c544c41d33"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"HELLO","threadId":"é"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/HELLO/visuals/bf12767b0f2a56b2190075bae8169f656e3ce8d6357d4aff184bc6c7ea48f9f6"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"ns:key.path","threadId":"emoji 👍🏽 mixa"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/ns:key.path/visuals/39d8c198f98d26b8a76e0b7fb0c93786d03ea7e5de656240badd45118743079a"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"key_name-1","threadId":"hello"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/key_name-1/visuals/2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"a","threadId":"Hello World"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/a/visuals/a591a6d40bf420404a011733cfb7b190d62c65bf0bcda32b57b277d9ad9f146e"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"İstanbul","threadId":"  padded  "}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/İstanbul/visuals/3d4a55719d2ebc89e0e90d5c6ca663ba4871cb0aa98603cf716bf343db149465"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"src/a/b.ts","threadId":"HELLO"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/src/a/b.ts/visuals/3733cd977ff8eb18b987357e22ced99f46097f31ecb239e878ae63760e83e4d5"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"","threadId":"😀./x/**/*.json"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/visuals/3ef6e62046b0590bf57d25c04684645c5dae649fad781c77c8d43c532f90d656"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"hello world","threadId":"src/a/b.ts"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/hello world/visuals/eb7041468cb32feadbbbcf82b6cf05326b26c717d315fc2a4cef3eaa16b0aaed"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"HELLO./x/**/*.json","threadId":"trailing."}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/HELLO./x/**/*.json/visuals/44c12a4e432eba3f7fa634fd116eef3900ad9166688cb40c3f488ef3a5320316"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"a.b.c","threadId":"HELLOa"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/a.b.c/visuals/1bf560f2ddb45f3dbfc9878fdd9d6ca0ddbcb32aa5c3f00ef1c87610c0cd76d4"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"😀","threadId":"emoji 👍🏽 mix"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/😀/visuals/7839fd7a65ab6e7d304ce23023e26614284e9c745c139718a7d4ac50e9db5330"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"a..b","threadId":"straße﻿bom"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/a..b/visuals/2fd60876c5d4bdfcaf458c42c24a2be2047df9ecd08191161ff6b2f6a0769079"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":":","threadId":".leading./x/**/*.json"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/:/visuals/1470409cd690dc2d3114bd0414cb86d3510a599769203e41cfbe5122d0057968"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":".leading","threadId":"abcé"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/.leading/visuals/1ee9f43fe41b412ddf502a1403707848b3e4d08fe5590508e168c732f72ce31b"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":".leading","threadId":"abc"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/.leading/visuals/ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"ΣΊΣΥΦΟΣns:key.path","threadId":"﻿bom"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/ΣΊΣΥΦΟΣns:key.path/visuals/2623148f0d047ef6feae63422c0d60741888ae7f45fd979ba232e1c975c14702"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"日本語のテキスト","threadId":"{name} has {count} items"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/日本語のテキスト/visuals/42ff2ad309da81ff6c5bab2538b35b5e9561d56f9ee93b7e9a5af1d03b28c40a"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"","threadId":"ünïcödé"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/visuals/b09ad3e278dfb341468394a32f732467e2245b4b2876c3e15e0aaf1aa5ac242a"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"a..b","threadId":"trailing."}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/a..b/visuals/44c12a4e432eba3f7fa634fd116eef3900ad9166688cb40c3f488ef3a5320316"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"HELLO","threadId":"﻿bom"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/HELLO/visuals/2623148f0d047ef6feae63422c0d60741888ae7f45fd979ba232e1c975c14702"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"éa.b.c","threadId":"a..b"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/éa.b.c/visuals/f62b42414c514fa689d3e087ba397c602a4ba2c897f0ac2cb32cf770c3442bf2"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"😀","threadId":"tab\tseparated"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/😀/visuals/737304a727e038b1b7006995771a6087621516d1337a62877c80a7406b1d4b1c"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"😀","threadId":"ns:key.path"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/😀/visuals/090ed4bc851381c01fc77d9df176dfe517adb082c4601d1e6241d0492bf78d83"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"{name} has {count} items","threadId":"a:b:c"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/{name} has {count} items/visuals/b0ee04f880c4ff4261479e2e7822b7410aee4c7159f4185ad5b0d88a312b495e"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"a.b.c","threadId":"ünïcödé"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/a.b.c/visuals/b09ad3e278dfb341468394a32f732467e2245b4b2876c3e15e0aaf1aa5ac242a"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"hello./x/**/*.json","threadId":"abcΣΊΣΥΦΟΣ"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/hello./x/**/*.json/visuals/dcfa7117c8aee0113385c9f4564bd8e8c6f80831fbe978b4afc66cc8b158dbe5"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":":","threadId":":"}],"ok":null}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"ünïcödé","threadId":"ünïcödé"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/ünïcödé/visuals/b09ad3e278dfb341468394a32f732467e2245b4b2876c3e15e0aaf1aa5ac242a"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"a:b:c","threadId":"{name} has {count} itemsa..b"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/a:b:c/visuals/700202e127ebadca936b5060845f84610cd1b434596442c13f3d0cf5d7f7d036"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"ns:key.path","threadId":"Hello World"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/ns:key.path/visuals/a591a6d40bf420404a011733cfb7b190d62c65bf0bcda32b57b277d9ad9f146e"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"straße","threadId":"ab"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/straße/visuals/fb8e20fc2e4c3f248c60c39bd652f3c1347298bb977b8b4d5903b85055620603"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"a😀b😀c","threadId":""}],"ok":null}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"tab\tseparated","threadId":"😀./x/**/*.json"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/tab\tseparated/visuals/3ef6e62046b0590bf57d25c04684645c5dae649fad781c77c8d43c532f90d656"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"hello","threadId":"trailing."}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/hello/visuals/44c12a4e432eba3f7fa634fd116eef3900ad9166688cb40c3f488ef3a5320316"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"straße","threadId":"abc"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/straße/visuals/ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"line1\nline2abc","threadId":"a"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/line1\nline2abc/visuals/ca978112ca1bbdcafac231b39a23dc4da786eff8147c4e72b9807785afee48bb"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":":","threadId":"key_name-1"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/:/visuals/4184db5447df2761afdd05c964791a1e85947449b0c6011b4c013245b7f065b3"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"ab","threadId":"HELLO"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/ab/visuals/3733cd977ff8eb18b987357e22ced99f46097f31ecb239e878ae63760e83e4d5"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"HELLO","threadId":"Hello World"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/HELLO/visuals/a591a6d40bf420404a011733cfb7b190d62c65bf0bcda32b57b277d9ad9f146e"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"key_name-1","threadId":"😀"}],"ok":null}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"a..b","threadId":"src/a/b.ts"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/a..b/visuals/eb7041468cb32feadbbbcf82b6cf05326b26c717d315fc2a4cef3eaa16b0aaed"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"tab\tseparated","threadId":"İstanbulé"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/tab\tseparated/visuals/0ea475986429f73e5680497ef965390884a24f737bf6b4589809d532326e1dd9"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"a","threadId":"trailing."}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/a/visuals/44c12a4e432eba3f7fa634fd116eef3900ad9166688cb40c3f488ef3a5320316"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"key_name-1","threadId":"Hello Worldsrc/a/b.ts"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/key_name-1/visuals/ddf2a43c32bbe44e982e35cddc6f7c5ac9b91cb93a1dfe23b01b5851b6956b71"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"hello","threadId":"HELLO"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/hello/visuals/3733cd977ff8eb18b987357e22ced99f46097f31ecb239e878ae63760e83e4d5"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"","threadId":"straßea😀b😀c"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/visuals/6f4eeaf424c28f6e9a833a616385a8079ce9eb8a9c777b39fba1b8317bca63fd"}
+{"fn":"inlineVisualThreadDirectory","args":[["a",1]],"error":"Cannot read properties of undefined (reading 'trim')"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"hello world","threadId":"a😀b😀c"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/hello world/visuals/3b0fa9d763b5cb38e6cdd6c5d95ca5fea8cf1d5f54570b87b06f3c8c22fe47d1"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"ahello","threadId":"ns:key.path"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/ahello/visuals/090ed4bc851381c01fc77d9df176dfe517adb082c4601d1e6241d0492bf78d83"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"{name} has {count} items","threadId":"é"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/{name} has {count} items/visuals/bf12767b0f2a56b2190075bae8169f656e3ce8d6357d4aff184bc6c7ea48f9f6"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"straße","threadId":"line1\nline2"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/straße/visuals/683376e290829b482c2655745caffa7a1dccfa10afaa62dac2b42dd6c68d0f83"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"ΣΊΣΥΦΟΣ","threadId":"é"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/ΣΊΣΥΦΟΣ/visuals/bf12767b0f2a56b2190075bae8169f656e3ce8d6357d4aff184bc6c7ea48f9f6"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"ünïcödé","threadId":"  padded  "}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/ünïcödé/visuals/3d4a55719d2ebc89e0e90d5c6ca663ba4871cb0aa98603cf716bf343db149465"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"HELLO","threadId":"straße"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/HELLO/visuals/787f4770613d3824cbc89b6d5da90a123e41b07b90b45ea3738c216b14616140"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"hello world","threadId":"hello world"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/hello world/visuals/b94d27b9934d3e08a52e52d7da7dabfac484efe37a5380ee9088f7ace2efcde9"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"😀","threadId":"﻿bom"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/😀/visuals/2623148f0d047ef6feae63422c0d60741888ae7f45fd979ba232e1c975c14702"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"abc","threadId":"﻿bom"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/abc/visuals/2623148f0d047ef6feae63422c0d60741888ae7f45fd979ba232e1c975c14702"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"src/a/b.ts","threadId":"hello"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/src/a/b.ts/visuals/2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"ünïcödé","threadId":"ns:key.pathns:key.path"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/ünïcödé/visuals/4ce9aed3a91b764033bcaa2ff188b67906c04bdbf0f68f0f5669c5436c817e38"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"ünïcödé","threadId":"Hello World"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/ünïcödé/visuals/a591a6d40bf420404a011733cfb7b190d62c65bf0bcda32b57b277d9ad9f146e"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"","threadId":"﻿bom"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/visuals/2623148f0d047ef6feae63422c0d60741888ae7f45fd979ba232e1c975c14702"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"ns:key.path","threadId":"src/a/b.ts"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/ns:key.path/visuals/eb7041468cb32feadbbbcf82b6cf05326b26c717d315fc2a4cef3eaa16b0aaed"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":".leadingabc","threadId":"trailing."}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/.leadingabc/visuals/44c12a4e432eba3f7fa634fd116eef3900ad9166688cb40c3f488ef3a5320316"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"a.b.c","threadId":"Hello World"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/a.b.c/visuals/a591a6d40bf420404a011733cfb7b190d62c65bf0bcda32b57b277d9ad9f146e"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"﻿bom","threadId":"abc"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/﻿bom/visuals/ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"ünïcödé","threadId":""}],"ok":null}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"é","threadId":"abc"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/é/visuals/ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"straße","threadId":":"}],"ok":null}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"key_name-1","threadId":"日本語のテキスト"}],"ok":null}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"é","threadId":"ünïcödé"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/é/visuals/b09ad3e278dfb341468394a32f732467e2245b4b2876c3e15e0aaf1aa5ac242a"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"tab\tseparated","threadId":"src/a/b.tsabc"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/tab\tseparated/visuals/3524ed55a7d6cfc94eb428d4b9646c3208366eae8b1f757f407f60fdf021cb19"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"trailing.","threadId":"﻿bom"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/trailing./visuals/2623148f0d047ef6feae63422c0d60741888ae7f45fd979ba232e1c975c14702"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"key_name-1","threadId":"ns:key.path"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/key_name-1/visuals/090ed4bc851381c01fc77d9df176dfe517adb082c4601d1e6241d0492bf78d83"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"tab\tseparated","threadId":"😀"}],"ok":null}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"  padded  ","threadId":"a😀b😀c"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/  padded  /visuals/3b0fa9d763b5cb38e6cdd6c5d95ca5fea8cf1d5f54570b87b06f3c8c22fe47d1"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"İstanbul","threadId":"./x/**/*.json"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/İstanbul/visuals/018071a777fc8b5655cf853a244fa7e3e4016e259f348d4cd4a25f30831dc6f0"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"a.b.c","threadId":"key_name-1"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/a.b.c/visuals/4184db5447df2761afdd05c964791a1e85947449b0c6011b4c013245b7f065b3"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"./x/**/*.json","threadId":"./x/**/*.json"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/x/**/*.json/visuals/018071a777fc8b5655cf853a244fa7e3e4016e259f348d4cd4a25f30831dc6f0"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"abc","threadId":"./x/**/*.json"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/abc/visuals/018071a777fc8b5655cf853a244fa7e3e4016e259f348d4cd4a25f30831dc6f0"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"﻿bom","threadId":"😀"}],"ok":null}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"a","threadId":""}],"ok":null}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"./x/**/*.json","threadId":"straße"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/x/**/*.json/visuals/787f4770613d3824cbc89b6d5da90a123e41b07b90b45ea3738c216b14616140"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"a.b.c","threadId":"tab\tseparated"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/a.b.c/visuals/737304a727e038b1b7006995771a6087621516d1337a62877c80a7406b1d4b1c"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"hello","threadId":"İstanbul"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/hello/visuals/24ec8f72b5eac4594cf4401235af1639159192194e025495d4a1055ab0f6dc9b"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"straße","threadId":"key_name-1"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/straße/visuals/4184db5447df2761afdd05c964791a1e85947449b0c6011b4c013245b7f065b3"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"","threadId":"{name} has {count} items"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/visuals/42ff2ad309da81ff6c5bab2538b35b5e9561d56f9ee93b7e9a5af1d03b28c40a"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"é","threadId":"ünïcödéemoji 👍🏽 mix"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/é/visuals/d36df45882e2dd1db8c54ff9f17e34aa4120af6a535a59387453158aa3b3acd1"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"ab﻿bom","threadId":"a"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/ab﻿bom/visuals/ca978112ca1bbdcafac231b39a23dc4da786eff8147c4e72b9807785afee48bb"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"ns:key.path","threadId":"line1\nline2"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/ns:key.path/visuals/683376e290829b482c2655745caffa7a1dccfa10afaa62dac2b42dd6c68d0f83"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"﻿bom","threadId":"ΣΊΣΥΦΟΣ"}],"ok":null}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"a😀b😀c","threadId":"ns:key.path"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/a😀b😀c/visuals/090ed4bc851381c01fc77d9df176dfe517adb082c4601d1e6241d0492bf78d83"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"İstanbul","threadId":"./x/**/*.jsona.b.c"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/İstanbul/visuals/f204d8493a9f9ddb2d2de4c065c0d16cc13f0b60e829c518957db9427c2617f6"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"key_name-1","threadId":"tab\tseparated"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/key_name-1/visuals/737304a727e038b1b7006995771a6087621516d1337a62877c80a7406b1d4b1c"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"straße","threadId":"{name} has {count} items﻿bom"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/straße/visuals/b31fc4e4774c17128c722f07a733f0af139196f1c755965dbf69c47fec0a5edc"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"ünïcödé","threadId":".leading.leading"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/ünïcödé/visuals/eceb2abae5d6f4e6032d30bc1704d964b3655a5084dddd9b9f561f5457c548e1"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"a","threadId":"ΣΊΣΥΦΟΣ"}],"ok":null}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"key_name-1","threadId":"line1\nline2"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/key_name-1/visuals/683376e290829b482c2655745caffa7a1dccfa10afaa62dac2b42dd6c68d0f83"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"ΣΊΣΥΦΟΣ","threadId":"src/a/b.ts"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/ΣΊΣΥΦΟΣ/visuals/eb7041468cb32feadbbbcf82b6cf05326b26c717d315fc2a4cef3eaa16b0aaed"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"key_name-1","threadId":"😀ns:key.path"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/key_name-1/visuals/918264a98efe4a4cc608daf61dc4fcb2517e87c7cfababa4008492b16f20bff9"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":":emoji 👍🏽 mix","threadId":"src/a/b.ts"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/:emoji 👍🏽 mix/visuals/eb7041468cb32feadbbbcf82b6cf05326b26c717d315fc2a4cef3eaa16b0aaed"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"ΣΊΣΥΦΟΣ","threadId":"{name} has {count} items"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/ΣΊΣΥΦΟΣ/visuals/42ff2ad309da81ff6c5bab2538b35b5e9561d56f9ee93b7e9a5af1d03b28c40a"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"hello world","threadId":"a..b"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/hello world/visuals/f62b42414c514fa689d3e087ba397c602a4ba2c897f0ac2cb32cf770c3442bf2"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"{name} has {count} items","threadId":"  padded  "}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/{name} has {count} items/visuals/3d4a55719d2ebc89e0e90d5c6ca663ba4871cb0aa98603cf716bf343db149465"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"ΣΊΣΥΦΟΣ","threadId":"İstanbul"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/ΣΊΣΥΦΟΣ/visuals/24ec8f72b5eac4594cf4401235af1639159192194e025495d4a1055ab0f6dc9b"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"😀{name} has {count} items","threadId":"é"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/😀{name} has {count} items/visuals/bf12767b0f2a56b2190075bae8169f656e3ce8d6357d4aff184bc6c7ea48f9f6"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"İstanbul","threadId":"a😀b😀c"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/İstanbul/visuals/3b0fa9d763b5cb38e6cdd6c5d95ca5fea8cf1d5f54570b87b06f3c8c22fe47d1"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"  padded  ","threadId":"😀"}],"ok":null}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"ΣΊΣΥΦΟΣ","threadId":".leading"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/ΣΊΣΥΦΟΣ/visuals/9c74491a21e8fc7a9b48d53d4432be058b3ae9771f0d6ce92881805dc8947feb"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"ΣΊΣΥΦΟΣ","threadId":"ΣΊΣΥΦΟΣ"}],"ok":null}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"","threadId":"a.b.c"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/visuals/845e30448809e2bc8958eb025bfc795235d13b077a53d0c3abbd2385170dc9b8"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"ns:key.path{name} has {count} items","threadId":".leading"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/ns:key.path{name} has {count} items/visuals/9c74491a21e8fc7a9b48d53d4432be058b3ae9771f0d6ce92881805dc8947feb"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"trailing.","threadId":""}],"ok":null}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"Hello World","threadId":"emoji 👍🏽 mixemoji 👍🏽 mix"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/Hello World/visuals/69f371465ee8780f699eaebb76598277545221f9e16a39828c7df50ea2b17b07"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":".leading","threadId":"./x/**/*.json"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/.leading/visuals/018071a777fc8b5655cf853a244fa7e3e4016e259f348d4cd4a25f30831dc6f0"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"trailing.","threadId":"a..b"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/trailing./visuals/f62b42414c514fa689d3e087ba397c602a4ba2c897f0ac2cb32cf770c3442bf2"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"  padded  ","threadId":"./x/**/*.json"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/  padded  /visuals/018071a777fc8b5655cf853a244fa7e3e4016e259f348d4cd4a25f30831dc6f0"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"./x/**/*.json","threadId":""}],"ok":null}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"hello world","threadId":"ns:key.pathsrc/a/b.ts"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/hello world/visuals/b1cf0190a03c6285d79ee6b17b1cad08577704b698b743dc403714a287b3c999"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"İstanbul","threadId":"ab"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/İstanbul/visuals/fb8e20fc2e4c3f248c60c39bd652f3c1347298bb977b8b4d5903b85055620603"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"abc","threadId":"日本語のテキスト"}],"ok":null}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"aa.b.c","threadId":"a😀b😀c.leading"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/aa.b.c/visuals/51cc50dddb84e120febd5dc8ac57a666721458f1cdd2bc6d7d597f04b50d7259"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":".leading","threadId":"é"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/.leading/visuals/bf12767b0f2a56b2190075bae8169f656e3ce8d6357d4aff184bc6c7ea48f9f6"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"key_name-1","threadId":"  padded  "}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/key_name-1/visuals/3d4a55719d2ebc89e0e90d5c6ca663ba4871cb0aa98603cf716bf343db149465"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"ΣΊΣΥΦΟΣ","threadId":"  padded  "}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/ΣΊΣΥΦΟΣ/visuals/3d4a55719d2ebc89e0e90d5c6ca663ba4871cb0aa98603cf716bf343db149465"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"ab","threadId":"a.leading"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/ab/visuals/6c635cde10d67149a1bda2ebe1a5f40a140a0277d2290390e381a6760650efd4"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"a.b.c","threadId":"trailing."}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/a.b.c/visuals/44c12a4e432eba3f7fa634fd116eef3900ad9166688cb40c3f488ef3a5320316"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"./x/**/*.json","threadId":"ΣΊΣΥΦΟΣ"}],"ok":null}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"é","threadId":"  padded  ﻿bom"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/é/visuals/2d7d5bd492d53db191c4de434c4608793f3efbd03871dc94ec77eb3786191dd3"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"line1\nline2","threadId":"line1\nline2"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/line1\nline2/visuals/683376e290829b482c2655745caffa7a1dccfa10afaa62dac2b42dd6c68d0f83"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"ünïcödé","threadId":"Hello Worldsrc/a/b.ts"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/ünïcödé/visuals/ddf2a43c32bbe44e982e35cddc6f7c5ac9b91cb93a1dfe23b01b5851b6956b71"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"line1\nline2","threadId":".leading"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/line1\nline2/visuals/9c74491a21e8fc7a9b48d53d4432be058b3ae9771f0d6ce92881805dc8947feb"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"Hello World","threadId":"ns:key.path"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/Hello World/visuals/090ed4bc851381c01fc77d9df176dfe517adb082c4601d1e6241d0492bf78d83"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"emoji 👍🏽 mixa..b","threadId":"日本語のテキスト"}],"ok":null}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"trailing.","threadId":"{name} has {count} items"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/trailing./visuals/42ff2ad309da81ff6c5bab2538b35b5e9561d56f9ee93b7e9a5af1d03b28c40a"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"a..b","threadId":"ab"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/a..b/visuals/fb8e20fc2e4c3f248c60c39bd652f3c1347298bb977b8b4d5903b85055620603"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"ünïcödé","threadId":"key_name-1"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/ünïcödé/visuals/4184db5447df2761afdd05c964791a1e85947449b0c6011b4c013245b7f065b3"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"  padded  ","threadId":"./x/**/*.jsona..b"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/  padded  /visuals/a8805af4485ccd0f455b776340da500388437d2dcfe9bf147568963b35516d72"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"İstanbul","threadId":".leading"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/İstanbul/visuals/9c74491a21e8fc7a9b48d53d4432be058b3ae9771f0d6ce92881805dc8947feb"}
+{"fn":"inlineVisualThreadDirectory","args":[{"a":"b"}],"error":"Cannot read properties of undefined (reading 'trim')"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"{name} has {count} items","threadId":"﻿bom"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/{name} has {count} items/visuals/2623148f0d047ef6feae63422c0d60741888ae7f45fd979ba232e1c975c14702"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"  padded  ","threadId":"Hello World"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/  padded  /visuals/a591a6d40bf420404a011733cfb7b190d62c65bf0bcda32b57b277d9ad9f146e"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":".leading","threadId":"a:b:c"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/.leading/visuals/b0ee04f880c4ff4261479e2e7822b7410aee4c7159f4185ad5b0d88a312b495e"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"a.b.c","threadId":"a"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/a.b.c/visuals/ca978112ca1bbdcafac231b39a23dc4da786eff8147c4e72b9807785afee48bb"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"😀tab\tseparated","threadId":"emoji 👍🏽 mix"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/😀tab\tseparated/visuals/7839fd7a65ab6e7d304ce23023e26614284e9c745c139718a7d4ac50e9db5330"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"ns:key.path","threadId":"abc"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/ns:key.path/visuals/ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"line1\nline2","threadId":"é"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/line1\nline2/visuals/bf12767b0f2a56b2190075bae8169f656e3ce8d6357d4aff184bc6c7ea48f9f6"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"a","threadId":"hello world"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/a/visuals/b94d27b9934d3e08a52e52d7da7dabfac484efe37a5380ee9088f7ace2efcde9"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":".leading","threadId":"straße"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/.leading/visuals/787f4770613d3824cbc89b6d5da90a123e41b07b90b45ea3738c216b14616140"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"./x/**/*.json","threadId":"﻿bom"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/x/**/*.json/visuals/2623148f0d047ef6feae63422c0d60741888ae7f45fd979ba232e1c975c14702"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"  padded  ","threadId":""}],"ok":null}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"ns:key.path","threadId":"aba:b:c"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/ns:key.path/visuals/72fa22a2e5ef61447b9850ff351ddef4bde6aa11207fe15bd2a70f0e2ef3a864"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"{name} has {count} items","threadId":"Hello World"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/{name} has {count} items/visuals/a591a6d40bf420404a011733cfb7b190d62c65bf0bcda32b57b277d9ad9f146e"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"Hello World","threadId":"a..b"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/Hello World/visuals/f62b42414c514fa689d3e087ba397c602a4ba2c897f0ac2cb32cf770c3442bf2"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"key_name-1  padded  ","threadId":"helloa.b.c"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/key_name-1  padded  /visuals/82a92ff06a85fe3170dafa122e062c2089c7d7c6c1ad39df50a78d121508ff3a"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"key_name-1","threadId":".leading"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/key_name-1/visuals/9c74491a21e8fc7a9b48d53d4432be058b3ae9771f0d6ce92881805dc8947feb"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"😀","threadId":"{name} has {count} itemsΣΊΣΥΦΟΣ"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/😀/visuals/f7f15ce950e312ca4c865665e40fad06bea20d02114d47a3b7b91cbc097b0fd2"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"  padded  ab","threadId":"a😀b😀c"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/  padded  ab/visuals/3b0fa9d763b5cb38e6cdd6c5d95ca5fea8cf1d5f54570b87b06f3c8c22fe47d1"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"ab","threadId":"😀"}],"ok":null}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"a😀b😀ctrailing.","threadId":"😀"}],"ok":null}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"{name} has {count} items","threadId":"abc"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/{name} has {count} items/visuals/ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"ünïcödé","threadId":"ünïcödéa..b"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/ünïcödé/visuals/91ae7278987a2d66d135c001c3ff409298a08d2cf32dcdc28a879fb8d45c81c9"}
+{"fn":"inlineVisualThreadDirectory","args":["x"],"error":"Cannot read properties of undefined (reading 'trim')"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"hello world","threadId":"Hello Worldhello"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/hello world/visuals/dd70e44a8e8f1c00b0845f5277a4ed0ad555ba009ce08c5ecc38798a37725780"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"hello world","threadId":"日本語のテキスト"}],"ok":null}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"src/a/b.tsünïcödé","threadId":"😀"}],"ok":null}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"ns:key.path","threadId":"a.b.c"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/ns:key.path/visuals/845e30448809e2bc8958eb025bfc795235d13b077a53d0c3abbd2385170dc9b8"}
+{"fn":"inlineVisualThreadDirectory","args":[{"attachmentsDir":"ab","threadId":"Hello World"}],"ok":"/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-8312-1/ab/visuals/a591a6d40bf420404a011733cfb7b190d62c65bf0bcda32b57b277d9ad9f146e"}
+{"fn":"inlineVisualFilePath","args":[["a",1]],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"hello","threadId":"  padded  ","visualId":""}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"trailing.","threadId":"a.b.c","visualId":"abhello world"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"é","threadId":"﻿bom","visualId":"straße"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[true],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"﻿bomabc","threadId":"日本語のテキストline1\nline2","visualId":"日本語のテキスト"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"a.b.c","threadId":"{name} has {count} items","visualId":"a"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"abc","threadId":"abstraße","visualId":"日本語のテキスト"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"ünïcödéa","threadId":"a:b:c","visualId":"日本語のテキスト"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"","threadId":"emoji 👍🏽 mix","visualId":"line1\nline2日本語のテキスト"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"emoji 👍🏽 mix","threadId":"{name} has {count} itemsa","visualId":"😀é"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":".leadingünïcödé","threadId":"a.b.c","visualId":"日本語のテキスト"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"Hello World","threadId":"trailing.","visualId":"a:b:c"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"abc","threadId":"hello","visualId":"emoji 👍🏽 mix"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"./x/**/*.json","threadId":"éabc","visualId":".leading"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"./x/**/*.jsonemoji 👍🏽 mix","threadId":"ΣΊΣΥΦΟΣ","visualId":"ab"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"ns:key.path","threadId":"abc","visualId":"src/a/b.ts"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"İstanbul","threadId":"ünïcödé","visualId":"a..b"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"Hello Worldab","threadId":"aünïcödé","visualId":"line1\nline2"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"a.b.c","threadId":"key_name-1","visualId":"ab"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"a..bünïcödé","threadId":"key_name-1😀","visualId":"ünïcödé"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"straße","threadId":"tab\tseparated","visualId":"hellohello world"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"hello","threadId":"İstanbul","visualId":"ΣΊΣΥΦΟΣ"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"src/a/b.ts","threadId":"emoji 👍🏽 mix","visualId":".leading"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"straße﻿bom","threadId":"a.b.c","visualId":"trailing."}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[0],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"ΣΊΣΥΦΟΣ","threadId":"😀","visualId":"tab\tseparated"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"key_name-1","threadId":"HELLO😀","visualId":"﻿bom"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"line1\nline2a.b.c","threadId":"a..b","visualId":"ns:key.path"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"ΣΊΣΥΦΟΣ./x/**/*.json","threadId":"{name} has {count} items","visualId":"HELLOtrailing."}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"trailing.:","threadId":"ns:key.path","visualId":"Hello WorldHELLO"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"a.b.c","threadId":"日本語のテキスト","visualId":"İstanbul:"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":":","threadId":"a😀b😀c","visualId":"a:b:c"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"line1\nline2","threadId":"a:b:c","visualId":":"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"a.b.c","threadId":"line1\nline2","visualId":"src/a/b.ts  padded  "}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"{name} has {count} items","threadId":".leadingHello World","visualId":"emoji 👍🏽 mix"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"HELLO","threadId":"😀","visualId":"a"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"ns:key.path","threadId":"a..b","visualId":"a..b"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"a","threadId":"","visualId":"straße"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[null],"error":"Cannot read properties of null (reading 'visualId')"}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"straße","threadId":"ab","visualId":"straße"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"ΣΊΣΥΦΟΣ","threadId":"a","visualId":"﻿bom"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"{name} has {count} items","threadId":"tab\tseparated","visualId":"emoji 👍🏽 mix"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"a":"b"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"HELLOhello","threadId":"Hello World","visualId":"{name} has {count} items"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"a:b:c","threadId":"ab","visualId":"a"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"::","threadId":"﻿bom","visualId":"ünïcödé"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"a..b","threadId":"a..b","visualId":"abc"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"straße","threadId":"a..b","visualId":"./x/**/*.json"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"étrailing.","threadId":"abc","visualId":"﻿bom"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"abc","threadId":"key_name-1","visualId":"key_name-1"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"a:b:c","threadId":"  padded  ","visualId":"ünïcödé"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"é","threadId":"ΣΊΣΥΦΟΣ","visualId":"aHELLO"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"ns:key.path","threadId":"﻿bom","visualId":"HELLOtrailing."}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"tab\tseparated😀","threadId":"a:b:c","visualId":"key_name-1ab"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"İstanbul","threadId":"trailing.é","visualId":"straße"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"a😀b😀c","threadId":"ΣΊΣΥΦΟΣ","visualId":"a.b.c"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"hello.leading","threadId":"line1\nline2","visualId":"a.b.c"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"İstanbul","threadId":"src/a/b.ts{name} has {count} items","visualId":"İstanbul"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"a😀b😀c","threadId":"😀","visualId":"ΣΊΣΥΦΟΣ"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"","threadId":"HELLO","visualId":"  padded  "}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"İstanbulab","threadId":"abc","visualId":"a..b"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"a😀b😀c","threadId":"HELLO","visualId":"é"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"straße","threadId":"a.b.c","visualId":"src/a/b.ts"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"ünïcödé","threadId":"İstanbul","visualId":"trailing."}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"src/a/b.ts","threadId":"abc","visualId":"{name} has {count} items"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"İstanbul","threadId":"a.b.c","visualId":"line1\nline2"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"abc","threadId":":src/a/b.ts","visualId":"abc"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"abcünïcödé","threadId":"abc","visualId":""}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"tab\tseparated","threadId":"日本語のテキスト","visualId":"a😀b😀cns:key.path"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":".leading","threadId":"abc","visualId":"emoji 👍🏽 mix"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"日本語のテキストΣΊΣΥΦΟΣ","threadId":"a😀b😀c","visualId":"hello world"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"./x/**/*.json","threadId":"a","visualId":"key_name-1"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"ünïcödé","threadId":"a..b","visualId":"ünïcödé"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"HELLO","threadId":"tab\tseparated","visualId":"😀"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"ns:key.path","threadId":"﻿bom","visualId":"{name} has {count} items"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"hello","threadId":"hello world","visualId":"ünïcödé"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"a..b","threadId":"😀","visualId":"İstanbul"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"src/a/b.ts","threadId":"İstanbul","visualId":"  padded  "}],"ok":null}
+{"fn":"inlineVisualFilePath","args":["x"],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":".leading","threadId":"hello","visualId":"ns:key.path"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"src/a/b.ts","threadId":"key_name-1straße","visualId":"﻿bomhello"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"ns:key.path","threadId":"emoji 👍🏽 mix:","visualId":"line1\nline2"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"{name} has {count} items","threadId":"hello world","visualId":"abc"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"ünïcödétrailing.","threadId":"a:b:c﻿bom","visualId":"İstanbul"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"  padded  ","threadId":"hello world","visualId":"HELLO"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"tab\tseparated","threadId":"abc","visualId":"line1\nline2"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"{name} has {count} items","threadId":"key_name-1","visualId":"😀"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"Hello World","threadId":"ünïcödé","visualId":"  padded  "}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"key_name-1","threadId":"Hello World","visualId":"line1\nline2"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"hello worldtab\tseparated","threadId":"line1\nline2Hello World","visualId":"a:b:c"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"hello","threadId":"a:b:ca..b","visualId":"😀"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"./x/**/*.json","threadId":"./x/**/*.json","visualId":"emoji 👍🏽 mix"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"emoji 👍🏽 mixstraße","threadId":"hello","visualId":"src/a/b.ts.leading"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"hello worlda..b","threadId":":","visualId":"./x/**/*.json"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"emoji 👍🏽 mix","threadId":"src/a/b.ts","visualId":"emoji 👍🏽 mixHELLO"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"日本語のテキスト","threadId":"straße","visualId":"HELLO"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"emoji 👍🏽 mix","threadId":"hello./x/**/*.json","visualId":"line1\nline2"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"trailing.","threadId":"a.b.c.leading","visualId":"é"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"ab","threadId":"Hello World","visualId":"ns:key.pathΣΊΣΥΦΟΣ"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"hello world","threadId":"src/a/b.ts","visualId":":"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"{name} has {count} items","threadId":"a..b","visualId":"😀"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"İstanbul","threadId":"a😀b😀ctab\tseparated","visualId":"./x/**/*.json"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"hello world","threadId":"src/a/b.ts","visualId":"Hello World"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"ns:key.path","threadId":"ns:key.path","visualId":"Hello World"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"ΣΊΣΥΦΟΣ","threadId":"😀","visualId":"a.b.ctrailing."}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"日本語のテキスト","threadId":"İstanbul","visualId":"hello"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"{name} has {count} items","threadId":"tab\tseparated","visualId":"./x/**/*.json"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"a..b","threadId":"a:b:c","visualId":"ab"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"","threadId":"ünïcödé","visualId":"straße"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"abc","threadId":":a😀b😀c","visualId":"src/a/b.tsa:b:c"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"emoji 👍🏽 mix","threadId":"a..b","visualId":"﻿bom"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"hello","threadId":"straßeline1\nline2","visualId":"Hello World"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"src/a/b.ts","threadId":"ab","visualId":"{name} has {count} items"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"{name} has {count} itemsab","threadId":"😀","visualId":"ab"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"tab\tseparated","threadId":"tab\tseparatedabc","visualId":"a😀b😀c"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"ΣΊΣΥΦΟΣ","threadId":"HELLO﻿bom","visualId":""}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"ünïcödé.leading","threadId":"a😀b😀c","visualId":"HELLO"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"straße日本語のテキスト","threadId":"日本語のテキスト","visualId":"{name} has {count} items"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"  padded  ","threadId":"aemoji 👍🏽 mix","visualId":"a.b.c"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"key_name-1","threadId":"ab","visualId":"İstanbul"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"key_name-1","threadId":"  padded  ","visualId":"a..b"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"a:b:c","threadId":":","visualId":"straße"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":":","threadId":"😀  padded  ","visualId":"ünïcödé"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":":","threadId":"😀","visualId":"日本語のテキスト"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"Hello World","threadId":"ns:key.path","visualId":"HELLOsrc/a/b.ts"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":":","threadId":"line1\nline2","visualId":"a..b"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"HELLO","threadId":"ünïcödé","visualId":"trailing."}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"","threadId":"﻿bom:","visualId":"./x/**/*.json"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"a..b","threadId":"","visualId":"key_name-1"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"key_name-1😀","threadId":"日本語のテキスト","visualId":"tab\tseparated"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"trailing.","threadId":"ab","visualId":"ünïcödé"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"hello world","threadId":"İstanbulİstanbul","visualId":"line1\nline2"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"hello","threadId":"tab\tseparated","visualId":"line1\nline2src/a/b.ts"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"a","threadId":"abc","visualId":"abc"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"  padded  ","threadId":"a.b.c","visualId":""}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[[]],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"key_name-1","threadId":"src/a/b.tsΣΊΣΥΦΟΣ","visualId":"a😀b😀c"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"  padded  ","threadId":"ab","visualId":"tab\tseparated"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"helloΣΊΣΥΦΟΣ","threadId":"straße","visualId":"trailing."}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"  padded  a😀b😀c","threadId":"hello world","visualId":"hello"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"abc","threadId":"ns:key.path","visualId":"a"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"emoji 👍🏽 mix","threadId":"ab","visualId":".leading"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"emoji 👍🏽 mix","threadId":"﻿bom","visualId":""}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"a..b","threadId":"a","visualId":"hello"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"emoji 👍🏽 mix","threadId":"  padded  ","visualId":"src/a/b.ts"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"ab","threadId":"a😀b😀c","visualId":"a:b:c"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"trailing.","threadId":"日本語のテキスト","visualId":"trailing."}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"abc","threadId":"straße","visualId":"line1\nline2"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"Hello World","threadId":"key_name-1","visualId":"HELLOsrc/a/b.ts"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"HELLO","threadId":"a","visualId":"﻿bom"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"ΣΊΣΥΦΟΣΣΊΣΥΦΟΣ","threadId":"a","visualId":"ΣΊΣΥΦΟΣ"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"HELLO","threadId":"line1\nline2","visualId":"{name} has {count} items"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"straße./x/**/*.json","threadId":"é","visualId":"  padded  emoji 👍🏽 mix"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"ab","threadId":"abc","visualId":"hello world"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"hello","threadId":"a.b.c","visualId":"hello world😀"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"😀","threadId":"a:b:c","visualId":"./x/**/*.json"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"Hello World","threadId":"ünïcödé","visualId":"İstanbula.b.c"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"  padded  ./x/**/*.json","threadId":"a:b:c","visualId":"ΣΊΣΥΦΟΣ"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"a..b","threadId":"ns:key.path","visualId":".leading"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"","threadId":"ΣΊΣΥΦΟΣ","visualId":"😀a"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"hello","threadId":"a:b:c","visualId":"line1\nline2HELLO"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"é","threadId":"Hello World","visualId":"aba:b:c"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"","threadId":"src/a/b.tsa.b.c","visualId":"日本語のテキスト"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"a😀b😀c","threadId":"﻿bom","visualId":""}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"﻿bom","threadId":"a","visualId":"{name} has {count} itemsİstanbul"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"HELLO","threadId":"./x/**/*.json","visualId":"trailing."}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"a.b.ctrailing.","threadId":"ünïcödé","visualId":"src/a/b.ts"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"straße","threadId":"ünïcödé","visualId":"HELLO"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"ünïcödé","threadId":"a😀b😀ca😀b😀c","visualId":"{name} has {count} items"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"ab","threadId":"😀","visualId":"Hello World"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"日本語のテキスト","threadId":"é","visualId":":"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"İstanbul","threadId":"ns:key.patha..b","visualId":"Hello World"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"./x/**/*.json","threadId":"a","visualId":"İstanbul"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"日本語のテキストkey_name-1","threadId":"HELLO","visualId":"Hello World"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"{name} has {count} items","threadId":"Hello World","visualId":"ab"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"hello","threadId":"ab","visualId":"abc"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"tab\tseparated","threadId":"line1\nline2","visualId":"ab"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"a:b:c","threadId":"hello","visualId":"abc"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"é","threadId":".leading😀","visualId":"./x/**/*.jsonline1\nline2"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"ns:key.path","threadId":"tab\tseparated","visualId":"日本語のテキスト"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"key_name-1","threadId":"hello","visualId":"日本語のテキストİstanbul"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"a..btrailing.","threadId":"ünïcödéab","visualId":"key_name-1line1\nline2"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"a","threadId":"","visualId":"line1\nline2"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"a.b.c","threadId":"HELLO","visualId":"{name} has {count} items"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"a😀b😀c","threadId":"﻿bom","visualId":"😀"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"a.b.c","threadId":"  padded  ","visualId":"hello world"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"line1\nline2{name} has {count} items","threadId":"Hello World","visualId":":"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"./x/**/*.json","threadId":"a😀b😀ctrailing.","visualId":"{name} has {count} items"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"{name} has {count} items","threadId":"HELLO","visualId":""}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"{name} has {count} items","threadId":"ΣΊΣΥΦΟΣa..b","visualId":"abc"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"é","threadId":"src/a/b.ts","visualId":"﻿bom"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"﻿bom","threadId":"  padded  ","visualId":"src/a/b.ts"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"日本語のテキストhello world","threadId":":","visualId":"HELLO"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"日本語のテキストns:key.path","threadId":"straße","visualId":"a:b:c"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"tab\tseparated","threadId":"ΣΊΣΥΦΟΣ","visualId":""}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":".leading","threadId":"Hello Worldab","visualId":"é"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"Hello World","threadId":"ab","visualId":"😀"}],"ok":null}
+{"fn":"inlineVisualFilePath","args":[{"attachmentsDir":"a..btrailing.","threadId":"😀","visualId":"hello world"}],"ok":null}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"straße","threadId":"abc","visualId":"helloHELLO","html":":"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"a:b:c","threadId":"a😀b😀c","visualId":"ΣΊΣΥΦΟΣ","html":"trailing.emoji 👍🏽 mix"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"abc","threadId":"key_name-1","visualId":"src/a/b.ts","html":"src/a/b.ts"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"key_name-1line1\nline2","threadId":"","visualId":"a..bΣΊΣΥΦΟΣ","html":"src/a/b.ts"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"line1\nline2src/a/b.ts","threadId":"Hello World","visualId":"key_name-1","html":"emoji 👍🏽 mix"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"src/a/b.ts","threadId":"a..b","visualId":"emoji 👍🏽 mix","html":":"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"İstanbul","threadId":"ünïcödé","visualId":"a😀b😀c","html":"trailing.é"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"a":{"b":"c"}}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"  padded  ","threadId":"tab\tseparated","visualId":"é","html":"a..b"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"a:b:c","threadId":".leading","visualId":"a..b","html":"hello"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"😀","threadId":"a","visualId":"./x/**/*.json","html":".leading"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"hello","threadId":".leading","visualId":"a","html":"emoji 👍🏽 mix"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"﻿bom","threadId":"ünïcödé","visualId":"﻿bom","html":"  padded  "}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"key_name-1tab\tseparated","threadId":"a😀b😀c","visualId":"abc","html":"日本語のテキストünïcödé"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"hello world","threadId":"HELLO","visualId":"emoji 👍🏽 mix","html":"./x/**/*.json"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"src/a/b.ts","threadId":"ΣΊΣΥΦΟΣ","visualId":"a:b:c:","html":"key_name-1"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"./x/**/*.json","threadId":"a","visualId":"﻿bomHELLO","html":"line1\nline2hello world"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[["a",1]],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"ΣΊΣΥΦΟΣ","threadId":"﻿bom","visualId":"","html":"tab\tseparated"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"line1\nline2","threadId":"a..b","visualId":"line1\nline2","html":"ünïcödéHELLO"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"key_name-1","threadId":"./x/**/*.json","visualId":"hello","html":"a.b.cé"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"trailing.straße","threadId":"﻿bom","visualId":"ns:key.path","html":".leadingline1\nline2"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"hello world","threadId":"a..b","visualId":"ns:key.path","html":"ab"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"Hello World","threadId":"a😀b😀c","visualId":"日本語のテキスト","html":"key_name-1"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"./x/**/*.json:","threadId":"src/a/b.ts","visualId":"a😀b😀ca.b.c","html":"a"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"emoji 👍🏽 mixkey_name-1","threadId":"Hello World","visualId":"line1\nline2","html":"key_name-1"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"ab","threadId":":","visualId":"key_name-1","html":".leadingkey_name-1"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"","threadId":"é","visualId":"ΣΊΣΥΦΟΣ","html":"İstanbulemoji 👍🏽 mix"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"{name} has {count} items","threadId":"😀","visualId":":","html":":"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"key_name-1","threadId":"日本語のテキストline1\nline2","visualId":"abc","html":"{name} has {count} items"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"abc","threadId":"  padded  ","visualId":"emoji 👍🏽 mix😀","html":"ab"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"trailing.","threadId":"﻿bom","visualId":"ΣΊΣΥΦΟΣ","html":"a"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[[]],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"key_name-1","threadId":"HELLO","visualId":"ΣΊΣΥΦΟΣhello world","html":"é"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"Hello World","threadId":"日本語のテキスト","visualId":"line1\nline2","html":"a😀b😀cab"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"a..b","threadId":"a😀b😀c","visualId":"a..bemoji 👍🏽 mix","html":"./x/**/*.json"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":":","threadId":"key_name-1","visualId":"  padded  ","html":"a😀b😀c"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"HELLO","threadId":"ΣΊΣΥΦΟΣ","visualId":"tab\tseparated","html":"HELLO"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"Hello World","threadId":"a..ba","visualId":"HELLO","html":"ΣΊΣΥΦΟΣ"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"hello world","threadId":"line1\nline2ns:key.path","visualId":"  padded  ","html":"src/a/b.ts"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"  padded  a..b","threadId":"ΣΊΣΥΦΟΣ","visualId":"é","html":"straße"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"","threadId":"abc","visualId":"Hello World","html":"hello"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"a","threadId":"a..b","visualId":"","html":"﻿bom"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"ns:key.path","threadId":"emoji 👍🏽 mix","visualId":"./x/**/*.json","html":"a:b:c"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"  padded  ","threadId":"key_name-1","visualId":"ΣΊΣΥΦΟΣ","html":"line1\nline2"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"日本語のテキスト","threadId":"ünïcödé","visualId":"emoji 👍🏽 mix","html":"ns:key.path"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":":","threadId":"HELLO","visualId":"日本語のテキストa","html":"a:b:c"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"日本語のテキスト./x/**/*.json","threadId":"İstanbul.leading","visualId":"tab\tseparated","html":"line1\nline2:"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"a.b.ca:b:c","threadId":"abns:key.path","visualId":"a😀b😀cHello World","html":"İstanbul"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"é","threadId":"日本語のテキスト","visualId":"  padded  src/a/b.ts","html":"src/a/b.tshello world"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"tab\tseparated","threadId":"a😀b😀c","visualId":"./x/**/*.json","html":"a😀b😀c"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"a😀b😀c","threadId":"HELLO","visualId":"é","html":"ns:key.path"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"emoji 👍🏽 mix","threadId":"line1\nline2","visualId":"日本語のテキストa😀b😀c","html":"hello world"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"😀  padded  ","threadId":"a.b.c","visualId":"line1\nline2","html":"  padded  ab"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"a😀b😀c","threadId":"line1\nline2","visualId":"key_name-1","html":"emoji 👍🏽 mix"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"a:b:c","threadId":"  padded  ","visualId":"src/a/b.ts","html":"line1\nline2"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"","threadId":"tab\tseparated","visualId":"line1\nline2","html":"tab\tseparateda.b.c"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"{name} has {count} items","threadId":"ünïcödé","visualId":"trailing.","html":"HELLOsrc/a/b.ts"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"{name} has {count} items","threadId":"é","visualId":"﻿bom","html":"line1\nline2"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"emoji 👍🏽 mixtrailing.","threadId":"trailing.","visualId":"ünïcödéa.b.c","html":"ΣΊΣΥΦΟΣ"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"emoji 👍🏽 mix:","threadId":"trailing.","visualId":"abé","html":"./x/**/*.json"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"./x/**/*.json","threadId":"tab\tseparated  padded  ","visualId":"","html":"tab\tseparated"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[0],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"a😀b😀c.leading","threadId":"a:b:c  padded  ","visualId":"a..b","html":"ünïcödé"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"{name} has {count} items","threadId":"key_name-1straße","visualId":"hello","html":"trailing."}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"  padded  ","threadId":"tab\tseparated","visualId":"a..b","html":"src/a/b.ts﻿bom"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"a😀b😀c","threadId":"a","visualId":"hello","html":"tab\tseparated"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"ab","threadId":"﻿bom","visualId":"a😀b😀c","html":"ΣΊΣΥΦΟΣ"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"emoji 👍🏽 mix","threadId":"emoji 👍🏽 mix.leading","visualId":"key_name-1.leading","html":"日本語のテキスト"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[null],"error":"Cannot read properties of null (reading 'visualId')"}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"trailing.","threadId":"ns:key.path","visualId":"a😀b😀cab","html":"a😀b😀c"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"key_name-1","threadId":"hello","visualId":"ns:key.path","html":":"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"tab\tseparated","threadId":"","visualId":"hello world","html":"line1\nline2"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"a:b:c","threadId":"﻿bom","visualId":"key_name-1","html":"﻿bom"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"a.b.c","threadId":"./x/**/*.jsonhello world","visualId":"ünïcödé","html":"trailing."}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"./x/**/*.json","threadId":"a😀b😀c","visualId":"  padded  ","html":"{name} has {count} items"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"trailing.","threadId":"ab","visualId":"key_name-1","html":"emoji 👍🏽 mix"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"a","threadId":"ΣΊΣΥΦΟΣsrc/a/b.ts","visualId":"Hello World","html":""}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"  padded  ","threadId":"日本語のテキスト","visualId":"ns:key.pathstraße","html":"straße"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"tab\tseparated","threadId":"{name} has {count} items","visualId":"ΣΊΣΥΦΟΣ","html":"ab"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"tab\tseparated  padded  ","threadId":"a..b","visualId":"a","html":"a:b:c"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"a:b:c./x/**/*.json","threadId":"İstanbul","visualId":"  padded  a..b","html":"straße"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"","threadId":"a:b:c","visualId":"é","html":"./x/**/*.json"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"a..b","threadId":"a:b:c","visualId":"a:b:c","html":"straße"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"hello world","threadId":"ab","visualId":"./x/**/*.json","html":"Hello World"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"a:b:c","threadId":"emoji 👍🏽 mix","visualId":"ab","html":"a..b"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"a":"b"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"﻿bom","threadId":"HELLO","visualId":"ns:key.path","html":"ΣΊΣΥΦΟΣstraße"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":["x"],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"ΣΊΣΥΦΟΣ","threadId":"é","visualId":"HELLOab","html":"ns:key.path"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"hello world","threadId":"key_name-1","visualId":"日本語のテキスト","html":"HELLO"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"ab","threadId":"a😀b😀c","visualId":"é","html":"İstanbul"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"abc","threadId":"😀","visualId":"{name} has {count} items","html":"日本語のテキスト"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"  padded  ","threadId":"é","visualId":"a:b:ca.b.c","html":"a:b:c"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"hello world","threadId":"hello","visualId":"a..b","html":"key_name-1"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"src/a/b.ts","threadId":":","visualId":"a..b.leading","html":"hello world"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"HELLOsrc/a/b.ts","threadId":"a","visualId":"aab","html":"a"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"./x/**/*.json","threadId":".leading","visualId":"{name} has {count} items","html":"HELLO  padded  "}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"日本語のテキスト","threadId":"hello","visualId":"Hello World","html":"straße"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"é","threadId":"ünïcödé","visualId":"{name} has {count} items","html":"straßehello world"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"src/a/b.ts","threadId":"ünïcödé","visualId":"","html":".leading"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"straße","threadId":"ünïcödé","visualId":":{name} has {count} items","html":"ünïcödé"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[true],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"./x/**/*.jsonkey_name-1","threadId":"日本語のテキストİstanbul","visualId":"src/a/b.tsa.b.c","html":"HELLO"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"a..b","threadId":"tab\tseparated","visualId":":","html":"a.b.c"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"./x/**/*.json","threadId":"{name} has {count} items","visualId":"İstanbul","html":"Hello World"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"a.b.c","threadId":":","visualId":"","html":"emoji 👍🏽 mix"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"hello","threadId":"İstanbul","visualId":"ns:key.path","html":"a..b"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"ΣΊΣΥΦΟΣ","threadId":"{name} has {count} items","visualId":".leading","html":".leading"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"ab","threadId":"é","visualId":"src/a/b.ts","html":"a..b"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"hello.leading","threadId":"HELLO","visualId":"ab","html":"src/a/b.ts"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"{name} has {count} items","threadId":"İstanbul","visualId":"a:b:c","html":"İstanbul"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"tab\tseparatedİstanbul","threadId":"","visualId":"trailing.","html":"ab"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"tab\tseparated","threadId":"a😀b😀c","visualId":"src/a/b.ts","html":"trailing."}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"emoji 👍🏽 mix","threadId":"abc  padded  ","visualId":"line1\nline2","html":"./x/**/*.json"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"a..ba:b:c","threadId":"straße","visualId":"straße","html":"a😀b😀c"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"Hello World","threadId":"a..b日本語のテキスト","visualId":"HELLO","html":"a:b:c"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":".leading","threadId":"😀","visualId":"straße","html":"İstanbul"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"ab","threadId":"src/a/b.ts","visualId":"﻿bom","html":"src/a/b.ts"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"","threadId":"src/a/b.ts","visualId":"{name} has {count} items","html":"trailing."}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"﻿bom","threadId":"ΣΊΣΥΦΟΣ","visualId":"a:b:c","html":"key_name-1:"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"HELLO","threadId":"Hello World","visualId":"straße","html":"a.b.c"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"ahello","threadId":"helloa.b.c","visualId":"ünïcödé:","html":"﻿bom"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"日本語のテキスト","threadId":"é","visualId":"HELLO","html":"hello world"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"./x/**/*.json","threadId":"ΣΊΣΥΦΟΣ","visualId":"ns:key.path","html":"emoji 👍🏽 mix"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"ünïcödé","threadId":"abc","visualId":"😀","html":"trailing.tab\tseparated"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":":😀","threadId":"é","visualId":"Hello World","html":"é"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"emoji 👍🏽 mix","threadId":":","visualId":"abc","html":"a"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"İstanbul","threadId":"  padded  ","visualId":"./x/**/*.json","html":"﻿bom"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"a:b:c","threadId":"a..bns:key.path","visualId":"tab\tseparateda😀b😀c","html":"emoji 👍🏽 mix﻿bom"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"İstanbul","threadId":"a","visualId":"日本語のテキスト","html":"HELLO"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"./x/**/*.json","threadId":"a.b.c","visualId":".leading","html":"./x/**/*.json"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"hello world","threadId":".leading","visualId":"Hello Worldhello","html":"a:b:c"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"a.b.c","threadId":"Hello World","visualId":"a","html":""}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"hello worlda.b.c","threadId":"  padded  é","visualId":"a","html":"trailing."}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":":","threadId":"İstanbul","visualId":"ΣΊΣΥΦΟΣ","html":"ünïcödé"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"emoji 👍🏽 mix","threadId":"😀","visualId":"a","html":"ns:key.pathHello World"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"ab","threadId":"abc","visualId":"ns:key.pathtrailing.","html":":"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"😀","threadId":"a😀b😀c","visualId":"日本語のテキスト","html":"日本語のテキストemoji 👍🏽 mix"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":".leading","threadId":"ünïcödé","visualId":"./x/**/*.json","html":"trailing."}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"hello","threadId":"tab\tseparatedsrc/a/b.ts","visualId":"HELLOtab\tseparated","html":"{name} has {count} items"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"Hello Worldstraße","threadId":"HELLO","visualId":"helloa..b","html":"﻿bom"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"ns:key.path","threadId":"trailing.","visualId":"hello","html":"line1\nline2  padded  "}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"Hello World","threadId":"a..b","visualId":"Hello World","html":"ünïcödé"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"src/a/b.ts","threadId":"a.b.c./x/**/*.json","visualId":":","html":"./x/**/*.json"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"  padded  ","threadId":"日本語のテキスト","visualId":"a😀b😀c","html":"a:b:ca..b"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"src/a/b.ts","threadId":"Hello World","visualId":"ünïcödéns:key.path","html":"é"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"hello","threadId":"ΣΊΣΥΦΟΣ","visualId":"a.b.c","html":"﻿bom"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"abc","threadId":"ΣΊΣΥΦΟΣ","visualId":"ΣΊΣΥΦΟΣ","html":"./x/**/*.jsonΣΊΣΥΦΟΣ"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"a.b.ctrailing.","threadId":"straße","visualId":"hello world","html":"日本語のテキストhello"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"key_name-1","threadId":"a😀b😀c","visualId":":tab\tseparated","html":"Hello World"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"abca:b:c","threadId":"İstanbul","visualId":"İstanbul","html":"ababc"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"key_name-1","threadId":"straße","visualId":"😀","html":"line1\nline2"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"src/a/b.ts","threadId":"","visualId":".leading","html":"emoji 👍🏽 mix"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"ΣΊΣΥΦΟΣ./x/**/*.json","threadId":"é","visualId":"a:b:c","html":"a"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"src/a/b.ts","threadId":"ünïcödé","visualId":"a..b","html":"a:b:cabc"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"abc:","threadId":"日本語のテキスト","visualId":"a.b.c","html":"﻿bom"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"key_name-1","threadId":"İstanbulab","visualId":"straße","html":"Hello World"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":".leading","threadId":"emoji 👍🏽 mix","visualId":"  padded  ","html":"ns:key.pathhello"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"日本語のテキスト","threadId":"﻿bom","visualId":"﻿bom","html":"straße"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":":","threadId":"./x/**/*.json","visualId":"line1\nline2","html":"İstanbul"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"﻿bom","threadId":"a😀b😀cHello World","visualId":"a:b:c","html":"trailing."}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"./x/**/*.json","threadId":"İstanbul","visualId":"a.b.c","html":"line1\nline2hello world"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"ΣΊΣΥΦΟΣ","threadId":"a.b.c","visualId":"a..b","html":"abc"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"abé","threadId":"a..b","visualId":"İstanbul","html":"HELLO"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"a..bİstanbul","threadId":"ns:key.pathhello world","visualId":"a:b:c","html":""}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"İstanbul","threadId":"日本語のテキスト","visualId":"😀","html":"hello worldtrailing."}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"emoji 👍🏽 mix","threadId":"a:b:c","visualId":":","html":"日本語のテキスト"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"abc","threadId":"src/a/b.ts","visualId":"ΣΊΣΥΦΟΣ","html":":"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"İstanbul","threadId":"a😀b😀c","visualId":"ns:key.path","html":"ab"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"ΣΊΣΥΦΟΣHELLO","threadId":"İstanbul","visualId":"ab","html":"ab"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"a..b{name} has {count} items","threadId":"İstanbul","visualId":"a😀b😀chello","html":"line1\nline2"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"a..b","threadId":"","visualId":".leading","html":".leading{name} has {count} items"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":":","threadId":"日本語のテキスト","visualId":"line1\nline2","html":""}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"helloabc","threadId":"key_name-1","visualId":"line1\nline2","html":"tab\tseparated"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"straße😀","threadId":"hello","visualId":"straße","html":"key_name-1"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"ünïcödé","threadId":"./x/**/*.json","visualId":"é","html":"é"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"﻿bom","threadId":"{name} has {count} items","visualId":"line1\nline2","html":"İstanbul"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"é","threadId":"straße","visualId":"a.b.c.leading","html":"  padded  "}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"ab","threadId":"İstanbul","visualId":"trailing.abc","html":"{name} has {count} items"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"a:b:c","threadId":"line1\nline2","visualId":"a:b:c","html":"abcab"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"line1\nline2","threadId":"src/a/b.ts","visualId":"a..bstraße","html":"HELLO"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"﻿bom","threadId":"a:b:c","visualId":"日本語のテキスト","html":"tab\tseparated"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"İstanbulab","threadId":"./x/**/*.json","visualId":"  padded  ","html":"  padded  "}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"hello world","threadId":"a.b.c","visualId":"İstanbul","html":"😀"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"./x/**/*.json","threadId":"a..b","visualId":"helloünïcödé","html":"😀"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"😀ünïcödé","threadId":"key_name-1","visualId":"line1\nline2","html":"a:b:c"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":":trailing.","threadId":"hello world","visualId":"a:b:c","html":"hello world"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"key_name-1","threadId":"straße","visualId":"./x/**/*.json","html":"é"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"Hello World","threadId":"a..b","visualId":"straße","html":"ns:key.path"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"trailing.","threadId":"{name} has {count} items","visualId":"hello world","html":"hello"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"a.b.c","threadId":"a:b:c","visualId":"a.b.c","html":"hello"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"","threadId":"a..bhello world","visualId":"ΣΊΣΥΦΟΣ","html":"tab\tseparated"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"trailing.","threadId":"﻿bom","visualId":"line1\nline2","html":"straße"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"a:b:c","threadId":"hello world","visualId":"é","html":":"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"trailing.","threadId":"a..b","visualId":"  padded  ","html":"ns:key.path"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"trailing.","threadId":"src/a/b.ts","visualId":"a..b","html":"key_name-1"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"src/a/b.ts","threadId":"a..b日本語のテキスト","visualId":":","html":"a:b:cab"}],"error":"The visual could not be stored for this thread."}
+{"fn":"writeInlineVisual","args":[{"attachmentsDir":"İstanbul","threadId":"日本語のテキスト","visualId":"key_name-1","html":"straße"}],"error":"The visual could not be stored for this thread."}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"a:b:c:","threadId":"src/a/b.ts","visualId":"a"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"😀","threadId":"emoji 👍🏽 mix","visualId":"src/a/b.tsab"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"src/a/b.ts","threadId":"日本語のテキスト","visualId":"ns:key.path"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"{name} has {count} items","threadId":"a😀b😀c","visualId":"a😀b😀c"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"a":{"b":"c"}}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"﻿bom","threadId":".leading","visualId":"  padded  "}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"a..bHELLO","threadId":"éa..b","visualId":"a"}],"ok":null}
+{"fn":"readInlineVisual","args":[["a",1]],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"ab","threadId":"emoji 👍🏽 mix","visualId":"😀"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"😀  padded  ","threadId":"line1\nline2","visualId":"line1\nline2"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"","threadId":"a:b:c","visualId":"{name} has {count} items"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"src/a/b.ts﻿bom","threadId":"  padded  ","visualId":"Hello World"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"a","threadId":"trailing.","visualId":"a:b:c"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":":","threadId":"key_name-1日本語のテキスト","visualId":"a😀b😀c"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"﻿bom日本語のテキスト","threadId":".leading","visualId":"İstanbulHELLO"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"a..b","threadId":"emoji 👍🏽 mix","visualId":"line1\nline2"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"{name} has {count} items","threadId":"aa😀b😀c","visualId":"日本語のテキスト"}],"ok":null}
+{"fn":"readInlineVisual","args":[null],"error":"Cannot read properties of null (reading 'visualId')"}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"Hello World","threadId":"straße","visualId":"a:b:chello"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"ünïcödé","threadId":"hello world","visualId":"./x/**/*.json"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"ünïcödé","threadId":"﻿bom","visualId":"HELLO"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"straße","threadId":"Hello World","visualId":"Hello World"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"abc","threadId":"straßea..b","visualId":"éé"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"hello world","threadId":"日本語のテキスト","visualId":"ΣΊΣΥΦΟΣ"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"﻿bom","threadId":"abcstraße","visualId":"é"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"a":"b"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":".leading","threadId":"﻿boma..b","visualId":"key_name-1"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"emoji 👍🏽 mix","threadId":"a:b:c","visualId":"hello"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"ünïcödé","threadId":"key_name-1a.b.c","visualId":"tab\tseparated"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"İstanbulline1\nline2","threadId":"😀","visualId":"İstanbul.leading"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"abc","threadId":"é","visualId":"key_name-1"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"a..b","threadId":"hello","visualId":"line1\nline2"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"ab","threadId":"tab\tseparated","visualId":"straße"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"trailing.","threadId":"ünïcödé","visualId":"trailing."}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"İstanbul😀","threadId":"ab","visualId":"a..b"}],"ok":null}
+{"fn":"readInlineVisual","args":[[]],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"ΣΊΣΥΦΟΣ","threadId":"ΣΊΣΥΦΟΣ","visualId":"abc"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"{name} has {count} items","threadId":"a😀b😀cabc","visualId":"  padded  "}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"Hello World","threadId":"a..bünïcödé","visualId":"HELLOkey_name-1"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"ΣΊΣΥΦΟΣ","threadId":"aba","visualId":"  padded  "}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"","threadId":"é","visualId":"trailing."}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"straße","threadId":"ab","visualId":"é"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"ns:key.path","threadId":"key_name-1","visualId":"trailing."}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"a","threadId":"😀Hello World","visualId":"tab\tseparated"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"a.b.cline1\nline2","threadId":"key_name-1","visualId":"trailing."}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"Hello World","threadId":"ab","visualId":"src/a/b.ts  padded  "}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"a..b","threadId":"a:b:csrc/a/b.ts","visualId":"ΣΊΣΥΦΟΣ"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"straße","threadId":"./x/**/*.json","visualId":"key_name-1"}],"ok":null}
+{"fn":"readInlineVisual","args":[0],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"日本語のテキスト","threadId":"😀","visualId":"./x/**/*.json"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"a😀b😀c","threadId":"a..b","visualId":"İstanbul"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"ΣΊΣΥΦΟΣ","threadId":"ünïcödé","visualId":"hello"}],"ok":null}
+{"fn":"readInlineVisual","args":[true],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"key_name-1","threadId":".leading","visualId":"é{name} has {count} items"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"éünïcödé","threadId":"hello","visualId":"😀"}],"ok":null}
+{"fn":"readInlineVisual","args":["x"],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"line1\nline2","threadId":"é","visualId":"{name} has {count} items"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"straße","threadId":"é","visualId":"😀"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"﻿bom","threadId":"key_name-1","visualId":"😀:"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"ünïcödé","threadId":"aba","visualId":"straße"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"日本語のテキスト","threadId":"hello world","visualId":"trailing."}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"  padded  ","threadId":"日本語のテキストkey_name-1","visualId":"a😀b😀c"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"key_name-1","threadId":"key_name-1","visualId":"a.b.c"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":":","threadId":"İstanbul","visualId":"hello"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"emoji 👍🏽 mix","threadId":"ab","visualId":"HELLOünïcödé"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"ΣΊΣΥΦΟΣ","threadId":"HELLO","visualId":"hello"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"Hello World","threadId":"{name} has {count} items","visualId":"hello"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":".leadinghello","threadId":"Hello World","visualId":"src/a/b.ts"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"hello world","threadId":"﻿bom","visualId":"İstanbul"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"﻿bom","threadId":"line1\nline2","visualId":"key_name-1"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"ns:key.path","threadId":"HELLO","visualId":"{name} has {count} items"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"ns:key.pathns:key.path","threadId":"İstanbul","visualId":"Hello World"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":":","threadId":"a.b.c","visualId":"abcHello World"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"HELLO","threadId":"trailing.","visualId":".leadingab"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"ns:key.path","threadId":"src/a/b.ts","visualId":"a"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"emoji 👍🏽 mix","threadId":"{name} has {count} itemstab\tseparated","visualId":"  padded  "}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"  padded  ","threadId":"straße","visualId":"a..b"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"ünïcödé","threadId":"a:b:c","visualId":"abc"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"abc","threadId":"a:b:c","visualId":"trailing."}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"src/a/b.ts","threadId":"hello","visualId":"İstanbul"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"ünïcödé","threadId":"a😀b😀ctrailing.","visualId":"key_name-1"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"tab\tseparated","threadId":"key_name-1","visualId":"ΣΊΣΥΦΟΣ"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"İstanbul","threadId":".leading","visualId":"abc"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"ab","threadId":"key_name-1","visualId":".leading"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"a:b:c","threadId":"straße  padded  ","visualId":"straße"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"é","threadId":"ΣΊΣΥΦΟΣ","visualId":"Hello World"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"{name} has {count} items😀","threadId":"key_name-1😀","visualId":"a.b.c"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":".leading","threadId":"{name} has {count} items","visualId":"a😀b😀ca😀b😀c"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"ünïcödé","threadId":"abc","visualId":"HELLO  padded  "}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"  padded  ","threadId":"a..b","visualId":"./x/**/*.json"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"a.b.c","threadId":"a😀b😀c","visualId":"{name} has {count} items"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"{name} has {count} items","threadId":"😀","visualId":"abcns:key.path"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"key_name-1","threadId":"ns:key.path","visualId":"éa😀b😀c"}],"ok":null}
+{"fn":"readInlineVisual","args":[{}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":".leading","threadId":"a😀b😀c","visualId":"straße"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"emoji 👍🏽 mix","threadId":"日本語のテキスト","visualId":"abc"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"a","threadId":"a😀b😀c","visualId":"{name} has {count} items"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"./x/**/*.json","threadId":"ab","visualId":"éhello world"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"é","threadId":"﻿bom","visualId":"{name} has {count} items"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"ab","threadId":"a","visualId":"key_name-1"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"日本語のテキスト","threadId":"a:b:c","visualId":"hello world"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"a😀b😀cünïcödé","threadId":"line1\nline2","visualId":"straße  padded  "}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"İstanbul","threadId":"./x/**/*.json","visualId":"tab\tseparated"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"ünïcödéΣΊΣΥΦΟΣ","threadId":"{name} has {count} items","visualId":"a😀b😀c"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"日本語のテキスト","threadId":"a..b","visualId":"a:b:c"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"HELLOkey_name-1","threadId":"İstanbul","visualId":"﻿bom"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"﻿bom","threadId":"trailing.","visualId":".leading"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":".leading","threadId":"emoji 👍🏽 mix","visualId":"a.b.c"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"tab\tseparateda😀b😀c","threadId":"ΣΊΣΥΦΟΣ","visualId":"hello"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"a","threadId":"a..b","visualId":"./x/**/*.json"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"a:b:c","threadId":"ΣΊΣΥΦΟΣ","visualId":"tab\tseparated"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"a:b:c","threadId":"ns:key.path","visualId":"trailing."}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"é","threadId":"abc","visualId":"emoji 👍🏽 mix"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"日本語のテキスト","threadId":"straße","visualId":"{name} has {count} itemsabc"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"emoji 👍🏽 mix  padded  ","threadId":"./x/**/*.json","visualId":"a..b:"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"","threadId":"ab","visualId":"İstanbul"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"hello world","threadId":"{name} has {count} items","visualId":"a😀b😀c"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"trailing.:","threadId":"tab\tseparated","visualId":"Hello World"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"ΣΊΣΥΦΟΣ","threadId":"src/a/b.tsa:b:c","visualId":"ΣΊΣΥΦΟΣHELLO"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"HELLO","threadId":"atrailing.","visualId":"straße"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"ünïcödé","threadId":"ns:key.path","visualId":"İstanbul"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"İstanbulstraße","threadId":"ab","visualId":"trailing."}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"ΣΊΣΥΦΟΣünïcödé","threadId":"ünïcödé","visualId":"a"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"Hello World","threadId":"tab\tseparated","visualId":"İstanbul"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"HELLO","threadId":":tab\tseparated","visualId":"a.b.c"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"ab","threadId":"tab\tseparated","visualId":"日本語のテキスト"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"src/a/b.ts","threadId":"line1\nline2","visualId":"trailing."}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"a","threadId":"Hello World","visualId":""}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"a.b.c😀","threadId":"emoji 👍🏽 mixa.b.c","visualId":"a😀b😀c"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"İstanbul","threadId":".leading","visualId":"İstanbul"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"a:b:c﻿bom","threadId":"ΣΊΣΥΦΟΣ","visualId":"hello日本語のテキスト"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"line1\nline2","threadId":"😀","visualId":"abc"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"😀","threadId":"﻿bom","visualId":"hello world"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":".leading","threadId":"hello world","visualId":"  padded  日本語のテキスト"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"abc","threadId":"  padded  ","visualId":"src/a/b.ts"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"./x/**/*.json","threadId":"trailing.ns:key.path","visualId":"a😀b😀c"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"hello","threadId":"HELLO","visualId":"Hello World"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"abc","threadId":"src/a/b.ts","visualId":"a..b"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"abcHello World","threadId":"./x/**/*.json","visualId":"emoji 👍🏽 mix"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"日本語のテキスト","threadId":"src/a/b.ts","visualId":"a"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"ünïcödé","threadId":"İstanbul","visualId":"abc"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"hello world","threadId":"😀","visualId":"line1\nline2ns:key.path"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"日本語のテキスト","threadId":"{name} has {count} items","visualId":"日本語のテキスト"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"ns:key.path","threadId":"﻿bom","visualId":"😀"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"﻿bom","threadId":"﻿boma..b","visualId":"ünïcödé"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"hello world","threadId":"İstanbul","visualId":"日本語のテキスト"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"src/a/b.ts","threadId":"","visualId":"hello world"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"hello","threadId":"straße","visualId":"ab"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"hello world","threadId":"./x/**/*.json","visualId":"straßeHELLO"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"HELLO日本語のテキスト","threadId":"emoji 👍🏽 mix","visualId":":{name} has {count} items"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"emoji 👍🏽 mix","threadId":"key_name-1","visualId":"😀"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"é","threadId":"😀ab","visualId":"﻿bomé"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"  padded  ","threadId":":","visualId":"日本語のテキスト"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"ab","threadId":"a😀b😀c","visualId":"trailing."}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"ns:key.path","threadId":"日本語のテキストtab\tseparated","visualId":"İstanbul"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"hello world","threadId":"emoji 👍🏽 mix","visualId":"😀"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"key_name-1","threadId":"key_name-1","visualId":""}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"tab\tseparated","threadId":"hello","visualId":"ab"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"😀","threadId":"hello world","visualId":"ünïcödé"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"key_name-1a:b:c","threadId":"a.b.ca","visualId":"straßea"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"ΣΊΣΥΦΟΣ","threadId":"hello world:","visualId":".leading"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"a😀b😀c","threadId":"key_name-1日本語のテキスト","visualId":"key_name-1"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"İstanbul","threadId":"ns:key.path","visualId":"Hello World"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"﻿bomtab\tseparated","threadId":"","visualId":"a"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"abc","threadId":"tab\tseparated","visualId":":abc"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"  padded  ","threadId":"a","visualId":"😀"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"ΣΊΣΥΦΟΣ","threadId":".leadingHello World","visualId":"😀"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"İstanbul","threadId":"src/a/b.ts😀","visualId":"İstanbul"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"emoji 👍🏽 mix","threadId":"ns:key.path","visualId":"straße"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":":","threadId":"./x/**/*.json","visualId":"a:b:c"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"a😀b😀c","threadId":"hello","visualId":"hello"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"日本語のテキスト","threadId":"ns:key.path日本語のテキスト","visualId":"a..b"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"ab","threadId":"a.b.c","visualId":":"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":":","threadId":"﻿bom","visualId":"abc"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"  padded  ","threadId":"tab\tseparated","visualId":"ns:key.path"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"a😀b😀c","threadId":"a:b:c","visualId":":"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"ns:key.path","threadId":"emoji 👍🏽 mix","visualId":"Hello WorldHello World"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"{name} has {count} items","threadId":"a😀b😀c","visualId":"abc"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"key_name-1","threadId":"ünïcödé","visualId":"tab\tseparated"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"{name} has {count} items","threadId":".leading","visualId":"a..b"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"trailing.","threadId":"é","visualId":"tab\tseparated"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"İstanbul","threadId":"  padded  ","visualId":"日本語のテキスト"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"İstanbul","threadId":"src/a/b.tssrc/a/b.ts","visualId":"a.b.cstraße"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":":","threadId":"tab\tseparated","visualId":"ΣΊΣΥΦΟΣé"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"tab\tseparated","threadId":"ns:key.path","visualId":".leading"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"﻿bom","threadId":"emoji 👍🏽 mix:","visualId":"emoji 👍🏽 mix"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"a😀b😀c","threadId":"hello world","visualId":"trailing."}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":":","threadId":"hello world","visualId":"a.b.c"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"src/a/b.ts","threadId":"ünïcödé","visualId":""}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"日本語のテキスト","threadId":"hello","visualId":"ns:key.path"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"ns:key.path","threadId":"ns:key.path","visualId":":"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"straßesrc/a/b.ts","threadId":"﻿bom","visualId":"a"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":".leading","threadId":"ünïcödé","visualId":"a"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"./x/**/*.json","threadId":"HELLO","visualId":"  padded  "}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"hello world","threadId":"a:b:c","visualId":"a😀b😀c"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"a..b","threadId":"İstanbul","visualId":"a.b.c"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"a..b","threadId":"HELLO","visualId":"﻿bom"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"Hello World","threadId":"a..b","visualId":"a:b:c"}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"İstanbul","threadId":"Hello World","visualId":"trailing."}],"ok":null}
+{"fn":"readInlineVisual","args":[{"attachmentsDir":"a:b:c","threadId":"﻿bom","visualId":".leading"}],"ok":null}

@@ -1,0 +1,84 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/inlineVisualStore.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "inlinevisualstore-rs",
+  "exports": [
+    {
+      "name": "inlineVisualThreadDirectory",
+      "file": "apps/server/src/inlineVisualStore.ts",
+      "line": 29,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly attachmentsDir: string;\n  readonly threadId: string;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "inlineVisualFilePath",
+      "file": "apps/server/src/inlineVisualStore.ts",
+      "line": 42,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly attachmentsDir: string;\n  readonly threadId: string;\n  readonly visualId: string;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "writeInlineVisual",
+      "file": "apps/server/src/inlineVisualStore.ts",
+      "line": 57,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly attachmentsDir: string;\n  readonly threadId: string;\n  readonly visualId: string;\n  readonly html: string;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<{ readonly filePath: string; readonly existed: boolean }>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "readInlineVisual",
+      "file": "apps/server/src/inlineVisualStore.ts",
+      "line": 84,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly attachmentsDir: string;\n  readonly threadId: string;\n  readonly visualId: string;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<string | null>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

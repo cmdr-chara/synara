@@ -1,0 +1,30 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/studioGeneratedImages.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "studiogeneratedimages-rs",
+  "exports": [
+    {
+      "name": "studioGeneratedImageFileName",
+      "file": "apps/server/src/studioGeneratedImages.ts",
+      "line": 47,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly sourcePath: string;\n  readonly createdAt: string;\n  readonly collisionNumber: number;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

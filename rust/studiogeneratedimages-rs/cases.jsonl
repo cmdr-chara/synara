@@ -1,0 +1,200 @@
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"src/a/b.ts","createdAt":"a:b:ctab\tseparated","collisionNumber":1}],"ok":"undated_generated-image.ts"}
+{"fn":"studioGeneratedImageFileName","args":[{"a":{"b":"c"}}],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"é","createdAt":"Hello World","collisionNumber":{"$num":"Infinity"}}],"ok":"undated_generated-image-Infinity"}
+{"fn":"studioGeneratedImageFileName","args":["x"],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"./x/**/*.json","createdAt":"a..b","collisionNumber":100}],"ok":"undated_generated-image-100.json"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"","createdAt":"line1\nline2","collisionNumber":1}],"ok":"undated_generated-image"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"İstanbula","createdAt":"a","collisionNumber":1}],"ok":"undated_generated-image"}
+{"fn":"studioGeneratedImageFileName","args":[[]],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"日本語のテキスト  padded  ","createdAt":"asrc/a/b.ts","collisionNumber":2}],"ok":"undated_generated-image-2"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"line1\nline2İstanbul","createdAt":"","collisionNumber":-1}],"ok":"undated_generated-image"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"{name} has {count} items","createdAt":".leading","collisionNumber":42}],"ok":"undated_generated-image-42"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":":","createdAt":"key_name-1","collisionNumber":1000}],"ok":"2001-01-01_generated-image-1000"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":".leading","createdAt":"{name} has {count} items","collisionNumber":2}],"ok":"undated_generated-image-2"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"hello","createdAt":"trailing.","collisionNumber":42}],"ok":"undated_generated-image-42"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"a..b","createdAt":"Hello World  padded  ","collisionNumber":2}],"ok":"undated_generated-image-2.b"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":":","createdAt":"a.b.c","collisionNumber":9007199254740992}],"ok":"undated_generated-image-9007199254740992"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"line1\nline2","createdAt":"日本語のテキスト","collisionNumber":-2.5}],"ok":"undated_generated-image"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"","createdAt":"a","collisionNumber":10}],"ok":"undated_generated-image-10"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"ΣΊΣΥΦΟΣ","createdAt":"ns:key.path","collisionNumber":{"$num":"-Infinity"}}],"ok":"undated_generated-image"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"key_name-1ab","createdAt":"abc","collisionNumber":0.5}],"ok":"undated_generated-image"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"hello","createdAt":"straße","collisionNumber":0}],"ok":"undated_generated-image"}
+{"fn":"studioGeneratedImageFileName","args":[{}],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"日本語のテキストa:b:c","createdAt":"a..b","collisionNumber":100}],"ok":"undated_generated-image-100"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":".leading","createdAt":":","collisionNumber":3}],"ok":"undated_generated-image-3"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"a:b:c","createdAt":"straßesrc/a/b.ts","collisionNumber":{"$num":"-Infinity"}}],"ok":"undated_generated-image"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":".leading","createdAt":"日本語のテキスト","collisionNumber":-2.5}],"ok":"undated_generated-image"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":".leading","createdAt":"line1\nline2","collisionNumber":0.5}],"ok":"undated_generated-image"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"tab\tseparateda..b","createdAt":"{name} has {count} items","collisionNumber":-2.5}],"ok":"undated_generated-image.b"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"a..b","createdAt":"trailing.hello","collisionNumber":{"$num":"-Infinity"}}],"ok":"undated_generated-image.b"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"","createdAt":"straße","collisionNumber":1}],"ok":"undated_generated-image"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"key_name-1","createdAt":"emoji 👍🏽 mix","collisionNumber":3}],"ok":"undated_generated-image-3"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"./x/**/*.json","createdAt":"HELLO","collisionNumber":42}],"ok":"undated_generated-image-42.json"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"./x/**/*.json","createdAt":"ns:key.path","collisionNumber":1}],"ok":"undated_generated-image.json"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"ns:key.path","createdAt":"Hello World","collisionNumber":10}],"ok":"undated_generated-image-10.path"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"line1\nline2","createdAt":"line1\nline2","collisionNumber":1000}],"ok":"undated_generated-image-1000"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"😀","createdAt":"./x/**/*.json","collisionNumber":0.5}],"ok":"undated_generated-image"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"ΣΊΣΥΦΟΣ","createdAt":"日本語のテキスト","collisionNumber":1000}],"ok":"undated_generated-image-1000"}
+{"fn":"studioGeneratedImageFileName","args":[null],"error":"Cannot read properties of null (reading 'sourcePath')"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"a😀b😀cİstanbul","createdAt":"src/a/b.tsünïcödé","collisionNumber":10}],"ok":"undated_generated-image-10"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"ünïcödé","createdAt":"日本語のテキスト","collisionNumber":3}],"ok":"undated_generated-image-3"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"abc","createdAt":"key_name-1ab","collisionNumber":100}],"ok":"undated_generated-image-100"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":".leadinga😀b😀c","createdAt":"{name} has {count} items","collisionNumber":100}],"ok":"undated_generated-image-100"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"trailing.","createdAt":"","collisionNumber":10}],"ok":"undated_generated-image-10."}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"ns:key.path","createdAt":"ΣΊΣΥΦΟΣ","collisionNumber":100}],"ok":"undated_generated-image-100.path"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"日本語のテキスト","createdAt":"İstanbul","collisionNumber":1000}],"ok":"undated_generated-image-1000"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"./x/**/*.json","createdAt":"key_name-1é","collisionNumber":3}],"ok":"undated_generated-image-3.json"}
+{"fn":"studioGeneratedImageFileName","args":[{"a":"b"}],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"HELLO","createdAt":"","collisionNumber":1}],"ok":"undated_generated-image"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"emoji 👍🏽 mix","createdAt":"é","collisionNumber":0.5}],"ok":"undated_generated-image"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"hello worldhello","createdAt":"日本語のテキスト","collisionNumber":2}],"ok":"undated_generated-image-2"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"emoji 👍🏽 mix","createdAt":"emoji 👍🏽 mix","collisionNumber":1}],"ok":"undated_generated-image"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"a:b:c","createdAt":"key_name-1","collisionNumber":2147483648}],"ok":"2001-01-01_generated-image-2147483648"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"./x/**/*.json","createdAt":"hello","collisionNumber":1000}],"ok":"undated_generated-image-1000.json"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"tab\tseparatedİstanbul","createdAt":"a..b","collisionNumber":{"$num":"-0"}}],"ok":"undated_generated-image"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"Hello World","createdAt":"key_name-1","collisionNumber":42}],"ok":"2001-01-01_generated-image-42"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"hello","createdAt":"a😀b😀c","collisionNumber":0}],"ok":"undated_generated-image"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"abc","createdAt":"trailing.","collisionNumber":100}],"ok":"undated_generated-image-100"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"ΣΊΣΥΦΟΣ","createdAt":"ns:key.path","collisionNumber":100}],"ok":"undated_generated-image-100"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"a","createdAt":"a:b:c","collisionNumber":42}],"ok":"undated_generated-image-42"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"ns:key.path","createdAt":"Hello World  padded  ","collisionNumber":3}],"ok":"undated_generated-image-3.path"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"hello","createdAt":"a:b:c","collisionNumber":0}],"ok":"undated_generated-image"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"absrc/a/b.ts","createdAt":"trailing.","collisionNumber":-1}],"ok":"undated_generated-image.ts"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"Hello World","createdAt":"hello world","collisionNumber":{"$num":"-Infinity"}}],"ok":"undated_generated-image"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"","createdAt":"a:b:c","collisionNumber":-1}],"ok":"undated_generated-image"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":".leading","createdAt":"{name} has {count} items","collisionNumber":100}],"ok":"undated_generated-image-100"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"é","createdAt":"İstanbul","collisionNumber":1000}],"ok":"undated_generated-image-1000"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"ünïcödé","createdAt":"trailing.","collisionNumber":0.5}],"ok":"undated_generated-image"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"ab","createdAt":"HELLO","collisionNumber":2}],"ok":"undated_generated-image-2"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":".leading","createdAt":"😀","collisionNumber":3}],"ok":"undated_generated-image-3"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"src/a/b.ts","createdAt":"ünïcödé","collisionNumber":100}],"ok":"undated_generated-image-100.ts"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"a","createdAt":"abc","collisionNumber":0}],"ok":"undated_generated-image"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"emoji 👍🏽 mix","createdAt":"é","collisionNumber":2147483648}],"ok":"undated_generated-image-2147483648"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"ünïcödé","createdAt":"a.b.cline1\nline2","collisionNumber":1000}],"ok":"undated_generated-image-1000"}
+{"fn":"studioGeneratedImageFileName","args":[["a",1]],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"é","createdAt":"key_name-1tab\tseparated","collisionNumber":-1}],"ok":"undated_generated-image"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"trailing.","createdAt":"  padded  ","collisionNumber":{"$num":"-Infinity"}}],"ok":"undated_generated-image."}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"日本語のテキスト","createdAt":".leading","collisionNumber":42}],"ok":"undated_generated-image-42"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"﻿bom:","createdAt":"  padded  ","collisionNumber":10}],"ok":"undated_generated-image-10"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"abc","createdAt":"tab\tseparated","collisionNumber":1000}],"ok":"undated_generated-image-1000"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"ns:key.patha..b","createdAt":"  padded  ","collisionNumber":1000000}],"ok":"undated_generated-image-1000000.b"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"tab\tseparated","createdAt":"abc","collisionNumber":-1}],"ok":"undated_generated-image"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"line1\nline2line1\nline2","createdAt":"straße","collisionNumber":2147483648}],"ok":"undated_generated-image-2147483648"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"abckey_name-1","createdAt":"straße","collisionNumber":{"$num":"NaN"}}],"ok":"undated_generated-image"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"tab\tseparatedİstanbul","createdAt":"a😀b😀c","collisionNumber":{"$num":"NaN"}}],"ok":"undated_generated-image"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"ab","createdAt":"trailing.","collisionNumber":10}],"ok":"undated_generated-image-10"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"Hello Worlda.b.c","createdAt":"src/a/b.ts","collisionNumber":-2.5}],"ok":"undated_generated-image.c"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"  padded  ","createdAt":"HELLO","collisionNumber":1}],"ok":"undated_generated-image"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"Hello World","createdAt":"a😀b😀c","collisionNumber":9007199254740992}],"ok":"undated_generated-image-9007199254740992"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"ns:key.path","createdAt":"ab","collisionNumber":1}],"ok":"undated_generated-image.path"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"ab","createdAt":"ns:key.path","collisionNumber":{"$num":"NaN"}}],"ok":"undated_generated-image"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"ünïcödé","createdAt":"straße","collisionNumber":1000000}],"ok":"undated_generated-image-1000000"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"a:b:c","createdAt":"a:b:c😀","collisionNumber":{"$num":"-0"}}],"ok":"undated_generated-image"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"﻿bom","createdAt":"😀","collisionNumber":-1}],"ok":"undated_generated-image"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"日本語のテキスト","createdAt":"hello","collisionNumber":2}],"ok":"undated_generated-image-2"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"a","createdAt":"a.b.c","collisionNumber":{"$num":"Infinity"}}],"ok":"undated_generated-image-Infinity"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"Hello World","createdAt":"a..b","collisionNumber":1}],"ok":"undated_generated-image"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"","createdAt":"{name} has {count} items","collisionNumber":{"$num":"-0"}}],"ok":"undated_generated-image"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"src/a/b.ts","createdAt":"ns:key.path","collisionNumber":2147483648}],"ok":"undated_generated-image-2147483648.ts"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"😀","createdAt":"key_name-1","collisionNumber":{"$num":"Infinity"}}],"ok":"2001-01-01_generated-image-Infinity"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"a","createdAt":"key_name-1","collisionNumber":0}],"ok":"2001-01-01_generated-image"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"emoji 👍🏽 mix","createdAt":"a:b:c","collisionNumber":2147483648}],"ok":"undated_generated-image-2147483648"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"key_name-1a:b:c","createdAt":"a","collisionNumber":10}],"ok":"undated_generated-image-10"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"./x/**/*.json","createdAt":"a.b.ckey_name-1","collisionNumber":{"$num":"NaN"}}],"ok":"2001-01-01_generated-image.json"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"İstanbul","createdAt":"line1\nline2","collisionNumber":2147483648}],"ok":"undated_generated-image-2147483648"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"ΣΊΣΥΦΟΣ","createdAt":"é","collisionNumber":{"$num":"Infinity"}}],"ok":"undated_generated-image-Infinity"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"﻿bomabc","createdAt":"hello world","collisionNumber":10}],"ok":"undated_generated-image-10"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"hello","createdAt":"﻿bom","collisionNumber":1}],"ok":"undated_generated-image"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"straße","createdAt":"a:b:c","collisionNumber":1000000}],"ok":"undated_generated-image-1000000"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"straße","createdAt":"hellosrc/a/b.ts","collisionNumber":2147483648}],"ok":"undated_generated-image-2147483648"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"  padded  ","createdAt":".leading","collisionNumber":{"$num":"-0"}}],"ok":"undated_generated-image"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"line1\nline2","createdAt":"abc","collisionNumber":{"$num":"NaN"}}],"ok":"undated_generated-image"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":":","createdAt":"  padded  ","collisionNumber":-1}],"ok":"undated_generated-image"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"HELLO./x/**/*.json","createdAt":"ns:key.path","collisionNumber":1000}],"ok":"undated_generated-image-1000.json"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"日本語のテキスト","createdAt":"src/a/b.ts  padded  ","collisionNumber":2147483648}],"ok":"undated_generated-image-2147483648"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"./x/**/*.json","createdAt":"straße","collisionNumber":-1}],"ok":"undated_generated-image.json"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"ünïcödé","createdAt":"ünïcödékey_name-1","collisionNumber":9007199254740992}],"ok":"2001-01-01_generated-image-9007199254740992"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"İstanbul","createdAt":"  padded  ","collisionNumber":2}],"ok":"undated_generated-image-2"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"İstanbula","createdAt":"./x/**/*.json","collisionNumber":2}],"ok":"undated_generated-image-2"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"a:b:cünïcödé","createdAt":"./x/**/*.json","collisionNumber":2147483648}],"ok":"undated_generated-image-2147483648"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"tab\tseparateda:b:c","createdAt":":","collisionNumber":1000000}],"ok":"undated_generated-image-1000000"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"straße","createdAt":"trailing.","collisionNumber":1000000}],"ok":"undated_generated-image-1000000"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"ab","createdAt":":{name} has {count} items","collisionNumber":{"$num":"-0"}}],"ok":"undated_generated-image"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"abc","createdAt":"ünïcödé","collisionNumber":10}],"ok":"undated_generated-image-10"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"a.b.c","createdAt":"./x/**/*.json","collisionNumber":0}],"ok":"undated_generated-image.c"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"hello","createdAt":"straßeab","collisionNumber":2}],"ok":"undated_generated-image-2"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"trailing.日本語のテキスト","createdAt":"./x/**/*.json","collisionNumber":{"$num":"NaN"}}],"ok":"undated_generated-image.日本語のテキスト"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"emoji 👍🏽 mix","createdAt":"{name} has {count} items","collisionNumber":-2.5}],"ok":"undated_generated-image"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"trailing../x/**/*.json","createdAt":"日本語のテキスト","collisionNumber":9007199254740992}],"ok":"undated_generated-image-9007199254740992.json"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"HELLO","createdAt":"ns:key.path","collisionNumber":{"$num":"-0"}}],"ok":"undated_generated-image"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"😀","createdAt":"😀","collisionNumber":{"$num":"-Infinity"}}],"ok":"undated_generated-image"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":".leading","createdAt":"ns:key.path","collisionNumber":{"$num":"-Infinity"}}],"ok":"undated_generated-image"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"﻿bom","createdAt":"hello world","collisionNumber":9007199254740992}],"ok":"undated_generated-image-9007199254740992"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"tab\tseparated","createdAt":":","collisionNumber":10}],"ok":"undated_generated-image-10"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"HELLOé","createdAt":"a.b.c","collisionNumber":{"$num":"Infinity"}}],"ok":"undated_generated-image-Infinity"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"a😀b😀c","createdAt":"hello","collisionNumber":10}],"ok":"undated_generated-image-10"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"😀","createdAt":"helloa:b:c","collisionNumber":{"$num":"NaN"}}],"ok":"undated_generated-image"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"HELLO","createdAt":"hello world","collisionNumber":10}],"ok":"undated_generated-image-10"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"{name} has {count} items😀","createdAt":"abc","collisionNumber":{"$num":"-0"}}],"ok":"undated_generated-image"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":".leadinghello","createdAt":"key_name-1straße","collisionNumber":{"$num":"Infinity"}}],"ok":"undated_generated-image-Infinity"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"src/a/b.ts","createdAt":"straßekey_name-1","collisionNumber":100}],"ok":"2001-01-01_generated-image-100.ts"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"ab","createdAt":".leading","collisionNumber":2}],"ok":"undated_generated-image-2"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"a:b:ca","createdAt":"﻿bom","collisionNumber":42}],"ok":"undated_generated-image-42"}
+{"fn":"studioGeneratedImageFileName","args":[true],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"ab","createdAt":"abca..b","collisionNumber":0.5}],"ok":"undated_generated-image"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"HELLO","createdAt":"src/a/b.ts","collisionNumber":1}],"ok":"undated_generated-image"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"  padded  ","createdAt":"İstanbul","collisionNumber":9007199254740992}],"ok":"undated_generated-image-9007199254740992"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"ünïcödé","createdAt":"İstanbul","collisionNumber":{"$num":"NaN"}}],"ok":"undated_generated-image"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"  padded  Hello World","createdAt":"a..b","collisionNumber":100}],"ok":"undated_generated-image-100"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"hello world","createdAt":"{name} has {count} itemsstraße","collisionNumber":{"$num":"NaN"}}],"ok":"undated_generated-image"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"hello world","createdAt":"a.b.c","collisionNumber":1}],"ok":"undated_generated-image"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":".leading","createdAt":"tab\tseparated","collisionNumber":42}],"ok":"undated_generated-image-42"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"Hello World","createdAt":"İstanbul","collisionNumber":0}],"ok":"undated_generated-image"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"src/a/b.ts","createdAt":"a😀b😀c","collisionNumber":2}],"ok":"undated_generated-image-2.ts"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"src/a/b.ts","createdAt":"abc","collisionNumber":0}],"ok":"undated_generated-image.ts"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"ΣΊΣΥΦΟΣ","createdAt":"ab","collisionNumber":{"$num":"Infinity"}}],"ok":"undated_generated-image-Infinity"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"ΣΊΣΥΦΟΣ","createdAt":"Hello World","collisionNumber":-2.5}],"ok":"undated_generated-image"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"hello","createdAt":"HELLO","collisionNumber":9007199254740992}],"ok":"undated_generated-image-9007199254740992"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"ΣΊΣΥΦΟΣns:key.path","createdAt":"key_name-1","collisionNumber":0.5}],"ok":"2001-01-01_generated-image.path"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"a:b:c","createdAt":":a😀b😀c","collisionNumber":{"$num":"-Infinity"}}],"ok":"undated_generated-image"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"{name} has {count} items","createdAt":"straße","collisionNumber":1000}],"ok":"undated_generated-image-1000"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"a..b","createdAt":"a.b.c","collisionNumber":{"$num":"Infinity"}}],"ok":"undated_generated-image-Infinity.b"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"HELLO","createdAt":"src/a/b.ts","collisionNumber":10}],"ok":"undated_generated-image-10"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"ΣΊΣΥΦΟΣ","createdAt":"a.b.c","collisionNumber":{"$num":"Infinity"}}],"ok":"undated_generated-image-Infinity"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"key_name-1hello","createdAt":"é","collisionNumber":1}],"ok":"undated_generated-image"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"a.b.c","createdAt":"﻿bom","collisionNumber":1000000}],"ok":"undated_generated-image-1000000.c"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"key_name-1emoji 👍🏽 mix","createdAt":"日本語のテキスト","collisionNumber":3}],"ok":"undated_generated-image-3"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"","createdAt":"日本語のテキスト","collisionNumber":-2.5}],"ok":"undated_generated-image"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"﻿bom","createdAt":"  padded  ","collisionNumber":1000000}],"ok":"undated_generated-image-1000000"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"ΣΊΣΥΦΟΣ","createdAt":"Hello Worldns:key.path","collisionNumber":-2.5}],"ok":"undated_generated-image"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"key_name-1","createdAt":"ns:key.path","collisionNumber":{"$num":"Infinity"}}],"ok":"undated_generated-image-Infinity"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"emoji 👍🏽 mix","createdAt":"{name} has {count} items","collisionNumber":{"$num":"-0"}}],"ok":"undated_generated-image"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"emoji 👍🏽 mixab","createdAt":"😀a😀b😀c","collisionNumber":{"$num":"Infinity"}}],"ok":"undated_generated-image-Infinity"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"﻿bom","createdAt":"src/a/b.ts","collisionNumber":3}],"ok":"undated_generated-image-3"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"日本語のテキスト","createdAt":"HELLO","collisionNumber":100}],"ok":"undated_generated-image-100"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"Hello World","createdAt":"./x/**/*.json","collisionNumber":-1}],"ok":"undated_generated-image"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"hello","createdAt":"hello world","collisionNumber":0.5}],"ok":"undated_generated-image"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"ΣΊΣΥΦΟΣ","createdAt":"line1\nline2","collisionNumber":{"$num":"Infinity"}}],"ok":"undated_generated-image-Infinity"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"straße","createdAt":"abc","collisionNumber":-2.5}],"ok":"undated_generated-image"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":".leadingstraße","createdAt":"./x/**/*.json","collisionNumber":-2.5}],"ok":"undated_generated-image"}
+{"fn":"studioGeneratedImageFileName","args":[0],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"abc","createdAt":"ünïcödéΣΊΣΥΦΟΣ","collisionNumber":9007199254740992}],"ok":"undated_generated-image-9007199254740992"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"./x/**/*.json","createdAt":"HELLO","collisionNumber":-2.5}],"ok":"undated_generated-image.json"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"İstanbul","createdAt":"a","collisionNumber":{"$num":"-Infinity"}}],"ok":"undated_generated-image"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"a","createdAt":"Hello Worldns:key.path","collisionNumber":2}],"ok":"undated_generated-image-2"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"HELLO","createdAt":":","collisionNumber":{"$num":"-0"}}],"ok":"undated_generated-image"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"hello","createdAt":"a","collisionNumber":{"$num":"Infinity"}}],"ok":"undated_generated-image-Infinity"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"ΣΊΣΥΦΟΣ","createdAt":"a.b.c","collisionNumber":2147483648}],"ok":"undated_generated-image-2147483648"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"a.b.c","createdAt":"{name} has {count} items","collisionNumber":{"$num":"-Infinity"}}],"ok":"undated_generated-image.c"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"ab","createdAt":"ab","collisionNumber":10}],"ok":"undated_generated-image-10"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"﻿bom日本語のテキスト","createdAt":":","collisionNumber":{"$num":"-Infinity"}}],"ok":"undated_generated-image"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"a😀b😀c","createdAt":"ünïcödé","collisionNumber":9007199254740992}],"ok":"undated_generated-image-9007199254740992"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"ΣΊΣΥΦΟΣ","createdAt":"key_name-1Hello World","collisionNumber":{"$num":"NaN"}}],"ok":"undated_generated-image"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"😀","createdAt":"é","collisionNumber":2147483648}],"ok":"undated_generated-image-2147483648"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":".leading","createdAt":"a😀b😀c","collisionNumber":9007199254740992}],"ok":"undated_generated-image-9007199254740992"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"Hello World","createdAt":"  padded  ","collisionNumber":2147483648}],"ok":"undated_generated-image-2147483648"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"  padded  ","createdAt":"ns:key.path","collisionNumber":-2.5}],"ok":"undated_generated-image"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"HELLO😀","createdAt":"abc","collisionNumber":{"$num":"NaN"}}],"ok":"undated_generated-image"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":":","createdAt":"abc","collisionNumber":1000000}],"ok":"undated_generated-image-1000000"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"key_name-1","createdAt":"tab\tseparated","collisionNumber":-2.5}],"ok":"undated_generated-image"}
+{"fn":"studioGeneratedImageFileName","args":[{"sourcePath":"emoji 👍🏽 mix","createdAt":"straße","collisionNumber":42}],"ok":"undated_generated-image-42"}

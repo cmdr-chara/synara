@@ -1,0 +1,17 @@
+{
+  "unit": "apps/desktop/src/desktopMigrationRecovery.ts",
+  "files": 1,
+  "fingerprint": "c2086841ebda39f9",
+  "coverage": {
+    "lines": 275,
+    "reached": 122,
+    "files": [
+      {
+        "file": "apps/desktop/src/desktopMigrationRecovery.ts",
+        "lines": 275,
+        "reached": 122,
+        "missed": "84-121, 123-153, 155-170, 187-194, 197-198, 213-214, 239-251, 253-278, 280-290, 292-297"
+      }
+    ]
+  }
+}

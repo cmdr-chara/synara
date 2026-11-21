@@ -1,0 +1,145 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/desktop/src/desktopMigrationRecovery.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "desktopmigrationrecovery-rs",
+  "exports": [
+    {
+      "name": "resolveDesktopMigrationRecoveryPaths",
+      "file": "apps/desktop/src/desktopMigrationRecovery.ts",
+      "line": 26,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly baseDir: string;\n  readonly appRoot: string;\n  readonly isDevelopment: boolean;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "DesktopMigrationRecoveryPaths",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "invalidMigrationStartupRecoveryChoices",
+      "file": "apps/desktop/src/desktopMigrationRecovery.ts",
+      "line": 59,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly canInstallUpdate: boolean;\n  readonly canOpenReleasePage: boolean;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ReadonlyArray<DesktopMigrationRecoveryChoice>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "hasPendingDesktopMigrationRecovery",
+      "file": "apps/desktop/src/desktopMigrationRecovery.ts",
+      "line": 172,
+      "params": [
+        {
+          "name": "paths",
+          "ts_type": "DesktopMigrationRecoveryPaths",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "hasVerifiedDesktopMigrationRestore",
+      "file": "apps/desktop/src/desktopMigrationRecovery.ts",
+      "line": 176,
+      "params": [
+        {
+          "name": "paths",
+          "ts_type": "DesktopMigrationRecoveryPaths",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "expectedBackupPath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveDesktopMigrationRestoreCandidate",
+      "file": "apps/desktop/src/desktopMigrationRecovery.ts",
+      "line": 206,
+      "params": [
+        {
+          "name": "paths",
+          "ts_type": "DesktopMigrationRecoveryPaths",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "block",
+          "ts_type": "MigrationSchemaTooNewStartupBlock",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Extract<\n  MigrationSchemaTooNewStartupBlock[\"recovery\"],\n  { readonly kind: \"restore-available\" }\n> | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "requiresDesktopMigrationRecovery",
+      "file": "apps/desktop/src/desktopMigrationRecovery.ts",
+      "line": 226,
+      "params": [
+        {
+          "name": "paths",
+          "ts_type": "DesktopMigrationRecoveryPaths",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "recoverDesktopMigrationIfRequired",
+      "file": "apps/desktop/src/desktopMigrationRecovery.ts",
+      "line": 83,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "restoreDesktopMigrationBackup",
+      "file": "apps/desktop/src/desktopMigrationRecovery.ts",
+      "line": 238,
+      "reason": "takes or returns a function"
+    }
+  ]
+}

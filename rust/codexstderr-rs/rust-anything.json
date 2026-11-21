@@ -1,0 +1,174 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/codexStderr.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "codexstderr-rs",
+  "exports": [
+    {
+      "name": "normalizeCodexProcessLine",
+      "file": "packages/shared/src/codexStderr.ts",
+      "line": 19,
+      "params": [
+        {
+          "name": "line",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isIgnorableCodexProcessLine",
+      "file": "packages/shared/src/codexStderr.ts",
+      "line": 23,
+      "params": [
+        {
+          "name": "line",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isCodexUnstableFeaturesWarning",
+      "file": "packages/shared/src/codexStderr.ts",
+      "line": 28,
+      "params": [
+        {
+          "name": "message",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isCodexMultiAgentDeprecationWarning",
+      "file": "packages/shared/src/codexStderr.ts",
+      "line": 36,
+      "params": [
+        {
+          "name": "message",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isCodexUserMcpOAuthStartupError",
+      "file": "packages/shared/src/codexStderr.ts",
+      "line": 47,
+      "params": [
+        {
+          "name": "server",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "error",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "readCodexMcpSubscriptionError",
+      "file": "packages/shared/src/codexStderr.ts",
+      "line": 56,
+      "params": [
+        {
+          "name": "message",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "normalizeCodexUserVisibleErrorMessage",
+      "file": "packages/shared/src/codexStderr.ts",
+      "line": 100,
+      "params": [
+        {
+          "name": "rawMessage",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "classifyCodexStderr",
+      "file": "packages/shared/src/codexStderr.ts",
+      "line": 113,
+      "params": [
+        {
+          "name": "line",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "mirroredUserConfigPath",
+          "ts_type": "string",
+          "optional": true,
+          "rest": false
+        },
+        {
+          "name": "options",
+          "ts_type": "{ errorLikePlainLinesOnly?: boolean }",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "| { kind: \"notice\"; message: string; configWarning?: true; mcpSubscriptionError?: string }\n  | { kind: \"user-mcp-oauth\"; server: string }\n  | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

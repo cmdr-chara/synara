@@ -1,0 +1,29 @@
+{
+  "unit": "packages/shared/src/codexStderr.ts",
+  "files": 1,
+  "fingerprint": "206a6fee3b70cd33",
+  "coverage": {
+    "lines": 525,
+    "reached": 388,
+    "files": [
+      {
+        "file": "packages/shared/src/codexStderr.ts",
+        "lines": 151,
+        "reached": 103,
+        "missed": "31, 59-64, 67-71, 73, 75-76, 89-91, 93-94, 106, 126-147, 151-154, 160"
+      },
+      {
+        "file": "packages/shared/src/mcpConnectors.ts",
+        "lines": 317,
+        "reached": 250,
+        "missed": "196-197, 228-231, 235-271, 275-277, 285-293, 297-298, 304-305, 308-309, 313-316, 336-337"
+      },
+      {
+        "file": "packages/shared/src/text.ts",
+        "lines": 57,
+        "reached": 35,
+        "missed": "10-11, 17-26, 31-34, 45-48, 62-63"
+      }
+    ]
+  }
+}

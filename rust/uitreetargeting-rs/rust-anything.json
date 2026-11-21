@@ -1,0 +1,43 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/uiTreeTargeting.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "uitreetargeting-rs",
+  "exports": [
+    {
+      "name": "uiTreeActivationPoint",
+      "file": "packages/shared/src/uiTreeTargeting.ts",
+      "line": 62,
+      "params": [
+        {
+          "name": "node",
+          "ts_type": "{\n  readonly frame: UiTreeRect;\n  readonly activationPoint?: UiTreePoint | null | undefined;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "UiTreePoint",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "flattenUiTree",
+      "file": "packages/shared/src/uiTreeTargeting.ts",
+      "line": 41,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "resolveUiTreeTarget",
+      "file": "packages/shared/src/uiTreeTargeting.ts",
+      "line": 128,
+      "reason": "generic over `TNode`: values of any shape, functions included"
+    }
+  ]
+}

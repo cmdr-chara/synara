@@ -1,0 +1,17 @@
+{
+  "unit": "packages/shared/src/uiTreeTargeting.ts",
+  "files": 1,
+  "fingerprint": "cd09035e2d22c245",
+  "coverage": {
+    "lines": 155,
+    "reached": 109,
+    "files": [
+      {
+        "file": "packages/shared/src/uiTreeTargeting.ts",
+        "lines": 155,
+        "reached": 109,
+        "missed": "42-52, 129-137, 139-140, 142-147, 149-159, 161-167"
+      }
+    ]
+  }
+}

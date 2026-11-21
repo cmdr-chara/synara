@@ -1,0 +1,72 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/desktop/src/backendNodeOptions.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "backendnodeoptions-rs",
+  "exports": [
+    {
+      "name": "resolveBackendMaxOldSpaceMb",
+      "file": "apps/desktop/src/backendNodeOptions.ts",
+      "line": 27,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly configuredMb?: string | null | undefined;\n  readonly totalMemoryBytes: number;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "number",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "withBackendHeapLimitArg",
+      "file": "apps/desktop/src/backendNodeOptions.ts",
+      "line": 42,
+      "params": [
+        {
+          "name": "nodeOptions",
+          "ts_type": "string | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "maxOldSpaceMb",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveBackendNodeArgs",
+      "file": "apps/desktop/src/backendNodeOptions.ts",
+      "line": 54,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly configuredMaxOldSpaceMb?: string | null | undefined;\n  readonly existingNodeOptions?: string | undefined;\n  readonly totalMemoryBytes: number;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

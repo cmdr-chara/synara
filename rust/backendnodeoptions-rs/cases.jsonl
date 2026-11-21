@@ -1,0 +1,623 @@
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":{"$undefined":true},"totalMemoryBytes":3}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"a.b.cab","totalMemoryBytes":{"$num":"-Infinity"}}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"hello worlda","totalMemoryBytes":1000000}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"a":{"b":"c"}}],"ok":{"$num":"NaN"}}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":null,"totalMemoryBytes":{"$num":"NaN"}}],"ok":{"$num":"NaN"}}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":{"$undefined":true},"totalMemoryBytes":100}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"totalMemoryBytes":{"$num":"NaN"}}],"ok":{"$num":"NaN"}}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"totalMemoryBytes":-2.5}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":null,"totalMemoryBytes":3}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":null,"totalMemoryBytes":1000}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"totalMemoryBytes":0}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":{"$undefined":true},"totalMemoryBytes":1000000}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":null,"totalMemoryBytes":-1}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":null,"totalMemoryBytes":9007199254740992}],"ok":8192}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"totalMemoryBytes":9007199254740992}],"ok":8192}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"a😀b😀c","totalMemoryBytes":-1}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"tab\tseparatedns:key.path","totalMemoryBytes":{"$num":"-0"}}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":":","totalMemoryBytes":1000000}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":null,"totalMemoryBytes":2}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[null],"error":"Cannot read properties of null (reading 'configuredMb')"}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"line1\nline2","totalMemoryBytes":2147483648}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":".leading","totalMemoryBytes":0}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"é","totalMemoryBytes":0}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":{"$undefined":true},"totalMemoryBytes":0.5}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":{"$undefined":true},"totalMemoryBytes":{"$num":"Infinity"}}],"ok":8192}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":null,"totalMemoryBytes":1}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"a:b:c","totalMemoryBytes":-2.5}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"line1\nline2","totalMemoryBytes":1}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":".leading","totalMemoryBytes":{"$num":"Infinity"}}],"ok":8192}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[["a",1]],"ok":{"$num":"NaN"}}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"İstanbulΣΊΣΥΦΟΣ","totalMemoryBytes":9007199254740992}],"ok":8192}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[0],"ok":{"$num":"NaN"}}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":null,"totalMemoryBytes":{"$num":"-0"}}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"totalMemoryBytes":42}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":null,"totalMemoryBytes":{"$num":"Infinity"}}],"ok":8192}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"totalMemoryBytes":3}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"é","totalMemoryBytes":2}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"totalMemoryBytes":2147483648}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"key_name-1","totalMemoryBytes":2147483648}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"src/a/b.ts","totalMemoryBytes":1}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":{"$undefined":true},"totalMemoryBytes":42}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":{"$undefined":true},"totalMemoryBytes":{"$num":"NaN"}}],"ok":{"$num":"NaN"}}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":{"$undefined":true},"totalMemoryBytes":9007199254740992}],"ok":8192}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{}],"ok":{"$num":"NaN"}}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":".leading","totalMemoryBytes":-2.5}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"totalMemoryBytes":1}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":{"$undefined":true},"totalMemoryBytes":10}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"totalMemoryBytes":-1}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"ab","totalMemoryBytes":{"$num":"Infinity"}}],"ok":8192}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":null,"totalMemoryBytes":-2.5}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[[]],"ok":{"$num":"NaN"}}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"","totalMemoryBytes":0}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":null,"totalMemoryBytes":10}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":null,"totalMemoryBytes":1000000}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":{"$undefined":true},"totalMemoryBytes":2147483648}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":null,"totalMemoryBytes":0.5}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":{"$undefined":true},"totalMemoryBytes":{"$num":"-0"}}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":{"$undefined":true},"totalMemoryBytes":1000}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"emoji 👍🏽 mix","totalMemoryBytes":1000}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":["x"],"ok":{"$num":"NaN"}}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"﻿bom","totalMemoryBytes":3}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"totalMemoryBytes":10}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"İstanbul","totalMemoryBytes":1000}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":{"$undefined":true},"totalMemoryBytes":-1}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"日本語のテキスト","totalMemoryBytes":100}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"src/a/b.ts","totalMemoryBytes":-1}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"a","totalMemoryBytes":-2.5}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":null,"totalMemoryBytes":{"$num":"-Infinity"}}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"a":"b"}],"ok":{"$num":"NaN"}}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[true],"ok":{"$num":"NaN"}}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":null,"totalMemoryBytes":42}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"﻿bom","totalMemoryBytes":{"$num":"Infinity"}}],"ok":8192}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"Hello World","totalMemoryBytes":{"$num":"-0"}}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"a..bΣΊΣΥΦΟΣ","totalMemoryBytes":0.5}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":null,"totalMemoryBytes":0}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"hello world","totalMemoryBytes":{"$num":"Infinity"}}],"ok":8192}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"a.b.c","totalMemoryBytes":42}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":{"$undefined":true},"totalMemoryBytes":1}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":{"$undefined":true},"totalMemoryBytes":0}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":null,"totalMemoryBytes":2147483648}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"","totalMemoryBytes":{"$num":"-Infinity"}}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"totalMemoryBytes":{"$num":"Infinity"}}],"ok":8192}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":{"$undefined":true},"totalMemoryBytes":-2.5}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"straße","totalMemoryBytes":0.5}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"totalMemoryBytes":1000}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":{"$undefined":true},"totalMemoryBytes":2}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"totalMemoryBytes":0.5}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"src/a/b.ts","totalMemoryBytes":1000}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"totalMemoryBytes":{"$num":"-Infinity"}}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"a..b","totalMemoryBytes":-2.5}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"totalMemoryBytes":{"$num":"-0"}}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"﻿boma😀b😀c","totalMemoryBytes":-2.5}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"😀","totalMemoryBytes":1000000}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"hello worlda..b","totalMemoryBytes":10}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"aba:b:c","totalMemoryBytes":3}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":{"$undefined":true},"totalMemoryBytes":{"$num":"-Infinity"}}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"./x/**/*.json","totalMemoryBytes":{"$num":"-0"}}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"ΣΊΣΥΦΟΣ","totalMemoryBytes":42}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"abcΣΊΣΥΦΟΣ","totalMemoryBytes":1}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"totalMemoryBytes":2}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"a😀b😀c","totalMemoryBytes":0}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":":abc","totalMemoryBytes":42}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"straßeline1\nline2","totalMemoryBytes":1000000}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"Hello World","totalMemoryBytes":3}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"ünïcödé","totalMemoryBytes":0.5}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"key_name-1a:b:c","totalMemoryBytes":{"$num":"-0"}}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"日本語のテキスト","totalMemoryBytes":2147483648}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"ns:key.path","totalMemoryBytes":2147483648}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":null,"totalMemoryBytes":100}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"hello world","totalMemoryBytes":2}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"key_name-1","totalMemoryBytes":1}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"line1\nline2","totalMemoryBytes":100}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"a","totalMemoryBytes":2147483648}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"ab","totalMemoryBytes":1000000}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"İstanbul","totalMemoryBytes":{"$num":"-0"}}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"ΣΊΣΥΦΟΣ","totalMemoryBytes":{"$num":"NaN"}}],"ok":{"$num":"NaN"}}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"{name} has {count} items","totalMemoryBytes":3}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"﻿bom","totalMemoryBytes":0}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"tab\tseparated","totalMemoryBytes":{"$num":"NaN"}}],"ok":{"$num":"NaN"}}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"key_name-1","totalMemoryBytes":10}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":":","totalMemoryBytes":2}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"totalMemoryBytes":100}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"HELLOünïcödé","totalMemoryBytes":0.5}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"key_name-1","totalMemoryBytes":-2.5}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"ΣΊΣΥΦΟΣ","totalMemoryBytes":100}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"HELLO","totalMemoryBytes":1000000}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"straßeΣΊΣΥΦΟΣ","totalMemoryBytes":0.5}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"HELLOkey_name-1","totalMemoryBytes":100}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"{name} has {count} items","totalMemoryBytes":2}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"line1\nline2Hello World","totalMemoryBytes":2147483648}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"trailing.","totalMemoryBytes":1000}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"straße","totalMemoryBytes":100}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"./x/**/*.json","totalMemoryBytes":1}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"日本語のテキスト","totalMemoryBytes":0}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"emoji 👍🏽 mix","totalMemoryBytes":-1}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"hello world","totalMemoryBytes":100}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"HELLO","totalMemoryBytes":42}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"ab","totalMemoryBytes":1000}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":":","totalMemoryBytes":0}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":":hello","totalMemoryBytes":2}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"ΣΊΣΥΦΟΣab","totalMemoryBytes":9007199254740992}],"ok":8192}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"tab\tseparated﻿bom","totalMemoryBytes":{"$num":"-Infinity"}}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"src/a/b.tsline1\nline2","totalMemoryBytes":{"$num":"Infinity"}}],"ok":8192}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"hello","totalMemoryBytes":100}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"straße","totalMemoryBytes":1000000}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"emoji 👍🏽 mixsrc/a/b.ts","totalMemoryBytes":10}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"Hello Worldabc","totalMemoryBytes":10}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"a..b","totalMemoryBytes":-1}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"😀","totalMemoryBytes":2}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"totalMemoryBytes":1000000}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"ns:key.pathΣΊΣΥΦΟΣ","totalMemoryBytes":-1}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"a:b:c","totalMemoryBytes":-1}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"ns:key.path","totalMemoryBytes":{"$num":"Infinity"}}],"ok":8192}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"İstanbulHELLO","totalMemoryBytes":1000}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"ünïcödéhello world","totalMemoryBytes":100}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"hello worlda","totalMemoryBytes":1000}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"{name} has {count} items","totalMemoryBytes":{"$num":"Infinity"}}],"ok":8192}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"ns:key.path","totalMemoryBytes":1000}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"ünïcödéHELLO","totalMemoryBytes":2147483648}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"a..b","totalMemoryBytes":10}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"Hello World","totalMemoryBytes":{"$num":"NaN"}}],"ok":{"$num":"NaN"}}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"a.b.c","totalMemoryBytes":9007199254740992}],"ok":8192}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"abHello World","totalMemoryBytes":100}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"日本語のテキスト","totalMemoryBytes":{"$num":"-Infinity"}}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"HELLO","totalMemoryBytes":-2.5}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"","totalMemoryBytes":1000}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"é","totalMemoryBytes":0.5}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"tab\tseparated","totalMemoryBytes":42}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"ahello","totalMemoryBytes":0}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":".leading","totalMemoryBytes":3}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"Hello World","totalMemoryBytes":9007199254740992}],"ok":8192}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"./x/**/*.json","totalMemoryBytes":1000000}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"ΣΊΣΥΦΟΣ  padded  ","totalMemoryBytes":1}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"./x/**/*.json","totalMemoryBytes":{"$num":"-Infinity"}}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"ab","totalMemoryBytes":10}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":".leading","totalMemoryBytes":1000}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"日本語のテキスト","totalMemoryBytes":1000000}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"ünïcödé","totalMemoryBytes":2}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"ns:key.path","totalMemoryBytes":1000000}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"abcstraße","totalMemoryBytes":1000000}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"emoji 👍🏽 mix","totalMemoryBytes":{"$num":"NaN"}}],"ok":{"$num":"NaN"}}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":":","totalMemoryBytes":10}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"ns:key.path","totalMemoryBytes":1}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"a😀b😀c","totalMemoryBytes":{"$num":"-Infinity"}}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":":","totalMemoryBytes":100}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"日本語のテキスト","totalMemoryBytes":10}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"src/a/b.ts","totalMemoryBytes":42}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"ΣΊΣΥΦΟΣHello World","totalMemoryBytes":{"$num":"-0"}}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"hello😀","totalMemoryBytes":{"$num":"-0"}}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"trailing.","totalMemoryBytes":9007199254740992}],"ok":8192}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"a:b:c","totalMemoryBytes":{"$num":"Infinity"}}],"ok":8192}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"line1\nline2","totalMemoryBytes":9007199254740992}],"ok":8192}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"abc","totalMemoryBytes":2147483648}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"a:b:ca.b.c","totalMemoryBytes":1000000}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"  padded  tab\tseparated","totalMemoryBytes":1000}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"emoji 👍🏽 mix","totalMemoryBytes":0}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"﻿bom","totalMemoryBytes":42}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"straße","totalMemoryBytes":0}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":"a😀b😀c","totalMemoryBytes":1000}],"ok":3072}
+{"fn":"resolveBackendMaxOldSpaceMb","args":[{"configuredMb":".leading","totalMemoryBytes":1000000}],"ok":3072}
+{"fn":"withBackendHeapLimitArg","args":["HELLO",{"$num":"NaN"}],"ok":["--max-old-space-size=NaN"]}
+{"fn":"withBackendHeapLimitArg","args":[{"$undefined":true},3],"ok":["--max-old-space-size=3"]}
+{"fn":"withBackendHeapLimitArg","args":[{"$undefined":true},{"$num":"NaN"}],"ok":["--max-old-space-size=NaN"]}
+{"fn":"withBackendHeapLimitArg","args":["﻿bom",{"$num":"Infinity"}],"ok":["--max-old-space-size=Infinity"]}
+{"fn":"withBackendHeapLimitArg","args":["src/a/b.ts.leading",1000],"ok":["--max-old-space-size=1000"]}
+{"fn":"withBackendHeapLimitArg","args":[{"$undefined":true},9007199254740992],"ok":["--max-old-space-size=9007199254740992"]}
+{"fn":"withBackendHeapLimitArg","args":["😀",1000000],"ok":["--max-old-space-size=1000000"]}
+{"fn":"withBackendHeapLimitArg","args":[".leading",2],"ok":["--max-old-space-size=2"]}
+{"fn":"withBackendHeapLimitArg","args":["a",{"$num":"-0"}],"ok":["--max-old-space-size=0"]}
+{"fn":"withBackendHeapLimitArg","args":["line1\nline2",1000],"ok":["--max-old-space-size=1000"]}
+{"fn":"withBackendHeapLimitArg","args":["a",1],"ok":["--max-old-space-size=1"]}
+{"fn":"withBackendHeapLimitArg","args":["é{name} has {count} items",2147483648],"ok":["--max-old-space-size=2147483648"]}
+{"fn":"withBackendHeapLimitArg","args":["tab\tseparated",9007199254740992],"ok":["--max-old-space-size=9007199254740992"]}
+{"fn":"withBackendHeapLimitArg","args":["line1\nline2",42],"ok":["--max-old-space-size=42"]}
+{"fn":"withBackendHeapLimitArg","args":["😀",9007199254740992],"ok":["--max-old-space-size=9007199254740992"]}
+{"fn":"withBackendHeapLimitArg","args":["é",10],"ok":["--max-old-space-size=10"]}
+{"fn":"withBackendHeapLimitArg","args":["HELLOhello world",{"$num":"Infinity"}],"ok":["--max-old-space-size=Infinity"]}
+{"fn":"withBackendHeapLimitArg","args":["emoji 👍🏽 mixhello",2],"ok":["--max-old-space-size=2"]}
+{"fn":"withBackendHeapLimitArg","args":[":",100],"ok":["--max-old-space-size=100"]}
+{"fn":"withBackendHeapLimitArg","args":["src/a/b.ts",{"$num":"Infinity"}],"ok":["--max-old-space-size=Infinity"]}
+{"fn":"withBackendHeapLimitArg","args":["Hello Worldemoji 👍🏽 mix",0],"ok":["--max-old-space-size=0"]}
+{"fn":"withBackendHeapLimitArg","args":["emoji 👍🏽 mixa..b",1000],"ok":["--max-old-space-size=1000"]}
+{"fn":"withBackendHeapLimitArg","args":["straße",2],"ok":["--max-old-space-size=2"]}
+{"fn":"withBackendHeapLimitArg","args":["aba..b",{"$num":"Infinity"}],"ok":["--max-old-space-size=Infinity"]}
+{"fn":"withBackendHeapLimitArg","args":["a..b",{"$num":"-0"}],"ok":["--max-old-space-size=0"]}
+{"fn":"withBackendHeapLimitArg","args":["HELLOünïcödé",1000000],"ok":["--max-old-space-size=1000000"]}
+{"fn":"withBackendHeapLimitArg","args":["ab",3],"ok":["--max-old-space-size=3"]}
+{"fn":"withBackendHeapLimitArg","args":["",{"$num":"Infinity"}],"ok":["--max-old-space-size=Infinity"]}
+{"fn":"withBackendHeapLimitArg","args":["src/a/b.ts",-1],"ok":["--max-old-space-size=-1"]}
+{"fn":"withBackendHeapLimitArg","args":[".leading",{"$num":"-0"}],"ok":["--max-old-space-size=0"]}
+{"fn":"withBackendHeapLimitArg","args":["hello world",9007199254740992],"ok":["--max-old-space-size=9007199254740992"]}
+{"fn":"withBackendHeapLimitArg","args":["",2],"ok":["--max-old-space-size=2"]}
+{"fn":"withBackendHeapLimitArg","args":["src/a/b.ts",1000000],"ok":["--max-old-space-size=1000000"]}
+{"fn":"withBackendHeapLimitArg","args":["a..b./x/**/*.json",-1],"ok":["--max-old-space-size=-1"]}
+{"fn":"withBackendHeapLimitArg","args":[":",10],"ok":["--max-old-space-size=10"]}
+{"fn":"withBackendHeapLimitArg","args":["helloünïcödé",{"$num":"Infinity"}],"ok":["--max-old-space-size=Infinity"]}
+{"fn":"withBackendHeapLimitArg","args":["é",2147483648],"ok":["--max-old-space-size=2147483648"]}
+{"fn":"withBackendHeapLimitArg","args":["Hello World",100],"ok":["--max-old-space-size=100"]}
+{"fn":"withBackendHeapLimitArg","args":["",3],"ok":["--max-old-space-size=3"]}
+{"fn":"withBackendHeapLimitArg","args":["emoji 👍🏽 mix",1],"ok":["--max-old-space-size=1"]}
+{"fn":"withBackendHeapLimitArg","args":["ab",1],"ok":["--max-old-space-size=1"]}
+{"fn":"withBackendHeapLimitArg","args":["😀",0.5],"ok":["--max-old-space-size=0.5"]}
+{"fn":"withBackendHeapLimitArg","args":[{"$undefined":true},0],"ok":["--max-old-space-size=0"]}
+{"fn":"withBackendHeapLimitArg","args":["tab\tseparatedtab\tseparated",{"$num":"-0"}],"ok":["--max-old-space-size=0"]}
+{"fn":"withBackendHeapLimitArg","args":["ns:key.path",-2.5],"ok":["--max-old-space-size=-2.5"]}
+{"fn":"withBackendHeapLimitArg","args":["  padded  ",100],"ok":["--max-old-space-size=100"]}
+{"fn":"withBackendHeapLimitArg","args":["a.b.c",2147483648],"ok":["--max-old-space-size=2147483648"]}
+{"fn":"withBackendHeapLimitArg","args":["ΣΊΣΥΦΟΣ",100],"ok":["--max-old-space-size=100"]}
+{"fn":"withBackendHeapLimitArg","args":["Hello World",{"$num":"Infinity"}],"ok":["--max-old-space-size=Infinity"]}
+{"fn":"withBackendHeapLimitArg","args":["{name} has {count} items",10],"ok":["--max-old-space-size=10"]}
+{"fn":"withBackendHeapLimitArg","args":["İstanbul",1000000],"ok":["--max-old-space-size=1000000"]}
+{"fn":"withBackendHeapLimitArg","args":["line1\nline2",2],"ok":["--max-old-space-size=2"]}
+{"fn":"withBackendHeapLimitArg","args":["a",-1],"ok":["--max-old-space-size=-1"]}
+{"fn":"withBackendHeapLimitArg","args":["hello worlda..b",-2.5],"ok":["--max-old-space-size=-2.5"]}
+{"fn":"withBackendHeapLimitArg","args":["İstanbulns:key.path",2],"ok":["--max-old-space-size=2"]}
+{"fn":"withBackendHeapLimitArg","args":[{"$undefined":true},{"$num":"Infinity"}],"ok":["--max-old-space-size=Infinity"]}
+{"fn":"withBackendHeapLimitArg","args":[{"$undefined":true},100],"ok":["--max-old-space-size=100"]}
+{"fn":"withBackendHeapLimitArg","args":["abc😀",9007199254740992],"ok":["--max-old-space-size=9007199254740992"]}
+{"fn":"withBackendHeapLimitArg","args":["hello",1000000],"ok":["--max-old-space-size=1000000"]}
+{"fn":"withBackendHeapLimitArg","args":["line1\nline2",2147483648],"ok":["--max-old-space-size=2147483648"]}
+{"fn":"withBackendHeapLimitArg","args":[{"$undefined":true},{"$num":"-Infinity"}],"ok":["--max-old-space-size=-Infinity"]}
+{"fn":"withBackendHeapLimitArg","args":[{"$undefined":true},{"$num":"-0"}],"ok":["--max-old-space-size=0"]}
+{"fn":"withBackendHeapLimitArg","args":["emoji 👍🏽 mix",10],"ok":["--max-old-space-size=10"]}
+{"fn":"withBackendHeapLimitArg","args":["a..b",1],"ok":["--max-old-space-size=1"]}
+{"fn":"withBackendHeapLimitArg","args":["日本語のテキスト",100],"ok":["--max-old-space-size=100"]}
+{"fn":"withBackendHeapLimitArg","args":["日本語のテキスト",3],"ok":["--max-old-space-size=3"]}
+{"fn":"withBackendHeapLimitArg","args":["ünïcödé",2147483648],"ok":["--max-old-space-size=2147483648"]}
+{"fn":"withBackendHeapLimitArg","args":["abİstanbul",3],"ok":["--max-old-space-size=3"]}
+{"fn":"withBackendHeapLimitArg","args":[{"$undefined":true},1000],"ok":["--max-old-space-size=1000"]}
+{"fn":"withBackendHeapLimitArg","args":["﻿bom😀",9007199254740992],"ok":["--max-old-space-size=9007199254740992"]}
+{"fn":"withBackendHeapLimitArg","args":[{"$undefined":true},10],"ok":["--max-old-space-size=10"]}
+{"fn":"withBackendHeapLimitArg","args":["./x/**/*.json",-2.5],"ok":["--max-old-space-size=-2.5"]}
+{"fn":"withBackendHeapLimitArg","args":["trailing.",{"$num":"-0"}],"ok":["--max-old-space-size=0"]}
+{"fn":"withBackendHeapLimitArg","args":["straße",0.5],"ok":["--max-old-space-size=0.5"]}
+{"fn":"withBackendHeapLimitArg","args":["éünïcödé",100],"ok":["--max-old-space-size=100"]}
+{"fn":"withBackendHeapLimitArg","args":["abcemoji 👍🏽 mix",{"$num":"Infinity"}],"ok":["--max-old-space-size=Infinity"]}
+{"fn":"withBackendHeapLimitArg","args":["{name} has {count} itemsemoji 👍🏽 mix",1],"ok":["--max-old-space-size=1"]}
+{"fn":"withBackendHeapLimitArg","args":["line1\nline2",3],"ok":["--max-old-space-size=3"]}
+{"fn":"withBackendHeapLimitArg","args":[{"$undefined":true},42],"ok":["--max-old-space-size=42"]}
+{"fn":"withBackendHeapLimitArg","args":["é",{"$num":"NaN"}],"ok":["--max-old-space-size=NaN"]}
+{"fn":"withBackendHeapLimitArg","args":["a😀b😀c",42],"ok":["--max-old-space-size=42"]}
+{"fn":"withBackendHeapLimitArg","args":["abc",1],"ok":["--max-old-space-size=1"]}
+{"fn":"withBackendHeapLimitArg","args":["ünïcödé",100],"ok":["--max-old-space-size=100"]}
+{"fn":"withBackendHeapLimitArg","args":["HELLO",{"$num":"-0"}],"ok":["--max-old-space-size=0"]}
+{"fn":"withBackendHeapLimitArg","args":["hello world",-1],"ok":["--max-old-space-size=-1"]}
+{"fn":"withBackendHeapLimitArg","args":["a:b:cemoji 👍🏽 mix",9007199254740992],"ok":["--max-old-space-size=9007199254740992"]}
+{"fn":"withBackendHeapLimitArg","args":["./x/**/*.json",-1],"ok":["--max-old-space-size=-1"]}
+{"fn":"withBackendHeapLimitArg","args":["aabc",0.5],"ok":["--max-old-space-size=0.5"]}
+{"fn":"withBackendHeapLimitArg","args":["",100],"ok":["--max-old-space-size=100"]}
+{"fn":"withBackendHeapLimitArg","args":["tab\tseparated",10],"ok":["--max-old-space-size=10"]}
+{"fn":"withBackendHeapLimitArg","args":[{"$undefined":true},1],"ok":["--max-old-space-size=1"]}
+{"fn":"withBackendHeapLimitArg","args":["emoji 👍🏽 mix﻿bom",0],"ok":["--max-old-space-size=0"]}
+{"fn":"withBackendHeapLimitArg","args":["a😀b😀cünïcödé",1000000],"ok":["--max-old-space-size=1000000"]}
+{"fn":"withBackendHeapLimitArg","args":["HELLO",10],"ok":["--max-old-space-size=10"]}
+{"fn":"withBackendHeapLimitArg","args":["key_name-1",1],"ok":["--max-old-space-size=1"]}
+{"fn":"withBackendHeapLimitArg","args":["İstanbul",0.5],"ok":["--max-old-space-size=0.5"]}
+{"fn":"withBackendHeapLimitArg","args":[{"$undefined":true},1000000],"ok":["--max-old-space-size=1000000"]}
+{"fn":"withBackendHeapLimitArg","args":[".leading",{"$num":"NaN"}],"ok":["--max-old-space-size=NaN"]}
+{"fn":"withBackendHeapLimitArg","args":["hello",100],"ok":["--max-old-space-size=100"]}
+{"fn":"withBackendHeapLimitArg","args":["😀",10],"ok":["--max-old-space-size=10"]}
+{"fn":"withBackendHeapLimitArg","args":["日本語のテキスト",-1],"ok":["--max-old-space-size=-1"]}
+{"fn":"withBackendHeapLimitArg","args":["éΣΊΣΥΦΟΣ",2],"ok":["--max-old-space-size=2"]}
+{"fn":"withBackendHeapLimitArg","args":["  padded  ",9007199254740992],"ok":["--max-old-space-size=9007199254740992"]}
+{"fn":"withBackendHeapLimitArg","args":["a:b:cünïcödé",{"$num":"-Infinity"}],"ok":["--max-old-space-size=-Infinity"]}
+{"fn":"withBackendHeapLimitArg","args":["a.b.c",2],"ok":["--max-old-space-size=2"]}
+{"fn":"withBackendHeapLimitArg","args":["HELLO",0.5],"ok":["--max-old-space-size=0.5"]}
+{"fn":"withBackendHeapLimitArg","args":["HELLO",1],"ok":["--max-old-space-size=1"]}
+{"fn":"withBackendHeapLimitArg","args":["😀",1000],"ok":["--max-old-space-size=1000"]}
+{"fn":"withBackendHeapLimitArg","args":["Hello World",{"$num":"NaN"}],"ok":["--max-old-space-size=NaN"]}
+{"fn":"withBackendHeapLimitArg","args":["İstanbul",3],"ok":["--max-old-space-size=3"]}
+{"fn":"withBackendHeapLimitArg","args":["ΣΊΣΥΦΟΣ",1000000],"ok":["--max-old-space-size=1000000"]}
+{"fn":"withBackendHeapLimitArg","args":["İstanbul",2147483648],"ok":["--max-old-space-size=2147483648"]}
+{"fn":"withBackendHeapLimitArg","args":["src/a/b.ts",0.5],"ok":["--max-old-space-size=0.5"]}
+{"fn":"withBackendHeapLimitArg","args":["Hello Worldsrc/a/b.ts",2],"ok":["--max-old-space-size=2"]}
+{"fn":"withBackendHeapLimitArg","args":[{"$undefined":true},2],"ok":["--max-old-space-size=2"]}
+{"fn":"withBackendHeapLimitArg","args":["key_name-1",100],"ok":["--max-old-space-size=100"]}
+{"fn":"withBackendHeapLimitArg","args":["a..b",{"$num":"Infinity"}],"ok":["--max-old-space-size=Infinity"]}
+{"fn":"withBackendHeapLimitArg","args":["a.b.c",42],"ok":["--max-old-space-size=42"]}
+{"fn":"withBackendHeapLimitArg","args":[{"$undefined":true},-2.5],"ok":["--max-old-space-size=-2.5"]}
+{"fn":"withBackendHeapLimitArg","args":[":",{"$num":"Infinity"}],"ok":["--max-old-space-size=Infinity"]}
+{"fn":"withBackendHeapLimitArg","args":["a..b",{"$num":"-Infinity"}],"ok":["--max-old-space-size=-Infinity"]}
+{"fn":"withBackendHeapLimitArg","args":["abcHello World",0.5],"ok":["--max-old-space-size=0.5"]}
+{"fn":"withBackendHeapLimitArg","args":["İstanbul",-1],"ok":["--max-old-space-size=-1"]}
+{"fn":"withBackendHeapLimitArg","args":["tab\tseparated",1000000],"ok":["--max-old-space-size=1000000"]}
+{"fn":"withBackendHeapLimitArg","args":["./x/**/*.json",1],"ok":["--max-old-space-size=1"]}
+{"fn":"withBackendHeapLimitArg","args":["a😀b😀c",{"$num":"-0"}],"ok":["--max-old-space-size=0"]}
+{"fn":"withBackendHeapLimitArg","args":["key_name-1",0],"ok":["--max-old-space-size=0"]}
+{"fn":"withBackendHeapLimitArg","args":["é",1000000],"ok":["--max-old-space-size=1000000"]}
+{"fn":"withBackendHeapLimitArg","args":["{name} has {count} items",{"$num":"NaN"}],"ok":["--max-old-space-size=NaN"]}
+{"fn":"withBackendHeapLimitArg","args":["  padded  ",0],"ok":["--max-old-space-size=0"]}
+{"fn":"withBackendHeapLimitArg","args":["emoji 👍🏽 mix",{"$num":"Infinity"}],"ok":["--max-old-space-size=Infinity"]}
+{"fn":"withBackendHeapLimitArg","args":["{name} has {count} itemshello",10],"ok":["--max-old-space-size=10"]}
+{"fn":"withBackendHeapLimitArg","args":["HELLOünïcödé",100],"ok":["--max-old-space-size=100"]}
+{"fn":"withBackendHeapLimitArg","args":["hello",3],"ok":["--max-old-space-size=3"]}
+{"fn":"withBackendHeapLimitArg","args":["emoji 👍🏽 mix  padded  ",-2.5],"ok":["--max-old-space-size=-2.5"]}
+{"fn":"withBackendHeapLimitArg","args":["日本語のテキスト",{"$num":"-0"}],"ok":["--max-old-space-size=0"]}
+{"fn":"withBackendHeapLimitArg","args":["a.b.c",1000000],"ok":["--max-old-space-size=1000000"]}
+{"fn":"withBackendHeapLimitArg","args":[".leading",-2.5],"ok":["--max-old-space-size=-2.5"]}
+{"fn":"withBackendHeapLimitArg","args":[":",1000],"ok":["--max-old-space-size=1000"]}
+{"fn":"withBackendHeapLimitArg","args":["ns:key.path",9007199254740992],"ok":["--max-old-space-size=9007199254740992"]}
+{"fn":"withBackendHeapLimitArg","args":[".leading",1],"ok":["--max-old-space-size=1"]}
+{"fn":"withBackendHeapLimitArg","args":["a:b:c",42],"ok":["--max-old-space-size=42"]}
+{"fn":"withBackendHeapLimitArg","args":["hello world",1000000],"ok":["--max-old-space-size=1000000"]}
+{"fn":"withBackendHeapLimitArg","args":["  padded  ",{"$num":"-0"}],"ok":["--max-old-space-size=0"]}
+{"fn":"withBackendHeapLimitArg","args":["src/a/b.ts",2147483648],"ok":["--max-old-space-size=2147483648"]}
+{"fn":"withBackendHeapLimitArg","args":["emoji 👍🏽 mix",0],"ok":["--max-old-space-size=0"]}
+{"fn":"withBackendHeapLimitArg","args":["emoji 👍🏽 mix",0.5],"ok":["--max-old-space-size=0.5"]}
+{"fn":"withBackendHeapLimitArg","args":["ns:key.path",{"$num":"Infinity"}],"ok":["--max-old-space-size=Infinity"]}
+{"fn":"withBackendHeapLimitArg","args":["a..b",0],"ok":["--max-old-space-size=0"]}
+{"fn":"withBackendHeapLimitArg","args":["straßeİstanbul",{"$num":"Infinity"}],"ok":["--max-old-space-size=Infinity"]}
+{"fn":"withBackendHeapLimitArg","args":["a..b😀",1000],"ok":["--max-old-space-size=1000"]}
+{"fn":"withBackendHeapLimitArg","args":[".leadingemoji 👍🏽 mix",{"$num":"Infinity"}],"ok":["--max-old-space-size=Infinity"]}
+{"fn":"withBackendHeapLimitArg","args":["trailing.",1000],"ok":["--max-old-space-size=1000"]}
+{"fn":"withBackendHeapLimitArg","args":["",{"$num":"-Infinity"}],"ok":["--max-old-space-size=-Infinity"]}
+{"fn":"withBackendHeapLimitArg","args":["key_name-1",-2.5],"ok":["--max-old-space-size=-2.5"]}
+{"fn":"withBackendHeapLimitArg","args":["a.b.c",1000],"ok":["--max-old-space-size=1000"]}
+{"fn":"withBackendHeapLimitArg","args":[{"$undefined":true},-1],"ok":["--max-old-space-size=-1"]}
+{"fn":"withBackendHeapLimitArg","args":["ns:key.path",42],"ok":["--max-old-space-size=42"]}
+{"fn":"withBackendHeapLimitArg","args":["日本語のテキスト",1],"ok":["--max-old-space-size=1"]}
+{"fn":"withBackendHeapLimitArg","args":["Hello World{name} has {count} items",3],"ok":["--max-old-space-size=3"]}
+{"fn":"withBackendHeapLimitArg","args":["emoji 👍🏽 mix",-1],"ok":["--max-old-space-size=-1"]}
+{"fn":"withBackendHeapLimitArg","args":["straßeİstanbul",1],"ok":["--max-old-space-size=1"]}
+{"fn":"withBackendHeapLimitArg","args":["./x/**/*.json",2],"ok":["--max-old-space-size=2"]}
+{"fn":"withBackendHeapLimitArg","args":["ab",1000000],"ok":["--max-old-space-size=1000000"]}
+{"fn":"withBackendHeapLimitArg","args":["HELLO",9007199254740992],"ok":["--max-old-space-size=9007199254740992"]}
+{"fn":"withBackendHeapLimitArg","args":["key_name-1İstanbul",-2.5],"ok":["--max-old-space-size=-2.5"]}
+{"fn":"withBackendHeapLimitArg","args":["straße",{"$num":"Infinity"}],"ok":["--max-old-space-size=Infinity"]}
+{"fn":"withBackendHeapLimitArg","args":["😀",3],"ok":["--max-old-space-size=3"]}
+{"fn":"withBackendHeapLimitArg","args":["trailing.a😀b😀c",0],"ok":["--max-old-space-size=0"]}
+{"fn":"withBackendHeapLimitArg","args":["İstanbulΣΊΣΥΦΟΣ",100],"ok":["--max-old-space-size=100"]}
+{"fn":"withBackendHeapLimitArg","args":["a😀b😀c",100],"ok":["--max-old-space-size=100"]}
+{"fn":"withBackendHeapLimitArg","args":["{name} has {count} items",9007199254740992],"ok":["--max-old-space-size=9007199254740992"]}
+{"fn":"withBackendHeapLimitArg","args":["ΣΊΣΥΦΟΣ",2],"ok":["--max-old-space-size=2"]}
+{"fn":"withBackendHeapLimitArg","args":["tab\tseparatedab",42],"ok":["--max-old-space-size=42"]}
+{"fn":"withBackendHeapLimitArg","args":["éstraße",-2.5],"ok":["--max-old-space-size=-2.5"]}
+{"fn":"withBackendHeapLimitArg","args":["é",100],"ok":["--max-old-space-size=100"]}
+{"fn":"withBackendHeapLimitArg","args":["{name} has {count} items",-2.5],"ok":["--max-old-space-size=-2.5"]}
+{"fn":"withBackendHeapLimitArg","args":["ünïcödéa😀b😀c",-2.5],"ok":["--max-old-space-size=-2.5"]}
+{"fn":"withBackendHeapLimitArg","args":[{"$undefined":true},0.5],"ok":["--max-old-space-size=0.5"]}
+{"fn":"withBackendHeapLimitArg","args":["{name} has {count} items",0.5],"ok":["--max-old-space-size=0.5"]}
+{"fn":"withBackendHeapLimitArg","args":["abc",{"$num":"-0"}],"ok":["--max-old-space-size=0"]}
+{"fn":"withBackendHeapLimitArg","args":["src/a/b.ts",{"$num":"NaN"}],"ok":["--max-old-space-size=NaN"]}
+{"fn":"withBackendHeapLimitArg","args":["tab\tseparated",{"$num":"-0"}],"ok":["--max-old-space-size=0"]}
+{"fn":"withBackendHeapLimitArg","args":["ns:key.path",1],"ok":["--max-old-space-size=1"]}
+{"fn":"withBackendHeapLimitArg","args":["tab\tseparated",0],"ok":["--max-old-space-size=0"]}
+{"fn":"withBackendHeapLimitArg","args":["a",2147483648],"ok":["--max-old-space-size=2147483648"]}
+{"fn":"withBackendHeapLimitArg","args":["日本語のテキスト",-2.5],"ok":["--max-old-space-size=-2.5"]}
+{"fn":"withBackendHeapLimitArg","args":["src/a/b.tsabc",{"$num":"-0"}],"ok":["--max-old-space-size=0"]}
+{"fn":"withBackendHeapLimitArg","args":["akey_name-1",1],"ok":["--max-old-space-size=1"]}
+{"fn":"withBackendHeapLimitArg","args":["tab\tseparated",2147483648],"ok":["--max-old-space-size=2147483648"]}
+{"fn":"withBackendHeapLimitArg","args":["﻿bom",10],"ok":["--max-old-space-size=10"]}
+{"fn":"withBackendHeapLimitArg","args":["日本語のテキスト",{"$num":"Infinity"}],"ok":["--max-old-space-size=Infinity"]}
+{"fn":"withBackendHeapLimitArg","args":["key_name-1",0.5],"ok":["--max-old-space-size=0.5"]}
+{"fn":"withBackendHeapLimitArg","args":["a",9007199254740992],"ok":["--max-old-space-size=9007199254740992"]}
+{"fn":"withBackendHeapLimitArg","args":["key_name-1",{"$num":"-Infinity"}],"ok":["--max-old-space-size=-Infinity"]}
+{"fn":"withBackendHeapLimitArg","args":["a..b",42],"ok":["--max-old-space-size=42"]}
+{"fn":"withBackendHeapLimitArg","args":["İstanbul",{"$num":"-0"}],"ok":["--max-old-space-size=0"]}
+{"fn":"withBackendHeapLimitArg","args":["a:b:c{name} has {count} items",9007199254740992],"ok":["--max-old-space-size=9007199254740992"]}
+{"fn":"withBackendHeapLimitArg","args":[".leading",1000000],"ok":["--max-old-space-size=1000000"]}
+{"fn":"withBackendHeapLimitArg","args":["a.b.c",1],"ok":["--max-old-space-size=1"]}
+{"fn":"withBackendHeapLimitArg","args":["héllo wörld",{"$num":"NaN"}],"ok":["--max-old-space-size=NaN"]}
+{"fn":"withBackendHeapLimitArg","args":["👍🏽 thumbs",{"$num":"NaN"}],"ok":["--max-old-space-size=NaN"]}
+{"fn":"withBackendHeapLimitArg","args":["日本語",{"$num":"NaN"}],"ok":["--max-old-space-size=NaN"]}
+{"fn":"withBackendHeapLimitArg","args":["",{"$num":"NaN"}],"ok":["--max-old-space-size=NaN"]}
+{"fn":"withBackendHeapLimitArg","args":["İstanbul",{"$num":"NaN"}],"ok":["--max-old-space-size=NaN"]}
+{"fn":"withBackendHeapLimitArg","args":["straße",{"$num":"NaN"}],"ok":["--max-old-space-size=NaN"]}
+{"fn":"withBackendHeapLimitArg","args":["ılık ırmak",{"$num":"NaN"}],"ok":["--max-old-space-size=NaN"]}
+{"fn":"withBackendHeapLimitArg","args":["👨‍👩‍👧 family",{"$num":"NaN"}],"ok":["--max-old-space-size=NaN"]}
+{"fn":"withBackendHeapLimitArg","args":["a b",{"$num":"NaN"}],"ok":["--max-old-space-size=NaN"]}
+{"fn":"withBackendHeapLimitArg","args":["ΣΊΣΥΦΟΣ",{"$num":"NaN"}],"ok":["--max-old-space-size=NaN"]}
+{"fn":"withBackendHeapLimitArg","args":["a😀b",{"$num":"NaN"}],"ok":["--max-old-space-size=NaN"]}
+{"fn":"withBackendHeapLimitArg","args":["﻿bom",{"$num":"NaN"}],"ok":["--max-old-space-size=NaN"]}
+{"fn":"withBackendHeapLimitArg","args":["a²b x½ y①",{"$num":"NaN"}],"ok":["--max-old-space-size=NaN"]}
+{"fn":"withBackendHeapLimitArg","args":["aⅠb Ⅻ",{"$num":"NaN"}],"ok":["--max-old-space-size=NaN"]}
+{"fn":"withBackendHeapLimitArg","args":["a𐐀b 𝐀bc",{"$num":"NaN"}],"ok":["--max-old-space-size=NaN"]}
+{"fn":"withBackendHeapLimitArg","args":["कि ٣٤",{"$num":"NaN"}],"ok":["--max-old-space-size=NaN"]}
+{"fn":"withBackendHeapLimitArg","args":["HELLO",-7.5],"ok":["--max-old-space-size=-7.5"]}
+{"fn":"withBackendHeapLimitArg","args":["HELLO",0.1],"ok":["--max-old-space-size=0.1"]}
+{"fn":"withBackendHeapLimitArg","args":["HELLO",0.30000000000000004],"ok":["--max-old-space-size=0.30000000000000004"]}
+{"fn":"withBackendHeapLimitArg","args":["HELLO",1e+21],"ok":["--max-old-space-size=1e+21"]}
+{"fn":"withBackendHeapLimitArg","args":["HELLO",1e-7],"ok":["--max-old-space-size=1e-7"]}
+{"fn":"withBackendHeapLimitArg","args":["HELLO",5e-324],"ok":["--max-old-space-size=5e-324"]}
+{"fn":"withBackendHeapLimitArg","args":["HELLO",1.7976931348623157e+308],"ok":["--max-old-space-size=1.7976931348623157e+308"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":"é","existingNodeOptions":{"$undefined":true},"totalMemoryBytes":1000000}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{}],"ok":["--max-old-space-size=NaN"]}
+{"fn":"resolveBackendNodeArgs","args":[{"existingNodeOptions":"ΣΊΣΥΦΟΣ","totalMemoryBytes":{"$num":"-0"}}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[true],"ok":["--max-old-space-size=NaN"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":null,"existingNodeOptions":"  padded  ","totalMemoryBytes":10}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"a":{"b":"c"}}],"ok":["--max-old-space-size=NaN"]}
+{"fn":"resolveBackendNodeArgs","args":[{"existingNodeOptions":{"$undefined":true},"totalMemoryBytes":0.5}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":null,"existingNodeOptions":":a:b:c","totalMemoryBytes":2}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":null,"existingNodeOptions":"  padded  straße","totalMemoryBytes":1000}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":"src/a/b.ts:","existingNodeOptions":"src/a/b.ts","totalMemoryBytes":{"$num":"Infinity"}}],"ok":["--max-old-space-size=8192"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":null,"totalMemoryBytes":2147483648}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":null,"totalMemoryBytes":-2.5}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":{"$undefined":true},"existingNodeOptions":"abc","totalMemoryBytes":2147483648}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":"日本語のテキスト","existingNodeOptions":{"$undefined":true},"totalMemoryBytes":1000000}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":null,"existingNodeOptions":"key_name-1","totalMemoryBytes":1}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[0],"ok":["--max-old-space-size=NaN"]}
+{"fn":"resolveBackendNodeArgs","args":[{"totalMemoryBytes":10}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":null,"existingNodeOptions":{"$undefined":true},"totalMemoryBytes":{"$num":"-0"}}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":null,"existingNodeOptions":"a.b.c","totalMemoryBytes":1000}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":":","existingNodeOptions":{"$undefined":true},"totalMemoryBytes":1000}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":["x"],"ok":["--max-old-space-size=NaN"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":"hello world","existingNodeOptions":"abcHello World","totalMemoryBytes":-2.5}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":null,"existingNodeOptions":{"$undefined":true},"totalMemoryBytes":{"$num":"Infinity"}}],"ok":["--max-old-space-size=8192"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":"😀","existingNodeOptions":"a.b.c","totalMemoryBytes":100}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":{"$undefined":true},"existingNodeOptions":{"$undefined":true},"totalMemoryBytes":2}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":null,"existingNodeOptions":{"$undefined":true},"totalMemoryBytes":-2.5}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":{"$undefined":true},"totalMemoryBytes":42}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":{"$undefined":true},"totalMemoryBytes":{"$num":"-0"}}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":"trailing.","existingNodeOptions":{"$undefined":true},"totalMemoryBytes":9007199254740992}],"ok":["--max-old-space-size=8192"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":"trailing.","existingNodeOptions":"emoji 👍🏽 mix","totalMemoryBytes":{"$num":"-0"}}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":null,"existingNodeOptions":"./x/**/*.json","totalMemoryBytes":100}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":null,"existingNodeOptions":{"$undefined":true},"totalMemoryBytes":42}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":{"$undefined":true},"existingNodeOptions":{"$undefined":true},"totalMemoryBytes":2147483648}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"totalMemoryBytes":1000}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":{"$undefined":true},"existingNodeOptions":{"$undefined":true},"totalMemoryBytes":1}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":{"$undefined":true},"existingNodeOptions":"abc","totalMemoryBytes":1}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":"straße","existingNodeOptions":"a","totalMemoryBytes":{"$num":"-0"}}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":"","totalMemoryBytes":2147483648}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":{"$undefined":true},"totalMemoryBytes":0}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"existingNodeOptions":{"$undefined":true},"totalMemoryBytes":{"$num":"-0"}}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":{"$undefined":true},"totalMemoryBytes":-1}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":null,"existingNodeOptions":{"$undefined":true},"totalMemoryBytes":3}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":{"$undefined":true},"existingNodeOptions":"abc","totalMemoryBytes":10}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"totalMemoryBytes":{"$num":"Infinity"}}],"ok":["--max-old-space-size=8192"]}
+{"fn":"resolveBackendNodeArgs","args":[{"totalMemoryBytes":{"$num":"-Infinity"}}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"existingNodeOptions":{"$undefined":true},"totalMemoryBytes":1000}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":"hello world","totalMemoryBytes":{"$num":"Infinity"}}],"ok":["--max-old-space-size=8192"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":".leading./x/**/*.json","totalMemoryBytes":2}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":null,"existingNodeOptions":"hello worldsrc/a/b.ts","totalMemoryBytes":42}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":{"$undefined":true},"totalMemoryBytes":100}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":"İstanbul","existingNodeOptions":{"$undefined":true},"totalMemoryBytes":100}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":"line1\nline2","existingNodeOptions":{"$undefined":true},"totalMemoryBytes":0.5}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":{"$undefined":true},"existingNodeOptions":"İstanbul","totalMemoryBytes":1000}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"a":"b"}],"ok":["--max-old-space-size=NaN"]}
+{"fn":"resolveBackendNodeArgs","args":[{"totalMemoryBytes":2}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":"abc","existingNodeOptions":"a..b","totalMemoryBytes":0}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"totalMemoryBytes":{"$num":"-0"}}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":"","existingNodeOptions":"日本語のテキスト﻿bom","totalMemoryBytes":1000000}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"existingNodeOptions":{"$undefined":true},"totalMemoryBytes":3}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":"ns:key.path","existingNodeOptions":"{name} has {count} items","totalMemoryBytes":0.5}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"existingNodeOptions":{"$undefined":true},"totalMemoryBytes":2147483648}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":{"$undefined":true},"existingNodeOptions":{"$undefined":true},"totalMemoryBytes":{"$num":"-Infinity"}}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":"a..b","existingNodeOptions":{"$undefined":true},"totalMemoryBytes":1000}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":{"$undefined":true},"existingNodeOptions":"ns:key.path","totalMemoryBytes":9007199254740992}],"ok":["--max-old-space-size=8192"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":{"$undefined":true},"existingNodeOptions":{"$undefined":true},"totalMemoryBytes":1000}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":"HELLOtrailing.","existingNodeOptions":"tab\tseparated","totalMemoryBytes":100}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":null,"existingNodeOptions":"ünïcödé😀","totalMemoryBytes":10}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":"日本語のテキスト","totalMemoryBytes":{"$num":"NaN"}}],"ok":["--max-old-space-size=NaN"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":null,"totalMemoryBytes":{"$num":"NaN"}}],"ok":["--max-old-space-size=NaN"]}
+{"fn":"resolveBackendNodeArgs","args":[{"totalMemoryBytes":1000000}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":"ns:key.path","existingNodeOptions":{"$undefined":true},"totalMemoryBytes":42}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":{"$undefined":true},"existingNodeOptions":{"$undefined":true},"totalMemoryBytes":{"$num":"Infinity"}}],"ok":["--max-old-space-size=8192"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":{"$undefined":true},"existingNodeOptions":"😀","totalMemoryBytes":100}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"existingNodeOptions":{"$undefined":true},"totalMemoryBytes":100}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"existingNodeOptions":"😀","totalMemoryBytes":-1}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":null,"totalMemoryBytes":1000}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":null,"totalMemoryBytes":2}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":null,"existingNodeOptions":":","totalMemoryBytes":{"$num":"-0"}}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":{"$undefined":true},"existingNodeOptions":{"$undefined":true},"totalMemoryBytes":-2.5}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"existingNodeOptions":"","totalMemoryBytes":2147483648}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":"﻿bom","existingNodeOptions":{"$undefined":true},"totalMemoryBytes":42}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":"ünïcödé","existingNodeOptions":"a..b","totalMemoryBytes":1}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":"😀","existingNodeOptions":"./x/**/*.jsonHello World","totalMemoryBytes":{"$num":"-Infinity"}}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":"a..b","totalMemoryBytes":-1}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"existingNodeOptions":{"$undefined":true},"totalMemoryBytes":9007199254740992}],"ok":["--max-old-space-size=8192"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":null,"existingNodeOptions":"ünïcödé","totalMemoryBytes":0}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":null,"existingNodeOptions":"a..b😀","totalMemoryBytes":0}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":"hello worldabc","existingNodeOptions":"a","totalMemoryBytes":{"$num":"NaN"}}],"ok":["--max-old-space-size=NaN"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":"a.b.c","totalMemoryBytes":0}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"existingNodeOptions":{"$undefined":true},"totalMemoryBytes":1}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":"  padded  ","totalMemoryBytes":42}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":"  padded  ","existingNodeOptions":{"$undefined":true},"totalMemoryBytes":10}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":{"$undefined":true},"existingNodeOptions":{"$undefined":true},"totalMemoryBytes":3}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":{"$undefined":true},"existingNodeOptions":{"$undefined":true},"totalMemoryBytes":10}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":"ab","existingNodeOptions":"ns:key.path","totalMemoryBytes":{"$num":"NaN"}}],"ok":["--max-old-space-size=NaN"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":"Hello World","existingNodeOptions":{"$undefined":true},"totalMemoryBytes":1000000}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":"😀","existingNodeOptions":{"$undefined":true},"totalMemoryBytes":-2.5}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[[]],"ok":["--max-old-space-size=NaN"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":"ünïcödé","totalMemoryBytes":-2.5}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":"trailing.","totalMemoryBytes":2}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":"a.b.c","totalMemoryBytes":100}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"existingNodeOptions":{"$undefined":true},"totalMemoryBytes":{"$num":"NaN"}}],"ok":["--max-old-space-size=NaN"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":{"$undefined":true},"existingNodeOptions":"İstanbul","totalMemoryBytes":100}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":null,"existingNodeOptions":{"$undefined":true},"totalMemoryBytes":{"$num":"-Infinity"}}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":"ab","existingNodeOptions":{"$undefined":true},"totalMemoryBytes":{"$num":"-0"}}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":null,"totalMemoryBytes":1000000}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"existingNodeOptions":{"$undefined":true},"totalMemoryBytes":0}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":null,"existingNodeOptions":".leading","totalMemoryBytes":-2.5}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"existingNodeOptions":"ns:key.path","totalMemoryBytes":3}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[null],"error":"Cannot read properties of null (reading 'existingNodeOptions')"}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":null,"existingNodeOptions":{"$undefined":true},"totalMemoryBytes":9007199254740992}],"ok":["--max-old-space-size=8192"]}
+{"fn":"resolveBackendNodeArgs","args":[{"totalMemoryBytes":0.5}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"existingNodeOptions":{"$undefined":true},"totalMemoryBytes":1000000}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":"{name} has {count} items","existingNodeOptions":{"$undefined":true},"totalMemoryBytes":0.5}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":".leading","totalMemoryBytes":1}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":"a","existingNodeOptions":{"$undefined":true},"totalMemoryBytes":0}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":{"$undefined":true},"existingNodeOptions":"a:b:c","totalMemoryBytes":1000000}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":"hello world","existingNodeOptions":"ns:key.path","totalMemoryBytes":-1}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":null,"existingNodeOptions":{"$undefined":true},"totalMemoryBytes":100}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":{"$undefined":true},"existingNodeOptions":"İstanbul","totalMemoryBytes":1}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"existingNodeOptions":"./x/**/*.json","totalMemoryBytes":100}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":null,"existingNodeOptions":"straße","totalMemoryBytes":-1}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"totalMemoryBytes":0}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":null,"existingNodeOptions":"line1\nline2","totalMemoryBytes":42}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":"straße","totalMemoryBytes":1000}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":null,"existingNodeOptions":{"$undefined":true},"totalMemoryBytes":1000000}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":"Hello World","totalMemoryBytes":-2.5}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":"straße","existingNodeOptions":{"$undefined":true},"totalMemoryBytes":0}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"totalMemoryBytes":-1}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":"日本語のテキスト","totalMemoryBytes":3}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"totalMemoryBytes":9007199254740992}],"ok":["--max-old-space-size=8192"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":null,"existingNodeOptions":{"$undefined":true},"totalMemoryBytes":1000}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":"src/a/b.ts","existingNodeOptions":{"$undefined":true},"totalMemoryBytes":3}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"existingNodeOptions":{"$undefined":true},"totalMemoryBytes":-2.5}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":null,"existingNodeOptions":{"$undefined":true},"totalMemoryBytes":1}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":null,"existingNodeOptions":"trailing.","totalMemoryBytes":9007199254740992}],"ok":["--max-old-space-size=8192"]}
+{"fn":"resolveBackendNodeArgs","args":[{"existingNodeOptions":"src/a/b.ts","totalMemoryBytes":3}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":{"$undefined":true},"totalMemoryBytes":10}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":null,"existingNodeOptions":"emoji 👍🏽 mix","totalMemoryBytes":42}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":"hello world","existingNodeOptions":"emoji 👍🏽 mix","totalMemoryBytes":1}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":"ns:key.path","existingNodeOptions":{"$undefined":true},"totalMemoryBytes":100}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"totalMemoryBytes":{"$num":"NaN"}}],"ok":["--max-old-space-size=NaN"]}
+{"fn":"resolveBackendNodeArgs","args":[["a",1]],"ok":["--max-old-space-size=NaN"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":{"$undefined":true},"existingNodeOptions":"  padded  ","totalMemoryBytes":-1}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":{"$undefined":true},"existingNodeOptions":{"$undefined":true},"totalMemoryBytes":{"$num":"-0"}}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":null,"existingNodeOptions":"😀","totalMemoryBytes":0}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":null,"totalMemoryBytes":100}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":null,"existingNodeOptions":{"$undefined":true},"totalMemoryBytes":0.5}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":null,"existingNodeOptions":"Hello World","totalMemoryBytes":100}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":{"$undefined":true},"existingNodeOptions":"İstanbul","totalMemoryBytes":42}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":null,"existingNodeOptions":"a😀b😀c","totalMemoryBytes":{"$num":"-0"}}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"existingNodeOptions":"ab","totalMemoryBytes":-2.5}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":"HELLO","totalMemoryBytes":-2.5}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":".leading","existingNodeOptions":"Hello World","totalMemoryBytes":{"$num":"NaN"}}],"ok":["--max-old-space-size=NaN"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":null,"existingNodeOptions":"key_name-1./x/**/*.json","totalMemoryBytes":10}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":null,"existingNodeOptions":"İstanbul","totalMemoryBytes":{"$num":"Infinity"}}],"ok":["--max-old-space-size=8192"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":":","existingNodeOptions":"ns:key.path","totalMemoryBytes":0.5}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":".leading","existingNodeOptions":"hello","totalMemoryBytes":{"$num":"-Infinity"}}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"existingNodeOptions":"a.b.c","totalMemoryBytes":3}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":"src/a/b.ts","existingNodeOptions":"straße","totalMemoryBytes":2147483648}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":null,"existingNodeOptions":{"$undefined":true},"totalMemoryBytes":2}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":"hello world","totalMemoryBytes":2}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":null,"existingNodeOptions":"a","totalMemoryBytes":42}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":null,"existingNodeOptions":{"$undefined":true},"totalMemoryBytes":{"$num":"NaN"}}],"ok":["--max-old-space-size=NaN"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":"emoji 👍🏽 mixab","existingNodeOptions":"./x/**/*.json","totalMemoryBytes":10}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":"key_name-1﻿bom","existingNodeOptions":"","totalMemoryBytes":3}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":{"$undefined":true},"existingNodeOptions":"Hello World","totalMemoryBytes":100}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":null,"existingNodeOptions":".leading","totalMemoryBytes":100}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":"ab","totalMemoryBytes":100}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":"ns:key.path","existingNodeOptions":"Hello World","totalMemoryBytes":42}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":{"$undefined":true},"existingNodeOptions":{"$undefined":true},"totalMemoryBytes":0}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":null,"existingNodeOptions":"a😀b😀c","totalMemoryBytes":2147483648}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"existingNodeOptions":"﻿bomsrc/a/b.ts","totalMemoryBytes":42}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":{"$undefined":true},"existingNodeOptions":{"$undefined":true},"totalMemoryBytes":9007199254740992}],"ok":["--max-old-space-size=8192"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":null,"totalMemoryBytes":0}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":"a:","existingNodeOptions":"Hello World","totalMemoryBytes":2147483648}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"totalMemoryBytes":2147483648}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":"日本語のテキストé","existingNodeOptions":{"$undefined":true},"totalMemoryBytes":10}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":{"$undefined":true},"existingNodeOptions":{"$undefined":true},"totalMemoryBytes":42}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":"hello world","existingNodeOptions":{"$undefined":true},"totalMemoryBytes":-2.5}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":null,"existingNodeOptions":"a.b.c","totalMemoryBytes":{"$num":"Infinity"}}],"ok":["--max-old-space-size=8192"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":"key_name-1.leading","existingNodeOptions":"ns:key.path","totalMemoryBytes":0}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":{"$undefined":true},"existingNodeOptions":"src/a/b.ts","totalMemoryBytes":100}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":{"$undefined":true},"existingNodeOptions":"😀","totalMemoryBytes":{"$num":"NaN"}}],"ok":["--max-old-space-size=NaN"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":null,"existingNodeOptions":"ns:key.path","totalMemoryBytes":{"$num":"Infinity"}}],"ok":["--max-old-space-size=8192"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":"hello world","existingNodeOptions":{"$undefined":true},"totalMemoryBytes":1}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":"a:b:c.leading","existingNodeOptions":"a😀b😀ca:b:c","totalMemoryBytes":100}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":{"$undefined":true},"existingNodeOptions":"src/a/b.ts","totalMemoryBytes":2147483648}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"existingNodeOptions":"日本語のテキスト","totalMemoryBytes":100}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"existingNodeOptions":"a..b","totalMemoryBytes":10}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":"trailing.","totalMemoryBytes":3}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":null,"existingNodeOptions":":emoji 👍🏽 mix","totalMemoryBytes":9007199254740992}],"ok":["--max-old-space-size=8192"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":null,"existingNodeOptions":":","totalMemoryBytes":1000000}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"totalMemoryBytes":42}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":"a.b.chello world","existingNodeOptions":{"$undefined":true},"totalMemoryBytes":9007199254740992}],"ok":["--max-old-space-size=8192"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":"src/a/b.ts","existingNodeOptions":"line1\nline2","totalMemoryBytes":2147483648}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":{"$undefined":true},"existingNodeOptions":"a:b:c","totalMemoryBytes":1000}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":"src/a/b.ts","existingNodeOptions":{"$undefined":true},"totalMemoryBytes":1}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"existingNodeOptions":"ünïcödé  padded  ","totalMemoryBytes":3}],"ok":["--max-old-space-size=3072"]}
+{"fn":"resolveBackendNodeArgs","args":[{"configuredMaxOldSpaceMb":null,"existingNodeOptions":{"$undefined":true},"totalMemoryBytes":10}],"ok":["--max-old-space-size=3072"]}

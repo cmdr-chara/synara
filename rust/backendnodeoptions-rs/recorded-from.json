@@ -1,0 +1,17 @@
+{
+  "unit": "apps/desktop/src/backendNodeOptions.ts",
+  "files": 1,
+  "fingerprint": "88a42cdf6c4410f5",
+  "coverage": {
+    "lines": 59,
+    "reached": 54,
+    "files": [
+      {
+        "file": "apps/desktop/src/backendNodeOptions.ts",
+        "lines": 59,
+        "reached": 54,
+        "missed": "24, 33-34, 48-49"
+      }
+    ]
+  }
+}

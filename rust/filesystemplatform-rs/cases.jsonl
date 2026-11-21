@@ -1,0 +1,867 @@
+{"fn":"supportsPosixPermissions","args":[{"a":{"b":"c"}}],"ok":true}
+{"fn":"supportsPosixPermissions","args":[{"$undefined":true}],"ok":true}
+{"fn":"supportsPosixPermissions","args":[null],"ok":true}
+{"fn":"supportsPosixPermissions","args":[true],"ok":true}
+{"fn":"supportsPosixPermissions","args":["x"],"ok":true}
+{"fn":"supportsPosixPermissions","args":[[]],"ok":true}
+{"fn":"supportsPosixPermissions","args":[{}],"ok":true}
+{"fn":"supportsPosixPermissions","args":[],"ok":true}
+{"fn":"supportsPosixPermissions","args":[{"a":"b"}],"ok":true}
+{"fn":"supportsPosixPermissions","args":[["a",1]],"ok":true}
+{"fn":"supportsPosixPermissions","args":[0],"ok":true}
+{"fn":"syncDirectoryEntry","args":["straße",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'straße'"}
+{"fn":"syncDirectoryEntry","args":[":",0],"error":"ENOENT: no such file or directory, open ':'"}
+{"fn":"syncDirectoryEntry","args":["a..b",true],"error":"ENOENT: no such file or directory, open 'a..b'"}
+{"fn":"syncDirectoryEntry","args":["line1\nline2",true],"error":"ENOENT: no such file or directory, open 'line1\nline2'"}
+{"fn":"syncDirectoryEntry","args":["Hello World","x"],"error":"ENOENT: no such file or directory, open 'Hello World'"}
+{"fn":"syncDirectoryEntry","args":["line1\nline2"],"error":"ENOENT: no such file or directory, open 'line1\nline2'"}
+{"fn":"syncDirectoryEntry","args":["ΣΊΣΥΦΟΣkey_name-1",{}],"error":"ENOENT: no such file or directory, open 'ΣΊΣΥΦΟΣkey_name-1'"}
+{"fn":"syncDirectoryEntry","args":["﻿bom"],"error":"ENOENT: no such file or directory, open '﻿bom'"}
+{"fn":"syncDirectoryEntry","args":["Hello World",{"a":"b"}],"error":"ENOENT: no such file or directory, open 'Hello World'"}
+{"fn":"syncDirectoryEntry","args":["hello",{}],"error":"ENOENT: no such file or directory, open 'hello'"}
+{"fn":"syncDirectoryEntry","args":["é",{"a":"b"}],"error":"ENOENT: no such file or directory, open 'é'"}
+{"fn":"syncDirectoryEntry","args":["a.b.c","x"],"error":"ENOENT: no such file or directory, open 'a.b.c'"}
+{"fn":"syncDirectoryEntry","args":["straße","x"],"error":"ENOENT: no such file or directory, open 'straße'"}
+{"fn":"syncDirectoryEntry","args":[".leading",0],"error":"ENOENT: no such file or directory, open '.leading'"}
+{"fn":"syncDirectoryEntry","args":["",{"a":"b"}],"error":"ENOENT: no such file or directory, open ''"}
+{"fn":"syncDirectoryEntry","args":["a..babc","x"],"error":"ENOENT: no such file or directory, open 'a..babc'"}
+{"fn":"syncDirectoryEntry","args":["日本語のテキストhello world",null],"error":"ENOENT: no such file or directory, open '日本語のテキストhello world'"}
+{"fn":"syncDirectoryEntry","args":["tab\tseparated",[]],"error":"ENOENT: no such file or directory, open 'tab\tseparated'"}
+{"fn":"syncDirectoryEntry","args":["a.b.cabc",[]],"error":"ENOENT: no such file or directory, open 'a.b.cabc'"}
+{"fn":"syncDirectoryEntry","args":["abc./x/**/*.json",["a",1]],"error":"ENOENT: no such file or directory, open 'abc./x/**/*.json'"}
+{"fn":"syncDirectoryEntry","args":["trailing.",["a",1]],"error":"ENOENT: no such file or directory, open 'trailing.'"}
+{"fn":"syncDirectoryEntry","args":["",{"$undefined":true}],"error":"ENOENT: no such file or directory, open ''"}
+{"fn":"syncDirectoryEntry","args":["{name} has {count} items",{}],"error":"ENOENT: no such file or directory, open '{name} has {count} items'"}
+{"fn":"syncDirectoryEntry","args":["HELLO","x"],"error":"ENOENT: no such file or directory, open 'HELLO'"}
+{"fn":"syncDirectoryEntry","args":["日本語のテキスト",null],"error":"ENOENT: no such file or directory, open '日本語のテキスト'"}
+{"fn":"syncDirectoryEntry","args":["a",{"a":"b"}],"error":"ENOENT: no such file or directory, open 'a'"}
+{"fn":"syncDirectoryEntry","args":["  padded  İstanbul",null],"error":"ENOENT: no such file or directory, open '  padded  İstanbul'"}
+{"fn":"syncDirectoryEntry","args":["  padded  ",0],"error":"ENOENT: no such file or directory, open '  padded  '"}
+{"fn":"syncDirectoryEntry","args":["abc",true],"error":"ENOENT: no such file or directory, open 'abc'"}
+{"fn":"syncDirectoryEntry","args":["a.b.ckey_name-1",true],"error":"ENOENT: no such file or directory, open 'a.b.ckey_name-1'"}
+{"fn":"syncDirectoryEntry","args":["日本語のテキスト",{"a":"b"}],"error":"ENOENT: no such file or directory, open '日本語のテキスト'"}
+{"fn":"syncDirectoryEntry","args":["src/a/b.ts"],"error":"ENOENT: no such file or directory, open 'src/a/b.ts'"}
+{"fn":"syncDirectoryEntry","args":["straße"],"error":"ENOENT: no such file or directory, open 'straße'"}
+{"fn":"syncDirectoryEntry","args":["ünïcödé",["a",1]],"error":"ENOENT: no such file or directory, open 'ünïcödé'"}
+{"fn":"syncDirectoryEntry","args":["hello",{"a":"b"}],"error":"ENOENT: no such file or directory, open 'hello'"}
+{"fn":"syncDirectoryEntry","args":["ns:key.path",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'ns:key.path'"}
+{"fn":"syncDirectoryEntry","args":["ΣΊΣΥΦΟΣabc",["a",1]],"error":"ENOENT: no such file or directory, open 'ΣΊΣΥΦΟΣabc'"}
+{"fn":"syncDirectoryEntry","args":["😀",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open '😀'"}
+{"fn":"syncDirectoryEntry","args":["line1\nline2",null],"error":"ENOENT: no such file or directory, open 'line1\nline2'"}
+{"fn":"syncDirectoryEntry","args":["İstanbul  padded  ",{"$undefined":true}],"error":"ENOENT: no such file or directory, open 'İstanbul  padded  '"}
+{"fn":"syncDirectoryEntry","args":["key_name-1",["a",1]],"error":"ENOENT: no such file or directory, open 'key_name-1'"}
+{"fn":"syncDirectoryEntry","args":["ns:key.pathstraße",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'ns:key.pathstraße'"}
+{"fn":"syncDirectoryEntry","args":["ünïcödé"],"error":"ENOENT: no such file or directory, open 'ünïcödé'"}
+{"fn":"syncDirectoryEntry","args":["ΣΊΣΥΦΟΣ",["a",1]],"error":"ENOENT: no such file or directory, open 'ΣΊΣΥΦΟΣ'"}
+{"fn":"syncDirectoryEntry","args":["😀",["a",1]],"error":"ENOENT: no such file or directory, open '😀'"}
+{"fn":"syncDirectoryEntry","args":["ab",null],"error":"ENOENT: no such file or directory, open 'ab'"}
+{"fn":"syncDirectoryEntry","args":["./x/**/*.jsonhello",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open './x/**/*.jsonhello'"}
+{"fn":"syncDirectoryEntry","args":["İstanbul  padded  "],"error":"ENOENT: no such file or directory, open 'İstanbul  padded  '"}
+{"fn":"syncDirectoryEntry","args":["ab",{}],"error":"ENOENT: no such file or directory, open 'ab'"}
+{"fn":"syncDirectoryEntry","args":["ab",true],"error":"ENOENT: no such file or directory, open 'ab'"}
+{"fn":"syncDirectoryEntry","args":["straße",0],"error":"ENOENT: no such file or directory, open 'straße'"}
+{"fn":"syncDirectoryEntry","args":["a..b",{"$undefined":true}],"error":"ENOENT: no such file or directory, open 'a..b'"}
+{"fn":"syncDirectoryEntry","args":["emoji 👍🏽 mix",[]],"error":"ENOENT: no such file or directory, open 'emoji 👍🏽 mix'"}
+{"fn":"syncDirectoryEntry","args":["a:b:c",0],"error":"ENOENT: no such file or directory, open 'a:b:c'"}
+{"fn":"syncDirectoryEntry","args":["HELLO",{}],"error":"ENOENT: no such file or directory, open 'HELLO'"}
+{"fn":"syncDirectoryEntry","args":["Hello World",0],"error":"ENOENT: no such file or directory, open 'Hello World'"}
+{"fn":"syncDirectoryEntry","args":[".leadingabc",[]],"error":"ENOENT: no such file or directory, open '.leadingabc'"}
+{"fn":"syncDirectoryEntry","args":["./x/**/*.json",true],"error":"ENOENT: no such file or directory, open './x/**/*.json'"}
+{"fn":"syncDirectoryEntry","args":["ünïcödé",{"$undefined":true}],"error":"ENOENT: no such file or directory, open 'ünïcödé'"}
+{"fn":"syncDirectoryEntry","args":["src/a/b.ts",null],"error":"ENOENT: no such file or directory, open 'src/a/b.ts'"}
+{"fn":"syncDirectoryEntry","args":["emoji 👍🏽 mix",{"a":"b"}],"error":"ENOENT: no such file or directory, open 'emoji 👍🏽 mix'"}
+{"fn":"syncDirectoryEntry","args":["﻿bom",true],"error":"ENOENT: no such file or directory, open '﻿bom'"}
+{"fn":"syncDirectoryEntry","args":["{name} has {count} itemsünïcödé"],"error":"ENOENT: no such file or directory, open '{name} has {count} itemsünïcödé'"}
+{"fn":"syncDirectoryEntry","args":["{name} has {count} items",[]],"error":"ENOENT: no such file or directory, open '{name} has {count} items'"}
+{"fn":"syncDirectoryEntry","args":["a:b:cemoji 👍🏽 mix",["a",1]],"error":"ENOENT: no such file or directory, open 'a:b:cemoji 👍🏽 mix'"}
+{"fn":"syncDirectoryEntry","args":["hello world",{}],"error":"ENOENT: no such file or directory, open 'hello world'"}
+{"fn":"syncDirectoryEntry","args":["{name} has {count} items",true],"error":"ENOENT: no such file or directory, open '{name} has {count} items'"}
+{"fn":"syncDirectoryEntry","args":["a..b","x"],"error":"ENOENT: no such file or directory, open 'a..b'"}
+{"fn":"syncDirectoryEntry","args":["a:b:c"],"error":"ENOENT: no such file or directory, open 'a:b:c'"}
+{"fn":"syncDirectoryEntry","args":["a..b"],"error":"ENOENT: no such file or directory, open 'a..b'"}
+{"fn":"syncDirectoryEntry","args":["a"],"error":"ENOENT: no such file or directory, open 'a'"}
+{"fn":"syncDirectoryEntry","args":["a.b.c"],"error":"ENOENT: no such file or directory, open 'a.b.c'"}
+{"fn":"syncDirectoryEntry","args":["./x/**/*.json",{"a":"b"}],"error":"ENOENT: no such file or directory, open './x/**/*.json'"}
+{"fn":"syncDirectoryEntry","args":["  padded  ünïcödé",[]],"error":"ENOENT: no such file or directory, open '  padded  ünïcödé'"}
+{"fn":"syncDirectoryEntry","args":["emoji 👍🏽 mixa..b",["a",1]],"error":"ENOENT: no such file or directory, open 'emoji 👍🏽 mixa..b'"}
+{"fn":"syncDirectoryEntry","args":["abc",null],"error":"ENOENT: no such file or directory, open 'abc'"}
+{"fn":"syncDirectoryEntry","args":["hello world",[]],"error":"ENOENT: no such file or directory, open 'hello world'"}
+{"fn":"syncDirectoryEntry","args":["straße",null],"error":"ENOENT: no such file or directory, open 'straße'"}
+{"fn":"syncDirectoryEntry","args":["hello",[]],"error":"ENOENT: no such file or directory, open 'hello'"}
+{"fn":"syncDirectoryEntry","args":["ünïcödé",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'ünïcödé'"}
+{"fn":"syncDirectoryEntry","args":[".leading",["a",1]],"error":"ENOENT: no such file or directory, open '.leading'"}
+{"fn":"syncDirectoryEntry","args":["Hello World",[]],"error":"ENOENT: no such file or directory, open 'Hello World'"}
+{"fn":"syncDirectoryEntry","args":["Hello World",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'Hello World'"}
+{"fn":"syncDirectoryEntry","args":["HELLOtab\tseparated",["a",1]],"error":"ENOENT: no such file or directory, open 'HELLOtab\tseparated'"}
+{"fn":"syncDirectoryEntry","args":["日本語のテキスト",["a",1]],"error":"ENOENT: no such file or directory, open '日本語のテキスト'"}
+{"fn":"syncDirectoryEntry","args":["﻿bomsrc/a/b.ts",null],"error":"ENOENT: no such file or directory, open '﻿bomsrc/a/b.ts'"}
+{"fn":"syncDirectoryEntry","args":["line1\nline2😀",0],"error":"ENOENT: no such file or directory, open 'line1\nline2😀'"}
+{"fn":"syncDirectoryEntry","args":["a😀b😀c"],"error":"ENOENT: no such file or directory, open 'a😀b😀c'"}
+{"fn":"syncDirectoryEntry","args":["a.b.c",["a",1]],"error":"ENOENT: no such file or directory, open 'a.b.c'"}
+{"fn":"syncDirectoryEntry","args":["﻿bom",null],"error":"ENOENT: no such file or directory, open '﻿bom'"}
+{"fn":"syncDirectoryEntry","args":[":",null],"error":"ENOENT: no such file or directory, open ':'"}
+{"fn":"syncDirectoryEntry","args":["😀",{"$undefined":true}],"error":"ENOENT: no such file or directory, open '😀'"}
+{"fn":"syncDirectoryEntry","args":["﻿bom﻿bom",null],"error":"ENOENT: no such file or directory, open '﻿bom﻿bom'"}
+{"fn":"syncDirectoryEntry","args":["ΣΊΣΥΦΟΣ",{}],"error":"ENOENT: no such file or directory, open 'ΣΊΣΥΦΟΣ'"}
+{"fn":"syncDirectoryEntry","args":["abc",{"a":"b"}],"error":"ENOENT: no such file or directory, open 'abc'"}
+{"fn":"syncDirectoryEntry","args":["a😀b😀cünïcödé",{}],"error":"ENOENT: no such file or directory, open 'a😀b😀cünïcödé'"}
+{"fn":"syncDirectoryEntry","args":["a",null],"error":"ENOENT: no such file or directory, open 'a'"}
+{"fn":"syncDirectoryEntry","args":["ΣΊΣΥΦΟΣ"],"error":"ENOENT: no such file or directory, open 'ΣΊΣΥΦΟΣ'"}
+{"fn":"syncDirectoryEntry","args":["  padded  .leading",[]],"error":"ENOENT: no such file or directory, open '  padded  .leading'"}
+{"fn":"syncDirectoryEntry","args":["line1\nline2",{}],"error":"ENOENT: no such file or directory, open 'line1\nline2'"}
+{"fn":"syncDirectoryEntry","args":["é",true],"error":"ENOENT: no such file or directory, open 'é'"}
+{"fn":"syncDirectoryEntry","args":["hello",null],"error":"ENOENT: no such file or directory, open 'hello'"}
+{"fn":"syncDirectoryEntry","args":["a",{"$undefined":true}],"error":"ENOENT: no such file or directory, open 'a'"}
+{"fn":"syncDirectoryEntry","args":["ünïcödé",{"a":"b"}],"error":"ENOENT: no such file or directory, open 'ünïcödé'"}
+{"fn":"syncDirectoryEntry","args":["straße",["a",1]],"error":"ENOENT: no such file or directory, open 'straße'"}
+{"fn":"syncDirectoryEntry","args":["a.b.c",{"a":"b"}],"error":"ENOENT: no such file or directory, open 'a.b.c'"}
+{"fn":"syncDirectoryEntry","args":["./x/**/*.json",null],"error":"ENOENT: no such file or directory, open './x/**/*.json'"}
+{"fn":"syncDirectoryEntry","args":["a😀b😀cabc",["a",1]],"error":"ENOENT: no such file or directory, open 'a😀b😀cabc'"}
+{"fn":"syncDirectoryEntry","args":[".leading","x"],"error":"ENOENT: no such file or directory, open '.leading'"}
+{"fn":"syncDirectoryEntry","args":["a.b.c",0],"error":"ENOENT: no such file or directory, open 'a.b.c'"}
+{"fn":"syncDirectoryEntry","args":["X","x"],"error":"ENOENT: no such file or directory, open 'X'"}
+{"fn":"syncDirectoryEntry","args":["ünïcödé","x"],"error":"ENOENT: no such file or directory, open 'ünïcödé'"}
+{"fn":"syncDirectoryEntry","args":["﻿bom",[]],"error":"ENOENT: no such file or directory, open '﻿bom'"}
+{"fn":"syncDirectoryEntry","args":["HELLO",{"a":"b"}],"error":"ENOENT: no such file or directory, open 'HELLO'"}
+{"fn":"syncDirectoryEntry","args":["tab\tseparated",{"$undefined":true}],"error":"ENOENT: no such file or directory, open 'tab\tseparated'"}
+{"fn":"syncDirectoryEntry","args":["./x/**/*.json"],"error":"ENOENT: no such file or directory, open './x/**/*.json'"}
+{"fn":"syncDirectoryEntry","args":["tab\tseparated日本語のテキスト",0],"error":"ENOENT: no such file or directory, open 'tab\tseparated日本語のテキスト'"}
+{"fn":"syncDirectoryEntry","args":[":hello",[]],"error":"ENOENT: no such file or directory, open ':hello'"}
+{"fn":"syncDirectoryEntry","args":["hello worldsrc/a/b.ts",{"a":"b"}],"error":"ENOENT: no such file or directory, open 'hello worldsrc/a/b.ts'"}
+{"fn":"syncDirectoryEntry","args":["ünïcödé",null],"error":"ENOENT: no such file or directory, open 'ünïcödé'"}
+{"fn":"syncDirectoryEntry","args":["hello"],"error":"ENOENT: no such file or directory, open 'hello'"}
+{"fn":"syncDirectoryEntry","args":["Hello Worlda😀b😀c",null],"error":"ENOENT: no such file or directory, open 'Hello Worlda😀b😀c'"}
+{"fn":"syncDirectoryEntry","args":["日本語のテキスト",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open '日本語のテキスト'"}
+{"fn":"syncDirectoryEntry","args":["./x/**/*.json",["a",1]],"error":"ENOENT: no such file or directory, open './x/**/*.json'"}
+{"fn":"syncDirectoryEntry","args":["straßeemoji 👍🏽 mix",{"$undefined":true}],"error":"ENOENT: no such file or directory, open 'straßeemoji 👍🏽 mix'"}
+{"fn":"syncDirectoryEntry","args":["😀",{}],"error":"ENOENT: no such file or directory, open '😀'"}
+{"fn":"syncDirectoryEntry","args":["é",{"$undefined":true}],"error":"ENOENT: no such file or directory, open 'é'"}
+{"fn":"syncDirectoryEntry","args":["İstanbul","x"],"error":"ENOENT: no such file or directory, open 'İstanbul'"}
+{"fn":"syncDirectoryEntry","args":["straße﻿bom",null],"error":"ENOENT: no such file or directory, open 'straße﻿bom'"}
+{"fn":"syncDirectoryEntry","args":["Hello World",{}],"error":"ENOENT: no such file or directory, open 'Hello World'"}
+{"fn":"syncDirectoryEntry","args":["ΣΊΣΥΦΟΣa:b:c",0],"error":"ENOENT: no such file or directory, open 'ΣΊΣΥΦΟΣa:b:c'"}
+{"fn":"syncDirectoryEntry","args":["Hello Worldünïcödé",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'Hello Worldünïcödé'"}
+{"fn":"syncDirectoryEntry","args":["﻿bomHELLO",{"$undefined":true}],"error":"ENOENT: no such file or directory, open '﻿bomHELLO'"}
+{"fn":"syncDirectoryEntry","args":["日本語のテキスト"],"error":"ENOENT: no such file or directory, open '日本語のテキスト'"}
+{"fn":"syncDirectoryEntry","args":["abc.leading",{"$undefined":true}],"error":"ENOENT: no such file or directory, open 'abc.leading'"}
+{"fn":"syncDirectoryEntry","args":["﻿bom",["a",1]],"error":"ENOENT: no such file or directory, open '﻿bom'"}
+{"fn":"syncDirectoryEntry","args":["a😀b😀c",["a",1]],"error":"ENOENT: no such file or directory, open 'a😀b😀c'"}
+{"fn":"syncDirectoryEntry","args":[""],"error":"ENOENT: no such file or directory, open ''"}
+{"fn":"syncDirectoryEntry","args":["key_name-1","x"],"error":"ENOENT: no such file or directory, open 'key_name-1'"}
+{"fn":"syncDirectoryEntry","args":["key_name-1",{}],"error":"ENOENT: no such file or directory, open 'key_name-1'"}
+{"fn":"syncDirectoryEntry","args":["","x"],"error":"ENOENT: no such file or directory, open ''"}
+{"fn":"syncDirectoryEntry","args":["src/a/b.ts","x"],"error":"ENOENT: no such file or directory, open 'src/a/b.ts'"}
+{"fn":"syncDirectoryEntry","args":["hello world",["a",1]],"error":"ENOENT: no such file or directory, open 'hello world'"}
+{"fn":"syncDirectoryEntry","args":["İstanbul",[]],"error":"ENOENT: no such file or directory, open 'İstanbul'"}
+{"fn":"syncDirectoryEntry","args":["a.b.cHELLO",{"$undefined":true}],"error":"ENOENT: no such file or directory, open 'a.b.cHELLO'"}
+{"fn":"syncDirectoryEntry","args":["ünïcödé",{}],"error":"ENOENT: no such file or directory, open 'ünïcödé'"}
+{"fn":"syncDirectoryEntry","args":["日本語のテキスト",[]],"error":"ENOENT: no such file or directory, open '日本語のテキスト'"}
+{"fn":"syncDirectoryEntry","args":["./x/**/*.json",[]],"error":"ENOENT: no such file or directory, open './x/**/*.json'"}
+{"fn":"syncDirectoryEntry","args":["tab\tseparateda",{"a":"b"}],"error":"ENOENT: no such file or directory, open 'tab\tseparateda'"}
+{"fn":"syncDirectoryEntry","args":[":"],"error":"ENOENT: no such file or directory, open ':'"}
+{"fn":"syncDirectoryEntry","args":["{name} has {count} itemskey_name-1","x"],"error":"ENOENT: no such file or directory, open '{name} has {count} itemskey_name-1'"}
+{"fn":"syncDirectoryEntry","args":["ΣΊΣΥΦΟΣ",{"a":"b"}],"error":"ENOENT: no such file or directory, open 'ΣΊΣΥΦΟΣ'"}
+{"fn":"syncDirectoryEntry","args":["hello",0],"error":"ENOENT: no such file or directory, open 'hello'"}
+{"fn":"syncDirectoryEntry","args":["﻿bomsrc/a/b.ts"],"error":"ENOENT: no such file or directory, open '﻿bomsrc/a/b.ts'"}
+{"fn":"syncDirectoryEntry","args":["ünïcödé",0],"error":"ENOENT: no such file or directory, open 'ünïcödé'"}
+{"fn":"syncDirectoryEntry","args":["trailing.line1\nline2",[]],"error":"ENOENT: no such file or directory, open 'trailing.line1\nline2'"}
+{"fn":"syncDirectoryEntry","args":["ΣΊΣΥΦΟΣ",[]],"error":"ENOENT: no such file or directory, open 'ΣΊΣΥΦΟΣ'"}
+{"fn":"syncDirectoryEntry","args":["😀",true],"error":"ENOENT: no such file or directory, open '😀'"}
+{"fn":"syncDirectoryEntry","args":["a",true],"error":"ENOENT: no such file or directory, open 'a'"}
+{"fn":"syncDirectoryEntry","args":["é{name} has {count} items",{}],"error":"ENOENT: no such file or directory, open 'é{name} has {count} items'"}
+{"fn":"syncDirectoryEntry","args":[".leading",{"$undefined":true}],"error":"ENOENT: no such file or directory, open '.leading'"}
+{"fn":"syncDirectoryEntry","args":["key_name-1",null],"error":"ENOENT: no such file or directory, open 'key_name-1'"}
+{"fn":"syncDirectoryEntry","args":["a😀b😀c",{"$undefined":true}],"error":"ENOENT: no such file or directory, open 'a😀b😀c'"}
+{"fn":"syncDirectoryEntry","args":[".leadingemoji 👍🏽 mix",0],"error":"ENOENT: no such file or directory, open '.leadingemoji 👍🏽 mix'"}
+{"fn":"syncDirectoryEntry","args":["trailing.",{"$undefined":true}],"error":"ENOENT: no such file or directory, open 'trailing.'"}
+{"fn":"syncDirectoryEntry","args":["tab\tseparated"],"error":"ENOENT: no such file or directory, open 'tab\tseparated'"}
+{"fn":"syncDirectoryEntry","args":["abc","abc"],"error":"ENOENT: no such file or directory, open 'abc'"}
+{"fn":"syncDirectoryEntry","args":["a.b.c",[]],"error":"ENOENT: no such file or directory, open 'a.b.c'"}
+{"fn":"syncDirectoryEntry","args":[".leadingé",{}],"error":"ENOENT: no such file or directory, open '.leadingé'"}
+{"fn":"syncDirectoryEntry","args":["tab\tseparated",{"a":"b"}],"error":"ENOENT: no such file or directory, open 'tab\tseparated'"}
+{"fn":"syncDirectoryEntry","args":["a..b",["a",1]],"error":"ENOENT: no such file or directory, open 'a..b'"}
+{"fn":"syncDirectoryEntry","args":["a",0],"error":"ENOENT: no such file or directory, open 'a'"}
+{"fn":"syncDirectoryEntry","args":["line1\nline2",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'line1\nline2'"}
+{"fn":"syncDirectoryEntry","args":["",0],"error":"ENOENT: no such file or directory, open ''"}
+{"fn":"syncDirectoryEntry","args":["😀ünïcödé",{"$undefined":true}],"error":"ENOENT: no such file or directory, open '😀ünïcödé'"}
+{"fn":"syncDirectoryEntry","args":["ns:key.path",{"$undefined":true}],"error":"ENOENT: no such file or directory, open 'ns:key.path'"}
+{"fn":"syncDirectoryEntry","args":["a",["a",1]],"error":"ENOENT: no such file or directory, open 'a'"}
+{"fn":"syncDirectoryEntry","args":["İstanbul",{"a":"b"}],"error":"ENOENT: no such file or directory, open 'İstanbul'"}
+{"fn":"syncDirectoryEntry","args":["{name} has {count} items",["a",1]],"error":"ENOENT: no such file or directory, open '{name} has {count} items'"}
+{"fn":"syncDirectoryEntry","args":["  padded  ",null],"error":"ENOENT: no such file or directory, open '  padded  '"}
+{"fn":"syncDirectoryEntry","args":["Hello World"],"error":"ENOENT: no such file or directory, open 'Hello World'"}
+{"fn":"syncDirectoryEntry","args":["{name} has {count} itemstab\tseparated",null],"error":"ENOENT: no such file or directory, open '{name} has {count} itemstab\tseparated'"}
+{"fn":"syncDirectoryEntry","args":["emoji 👍🏽 mixstraße",{}],"error":"ENOENT: no such file or directory, open 'emoji 👍🏽 mixstraße'"}
+{"fn":"syncDirectoryEntry","args":["{name} has {count} items",{"$undefined":true}],"error":"ENOENT: no such file or directory, open '{name} has {count} items'"}
+{"fn":"syncDirectoryEntry","args":["ΣΊΣΥΦΟΣ",null],"error":"ENOENT: no such file or directory, open 'ΣΊΣΥΦΟΣ'"}
+{"fn":"syncDirectoryEntry","args":["trailing.:"],"error":"ENOENT: no such file or directory, open 'trailing.:'"}
+{"fn":"syncDirectoryEntry","args":["İstanbul",{"$undefined":true}],"error":"ENOENT: no such file or directory, open 'İstanbul'"}
+{"fn":"syncDirectoryEntry","args":["tab\tseparated",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'tab\tseparated'"}
+{"fn":"syncDirectoryEntry","args":["hello world"],"error":"ENOENT: no such file or directory, open 'hello world'"}
+{"fn":"syncDirectoryEntry","args":["ΣΊΣΥΦΟΣ",true],"error":"ENOENT: no such file or directory, open 'ΣΊΣΥΦΟΣ'"}
+{"fn":"syncDirectoryEntry","args":["ünïcödé😀",0],"error":"ENOENT: no such file or directory, open 'ünïcödé😀'"}
+{"fn":"syncDirectoryEntry","args":["src/a/b.ts",0],"error":"ENOENT: no such file or directory, open 'src/a/b.ts'"}
+{"fn":"syncDirectoryEntry","args":["ünïcödéHello World",{}],"error":"ENOENT: no such file or directory, open 'ünïcödéHello World'"}
+{"fn":"syncDirectoryEntry","args":["a😀b😀c",null],"error":"ENOENT: no such file or directory, open 'a😀b😀c'"}
+{"fn":"syncDirectoryEntry","args":["a..bsrc/a/b.ts",[]],"error":"ENOENT: no such file or directory, open 'a..bsrc/a/b.ts'"}
+{"fn":"syncDirectoryEntry","args":["a",{}],"error":"ENOENT: no such file or directory, open 'a'"}
+{"fn":"syncDirectoryEntry","args":["trailing.",{"a":"b"}],"error":"ENOENT: no such file or directory, open 'trailing.'"}
+{"fn":"syncDirectoryEntry","args":[":",{"a":"b"}],"error":"ENOENT: no such file or directory, open ':'"}
+{"fn":"syncDirectoryEntry","args":["ns:key.path",{"a":"b"}],"error":"ENOENT: no such file or directory, open 'ns:key.path'"}
+{"fn":"syncDirectoryEntry","args":["a:b:c",true],"error":"ENOENT: no such file or directory, open 'a:b:c'"}
+{"fn":"syncDirectoryEntry","args":["héllo wörld",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'héllo wörld'"}
+{"fn":"syncDirectoryEntry","args":["👍🏽 thumbs",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open '👍🏽 thumbs'"}
+{"fn":"syncDirectoryEntry","args":["日本語",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open '日本語'"}
+{"fn":"syncDirectoryEntry","args":["",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open ''"}
+{"fn":"syncDirectoryEntry","args":["é",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'é'"}
+{"fn":"syncDirectoryEntry","args":["İstanbul",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'İstanbul'"}
+{"fn":"syncDirectoryEntry","args":["ılık ırmak",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'ılık ırmak'"}
+{"fn":"syncDirectoryEntry","args":["👨‍👩‍👧 family",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open '👨‍👩‍👧 family'"}
+{"fn":"syncDirectoryEntry","args":["a b",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'a b'"}
+{"fn":"syncDirectoryEntry","args":["ΣΊΣΥΦΟΣ",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'ΣΊΣΥΦΟΣ'"}
+{"fn":"syncDirectoryEntry","args":["a😀b",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'a😀b'"}
+{"fn":"syncDirectoryEntry","args":["﻿bom",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open '﻿bom'"}
+{"fn":"syncDirectoryEntry","args":["a²b x½ y①",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'a²b x½ y①'"}
+{"fn":"syncDirectoryEntry","args":["aⅠb Ⅻ",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'aⅠb Ⅻ'"}
+{"fn":"syncDirectoryEntry","args":["a𐐀b 𝐀bc",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'a𐐀b 𝐀bc'"}
+{"fn":"syncDirectoryEntry","args":["कि ٣٤",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'कि ٣٤'"}
+{"fn":"syncRegularFile","args":["İstanbul",["a",1]],"error":"ENOENT: no such file or directory, open 'İstanbul'"}
+{"fn":"syncRegularFile","args":["{name} has {count} itemsa..b",{"a":"b"}],"error":"ENOENT: no such file or directory, open '{name} has {count} itemsa..b'"}
+{"fn":"syncRegularFile","args":["key_name-1",{"$undefined":true}],"error":"ENOENT: no such file or directory, open 'key_name-1'"}
+{"fn":"syncRegularFile","args":["line1\nline2",true],"error":"ENOENT: no such file or directory, open 'line1\nline2'"}
+{"fn":"syncRegularFile","args":["hello",["a",1]],"error":"ENOENT: no such file or directory, open 'hello'"}
+{"fn":"syncRegularFile","args":["ΣΊΣΥΦΟΣ","ΊΣΥΦΟ"],"error":"ENOENT: no such file or directory, open 'ΣΊΣΥΦΟΣ'"}
+{"fn":"syncRegularFile","args":["a😀b😀cHello World",{"$undefined":true}],"error":"ENOENT: no such file or directory, open 'a😀b😀cHello World'"}
+{"fn":"syncRegularFile","args":["HELLOé",["a",1]],"error":"ENOENT: no such file or directory, open 'HELLOé'"}
+{"fn":"syncRegularFile","args":["X","x"],"error":"ENOENT: no such file or directory, open 'X'"}
+{"fn":"syncRegularFile","args":["  padded  ",{"a":"b"}],"error":"ENOENT: no such file or directory, open '  padded  '"}
+{"fn":"syncRegularFile","args":["abc",[]],"error":"ENOENT: no such file or directory, open 'abc'"}
+{"fn":"syncRegularFile","args":["日本語のテキスト",0],"error":"ENOENT: no such file or directory, open '日本語のテキスト'"}
+{"fn":"syncRegularFile","args":["ab",0],"error":"ENOENT: no such file or directory, open 'ab'"}
+{"fn":"syncRegularFile","args":["ns:key.path",null],"error":"ENOENT: no such file or directory, open 'ns:key.path'"}
+{"fn":"syncRegularFile","args":["hello worldΣΊΣΥΦΟΣ",{"a":"b"}],"error":"ENOENT: no such file or directory, open 'hello worldΣΊΣΥΦΟΣ'"}
+{"fn":"syncRegularFile","args":["hello worldemoji 👍🏽 mix"],"error":"ENOENT: no such file or directory, open 'hello worldemoji 👍🏽 mix'"}
+{"fn":"syncRegularFile","args":["tab\tseparated","x"],"error":"ENOENT: no such file or directory, open 'tab\tseparated'"}
+{"fn":"syncRegularFile","args":["日本語のテキスト",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open '日本語のテキスト'"}
+{"fn":"syncRegularFile","args":[":",{"a":"b"}],"error":"ENOENT: no such file or directory, open ':'"}
+{"fn":"syncRegularFile","args":[":",[]],"error":"ENOENT: no such file or directory, open ':'"}
+{"fn":"syncRegularFile","args":["﻿bom",{"$undefined":true}],"error":"ENOENT: no such file or directory, open '﻿bom'"}
+{"fn":"syncRegularFile","args":["src/a/b.ts  padded  ","x"],"error":"ENOENT: no such file or directory, open 'src/a/b.ts  padded  '"}
+{"fn":"syncRegularFile","args":["line1\nline2",0],"error":"ENOENT: no such file or directory, open 'line1\nline2'"}
+{"fn":"syncRegularFile","args":["key_name-1",[]],"error":"ENOENT: no such file or directory, open 'key_name-1'"}
+{"fn":"syncRegularFile","args":["tab\tseparated",[]],"error":"ENOENT: no such file or directory, open 'tab\tseparated'"}
+{"fn":"syncRegularFile","args":["trailing.HELLO",true],"error":"ENOENT: no such file or directory, open 'trailing.HELLO'"}
+{"fn":"syncRegularFile","args":["HELLO",true],"error":"ENOENT: no such file or directory, open 'HELLO'"}
+{"fn":"syncRegularFile","args":["日本語のテキスト","ス"],"error":"ENOENT: no such file or directory, open '日本語のテキスト'"}
+{"fn":"syncRegularFile","args":["a:b:c",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'a:b:c'"}
+{"fn":"syncRegularFile","args":["line1\nline2",{}],"error":"ENOENT: no such file or directory, open 'line1\nline2'"}
+{"fn":"syncRegularFile","args":["ab",null],"error":"ENOENT: no such file or directory, open 'ab'"}
+{"fn":"syncRegularFile","args":["src/a/b.ts",0],"error":"ENOENT: no such file or directory, open 'src/a/b.ts'"}
+{"fn":"syncRegularFile","args":["ab",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'ab'"}
+{"fn":"syncRegularFile","args":["İstanbul",[]],"error":"ENOENT: no such file or directory, open 'İstanbul'"}
+{"fn":"syncRegularFile","args":[".leading",0],"error":"ENOENT: no such file or directory, open '.leading'"}
+{"fn":"syncRegularFile","args":["a😀b😀c",true],"error":"ENOENT: no such file or directory, open 'a😀b😀c'"}
+{"fn":"syncRegularFile","args":["日本語のテキスト",["a",1]],"error":"ENOENT: no such file or directory, open '日本語のテキスト'"}
+{"fn":"syncRegularFile","args":["tab\tseparated",0],"error":"ENOENT: no such file or directory, open 'tab\tseparated'"}
+{"fn":"syncRegularFile","args":[".leading"],"error":"ENOENT: no such file or directory, open '.leading'"}
+{"fn":"syncRegularFile","args":["ünïcödé","x"],"error":"ENOENT: no such file or directory, open 'ünïcödé'"}
+{"fn":"syncRegularFile","args":["tab\tseparated",null],"error":"ENOENT: no such file or directory, open 'tab\tseparated'"}
+{"fn":"syncRegularFile","args":["hello world","x"],"error":"ENOENT: no such file or directory, open 'hello world'"}
+{"fn":"syncRegularFile","args":["key_name-1",true],"error":"ENOENT: no such file or directory, open 'key_name-1'"}
+{"fn":"syncRegularFile","args":["ab"],"error":"ENOENT: no such file or directory, open 'ab'"}
+{"fn":"syncRegularFile","args":["{name} has {count} items",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open '{name} has {count} items'"}
+{"fn":"syncRegularFile","args":[".leading",null],"error":"ENOENT: no such file or directory, open '.leading'"}
+{"fn":"syncRegularFile","args":["ΣΊΣΥΦΟΣ"],"error":"ENOENT: no such file or directory, open 'ΣΊΣΥΦΟΣ'"}
+{"fn":"syncRegularFile","args":["hello worldhello world",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'hello worldhello world'"}
+{"fn":"syncRegularFile","args":["  padded  a:b:c","x"],"error":"ENOENT: no such file or directory, open '  padded  a:b:c'"}
+{"fn":"syncRegularFile","args":["a",{"$undefined":true}],"error":"ENOENT: no such file or directory, open 'a'"}
+{"fn":"syncRegularFile","args":["  padded  ",0],"error":"ENOENT: no such file or directory, open '  padded  '"}
+{"fn":"syncRegularFile","args":["a..b",{"$undefined":true}],"error":"ENOENT: no such file or directory, open 'a..b'"}
+{"fn":"syncRegularFile","args":["İstanbula.b.c",0],"error":"ENOENT: no such file or directory, open 'İstanbula.b.c'"}
+{"fn":"syncRegularFile","args":["é",true],"error":"ENOENT: no such file or directory, open 'é'"}
+{"fn":"syncRegularFile","args":["a",["a",1]],"error":"ENOENT: no such file or directory, open 'a'"}
+{"fn":"syncRegularFile","args":["hello",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'hello'"}
+{"fn":"syncRegularFile","args":["straße"],"error":"ENOENT: no such file or directory, open 'straße'"}
+{"fn":"syncRegularFile","args":["a:b:c",true],"error":"ENOENT: no such file or directory, open 'a:b:c'"}
+{"fn":"syncRegularFile","args":["key_name-1"],"error":"ENOENT: no such file or directory, open 'key_name-1'"}
+{"fn":"syncRegularFile","args":["hello world",[]],"error":"ENOENT: no such file or directory, open 'hello world'"}
+{"fn":"syncRegularFile","args":["",null],"error":"ENOENT: no such file or directory, open ''"}
+{"fn":"syncRegularFile","args":["é",{"a":"b"}],"error":"ENOENT: no such file or directory, open 'é'"}
+{"fn":"syncRegularFile","args":["./x/**/*.json",{"a":"b"}],"error":"ENOENT: no such file or directory, open './x/**/*.json'"}
+{"fn":"syncRegularFile","args":["a😀b😀c",{"$undefined":true}],"error":"ENOENT: no such file or directory, open 'a😀b😀c'"}
+{"fn":"syncRegularFile","args":["a:b:c",[]],"error":"ENOENT: no such file or directory, open 'a:b:c'"}
+{"fn":"syncRegularFile","args":[".leading",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open '.leading'"}
+{"fn":"syncRegularFile","args":["a.b.c"],"error":"ENOENT: no such file or directory, open 'a.b.c'"}
+{"fn":"syncRegularFile","args":["line1\nline2",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'line1\nline2'"}
+{"fn":"syncRegularFile","args":[".leadingsrc/a/b.ts",{}],"error":"ENOENT: no such file or directory, open '.leadingsrc/a/b.ts'"}
+{"fn":"syncRegularFile","args":["﻿bom",[]],"error":"ENOENT: no such file or directory, open '﻿bom'"}
+{"fn":"syncRegularFile","args":["  padded  ",[]],"error":"ENOENT: no such file or directory, open '  padded  '"}
+{"fn":"syncRegularFile","args":["ünïcödé",{"a":"b"}],"error":"ENOENT: no such file or directory, open 'ünïcödé'"}
+{"fn":"syncRegularFile","args":["trailing.","x"],"error":"ENOENT: no such file or directory, open 'trailing.'"}
+{"fn":"syncRegularFile","args":["hello worldhello","x"],"error":"ENOENT: no such file or directory, open 'hello worldhello'"}
+{"fn":"syncRegularFile","args":["HELLO"],"error":"ENOENT: no such file or directory, open 'HELLO'"}
+{"fn":"syncRegularFile","args":["a😀b😀cline1\nline2",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'a😀b😀cline1\nline2'"}
+{"fn":"syncRegularFile","args":["hello"],"error":"ENOENT: no such file or directory, open 'hello'"}
+{"fn":"syncRegularFile","args":["Hello World",{}],"error":"ENOENT: no such file or directory, open 'Hello World'"}
+{"fn":"syncRegularFile","args":["trailing.",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'trailing.'"}
+{"fn":"syncRegularFile","args":["{name} has {count} itemsünïcödé",0],"error":"ENOENT: no such file or directory, open '{name} has {count} itemsünïcödé'"}
+{"fn":"syncRegularFile","args":["hello world:",null],"error":"ENOENT: no such file or directory, open 'hello world:'"}
+{"fn":"syncRegularFile","args":["İstanbul日本語のテキスト",null],"error":"ENOENT: no such file or directory, open 'İstanbul日本語のテキスト'"}
+{"fn":"syncRegularFile","args":["hello",0],"error":"ENOENT: no such file or directory, open 'hello'"}
+{"fn":"syncRegularFile","args":["a",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'a'"}
+{"fn":"syncRegularFile","args":["日本語のテキストé",0],"error":"ENOENT: no such file or directory, open '日本語のテキストé'"}
+{"fn":"syncRegularFile","args":["a.b.c",null],"error":"ENOENT: no such file or directory, open 'a.b.c'"}
+{"fn":"syncRegularFile","args":["trailing.",null],"error":"ENOENT: no such file or directory, open 'trailing.'"}
+{"fn":"syncRegularFile","args":["",{"a":"b"}],"error":"ENOENT: no such file or directory, open ''"}
+{"fn":"syncRegularFile","args":["Hello Worldİstanbul",[]],"error":"ENOENT: no such file or directory, open 'Hello Worldİstanbul'"}
+{"fn":"syncRegularFile","args":["😀",{}],"error":"ENOENT: no such file or directory, open '😀'"}
+{"fn":"syncRegularFile","args":["a..b","x"],"error":"ENOENT: no such file or directory, open 'a..b'"}
+{"fn":"syncRegularFile","args":["abhello",{"a":"b"}],"error":"ENOENT: no such file or directory, open 'abhello'"}
+{"fn":"syncRegularFile","args":["ünïcödé",true],"error":"ENOENT: no such file or directory, open 'ünïcödé'"}
+{"fn":"syncRegularFile","args":[":",true],"error":"ENOENT: no such file or directory, open ':'"}
+{"fn":"syncRegularFile","args":["Hello World",true],"error":"ENOENT: no such file or directory, open 'Hello World'"}
+{"fn":"syncRegularFile","args":["a:b:c  padded  ",true],"error":"ENOENT: no such file or directory, open 'a:b:c  padded  '"}
+{"fn":"syncRegularFile","args":["abc﻿bom",["a",1]],"error":"ENOENT: no such file or directory, open 'abc﻿bom'"}
+{"fn":"syncRegularFile","args":["a",0],"error":"ENOENT: no such file or directory, open 'a'"}
+{"fn":"syncRegularFile","args":["trailing.",0],"error":"ENOENT: no such file or directory, open 'trailing.'"}
+{"fn":"syncRegularFile","args":["a.b.c",["a",1]],"error":"ENOENT: no such file or directory, open 'a.b.c'"}
+{"fn":"syncRegularFile","args":["hello",{"a":"b"}],"error":"ENOENT: no such file or directory, open 'hello'"}
+{"fn":"syncRegularFile","args":[".leading",["a",1]],"error":"ENOENT: no such file or directory, open '.leading'"}
+{"fn":"syncRegularFile","args":["{name} has {count} items",{}],"error":"ENOENT: no such file or directory, open '{name} has {count} items'"}
+{"fn":"syncRegularFile","args":["a:b:c",["a",1]],"error":"ENOENT: no such file or directory, open 'a:b:c'"}
+{"fn":"syncRegularFile","args":["😀",{"a":"b"}],"error":"ENOENT: no such file or directory, open '😀'"}
+{"fn":"syncRegularFile","args":[":",{"$undefined":true}],"error":"ENOENT: no such file or directory, open ':'"}
+{"fn":"syncRegularFile","args":["./x/**/*.json",0],"error":"ENOENT: no such file or directory, open './x/**/*.json'"}
+{"fn":"syncRegularFile","args":["src/a/b.ts",{"$undefined":true}],"error":"ENOENT: no such file or directory, open 'src/a/b.ts'"}
+{"fn":"syncRegularFile","args":["abctrailing.",0],"error":"ENOENT: no such file or directory, open 'abctrailing.'"}
+{"fn":"syncRegularFile","args":["ΣΊΣΥΦΟΣ",{}],"error":"ENOENT: no such file or directory, open 'ΣΊΣΥΦΟΣ'"}
+{"fn":"syncRegularFile","args":["./x/**/*.json",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open './x/**/*.json'"}
+{"fn":"syncRegularFile","args":["HELLO",{"$undefined":true}],"error":"ENOENT: no such file or directory, open 'HELLO'"}
+{"fn":"syncRegularFile","args":["./x/**/*.json",{}],"error":"ENOENT: no such file or directory, open './x/**/*.json'"}
+{"fn":"syncRegularFile","args":[":",null],"error":"ENOENT: no such file or directory, open ':'"}
+{"fn":"syncRegularFile","args":["",{"$undefined":true}],"error":"ENOENT: no such file or directory, open ''"}
+{"fn":"syncRegularFile","args":["a"],"error":"ENOENT: no such file or directory, open 'a'"}
+{"fn":"syncRegularFile","args":["abcemoji 👍🏽 mix","x"],"error":"ENOENT: no such file or directory, open 'abcemoji 👍🏽 mix'"}
+{"fn":"syncRegularFile","args":["ab",{}],"error":"ENOENT: no such file or directory, open 'ab'"}
+{"fn":"syncRegularFile","args":["ΣΊΣΥΦΟΣ",true],"error":"ENOENT: no such file or directory, open 'ΣΊΣΥΦΟΣ'"}
+{"fn":"syncRegularFile","args":["  padded  ",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open '  padded  '"}
+{"fn":"syncRegularFile","args":["a😀b😀c",null],"error":"ENOENT: no such file or directory, open 'a😀b😀c'"}
+{"fn":"syncRegularFile","args":["{name} has {count} items",["a",1]],"error":"ENOENT: no such file or directory, open '{name} has {count} items'"}
+{"fn":"syncRegularFile","args":["key_name-1",{"a":"b"}],"error":"ENOENT: no such file or directory, open 'key_name-1'"}
+{"fn":"syncRegularFile","args":["trailing.",["a",1]],"error":"ENOENT: no such file or directory, open 'trailing.'"}
+{"fn":"syncRegularFile","args":["ns:key.path{name} has {count} items",["a",1]],"error":"ENOENT: no such file or directory, open 'ns:key.path{name} has {count} items'"}
+{"fn":"syncRegularFile","args":["é",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'é'"}
+{"fn":"syncRegularFile","args":["a.b.cstraße",0],"error":"ENOENT: no such file or directory, open 'a.b.cstraße'"}
+{"fn":"syncRegularFile","args":["a..b"],"error":"ENOENT: no such file or directory, open 'a..b'"}
+{"fn":"syncRegularFile","args":["src/a/b.ts",{"a":"b"}],"error":"ENOENT: no such file or directory, open 'src/a/b.ts'"}
+{"fn":"syncRegularFile","args":["HELLO",[]],"error":"ENOENT: no such file or directory, open 'HELLO'"}
+{"fn":"syncRegularFile","args":["hello","ell"],"error":"ENOENT: no such file or directory, open 'hello'"}
+{"fn":"syncRegularFile","args":["a.b.c",true],"error":"ENOENT: no such file or directory, open 'a.b.c'"}
+{"fn":"syncRegularFile","args":["  padded  ",null],"error":"ENOENT: no such file or directory, open '  padded  '"}
+{"fn":"syncRegularFile","args":["Hello World","x"],"error":"ENOENT: no such file or directory, open 'Hello World'"}
+{"fn":"syncRegularFile","args":["straße",true],"error":"ENOENT: no such file or directory, open 'straße'"}
+{"fn":"syncRegularFile","args":["a",null],"error":"ENOENT: no such file or directory, open 'a'"}
+{"fn":"syncRegularFile","args":["a:b:c","x"],"error":"ENOENT: no such file or directory, open 'a:b:c'"}
+{"fn":"syncRegularFile","args":["src/a/b.ts",null],"error":"ENOENT: no such file or directory, open 'src/a/b.ts'"}
+{"fn":"syncRegularFile","args":["trailing.",{}],"error":"ENOENT: no such file or directory, open 'trailing.'"}
+{"fn":"syncRegularFile","args":["a",{"a":"b"}],"error":"ENOENT: no such file or directory, open 'a'"}
+{"fn":"syncRegularFile","args":["abcabc","x"],"error":"ENOENT: no such file or directory, open 'abcabc'"}
+{"fn":"syncRegularFile","args":[":ns:key.path"],"error":"ENOENT: no such file or directory, open ':ns:key.path'"}
+{"fn":"syncRegularFile","args":["Hello World",{"$undefined":true}],"error":"ENOENT: no such file or directory, open 'Hello World'"}
+{"fn":"syncRegularFile","args":["key_name-1a:b:c",true],"error":"ENOENT: no such file or directory, open 'key_name-1a:b:c'"}
+{"fn":"syncRegularFile","args":["hello world",true],"error":"ENOENT: no such file or directory, open 'hello world'"}
+{"fn":"syncRegularFile","args":["abc",{"a":"b"}],"error":"ENOENT: no such file or directory, open 'abc'"}
+{"fn":"syncRegularFile","args":["abab",0],"error":"ENOENT: no such file or directory, open 'abab'"}
+{"fn":"syncRegularFile","args":["ns:key.path",".pa"],"error":"ENOENT: no such file or directory, open 'ns:key.path'"}
+{"fn":"syncRegularFile","args":["a",{}],"error":"ENOENT: no such file or directory, open 'a'"}
+{"fn":"syncRegularFile","args":["tab\tseparated",true],"error":"ENOENT: no such file or directory, open 'tab\tseparated'"}
+{"fn":"syncRegularFile","args":["HELLOline1\nline2"],"error":"ENOENT: no such file or directory, open 'HELLOline1\nline2'"}
+{"fn":"syncRegularFile","args":["{name} has {count} items",null],"error":"ENOENT: no such file or directory, open '{name} has {count} items'"}
+{"fn":"syncRegularFile","args":["a😀b😀c","x"],"error":"ENOENT: no such file or directory, open 'a😀b😀c'"}
+{"fn":"syncRegularFile","args":["😀",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open '😀'"}
+{"fn":"syncRegularFile","args":["a😀b😀c",{"a":"b"}],"error":"ENOENT: no such file or directory, open 'a😀b😀c'"}
+{"fn":"syncRegularFile","args":["a..ba..b",[]],"error":"ENOENT: no such file or directory, open 'a..ba..b'"}
+{"fn":"syncRegularFile","args":["ab",{"a":"b"}],"error":"ENOENT: no such file or directory, open 'ab'"}
+{"fn":"syncRegularFile","args":["ΣΊΣΥΦΟΣ",[]],"error":"ENOENT: no such file or directory, open 'ΣΊΣΥΦΟΣ'"}
+{"fn":"syncRegularFile","args":["ésrc/a/b.ts"],"error":"ENOENT: no such file or directory, open 'ésrc/a/b.ts'"}
+{"fn":"syncRegularFile","args":["a..b",true],"error":"ENOENT: no such file or directory, open 'a..b'"}
+{"fn":"syncRegularFile","args":["日本語のテキスト","x"],"error":"ENOENT: no such file or directory, open '日本語のテキスト'"}
+{"fn":"syncRegularFile","args":["  padded  ",true],"error":"ENOENT: no such file or directory, open '  padded  '"}
+{"fn":"syncRegularFile","args":["😀",0],"error":"ENOENT: no such file or directory, open '😀'"}
+{"fn":"syncRegularFile","args":["  padded  ",{"$undefined":true}],"error":"ENOENT: no such file or directory, open '  padded  '"}
+{"fn":"syncRegularFile","args":["line1\nline2",null],"error":"ENOENT: no such file or directory, open 'line1\nline2'"}
+{"fn":"syncRegularFile","args":["abc",["a",1]],"error":"ENOENT: no such file or directory, open 'abc'"}
+{"fn":"syncRegularFile","args":["ns:key.path",true],"error":"ENOENT: no such file or directory, open 'ns:key.path'"}
+{"fn":"syncRegularFile","args":[":"],"error":"ENOENT: no such file or directory, open ':'"}
+{"fn":"syncRegularFile","args":["ünïcödé",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'ünïcödé'"}
+{"fn":"syncRegularFile","args":["abstraße",["a",1]],"error":"ENOENT: no such file or directory, open 'abstraße'"}
+{"fn":"syncRegularFile","args":["﻿bom","x"],"error":"ENOENT: no such file or directory, open '﻿bom'"}
+{"fn":"syncRegularFile","args":["ΣΊΣΥΦΟΣ",null],"error":"ENOENT: no such file or directory, open 'ΣΊΣΥΦΟΣ'"}
+{"fn":"syncRegularFile","args":["ns:key.path",{}],"error":"ENOENT: no such file or directory, open 'ns:key.path'"}
+{"fn":"syncRegularFile","args":["./x/**/*.json",[]],"error":"ENOENT: no such file or directory, open './x/**/*.json'"}
+{"fn":"syncRegularFile","args":["a.b.c﻿bom",{"a":"b"}],"error":"ENOENT: no such file or directory, open 'a.b.c﻿bom'"}
+{"fn":"syncRegularFile","args":["hello",[]],"error":"ENOENT: no such file or directory, open 'hello'"}
+{"fn":"syncRegularFile","args":["line1\nline2abc",{"$undefined":true}],"error":"ENOENT: no such file or directory, open 'line1\nline2abc'"}
+{"fn":"syncRegularFile","args":["a😀b😀c",0],"error":"ENOENT: no such file or directory, open 'a😀b😀c'"}
+{"fn":"syncRegularFile","args":["ünïcödé",["a",1]],"error":"ENOENT: no such file or directory, open 'ünïcödé'"}
+{"fn":"syncRegularFile","args":["ns:key.path",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'ns:key.path'"}
+{"fn":"syncRegularFile","args":["é",{}],"error":"ENOENT: no such file or directory, open 'é'"}
+{"fn":"syncRegularFile","args":["日本語のテキスト",[]],"error":"ENOENT: no such file or directory, open '日本語のテキスト'"}
+{"fn":"syncRegularFile","args":["hello","l"],"error":"ENOENT: no such file or directory, open 'hello'"}
+{"fn":"syncRegularFile","args":["a😀b😀cline1\nline2",null],"error":"ENOENT: no such file or directory, open 'a😀b😀cline1\nline2'"}
+{"fn":"syncRegularFile","args":["trailing."],"error":"ENOENT: no such file or directory, open 'trailing.'"}
+{"fn":"syncRegularFile","args":["  padded  tab\tseparated",{"a":"b"}],"error":"ENOENT: no such file or directory, open '  padded  tab\tseparated'"}
+{"fn":"syncRegularFile","args":["tab\tseparated",{"$undefined":true}],"error":"ENOENT: no such file or directory, open 'tab\tseparated'"}
+{"fn":"syncRegularFile","args":["straße",{"$undefined":true}],"error":"ENOENT: no such file or directory, open 'straße'"}
+{"fn":"syncRegularFile","args":[".leading:"],"error":"ENOENT: no such file or directory, open '.leading:'"}
+{"fn":"syncRegularFile","args":["straßeé",true],"error":"ENOENT: no such file or directory, open 'straßeé'"}
+{"fn":"syncRegularFile","args":["İstanbul"],"error":"ENOENT: no such file or directory, open 'İstanbul'"}
+{"fn":"syncRegularFile","args":["key_name-1",["a",1]],"error":"ENOENT: no such file or directory, open 'key_name-1'"}
+{"fn":"syncRegularFile","args":["{name} has {count} items",{"a":"b"}],"error":"ENOENT: no such file or directory, open '{name} has {count} items'"}
+{"fn":"syncRegularFile","args":["src/a/b.ts",["a",1]],"error":"ENOENT: no such file or directory, open 'src/a/b.ts'"}
+{"fn":"syncRegularFile","args":["ΣΊΣΥΦΟΣé",null],"error":"ENOENT: no such file or directory, open 'ΣΊΣΥΦΟΣé'"}
+{"fn":"syncRegularFile","args":["😀straße"],"error":"ENOENT: no such file or directory, open '😀straße'"}
+{"fn":"syncRegularFile","args":["é",["a",1]],"error":"ENOENT: no such file or directory, open 'é'"}
+{"fn":"syncRegularFile","args":["ünïcödétrailing.","cöd"],"error":"ENOENT: no such file or directory, open 'ünïcödétrailing.'"}
+{"fn":"syncRegularFile","args":["abc",{}],"error":"ENOENT: no such file or directory, open 'abc'"}
+{"fn":"syncRegularFile","args":["hello world.leading",{"$undefined":true}],"error":"ENOENT: no such file or directory, open 'hello world.leading'"}
+{"fn":"syncRegularFile","args":["héllo wörld",["a",1]],"error":"ENOENT: no such file or directory, open 'héllo wörld'"}
+{"fn":"syncRegularFile","args":["👍🏽 thumbs",["a",1]],"error":"ENOENT: no such file or directory, open '👍🏽 thumbs'"}
+{"fn":"syncRegularFile","args":["日本語",["a",1]],"error":"ENOENT: no such file or directory, open '日本語'"}
+{"fn":"syncRegularFile","args":["",["a",1]],"error":"ENOENT: no such file or directory, open ''"}
+{"fn":"syncRegularFile","args":["straße",["a",1]],"error":"ENOENT: no such file or directory, open 'straße'"}
+{"fn":"syncRegularFile","args":["ılık ırmak",["a",1]],"error":"ENOENT: no such file or directory, open 'ılık ırmak'"}
+{"fn":"syncRegularFile","args":["👨‍👩‍👧 family",["a",1]],"error":"ENOENT: no such file or directory, open '👨‍👩‍👧 family'"}
+{"fn":"syncRegularFile","args":["a b",["a",1]],"error":"ENOENT: no such file or directory, open 'a b'"}
+{"fn":"syncRegularFile","args":["ΣΊΣΥΦΟΣ",["a",1]],"error":"ENOENT: no such file or directory, open 'ΣΊΣΥΦΟΣ'"}
+{"fn":"syncRegularFile","args":["a😀b",["a",1]],"error":"ENOENT: no such file or directory, open 'a😀b'"}
+{"fn":"syncRegularFile","args":["﻿bom",["a",1]],"error":"ENOENT: no such file or directory, open '﻿bom'"}
+{"fn":"syncRegularFile","args":["a²b x½ y①",["a",1]],"error":"ENOENT: no such file or directory, open 'a²b x½ y①'"}
+{"fn":"syncRegularFile","args":["aⅠb Ⅻ",["a",1]],"error":"ENOENT: no such file or directory, open 'aⅠb Ⅻ'"}
+{"fn":"syncRegularFile","args":["a𐐀b 𝐀bc",["a",1]],"error":"ENOENT: no such file or directory, open 'a𐐀b 𝐀bc'"}
+{"fn":"syncRegularFile","args":["कि ٣٤",["a",1]],"error":"ENOENT: no such file or directory, open 'कि ٣٤'"}
+{"fn":"sameFileIdentity","args":[null,[],["a",1]],"error":"Cannot read properties of null (reading 'dev')"}
+{"fn":"sameFileIdentity","args":[true,{"a":{"b":"c"}},["a",1]],"ok":true}
+{"fn":"sameFileIdentity","args":[{"a":{"b":"c"}},{"a":"b"},{}],"ok":true}
+{"fn":"sameFileIdentity","args":[{"a":"b"},null,[]],"error":"Cannot read properties of null (reading 'dev')"}
+{"fn":"sameFileIdentity","args":[{"a":{"b":"c"}},null,true],"error":"Cannot read properties of null (reading 'dev')"}
+{"fn":"sameFileIdentity","args":[["a",1],0,{"a":{"b":"c"}}],"ok":true}
+{"fn":"sameFileIdentity","args":["x",{},{"$undefined":true}],"ok":true}
+{"fn":"sameFileIdentity","args":[null,{"a":"b"},true],"error":"Cannot read properties of null (reading 'dev')"}
+{"fn":"sameFileIdentity","args":[0,["a",1],{"a":"b"}],"ok":true}
+{"fn":"sameFileIdentity","args":[0,{"a":{"b":"c"}},{"a":{"b":"c"}}],"ok":true}
+{"fn":"sameFileIdentity","args":[{},0,{}],"ok":true}
+{"fn":"sameFileIdentity","args":[{},{"a":"b"},["a",1]],"ok":true}
+{"fn":"sameFileIdentity","args":[{"a":"b"},[],0],"ok":true}
+{"fn":"sameFileIdentity","args":[[],0,0],"ok":true}
+{"fn":"sameFileIdentity","args":[true,null,{"$undefined":true}],"error":"Cannot read properties of null (reading 'dev')"}
+{"fn":"sameFileIdentity","args":[true,{"a":"b"},{"a":"b"}],"ok":true}
+{"fn":"sameFileIdentity","args":[0,["a",1],0],"ok":true}
+{"fn":"sameFileIdentity","args":[{"a":{"b":"c"}},{"a":{"b":"c"}},0],"ok":true}
+{"fn":"sameFileIdentity","args":[{"a":{"b":"c"}},{},[]],"ok":true}
+{"fn":"sameFileIdentity","args":[["a",1],[],["a",1]],"ok":true}
+{"fn":"sameFileIdentity","args":[null,["a",1],["a",1]],"error":"Cannot read properties of null (reading 'dev')"}
+{"fn":"sameFileIdentity","args":[["a",1],{"a":"b"},{"a":"b"}],"ok":true}
+{"fn":"sameFileIdentity","args":[{},{"a":{"b":"c"}},{}],"ok":true}
+{"fn":"sameFileIdentity","args":[true,{"a":"b"},0],"ok":true}
+{"fn":"sameFileIdentity","args":[[],null,["a",1]],"error":"Cannot read properties of null (reading 'dev')"}
+{"fn":"sameFileIdentity","args":[0,{"a":"b"},"x"],"ok":true}
+{"fn":"sameFileIdentity","args":[true,true,{"a":"b"}],"ok":true}
+{"fn":"sameFileIdentity","args":[["a",1],{"a":{"b":"c"}},[]],"ok":true}
+{"fn":"sameFileIdentity","args":[{"a":{"b":"c"}},null,[]],"error":"Cannot read properties of null (reading 'dev')"}
+{"fn":"sameFileIdentity","args":[{"a":{"b":"c"}},["a",1],"x"],"ok":true}
+{"fn":"sameFileIdentity","args":[0,{"a":"b"},true],"ok":true}
+{"fn":"sameFileIdentity","args":[[],["a",1],[]],"ok":true}
+{"fn":"sameFileIdentity","args":[{"a":{"b":"c"}},[],{"a":{"b":"c"}}],"ok":true}
+{"fn":"sameFileIdentity","args":[["a",1],true,{"a":{"b":"c"}}],"ok":true}
+{"fn":"sameFileIdentity","args":[null,{"a":{"b":"c"}},["a",1]],"error":"Cannot read properties of null (reading 'dev')"}
+{"fn":"sameFileIdentity","args":["x",{"a":{"b":"c"}},null],"ok":true}
+{"fn":"sameFileIdentity","args":[{},["a",1],true],"ok":true}
+{"fn":"sameFileIdentity","args":[[],{"a":{"b":"c"}},true],"ok":true}
+{"fn":"sameFileIdentity","args":[0,{"a":"b"},{"a":{"b":"c"}}],"ok":true}
+{"fn":"sameFileIdentity","args":[{"a":{"b":"c"}},{"a":"b"},null],"ok":true}
+{"fn":"sameFileIdentity","args":[null,{"a":{"b":"c"}},{"$undefined":true}],"error":"Cannot read properties of null (reading 'dev')"}
+{"fn":"sameFileIdentity","args":[{},[],null],"ok":true}
+{"fn":"sameFileIdentity","args":[{"a":{"b":"c"}},[],null],"ok":true}
+{"fn":"sameFileIdentity","args":[{},true,["a",1]],"ok":true}
+{"fn":"sameFileIdentity","args":[{"a":"b"},"x"],"ok":true}
+{"fn":"sameFileIdentity","args":[0,[],null],"ok":true}
+{"fn":"sameFileIdentity","args":["x",null,"x"],"error":"Cannot read properties of null (reading 'dev')"}
+{"fn":"sameFileIdentity","args":[[],"x",true],"ok":true}
+{"fn":"sameFileIdentity","args":[0,{},{"$undefined":true}],"ok":true}
+{"fn":"sameFileIdentity","args":[[],{"a":"b"},[]],"ok":true}
+{"fn":"sameFileIdentity","args":[null,["a",1]],"error":"Cannot read properties of null (reading 'dev')"}
+{"fn":"sameFileIdentity","args":["x",{}],"ok":true}
+{"fn":"sameFileIdentity","args":[true,[],["a",1]],"ok":true}
+{"fn":"sameFileIdentity","args":[["a",1],["a",1]],"ok":true}
+{"fn":"sameFileIdentity","args":[{"a":"b"},true,null],"ok":true}
+{"fn":"sameFileIdentity","args":[[],null,{"a":{"b":"c"}}],"error":"Cannot read properties of null (reading 'dev')"}
+{"fn":"sameFileIdentity","args":[["a",1],{},"x"],"ok":true}
+{"fn":"sameFileIdentity","args":[{"a":{"b":"c"}},0,{}],"ok":true}
+{"fn":"sameFileIdentity","args":[0,[],{"a":"b"}],"ok":true}
+{"fn":"sameFileIdentity","args":[0,[],0],"ok":true}
+{"fn":"sameFileIdentity","args":[{"a":"b"},{"a":"b"},{"a":"b"}],"ok":true}
+{"fn":"sameFileIdentity","args":[{},{"a":{"b":"c"}},true],"ok":true}
+{"fn":"sameFileIdentity","args":["x",[],{"a":"b"}],"ok":true}
+{"fn":"sameFileIdentity","args":[true,{},true],"ok":true}
+{"fn":"sameFileIdentity","args":[[],{"a":{"b":"c"}},[]],"ok":true}
+{"fn":"sameFileIdentity","args":[[],null,{}],"error":"Cannot read properties of null (reading 'dev')"}
+{"fn":"sameFileIdentity","args":[null,0,0],"error":"Cannot read properties of null (reading 'dev')"}
+{"fn":"sameFileIdentity","args":["x",{},null],"ok":true}
+{"fn":"sameFileIdentity","args":[{},true,{"$undefined":true}],"ok":true}
+{"fn":"sameFileIdentity","args":[true,[],null],"ok":true}
+{"fn":"sameFileIdentity","args":[{"a":"b"},{"a":"b"},null],"ok":true}
+{"fn":"sameFileIdentity","args":[true,[]],"ok":true}
+{"fn":"sameFileIdentity","args":["x",["a",1],{"a":"b"}],"ok":true}
+{"fn":"sameFileIdentity","args":[["a",1],true,"x"],"ok":true}
+{"fn":"sameFileIdentity","args":["x",0,["a",1]],"ok":true}
+{"fn":"sameFileIdentity","args":[true,"x",{"a":"b"}],"ok":true}
+{"fn":"sameFileIdentity","args":[{"a":"b"},0,0],"ok":true}
+{"fn":"sameFileIdentity","args":[true,[],0],"ok":true}
+{"fn":"sameFileIdentity","args":[{"a":"b"},{"a":{"b":"c"}},{"a":"b"}],"ok":true}
+{"fn":"sameFileIdentity","args":[{"a":"b"},[],["a",1]],"ok":true}
+{"fn":"sameFileIdentity","args":[0,0,null],"ok":true}
+{"fn":"sameFileIdentity","args":[{},true,"x"],"ok":true}
+{"fn":"sameFileIdentity","args":[0,true],"ok":true}
+{"fn":"sameFileIdentity","args":[["a",1],{"a":{"b":"c"}},{"a":{"b":"c"}}],"ok":true}
+{"fn":"sameFileIdentity","args":[true,[],{}],"ok":true}
+{"fn":"sameFileIdentity","args":["x",{},{"a":"b"}],"ok":true}
+{"fn":"sameFileIdentity","args":[{},null],"error":"Cannot read properties of null (reading 'dev')"}
+{"fn":"sameFileIdentity","args":["x",[],true],"ok":true}
+{"fn":"sameFileIdentity","args":[["a",1],0,true],"ok":true}
+{"fn":"sameFileIdentity","args":[{"a":{"b":"c"}},0,"x"],"ok":true}
+{"fn":"sameFileIdentity","args":[0,0],"ok":true}
+{"fn":"sameFileIdentity","args":[true,{"a":"b"},{"$undefined":true}],"ok":true}
+{"fn":"sameFileIdentity","args":[["a",1],[],0],"ok":true}
+{"fn":"sameFileIdentity","args":[0,{"a":"b"}],"ok":true}
+{"fn":"sameFileIdentity","args":[{"a":"b"},true,["a",1]],"ok":true}
+{"fn":"sameFileIdentity","args":[true,[],{"a":{"b":"c"}}],"ok":true}
+{"fn":"sameFileIdentity","args":[{"a":"b"},{},{"a":"b"}],"ok":true}
+{"fn":"sameFileIdentity","args":["x",null,["a",1]],"error":"Cannot read properties of null (reading 'dev')"}
+{"fn":"sameFileIdentity","args":[true,{"a":"b"},"x"],"ok":true}
+{"fn":"sameFileIdentity","args":[[],[],{"a":"b"}],"ok":true}
+{"fn":"sameFileIdentity","args":[null,0,{"a":"b"}],"error":"Cannot read properties of null (reading 'dev')"}
+{"fn":"sameFileIdentity","args":["x",["a",1],true],"ok":true}
+{"fn":"sameFileIdentity","args":["x",{},{}],"ok":true}
+{"fn":"sameFileIdentity","args":["x",["a",1],0],"ok":true}
+{"fn":"sameFileIdentity","args":[{},"x",{"a":"b"}],"ok":true}
+{"fn":"sameFileIdentity","args":[{"a":{"b":"c"}},[]],"ok":true}
+{"fn":"sameFileIdentity","args":[true,true,[]],"ok":true}
+{"fn":"sameFileIdentity","args":[[],{"a":"b"},{"a":{"b":"c"}}],"ok":true}
+{"fn":"sameFileIdentity","args":[0,{"a":{"b":"c"}},{"$undefined":true}],"ok":true}
+{"fn":"sameFileIdentity","args":[0,[],{"a":{"b":"c"}}],"ok":true}
+{"fn":"sameFileIdentity","args":[[],{"a":{"b":"c"}},{"a":{"b":"c"}}],"ok":true}
+{"fn":"sameFileIdentity","args":[{"a":{"b":"c"}},true,"x"],"ok":true}
+{"fn":"sameFileIdentity","args":[{"a":{"b":"c"}},{},{"a":{"b":"c"}}],"ok":true}
+{"fn":"sameFileIdentity","args":[["a",1],null,{"a":"b"}],"error":"Cannot read properties of null (reading 'dev')"}
+{"fn":"sameFileIdentity","args":[{"a":{"b":"c"}},[],0],"ok":true}
+{"fn":"sameFileIdentity","args":[["a",1],null],"error":"Cannot read properties of null (reading 'dev')"}
+{"fn":"sameFileIdentity","args":[true,["a",1],"x"],"ok":true}
+{"fn":"sameFileIdentity","args":[{"a":"b"},"x",["a",1]],"ok":true}
+{"fn":"sameFileIdentity","args":[["a",1],"x",{}],"ok":true}
+{"fn":"sameFileIdentity","args":[null,true,{"$undefined":true}],"error":"Cannot read properties of null (reading 'dev')"}
+{"fn":"sameFileIdentity","args":[[],[],"x"],"ok":true}
+{"fn":"sameFileIdentity","args":[true,true,null],"ok":true}
+{"fn":"sameFileIdentity","args":[{"a":"b"},[],{"a":{"b":"c"}}],"ok":true}
+{"fn":"sameFileIdentity","args":["x",["a",1],{"$undefined":true}],"ok":true}
+{"fn":"sameFileIdentity","args":[true,{"a":"b"},null],"ok":true}
+{"fn":"sameFileIdentity","args":[{"a":"b"},["a",1],{"$undefined":true}],"ok":true}
+{"fn":"sameFileIdentity","args":[{"a":"b"},{"a":"b"},"x"],"ok":true}
+{"fn":"sameFileIdentity","args":[null,"x",["a",1]],"error":"Cannot read properties of null (reading 'dev')"}
+{"fn":"sameFileIdentity","args":[{},{"a":"b"},[]],"ok":true}
+{"fn":"sameFileIdentity","args":["x",true,"x"],"ok":true}
+{"fn":"sameFileIdentity","args":[0,{},{}],"ok":true}
+{"fn":"sameFileIdentity","args":[{"a":"b"},{},0],"ok":true}
+{"fn":"sameFileIdentity","args":[null,{},["a",1]],"error":"Cannot read properties of null (reading 'dev')"}
+{"fn":"sameFileIdentity","args":[true,"x",true],"ok":true}
+{"fn":"sameFileIdentity","args":[[],0,null],"ok":true}
+{"fn":"sameFileIdentity","args":[{},"x",{"$undefined":true}],"ok":true}
+{"fn":"sameFileIdentity","args":[true,{},{"$undefined":true}],"ok":true}
+{"fn":"sameFileIdentity","args":[null,0,[]],"error":"Cannot read properties of null (reading 'dev')"}
+{"fn":"sameFileIdentity","args":[0,"x",true],"ok":true}
+{"fn":"sameFileIdentity","args":[0,0,{"a":"b"}],"ok":true}
+{"fn":"sameFileIdentity","args":[[],["a",1],{"a":{"b":"c"}}],"ok":true}
+{"fn":"sameFileIdentity","args":[null,[],{"$undefined":true}],"error":"Cannot read properties of null (reading 'dev')"}
+{"fn":"sameFileIdentity","args":[{},{"a":{"b":"c"}}],"ok":true}
+{"fn":"sameFileIdentity","args":["x",null,{}],"error":"Cannot read properties of null (reading 'dev')"}
+{"fn":"sameFileIdentity","args":[{"a":{"b":"c"}},true,null],"ok":true}
+{"fn":"sameFileIdentity","args":[{"a":"b"},{"a":{"b":"c"}},"x"],"ok":true}
+{"fn":"sameFileIdentity","args":[["a",1],{},null],"ok":true}
+{"fn":"sameFileIdentity","args":[["a",1],"x"],"ok":true}
+{"fn":"sameFileIdentity","args":[{"a":"b"},{"a":{"b":"c"}},["a",1]],"ok":true}
+{"fn":"sameFileIdentity","args":[{"a":{"b":"c"}},"x",{"a":{"b":"c"}}],"ok":true}
+{"fn":"sameFileIdentity","args":[0,"x",null],"ok":true}
+{"fn":"sameFileIdentity","args":[true,["a",1]],"ok":true}
+{"fn":"sameFileIdentity","args":[{"a":"b"},["a",1]],"ok":true}
+{"fn":"sameFileIdentity","args":[null,"x",0],"error":"Cannot read properties of null (reading 'dev')"}
+{"fn":"sameFileIdentity","args":["x",[],["a",1]],"ok":true}
+{"fn":"sameFileIdentity","args":[0,["a",1],"x"],"ok":true}
+{"fn":"sameFileIdentity","args":[{"a":{"b":"c"}},{},0],"ok":true}
+{"fn":"sameFileIdentity","args":[{},{"a":"b"},{}],"ok":true}
+{"fn":"sameFileIdentity","args":[[],true,[]],"ok":true}
+{"fn":"sameFileIdentity","args":[null,{"a":{"b":"c"}},true],"error":"Cannot read properties of null (reading 'dev')"}
+{"fn":"sameFileIdentity","args":[[],{},0],"ok":true}
+{"fn":"sameFileIdentity","args":[["a",1],[],true],"ok":true}
+{"fn":"sameFileIdentity","args":[["a",1],{},{}],"ok":true}
+{"fn":"sameFileIdentity","args":[{"a":"b"},{},{"a":{"b":"c"}}],"ok":true}
+{"fn":"sameFileIdentity","args":[{},{},0],"ok":true}
+{"fn":"sameFileIdentity","args":[[],"x",["a",1]],"ok":true}
+{"fn":"sameFileIdentity","args":[["a",1],null,0],"error":"Cannot read properties of null (reading 'dev')"}
+{"fn":"sameFileIdentity","args":["x","x",{"$undefined":true}],"ok":true}
+{"fn":"sameFileIdentity","args":[null,null,{"a":"b"}],"error":"Cannot read properties of null (reading 'dev')"}
+{"fn":"sameFileIdentity","args":[null,{},{"$undefined":true}],"error":"Cannot read properties of null (reading 'dev')"}
+{"fn":"sameFileIdentity","args":[{"a":{"b":"c"}},{}],"ok":true}
+{"fn":"sameFileIdentity","args":[true,["a",1],true],"ok":true}
+{"fn":"sameFileIdentity","args":[0,null],"error":"Cannot read properties of null (reading 'dev')"}
+{"fn":"sameFileIdentity","args":[["a",1],{"a":{"b":"c"}},["a",1]],"ok":true}
+{"fn":"sameFileIdentity","args":[{"a":"b"},"x",{"a":{"b":"c"}}],"ok":true}
+{"fn":"sameFileIdentity","args":[{},0,{"a":{"b":"c"}}],"ok":true}
+{"fn":"sameFileIdentity","args":[[],{},{"$undefined":true}],"ok":true}
+{"fn":"sameFileIdentity","args":["x",{"a":"b"},{"a":{"b":"c"}}],"ok":true}
+{"fn":"sameFileIdentity","args":["x",[],"x"],"ok":true}
+{"fn":"sameFileIdentity","args":["x",0,[]],"ok":true}
+{"fn":"sameFileIdentity","args":[{"a":{"b":"c"}},["a",1],["a",1]],"ok":true}
+{"fn":"sameFileIdentity","args":["X","x",{"$undefined":true}],"ok":true}
+{"fn":"sameFileIdentity","args":[0,0,"x"],"ok":true}
+{"fn":"sameFileIdentity","args":[{},0,{"$undefined":true}],"ok":true}
+{"fn":"sameFileIdentity","args":[{"a":{"b":"c"}},{},true],"ok":true}
+{"fn":"sameFileIdentity","args":[{"a":"b"},{"a":{"b":"c"}}],"ok":true}
+{"fn":"sameFileIdentity","args":[0,{"a":{"b":"c"}},{"a":"b"}],"ok":true}
+{"fn":"sameFileIdentity","args":[[],true,{"$undefined":true}],"ok":true}
+{"fn":"sameFileIdentity","args":[{},0,{"a":"b"}],"ok":true}
+{"fn":"sameFileIdentity","args":[null,["a",1],"x"],"error":"Cannot read properties of null (reading 'dev')"}
+{"fn":"sameFileIdentity","args":[["a",1],true,null],"ok":true}
+{"fn":"sameFileIdentity","args":[{},["a",1],{"$undefined":true}],"ok":true}
+{"fn":"sameFileIdentity","args":[0,0,0],"ok":true}
+{"fn":"sameFileIdentity","args":[[],null,[]],"error":"Cannot read properties of null (reading 'dev')"}
+{"fn":"sameFileIdentity","args":[null,{"a":{"b":"c"}}],"error":"Cannot read properties of null (reading 'dev')"}
+{"fn":"sameFileIdentity","args":[{},null,"x"],"error":"Cannot read properties of null (reading 'dev')"}
+{"fn":"sameFileIdentity","args":[null,{}],"error":"Cannot read properties of null (reading 'dev')"}
+{"fn":"sameFileIdentity","args":[{},null,{"a":"b"}],"error":"Cannot read properties of null (reading 'dev')"}
+{"fn":"sameFileIdentity","args":[null,{"a":"b"}],"error":"Cannot read properties of null (reading 'dev')"}
+{"fn":"sameFileIdentity","args":[[],{"a":{"b":"c"}},["a",1]],"ok":true}
+{"fn":"isMacAppBundlePath","args":["😀",0],"ok":false}
+{"fn":"isMacAppBundlePath","args":["😀","x"],"ok":false}
+{"fn":"isMacAppBundlePath","args":["hello",{}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["abc",{}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["ünïcödé",[]],"ok":false}
+{"fn":"isMacAppBundlePath","args":["straße",{"a":{"b":"c"}}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["trailing.",["a",1]],"ok":false}
+{"fn":"isMacAppBundlePath","args":["😀﻿bom",{"$undefined":true}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["a..b",{"a":"b"}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["é",null],"ok":false}
+{"fn":"isMacAppBundlePath","args":["","x"],"ok":false}
+{"fn":"isMacAppBundlePath","args":["src/a/b.ts",0],"ok":false}
+{"fn":"isMacAppBundlePath","args":["a",{}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["",[]],"ok":false}
+{"fn":"isMacAppBundlePath","args":["ab",["a",1]],"ok":false}
+{"fn":"isMacAppBundlePath","args":["abc",[]],"ok":false}
+{"fn":"isMacAppBundlePath","args":[":"],"ok":false}
+{"fn":"isMacAppBundlePath","args":["ns:key.path"],"ok":false}
+{"fn":"isMacAppBundlePath","args":["src/a/b.ts",{"$undefined":true}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["hello world",{"$undefined":true}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["ab",0],"ok":false}
+{"fn":"isMacAppBundlePath","args":["tab\tseparated",{}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["ab日本語のテキスト",["a",1]],"ok":false}
+{"fn":"isMacAppBundlePath","args":["abc",0],"ok":false}
+{"fn":"isMacAppBundlePath","args":["./x/**/*.json",{"a":{"b":"c"}}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["tab\tseparatedHello World",[]],"ok":false}
+{"fn":"isMacAppBundlePath","args":["é",{"a":"b"}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["﻿bom",{"$undefined":true}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["hello world",0],"ok":false}
+{"fn":"isMacAppBundlePath","args":["a😀b😀c",{"a":{"b":"c"}}],"ok":false}
+{"fn":"isMacAppBundlePath","args":[":.leading"],"ok":false}
+{"fn":"isMacAppBundlePath","args":["a:b:c",true],"ok":false}
+{"fn":"isMacAppBundlePath","args":["  padded  "],"ok":false}
+{"fn":"isMacAppBundlePath","args":["a:b:c"],"ok":false}
+{"fn":"isMacAppBundlePath","args":["line1\nline2",{"$undefined":true}],"ok":false}
+{"fn":"isMacAppBundlePath","args":[".leading",{"a":"b"}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["日本語のテキストa.b.c",["a",1]],"ok":false}
+{"fn":"isMacAppBundlePath","args":["ns:key.path","x"],"ok":false}
+{"fn":"isMacAppBundlePath","args":["{name} has {count} items",[]],"ok":false}
+{"fn":"isMacAppBundlePath","args":["hello",[]],"ok":false}
+{"fn":"isMacAppBundlePath","args":["ab",true],"ok":false}
+{"fn":"isMacAppBundlePath","args":["a.b.c",{"$undefined":true}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["HELLO","x"],"ok":false}
+{"fn":"isMacAppBundlePath","args":["trailing."],"ok":false}
+{"fn":"isMacAppBundlePath","args":[":",{"a":{"b":"c"}}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["key_name-1",["a",1]],"ok":false}
+{"fn":"isMacAppBundlePath","args":["abé",{"a":"b"}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["x","x"],"ok":false}
+{"fn":"isMacAppBundlePath","args":["ΣΊΣΥΦΟΣ",{"$undefined":true}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["straße",true],"ok":false}
+{"fn":"isMacAppBundlePath","args":["é",["a",1]],"ok":false}
+{"fn":"isMacAppBundlePath","args":["ab",null],"ok":false}
+{"fn":"isMacAppBundlePath","args":["hello world","rld"],"ok":false}
+{"fn":"isMacAppBundlePath","args":["a:b:c",null],"ok":false}
+{"fn":"isMacAppBundlePath","args":["é",{"a":{"b":"c"}}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["Hello Worldline1\nline2",{"a":{"b":"c"}}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["key_name-1"],"ok":false}
+{"fn":"isMacAppBundlePath","args":["tab\tseparated",[]],"ok":false}
+{"fn":"isMacAppBundlePath","args":["a.b.c",{}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["a..b",[]],"ok":false}
+{"fn":"isMacAppBundlePath","args":["hello world",{"a":"b"}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["a.b.c",0],"ok":false}
+{"fn":"isMacAppBundlePath","args":["ns:key.path",true],"ok":false}
+{"fn":"isMacAppBundlePath","args":["src/a/b.ts"],"ok":false}
+{"fn":"isMacAppBundlePath","args":["emoji 👍🏽 mix","x"],"ok":false}
+{"fn":"isMacAppBundlePath","args":["HELLO",{"a":{"b":"c"}}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["tab\tseparated"],"ok":false}
+{"fn":"isMacAppBundlePath","args":["",{}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["ns:key.path",[]],"ok":false}
+{"fn":"isMacAppBundlePath","args":["./x/**/*.json",{"a":"b"}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["tab\tseparated",["a",1]],"ok":false}
+{"fn":"isMacAppBundlePath","args":["ΣΊΣΥΦΟΣ",{"a":"b"}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["ns:key.path",{"a":{"b":"c"}}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["Hello World",true],"ok":false}
+{"fn":"isMacAppBundlePath","args":["line1\nline2",0],"ok":false}
+{"fn":"isMacAppBundlePath","args":["ΣΊΣΥΦΟΣ",true],"ok":false}
+{"fn":"isMacAppBundlePath","args":["Hello World",{}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["ab",{}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["a",{"$undefined":true}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["straßea.b.c",{"a":"b"}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["straße",null],"ok":false}
+{"fn":"isMacAppBundlePath","args":["Hello Worldline1\nline2",{}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["  padded  ",{"$undefined":true}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["😀",{}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["ab","x"],"ok":false}
+{"fn":"isMacAppBundlePath","args":["﻿bom",{}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["src/a/b.ts",{"a":{"b":"c"}}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["hello worlda"],"ok":false}
+{"fn":"isMacAppBundlePath","args":["  padded  trailing.",true],"ok":false}
+{"fn":"isMacAppBundlePath","args":["ns:key.path",{}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["tab\tseparated",{"a":"b"}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["./x/**/*.json",true],"ok":false}
+{"fn":"isMacAppBundlePath","args":["./x/**/*.json./x/**/*.json",{"$undefined":true}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["Hello World",{"a":{"b":"c"}}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["{name} has {count} items:",null],"ok":false}
+{"fn":"isMacAppBundlePath","args":[".leading",{}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["tab\tseparated",null],"ok":false}
+{"fn":"isMacAppBundlePath","args":["src/a/b.ts  padded  ",[]],"ok":false}
+{"fn":"isMacAppBundlePath","args":["hello",null],"ok":false}
+{"fn":"isMacAppBundlePath","args":["﻿bom",0],"ok":false}
+{"fn":"isMacAppBundlePath","args":["ΣΊΣΥΦΟΣemoji 👍🏽 mix",["a",1]],"ok":false}
+{"fn":"isMacAppBundlePath","args":["straße"],"ok":false}
+{"fn":"isMacAppBundlePath","args":["aa.b.c"],"ok":false}
+{"fn":"isMacAppBundlePath","args":["hello worldhello",null],"ok":false}
+{"fn":"isMacAppBundlePath","args":["a:b:ca.b.c",{"a":"b"}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["line1\nline2",[]],"ok":false}
+{"fn":"isMacAppBundlePath","args":["é",[]],"ok":false}
+{"fn":"isMacAppBundlePath","args":["HELLO",{"$undefined":true}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["İstanbula:b:c"],"ok":false}
+{"fn":"isMacAppBundlePath","args":["emoji 👍🏽 mix",true],"ok":false}
+{"fn":"isMacAppBundlePath","args":["é"],"ok":false}
+{"fn":"isMacAppBundlePath","args":["a.b.c",{"a":"b"}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["line1\nline2İstanbul",{"a":"b"}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["src/a/b.ts",{}],"ok":false}
+{"fn":"isMacAppBundlePath","args":[".leading",[]],"ok":false}
+{"fn":"isMacAppBundlePath","args":["a..b",true],"ok":false}
+{"fn":"isMacAppBundlePath","args":["a",[]],"ok":false}
+{"fn":"isMacAppBundlePath","args":["hello world",{"a":{"b":"c"}}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["tab\tseparated{name} has {count} items",null],"ok":false}
+{"fn":"isMacAppBundlePath","args":["{name} has {count} items",{"a":{"b":"c"}}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["{name} has {count} items",{"a":"b"}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["😀",[]],"ok":false}
+{"fn":"isMacAppBundlePath","args":["İstanbul",0],"ok":false}
+{"fn":"isMacAppBundlePath","args":["日本語のテキスト",{"a":"b"}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["./x/**/*.json",["a",1]],"ok":false}
+{"fn":"isMacAppBundlePath","args":[":HELLO",[]],"ok":false}
+{"fn":"isMacAppBundlePath","args":["😀ünïcödé",null],"ok":false}
+{"fn":"isMacAppBundlePath","args":["ésrc/a/b.ts",null],"ok":false}
+{"fn":"isMacAppBundlePath","args":[":","x"],"ok":false}
+{"fn":"isMacAppBundlePath","args":["./x/**/*.json"],"ok":false}
+{"fn":"isMacAppBundlePath","args":["日本語のテキスト",null],"ok":false}
+{"fn":"isMacAppBundlePath","args":["日本語のテキスト",0],"ok":false}
+{"fn":"isMacAppBundlePath","args":["key_name-1",{"a":"b"}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["İstanbulünïcödé",true],"ok":false}
+{"fn":"isMacAppBundlePath","args":["{name} has {count} items",{"$undefined":true}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["aHello World",[]],"ok":false}
+{"fn":"isMacAppBundlePath","args":["日本語のテキストhello",true],"ok":false}
+{"fn":"isMacAppBundlePath","args":["İstanbul",{"a":{"b":"c"}}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["﻿bom",true],"ok":false}
+{"fn":"isMacAppBundlePath","args":["hello",["a",1]],"ok":false}
+{"fn":"isMacAppBundlePath","args":["a😀b😀ca:b:c"],"ok":false}
+{"fn":"isMacAppBundlePath","args":["line1\nline2",["a",1]],"ok":false}
+{"fn":"isMacAppBundlePath","args":["Hello World",{"$undefined":true}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["src/a/b.ts",null],"ok":false}
+{"fn":"isMacAppBundlePath","args":["aline1\nline2",0],"ok":false}
+{"fn":"isMacAppBundlePath","args":["X","x"],"ok":false}
+{"fn":"isMacAppBundlePath","args":["straße",{"$undefined":true}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["a:b:c",{"a":{"b":"c"}}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["HELLO",true],"ok":false}
+{"fn":"isMacAppBundlePath","args":["hello",true],"ok":false}
+{"fn":"isMacAppBundlePath","args":["a:b:c",{}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["key_name-1",[]],"ok":false}
+{"fn":"isMacAppBundlePath","args":["ns:key.path{name} has {count} items",{"$undefined":true}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["{name} has {count} items",0],"ok":false}
+{"fn":"isMacAppBundlePath","args":["a",0],"ok":false}
+{"fn":"isMacAppBundlePath","args":["line1\nline2key_name-1",{"a":{"b":"c"}}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["HELLO",{}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["a😀b😀c",{"a":"b"}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["hello",{"$undefined":true}],"ok":false}
+{"fn":"isMacAppBundlePath","args":[":",true],"ok":false}
+{"fn":"isMacAppBundlePath","args":["😀straße",{}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["hello world"],"ok":false}
+{"fn":"isMacAppBundlePath","args":["日本語のテキスト",{"$undefined":true}],"ok":false}
+{"fn":"isMacAppBundlePath","args":[".leading{name} has {count} items",{"a":{"b":"c"}}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["emoji 👍🏽 mix.leading",{"$undefined":true}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["key_name-1","x"],"ok":false}
+{"fn":"isMacAppBundlePath","args":["é",0],"ok":false}
+{"fn":"isMacAppBundlePath","args":["a..bkey_name-1",{}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["  padded  ",[]],"ok":false}
+{"fn":"isMacAppBundlePath","args":["a.b.cemoji 👍🏽 mix",0],"ok":false}
+{"fn":"isMacAppBundlePath","args":["ΣΊΣΥΦΟΣ",["a",1]],"ok":false}
+{"fn":"isMacAppBundlePath","args":["日本語のテキストtrailing.","x"],"ok":false}
+{"fn":"isMacAppBundlePath","args":["😀",true],"ok":false}
+{"fn":"isMacAppBundlePath","args":["hello world",[]],"ok":false}
+{"fn":"isMacAppBundlePath","args":["Hello World",[]],"ok":false}
+{"fn":"isMacAppBundlePath","args":["  padded  ",null],"ok":false}
+{"fn":"isMacAppBundlePath","args":["tab\tseparated",true],"ok":false}
+{"fn":"isMacAppBundlePath","args":["a.b.c",{"a":{"b":"c"}}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["  padded  ",0],"ok":false}
+{"fn":"isMacAppBundlePath","args":["abc:",{}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["hello",{"a":"b"}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["ab",[]],"ok":false}
+{"fn":"isMacAppBundlePath","args":["HELLO"],"ok":false}
+{"fn":"isMacAppBundlePath","args":["a..b"],"ok":false}
+{"fn":"isMacAppBundlePath","args":["  padded  a.b.c",[]],"ok":false}
+{"fn":"isMacAppBundlePath","args":["a..b",{}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["ns:key.path",{"a":"b"}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["İstanbul",{"a":"b"}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["İstanbul",["a",1]],"ok":false}
+{"fn":"isMacAppBundlePath","args":["ans:key.path",{}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["emoji 👍🏽 mix",[]],"ok":false}
+{"fn":"isMacAppBundlePath","args":["key_name-1:",{"a":{"b":"c"}}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["trailing.",{}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["tab\tseparatedns:key.path",0],"ok":false}
+{"fn":"isMacAppBundlePath","args":["abc",{"a":{"b":"c"}}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["straße",{}],"ok":false}
+{"fn":"isMacAppBundlePath","args":["HELLOhello world",["a",1]],"ok":false}
+{"fn":"isMacAppBundlePath","args":["😀"],"ok":false}
+{"fn":"isMacAppBundlePath","args":["line1\nline2",{"a":"b"}],"ok":false}
+{"fn":"isMacAppBundlePath","args":[":",null],"ok":false}
+{"fn":"isMacAppBundlePath","args":["héllo wörld",0],"ok":false}
+{"fn":"isMacAppBundlePath","args":["👍🏽 thumbs",0],"ok":false}
+{"fn":"isMacAppBundlePath","args":["日本語",0],"ok":false}
+{"fn":"isMacAppBundlePath","args":["",0],"ok":false}
+{"fn":"isMacAppBundlePath","args":["straße",0],"ok":false}
+{"fn":"isMacAppBundlePath","args":["ılık ırmak",0],"ok":false}
+{"fn":"isMacAppBundlePath","args":["👨‍👩‍👧 family",0],"ok":false}
+{"fn":"isMacAppBundlePath","args":["a b",0],"ok":false}
+{"fn":"isMacAppBundlePath","args":["ΣΊΣΥΦΟΣ",0],"ok":false}
+{"fn":"isMacAppBundlePath","args":["a😀b",0],"ok":false}
+{"fn":"isMacAppBundlePath","args":["a²b x½ y①",0],"ok":false}
+{"fn":"isMacAppBundlePath","args":["aⅠb Ⅻ",0],"ok":false}
+{"fn":"isMacAppBundlePath","args":["a𐐀b 𝐀bc",0],"ok":false}
+{"fn":"isMacAppBundlePath","args":["कि ٣٤",0],"ok":false}
+{"fn":"sameFileIdentity","args":[null,{"dev":1,"ino":2},"win32"],"ok":true}
+{"fn":"sameFileIdentity","args":[{"dev":1,"ino":2},null,"win32"],"ok":true}
+{"fn":"sameFileIdentity","args":[null,null,"win32"],"ok":true}
+{"fn":"sameFileIdentity","args":[{"dev":1,"ino":2},{"dev":1,"ino":2},{"$undefined":true}],"ok":true}
+{"fn":"sameFileIdentity","args":[{"dev":1,"ino":2},[{"dev":1,"ino":2}]],"ok":false}
+{"fn":"syncDirectoryEntry","args":["/private/tmp/fsp_dir",null],"ok":{"$undefined":true}}
+{"fn":"syncRegularFile","args":["/private/tmp/fsp_file.txt",null],"ok":{"$undefined":true}}
+{"fn":"isMacAppBundlePath","args":["x.app",""],"ok":false}
+{"fn":"isMacAppBundlePath","args":["x.app","DARWIN"],"ok":false}
+{"fn":"isMacAppBundlePath","args":["a.app/b/"],"ok":false}
+{"fn":"isMacAppBundlePath","args":["/a.app//x"],"ok":false}

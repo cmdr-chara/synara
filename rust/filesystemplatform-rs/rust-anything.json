@@ -1,0 +1,132 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/filesystemPlatform.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "filesystemplatform-rs",
+  "exports": [
+    {
+      "name": "supportsPosixPermissions",
+      "file": "packages/shared/src/filesystemPlatform.ts",
+      "line": 11,
+      "params": [
+        {
+          "name": "platform",
+          "ts_type": "NodeJS.Platform",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "syncDirectoryEntry",
+      "file": "packages/shared/src/filesystemPlatform.ts",
+      "line": 16,
+      "params": [
+        {
+          "name": "directoryPath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "platform",
+          "ts_type": "NodeJS.Platform",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<void>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "syncRegularFile",
+      "file": "packages/shared/src/filesystemPlatform.ts",
+      "line": 40,
+      "params": [
+        {
+          "name": "filePath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "platform",
+          "ts_type": "NodeJS.Platform",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<void>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "sameFileIdentity",
+      "file": "packages/shared/src/filesystemPlatform.ts",
+      "line": 56,
+      "params": [
+        {
+          "name": "left",
+          "ts_type": "Pick<Stats, \"dev\" | \"ino\">",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "right",
+          "ts_type": "Pick<Stats, \"dev\" | \"ino\">",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "platform",
+          "ts_type": "NodeJS.Platform",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isMacAppBundlePath",
+      "file": "packages/shared/src/filesystemPlatform.ts",
+      "line": 69,
+      "params": [
+        {
+          "name": "directoryPath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "platform",
+          "ts_type": "NodeJS.Platform",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

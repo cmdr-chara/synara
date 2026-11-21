@@ -1,0 +1,17 @@
+{
+  "unit": "packages/shared/src/filesystemPlatform.ts",
+  "files": 1,
+  "fingerprint": "94e2532f71cffba5",
+  "coverage": {
+    "lines": 66,
+    "reached": 64,
+    "files": [
+      {
+        "file": "packages/shared/src/filesystemPlatform.ts",
+        "lines": 66,
+        "reached": 64,
+        "missed": "28-29"
+      }
+    ]
+  }
+}

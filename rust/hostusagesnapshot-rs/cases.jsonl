@@ -1,0 +1,450 @@
+{"fn":"writeHostUsageSnapshots","args":["😀",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":[".leading",[]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["abc",["a",1]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["x","x"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["﻿bom",["a",1]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["a.b.c",{"a":"b"}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["emoji 👍🏽 mix",[]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["a.b.c",0],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["trailing.",{"$undefined":true}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["İstanbul",{"$undefined":true}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["😀",{}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["ünïcödé",{"$undefined":true}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["hello",[]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["a:b:c","x"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["Hello World","x"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["tab\tseparated",["a",1]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["  padded  {name} has {count} items",["a",1]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["a😀b😀c",[]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["key_name-1",{}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":[".leading",{"a":"b"}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["a",{"a":"b"}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["﻿bom日本語のテキスト",0],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["tab\tseparated  padded  ",{"a":{"b":"c"}}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["{name} has {count} items",{"a":{"b":"c"}}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["HELLOHello World",["a",1]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["a:b:c",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["😀",null],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["HELLO",[]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["abstraße",0],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["straße",["a",1]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["İstanbul",null],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["./x/**/*.json",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["{name} has {count} items",{"a":"b"}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["trailing.a:b:c",[]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["./x/**/*.json",{"$undefined":true}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":[":",{"$undefined":true}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["trailing.",{"a":"b"}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["HELLO",["a",1]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["tab\tseparated",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["日本語のテキスト",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["line1\nline2",null],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["trailing.",[]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["abc",{"a":"b"}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["",0],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["key_name-1","x"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["a..b","x"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["  padded  ",["a",1]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["ünïcödé",0],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["trailing.emoji 👍🏽 mix",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["a:b:c",0],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["tab\tseparated.leading",0],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["a😀b😀c",{"$undefined":true}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["İstanbulHELLO","x"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["hello world",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["helloΣΊΣΥΦΟΣ"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["HELLOkey_name-1",null],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["ans:key.path",{}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["İstanbul",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["a😀b😀c",{}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["HELLO",{"a":{"b":"c"}}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":[".leading",["a",1]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["a:b:ca",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["日本語のテキスト",[]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["日本語のテキスト",{"$undefined":true}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["line1\nline2","x"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["emoji 👍🏽 mixünïcödé",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["﻿boma:b:c",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["  padded  ",{"a":"b"}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["ΣΊΣΥΦΟΣ","x"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["hello world","x"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["straße",[]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["İstanbul","l"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["hello",null],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["HELLO",null],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["a",0],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["trailing.key_name-1",[]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["ünïcödé",{"a":{"b":"c"}}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["  padded  "],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["./x/**/*.jsonkey_name-1",["a",1]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["a.b.c"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["a:b:c",{}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["{name} has {count} itemsa😀b😀c",{"$undefined":true}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["src/a/b.ts",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["tab\tseparated","x"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["a.b.c",{}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["a..b",{}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["line1\nline2"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["a.b.cHello World",0],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["hello",["a",1]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["abc",{}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["ünïcödé",null],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["a..b:",{"$undefined":true}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["hello worldtrailing.",{}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["tab\tseparated",null],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["ns:key.pathé",[]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["  padded  ",null],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["a😀b😀cHello World",{"a":{"b":"c"}}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["İstanbul",{"a":"b"}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["line1\nline2",{}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["emoji 👍🏽 mix",{"$undefined":true}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["日本語のテキスト",null],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["",null],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["Hello World",{"a":{"b":"c"}}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["straßens:key.path"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["😀"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["HELLOab"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["hello world",0],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["straße"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["a..b",{"a":{"b":"c"}}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["abcİstanbul",[]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["  padded  ",[]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":[".leading","x"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["key_name-1",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["ab",{}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["./x/**/*.json"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":[".leading",null],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["tab\tseparated",0],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["hello worlda",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["{name} has {count} items",[]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["HELLOstraße",{"a":"b"}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["a.b.c",null],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["a",{"a":{"b":"c"}}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["tab\tseparated","D"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["﻿bom"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["./x/**/*.jsonab",{}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":[":","x"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["src/a/b.ts","x"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["ns:key.pathHello World","x"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["a","x"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["straße",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["ünïcödéé",null],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["hello world",{"$undefined":true}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["src/a/b.ts",{"a":{"b":"c"}}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["a",{"$undefined":true}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["key_name-1",{"$undefined":true}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["abc",{"$undefined":true}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["trailing.",null],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["src/a/b.ts",{}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["HELLO",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["ns:key.path",null],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["",[]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["aab",null],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["{name} has {count} items  padded  ",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["{name} has {count} items",{}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["é","x"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["a:b:c",null],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["key_name-1key_name-1",["a",1]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["Hello World",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["",{"a":"b"}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["日本語のテキストline1\nline2",{"$undefined":true}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["src/a/b.ts",[]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["src/a/b.ts",{"$undefined":true}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":[".leading😀",[]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["Hello World:",{"a":{"b":"c"}}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["Hello World",["a",1]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["asrc/a/b.ts",null],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["line1\nline2",{"$undefined":true}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["abc","bc"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["ΣΊΣΥΦΟΣ",0],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["key_name-1",["a",1]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["hello world",{"a":{"b":"c"}}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["./x/**/*.json",{"a":{"b":"c"}}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["HELLO",0],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["a.b.c",{"$undefined":true}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["HELLO",{"a":"b"}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["tab\tseparated",{"$undefined":true}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["ΣΊΣΥΦΟΣhello",{"a":{"b":"c"}}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["./x/**/*.jsona😀b😀c",{"$undefined":true}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["日本語のテキスト",["a",1]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["emoji 👍🏽 mixhello world",null],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["trailing.",{"a":{"b":"c"}}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["./x/**/*.json",[]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["{name} has {count} items",["a",1]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["ünïcödé","x"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["src/a/b.tssrc/a/b.ts",0],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["a",null],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["{name} has {count} items"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["emoji 👍🏽 mix",{}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["😀",{"$undefined":true}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["a..bline1\nline2",{"$undefined":true}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["hello world",["a",1]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["abc",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["HELLO",{}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["日本語のテキスト",{}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["trailing.tab\tseparated",{}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["ns:key.path",{}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["ab",{"$undefined":true}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["é",{"a":"b"}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":[".leading",{"a":{"b":"c"}}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["src/a/b.ts",0],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["a..b",["a",1]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["a..b",0],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["  padded  emoji 👍🏽 mix",0],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["./x/**/*.jsona",{"$undefined":true}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["hello./x/**/*.json",0],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["ünïcödé",{"a":"b"}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["ΣΊΣΥΦΟΣ"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["ΣΊΣΥΦΟΣHELLO",{"a":{"b":"c"}}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":[".leading😀"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["ünïcödé",["a",1]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["héllo wörld",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["👍🏽 thumbs",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["日本語",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["é",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["ılık ırmak",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["👨‍👩‍👧 family",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["a b",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["ΣΊΣΥΦΟΣ",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["a😀b",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["﻿bom",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["a²b x½ y①",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["aⅠb Ⅻ",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["a𐐀b 𝐀bc",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["कि ٣٤",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["Iı İi",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["K K k",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["ſ s S",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["x‍y 👨‍👩‍👧",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["a b c　d",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["١٢٣ ٤٥",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["𝟘𝟙 ²³",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["snake_case foo-bar o'neil",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["ǅungla Ǆ",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["one\r\ntwo threefour",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["café café",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"writeHostUsageSnapshots","args":["ΣΑΣ σας ς",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["tab\tseparated"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["﻿bom"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["İstanbul"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["a😀b😀c"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["😀"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["abc"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":[".leadingab"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":[":"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["emoji 👍🏽 mix"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["straße"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["ab"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["line1\nline2"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["ünïcödé"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["hello"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["日本語のテキストa😀b😀c"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["hello./x/**/*.json"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["ΣΊΣΥΦΟΣ"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["a:b:c"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["trailing."],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["key_name-1"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":[""],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["a"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["é"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["a.b.c"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["a.b.cİstanbul"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["Hello World"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["  padded  "],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["ns:key.path"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["Hello World.leading"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["./x/**/*.json"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["hello worldstraße"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["straße😀"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["./x/**/*.json日本語のテキスト"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["src/a/b.ts"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["a😀b😀ca"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["日本語のテキスト"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["﻿bomΣΊΣΥΦΟΣ"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":[".leading"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["aline1\nline2"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["a..b:"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["trailing.ab"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["emoji 👍🏽 mix﻿bom"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["a:b:ca:b:c"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["İstanbultab\tseparated"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["  padded  Hello World"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["abcline1\nline2"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["key_name-1a😀b😀c"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["tab\tseparatedns:key.path"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["ns:key.patha😀b😀c"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["abctrailing."],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["{name} has {count} itemsemoji 👍🏽 mix"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["  padded  a😀b😀c"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["HELLOünïcödé"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["{name} has {count} items"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["aba😀b😀c"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["./x/**/*.json😀"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["hello world"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["a..b"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":[":emoji 👍🏽 mix"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":[".leading.leading"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["HELLO"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["éΣΊΣΥΦΟΣ"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["key_name-1😀"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["key_name-1ünïcödé"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["abab"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["😀日本語のテキスト"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":[".leadingHELLO"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["aemoji 👍🏽 mix"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["line1\nline2ΣΊΣΥΦΟΣ"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["a{name} has {count} items"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["tab\tseparated日本語のテキスト"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["atrailing."],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["éline1\nline2"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["a..b{name} has {count} items"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["﻿bom./x/**/*.json"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["abtab\tseparated"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["a:b:ca😀b😀c"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":[".leadinga:b:c"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["key_name-1日本語のテキスト"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["a:b:c  padded  "],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["  padded  İstanbul"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["a:b:ca"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["trailing.emoji 👍🏽 mix"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["😀ab"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["ünïcödéns:key.path"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":[":abc"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["./x/**/*.jsona😀b😀c"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["./x/**/*.json  padded  "],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["ab:"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["abé"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["😀ΣΊΣΥΦΟΣ"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["./x/**/*.jsoné"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["a..b日本語のテキスト"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["😀a..b"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["helloa"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["ünïcödé日本語のテキスト"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["./x/**/*.json{name} has {count} items"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["a.b.c日本語のテキスト"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["Hello Worldstraße"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["a.b.cHello World"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["﻿bomhello world"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["key_name-1src/a/b.ts"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["src/a/b.tshello world"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["a:b:c./x/**/*.json"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["emoji 👍🏽 mixa..b"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["a.b.ca.b.c"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["a:b:c:"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["a.b.c😀"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["src/a/b.ts﻿bom"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["  padded  emoji 👍🏽 mix"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["tab\tseparatedİstanbul"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["trailing..leading"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["a.b.ctrailing."],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["a😀b😀ca..b"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["{name} has {count} itemsab"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["Hello World  padded  "],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["a:b:ctab\tseparated"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["ΣΊΣΥΦΟΣΣΊΣΥΦΟΣ"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["straße﻿bom"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["line1\nline2a:b:c"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["abns:key.path"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":[":{name} has {count} items"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["./x/**/*.jsonns:key.path"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["abca:b:c"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["emoji 👍🏽 mixns:key.path"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["emoji 👍🏽 mixemoji 👍🏽 mix"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["abkey_name-1"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":[".leadingé"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["tab\tseparateda😀b😀c"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["key_name-1trailing."],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["Hello Worlda:b:c"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["emoji 👍🏽 mixHELLO"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["./x/**/*.jsonhello"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["ns:key.path  padded  "],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["key_name-1straße"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["atab\tseparated"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["Hello Worldtrailing."],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["日本語のテキストns:key.path"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["a😀b😀cline1\nline2"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["key_name-1Hello World"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["a.b.chello world"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["hello worldkey_name-1"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["İstanbulİstanbul"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["a.b.cé"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":[".leading{name} has {count} items"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["  padded  {name} has {count} items"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":[".leading日本語のテキスト"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["étab\tseparated"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["HELLOa.b.c"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["é﻿bom"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["abcns:key.path"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["./x/**/*.jsonsrc/a/b.ts"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["trailing.ünïcödé"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["hellohello world"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["abcemoji 👍🏽 mix"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["line1\nline2a"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["İstanbul.leading"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["Hello Worlda.b.c"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["line1\nline2ünïcödé"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["abemoji 👍🏽 mix"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["ΣΊΣΥΦΟΣa:b:c"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["src/a/b.ts日本語のテキスト"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":[".leadinghello world"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["tab\tseparateda..b"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["./x/**/*.jsonHELLO"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["ns:key.pathabc"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["a./x/**/*.json"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["ünïcödétrailing."],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["{name} has {count} itemstab\tseparated"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["ns:key.pathstraße"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["ΣΊΣΥΦΟΣ.leading"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["a.b.ca"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["a😀b😀c  padded  "],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["line1\nline2./x/**/*.json"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["HELLO./x/**/*.json"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":[":a😀b😀c"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["a..babc"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["a:b:ca.b.c"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["tab\tseparated.leading"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["line1\nline2İstanbul"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["日本語のテキストé"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["emoji 👍🏽 mixa:b:c"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["./x/**/*.jsonHello World"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["hello world./x/**/*.json"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["hello world日本語のテキスト"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["﻿bom:"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["a..btrailing."],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":[":﻿bom"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["a..ba"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["{name} has {count} itemsa"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["Hello Worldİstanbul"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["😀hello"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["{name} has {count} items:"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["hello world😀"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["😀:"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["😀İstanbul"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["日本語のテキストline1\nline2"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":[":HELLO"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["ababc"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["ünïcödéa"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["héllo wörld"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["👍🏽 thumbs"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["日本語"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["ılık ırmak"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["👨‍👩‍👧 family"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["a b"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["a😀b"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["a²b x½ y①"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["aⅠb Ⅻ"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["a𐐀b 𝐀bc"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["कि ٣٤"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["Iı İi"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["K K k"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["ſ s S"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["x‍y 👨‍👩‍👧"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["a b c　d"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["١٢٣ ٤٥"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["𝟘𝟙 ²³"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["snake_case foo-bar o'neil"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["ǅungla Ǆ"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["one\r\ntwo threefour"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["café café"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"startHostUsageSnapshotJob","args":["ΣΑΣ σας ς"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"$function":""}},"~effect/Effect/successCont":{"$function":""}}}

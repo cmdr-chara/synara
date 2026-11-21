@@ -1,0 +1,54 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/hostUsageSnapshot.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "hostusagesnapshot-rs",
+  "exports": [
+    {
+      "name": "writeHostUsageSnapshots",
+      "file": "apps/server/src/hostUsageSnapshot.ts",
+      "line": 150,
+      "params": [
+        {
+          "name": "homeDir",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "now",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "startHostUsageSnapshotJob",
+      "file": "apps/server/src/hostUsageSnapshot.ts",
+      "line": 283,
+      "params": [
+        {
+          "name": "homeDir",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

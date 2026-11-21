@@ -1,0 +1,17 @@
+{
+  "unit": "packages/shared/src/releaseDownloads.ts",
+  "files": 1,
+  "fingerprint": "c956a6fa6e36bc84",
+  "coverage": {
+    "lines": 106,
+    "reached": 106,
+    "files": [
+      {
+        "file": "packages/shared/src/releaseDownloads.ts",
+        "lines": 106,
+        "reached": 106,
+        "missed": ""
+      }
+    ]
+  }
+}

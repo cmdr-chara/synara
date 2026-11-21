@@ -1,0 +1,54 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/releaseDownloads.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "releasedownloads-rs",
+  "exports": [
+    {
+      "name": "mapReleaseAssets",
+      "file": "packages/shared/src/releaseDownloads.ts",
+      "line": 50,
+      "params": [
+        {
+          "name": "release",
+          "ts_type": "GitHubReleaseAssets",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "fallbackUrl",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ReleaseDownloads",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "parseReleaseDownloadsSnapshot",
+      "file": "packages/shared/src/releaseDownloads.ts",
+      "line": 85,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ReleaseDownloads | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

@@ -1,0 +1,17 @@
+{
+  "unit": "packages/shared/src/githubAvatar.ts",
+  "files": 1,
+  "fingerprint": "bbea2aa5dd501943",
+  "coverage": {
+    "lines": 13,
+    "reached": 13,
+    "files": [
+      {
+        "file": "packages/shared/src/githubAvatar.ts",
+        "lines": 13,
+        "reached": 13,
+        "missed": ""
+      }
+    ]
+  }
+}

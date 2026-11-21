@@ -1,0 +1,30 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/githubAvatar.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "githubavatar-rs",
+  "exports": [
+    {
+      "name": "githubAvatarUrlForLogin",
+      "file": "packages/shared/src/githubAvatar.ts",
+      "line": 9,
+      "params": [
+        {
+          "name": "login",
+          "ts_type": "string | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

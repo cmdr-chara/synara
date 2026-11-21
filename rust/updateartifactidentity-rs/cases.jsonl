@@ -1,0 +1,635 @@
+{"fn":"isUpdateArtifactIdentity","args":["x"],"ok":false}
+{"fn":"isUpdateArtifactIdentity","args":[{"a":{"b":"c"}}],"ok":false}
+{"fn":"isUpdateArtifactIdentity","args":[[]],"ok":false}
+{"fn":"isUpdateArtifactIdentity","args":[{"a":"b"}],"ok":false}
+{"fn":"isUpdateArtifactIdentity","args":[{}],"ok":false}
+{"fn":"isUpdateArtifactIdentity","args":[0],"ok":false}
+{"fn":"isUpdateArtifactIdentity","args":[true],"ok":false}
+{"fn":"isUpdateArtifactIdentity","args":[null],"ok":false}
+{"fn":"isUpdateArtifactIdentity","args":[["a",1]],"ok":false}
+{"fn":"isUpdateArtifactIdentity","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6}],"ok":false}
+{"fn":"isUpdateArtifactIdentity","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7}],"ok":false}
+{"fn":"isUpdateArtifactIdentity","args":[[3,1,2]],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"hello worldHello World","size":{"$num":"-0"},"sha512":"straße"},{"path":"  padded  ","size":10,"sha512":"a.b.c"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"a😀b😀cHello World","size":0.5,"sha512":"Hello World"},{"path":"Hello World","size":1,"sha512":""}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"trailing.","size":0,"sha512":"src/a/b.tsns:key.path"},{"path":"emoji 👍🏽 mix","size":9007199254740992,"sha512":"é"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"emoji 👍🏽 mix","size":9007199254740992,"sha512":"﻿bom"},{"path":"ünïcödé","size":{"$num":"Infinity"},"sha512":"a..b"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"line1\nline2😀","size":9007199254740992,"sha512":"key_name-1Hello World"},[]],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"HELLO","size":3,"sha512":"key_name-1straße"},{"path":"a😀b😀ca.b.c","size":-2.5,"sha512":"a..b"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[true,{"path":"ünïcödétrailing.","size":{"$num":"Infinity"},"sha512":"İstanbul"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"a:b:cİstanbul","size":-1,"sha512":"abc"},{"path":"Hello World","size":{"$num":"-0"},"sha512":"日本語のテキスト"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"line1\nline2","size":2,"sha512":"trailing."},{"path":".leading","size":{"$num":"NaN"},"sha512":"HELLO"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"trailing.","size":{"$num":"-Infinity"},"sha512":"key_name-1"},{"path":"{name} has {count} items","size":{"$num":"Infinity"},"sha512":"a"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{},{"path":"hello","size":3,"sha512":"😀"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"a.b.cΣΊΣΥΦΟΣ","size":1000,"sha512":""},{"path":"key_name-1","size":{"$num":"-0"},"sha512":"a:b:c"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"trailing.","size":0,"sha512":"tab\tseparated"},null],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"line1\nline2hello","size":100,"sha512":"ns:key.path"},{"path":"İstanbul","size":1000000,"sha512":"trailing.hello world"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"emoji 👍🏽 mix","size":-2.5,"sha512":"a.b.c"},{"path":"a😀b😀c","size":-1,"sha512":"abc"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"{name} has {count} items","size":-1,"sha512":"line1\nline2"},{"path":".leading","size":-1,"sha512":"straße"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"a..b","size":9007199254740992,"sha512":"src/a/b.ts"},{"path":"a.b.ca😀b😀c","size":9007199254740992,"sha512":"😀Hello World"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"日本語のテキスト","size":100,"sha512":"ns:key.path"},{"path":".leading","size":1000,"sha512":"日本語のテキスト"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"tab\tseparated","size":42,"sha512":"  padded  a..b"},{"path":"日本語のテキスト","size":{"$num":"-0"},"sha512":"straße"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"a":{"b":"c"}},{"a":"b"}],"ok":true}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"ΣΊΣΥΦΟΣ","size":0,"sha512":"  padded  emoji 👍🏽 mix"},{"path":"line1\nline2","size":1,"sha512":"İstanbul"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"emoji 👍🏽 mix","size":2147483648,"sha512":"abcsrc/a/b.ts"},{"path":"İstanbul","size":9007199254740992,"sha512":"straßehello"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"a:b:c","size":-1,"sha512":"ünïcödé"},{"path":"key_name-1","size":{"$num":"-0"},"sha512":"a:b:c"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"a":{"b":"c"}},{"path":"HELLOns:key.path","size":1000000,"sha512":"{name} has {count} items"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"emoji 👍🏽 mix","size":1000,"sha512":"emoji 👍🏽 mix"},{"path":"hello","size":9007199254740992,"sha512":"日本語のテキスト"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"a😀b😀cstraße","size":-1,"sha512":":"},{"path":"emoji 👍🏽 mixemoji 👍🏽 mix","size":42,"sha512":"emoji 👍🏽 mix"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"ns:key.path","size":1000000,"sha512":"﻿bom"},{"path":"{name} has {count} items","size":9007199254740992,"sha512":"{name} has {count} items"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"a":"b"},{"path":"trailing.","size":1000,"sha512":"key_name-1"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"ΣΊΣΥΦΟΣ","size":1,"sha512":"emoji 👍🏽 mix"},{"path":"abhello world","size":10,"sha512":"key_name-1"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"a":{"b":"c"}},{"path":"{name} has {count} items","size":2147483648,"sha512":"line1\nline2"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"İstanbul","size":10,"sha512":"trailing."},{"path":"a","size":1000000,"sha512":"a"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"éΣΊΣΥΦΟΣ","size":{"$num":"-0"},"sha512":"hello"},{"path":"emoji 👍🏽 mix","size":0.5,"sha512":":"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"hello world","size":{"$num":"NaN"},"sha512":"line1\nline2hello"},{"path":"日本語のテキスト","size":{"$num":"Infinity"},"sha512":"hello world"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"a😀b😀c","size":9007199254740992,"sha512":"emoji 👍🏽 mixHello World"},{"path":"ab","size":1,"sha512":"ünïcödéa:b:c"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"line1\nline2","size":9007199254740992,"sha512":"日本語のテキスト"},{"path":"ΣΊΣΥΦΟΣ","size":1000000,"sha512":"./x/**/*.json"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"src/a/b.tsa😀b😀c","size":9007199254740992,"sha512":"é"},{"path":"aünïcödé","size":0.5,"sha512":"😀"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"a":{"b":"c"}},{"path":"İstanbul","size":-1,"sha512":"hello"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"a","size":2147483648,"sha512":"﻿bom"},{"path":"a..b","size":1000000,"sha512":"tab\tseparated"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"line1\nline2","size":0.5,"sha512":":"},{"path":"ns:key.path","size":{"$num":"-Infinity"},"sha512":"a..b"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"src/a/b.ts","size":-2.5,"sha512":"😀"},true],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"Hello Worldtab\tseparated","size":0,"sha512":"İstanbul"},null],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"éhello world","size":{"$num":"-0"},"sha512":"a:b:c"},{"path":"a:b:c","size":9007199254740992,"sha512":"hello world"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"a😀b😀c","size":42,"sha512":"ab"},{"path":"é","size":0.5,"sha512":"a:b:c"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"line1\nline2","size":2,"sha512":"a😀b😀c"},{"path":"a😀b😀ctab\tseparated","size":42,"sha512":"a:b:c./x/**/*.json"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"a..ba.b.c","size":{"$num":"-0"},"sha512":"hello world"},{"a":{"b":"c"}}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"key_name-1","size":{"$num":"NaN"},"sha512":"straße"},{"path":"straße","size":1,"sha512":"./x/**/*.json"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"key_name-1:","size":{"$num":"-0"},"sha512":"ΣΊΣΥΦΟΣ"},{"path":"HELLO","size":10,"sha512":"./x/**/*.json"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"ΣΊΣΥΦΟΣ","size":{"$num":"NaN"},"sha512":"😀"},{"path":"","size":9007199254740992,"sha512":"key_name-1"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"tab\tseparated","size":2147483648,"sha512":"emoji 👍🏽 mix"},{"path":"ns:key.pathHELLO","size":10,"sha512":"é"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"HELLO","size":{"$num":"NaN"},"sha512":"a.b.c"},{"path":"a:b:c","size":{"$num":"-Infinity"},"sha512":"a"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":":","size":3,"sha512":"tab\tseparated"},{"path":"a😀b😀c","size":{"$num":"Infinity"},"sha512":"😀"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"日本語のテキスト","size":1000,"sha512":"abcline1\nline2"},0],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"atab\tseparated","size":3,"sha512":"a:b:c"},{"path":"ΣΊΣΥΦΟΣ","size":1,"sha512":"日本語のテキスト"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[["a",1],{"path":"é","size":-2.5,"sha512":"a..b"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"é","size":100,"sha512":".leading"},[]],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"key_name-1","size":9007199254740992,"sha512":"hello"},true],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":["x",["a",1]],"ok":true}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"ns:key.path","size":2147483648,"sha512":"trailing."},{"path":"😀","size":{"$num":"-Infinity"},"sha512":"a..b"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"  padded  ","size":1,"sha512":"hello"},{"path":"{name} has {count} items","size":-1,"sha512":"日本語のテキスト"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":":","size":-2.5,"sha512":"a..b"},{"path":"hello world","size":100,"sha512":"abc"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"a:b:cline1\nline2","size":-1,"sha512":"ab:"},{"path":"日本語のテキストHELLO","size":1000,"sha512":"é"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":".leading","size":2,"sha512":"trailing."},{"path":"﻿bom","size":-1,"sha512":"😀"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"İstanbulemoji 👍🏽 mix","size":{"$num":"-Infinity"},"sha512":"  padded  "},[]],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"a":"b"},{"path":"hello","size":42,"sha512":"HELLO"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"{name} has {count} itemsabc","size":-2.5,"sha512":"trailing."},{"path":"ab","size":1000000,"sha512":"straße"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[[],{"path":"ns:key.path","size":1000,"sha512":"é"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"HELLO","size":-2.5,"sha512":"﻿bom"},{"a":{"b":"c"}}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":":","size":2147483648,"sha512":"line1\nline2"},{"path":"straßestraße","size":{"$num":"-Infinity"},"sha512":"./x/**/*.json"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"src/a/b.ts","size":{"$num":"-Infinity"},"sha512":"  padded  "},{"path":"tab\tseparated","size":42,"sha512":"hello world"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"a.b.c","size":{"$num":"NaN"},"sha512":"straße"},{"path":"./x/**/*.json","size":2,"sha512":"é"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"trailing.","size":3,"sha512":"src/a/b.ts"},{"path":".leading","size":1,"sha512":""}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"  padded  ","size":10,"sha512":"hello😀"},{"path":"abc","size":{"$num":"Infinity"},"sha512":".leading"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"a:b:c","size":0.5,"sha512":":"},{"path":"HELLO","size":9007199254740992,"sha512":"src/a/b.ts"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"﻿bom","size":{"$num":"-Infinity"},"sha512":"straße.leading"},{}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"hello world","size":1000,"sha512":"a..b"},"x"],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"src/a/b.ts","size":2147483648,"sha512":""},{"path":"ΣΊΣΥΦΟΣ","size":{"$num":"NaN"},"sha512":"src/a/b.ts"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"a:b:c","size":-2.5,"sha512":"  padded  "},{"path":"hello worldhello","size":2,"sha512":"a😀b😀c"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"İstanbul","size":3,"sha512":"hello world"},{"path":"HELLOİstanbul","size":-2.5,"sha512":"é﻿bom"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"Hello World","size":0,"sha512":"İstanbul"},{"path":"ns:key.path","size":9007199254740992,"sha512":"abc"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"a":{"b":"c"}},{"path":"trailing.","size":3,"sha512":"src/a/b.ts"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"trailing.","size":{"$num":"NaN"},"sha512":"a"},true],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"﻿boma:b:c","size":{"$num":"NaN"},"sha512":"tab\tseparated{name} has {count} items"},{"path":"é","size":0.5,"sha512":"ünïcödé"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[0,{"path":"﻿bom","size":-2.5,"sha512":"éline1\nline2"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"İstanbul  padded  ","size":-2.5,"sha512":"aline1\nline2"},{"path":"  padded  ","size":-1,"sha512":".leadinga.b.c"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"abc","size":{"$num":"NaN"},"sha512":"a.b.c"},{"path":"a😀b😀cns:key.path","size":{"$num":"NaN"},"sha512":"src/a/b.ts"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"  padded  ./x/**/*.json","size":42,"sha512":"hello"},{"path":"abcab","size":{"$num":"-Infinity"},"sha512":"tab\tseparatedsrc/a/b.ts"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"﻿bomünïcödé","size":1000000,"sha512":"😀"},{"path":"HELLO","size":10,"sha512":"İstanbul"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"./x/**/*.json","size":3,"sha512":"hello world😀"},{"path":"a.b.c","size":3,"sha512":"straße"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"straße","size":1000,"sha512":"Hello World"},true],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"emoji 👍🏽 mix","size":1000000,"sha512":"Hello World"},{"path":"src/a/b.ts","size":100,"sha512":"trailing."}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"{name} has {count} itemsns:key.path","size":9007199254740992,"sha512":"a..b"},{"path":"a😀b😀c","size":1000,"sha512":"key_name-1"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"key_name-1","size":9007199254740992,"sha512":"abcstraße"},{"path":"ab","size":0.5,"sha512":"tab\tseparated"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"straße","size":0.5,"sha512":""},{"path":"a.b.c","size":{"$num":"-0"},"sha512":"a😀b😀cünïcödé"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[true,{"path":"HELLOtrailing.","size":-2.5,"sha512":"Hello World"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"line1\nline2","size":10,"sha512":"src/a/b.ts"},{"path":"hello world","size":100,"sha512":"tab\tseparated"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"key_name-1","size":-1,"sha512":"a:b:c"},{"path":"straße","size":1000000,"sha512":"a😀b😀c"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"a.b.c:","size":42,"sha512":"HELLO"},{"path":"tab\tseparated﻿bom","size":-2.5,"sha512":"ünïcödé"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"İstanbul","size":{"$num":"Infinity"},"sha512":":"},null],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"straße","size":-1,"sha512":"straße"},{"path":"a.b.c","size":0.5,"sha512":"a..b"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"a.b.c","size":10,"sha512":"é"},{"path":"emoji 👍🏽 mix","size":1000,"sha512":"ΣΊΣΥΦΟΣ"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"ab","size":2147483648,"sha512":"ünïcödé"},{"path":"﻿bom","size":{"$num":"-Infinity"},"sha512":"straße"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[["a",1],{"path":"akey_name-1","size":2,"sha512":"ns:key.path"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"ab","size":9007199254740992,"sha512":"hello"},{"path":"﻿bom","size":-2.5,"sha512":":"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"{name} has {count} items","size":1,"sha512":"hello worlda"},{"path":"İstanbulns:key.path","size":0,"sha512":"straße"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"İstanbul","size":2147483648,"sha512":"{name} has {count} items"},{"path":"  padded  ","size":0,"sha512":"straße"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"﻿bom","size":{"$num":"NaN"},"sha512":"trailing."},{"path":"日本語のテキスト","size":10,"sha512":"trailing.trailing."}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"a..b","size":2147483648,"sha512":"{name} has {count} items"},{"path":"a","size":{"$num":"-0"},"sha512":"key_name-1"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"line1\nline2","size":42,"sha512":"src/a/b.ts"},{"path":"{name} has {count} items.leading","size":1000,"sha512":"ünïcödé"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"ns:key.path","size":2147483648,"sha512":"ünïcödé"},{"path":"ΣΊΣΥΦΟΣ","size":1000,"sha512":"ΣΊΣΥΦΟΣ"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"line1\nline2","size":{"$num":"-Infinity"},"sha512":"é"},0],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"a:b:c","size":0,"sha512":"emoji 👍🏽 mix"},{"path":"a😀b😀c","size":-1,"sha512":"tab\tseparated"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"  padded  ab","size":0,"sha512":"Hello Worldkey_name-1"},{"path":"src/a/b.ts","size":9007199254740992,"sha512":"key_name-1"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"trailing.","size":2147483648,"sha512":"hello world"},{"path":"a","size":1000,"sha512":"straßeHello World"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"key_name-1Hello World","size":1000000,"sha512":"ünïcödé"},"x"],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"trailing.","size":1,"sha512":"HELLO"},{}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"Hello World","size":1,"sha512":":.leading"},{"path":"ns:key.path","size":1,"sha512":"hello world"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"key_name-1","size":{"$num":"-0"},"sha512":"日本語のテキスト"},{"path":"Hello World:","size":1000000,"sha512":"line1\nline2"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"a:b:c","size":9007199254740992,"sha512":"é"},{"path":"ΣΊΣΥΦΟΣ","size":2147483648,"sha512":"ΣΊΣΥΦΟΣ"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":":","size":1,"sha512":"Hello World"},{"path":".leading","size":{"$num":"NaN"},"sha512":"{name} has {count} itemsa"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"﻿bom","size":{"$num":"-0"},"sha512":"line1\nline2"},{"path":"straße","size":0,"sha512":"Hello World"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"abcsrc/a/b.ts","size":10,"sha512":"ΣΊΣΥΦΟΣ"},{"path":"./x/**/*.jsoné","size":2147483648,"sha512":"Hello World"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"key_name-1","size":{"$num":"-Infinity"},"sha512":"./x/**/*.json"},{"path":"a","size":1000,"sha512":"ns:key.path"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"ΣΊΣΥΦΟΣ","size":9007199254740992,"sha512":"./x/**/*.json"},{"path":"ns:key.path","size":1000000,"sha512":"tab\tseparated"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"","size":1000000,"sha512":"a😀b😀c"},"x"],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"key_name-1","size":3,"sha512":"a:b:c"},{"path":"ns:key.pathhello","size":2147483648,"sha512":"﻿bom"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"./x/**/*.json","size":2147483648,"sha512":"emoji 👍🏽 mix"},{"path":"ünïcödéünïcödé","size":0,"sha512":"hello worldHello World"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"ΣΊΣΥΦΟΣ","size":{"$num":"-0"},"sha512":"İstanbul"},0],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"a":{"b":"c"}},{"path":"hello","size":100,"sha512":"hello world"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"  padded  ","size":{"$num":"-0"},"sha512":"key_name-1"},["a",1]],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"é","size":2,"sha512":"./x/**/*.json"},{"path":":","size":0,"sha512":"İstanbul"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"straßens:key.path","size":2,"sha512":"a..b"},{"path":"./x/**/*.json","size":1000,"sha512":"a:b:cns:key.path"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"a😀b😀c","size":1000000,"sha512":"a:b:c"},{"path":"😀  padded  ","size":1,"sha512":"﻿bom"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[[],{"path":"ΣΊΣΥΦΟΣ","size":100,"sha512":"😀"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"a..b","size":100,"sha512":"日本語のテキスト"},{"path":"tab\tseparated","size":9007199254740992,"sha512":"line1\nline2"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"ünïcödé","size":-1,"sha512":"{name} has {count} items"},{"path":"a:b:c","size":1000,"sha512":"tab\tseparated"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"ΣΊΣΥΦΟΣ","size":0,"sha512":"line1\nline2"},{"path":"İstanbula:b:c","size":2147483648,"sha512":"ns:key.path"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"straße","size":3,"sha512":"  padded  "},[]],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"./x/**/*.json","size":{"$num":"-Infinity"},"sha512":"a😀b😀c"},{"path":"./x/**/*.json","size":-2.5,"sha512":"﻿bom"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"trailing.","size":42,"sha512":"a😀b😀c"},{"path":"trailing.","size":42,"sha512":"abc"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"﻿bom","size":1000,"sha512":"{name} has {count} items"},{"path":"straßeΣΊΣΥΦΟΣ","size":2147483648,"sha512":"日本語のテキストHELLO"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"emoji 👍🏽 mix","size":10,"sha512":"ns:key.path"},{"path":"a.b.c","size":42,"sha512":"key_name-1"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"key_name-1","size":1,"sha512":"日本語のテキスト﻿bom"},{"path":"a:b:c","size":10,"sha512":"İstanbulHello World"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[[],{"path":"日本語のテキスト","size":{"$num":"Infinity"},"sha512":"key_name-1"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"key_name-1","size":-1,"sha512":"hello"},{"path":"emoji 👍🏽 mix","size":2147483648,"sha512":"a.b.ca:b:c"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"src/a/b.ts","size":-2.5,"sha512":"trailing."},{"path":"Hello World","size":{"$num":"-0"},"sha512":"hello worldünïcödé"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"trailing.","size":1000,"sha512":"line1\nline2"},{"path":"HELLO.leading","size":0.5,"sha512":"a..b"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":".leading","size":-1,"sha512":"a:b:c"},{"path":"日本語のテキスト","size":1000000,"sha512":"😀"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"tab\tseparated","size":-2.5,"sha512":"a:b:c😀"},{"path":"ékey_name-1","size":10,"sha512":"a:b:c"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"ünïcödé","size":10,"sha512":"HELLO"},{"path":"Hello World","size":{"$num":"Infinity"},"sha512":":"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"key_name-1","size":1,"sha512":"abctab\tseparated"},{"path":"line1\nline2","size":0.5,"sha512":"a:b:ca😀b😀c"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"src/a/b.ts","size":1000,"sha512":"tab\tseparated"},{"path":"line1\nline2","size":100,"sha512":"trailing."}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"ab","size":1000000,"sha512":"a"},{"path":"./x/**/*.json","size":10,"sha512":"key_name-1tab\tseparated"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"line1\nline2","size":1000000,"sha512":"ünïcödé"},{"path":"  padded  ","size":1,"sha512":"😀"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"a","size":1000000,"sha512":"abc"},{"path":"a.b.csrc/a/b.ts","size":9007199254740992,"sha512":"a..b"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[true,{"path":"hello","size":1000,"sha512":"HELLOstraße"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"src/a/b.ts😀","size":9007199254740992,"sha512":"日本語のテキスト"},{"path":".leading","size":0.5,"sha512":"Hello World:"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"  padded  ","size":{"$num":"-Infinity"},"sha512":"ab"},[]],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"ab","size":42,"sha512":"a..b"},{"path":"src/a/b.ts  padded  ","size":-2.5,"sha512":"trailing.a:b:c"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"日本語のテキストline1\nline2","size":3,"sha512":"﻿bom"},{"path":"abc","size":0.5,"sha512":"a..b"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"trailing.Hello World","size":-1,"sha512":":a..b"},{"path":"é","size":{"$num":"-0"},"sha512":"HELLO"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"src/a/b.ts","size":3,"sha512":"abc"},{"path":"İstanbul","size":1000000,"sha512":"😀"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"trailing.","size":2,"sha512":"line1\nline2"},{"path":"﻿bom","size":-2.5,"sha512":"ΣΊΣΥΦΟΣ"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"a..b","size":42,"sha512":"hello"},{"path":"abc","size":-1,"sha512":"﻿bom"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"a":{"b":"c"}},{"path":"src/a/b.ts","size":{"$num":"Infinity"},"sha512":"hello world"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"src/a/b.ts","size":2147483648,"sha512":"trailing."},{"path":"ns:key.path","size":-1,"sha512":"ns:key.path"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"a😀b😀c","size":0.5,"sha512":"hello world"},{"path":"ns:key.path","size":1,"sha512":"{name} has {count} items"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":":key_name-1","size":{"$num":"NaN"},"sha512":".leading"},{"path":".leadingabc","size":2147483648,"sha512":"src/a/b.ts"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"src/a/b.ts.leading","size":2,"sha512":".leading"},{"path":"é","size":2,"sha512":"src/a/b.ts"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"Hello World:","size":2,"sha512":"﻿bomİstanbul"},{"path":"ab日本語のテキスト","size":0.5,"sha512":"src/a/b.tsHELLO"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"key_name-1","size":1000000,"sha512":"😀"},{"path":"é","size":0.5,"sha512":"é"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{},{"path":"a..b","size":2147483648,"sha512":"{name} has {count} items"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"a:b:c","size":9007199254740992,"sha512":".leadinga:b:c"},{"path":"src/a/b.ts.leading","size":-1,"sha512":"straße"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"src/a/b.ts","size":{"$num":"Infinity"},"sha512":"ΣΊΣΥΦΟΣ"},{"path":"{name} has {count} items","size":2,"sha512":"emoji 👍🏽 mix"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"a":"b"},{"path":"key_name-1日本語のテキスト","size":10,"sha512":""}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[0,{"path":"./x/**/*.json","size":9007199254740992,"sha512":"hello world"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"Hello World","size":0,"sha512":"a.b.c"},{"path":"a..b﻿bom","size":2,"sha512":"é"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"ab😀","size":0,"sha512":"hello"},{"path":".leading","size":0.5,"sha512":"a:b:c"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"key_name-1  padded  ","size":100,"sha512":"a"},{"path":"  padded  ","size":-2.5,"sha512":"HELLOé"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"a.b.c😀","size":9007199254740992,"sha512":"hello"},{"path":"ns:key.path","size":0,"sha512":"straße"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"{name} has {count} items","size":{"$num":"-0"},"sha512":"İstanbul"},0],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[null,null],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"emoji 👍🏽 mix","size":1,"sha512":"😀"},{"a":{"b":"c"}}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"﻿bom","size":2,"sha512":"a..b"},{"path":"a😀b😀c","size":{"$num":"Infinity"},"sha512":"😀"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"ns:key.path","size":{"$num":"-0"},"sha512":"😀"},{"path":"emoji 👍🏽 mix","size":3,"sha512":"abline1\nline2"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"﻿bom","size":1000,"sha512":"hello"},{"path":"ünïcödé","size":{"$num":"NaN"},"sha512":"abc"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"{name} has {count} items","size":2147483648,"sha512":"ns:key.path"},{"path":"tab\tseparated","size":3,"sha512":"a:b:c"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"a","size":{"$num":"-0"},"sha512":"HELLO"},{"path":"key_name-1a:b:c","size":10,"sha512":"trailing."}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"abc","size":2,"sha512":"a:b:c"},{"path":"straße","size":{"$num":"-Infinity"},"sha512":"./x/**/*.json日本語のテキスト"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"a","size":1000,"sha512":"ünïcödé"},0],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[0,{"path":"a😀b😀c","size":{"$num":"NaN"},"sha512":"tab\tseparated"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"line1\nline2","size":2147483648,"sha512":"src/a/b.tsa:b:c"},{"path":"ns:key.path","size":3,"sha512":"src/a/b.ts"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"tab\tseparated","size":1000000,"sha512":"日本語のテキスト"},{"path":"a.b.c","size":{"$num":"Infinity"},"sha512":"ΣΊΣΥΦΟΣ"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"😀","size":{"$num":"-Infinity"},"sha512":"tab\tseparated"},{"path":"İstanbul","size":{"$num":"-0"},"sha512":""}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"a":"b"},{"path":"a😀b😀c","size":1000000,"sha512":"ns:key.pathkey_name-1"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"ünïcödé","size":100,"sha512":"hello world"},{"path":"src/a/b.ts","size":1000000,"sha512":"HELLO"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[0,{"path":"a😀b😀c","size":-2.5,"sha512":"ns:key.path"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"straße","size":1,"sha512":"ab"},{"path":"a","size":{"$num":"-0"},"sha512":"a:b:chello"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"Hello World","size":2,"sha512":"ünïcödé"},null],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"Hello World{name} has {count} items","size":3,"sha512":"HELLO"},{"path":"  padded  ","size":1000000,"sha512":"trailing.a..b"}],"ok":false}
+{"fn":"updateArtifactIdentitiesEqual","args":[{"path":"abc","size":2,"sha512":"tab\tseparated"},{"path":"HELLO","size":2147483648,"sha512":"src/a/b.ts"}],"ok":false}
+{"fn":"fingerprintUpdateArtifact","args":["a.b.c"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/a.b.c'"}
+{"fn":"fingerprintUpdateArtifact","args":["{name} has {count} items"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/{name} has {count} items'"}
+{"fn":"fingerprintUpdateArtifact","args":["tab\tseparated"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/tab\tseparated'"}
+{"fn":"fingerprintUpdateArtifact","args":["key_name-1"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/key_name-1'"}
+{"fn":"fingerprintUpdateArtifact","args":["ns:key.path"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/ns:key.path'"}
+{"fn":"fingerprintUpdateArtifact","args":["a.b.c﻿bom"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/a.b.c﻿bom'"}
+{"fn":"fingerprintUpdateArtifact","args":["ünïcödé"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/ünïcödé'"}
+{"fn":"fingerprintUpdateArtifact","args":["a.b.cline1\nline2"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/a.b.cline1\nline2'"}
+{"fn":"fingerprintUpdateArtifact","args":["HELLO"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/HELLO'"}
+{"fn":"fingerprintUpdateArtifact","args":["key_name-1src/a/b.ts"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/key_name-1src/a/b.ts'"}
+{"fn":"fingerprintUpdateArtifact","args":["😀😀"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/😀😀'"}
+{"fn":"fingerprintUpdateArtifact","args":["a..ba.b.c"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/a..ba.b.c'"}
+{"fn":"fingerprintUpdateArtifact","args":[".leading﻿bom"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/.leading﻿bom'"}
+{"fn":"fingerprintUpdateArtifact","args":["日本語のテキスト"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/日本語のテキスト'"}
+{"fn":"fingerprintUpdateArtifact","args":[".leading:"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/.leading:'"}
+{"fn":"fingerprintUpdateArtifact","args":["  padded  .leading"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/  padded  .leading'"}
+{"fn":"fingerprintUpdateArtifact","args":["a😀b😀c"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/a😀b😀c'"}
+{"fn":"fingerprintUpdateArtifact","args":["hello"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/hello'"}
+{"fn":"fingerprintUpdateArtifact","args":["a..bns:key.path"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/a..bns:key.path'"}
+{"fn":"fingerprintUpdateArtifact","args":["😀"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/😀'"}
+{"fn":"fingerprintUpdateArtifact","args":["Hello World"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/Hello World'"}
+{"fn":"fingerprintUpdateArtifact","args":["ΣΊΣΥΦΟΣ"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/ΣΊΣΥΦΟΣ'"}
+{"fn":"fingerprintUpdateArtifact","args":["a:b:cé"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/a:b:cé'"}
+{"fn":"fingerprintUpdateArtifact","args":["  padded  "],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/  padded  '"}
+{"fn":"fingerprintUpdateArtifact","args":["a..b"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/a..b'"}
+{"fn":"fingerprintUpdateArtifact","args":["é"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/é'"}
+{"fn":"fingerprintUpdateArtifact","args":[""],"error":"Downloaded update payload must be a regular, non-symlink file."}
+{"fn":"fingerprintUpdateArtifact","args":["line1\nline2"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/line1\nline2'"}
+{"fn":"fingerprintUpdateArtifact","args":["emoji 👍🏽 mix"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/emoji 👍🏽 mix'"}
+{"fn":"fingerprintUpdateArtifact","args":["src/a/b.ts"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/src/a/b.ts'"}
+{"fn":"fingerprintUpdateArtifact","args":["a:b:ckey_name-1"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/a:b:ckey_name-1'"}
+{"fn":"fingerprintUpdateArtifact","args":["ab"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/ab'"}
+{"fn":"fingerprintUpdateArtifact","args":["abc"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/abc'"}
+{"fn":"fingerprintUpdateArtifact","args":["./x/**/*.jsonsrc/a/b.ts"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/x/**/*.jsonsrc/a/b.ts'"}
+{"fn":"fingerprintUpdateArtifact","args":["hello world"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/hello world'"}
+{"fn":"fingerprintUpdateArtifact","args":["tab\tseparatedemoji 👍🏽 mix"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/tab\tseparatedemoji 👍🏽 mix'"}
+{"fn":"fingerprintUpdateArtifact","args":["line1\nline2{name} has {count} items"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/line1\nline2{name} has {count} items'"}
+{"fn":"fingerprintUpdateArtifact","args":["a"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/a'"}
+{"fn":"fingerprintUpdateArtifact","args":["straßetab\tseparated"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/straßetab\tseparated'"}
+{"fn":"fingerprintUpdateArtifact","args":["İstanbul"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/İstanbul'"}
+{"fn":"fingerprintUpdateArtifact","args":["a..bé"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/a..bé'"}
+{"fn":"fingerprintUpdateArtifact","args":["a😀b😀cabc"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/a😀b😀cabc'"}
+{"fn":"fingerprintUpdateArtifact","args":["straße"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/straße'"}
+{"fn":"fingerprintUpdateArtifact","args":["éa..b"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/éa..b'"}
+{"fn":"fingerprintUpdateArtifact","args":["./x/**/*.json"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/x/**/*.json'"}
+{"fn":"fingerprintUpdateArtifact","args":["straßeé"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/straßeé'"}
+{"fn":"fingerprintUpdateArtifact","args":["a:b:c"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/a:b:c'"}
+{"fn":"fingerprintUpdateArtifact","args":["Hello Worldstraße"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/Hello Worldstraße'"}
+{"fn":"fingerprintUpdateArtifact","args":["﻿bom"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/﻿bom'"}
+{"fn":"fingerprintUpdateArtifact","args":[":"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/:'"}
+{"fn":"fingerprintUpdateArtifact","args":["日本語のテキストabc"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/日本語のテキストabc'"}
+{"fn":"fingerprintUpdateArtifact","args":["日本語のテキストsrc/a/b.ts"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/日本語のテキストsrc/a/b.ts'"}
+{"fn":"fingerprintUpdateArtifact","args":["key_name-1trailing."],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/key_name-1trailing.'"}
+{"fn":"fingerprintUpdateArtifact","args":["a..b﻿bom"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/a..b﻿bom'"}
+{"fn":"fingerprintUpdateArtifact","args":["Hello Worldkey_name-1"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/Hello Worldkey_name-1'"}
+{"fn":"fingerprintUpdateArtifact","args":["😀straße"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/😀straße'"}
+{"fn":"fingerprintUpdateArtifact","args":["a😀b😀cΣΊΣΥΦΟΣ"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/a😀b😀cΣΊΣΥΦΟΣ'"}
+{"fn":"fingerprintUpdateArtifact","args":["ns:key.pathİstanbul"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/ns:key.pathİstanbul'"}
+{"fn":"fingerprintUpdateArtifact","args":[".leading"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/.leading'"}
+{"fn":"fingerprintUpdateArtifact","args":["abΣΊΣΥΦΟΣ"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/abΣΊΣΥΦΟΣ'"}
+{"fn":"fingerprintUpdateArtifact","args":["./x/**/*.jsona:b:c"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/x/**/*.jsona:b:c'"}
+{"fn":"fingerprintUpdateArtifact","args":["src/a/b.ts.leading"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/src/a/b.ts.leading'"}
+{"fn":"fingerprintUpdateArtifact","args":["abctrailing."],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/abctrailing.'"}
+{"fn":"fingerprintUpdateArtifact","args":["abünïcödé"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/abünïcödé'"}
+{"fn":"fingerprintUpdateArtifact","args":["key_name-1hello"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/key_name-1hello'"}
+{"fn":"fingerprintUpdateArtifact","args":["a..bhello world"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/a..bhello world'"}
+{"fn":"fingerprintUpdateArtifact","args":["line1\nline2ns:key.path"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/line1\nline2ns:key.path'"}
+{"fn":"fingerprintUpdateArtifact","args":["abline1\nline2"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/abline1\nline2'"}
+{"fn":"fingerprintUpdateArtifact","args":["tab\tseparateda.b.c"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/tab\tseparateda.b.c'"}
+{"fn":"fingerprintUpdateArtifact","args":["ab﻿bom"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/ab﻿bom'"}
+{"fn":"fingerprintUpdateArtifact","args":["key_name-1tab\tseparated"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/key_name-1tab\tseparated'"}
+{"fn":"fingerprintUpdateArtifact","args":[":hello world"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/:hello world'"}
+{"fn":"fingerprintUpdateArtifact","args":["日本語のテキストé"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/日本語のテキストé'"}
+{"fn":"fingerprintUpdateArtifact","args":["aba😀b😀c"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/aba😀b😀c'"}
+{"fn":"fingerprintUpdateArtifact","args":["İstanbultrailing."],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/İstanbultrailing.'"}
+{"fn":"fingerprintUpdateArtifact","args":["tab\tseparatedhello world"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/tab\tseparatedhello world'"}
+{"fn":"fingerprintUpdateArtifact","args":["src/a/b.tsünïcödé"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/src/a/b.tsünïcödé'"}
+{"fn":"fingerprintUpdateArtifact","args":["src/a/b.tsa..b"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/src/a/b.tsa..b'"}
+{"fn":"fingerprintUpdateArtifact","args":["😀ünïcödé"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/😀ünïcödé'"}
+{"fn":"fingerprintUpdateArtifact","args":["straßeİstanbul"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/straßeİstanbul'"}
+{"fn":"fingerprintUpdateArtifact","args":["İstanbula:b:c"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/İstanbula:b:c'"}
+{"fn":"fingerprintUpdateArtifact","args":["emoji 👍🏽 mix:"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/emoji 👍🏽 mix:'"}
+{"fn":"fingerprintUpdateArtifact","args":["İstanbulΣΊΣΥΦΟΣ"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/İstanbulΣΊΣΥΦΟΣ'"}
+{"fn":"fingerprintUpdateArtifact","args":["HELLOΣΊΣΥΦΟΣ"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/HELLOΣΊΣΥΦΟΣ'"}
+{"fn":"fingerprintUpdateArtifact","args":["emoji 👍🏽 mixhello world"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/emoji 👍🏽 mixhello world'"}
+{"fn":"fingerprintUpdateArtifact","args":["İstanbulline1\nline2"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/İstanbulline1\nline2'"}
+{"fn":"fingerprintUpdateArtifact","args":["﻿bomtab\tseparated"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/﻿bomtab\tseparated'"}
+{"fn":"fingerprintUpdateArtifact","args":["😀HELLO"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/😀HELLO'"}
+{"fn":"fingerprintUpdateArtifact","args":["a.b.cab"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/a.b.cab'"}
+{"fn":"fingerprintUpdateArtifact","args":["HELLOsrc/a/b.ts"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/HELLOsrc/a/b.ts'"}
+{"fn":"fingerprintUpdateArtifact","args":["straße:"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/straße:'"}
+{"fn":"fingerprintUpdateArtifact","args":["ΣΊΣΥΦΟΣ😀"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/ΣΊΣΥΦΟΣ😀'"}
+{"fn":"fingerprintUpdateArtifact","args":["ΣΊΣΥΦΟΣkey_name-1"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/ΣΊΣΥΦΟΣkey_name-1'"}
+{"fn":"fingerprintUpdateArtifact","args":["tab\tseparatedab"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/tab\tseparatedab'"}
+{"fn":"fingerprintUpdateArtifact","args":["a.b.c😀"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/a.b.c😀'"}
+{"fn":"fingerprintUpdateArtifact","args":[".leadingtab\tseparated"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/.leadingtab\tseparated'"}
+{"fn":"fingerprintUpdateArtifact","args":["HELLO  padded  "],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/HELLO  padded  '"}
+{"fn":"fingerprintUpdateArtifact","args":["emoji 👍🏽 mixemoji 👍🏽 mix"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/emoji 👍🏽 mixemoji 👍🏽 mix'"}
+{"fn":"fingerprintUpdateArtifact","args":["trailing."],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/trailing.'"}
+{"fn":"fingerprintUpdateArtifact","args":["HELLOstraße"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/HELLOstraße'"}
+{"fn":"fingerprintUpdateArtifact","args":["trailing.tab\tseparated"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/trailing.tab\tseparated'"}
+{"fn":"fingerprintUpdateArtifact","args":["  padded  HELLO"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/  padded  HELLO'"}
+{"fn":"fingerprintUpdateArtifact","args":["a.b.c日本語のテキスト"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/a.b.c日本語のテキスト'"}
+{"fn":"fingerprintUpdateArtifact","args":["a日本語のテキスト"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/a日本語のテキスト'"}
+{"fn":"fingerprintUpdateArtifact","args":["straßea😀b😀c"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/straßea😀b😀c'"}
+{"fn":"fingerprintUpdateArtifact","args":["tab\tseparated{name} has {count} items"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/tab\tseparated{name} has {count} items'"}
+{"fn":"fingerprintUpdateArtifact","args":[":emoji 👍🏽 mix"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/:emoji 👍🏽 mix'"}
+{"fn":"fingerprintUpdateArtifact","args":["😀日本語のテキスト"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/😀日本語のテキスト'"}
+{"fn":"fingerprintUpdateArtifact","args":["src/a/b.tssrc/a/b.ts"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/src/a/b.tssrc/a/b.ts'"}
+{"fn":"fingerprintUpdateArtifact","args":["key_name-1﻿bom"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/key_name-1﻿bom'"}
+{"fn":"fingerprintUpdateArtifact","args":["tab\tseparateda😀b😀c"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/tab\tseparateda😀b😀c'"}
+{"fn":"fingerprintUpdateArtifact","args":["﻿bomΣΊΣΥΦΟΣ"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/﻿bomΣΊΣΥΦΟΣ'"}
+{"fn":"fingerprintUpdateArtifact","args":["tab\tseparateda:b:c"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/tab\tseparateda:b:c'"}
+{"fn":"fingerprintUpdateArtifact","args":["éa"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/éa'"}
+{"fn":"fingerprintUpdateArtifact","args":["key_name-1straße"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/key_name-1straße'"}
+{"fn":"fingerprintUpdateArtifact","args":["tab\tseparated😀"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/tab\tseparated😀'"}
+{"fn":"fingerprintUpdateArtifact","args":["a😀b😀cemoji 👍🏽 mix"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/a😀b😀cemoji 👍🏽 mix'"}
+{"fn":"fingerprintUpdateArtifact","args":["straßeemoji 👍🏽 mix"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/straßeemoji 👍🏽 mix'"}
+{"fn":"fingerprintUpdateArtifact","args":["éa😀b😀c"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/éa😀b😀c'"}
+{"fn":"fingerprintUpdateArtifact","args":["line1\nline2abc"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/line1\nline2abc'"}
+{"fn":"fingerprintUpdateArtifact","args":["İstanbulHELLO"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/İstanbulHELLO'"}
+{"fn":"fingerprintUpdateArtifact","args":["ΣΊΣΥΦΟΣa..b"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/ΣΊΣΥΦΟΣa..b'"}
+{"fn":"fingerprintUpdateArtifact","args":["hellokey_name-1"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/hellokey_name-1'"}
+{"fn":"fingerprintUpdateArtifact","args":["line1\nline2😀"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/line1\nline2😀'"}
+{"fn":"fingerprintUpdateArtifact","args":["ns:key.pathsrc/a/b.ts"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/ns:key.pathsrc/a/b.ts'"}
+{"fn":"fingerprintUpdateArtifact","args":["ünïcödé./x/**/*.json"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/ünïcödé./x/**/*.json'"}
+{"fn":"fingerprintUpdateArtifact","args":["a😀b😀c:"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/a😀b😀c:'"}
+{"fn":"fingerprintUpdateArtifact","args":["Hello Worldsrc/a/b.ts"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/Hello Worldsrc/a/b.ts'"}
+{"fn":"fingerprintUpdateArtifact","args":["tab\tseparatedtrailing."],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/tab\tseparatedtrailing.'"}
+{"fn":"fingerprintUpdateArtifact","args":["İstanbula😀b😀c"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/İstanbula😀b😀c'"}
+{"fn":"fingerprintUpdateArtifact","args":["  padded  a:b:c"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/  padded  a:b:c'"}
+{"fn":"fingerprintUpdateArtifact","args":["ΣΊΣΥΦΟΣünïcödé"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/ΣΊΣΥΦΟΣünïcödé'"}
+{"fn":"fingerprintUpdateArtifact","args":["ans:key.path"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/ans:key.path'"}
+{"fn":"fingerprintUpdateArtifact","args":["./x/**/*.jsonline1\nline2"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/x/**/*.jsonline1\nline2'"}
+{"fn":"fingerprintUpdateArtifact","args":["日本語のテキストstraße"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/日本語のテキストstraße'"}
+{"fn":"fingerprintUpdateArtifact","args":["a..bΣΊΣΥΦΟΣ"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/a..bΣΊΣΥΦΟΣ'"}
+{"fn":"fingerprintUpdateArtifact","args":[":a.b.c"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/:a.b.c'"}
+{"fn":"fingerprintUpdateArtifact","args":["a.b.c./x/**/*.json"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/a.b.c./x/**/*.json'"}
+{"fn":"fingerprintUpdateArtifact","args":["Hello World日本語のテキスト"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/Hello World日本語のテキスト'"}
+{"fn":"fingerprintUpdateArtifact","args":["trailing../x/**/*.json"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/trailing../x/**/*.json'"}
+{"fn":"fingerprintUpdateArtifact","args":["line1\nline2ünïcödé"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/line1\nline2ünïcödé'"}
+{"fn":"fingerprintUpdateArtifact","args":["日本語のテキスト:"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/日本語のテキスト:'"}
+{"fn":"fingerprintUpdateArtifact","args":["﻿bomabc"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/﻿bomabc'"}
+{"fn":"fingerprintUpdateArtifact","args":["日本語のテキストhello world"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/日本語のテキストhello world'"}
+{"fn":"fingerprintUpdateArtifact","args":["hellohello world"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/hellohello world'"}
+{"fn":"fingerprintUpdateArtifact","args":["helloé"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/helloé'"}
+{"fn":"fingerprintUpdateArtifact","args":["  padded  ΣΊΣΥΦΟΣ"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/  padded  ΣΊΣΥΦΟΣ'"}
+{"fn":"fingerprintUpdateArtifact","args":["hello worldHello World"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/hello worldHello World'"}
+{"fn":"fingerprintUpdateArtifact","args":["emoji 👍🏽 mix.leading"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/emoji 👍🏽 mix.leading'"}
+{"fn":"fingerprintUpdateArtifact","args":[":a:b:c"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/:a:b:c'"}
+{"fn":"fingerprintUpdateArtifact","args":["trailing.a..b"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/trailing.a..b'"}
+{"fn":"fingerprintUpdateArtifact","args":["trailing.line1\nline2"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/trailing.line1\nline2'"}
+{"fn":"fingerprintUpdateArtifact","args":["étab\tseparated"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/étab\tseparated'"}
+{"fn":"fingerprintUpdateArtifact","args":["aabc"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/aabc'"}
+{"fn":"fingerprintUpdateArtifact","args":["ünïcödéemoji 👍🏽 mix"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/ünïcödéemoji 👍🏽 mix'"}
+{"fn":"fingerprintUpdateArtifact","args":["tab\tseparatedhello"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/tab\tseparatedhello'"}
+{"fn":"fingerprintUpdateArtifact","args":["ünïcödéns:key.path"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/ünïcödéns:key.path'"}
+{"fn":"fingerprintUpdateArtifact","args":["aemoji 👍🏽 mix"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/aemoji 👍🏽 mix'"}
+{"fn":"fingerprintUpdateArtifact","args":["ünïcödésrc/a/b.ts"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/ünïcödésrc/a/b.ts'"}
+{"fn":"fingerprintUpdateArtifact","args":["ünïcödé.leading"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/ünïcödé.leading'"}
+{"fn":"fingerprintUpdateArtifact","args":["HELLOhello"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/HELLOhello'"}
+{"fn":"fingerprintUpdateArtifact","args":["hello worldtrailing."],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/hello worldtrailing.'"}
+{"fn":"fingerprintUpdateArtifact","args":["src/a/b.tsHello World"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/src/a/b.tsHello World'"}
+{"fn":"fingerprintUpdateArtifact","args":["ns:key.pathünïcödé"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/ns:key.pathünïcödé'"}
+{"fn":"fingerprintUpdateArtifact","args":["a😀"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/a😀'"}
+{"fn":"fingerprintUpdateArtifact","args":["a:b:c{name} has {count} items"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/a:b:c{name} has {count} items'"}
+{"fn":"fingerprintUpdateArtifact","args":["日本語のテキスト日本語のテキスト"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/日本語のテキスト日本語のテキスト'"}
+{"fn":"fingerprintUpdateArtifact","args":[":  padded  "],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/:  padded  '"}
+{"fn":"fingerprintUpdateArtifact","args":["key_name-1a.b.c"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/key_name-1a.b.c'"}
+{"fn":"fingerprintUpdateArtifact","args":["日本語のテキストline1\nline2"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/日本語のテキストline1\nline2'"}
+{"fn":"fingerprintUpdateArtifact","args":["straßetrailing."],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/straßetrailing.'"}
+{"fn":"fingerprintUpdateArtifact","args":["hello worlda😀b😀c"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/hello worlda😀b😀c'"}
+{"fn":"fingerprintUpdateArtifact","args":["  padded  ab"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/  padded  ab'"}
+{"fn":"fingerprintUpdateArtifact","args":["a.b.cHello World"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/a.b.cHello World'"}
+{"fn":"fingerprintUpdateArtifact","args":["ab日本語のテキスト"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/ab日本語のテキスト'"}
+{"fn":"fingerprintUpdateArtifact","args":["éİstanbul"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/éİstanbul'"}
+{"fn":"fingerprintUpdateArtifact","args":["  padded  a.b.c"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/  padded  a.b.c'"}
+{"fn":"fingerprintUpdateArtifact","args":["abtab\tseparated"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/abtab\tseparated'"}
+{"fn":"fingerprintUpdateArtifact","args":["abHello World"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/abHello World'"}
+{"fn":"fingerprintUpdateArtifact","args":["  padded  line1\nline2"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/  padded  line1\nline2'"}
+{"fn":"fingerprintUpdateArtifact","args":["emoji 👍🏽 mixab"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/emoji 👍🏽 mixab'"}
+{"fn":"fingerprintUpdateArtifact","args":["ünïcödéstraße"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/ünïcödéstraße'"}
+{"fn":"fingerprintUpdateArtifact","args":[".leadinghello world"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/.leadinghello world'"}
+{"fn":"fingerprintUpdateArtifact","args":["ΣΊΣΥΦΟΣhello world"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/ΣΊΣΥΦΟΣhello world'"}
+{"fn":"fingerprintUpdateArtifact","args":["aa"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/aa'"}
+{"fn":"fingerprintUpdateArtifact","args":["key_name-1  padded  "],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/key_name-1  padded  '"}
+{"fn":"fingerprintUpdateArtifact","args":["hello worldΣΊΣΥΦΟΣ"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/hello worldΣΊΣΥΦΟΣ'"}
+{"fn":"fingerprintUpdateArtifact","args":["﻿boma"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/﻿boma'"}
+{"fn":"fingerprintUpdateArtifact","args":["emoji 👍🏽 mixline1\nline2"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/emoji 👍🏽 mixline1\nline2'"}
+{"fn":"fingerprintUpdateArtifact","args":["İstanbulhello world"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/İstanbulhello world'"}
+{"fn":"fingerprintUpdateArtifact","args":["﻿boma.b.c"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/﻿boma.b.c'"}
+{"fn":"fingerprintUpdateArtifact","args":["key_name-1HELLO"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/key_name-1HELLO'"}
+{"fn":"fingerprintUpdateArtifact","args":["trailing.😀"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/trailing.😀'"}
+{"fn":"fingerprintUpdateArtifact","args":[":a😀b😀c"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/:a😀b😀c'"}
+{"fn":"fingerprintUpdateArtifact","args":["{name} has {count} itemsline1\nline2"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/{name} has {count} itemsline1\nline2'"}
+{"fn":"fingerprintUpdateArtifact","args":["Hello Worlda😀b😀c"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/Hello Worlda😀b😀c'"}
+{"fn":"fingerprintUpdateArtifact","args":["aa..b"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/aa..b'"}
+{"fn":"fingerprintUpdateArtifact","args":["abc﻿bom"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/abc﻿bom'"}
+{"fn":"fingerprintUpdateArtifact","args":[":line1\nline2"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/:line1\nline2'"}
+{"fn":"fingerprintUpdateArtifact","args":["tab\tseparatedünïcödé"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/tab\tseparatedünïcödé'"}
+{"fn":"fingerprintUpdateArtifact","args":["héllo wörld"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/héllo wörld'"}
+{"fn":"fingerprintUpdateArtifact","args":["👍🏽 thumbs"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/👍🏽 thumbs'"}
+{"fn":"fingerprintUpdateArtifact","args":["日本語"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/日本語'"}
+{"fn":"fingerprintUpdateArtifact","args":["ılık ırmak"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/ılık ırmak'"}
+{"fn":"fingerprintUpdateArtifact","args":["👨‍👩‍👧 family"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/👨‍👩‍👧 family'"}
+{"fn":"fingerprintUpdateArtifact","args":["a b"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/a b'"}
+{"fn":"fingerprintUpdateArtifact","args":["a😀b"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/a😀b'"}
+{"fn":"fingerprintUpdateArtifact","args":["a²b x½ y①"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/a²b x½ y①'"}
+{"fn":"fingerprintUpdateArtifact","args":["aⅠb Ⅻ"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/aⅠb Ⅻ'"}
+{"fn":"fingerprintUpdateArtifact","args":["a𐐀b 𝐀bc"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/a𐐀b 𝐀bc'"}
+{"fn":"fingerprintUpdateArtifact","args":["कि ٣٤"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/कि ٣٤'"}
+{"fn":"fingerprintUpdateArtifact","args":["Iı İi"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/Iı İi'"}
+{"fn":"fingerprintUpdateArtifact","args":["K K k"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/K K k'"}
+{"fn":"fingerprintUpdateArtifact","args":["ſ s S"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/ſ s S'"}
+{"fn":"fingerprintUpdateArtifact","args":["x‍y 👨‍👩‍👧"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/x‍y 👨‍👩‍👧'"}
+{"fn":"fingerprintUpdateArtifact","args":["a b c　d"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/a b c　d'"}
+{"fn":"fingerprintUpdateArtifact","args":["١٢٣ ٤٥"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/١٢٣ ٤٥'"}
+{"fn":"fingerprintUpdateArtifact","args":["𝟘𝟙 ²³"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/𝟘𝟙 ²³'"}
+{"fn":"fingerprintUpdateArtifact","args":["snake_case foo-bar o'neil"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/snake_case foo-bar o'neil'"}
+{"fn":"fingerprintUpdateArtifact","args":["ǅungla Ǆ"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/ǅungla Ǆ'"}
+{"fn":"fingerprintUpdateArtifact","args":["one\r\ntwo threefour"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/one\r\ntwo threefour'"}
+{"fn":"fingerprintUpdateArtifact","args":["café café"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/café café'"}
+{"fn":"fingerprintUpdateArtifact","args":["ΣΑΣ σας ς"],"error":"ENOENT: no such file or directory, lstat '/private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-34094-0/ΣΑΣ σας ς'"}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"😀","size":10,"sha512":"{name} has {count} items"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"a","size":1000000,"sha512":"abc"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"helloΣΊΣΥΦΟΣ","size":1,"sha512":"src/a/b.ts"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"日本語のテキスト","size":1000,"sha512":"key_name-1"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"HELLO","size":10,"sha512":"straße"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"hello world","size":2147483648,"sha512":"İstanbul"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"HELLO","size":{"$num":"-0"},"sha512":"emoji 👍🏽 mix"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"hello","size":-1,"sha512":"İstanbul"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"HELLO","size":{"$num":"NaN"},"sha512":"  padded  "}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"Hello World{name} has {count} items","size":1,"sha512":"日本語のテキスト"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"a..b","size":2,"sha512":"﻿bom"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"a😀b😀c","size":10,"sha512":"line1\nline2"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"src/a/b.ts","size":2,"sha512":"emoji 👍🏽 mix"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[[]],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"key_name-1","size":-1,"sha512":"key_name-1"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":":","size":1,"sha512":"tab\tseparated"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"a😀b😀c","size":2,"sha512":"ns:key.path"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"HELLO","size":{"$num":"-Infinity"},"sha512":"﻿bom"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"emoji 👍🏽 mix","size":{"$num":"Infinity"},"sha512":"./x/**/*.json"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"😀","size":2,"sha512":"  padded  "}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"trailing.ΣΊΣΥΦΟΣ","size":2,"sha512":"a.b.c"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"ab","size":42,"sha512":"hello world"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"  padded  ","size":-2.5,"sha512":":"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"a":{"b":"c"}}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"  padded  ","size":9007199254740992,"sha512":"a😀b😀cabc"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"abline1\nline2","size":{"$num":"NaN"},"sha512":"tab\tseparated"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"straße","size":-2.5,"sha512":"a..b"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"./x/**/*.json","size":2147483648,"sha512":"ab"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"😀","size":{"$num":"NaN"},"sha512":"😀"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"line1\nline2Hello World","size":2,"sha512":"{name} has {count} items"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"hello world","size":3,"sha512":"a"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":["x"],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"src/a/b.tsab","size":10,"sha512":"line1\nline2"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"a:b:ca..b","size":{"$num":"-Infinity"},"sha512":"a😀b😀c"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"abc","size":3,"sha512":"  padded  "}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"a..b","size":{"$num":"-Infinity"},"sha512":"hello world"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"src/a/b.ts","size":1000000,"sha512":"abc"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"İstanbul","size":1000,"sha512":"a"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"é","size":{"$num":"NaN"},"sha512":"a😀b😀c😀"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"line1\nline2","size":2147483648,"sha512":"trailing."}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"tab\tseparatedΣΊΣΥΦΟΣ","size":{"$num":"NaN"},"sha512":"a..bns:key.path"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"./x/**/*.json","size":1000,"sha512":"😀HELLO"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"trailing.","size":{"$num":"-Infinity"},"sha512":"hello"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"a","size":{"$num":"-0"},"sha512":"ns:key.path"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[0],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":":","size":3,"sha512":"{name} has {count} itemsHELLO"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"é","size":{"$num":"-0"},"sha512":"line1\nline2"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"  padded  ","size":10,"sha512":"é"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"a..b","size":2,"sha512":"ns:key.path"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"","size":9007199254740992,"sha512":"HELLO"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"tab\tseparated","size":9007199254740992,"sha512":"  padded  "}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"straße","size":1000000,"sha512":"{name} has {count} items"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"é","size":{"$num":"NaN"},"sha512":"é"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"  padded  ","size":{"$num":"-Infinity"},"sha512":"Hello World"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":".leadinga.b.c","size":1000,"sha512":"a:b:c"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"ΣΊΣΥΦΟΣ","size":3,"sha512":"ünïcödéab"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"a..b","size":1000000,"sha512":""}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"line1\nline2","size":9007199254740992,"sha512":"abca.b.c"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"﻿bom","size":-2.5,"sha512":"ΣΊΣΥΦΟΣ{name} has {count} items"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"hello world","size":0,"sha512":"a..b"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"trailing.","size":{"$num":"-Infinity"},"sha512":"ab"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"","size":{"$num":"-Infinity"},"sha512":"😀"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"hello","size":10,"sha512":"hello"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"a","size":100,"sha512":"﻿bom"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"hello world","size":9007199254740992,"sha512":"a:b:cΣΊΣΥΦΟΣ"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"emoji 👍🏽 mix","size":100,"sha512":"abc:"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"abcünïcödé","size":0.5,"sha512":"İstanbul"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"straße","size":-1,"sha512":"ΣΊΣΥΦΟΣ"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"tab\tseparatedtrailing.","size":1000,"sha512":"HELLO"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"abca:b:c","size":10,"sha512":"ünïcödé"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"a:b:c","size":{"$num":"Infinity"},"sha512":"key_name-1"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"ns:key.path","size":{"$num":"-Infinity"},"sha512":"İstanbul"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"hello","size":9007199254740992,"sha512":"é"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"src/a/b.ts","size":100,"sha512":"line1\nline2"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"ΣΊΣΥΦΟΣ","size":9007199254740992,"sha512":"a..b"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"helloab","size":{"$num":"NaN"},"sha512":"é"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"abchello","size":{"$num":"Infinity"},"sha512":"ns:key.path"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"HELLO","size":1,"sha512":"﻿bomstraße"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"straße","size":2,"sha512":"trailing."}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"a..b","size":3,"sha512":"tab\tseparatedHello World"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"﻿bom","size":3,"sha512":"ΣΊΣΥΦΟΣ"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"","size":2,"sha512":"a.b.c"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"","size":9007199254740992,"sha512":"a😀b😀c"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[["a",1]],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"hello","size":100,"sha512":"trailing."}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"ünïcödé","size":{"$num":"NaN"},"sha512":"line1\nline2"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"ΣΊΣΥΦΟΣ﻿bom","size":{"$num":"Infinity"},"sha512":"Hello World"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"a😀b😀c","size":42,"sha512":"tab\tseparatedé"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"ns:key.path","size":1,"sha512":"./x/**/*.json"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"ns:key.path","size":1000000,"sha512":"hello"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"line1\nline2","size":{"$num":"-Infinity"},"sha512":"a:b:c"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"é","size":3,"sha512":"emoji 👍🏽 mix"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"HELLO","size":{"$num":"NaN"},"sha512":"Hello World"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"a.b.c","size":{"$num":"-0"},"sha512":"emoji 👍🏽 mix"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":":","size":{"$num":"-0"},"sha512":"{name} has {count} items"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"a:b:c","size":-2.5,"sha512":"hello world"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"straße","size":{"$num":"Infinity"},"sha512":"ünïcödé"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"a😀b😀c","size":{"$num":"-0"},"sha512":"tab\tseparated"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"emoji 👍🏽 mixΣΊΣΥΦΟΣ","size":100,"sha512":"tab\tseparatedsrc/a/b.ts"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"emoji 👍🏽 mix","size":{"$num":"Infinity"},"sha512":"abc"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"abstraße","size":{"$num":"NaN"},"sha512":"hello worldkey_name-1"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"a😀b😀ca","size":-1,"sha512":"a😀b😀c"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"a.b.c","size":3,"sha512":".leading"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"abc","size":2,"sha512":"abstraße"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":":","size":1000,"sha512":"tab\tseparated"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"key_name-1straße","size":9007199254740992,"sha512":"😀"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"key_name-1","size":1000,"sha512":"ünïcödé"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"ΣΊΣΥΦΟΣ","size":10,"sha512":"İstanbul"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"key_name-1key_name-1","size":2147483648,"sha512":"ab"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"😀","size":0,"sha512":"Hello World"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":":","size":1,"sha512":"  padded  "}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"","size":{"$num":"Infinity"},"sha512":".leading"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"key_name-1","size":100,"sha512":"./x/**/*.json"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"a":"b"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"a.b.c","size":1,"sha512":"a.b.c"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":".leading","size":100,"sha512":"ns:key.path"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"","size":2,"sha512":"a:b:c"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"  padded  ","size":{"$num":"NaN"},"sha512":"a😀b😀c"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[true],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"./x/**/*.json","size":{"$num":"NaN"},"sha512":":"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"./x/**/*.json","size":0.5,"sha512":"  padded  "}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"İstanbul","size":10,"sha512":".leading"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"Hello World","size":1000000,"sha512":"ab"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"./x/**/*.json{name} has {count} items","size":{"$num":"-Infinity"},"sha512":"./x/**/*.json"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"line1\nline2","size":9007199254740992,"sha512":"emoji 👍🏽 mix"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"line1\nline2","size":42,"sha512":":"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"key_name-1","size":0,"sha512":"a.b.c"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"a😀b😀c","size":{"$num":"NaN"},"sha512":"src/a/b.ts"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"trailing.","size":9007199254740992,"sha512":"é"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"src/a/b.ts","size":-1,"sha512":"a.b.c"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"Hello World","size":2147483648,"sha512":"{name} has {count} itemshello world"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"trailing.","size":1,"sha512":"./x/**/*.json"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"﻿bom","size":{"$num":"-0"},"sha512":"😀"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"{name} has {count} items","size":1000,"sha512":"HELLO"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"a.b.c","size":2147483648,"sha512":"﻿bom"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"./x/**/*.json","size":100,"sha512":"./x/**/*.json"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"ΣΊΣΥΦΟΣ{name} has {count} items","size":3,"sha512":"a:b:c"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"a","size":100,"sha512":"日本語のテキストtrailing."}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"Hello World","size":42,"sha512":"emoji 👍🏽 mix"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"😀é","size":1000,"sha512":"line1\nline2"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"ab","size":10,"sha512":"./x/**/*.jsona..b"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"﻿bom","size":{"$num":"NaN"},"sha512":"İstanbul"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"a:b:c","size":42,"sha512":"İstanbul"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"emoji 👍🏽 mixkey_name-1","size":42,"sha512":"hellotab\tseparated"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"hello","size":-1,"sha512":"  padded  "}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"Hello Worldtab\tseparated","size":9007199254740992,"sha512":"İstanbul"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"","size":2147483648,"sha512":"straße"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"ΣΊΣΥΦΟΣ","size":0,"sha512":"ünïcödé"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"日本語のテキスト","size":0,"sha512":"HELLO"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"a.b.c","size":1000000,"sha512":"😀"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"ünïcödé","size":{"$num":"-Infinity"},"sha512":"trailing."}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"a:b:c","size":{"$num":"Infinity"},"sha512":"İstanbul"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"tab\tseparated","size":2,"sha512":"HELLO"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"a.b.c","size":{"$num":"NaN"},"sha512":"a:b:c"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"hello","size":42,"sha512":":"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"src/a/b.ts","size":3,"sha512":"helloemoji 👍🏽 mix"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":".leadingtrailing.","size":1000,"sha512":"日本語のテキスト"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"é","size":2147483648,"sha512":"ünïcödé./x/**/*.json"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"ünïcödé./x/**/*.json","size":{"$num":"NaN"},"sha512":"a😀b😀c"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"trailing.","size":100,"sha512":""}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"a.b.c","size":42,"sha512":"src/a/b.ts"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"./x/**/*.json","size":0.5,"sha512":"é"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"Hello World","size":1000000,"sha512":"Hello World:"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":".leading","size":1000000,"sha512":"emoji 👍🏽 mix﻿bom"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"trailing.","size":-2.5,"sha512":"ns:key.path"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"😀","size":{"$num":"-Infinity"},"sha512":""}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"","size":9007199254740992,"sha512":"ΣΊΣΥΦΟΣ"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"é","size":9007199254740992,"sha512":"tab\tseparated"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"ΣΊΣΥΦΟΣ","size":-2.5,"sha512":"a😀b😀c:"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"a.b.c","size":-1,"sha512":"﻿bom"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"trailing.ns:key.path","size":-1,"sha512":"  padded  "}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"ab","size":{"$num":"Infinity"},"sha512":"ünïcödé"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"helloemoji 👍🏽 mix","size":10,"sha512":"tab\tseparated"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"ΣΊΣΥΦΟΣ","size":100,"sha512":"straße"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"hello world","size":1000,"sha512":"ab"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"key_name-1é","size":2,"sha512":"a😀b😀c"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"a😀b😀c","size":10,"sha512":"key_name-1"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"tab\tseparated  padded  ","size":{"$num":"Infinity"},"sha512":"key_name-1"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"a","size":1,"sha512":"trailing.HELLO"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"","size":1,"sha512":"İstanbulab"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"./x/**/*.json﻿bom","size":3,"sha512":"abc"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"straße","size":2147483648,"sha512":"trailing."}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"tab\tseparated","size":2,"sha512":"hello world"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":".leadinga😀b😀c","size":3,"sha512":"tab\tseparated"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"日本語のテキストa","size":{"$num":"Infinity"},"sha512":":İstanbul"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"src/a/b.ts","size":-2.5,"sha512":"İstanbul"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"ab","size":1,"sha512":"HELLO"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"tab\tseparated","size":{"$num":"NaN"},"sha512":"a.b.cé"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"İstanbul","size":10,"sha512":"é"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"a..b","size":0.5,"sha512":"HELLO"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"./x/**/*.json","size":{"$num":"-0"},"sha512":"straße"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"﻿bom","size":42,"sha512":"a..b"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"  padded  ","size":2147483648,"sha512":"trailing."}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"ab","size":-1,"sha512":"a"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"tab\tseparated","size":-2.5,"sha512":"İstanbul"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"ΣΊΣΥΦΟΣ","size":{"$num":"-0"},"sha512":"tab\tseparated"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"ΣΊΣΥΦΟΣa..b","size":1000,"sha512":"straße"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"tab\tseparated","size":3,"sha512":"HELLO"}],"ok":false}
+{"fn":"verifyUpdateArtifactIdentity","args":[{"path":"abc","size":-1,"sha512":""}],"ok":false}

@@ -1,0 +1,90 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/desktop/src/updateArtifactIdentity.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "updateartifactidentity-rs",
+  "exports": [
+    {
+      "name": "isUpdateArtifactIdentity",
+      "file": "apps/desktop/src/updateArtifactIdentity.ts",
+      "line": 17,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "value is UpdateArtifactIdentity",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "updateArtifactIdentitiesEqual",
+      "file": "apps/desktop/src/updateArtifactIdentity.ts",
+      "line": 32,
+      "params": [
+        {
+          "name": "left",
+          "ts_type": "UpdateArtifactIdentity",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "right",
+          "ts_type": "UpdateArtifactIdentity",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "fingerprintUpdateArtifact",
+      "file": "apps/desktop/src/updateArtifactIdentity.ts",
+      "line": 39,
+      "params": [
+        {
+          "name": "filePath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<UpdateArtifactIdentity>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "verifyUpdateArtifactIdentity",
+      "file": "apps/desktop/src/updateArtifactIdentity.ts",
+      "line": 92,
+      "params": [
+        {
+          "name": "expected",
+          "ts_type": "UpdateArtifactIdentity",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<boolean>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

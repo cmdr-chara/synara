@@ -1,0 +1,17 @@
+{
+  "unit": "packages/shared/src/outboundHttpPolicy.ts",
+  "files": 1,
+  "fingerprint": "94eb52b8f5269c02",
+  "coverage": {
+    "lines": 199,
+    "reached": 144,
+    "files": [
+      {
+        "file": "packages/shared/src/outboundHttpPolicy.ts",
+        "lines": 199,
+        "reached": 144,
+        "missed": "110-117, 120-141, 144-168"
+      }
+    ]
+  }
+}

@@ -1,0 +1,151 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/outboundHttpPolicy.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "outboundhttppolicy-rs",
+  "exports": [
+    {
+      "name": "isPublicIpAddress",
+      "file": "packages/shared/src/outboundHttpPolicy.ts",
+      "line": 66,
+      "params": [
+        {
+          "name": "address",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "assertPublicIpAddress",
+      "file": "packages/shared/src/outboundHttpPolicy.ts",
+      "line": 78,
+      "params": [
+        {
+          "name": "address",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "assertExactLoopbackIpAddress",
+      "file": "packages/shared/src/outboundHttpPolicy.ts",
+      "line": 87,
+      "params": [
+        {
+          "name": "address",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "allowIpv4Subnet",
+          "ts_type": "boolean",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isBenchmarkIpAddress",
+      "file": "packages/shared/src/outboundHttpPolicy.ts",
+      "line": 106,
+      "params": [
+        {
+          "name": "address",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "assertJsonWithinLimits",
+      "file": "packages/shared/src/outboundHttpPolicy.ts",
+      "line": 170,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "limits",
+          "ts_type": "{ readonly maxDepth: number; readonly maxNodes: number }",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "stripOutboundSensitiveHeaders",
+      "file": "packages/shared/src/outboundHttpPolicy.ts",
+      "line": 212,
+      "params": [
+        {
+          "name": "headers",
+          "ts_type": "Headers",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Headers",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "OutboundPolicyError",
+      "file": "packages/shared/src/outboundHttpPolicy.ts",
+      "line": 14,
+      "reason": "class: extends another class, public field `code`"
+    },
+    {
+      "name": "normalizeOutboundOrigin",
+      "file": "packages/shared/src/outboundHttpPolicy.ts",
+      "line": 119,
+      "reason": "checks `instanceof`: class identity does not survive the bridge"
+    },
+    {
+      "name": "assertOutboundUrlAllowed",
+      "file": "packages/shared/src/outboundHttpPolicy.ts",
+      "line": 143,
+      "reason": "checks `instanceof`: class identity does not survive the bridge"
+    }
+  ]
+}

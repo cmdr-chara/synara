@@ -1,0 +1,1266 @@
+{"fn":"isPublicIpAddress","args":["abc"],"ok":false}
+{"fn":"isPublicIpAddress","args":["src/a/b.ts"],"ok":false}
+{"fn":"isPublicIpAddress","args":["İstanbul"],"ok":false}
+{"fn":"isPublicIpAddress","args":["a.b.c"],"ok":false}
+{"fn":"isPublicIpAddress","args":["😀hello"],"ok":false}
+{"fn":"isPublicIpAddress","args":["ab"],"ok":false}
+{"fn":"isPublicIpAddress","args":["line1\nline2"],"ok":false}
+{"fn":"isPublicIpAddress","args":["ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isPublicIpAddress","args":["hello"],"ok":false}
+{"fn":"isPublicIpAddress","args":["helloa:b:c"],"ok":false}
+{"fn":"isPublicIpAddress","args":["tab\tseparatedtab\tseparated"],"ok":false}
+{"fn":"isPublicIpAddress","args":[".leading"],"ok":false}
+{"fn":"isPublicIpAddress","args":["a:b:c"],"ok":false}
+{"fn":"isPublicIpAddress","args":["ns:key.path"],"ok":false}
+{"fn":"isPublicIpAddress","args":["key_name-1"],"ok":false}
+{"fn":"isPublicIpAddress","args":["Hello World"],"ok":false}
+{"fn":"isPublicIpAddress","args":["a"],"ok":false}
+{"fn":"isPublicIpAddress","args":["./x/**/*.json"],"ok":false}
+{"fn":"isPublicIpAddress","args":["straße"],"ok":false}
+{"fn":"isPublicIpAddress","args":["a{name} has {count} items"],"ok":false}
+{"fn":"isPublicIpAddress","args":["tab\tseparated"],"ok":false}
+{"fn":"isPublicIpAddress","args":["a:b:c.leading"],"ok":false}
+{"fn":"isPublicIpAddress","args":["tab\tseparatedtrailing."],"ok":false}
+{"fn":"isPublicIpAddress","args":["a..b"],"ok":false}
+{"fn":"isPublicIpAddress","args":["emoji 👍🏽 mix"],"ok":false}
+{"fn":"isPublicIpAddress","args":["a😀b😀c"],"ok":false}
+{"fn":"isPublicIpAddress","args":["  padded  "],"ok":false}
+{"fn":"isPublicIpAddress","args":["tab\tseparatedsrc/a/b.ts"],"ok":false}
+{"fn":"isPublicIpAddress","args":[":"],"ok":false}
+{"fn":"isPublicIpAddress","args":["﻿bom"],"ok":false}
+{"fn":"isPublicIpAddress","args":["HELLOkey_name-1"],"ok":false}
+{"fn":"isPublicIpAddress","args":["{name} has {count} items"],"ok":false}
+{"fn":"isPublicIpAddress","args":["helloabc"],"ok":false}
+{"fn":"isPublicIpAddress","args":["emoji 👍🏽 mixline1\nline2"],"ok":false}
+{"fn":"isPublicIpAddress","args":[":é"],"ok":false}
+{"fn":"isPublicIpAddress","args":[""],"ok":false}
+{"fn":"isPublicIpAddress","args":["hello world"],"ok":false}
+{"fn":"isPublicIpAddress","args":["a😀b😀c.leading"],"ok":false}
+{"fn":"isPublicIpAddress","args":["aba😀b😀c"],"ok":false}
+{"fn":"isPublicIpAddress","args":["ünïcödé"],"ok":false}
+{"fn":"isPublicIpAddress","args":["😀"],"ok":false}
+{"fn":"isPublicIpAddress","args":[":.leading"],"ok":false}
+{"fn":"isPublicIpAddress","args":["日本語のテキスト"],"ok":false}
+{"fn":"isPublicIpAddress","args":["HELLO"],"ok":false}
+{"fn":"isPublicIpAddress","args":["ünïcödé﻿bom"],"ok":false}
+{"fn":"isPublicIpAddress","args":[":ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isPublicIpAddress","args":["a..bünïcödé"],"ok":false}
+{"fn":"isPublicIpAddress","args":["aa..b"],"ok":false}
+{"fn":"isPublicIpAddress","args":["a.b.cab"],"ok":false}
+{"fn":"isPublicIpAddress","args":["hello worldhello"],"ok":false}
+{"fn":"isPublicIpAddress","args":["ns:key.pathHELLO"],"ok":false}
+{"fn":"isPublicIpAddress","args":["éa"],"ok":false}
+{"fn":"isPublicIpAddress","args":["abHello World"],"ok":false}
+{"fn":"isPublicIpAddress","args":["é"],"ok":false}
+{"fn":"isPublicIpAddress","args":["./x/**/*.jsonhello"],"ok":false}
+{"fn":"isPublicIpAddress","args":["日本語のテキストsrc/a/b.ts"],"ok":false}
+{"fn":"isPublicIpAddress","args":["日本語のテキストa.b.c"],"ok":false}
+{"fn":"isPublicIpAddress","args":["trailing.a:b:c"],"ok":false}
+{"fn":"isPublicIpAddress","args":[":ünïcödé"],"ok":false}
+{"fn":"isPublicIpAddress","args":["ünïcödéünïcödé"],"ok":false}
+{"fn":"isPublicIpAddress","args":["a.b.cline1\nline2"],"ok":false}
+{"fn":"isPublicIpAddress","args":["emoji 👍🏽 mixİstanbul"],"ok":false}
+{"fn":"isPublicIpAddress","args":["HELLOabc"],"ok":false}
+{"fn":"isPublicIpAddress","args":["straßeabc"],"ok":false}
+{"fn":"isPublicIpAddress","args":["hello world日本語のテキスト"],"ok":false}
+{"fn":"isPublicIpAddress","args":["a:"],"ok":false}
+{"fn":"isPublicIpAddress","args":["😀日本語のテキスト"],"ok":false}
+{"fn":"isPublicIpAddress","args":["Hello WorldHELLO"],"ok":false}
+{"fn":"isPublicIpAddress","args":["😀straße"],"ok":false}
+{"fn":"isPublicIpAddress","args":["trailing."],"ok":false}
+{"fn":"isPublicIpAddress","args":["trailing.ünïcödé"],"ok":false}
+{"fn":"isPublicIpAddress","args":["éHELLO"],"ok":false}
+{"fn":"isPublicIpAddress","args":["abcab"],"ok":false}
+{"fn":"isPublicIpAddress","args":["ab  padded  "],"ok":false}
+{"fn":"isPublicIpAddress","args":["hello worldstraße"],"ok":false}
+{"fn":"isPublicIpAddress","args":["a..bHELLO"],"ok":false}
+{"fn":"isPublicIpAddress","args":["a..btrailing."],"ok":false}
+{"fn":"isPublicIpAddress","args":["{name} has {count} itemsa:b:c"],"ok":false}
+{"fn":"isPublicIpAddress","args":["a.b.ca.b.c"],"ok":false}
+{"fn":"isPublicIpAddress","args":["a.b.csrc/a/b.ts"],"ok":false}
+{"fn":"isPublicIpAddress","args":["line1\nline2straße"],"ok":false}
+{"fn":"isPublicIpAddress","args":["hellotrailing."],"ok":false}
+{"fn":"isPublicIpAddress","args":["a..b.leading"],"ok":false}
+{"fn":"isPublicIpAddress","args":["éab"],"ok":false}
+{"fn":"isPublicIpAddress","args":["helloa..b"],"ok":false}
+{"fn":"isPublicIpAddress","args":["key_name-1日本語のテキスト"],"ok":false}
+{"fn":"isPublicIpAddress","args":["{name} has {count} itemstab\tseparated"],"ok":false}
+{"fn":"isPublicIpAddress","args":["a.b.ckey_name-1"],"ok":false}
+{"fn":"isPublicIpAddress","args":["  padded  {name} has {count} items"],"ok":false}
+{"fn":"isPublicIpAddress","args":["a:b:cns:key.path"],"ok":false}
+{"fn":"isPublicIpAddress","args":["İstanbula..b"],"ok":false}
+{"fn":"isPublicIpAddress","args":["trailing.:"],"ok":false}
+{"fn":"isPublicIpAddress","args":["ns:key.pathünïcödé"],"ok":false}
+{"fn":"isPublicIpAddress","args":["﻿bomé"],"ok":false}
+{"fn":"isPublicIpAddress","args":["a..bkey_name-1"],"ok":false}
+{"fn":"isPublicIpAddress","args":["😀tab\tseparated"],"ok":false}
+{"fn":"isPublicIpAddress","args":["HELLO  padded  "],"ok":false}
+{"fn":"isPublicIpAddress","args":["helloab"],"ok":false}
+{"fn":"isPublicIpAddress","args":["İstanbulstraße"],"ok":false}
+{"fn":"isPublicIpAddress","args":["İstanbul﻿bom"],"ok":false}
+{"fn":"isPublicIpAddress","args":["{name} has {count} itemsstraße"],"ok":false}
+{"fn":"isPublicIpAddress","args":["ΣΊΣΥΦΟΣemoji 👍🏽 mix"],"ok":false}
+{"fn":"isPublicIpAddress","args":["line1\nline2😀"],"ok":false}
+{"fn":"isPublicIpAddress","args":["hello worldİstanbul"],"ok":false}
+{"fn":"isPublicIpAddress","args":["./x/**/*.jsontab\tseparated"],"ok":false}
+{"fn":"isPublicIpAddress","args":["Hello Worldtab\tseparated"],"ok":false}
+{"fn":"isPublicIpAddress","args":["a:b:cemoji 👍🏽 mix"],"ok":false}
+{"fn":"isPublicIpAddress","args":["a..bé"],"ok":false}
+{"fn":"isPublicIpAddress","args":["trailing.日本語のテキスト"],"ok":false}
+{"fn":"isPublicIpAddress","args":["./x/**/*.jsonline1\nline2"],"ok":false}
+{"fn":"isPublicIpAddress","args":["HELLOtrailing."],"ok":false}
+{"fn":"isPublicIpAddress","args":["abca😀b😀c"],"ok":false}
+{"fn":"isPublicIpAddress","args":["abca"],"ok":false}
+{"fn":"isPublicIpAddress","args":[".leadinga😀b😀c"],"ok":false}
+{"fn":"isPublicIpAddress","args":["trailing.a..b"],"ok":false}
+{"fn":"isPublicIpAddress","args":["abcsrc/a/b.ts"],"ok":false}
+{"fn":"isPublicIpAddress","args":["Hello World﻿bom"],"ok":false}
+{"fn":"isPublicIpAddress","args":["aa😀b😀c"],"ok":false}
+{"fn":"isPublicIpAddress","args":["﻿bomab"],"ok":false}
+{"fn":"isPublicIpAddress","args":["😀é"],"ok":false}
+{"fn":"isPublicIpAddress","args":["abİstanbul"],"ok":false}
+{"fn":"isPublicIpAddress","args":[".leadingkey_name-1"],"ok":false}
+{"fn":"isPublicIpAddress","args":["tab\tseparatedé"],"ok":false}
+{"fn":"isPublicIpAddress","args":["{name} has {count} itemshello world"],"ok":false}
+{"fn":"isPublicIpAddress","args":["日本語のテキスト😀"],"ok":false}
+{"fn":"isPublicIpAddress","args":["abc{name} has {count} items"],"ok":false}
+{"fn":"isPublicIpAddress","args":["emoji 👍🏽 mixabc"],"ok":false}
+{"fn":"isPublicIpAddress","args":["é.leading"],"ok":false}
+{"fn":"isPublicIpAddress","args":["abtab\tseparated"],"ok":false}
+{"fn":"isPublicIpAddress","args":["é  padded  "],"ok":false}
+{"fn":"isPublicIpAddress","args":["line1\nline2hello world"],"ok":false}
+{"fn":"isPublicIpAddress","args":["Hello Worldstraße"],"ok":false}
+{"fn":"isPublicIpAddress","args":["hello worlda:b:c"],"ok":false}
+{"fn":"isPublicIpAddress","args":["emoji 👍🏽 mixa:b:c"],"ok":false}
+{"fn":"isPublicIpAddress","args":["a😀b😀c:"],"ok":false}
+{"fn":"isPublicIpAddress","args":["ΣΊΣΥΦΟΣab"],"ok":false}
+{"fn":"isPublicIpAddress","args":["a.b.c./x/**/*.json"],"ok":false}
+{"fn":"isPublicIpAddress","args":["éé"],"ok":false}
+{"fn":"isPublicIpAddress","args":["trailing.😀"],"ok":false}
+{"fn":"isPublicIpAddress","args":["  padded  src/a/b.ts"],"ok":false}
+{"fn":"isPublicIpAddress","args":["ünïcödéstraße"],"ok":false}
+{"fn":"isPublicIpAddress","args":["a..ba..b"],"ok":false}
+{"fn":"isPublicIpAddress","args":["😀a..b"],"ok":false}
+{"fn":"isPublicIpAddress","args":["abctab\tseparated"],"ok":false}
+{"fn":"isPublicIpAddress","args":["ns:key.patha..b"],"ok":false}
+{"fn":"isPublicIpAddress","args":["tab\tseparateda..b"],"ok":false}
+{"fn":"isPublicIpAddress","args":["a:b:c{name} has {count} items"],"ok":false}
+{"fn":"isPublicIpAddress","args":["straßeab"],"ok":false}
+{"fn":"isPublicIpAddress","args":["key_name-1İstanbul"],"ok":false}
+{"fn":"isPublicIpAddress","args":["ΣΊΣΥΦΟΣé"],"ok":false}
+{"fn":"isPublicIpAddress","args":["ünïcödéabc"],"ok":false}
+{"fn":"isPublicIpAddress","args":["😀./x/**/*.json"],"ok":false}
+{"fn":"isPublicIpAddress","args":["helloa"],"ok":false}
+{"fn":"isPublicIpAddress","args":["tab\tseparated😀"],"ok":false}
+{"fn":"isPublicIpAddress","args":["ns:key.pathns:key.path"],"ok":false}
+{"fn":"isPublicIpAddress","args":["trailing../x/**/*.json"],"ok":false}
+{"fn":"isPublicIpAddress","args":["  padded  emoji 👍🏽 mix"],"ok":false}
+{"fn":"isPublicIpAddress","args":["a..bhello world"],"ok":false}
+{"fn":"isPublicIpAddress","args":["./x/**/*.jsontrailing."],"ok":false}
+{"fn":"isPublicIpAddress","args":["trailing.hello world"],"ok":false}
+{"fn":"isPublicIpAddress","args":["line1\nline2﻿bom"],"ok":false}
+{"fn":"isPublicIpAddress","args":["hellosrc/a/b.ts"],"ok":false}
+{"fn":"isPublicIpAddress","args":["straße{name} has {count} items"],"ok":false}
+{"fn":"isPublicIpAddress","args":["src/a/b.tsHELLO"],"ok":false}
+{"fn":"isPublicIpAddress","args":["HELLOsrc/a/b.ts"],"ok":false}
+{"fn":"isPublicIpAddress","args":[".leadingΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isPublicIpAddress","args":["{name} has {count} items:"],"ok":false}
+{"fn":"isPublicIpAddress","args":["  padded  ab"],"ok":false}
+{"fn":"isPublicIpAddress","args":[":abc"],"ok":false}
+{"fn":"isPublicIpAddress","args":["a..bstraße"],"ok":false}
+{"fn":"isPublicIpAddress","args":["tab\tseparateda.b.c"],"ok":false}
+{"fn":"isPublicIpAddress","args":["src/a/b.tshello"],"ok":false}
+{"fn":"isPublicIpAddress","args":["ΣΊΣΥΦΟΣa..b"],"ok":false}
+{"fn":"isPublicIpAddress","args":["a:b:ca"],"ok":false}
+{"fn":"isPublicIpAddress","args":[":trailing."],"ok":false}
+{"fn":"isPublicIpAddress","args":["src/a/b.ts😀"],"ok":false}
+{"fn":"isPublicIpAddress","args":["hello worlda..b"],"ok":false}
+{"fn":"isPublicIpAddress","args":["ns:key.pathab"],"ok":false}
+{"fn":"isPublicIpAddress","args":["ns:key.pathtab\tseparated"],"ok":false}
+{"fn":"isPublicIpAddress","args":["日本語のテキストstraße"],"ok":false}
+{"fn":"isPublicIpAddress","args":["key_name-1.leading"],"ok":false}
+{"fn":"isPublicIpAddress","args":["Hello Worldemoji 👍🏽 mix"],"ok":false}
+{"fn":"isPublicIpAddress","args":["emoji 👍🏽 mixtab\tseparated"],"ok":false}
+{"fn":"isPublicIpAddress","args":["é:"],"ok":false}
+{"fn":"isPublicIpAddress","args":["😀ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isPublicIpAddress","args":["helloline1\nline2"],"ok":false}
+{"fn":"isPublicIpAddress","args":["Hello WorldHello World"],"ok":false}
+{"fn":"isPublicIpAddress","args":["abkey_name-1"],"ok":false}
+{"fn":"isPublicIpAddress","args":["日本語のテキストns:key.path"],"ok":false}
+{"fn":"isPublicIpAddress","args":["astraße"],"ok":false}
+{"fn":"isPublicIpAddress","args":["abchello world"],"ok":false}
+{"fn":"isPublicIpAddress","args":["İstanbula"],"ok":false}
+{"fn":"isPublicIpAddress","args":["ΣΊΣΥΦΟΣtab\tseparated"],"ok":false}
+{"fn":"isPublicIpAddress","args":["trailing.abc"],"ok":false}
+{"fn":"isPublicIpAddress","args":["Hello Worldünïcödé"],"ok":false}
+{"fn":"isPublicIpAddress","args":["hello worlda.b.c"],"ok":false}
+{"fn":"isPublicIpAddress","args":["abc:"],"ok":false}
+{"fn":"isPublicIpAddress","args":["ab﻿bom"],"ok":false}
+{"fn":"isPublicIpAddress","args":["ΣΊΣΥΦΟΣ﻿bom"],"ok":false}
+{"fn":"isPublicIpAddress","args":["a..b日本語のテキスト"],"ok":false}
+{"fn":"isPublicIpAddress","args":["héllo wörld"],"ok":false}
+{"fn":"isPublicIpAddress","args":["👍🏽 thumbs"],"ok":false}
+{"fn":"isPublicIpAddress","args":["日本語"],"ok":false}
+{"fn":"isPublicIpAddress","args":["ılık ırmak"],"ok":false}
+{"fn":"isPublicIpAddress","args":["👨‍👩‍👧 family"],"ok":false}
+{"fn":"isPublicIpAddress","args":["a b"],"ok":false}
+{"fn":"isPublicIpAddress","args":["a😀b"],"ok":false}
+{"fn":"isPublicIpAddress","args":["a²b x½ y①"],"ok":false}
+{"fn":"isPublicIpAddress","args":["aⅠb Ⅻ"],"ok":false}
+{"fn":"isPublicIpAddress","args":["a𐐀b 𝐀bc"],"ok":false}
+{"fn":"isPublicIpAddress","args":["कि ٣٤"],"ok":false}
+{"fn":"assertPublicIpAddress","args":["straße{name} has {count} items"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":[":{name} has {count} items"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["abc"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["😀"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["ns:key.path"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["straße"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["﻿bom"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":[""],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["a..b"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["./x/**/*.json"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["trailing."],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["a.b.c"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["line1\nline2"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["a"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["HELLO"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["ns:key.patha:b:c"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["ΣΊΣΥΦΟΣ"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["😀😀"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["hello world"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":[":"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["İstanbul"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["  padded  "],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["日本語のテキストhello"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["key_name-1"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["abcΣΊΣΥΦΟΣ"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["emoji 👍🏽 mix"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["a😀b😀c"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":[".leading"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["{name} has {count} itemsabc"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["{name} has {count} itemssrc/a/b.ts"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["tab\tseparated"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["é"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["  padded  ab"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["helloİstanbul"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["ünïcödé"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["src/a/b.ts"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["straße./x/**/*.json"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["日本語のテキスト"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["Hello World"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["src/a/b.tshello world"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["hello world  padded  "],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["trailing.Hello World"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["{name} has {count} items"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["ünïcödésrc/a/b.ts"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["a..ba😀b😀c"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["hello"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["./x/**/*.json.leading"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["ΣΊΣΥΦΟΣ  padded  "],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["﻿bom.leading"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":[".leadingline1\nline2"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["{name} has {count} items./x/**/*.json"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["a😀b😀cstraße"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["ab"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["ünïcödéhello world"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["  padded  Hello World"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["a:b:c"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["é﻿bom"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["aba.b.c"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["emoji 👍🏽 mix./x/**/*.json"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["İstanbul😀"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["helloa.b.c"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["src/a/b.ts.leading"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["a😀b😀ca:b:c"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["straßekey_name-1"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["key_name-1tab\tseparated"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["key_name-1abc"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["a😀b😀chello"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["  padded  HELLO"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["éünïcödé"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["﻿bom  padded  "],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["İstanbulHELLO"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["tab\tseparated  padded  "],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":[".leading日本語のテキスト"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["emoji 👍🏽 mix日本語のテキスト"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["helloa😀b😀c"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["İstanbulns:key.path"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":[".leadinghello"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["abkey_name-1"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["﻿bomé"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["emoji 👍🏽 mix.leading"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["abé"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["ns:key.pathHELLO"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["ab:"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["hellostraße"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["😀ΣΊΣΥΦΟΣ"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["line1\nline2a"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":[".leadingΣΊΣΥΦΟΣ"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["trailing.:"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":[".leadingHello World"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["./x/**/*.json  padded  "],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["./x/**/*.jsonünïcödé"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["  padded  trailing."],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["{name} has {count} itemsa.b.c"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["HELLO日本語のテキスト"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["a:b:cünïcödé"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["a.leading"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["a:b:csrc/a/b.ts"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["ünïcödé﻿bom"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["éline1\nline2"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["HELLO{name} has {count} items"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["  padded  ﻿bom"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["hello world.leading"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["hello worldstraße"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["a.b.cΣΊΣΥΦΟΣ"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["İstanbula😀b😀c"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["emoji 👍🏽 mixtab\tseparated"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":[".leadingİstanbul"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["abc{name} has {count} items"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["ünïcödétrailing."],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["src/a/b.tsa:b:c"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["straßeemoji 👍🏽 mix"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["日本語のテキスト{name} has {count} items"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["src/a/b.tssrc/a/b.ts"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["src/a/b.ts./x/**/*.json"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["hello﻿bom"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["tab\tseparateda"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["abc./x/**/*.json"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["ΣΊΣΥΦΟΣstraße"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":[".leadinga.b.c"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["abhello"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["﻿bomemoji 👍🏽 mix"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":[":a"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["a😀b😀ca..b"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["straßea..b"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["a{name} has {count} items"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["a.b.ca"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["a😀b😀c😀"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["src/a/b.tsstraße"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["a..ba:b:c"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["HELLOhello"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["trailing.line1\nline2"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["hello world日本語のテキスト"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["ünïcödéa😀b😀c"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["Hello Worldhello"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["tab\tseparatedline1\nline2"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["abchello world"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["ünïcödé  padded  "],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["aHELLO"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["hello  padded  "],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["{name} has {count} items  padded  "],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["trailing../x/**/*.json"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["a..bΣΊΣΥΦΟΣ"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["tab\tseparated./x/**/*.json"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["key_name-1ns:key.path"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["a.b.cİstanbul"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["straßea:b:c"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["İstanbulİstanbul"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["key_name-1😀"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["a..bhello world"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["Hello Worldns:key.path"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["a.b.ca😀b😀c"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["line1\nline2a:b:c"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["trailing.src/a/b.ts"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["a😀b😀ca"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["trailing.日本語のテキスト"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["straßeabc"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["ns:key.pathhello"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["./x/**/*.json{name} has {count} items"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":[".leading  padded  "],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["emoji 👍🏽 mixab"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["src/a/b.ts😀"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["hello😀"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":[":﻿bom"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["ünïcödéabc"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["emoji 👍🏽 mixΣΊΣΥΦΟΣ"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["ünïcödé{name} has {count} items"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["line1\nline2a..b"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["ab./x/**/*.json"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["ns:key.path./x/**/*.json"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":[".leadingkey_name-1"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["key_name-1{name} has {count} items"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["a..bsrc/a/b.ts"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["src/a/b.tsabc"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["./x/**/*.jsonemoji 👍🏽 mix"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["ünïcödéhello"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["abab"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["  padded  :"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["abc日本語のテキスト"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["hello.leading"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["日本語のテキストa:b:c"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["😀emoji 👍🏽 mix"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["straße😀"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["ns:key.path😀"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["ΣΊΣΥΦΟΣtab\tseparated"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["{name} has {count} itemsline1\nline2"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["line1\nline2ab"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["HELLOΣΊΣΥΦΟΣ"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["straßetrailing."],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["😀straße"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["straße  padded  "],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["tab\tseparateda.b.c"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":[".leadingünïcödé"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["{name} has {count} itemsns:key.path"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["ahello"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["./x/**/*.jsonhello"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["日本語のテキスト:"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["ΣΊΣΥΦΟΣline1\nline2"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["ab{name} has {count} items"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["abca.b.c"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["étrailing."],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["héllo wörld"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["👍🏽 thumbs"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["日本語"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["ılık ırmak"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["👨‍👩‍👧 family"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["a b"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["a😀b"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["a²b x½ y①"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["aⅠb Ⅻ"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["a𐐀b 𝐀bc"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertPublicIpAddress","args":["कि ٣٤"],"error":"Outbound destination resolved to a private, local, reserved, or invalid address."}
+{"fn":"assertExactLoopbackIpAddress","args":["ab",true],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["emoji 👍🏽 mix",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["ns:key.patha:b:c",true],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":[""],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["ΣΊΣΥΦΟΣ"],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["./x/**/*.json",true],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["line1\nline2"],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":[".leading",true],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["ns:key.path"],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["",true],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["Hello World",true],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["tab\tseparated{name} has {count} items"],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["./x/**/*.json"],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["straße",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["tab\tseparated",true],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["a",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["trailing."],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":[".leadingline1\nline2",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["Hello Worldsrc/a/b.ts",true],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["é",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":[".leading",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["{name} has {count} items",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["src/a/b.ts",true],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["HELLO",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":[":",true],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["日本語のテキスト",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["😀İstanbul",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["😀",true],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["ΣΊΣΥΦΟΣhello world",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["hello world",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["日本語のテキスト",{"$undefined":true}],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["a..b",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["hello  padded  ",true],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["ab",{"$undefined":true}],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["İstanbul"],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["key_name-1",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["./x/**/*.json",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["ab.leading",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["a😀b😀c"],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["ünïcödé",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":[":",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["",{"$undefined":true}],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["trailing.trailing.",true],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["é",{"$undefined":true}],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["﻿bom",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["trailing.ünïcödé",{"$undefined":true}],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["line1\nline2",{"$undefined":true}],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["trailing.key_name-1",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["emoji 👍🏽 mix"],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["a😀b😀c",true],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["İstanbul",true],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["tab\tseparated",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["a..b",true],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["a.b.c",{"$undefined":true}],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["line1\nline2",true],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["﻿bom",true],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["﻿bom",{"$undefined":true}],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["a",true],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["Hello World",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["hello world"],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["ab",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["ünïcödé"],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["ΣΊΣΥΦΟΣ",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["tab\tseparated",{"$undefined":true}],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["a.b.c"],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["a..bns:key.path",true],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["a:b:c",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["Hello WorldHELLO",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["é",true],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["line1\nline2ΣΊΣΥΦΟΣ",true],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["a:b:cab",{"$undefined":true}],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["abc",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["😀line1\nline2",{"$undefined":true}],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["HELLO",true],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["a..b",{"$undefined":true}],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["hello world:",{"$undefined":true}],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["a:b:c",true],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["  padded  ",true],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["abc",{"$undefined":true}],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["a😀b😀c",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["Hello World日本語のテキスト",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["hello",true],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["😀Hello World"],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["a.b.c",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["a.b.c",true],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["emoji 👍🏽 mix",true],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["{name} has {count} items",true],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["ünïcödéa😀b😀c",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["ünïcödé",true],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["trailing.a",true],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["😀",{"$undefined":true}],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["😀hello",true],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["İstanbul",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["Hello Worldstraße",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["src/a/b.ts",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["abns:key.path",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["emoji 👍🏽 mix.leading",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["straße",{"$undefined":true}],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["a:b:cline1\nline2",{"$undefined":true}],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["ns:key.path",true],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["a..b.leading",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["日本語のテキスト"],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["tab\tseparated:",{"$undefined":true}],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["ns:key.pathHELLO",{"$undefined":true}],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["aünïcödé"],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":[".leadingé",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["é日本語のテキスト"],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["ünïcödétrailing.",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["a..bsrc/a/b.ts"],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["abtab\tseparated",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["line1\nline2",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["a:b:c{name} has {count} items",{"$undefined":true}],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["key_name-1",true],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["ans:key.path",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["abc",true],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["key_name-1ns:key.path",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["ΣΊΣΥΦΟΣİstanbul",true],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["emoji 👍🏽 mix😀",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["ΣΊΣΥΦΟΣ😀",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["😀",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["İstanbulhello world",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["a..btrailing.",{"$undefined":true}],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["straße",true],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["İstanbulhello",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["hello"],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["ΣΊΣΥΦΟΣ",true],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["ünïcödéHELLO",true],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["hello world",true],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["﻿bom{name} has {count} items"],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["ahello",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["a",{"$undefined":true}],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":[".leading",{"$undefined":true}],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["abcemoji 👍🏽 mix",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["HELLOa:b:c",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["./x/**/*.json:",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["ΣΊΣΥΦΟΣ",{"$undefined":true}],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["HELLO"],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["Hello World",{"$undefined":true}],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["HELLO",{"$undefined":true}],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["ns:key.path",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["src/a/b.ts﻿bom"],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["trailing.",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["abchello",true],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["key_name-1hello world",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["abc"],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["straßea:b:c",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["😀Hello World",true],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["  padded  ",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["a:b:chello",true],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":[":",{"$undefined":true}],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["  padded  emoji 👍🏽 mix",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["hello",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["{name} has {count} itemsa.b.c",true],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["İstanbul",{"$undefined":true}],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["a..bé",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":[".leading"],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["  padded  ",{"$undefined":true}],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["a.b.csrc/a/b.ts",true],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["trailing.",{"$undefined":true}],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["ab./x/**/*.json",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["key_name-1key_name-1",{"$undefined":true}],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["{name} has {count} items",{"$undefined":true}],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["hello",{"$undefined":true}],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["  padded  key_name-1"],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["ns:key.path😀",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":[":"],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["İstanbul.leading",true],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["straße"],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["hello﻿bom"],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["a..btab\tseparated",true],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["Hello World"],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["  padded  ab",true],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["emoji 👍🏽 mix",{"$undefined":true}],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["hello world",{"$undefined":true}],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":[":abc",true],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["é"],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["İstanbulkey_name-1",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["日本語のテキストa.b.c",true],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["./x/**/*.json",{"$undefined":true}],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["abhello world",true],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["ns:key.path",{"$undefined":true}],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["ünïcödé",{"$undefined":true}],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["./x/**/*.jsonns:key.path",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["hello world  padded  ",{"$undefined":true}],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":[":emoji 👍🏽 mix",true],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["helloa.b.c",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["::",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["akey_name-1",true],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["line1\nline2ns:key.path",true],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["﻿bomkey_name-1",true],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["abline1\nline2",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["src/a/b.ts日本語のテキスト",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["İstanbulİstanbul",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["日本語のテキスト",true],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["é:",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["😀emoji 👍🏽 mix",{"$undefined":true}],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["line1\nline2ns:key.path"],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["trailing.Hello World",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["日本語のテキストa:b:c",true],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["héllo wörld",true],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["👍🏽 thumbs",true],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["日本語",true],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["ılık ırmak",true],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["👨‍👩‍👧 family",true],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["a b",true],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["a😀b",true],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["a²b x½ y①",true],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["aⅠb Ⅻ",true],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["a𐐀b 𝐀bc",true],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["कि ٣٤",true],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"isBenchmarkIpAddress","args":["{name} has {count} items"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["ns:key.path"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["é"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":[":"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["trailing.Hello World"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["İstanbul"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["hello"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["./x/**/*.json"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["key_name-1"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["ünïcödé"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["straße"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["line1\nline2abc"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["trailing.İstanbul"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["a.b.c"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["a..babc"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["trailing."],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":[".leading"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["helloa"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["日本語のテキスト"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["HELLO"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["﻿bom"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["İstanbulns:key.path"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["ab"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["  padded  "],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["Hello World"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["ns:key.pathünïcödé"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["a:b:c"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["tab\tseparated"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["a..b"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["﻿bomİstanbul"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["src/a/b.ts"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["hello.leading"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["hello world"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["  padded  abc"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["😀HELLO"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["straßea:b:c"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["Hello Worldİstanbul"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["abc"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["HELLOa😀b😀c"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["😀"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["a😀b😀c"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["日本語のテキスト{name} has {count} items"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["  padded  key_name-1"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["line1\nline2"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["abab"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["éstraße"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["ΣΊΣΥΦΟΣstraße"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["hello worlda"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["a"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["a..ba"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["abcİstanbul"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["abctrailing."],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["é日本語のテキスト"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["﻿bom./x/**/*.json"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["﻿boma:b:c"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["line1\nline2﻿bom"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["a😀b😀c{name} has {count} items"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":[".leadingline1\nline2"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["a.leading"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["line1\nline2a..b"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["abcünïcödé"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["ns:key.pathstraße"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["a..b﻿bom"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":[""],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["ésrc/a/b.ts"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["tab\tseparatedHELLO"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["  padded    padded  "],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["{name} has {count} itemsünïcödé"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["ünïcödéns:key.path"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["Hello World日本語のテキスト"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["line1\nline2./x/**/*.json"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["hellohello"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["İstanbula😀b😀c"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["trailing.a"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["a😀b😀cΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["日本語のテキスト.leading"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":[":ünïcödé"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["abline1\nline2"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["./x/**/*.json{name} has {count} items"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["abcemoji 👍🏽 mix"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["İstanbulünïcödé"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["ünïcödétab\tseparated"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["hello  padded  "],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["emoji 👍🏽 mix"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["  padded  ab"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["hello world./x/**/*.json"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["tab\tseparatedhello"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["line1\nline2{name} has {count} items"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["İstanbul./x/**/*.json"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["😀a😀b😀c"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["abtrailing."],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["src/a/b.ts  padded  "],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["a:b:c{name} has {count} items"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["İstanbul日本語のテキスト"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["a.b.c./x/**/*.json"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["ünïcödé  padded  "],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["key_name-1a.b.c"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["ΣΊΣΥΦΟΣ日本語のテキスト"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["./x/**/*.jsonstraße"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["İstanbul.leading"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":[":key_name-1"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":[".leading😀"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["ΣΊΣΥΦΟΣ  padded  "],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["日本語のテキストhello"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["日本語のテキスト./x/**/*.json"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["./x/**/*.jsonns:key.path"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["日本語のテキストa.b.c"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["abé"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["emoji 👍🏽 mix﻿bom"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["ns:key.pathhello"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["a..b./x/**/*.json"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["a.b.ctab\tseparated"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["a:b:c:"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["trailing.trailing."],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["a😀b😀c:"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["a..bemoji 👍🏽 mix"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["éline1\nline2"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["{name} has {count} items:"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["abkey_name-1"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["a😀b😀cns:key.path"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["a:b:cünïcödé"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["a  padded  "],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["src/a/b.tstrailing."],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["./x/**/*.jsonHELLO"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["a.b.cstraße"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["atab\tseparated"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["emoji 👍🏽 mixé"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["  padded  {name} has {count} items"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["😀é"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["Hello Worldstraße"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["ns:key.patha:b:c"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["😀hello"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["İstanbultrailing."],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["line1\nline2a:b:c"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["straßeline1\nline2"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["a:b:ca..b"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["aé"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["a:"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["a:b:cabc"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["hello world.leading"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["é😀"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["ünïcödéhello world"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["ΣΊΣΥΦΟΣ{name} has {count} items"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["helloa.b.c"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["a:b:ctrailing."],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["abc.leading"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["a:b:c.leading"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["tab\tseparatedhello world"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["./x/**/*.jsonΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":[":  padded  "],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["hellotrailing."],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["ΣΊΣΥΦΟΣa"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["HELLOns:key.path"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":[".leadinghello world"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["日本語のテキストline1\nline2"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["Hello Worldtab\tseparated"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["ünïcödéİstanbul"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["﻿bomHello World"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["hello:"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["aba..b"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["😀tab\tseparated"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["hello worldline1\nline2"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["  padded  Hello World"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["straße日本語のテキスト"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["src/a/b.tsstraße"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["é./x/**/*.json"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":[":emoji 👍🏽 mix"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["{name} has {count} itemsabc"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["straßeHELLO"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["日本語のテキスト:"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["abcstraße"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["key_name-1emoji 👍🏽 mix"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["İstanbulhello"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["a.b.c﻿bom"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["a:b:cHello World"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["éa..b"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["a:b:c﻿bom"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["  padded  .leading"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["emoji 👍🏽 mixa.b.c"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["İstanbul{name} has {count} items"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["hello worldünïcödé"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["hello worldab"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["éHello World"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["hello./x/**/*.json"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["src/a/b.tstab\tseparated"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["a..bHello World"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["Hello Worldns:key.path"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["﻿bomemoji 👍🏽 mix"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["ünïcödé.leading"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":[".leadinga..b"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["helloa😀b😀c"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["ns:key.pathabc"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["Hello Worlda"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["HELLOHello World"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["hellostraße"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["ünïcödéé"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["hello world{name} has {count} items"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["aba:b:c"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["a.b.cünïcödé"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["héllo wörld"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["👍🏽 thumbs"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["日本語"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["ılık ırmak"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["👨‍👩‍👧 family"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["a b"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["a😀b"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["a²b x½ y①"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["aⅠb Ⅻ"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["a𐐀b 𝐀bc"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["कि ٣٤"],"ok":false}
+{"fn":"assertJsonWithinLimits","args":[{"a":{"b":"c"}},{"maxDepth":{"$num":"Infinity"},"maxNodes":0.5}],"error":"Outbound JSON exceeded the 0.5-node limit."}
+{"fn":"assertJsonWithinLimits","args":[{},{"maxDepth":100,"maxNodes":1}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[true,{"maxDepth":2,"maxNodes":0.5}],"error":"Outbound JSON exceeded the 0.5-node limit."}
+{"fn":"assertJsonWithinLimits","args":[{"a":"b"},{"maxDepth":9007199254740992,"maxNodes":42}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":["x",{"maxDepth":0.5,"maxNodes":{"$num":"-0"}}],"error":"Outbound JSON exceeded the 0-node limit."}
+{"fn":"assertJsonWithinLimits","args":[null,{"maxDepth":3,"maxNodes":42}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[[],{"maxDepth":2,"maxNodes":2147483648}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[{"a":"b"},{"maxDepth":1000000,"maxNodes":{"$num":"Infinity"}}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[{"a":{"b":"c"}},{"maxDepth":1000000,"maxNodes":1000}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[null,{"maxDepth":{"$num":"-0"},"maxNodes":9007199254740992}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[true,{"maxDepth":{"$num":"-0"},"maxNodes":{"$num":"-0"}}],"error":"Outbound JSON exceeded the 0-node limit."}
+{"fn":"assertJsonWithinLimits","args":["x",{"maxDepth":-2.5,"maxNodes":2147483648}],"error":"Outbound JSON exceeded the depth limit of -2.5."}
+{"fn":"assertJsonWithinLimits","args":[[],{"maxDepth":2147483648,"maxNodes":{"$num":"Infinity"}}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":["x",{}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[["a",1],{"maxDepth":{"$num":"-0"},"maxNodes":10}],"error":"Outbound JSON exceeded the depth limit of 0."}
+{"fn":"assertJsonWithinLimits","args":[{"a":"b"},{"maxDepth":0,"maxNodes":2}],"error":"Outbound JSON exceeded the depth limit of 0."}
+{"fn":"assertJsonWithinLimits","args":[{"a":"b"},{"maxDepth":1000000,"maxNodes":0.5}],"error":"Outbound JSON exceeded the 0.5-node limit."}
+{"fn":"assertJsonWithinLimits","args":[[],{"maxDepth":42,"maxNodes":2147483648}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[null,{"maxDepth":2147483648,"maxNodes":100}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[null,{"maxDepth":10,"maxNodes":{"$num":"-Infinity"}}],"error":"Outbound JSON exceeded the -Infinity-node limit."}
+{"fn":"assertJsonWithinLimits","args":[[],{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[null,{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[{"a":"b"},{"maxDepth":10,"maxNodes":1000000}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[{},{"maxDepth":100,"maxNodes":2147483648}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":["x",{"maxDepth":9007199254740992,"maxNodes":{"$num":"NaN"}}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[0,{"maxDepth":-2.5,"maxNodes":1000000}],"error":"Outbound JSON exceeded the depth limit of -2.5."}
+{"fn":"assertJsonWithinLimits","args":[[],{"maxDepth":-1,"maxNodes":1}],"error":"Outbound JSON exceeded the depth limit of -1."}
+{"fn":"assertJsonWithinLimits","args":[{"a":"b"},{"maxDepth":{"$num":"-0"},"maxNodes":1000}],"error":"Outbound JSON exceeded the depth limit of 0."}
+{"fn":"assertJsonWithinLimits","args":[true,{"maxDepth":1000,"maxNodes":-1}],"error":"Outbound JSON exceeded the -1-node limit."}
+{"fn":"assertJsonWithinLimits","args":[null,{"maxDepth":2,"maxNodes":0.5}],"error":"Outbound JSON exceeded the 0.5-node limit."}
+{"fn":"assertJsonWithinLimits","args":[["a",1],{"maxDepth":{"$num":"Infinity"},"maxNodes":0.5}],"error":"Outbound JSON exceeded the 0.5-node limit."}
+{"fn":"assertJsonWithinLimits","args":[[],{"maxDepth":0.5,"maxNodes":42}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[["a",1],{"maxDepth":{"$num":"Infinity"},"maxNodes":0}],"error":"Outbound JSON exceeded the 0-node limit."}
+{"fn":"assertJsonWithinLimits","args":[{"a":{"b":"c"}},{"maxDepth":42,"maxNodes":-1}],"error":"Outbound JSON exceeded the -1-node limit."}
+{"fn":"assertJsonWithinLimits","args":[[],{"maxDepth":2,"maxNodes":-1}],"error":"Outbound JSON exceeded the -1-node limit."}
+{"fn":"assertJsonWithinLimits","args":[["a",1],{"maxDepth":3,"maxNodes":2}],"error":"Outbound JSON exceeded the 2-node limit."}
+{"fn":"assertJsonWithinLimits","args":[{},{"maxDepth":{"$num":"NaN"},"maxNodes":{"$num":"NaN"}}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[[],{"maxDepth":-1,"maxNodes":0.5}],"error":"Outbound JSON exceeded the 0.5-node limit."}
+{"fn":"assertJsonWithinLimits","args":[{"a":{"b":"c"}},0],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[{"a":{"b":"c"}},{"maxDepth":3,"maxNodes":3}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[{"a":"b"},{"maxDepth":10,"maxNodes":0}],"error":"Outbound JSON exceeded the 0-node limit."}
+{"fn":"assertJsonWithinLimits","args":[{},{"maxDepth":{"$num":"-Infinity"},"maxNodes":0.5}],"error":"Outbound JSON exceeded the 0.5-node limit."}
+{"fn":"assertJsonWithinLimits","args":[[],{"maxDepth":1,"maxNodes":2147483648}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[{},{"maxDepth":100,"maxNodes":0}],"error":"Outbound JSON exceeded the 0-node limit."}
+{"fn":"assertJsonWithinLimits","args":[true,{"maxDepth":{"$num":"-0"},"maxNodes":10}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[["a",1],{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[["a",1],{"maxDepth":{"$num":"-0"},"maxNodes":0.5}],"error":"Outbound JSON exceeded the 0.5-node limit."}
+{"fn":"assertJsonWithinLimits","args":[{},{"maxDepth":1,"maxNodes":{"$num":"NaN"}}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[null,["a",1]],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":["x",{"maxDepth":42,"maxNodes":{"$num":"-Infinity"}}],"error":"Outbound JSON exceeded the -Infinity-node limit."}
+{"fn":"assertJsonWithinLimits","args":[{"a":"b"},{"maxDepth":0.5,"maxNodes":0.5}],"error":"Outbound JSON exceeded the 0.5-node limit."}
+{"fn":"assertJsonWithinLimits","args":[{},{"maxDepth":{"$num":"-0"},"maxNodes":{"$num":"Infinity"}}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":["x",{"maxDepth":{"$num":"NaN"},"maxNodes":3}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[["a",1],{"maxDepth":{"$num":"-0"},"maxNodes":-1}],"error":"Outbound JSON exceeded the -1-node limit."}
+{"fn":"assertJsonWithinLimits","args":[{"a":{"b":"c"}},{"maxDepth":10,"maxNodes":2}],"error":"Outbound JSON exceeded the 2-node limit."}
+{"fn":"assertJsonWithinLimits","args":[[],{"maxDepth":{"$num":"-0"},"maxNodes":{"$num":"-0"}}],"error":"Outbound JSON exceeded the 0-node limit."}
+{"fn":"assertJsonWithinLimits","args":[true,{"maxDepth":{"$num":"-Infinity"},"maxNodes":1000000}],"error":"Outbound JSON exceeded the depth limit of -Infinity."}
+{"fn":"assertJsonWithinLimits","args":[null,{"maxDepth":{"$num":"NaN"},"maxNodes":1}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[[],{"maxDepth":-1,"maxNodes":-2.5}],"error":"Outbound JSON exceeded the -2.5-node limit."}
+{"fn":"assertJsonWithinLimits","args":["x",{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[[],{"maxDepth":42,"maxNodes":1000}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[["a",1],{"maxDepth":100,"maxNodes":1}],"error":"Outbound JSON exceeded the 1-node limit."}
+{"fn":"assertJsonWithinLimits","args":[[],{"maxDepth":1000,"maxNodes":2}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[true,["a",1]],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[null,{"maxDepth":0,"maxNodes":0}],"error":"Outbound JSON exceeded the 0-node limit."}
+{"fn":"assertJsonWithinLimits","args":[{"a":"b"},{"maxDepth":{"$num":"Infinity"},"maxNodes":0}],"error":"Outbound JSON exceeded the 0-node limit."}
+{"fn":"assertJsonWithinLimits","args":[[],{"maxDepth":0,"maxNodes":{"$num":"NaN"}}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[{},{"maxDepth":{"$num":"-0"},"maxNodes":2147483648}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[{},{"maxDepth":9007199254740992,"maxNodes":1000000}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[{"a":{"b":"c"}},[]],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[["a",1],{"maxDepth":1000000,"maxNodes":10}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[{"a":{"b":"c"}},{"maxDepth":9007199254740992,"maxNodes":{"$num":"Infinity"}}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[null,true],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[{},{"maxDepth":1000,"maxNodes":2}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[0,{"maxDepth":3,"maxNodes":1000}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[[],{"maxDepth":10,"maxNodes":1000}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[{"a":"b"},{"maxDepth":1000000,"maxNodes":10}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[true,{"maxDepth":3,"maxNodes":{"$num":"-Infinity"}}],"error":"Outbound JSON exceeded the -Infinity-node limit."}
+{"fn":"assertJsonWithinLimits","args":[0,{"maxDepth":100,"maxNodes":-2.5}],"error":"Outbound JSON exceeded the -2.5-node limit."}
+{"fn":"assertJsonWithinLimits","args":[{"a":"b"},{"maxDepth":-1,"maxNodes":{"$num":"NaN"}}],"error":"Outbound JSON exceeded the depth limit of -1."}
+{"fn":"assertJsonWithinLimits","args":["x",{"maxDepth":2,"maxNodes":42}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[0,{"maxDepth":42,"maxNodes":9007199254740992}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[{"a":{"b":"c"}},null],"error":"Cannot read properties of null (reading 'maxNodes')"}
+{"fn":"assertJsonWithinLimits","args":[0,{"maxDepth":1000,"maxNodes":100}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[[],{"maxDepth":1000,"maxNodes":{"$num":"-Infinity"}}],"error":"Outbound JSON exceeded the -Infinity-node limit."}
+{"fn":"assertJsonWithinLimits","args":[{"a":{"b":"c"}},{"maxDepth":{"$num":"Infinity"},"maxNodes":100}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[{"a":"b"},{"maxDepth":{"$num":"NaN"},"maxNodes":10}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[{"a":"b"},{"maxDepth":0.5,"maxNodes":-1}],"error":"Outbound JSON exceeded the -1-node limit."}
+{"fn":"assertJsonWithinLimits","args":[null,{"maxDepth":{"$num":"-Infinity"},"maxNodes":2147483648}],"error":"Outbound JSON exceeded the depth limit of -Infinity."}
+{"fn":"assertJsonWithinLimits","args":[[],0],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[0,{"maxDepth":{"$num":"-0"},"maxNodes":100}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[0,{"maxDepth":1,"maxNodes":10}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[["a",1],{"maxDepth":1000000,"maxNodes":9007199254740992}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[["a",1],{"maxDepth":2,"maxNodes":0}],"error":"Outbound JSON exceeded the 0-node limit."}
+{"fn":"assertJsonWithinLimits","args":[null,{"maxDepth":0.5,"maxNodes":-1}],"error":"Outbound JSON exceeded the -1-node limit."}
+{"fn":"assertJsonWithinLimits","args":[["a",1],{"maxDepth":100,"maxNodes":-2.5}],"error":"Outbound JSON exceeded the -2.5-node limit."}
+{"fn":"assertJsonWithinLimits","args":[{"a":"b"},{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[["a",1],"x"],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[{},[]],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[["a",1],{"maxDepth":0,"maxNodes":0.5}],"error":"Outbound JSON exceeded the 0.5-node limit."}
+{"fn":"assertJsonWithinLimits","args":[["a",1],{"maxDepth":-1,"maxNodes":{"$num":"NaN"}}],"error":"Outbound JSON exceeded the depth limit of -1."}
+{"fn":"assertJsonWithinLimits","args":[true,{"maxDepth":42,"maxNodes":1}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[0,true],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[true,{"maxDepth":0.5,"maxNodes":1}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[[],{"maxDepth":{"$num":"Infinity"},"maxNodes":9007199254740992}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":["x",{"maxDepth":42,"maxNodes":9007199254740992}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[null,{"maxDepth":-2.5,"maxNodes":2}],"error":"Outbound JSON exceeded the depth limit of -2.5."}
+{"fn":"assertJsonWithinLimits","args":["x",{"maxDepth":{"$num":"Infinity"},"maxNodes":42}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[{"a":{"b":"c"}},{"maxDepth":1000000,"maxNodes":9007199254740992}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[{"a":{"b":"c"}},{"maxDepth":1000000,"maxNodes":-2.5}],"error":"Outbound JSON exceeded the -2.5-node limit."}
+{"fn":"assertJsonWithinLimits","args":[null,{"maxDepth":{"$num":"Infinity"},"maxNodes":42}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[["a",1],{"maxDepth":10,"maxNodes":2}],"error":"Outbound JSON exceeded the 2-node limit."}
+{"fn":"assertJsonWithinLimits","args":[0,{"maxDepth":1000000,"maxNodes":-1}],"error":"Outbound JSON exceeded the -1-node limit."}
+{"fn":"assertJsonWithinLimits","args":[0,{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[{"a":{"b":"c"}},{"maxDepth":-2.5,"maxNodes":1000000}],"error":"Outbound JSON exceeded the depth limit of -2.5."}
+{"fn":"assertJsonWithinLimits","args":["x",{"maxDepth":1000000,"maxNodes":{"$num":"Infinity"}}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[{"a":{"b":"c"}},{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[{},["a",1]],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":["x",{"maxDepth":2147483648,"maxNodes":10}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[{"a":"b"},{"maxDepth":100,"maxNodes":3}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[null,{"maxDepth":42,"maxNodes":10}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[null,{"maxDepth":{"$num":"-Infinity"},"maxNodes":9007199254740992}],"error":"Outbound JSON exceeded the depth limit of -Infinity."}
+{"fn":"assertJsonWithinLimits","args":[true,{"maxDepth":-2.5,"maxNodes":{"$num":"-Infinity"}}],"error":"Outbound JSON exceeded the -Infinity-node limit."}
+{"fn":"assertJsonWithinLimits","args":[0,0],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":["x",{"maxDepth":0,"maxNodes":2147483648}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[0,{"maxDepth":2,"maxNodes":42}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[null,{"maxDepth":42,"maxNodes":{"$num":"-0"}}],"error":"Outbound JSON exceeded the 0-node limit."}
+{"fn":"assertJsonWithinLimits","args":[["a",1],{"maxDepth":3,"maxNodes":0.5}],"error":"Outbound JSON exceeded the 0.5-node limit."}
+{"fn":"assertJsonWithinLimits","args":[null,{"maxDepth":9007199254740992,"maxNodes":2}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[null,{"maxDepth":-1,"maxNodes":1}],"error":"Outbound JSON exceeded the depth limit of -1."}
+{"fn":"assertJsonWithinLimits","args":[0,{"maxDepth":{"$num":"-0"},"maxNodes":{"$num":"Infinity"}}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":["x",{"maxDepth":42,"maxNodes":{"$num":"-0"}}],"error":"Outbound JSON exceeded the 0-node limit."}
+{"fn":"assertJsonWithinLimits","args":[[],["a",1]],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[{},{"maxDepth":1000000,"maxNodes":3}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[0,{"maxDepth":-2.5,"maxNodes":{"$num":"Infinity"}}],"error":"Outbound JSON exceeded the depth limit of -2.5."}
+{"fn":"assertJsonWithinLimits","args":[true,{"maxDepth":2,"maxNodes":1000000}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[null,{"maxDepth":{"$num":"Infinity"},"maxNodes":-1}],"error":"Outbound JSON exceeded the -1-node limit."}
+{"fn":"assertJsonWithinLimits","args":[0,{"maxDepth":1,"maxNodes":0}],"error":"Outbound JSON exceeded the 0-node limit."}
+{"fn":"assertJsonWithinLimits","args":[true,{"maxDepth":1000,"maxNodes":100}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[null,{"maxDepth":10,"maxNodes":0.5}],"error":"Outbound JSON exceeded the 0.5-node limit."}
+{"fn":"assertJsonWithinLimits","args":[{},{"maxDepth":1,"maxNodes":{"$num":"-Infinity"}}],"error":"Outbound JSON exceeded the -Infinity-node limit."}
+{"fn":"assertJsonWithinLimits","args":[true,{}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[["a",1],{"maxDepth":{"$num":"-0"},"maxNodes":3}],"error":"Outbound JSON exceeded the depth limit of 0."}
+{"fn":"assertJsonWithinLimits","args":[true,{"maxDepth":10,"maxNodes":3}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[0,{"maxDepth":10,"maxNodes":0.5}],"error":"Outbound JSON exceeded the 0.5-node limit."}
+{"fn":"assertJsonWithinLimits","args":[{"a":"b"},{"maxDepth":1000,"maxNodes":2}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[[],{"maxDepth":{"$num":"Infinity"},"maxNodes":-2.5}],"error":"Outbound JSON exceeded the -2.5-node limit."}
+{"fn":"assertJsonWithinLimits","args":[0,{"maxDepth":1,"maxNodes":-2.5}],"error":"Outbound JSON exceeded the -2.5-node limit."}
+{"fn":"assertJsonWithinLimits","args":["x",{"maxDepth":{"$num":"-Infinity"},"maxNodes":1000}],"error":"Outbound JSON exceeded the depth limit of -Infinity."}
+{"fn":"assertJsonWithinLimits","args":[[],{"maxDepth":{"$num":"NaN"},"maxNodes":100}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[true,{"maxDepth":2147483648,"maxNodes":{"$num":"Infinity"}}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[null,{"maxDepth":100,"maxNodes":1000000}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[0,{"maxDepth":{"$num":"-Infinity"},"maxNodes":{"$num":"-Infinity"}}],"error":"Outbound JSON exceeded the -Infinity-node limit."}
+{"fn":"assertJsonWithinLimits","args":[{"a":"b"},{"maxDepth":-2.5,"maxNodes":1}],"error":"Outbound JSON exceeded the depth limit of -2.5."}
+{"fn":"assertJsonWithinLimits","args":[true,null],"error":"Cannot read properties of null (reading 'maxNodes')"}
+{"fn":"assertJsonWithinLimits","args":[null,{"maxDepth":0.5,"maxNodes":1000000}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[{},{"maxDepth":2147483648,"maxNodes":100}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[{"a":"b"},{"maxDepth":9007199254740992,"maxNodes":0.5}],"error":"Outbound JSON exceeded the 0.5-node limit."}
+{"fn":"assertJsonWithinLimits","args":[true,{"maxDepth":2147483648,"maxNodes":2147483648}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[true,{"maxDepth":{"$num":"NaN"},"maxNodes":2}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[{"a":{"b":"c"}},{"maxDepth":2147483648,"maxNodes":1}],"error":"Outbound JSON exceeded the 1-node limit."}
+{"fn":"assertJsonWithinLimits","args":[{},{"maxDepth":-2.5,"maxNodes":-1}],"error":"Outbound JSON exceeded the -1-node limit."}
+{"fn":"assertJsonWithinLimits","args":[[],{"maxDepth":1000,"maxNodes":2147483648}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[["a",1],{"maxDepth":10,"maxNodes":0}],"error":"Outbound JSON exceeded the 0-node limit."}
+{"fn":"assertJsonWithinLimits","args":[true,{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[{"a":{"b":"c"}},{}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":["x",{"maxDepth":{"$num":"-0"},"maxNodes":9007199254740992}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[{"a":"b"},{}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[[],{"maxDepth":2147483648,"maxNodes":1}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[{"a":"b"},"x"],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":["x",{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[0,{"maxDepth":-1,"maxNodes":2147483648}],"error":"Outbound JSON exceeded the depth limit of -1."}
+{"fn":"assertJsonWithinLimits","args":[null,{"maxDepth":42,"maxNodes":2}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[0,{"maxDepth":3,"maxNodes":42}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":["x",{"maxDepth":-1,"maxNodes":100}],"error":"Outbound JSON exceeded the depth limit of -1."}
+{"fn":"assertJsonWithinLimits","args":[{"a":"b"},{"maxDepth":100,"maxNodes":10}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[{"a":"b"},{"maxDepth":-2.5,"maxNodes":1000}],"error":"Outbound JSON exceeded the depth limit of -2.5."}
+{"fn":"assertJsonWithinLimits","args":[true,{"maxDepth":{"$num":"NaN"},"maxNodes":{"$num":"NaN"}}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[0,{"maxDepth":42,"maxNodes":3}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[[],{"maxDepth":100,"maxNodes":1000000}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":["x",{"maxDepth":2,"maxNodes":1}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[[],{"maxDepth":0.5,"maxNodes":100}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":["x",{"maxDepth":10,"maxNodes":{"$num":"-0"}}],"error":"Outbound JSON exceeded the 0-node limit."}
+{"fn":"assertJsonWithinLimits","args":[{"a":"b"},["a",1]],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[{"a":{"b":"c"}},{"maxDepth":10,"maxNodes":1}],"error":"Outbound JSON exceeded the 1-node limit."}
+{"fn":"assertJsonWithinLimits","args":["x",[]],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[null,{"maxDepth":3,"maxNodes":{"$num":"-Infinity"}}],"error":"Outbound JSON exceeded the -Infinity-node limit."}
+{"fn":"assertJsonWithinLimits","args":[true,{"maxDepth":-2.5,"maxNodes":2147483648}],"error":"Outbound JSON exceeded the depth limit of -2.5."}
+{"fn":"assertJsonWithinLimits","args":[{"a":{"b":"c"}},{"maxDepth":2,"maxNodes":2147483648}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[{"a":"b"},{"maxDepth":{"$num":"Infinity"},"maxNodes":-1}],"error":"Outbound JSON exceeded the -1-node limit."}
+{"fn":"assertJsonWithinLimits","args":["x",{"maxDepth":1,"maxNodes":{"$num":"-Infinity"}}],"error":"Outbound JSON exceeded the -Infinity-node limit."}
+{"fn":"assertJsonWithinLimits","args":[null,{"maxDepth":{"$num":"-0"},"maxNodes":3}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[["a",1],{"maxDepth":-2.5,"maxNodes":-2.5}],"error":"Outbound JSON exceeded the -2.5-node limit."}
+{"fn":"assertJsonWithinLimits","args":[{"a":{"b":"c"}},{"maxDepth":10,"maxNodes":9007199254740992}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[0,{"maxDepth":0,"maxNodes":{"$num":"Infinity"}}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[["a",1],{"maxDepth":3,"maxNodes":42}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[[],{"maxDepth":42,"maxNodes":{"$num":"-Infinity"}}],"error":"Outbound JSON exceeded the -Infinity-node limit."}
+{"fn":"assertJsonWithinLimits","args":[null,{"maxDepth":-2.5,"maxNodes":-1}],"error":"Outbound JSON exceeded the -1-node limit."}
+{"fn":"assertJsonWithinLimits","args":[["a",1],{"maxDepth":{"$num":"-0"},"maxNodes":42}],"error":"Outbound JSON exceeded the depth limit of 0."}
+{"fn":"assertJsonWithinLimits","args":[["a",1],{}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6},{"maxDepth":{"$num":"Infinity"},"maxNodes":0.5}],"error":"Outbound JSON exceeded the 0.5-node limit."}
+{"fn":"assertJsonWithinLimits","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7},{"maxDepth":{"$num":"Infinity"},"maxNodes":0.5}],"error":"Outbound JSON exceeded the 0.5-node limit."}
+{"fn":"assertJsonWithinLimits","args":[[3,1,2],{"maxDepth":{"$num":"Infinity"},"maxNodes":0.5}],"error":"Outbound JSON exceeded the 0.5-node limit."}
+{"fn":"assertJsonWithinLimits","args":[{},{"maxDepth":{"$num":"Infinity"},"maxNodes":0.5}],"error":"Outbound JSON exceeded the 0.5-node limit."}
+{"fn":"stripOutboundSensitiveHeaders","args":[true],"error":"Headers constructor: Argument 1 could not be converted to one of: sequence<sequence<ByteString>>, record<ByteString, ByteString>."}
+{"fn":"stripOutboundSensitiveHeaders","args":[{"a":{"b":"c"}}],"ok":{}}
+{"fn":"stripOutboundSensitiveHeaders","args":[null],"error":"Headers constructor: Argument 1 could not be converted to one of: sequence<sequence<ByteString>>, record<ByteString, ByteString>."}
+{"fn":"stripOutboundSensitiveHeaders","args":[["a",1]],"error":"Headers constructor: init[0] (\"a\") is not iterable."}
+{"fn":"stripOutboundSensitiveHeaders","args":[[]],"ok":{}}
+{"fn":"stripOutboundSensitiveHeaders","args":["x"],"error":"Headers constructor: Argument 1 could not be converted to one of: sequence<sequence<ByteString>>, record<ByteString, ByteString>."}
+{"fn":"stripOutboundSensitiveHeaders","args":[0],"error":"Headers constructor: Argument 1 could not be converted to one of: sequence<sequence<ByteString>>, record<ByteString, ByteString>."}
+{"fn":"stripOutboundSensitiveHeaders","args":[{}],"ok":{}}
+{"fn":"stripOutboundSensitiveHeaders","args":[{"a":"b"}],"ok":{}}
+{"fn":"isPublicIpAddress","args":["8.8.8.8"],"ok":true}
+{"fn":"isPublicIpAddress","args":["10.0.0.1"],"ok":false}
+{"fn":"isPublicIpAddress","args":["127.0.0.1"],"ok":false}
+{"fn":"isPublicIpAddress","args":["192.168.1.1"],"ok":false}
+{"fn":"isPublicIpAddress","args":["172.16.0.1"],"ok":false}
+{"fn":"isPublicIpAddress","args":["169.254.1.1"],"ok":false}
+{"fn":"isPublicIpAddress","args":["100.64.0.1"],"ok":false}
+{"fn":"isPublicIpAddress","args":["0.0.0.0"],"ok":false}
+{"fn":"isPublicIpAddress","args":["192.0.0.1"],"ok":false}
+{"fn":"isPublicIpAddress","args":["192.0.2.1"],"ok":false}
+{"fn":"isPublicIpAddress","args":["198.18.0.1"],"ok":false}
+{"fn":"isPublicIpAddress","args":["198.51.100.1"],"ok":false}
+{"fn":"isPublicIpAddress","args":["203.0.113.1"],"ok":false}
+{"fn":"isPublicIpAddress","args":["224.0.0.1"],"ok":false}
+{"fn":"isPublicIpAddress","args":["240.0.0.1"],"ok":false}
+{"fn":"isPublicIpAddress","args":["::1"],"ok":false}
+{"fn":"isPublicIpAddress","args":["::"],"ok":false}
+{"fn":"isPublicIpAddress","args":["2001:4860:4860::8888"],"ok":true}
+{"fn":"isPublicIpAddress","args":["2001:db8::1"],"ok":false}
+{"fn":"isPublicIpAddress","args":["fc00::1"],"ok":false}
+{"fn":"isPublicIpAddress","args":["fe80::1"],"ok":false}
+{"fn":"isPublicIpAddress","args":["ff00::1"],"ok":false}
+{"fn":"isPublicIpAddress","args":["64:ff9b::8.8.8.8"],"ok":false}
+{"fn":"isPublicIpAddress","args":["100::1"],"ok":false}
+{"fn":"isPublicIpAddress","args":["2001:10::1"],"ok":false}
+{"fn":"isPublicIpAddress","args":["::ffff:8.8.8.8"],"ok":false}
+{"fn":"isPublicIpAddress","args":["::ffff:10.0.0.1"],"ok":false}
+{"fn":"isPublicIpAddress","args":["::ffff:127.0.0.1"],"ok":false}
+{"fn":"isPublicIpAddress","args":["256.1.1.1"],"ok":false}
+{"fn":"isPublicIpAddress","args":["01.2.3.4"],"ok":false}
+{"fn":"isPublicIpAddress","args":["1.2.3"],"ok":false}
+{"fn":"isPublicIpAddress","args":["1.2.3.4.5"],"ok":false}
+{"fn":"isPublicIpAddress","args":["8.8.8.8 "],"ok":false}
+{"fn":"isPublicIpAddress","args":[" 8.8.8.8"],"ok":false}
+{"fn":"isPublicIpAddress","args":[""],"ok":false}
+{"fn":"isPublicIpAddress","args":[123],"ok":false}
+{"fn":"isPublicIpAddress","args":[null],"ok":false}
+{"fn":"isPublicIpAddress","args":[true],"ok":false}
+{"fn":"isPublicIpAddress","args":[{}],"ok":false}
+{"fn":"isPublicIpAddress","args":[[]],"ok":false}
+{"fn":"isPublicIpAddress","args":[["8.8.8.8"]],"error":"The \"address\" argument must be of type string. Received an instance of Array"}
+{"fn":"isPublicIpAddress","args":["0x8.0x8.0x8.0x8"],"ok":false}
+{"fn":"isPublicIpAddress","args":["8.8.8.8\n"],"ok":false}
+{"fn":"isPublicIpAddress","args":["::ffff:0808:0808"],"ok":false}
+{"fn":"isPublicIpAddress","args":["1:2:3:4:5:6:7:8"],"ok":true}
+{"fn":"isPublicIpAddress","args":["::ffff:0a00:0001"],"ok":false}
+{"fn":"isPublicIpAddress","args":[["10.0.0.1"]],"error":"The \"address\" argument must be of type string. Received an instance of Array"}
+{"fn":"isPublicIpAddress","args":[["x"]],"ok":false}
+{"fn":"isPublicIpAddress","args":[["::1"]],"error":"The \"address\" argument must be of type string. Received an instance of Array"}
+{"fn":"isPublicIpAddress","args":[["8.8.8.8","x"]],"ok":false}
+{"fn":"isPublicIpAddress","args":["fe80::1%eth0"],"ok":false}
+{"fn":"isPublicIpAddress","args":["fe80::%e"],"ok":false}
+{"fn":"isPublicIpAddress","args":["FE80::1%eth0"],"ok":false}
+{"fn":"isPublicIpAddress","args":["0:0:0:0:0:ffff:8.8.8.8"],"ok":false}
+{"fn":"isPublicIpAddress","args":["::ffff:8.8.8.8.8"],"ok":false}
+{"fn":"isPublicIpAddress","args":["::8.8.8.8"],"ok":true}
+{"fn":"isPublicIpAddress","args":["1:2:3:4::8.8.8.8"],"ok":true}
+{"fn":"isPublicIpAddress","args":["::ffff:0:8.8.8.8"],"ok":true}
+{"fn":"isPublicIpAddress","args":["::ffff:08.8.8.8"],"ok":false}
+{"fn":"isPublicIpAddress","args":["::ffff:008.8.8.8"],"ok":false}
+{"fn":"isPublicIpAddress","args":["::ffff:999.8.8.8"],"ok":false}
+{"fn":"isPublicIpAddress","args":["1:2:3:4:5:6:7:8:9"],"ok":false}
+{"fn":"isPublicIpAddress","args":["fe80:abcd::%z"],"ok":false}
+{"fn":"isPublicIpAddress","args":["fe80::abcd%z"],"ok":false}
+{"fn":"assertPublicIpAddress","args":["8.8.8.8"],"ok":{"$undefined":true}}
+{"fn":"assertPublicIpAddress","args":[["8.8.8.8"]],"error":"The \"address\" argument must be of type string. Received an instance of Array"}
+{"fn":"assertExactLoopbackIpAddress","args":["127.0.0.1"],"ok":{"$undefined":true}}
+{"fn":"assertExactLoopbackIpAddress","args":["127.0.0.2",true],"ok":{"$undefined":true}}
+{"fn":"assertExactLoopbackIpAddress","args":["127.255.255.255",true],"ok":{"$undefined":true}}
+{"fn":"assertExactLoopbackIpAddress","args":["127.0.0.2",false],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["127.0.0.2","yes"],"ok":{"$undefined":true}}
+{"fn":"assertExactLoopbackIpAddress","args":["127.0.0.2",0],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["::1"],"ok":{"$undefined":true}}
+{"fn":"assertExactLoopbackIpAddress","args":["::01"],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["::1 "],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["0:0:0:0:0:0:0:1"],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":[123],"error":"address.toLowerCase is not a function"}
+{"fn":"assertExactLoopbackIpAddress","args":[null],"error":"Cannot read properties of null (reading 'toLowerCase')"}
+{"fn":"assertExactLoopbackIpAddress","args":[["127.0.0.1"],true],"error":"address.toLowerCase is not a function"}
+{"fn":"assertExactLoopbackIpAddress","args":[["127.0.0.1"]],"error":"address.toLowerCase is not a function"}
+{"fn":"assertExactLoopbackIpAddress","args":[{},true],"error":"address.toLowerCase is not a function"}
+{"fn":"assertExactLoopbackIpAddress","args":["LOCALHOST"],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["127.1.0.1",true],"ok":{"$undefined":true}}
+{"fn":"assertExactLoopbackIpAddress","args":["126.0.0.1",true],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["127.0.0.1","x"],"ok":{"$undefined":true}}
+{"fn":"isBenchmarkIpAddress","args":["198.18.0.1"],"ok":true}
+{"fn":"isBenchmarkIpAddress","args":["198.19.255.255"],"ok":true}
+{"fn":"isBenchmarkIpAddress","args":["198.17.255.255"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":["198.20.0.0"],"ok":false}
+{"fn":"isBenchmarkIpAddress","args":[["198.18.0.1"]],"error":"The \"address\" argument must be of type string. Received an instance of Array"}
+{"fn":"isBenchmarkIpAddress","args":[123],"ok":false}
+{"fn":"stripOutboundSensitiveHeaders","args":[{"$undefined":true}],"ok":{}}
+{"fn":"stripOutboundSensitiveHeaders","args":[[["a","b"]]],"ok":{}}
+{"fn":"stripOutboundSensitiveHeaders","args":[[["a"]]],"error":"Headers constructor: expected name/value pair to be length 2, found 1."}
+{"fn":"stripOutboundSensitiveHeaders","args":[[["a","b","c"]]],"error":"Headers constructor: expected name/value pair to be length 2, found 3."}
+{"fn":"stripOutboundSensitiveHeaders","args":[[[5,6]]],"ok":{}}
+{"fn":"stripOutboundSensitiveHeaders","args":[[5]],"error":"Headers constructor: init[0] (5) is not iterable."}
+{"fn":"stripOutboundSensitiveHeaders","args":[[["a",{"b":"c"}]]],"ok":{}}
+{"fn":"stripOutboundSensitiveHeaders","args":[{"authorization":"x","x":"y"}],"ok":{}}
+{"fn":"stripOutboundSensitiveHeaders","args":[{"bad name":"x"}],"error":"Headers.append: \"bad name\" is an invalid header name."}
+{"fn":"stripOutboundSensitiveHeaders","args":[{"a":"日本語"}],"error":"Cannot convert argument to a ByteString because the character at index 0 has a value of 26085 which is greater than 255."}
+{"fn":"stripOutboundSensitiveHeaders","args":[[["a","日本語"]]],"error":"Cannot convert argument to a ByteString because the character at index 0 has a value of 26085 which is greater than 255."}
+{"fn":"stripOutboundSensitiveHeaders","args":[{"":"x"}],"error":"Headers.append: \"\" is an invalid header name."}
+{"fn":"stripOutboundSensitiveHeaders","args":[[["a b","x"]]],"error":"Headers.append: \"a b\" is an invalid header name."}
+{"fn":"stripOutboundSensitiveHeaders","args":[{"a":5}],"ok":{}}
+{"fn":"stripOutboundSensitiveHeaders","args":[{"a":null}],"ok":{}}
+{"fn":"stripOutboundSensitiveHeaders","args":[{"a":["x","y"]}],"ok":{}}
+{"fn":"stripOutboundSensitiveHeaders","args":[[[["a","b"]]]],"error":"Headers constructor: expected name/value pair to be length 2, found 1."}
+{"fn":"stripOutboundSensitiveHeaders","args":[["a","b"]],"error":"Headers constructor: init[0] (\"a\") is not iterable."}
+{"fn":"stripOutboundSensitiveHeaders","args":[["a"]],"error":"Headers constructor: init[0] (\"a\") is not iterable."}
+{"fn":"stripOutboundSensitiveHeaders","args":[{"Cookie":"x","Proxy-Authorization":"y","AUTHORIZATION":"z","keep":"1"}],"ok":{}}
+{"fn":"stripOutboundSensitiveHeaders","args":[["x","y"]],"error":"Headers constructor: init[0] (\"x\") is not iterable."}
+{"fn":"stripOutboundSensitiveHeaders","args":[{"a":""}],"ok":{}}
+{"fn":"stripOutboundSensitiveHeaders","args":[[["Cookie","x"]]],"ok":{}}
+{"fn":"assertJsonWithinLimits","args":[{"a":"b"},{"$undefined":true}],"error":"Cannot read properties of undefined (reading 'maxNodes')"}
+{"fn":"assertJsonWithinLimits","args":[{"a":"b"},"x"],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[{"a":"b"},[]],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[{"a":{"b":{"c":1}}},{"maxDepth":2,"maxNodes":99}],"error":"Outbound JSON exceeded the depth limit of 2."}
+{"fn":"assertJsonWithinLimits","args":[{"a":{"b":{"c":1}}},{"maxDepth":1,"maxNodes":99}],"error":"Outbound JSON exceeded the depth limit of 1."}
+{"fn":"assertJsonWithinLimits","args":[{"l":{"d":{"x":1}},"r":1},{"maxDepth":1,"maxNodes":2}],"error":"Outbound JSON exceeded the 2-node limit."}
+{"fn":"assertJsonWithinLimits","args":[{"l":{"d":{"x":1}},"r":1},{"maxDepth":0,"maxNodes":99}],"error":"Outbound JSON exceeded the depth limit of 0."}
+{"fn":"assertJsonWithinLimits","args":[{"l":{"d":{"x":1}},"r":1},{"maxDepth":99,"maxNodes":3}],"error":"Outbound JSON exceeded the 3-node limit."}
+{"fn":"assertJsonWithinLimits","args":[{"a":{"b":{"c":1}}},{"maxDepth":2,"maxNodes":4}],"error":"Outbound JSON exceeded the depth limit of 2."}
+{"fn":"assertJsonWithinLimits","args":[{"a":"b"},{"maxNodes":"2"}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[{"a":"b"},{"maxNodes":"x"}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[{"a":"b"},{"maxNodes":[2],"maxDepth":[0]}],"error":"Outbound JSON exceeded the depth limit of 0."}
+{"fn":"assertJsonWithinLimits","args":[{"a":"b"},{"maxNodes":{},"maxDepth":{}}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[{"a":"b"},{"maxNodes":true,"maxDepth":false}],"error":"Outbound JSON exceeded the true-node limit."}
+{"fn":"assertJsonWithinLimits","args":[{"a":"b"},{"maxNodes":{"toString":"x"}}],"error":"Cannot convert object to primitive value"}
+{"fn":"stripOutboundSensitiveHeaders","args":[{"日":"x"}],"error":"Cannot convert argument to a ByteString because the character at index 0 has a value of 26085 which is greater than 255."}
+{"fn":"stripOutboundSensitiveHeaders","args":[{"a:b":"x"}],"error":"Headers.append: \"a:b\" is an invalid header name."}
+{"fn":"stripOutboundSensitiveHeaders","args":[{"a/b":"x"}],"error":"Headers.append: \"a/b\" is an invalid header name."}
+{"fn":"stripOutboundSensitiveHeaders","args":[{"a_b":"x"}],"ok":{}}
+{"fn":"stripOutboundSensitiveHeaders","args":[{"a~b":"x"}],"ok":{}}
+{"fn":"stripOutboundSensitiveHeaders","args":[{"a@b":"x"}],"error":"Headers.append: \"a@b\" is an invalid header name."}
+{"fn":"stripOutboundSensitiveHeaders","args":[{"a,b":"x"}],"error":"Headers.append: \"a,b\" is an invalid header name."}
+{"fn":"stripOutboundSensitiveHeaders","args":[{"a":"a日本"}],"error":"Cannot convert argument to a ByteString because the character at index 1 has a value of 26085 which is greater than 255."}
+{"fn":"stripOutboundSensitiveHeaders","args":[{"a":"x\ny"}],"error":"Headers.append: \"x\ny\" is an invalid header value."}
+{"fn":"stripOutboundSensitiveHeaders","args":[{"a":"x\ry"}],"error":"Headers.append: \"x\ry\" is an invalid header value."}
+{"fn":"stripOutboundSensitiveHeaders","args":[{"a":"x\ty"}],"ok":{}}
+{"fn":"stripOutboundSensitiveHeaders","args":[{"a":"é"}],"ok":{}}
+{"fn":"stripOutboundSensitiveHeaders","args":[{"a":"Ā"}],"error":"Cannot convert argument to a ByteString because the character at index 0 has a value of 256 which is greater than 255."}
+{"fn":"stripOutboundSensitiveHeaders","args":[[5]],"error":"Headers constructor: init[0] (5) is not iterable."}
+{"fn":"stripOutboundSensitiveHeaders","args":[[[{"a":"b"}]]],"error":"Headers constructor: expected name/value pair to be length 2, found 1."}
+{"fn":"stripOutboundSensitiveHeaders","args":[[["a","b"],["c","d"]]],"ok":{}}
+{"fn":"stripOutboundSensitiveHeaders","args":[[["a","b"],5]],"error":"Headers constructor: init[1] (5) is not iterable."}
+{"fn":"stripOutboundSensitiveHeaders","args":[{"ok":"v","日本":"v2"}],"error":"Cannot convert argument to a ByteString because the character at index 0 has a value of 26085 which is greater than 255."}
+{"fn":"assertExactLoopbackIpAddress","args":[null],"error":"Cannot read properties of null (reading 'toLowerCase')"}
+{"fn":"assertExactLoopbackIpAddress","args":[{"$undefined":true}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"assertExactLoopbackIpAddress","args":["::１"],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["127.0.0.1",null],"ok":{"$undefined":true}}
+{"fn":"assertExactLoopbackIpAddress","args":["127.9.0.1",true],"ok":{"$undefined":true}}
+{"fn":"assertExactLoopbackIpAddress","args":["127.0.0.1x",true],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["0127.0.0.1",true],"error":"Outbound loopback destination resolved to a non-loopback address."}
+{"fn":"assertExactLoopbackIpAddress","args":["::1",true],"ok":{"$undefined":true}}
+{"fn":"assertExactLoopbackIpAddress","args":["::1","x"],"ok":{"$undefined":true}}
+{"fn":"isPublicIpAddress","args":["1:2:3:4:5:6:8.8.8.8"],"ok":true}
+{"fn":"isPublicIpAddress","args":["1:2:3:4:8.8.8.8"],"ok":false}
+{"fn":"isPublicIpAddress","args":["64:ff9b::0808:0808"],"ok":false}
+{"fn":"isPublicIpAddress","args":["64:ff9b:1::8.8.8.8"],"ok":true}
+{"fn":"isPublicIpAddress","args":["::ffff:127.1"],"ok":false}
+{"fn":"isPublicIpAddress","args":["::ffff:127.0.0.1"],"ok":false}
+{"fn":"isPublicIpAddress","args":["0::1"],"ok":false}
+{"fn":"isPublicIpAddress","args":["192.0.1.1"],"ok":true}
+{"fn":"isPublicIpAddress","args":["223.255.255.255"],"ok":true}
+{"fn":"isPublicIpAddress","args":["239.255.255.255"],"ok":false}
+{"fn":"isPublicIpAddress","args":["100.127.255.255"],"ok":false}
+{"fn":"isPublicIpAddress","args":["100.128.0.0"],"ok":true}
+{"fn":"isPublicIpAddress","args":["11.0.0.0"],"ok":true}
+{"fn":"isPublicIpAddress","args":["9.255.255.255"],"ok":true}
+{"fn":"isPublicIpAddress","args":["192.0.0.255"],"ok":false}
+{"fn":"isPublicIpAddress","args":["192.0.3.0"],"ok":true}
+{"fn":"isPublicIpAddress","args":["192.167.255.255"],"ok":true}
+{"fn":"isPublicIpAddress","args":["192.169.0.0"],"ok":true}
+{"fn":"isPublicIpAddress","args":["172.15.255.255"],"ok":true}
+{"fn":"isPublicIpAddress","args":["172.31.255.255"],"ok":false}
+{"fn":"isPublicIpAddress","args":["172.32.0.0"],"ok":true}
+{"fn":"isPublicIpAddress","args":["198.51.99.255"],"ok":true}
+{"fn":"isPublicIpAddress","args":["198.51.101.0"],"ok":true}
+{"fn":"isPublicIpAddress","args":["203.0.112.255"],"ok":true}
+{"fn":"isPublicIpAddress","args":["203.0.114.0"],"ok":true}
+{"fn":"isPublicIpAddress","args":["2001:11::1"],"ok":false}
+{"fn":"isPublicIpAddress","args":["2001:f::1"],"ok":true}
+{"fn":"isPublicIpAddress","args":["2001:1f::1"],"ok":false}
+{"fn":"isPublicIpAddress","args":["2001:20::1"],"ok":true}
+{"fn":"isPublicIpAddress","args":["f800::1"],"ok":true}
+{"fn":"isPublicIpAddress","args":["fbff::1"],"ok":true}
+{"fn":"isPublicIpAddress","args":["fc00::1"],"ok":false}
+{"fn":"isPublicIpAddress","args":["fe7f::1"],"ok":true}
+{"fn":"isPublicIpAddress","args":["febf::1"],"ok":false}
+{"fn":"isPublicIpAddress","args":["fec0::1"],"ok":true}
+{"fn":"isPublicIpAddress","args":["feff::1"],"ok":true}
+{"fn":"isPublicIpAddress","args":["ff00::1"],"ok":false}
+{"fn":"isPublicIpAddress","args":["fe00::1"],"ok":true}
+{"fn":"isPublicIpAddress","args":["1::ffff:8.8.8.8"],"ok":true}
+{"fn":"isPublicIpAddress","args":["64:ff9b:ffff::1"],"ok":true}
+{"fn":"assertJsonWithinLimits","args":[{"a":1,"b":{"c":{"d":2}}},{"maxDepth":1,"maxNodes":4}],"error":"Outbound JSON exceeded the depth limit of 1."}
+{"fn":"assertJsonWithinLimits","args":[{"a":1,"b":{"c":{"d":2}}},{"maxDepth":99,"maxNodes":5}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[{"a":1,"b":{"c":{"d":2}}},{"maxDepth":0,"maxNodes":99}],"error":"Outbound JSON exceeded the depth limit of 0."}
+{"fn":"assertJsonWithinLimits","args":[[{"x":1},{"y":{"z":2}}],{"maxDepth":1,"maxNodes":4}],"error":"Outbound JSON exceeded the depth limit of 1."}
+{"fn":"assertJsonWithinLimits","args":[[{"x":1},{"y":{"z":2}}],{"maxDepth":2,"maxNodes":3}],"error":"Outbound JSON exceeded the 3-node limit."}
+{"fn":"assertJsonWithinLimits","args":[{"a":"b"},{"maxNodes":[2]}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[{"a":"b"},{"maxNodes":{"valueOf":"x"}}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[{"a":"b"},{"maxDepth":{"toString":"x"}}],"error":"Cannot convert object to primitive value"}
+{"fn":"assertJsonWithinLimits","args":[{"a":"b"},{"maxNodes":null,"maxDepth":null}],"error":"Outbound JSON exceeded the null-node limit."}
+{"fn":"assertJsonWithinLimits","args":[[1,[2,[3,[4]]]],{"maxDepth":3,"maxNodes":99}],"error":"Outbound JSON exceeded the depth limit of 3."}
+{"fn":"assertJsonWithinLimits","args":[[1,[2,[3,[4]]]],{"maxDepth":99,"maxNodes":9}],"ok":{"$undefined":true}}
+{"fn":"assertJsonWithinLimits","args":[[1,[2,[3,[4]]]],{"maxDepth":2,"maxNodes":8}],"error":"Outbound JSON exceeded the depth limit of 2."}
+{"fn":"assertJsonWithinLimits","args":[{"a":{"b":{"c":1}},"d":2},{"maxDepth":2,"maxNodes":5}],"error":"Outbound JSON exceeded the depth limit of 2."}

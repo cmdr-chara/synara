@@ -1,0 +1,233 @@
+{"fn":"expandHomePath","args":["a.b.c"],"ok":{"~effect/Effect/args":"a.b.c"}}
+{"fn":"expandHomePath","args":["tab\tseparated"],"ok":{"~effect/Effect/args":"tab\tseparated"}}
+{"fn":"expandHomePath","args":["a.b.cİstanbul"],"ok":{"~effect/Effect/args":"a.b.cİstanbul"}}
+{"fn":"expandHomePath","args":["😀"],"ok":{"~effect/Effect/args":"😀"}}
+{"fn":"expandHomePath","args":["tab\tseparateda.b.c"],"ok":{"~effect/Effect/args":"tab\tseparateda.b.c"}}
+{"fn":"expandHomePath","args":["hello world"],"ok":{"~effect/Effect/args":"hello world"}}
+{"fn":"expandHomePath","args":["Hello Worldtrailing."],"ok":{"~effect/Effect/args":"Hello Worldtrailing."}}
+{"fn":"expandHomePath","args":["abns:key.path"],"ok":{"~effect/Effect/args":"abns:key.path"}}
+{"fn":"expandHomePath","args":[":"],"ok":{"~effect/Effect/args":":"}}
+{"fn":"expandHomePath","args":["ünïcödétab\tseparated"],"ok":{"~effect/Effect/args":"ünïcödétab\tseparated"}}
+{"fn":"expandHomePath","args":[".leading"],"ok":{"~effect/Effect/args":".leading"}}
+{"fn":"expandHomePath","args":["./x/**/*.jsonhello world"],"ok":{"~effect/Effect/args":"./x/**/*.jsonhello world"}}
+{"fn":"expandHomePath","args":["ab"],"ok":{"~effect/Effect/args":"ab"}}
+{"fn":"expandHomePath","args":["abca😀b😀c"],"ok":{"~effect/Effect/args":"abca😀b😀c"}}
+{"fn":"expandHomePath","args":["a😀b😀c"],"ok":{"~effect/Effect/args":"a😀b😀c"}}
+{"fn":"expandHomePath","args":["HELLO"],"ok":{"~effect/Effect/args":"HELLO"}}
+{"fn":"expandHomePath","args":["src/a/b.ts"],"ok":{"~effect/Effect/args":"src/a/b.ts"}}
+{"fn":"expandHomePath","args":["{name} has {count} items"],"ok":{"~effect/Effect/args":"{name} has {count} items"}}
+{"fn":"expandHomePath","args":["  padded  {name} has {count} items"],"ok":{"~effect/Effect/args":"  padded  {name} has {count} items"}}
+{"fn":"expandHomePath","args":["./x/**/*.json.leading"],"ok":{"~effect/Effect/args":"./x/**/*.json.leading"}}
+{"fn":"expandHomePath","args":["  padded  ./x/**/*.json"],"ok":{"~effect/Effect/args":"  padded  ./x/**/*.json"}}
+{"fn":"expandHomePath","args":["straße"],"ok":{"~effect/Effect/args":"straße"}}
+{"fn":"expandHomePath","args":["日本語のテキスト"],"ok":{"~effect/Effect/args":"日本語のテキスト"}}
+{"fn":"expandHomePath","args":["hello"],"ok":{"~effect/Effect/args":"hello"}}
+{"fn":"expandHomePath","args":["İstanbul"],"ok":{"~effect/Effect/args":"İstanbul"}}
+{"fn":"expandHomePath","args":["a..b"],"ok":{"~effect/Effect/args":"a..b"}}
+{"fn":"expandHomePath","args":["key_name-1"],"ok":{"~effect/Effect/args":"key_name-1"}}
+{"fn":"expandHomePath","args":["ΣΊΣΥΦΟΣ"],"ok":{"~effect/Effect/args":"ΣΊΣΥΦΟΣ"}}
+{"fn":"expandHomePath","args":["key_name-1HELLO"],"ok":{"~effect/Effect/args":"key_name-1HELLO"}}
+{"fn":"expandHomePath","args":["  padded  "],"ok":{"~effect/Effect/args":"  padded  "}}
+{"fn":"expandHomePath","args":["trailing."],"ok":{"~effect/Effect/args":"trailing."}}
+{"fn":"expandHomePath","args":["ünïcödéhello world"],"ok":{"~effect/Effect/args":"ünïcödéhello world"}}
+{"fn":"expandHomePath","args":["abc"],"ok":{"~effect/Effect/args":"abc"}}
+{"fn":"expandHomePath","args":["emoji 👍🏽 mix"],"ok":{"~effect/Effect/args":"emoji 👍🏽 mix"}}
+{"fn":"expandHomePath","args":[""],"ok":{"~effect/Effect/args":""}}
+{"fn":"expandHomePath","args":["a"],"ok":{"~effect/Effect/args":"a"}}
+{"fn":"expandHomePath","args":["a:b:c"],"ok":{"~effect/Effect/args":"a:b:c"}}
+{"fn":"expandHomePath","args":["trailing.é"],"ok":{"~effect/Effect/args":"trailing.é"}}
+{"fn":"expandHomePath","args":["é"],"ok":{"~effect/Effect/args":"é"}}
+{"fn":"expandHomePath","args":["éa😀b😀c"],"ok":{"~effect/Effect/args":"éa😀b😀c"}}
+{"fn":"expandHomePath","args":["abca.b.c"],"ok":{"~effect/Effect/args":"abca.b.c"}}
+{"fn":"expandHomePath","args":["ünïcödé"],"ok":{"~effect/Effect/args":"ünïcödé"}}
+{"fn":"expandHomePath","args":["  padded  a"],"ok":{"~effect/Effect/args":"  padded  a"}}
+{"fn":"expandHomePath","args":["  padded  straße"],"ok":{"~effect/Effect/args":"  padded  straße"}}
+{"fn":"expandHomePath","args":["Hello World"],"ok":{"~effect/Effect/args":"Hello World"}}
+{"fn":"expandHomePath","args":["hello worldsrc/a/b.ts"],"ok":{"~effect/Effect/args":"hello worldsrc/a/b.ts"}}
+{"fn":"expandHomePath","args":["line1\nline2"],"ok":{"~effect/Effect/args":"line1\nline2"}}
+{"fn":"expandHomePath","args":["a..babc"],"ok":{"~effect/Effect/args":"a..babc"}}
+{"fn":"expandHomePath","args":["ns:key.path"],"ok":{"~effect/Effect/args":"ns:key.path"}}
+{"fn":"expandHomePath","args":["ns:key.pathtrailing."],"ok":{"~effect/Effect/args":"ns:key.pathtrailing."}}
+{"fn":"expandHomePath","args":["helloé"],"ok":{"~effect/Effect/args":"helloé"}}
+{"fn":"expandHomePath","args":["é😀"],"ok":{"~effect/Effect/args":"é😀"}}
+{"fn":"expandHomePath","args":["ünïcödétrailing."],"ok":{"~effect/Effect/args":"ünïcödétrailing."}}
+{"fn":"expandHomePath","args":["Hello Worldhello world"],"ok":{"~effect/Effect/args":"Hello Worldhello world"}}
+{"fn":"expandHomePath","args":["./x/**/*.json"],"ok":{"~effect/Effect/args":"./x/**/*.json"}}
+{"fn":"expandHomePath","args":["a:b:cΣΊΣΥΦΟΣ"],"ok":{"~effect/Effect/args":"a:b:cΣΊΣΥΦΟΣ"}}
+{"fn":"expandHomePath","args":["İstanbula"],"ok":{"~effect/Effect/args":"İstanbula"}}
+{"fn":"expandHomePath","args":["﻿bom"],"ok":{"~effect/Effect/args":"﻿bom"}}
+{"fn":"expandHomePath","args":["key_name-1😀"],"ok":{"~effect/Effect/args":"key_name-1😀"}}
+{"fn":"expandHomePath","args":["hello worldabc"],"ok":{"~effect/Effect/args":"hello worldabc"}}
+{"fn":"expandHomePath","args":["ns:key.pathtab\tseparated"],"ok":{"~effect/Effect/args":"ns:key.pathtab\tseparated"}}
+{"fn":"expandHomePath","args":["straßeİstanbul"],"ok":{"~effect/Effect/args":"straßeİstanbul"}}
+{"fn":"expandHomePath","args":["ünïcödé﻿bom"],"ok":{"~effect/Effect/args":"ünïcödé﻿bom"}}
+{"fn":"expandHomePath","args":["key_name-1straße"],"ok":{"~effect/Effect/args":"key_name-1straße"}}
+{"fn":"expandHomePath","args":["ns:key.pathHello World"],"ok":{"~effect/Effect/args":"ns:key.pathHello World"}}
+{"fn":"expandHomePath","args":["İstanbulns:key.path"],"ok":{"~effect/Effect/args":"İstanbulns:key.path"}}
+{"fn":"expandHomePath","args":["key_name-1trailing."],"ok":{"~effect/Effect/args":"key_name-1trailing."}}
+{"fn":"expandHomePath","args":["{name} has {count} itemsünïcödé"],"ok":{"~effect/Effect/args":"{name} has {count} itemsünïcödé"}}
+{"fn":"expandHomePath","args":["  padded  Hello World"],"ok":{"~effect/Effect/args":"  padded  Hello World"}}
+{"fn":"expandHomePath","args":["ünïcödésrc/a/b.ts"],"ok":{"~effect/Effect/args":"ünïcödésrc/a/b.ts"}}
+{"fn":"expandHomePath","args":["helloHELLO"],"ok":{"~effect/Effect/args":"helloHELLO"}}
+{"fn":"expandHomePath","args":["ΣΊΣΥΦΟΣkey_name-1"],"ok":{"~effect/Effect/args":"ΣΊΣΥΦΟΣkey_name-1"}}
+{"fn":"expandHomePath","args":["ab.leading"],"ok":{"~effect/Effect/args":"ab.leading"}}
+{"fn":"expandHomePath","args":["ünïcödéa"],"ok":{"~effect/Effect/args":"ünïcödéa"}}
+{"fn":"expandHomePath","args":["emoji 👍🏽 mixünïcödé"],"ok":{"~effect/Effect/args":"emoji 👍🏽 mixünïcödé"}}
+{"fn":"expandHomePath","args":["ünïcödéHELLO"],"ok":{"~effect/Effect/args":"ünïcödéHELLO"}}
+{"fn":"expandHomePath","args":["src/a/b.tsns:key.path"],"ok":{"~effect/Effect/args":"src/a/b.tsns:key.path"}}
+{"fn":"expandHomePath","args":[".leading{name} has {count} items"],"ok":{"~effect/Effect/args":".leading{name} has {count} items"}}
+{"fn":"expandHomePath","args":["ΣΊΣΥΦΟΣemoji 👍🏽 mix"],"ok":{"~effect/Effect/args":"ΣΊΣΥΦΟΣemoji 👍🏽 mix"}}
+{"fn":"expandHomePath","args":["a..ba😀b😀c"],"ok":{"~effect/Effect/args":"a..ba😀b😀c"}}
+{"fn":"expandHomePath","args":["a😀"],"ok":{"~effect/Effect/args":"a😀"}}
+{"fn":"expandHomePath","args":["ns:key.patha.b.c"],"ok":{"~effect/Effect/args":"ns:key.patha.b.c"}}
+{"fn":"expandHomePath","args":["HELLOa..b"],"ok":{"~effect/Effect/args":"HELLOa..b"}}
+{"fn":"expandHomePath","args":["src/a/b.tsHELLO"],"ok":{"~effect/Effect/args":"src/a/b.tsHELLO"}}
+{"fn":"expandHomePath","args":["😀emoji 👍🏽 mix"],"ok":{"~effect/Effect/args":"😀emoji 👍🏽 mix"}}
+{"fn":"expandHomePath","args":["😀abc"],"ok":{"~effect/Effect/args":"😀abc"}}
+{"fn":"expandHomePath","args":["ünïcödéa:b:c"],"ok":{"~effect/Effect/args":"ünïcödéa:b:c"}}
+{"fn":"expandHomePath","args":["Hello Worldstraße"],"ok":{"~effect/Effect/args":"Hello Worldstraße"}}
+{"fn":"expandHomePath","args":["Hello Worldİstanbul"],"ok":{"~effect/Effect/args":"Hello Worldİstanbul"}}
+{"fn":"expandHomePath","args":["ΣΊΣΥΦΟΣab"],"ok":{"~effect/Effect/args":"ΣΊΣΥΦΟΣab"}}
+{"fn":"expandHomePath","args":["{name} has {count} items./x/**/*.json"],"ok":{"~effect/Effect/args":"{name} has {count} items./x/**/*.json"}}
+{"fn":"expandHomePath","args":["日本語のテキストé"],"ok":{"~effect/Effect/args":"日本語のテキストé"}}
+{"fn":"expandHomePath","args":["a😀b😀ca:b:c"],"ok":{"~effect/Effect/args":"a😀b😀ca:b:c"}}
+{"fn":"expandHomePath","args":["./x/**/*.jsona"],"ok":{"~effect/Effect/args":"./x/**/*.jsona"}}
+{"fn":"expandHomePath","args":["hello worlda..b"],"ok":{"~effect/Effect/args":"hello worlda..b"}}
+{"fn":"expandHomePath","args":["trailing../x/**/*.json"],"ok":{"~effect/Effect/args":"trailing../x/**/*.json"}}
+{"fn":"expandHomePath","args":[".leadingline1\nline2"],"ok":{"~effect/Effect/args":".leadingline1\nline2"}}
+{"fn":"expandHomePath","args":["straßetab\tseparated"],"ok":{"~effect/Effect/args":"straßetab\tseparated"}}
+{"fn":"expandHomePath","args":["trailing.😀"],"ok":{"~effect/Effect/args":"trailing.😀"}}
+{"fn":"expandHomePath","args":["a😀b😀c.leading"],"ok":{"~effect/Effect/args":"a😀b😀c.leading"}}
+{"fn":"expandHomePath","args":["emoji 👍🏽 mixemoji 👍🏽 mix"],"ok":{"~effect/Effect/args":"emoji 👍🏽 mixemoji 👍🏽 mix"}}
+{"fn":"expandHomePath","args":["HELLOHELLO"],"ok":{"~effect/Effect/args":"HELLOHELLO"}}
+{"fn":"expandHomePath","args":["emoji 👍🏽 mixa..b"],"ok":{"~effect/Effect/args":"emoji 👍🏽 mixa..b"}}
+{"fn":"expandHomePath","args":["日本語のテキストa"],"ok":{"~effect/Effect/args":"日本語のテキストa"}}
+{"fn":"expandHomePath","args":["a..bΣΊΣΥΦΟΣ"],"ok":{"~effect/Effect/args":"a..bΣΊΣΥΦΟΣ"}}
+{"fn":"expandHomePath","args":["a😀b😀c:"],"ok":{"~effect/Effect/args":"a😀b😀c:"}}
+{"fn":"expandHomePath","args":["HELLOline1\nline2"],"ok":{"~effect/Effect/args":"HELLOline1\nline2"}}
+{"fn":"expandHomePath","args":["ünïcödé😀"],"ok":{"~effect/Effect/args":"ünïcödé😀"}}
+{"fn":"expandHomePath","args":["key_name-1./x/**/*.json"],"ok":{"~effect/Effect/args":"key_name-1./x/**/*.json"}}
+{"fn":"expandHomePath","args":["emoji 👍🏽 mixa:b:c"],"ok":{"~effect/Effect/args":"emoji 👍🏽 mixa:b:c"}}
+{"fn":"expandHomePath","args":["éa:b:c"],"ok":{"~effect/Effect/args":"éa:b:c"}}
+{"fn":"expandHomePath","args":["trailing.a😀b😀c"],"ok":{"~effect/Effect/args":"trailing.a😀b😀c"}}
+{"fn":"expandHomePath","args":["a:b:c.leading"],"ok":{"~effect/Effect/args":"a:b:c.leading"}}
+{"fn":"expandHomePath","args":["éHELLO"],"ok":{"~effect/Effect/args":"éHELLO"}}
+{"fn":"expandHomePath","args":["abc😀"],"ok":{"~effect/Effect/args":"abc😀"}}
+{"fn":"expandHomePath","args":["﻿bomstraße"],"ok":{"~effect/Effect/args":"﻿bomstraße"}}
+{"fn":"expandHomePath","args":["{name} has {count} itemsemoji 👍🏽 mix"],"ok":{"~effect/Effect/args":"{name} has {count} itemsemoji 👍🏽 mix"}}
+{"fn":"expandHomePath","args":["a:b:cabc"],"ok":{"~effect/Effect/args":"a:b:cabc"}}
+{"fn":"expandHomePath","args":["a..bHello World"],"ok":{"~effect/Effect/args":"a..bHello World"}}
+{"fn":"expandHomePath","args":["key_name-1  padded  "],"ok":{"~effect/Effect/args":"key_name-1  padded  "}}
+{"fn":"expandHomePath","args":["hello world.leading"],"ok":{"~effect/Effect/args":"hello world.leading"}}
+{"fn":"expandHomePath","args":["a:b:ca..b"],"ok":{"~effect/Effect/args":"a:b:ca..b"}}
+{"fn":"expandHomePath","args":["  padded  line1\nline2"],"ok":{"~effect/Effect/args":"  padded  line1\nline2"}}
+{"fn":"expandHomePath","args":["tab\tseparated:"],"ok":{"~effect/Effect/args":"tab\tseparated:"}}
+{"fn":"expandHomePath","args":["src/a/b.ts./x/**/*.json"],"ok":{"~effect/Effect/args":"src/a/b.ts./x/**/*.json"}}
+{"fn":"expandHomePath","args":["abline1\nline2"],"ok":{"~effect/Effect/args":"abline1\nline2"}}
+{"fn":"expandHomePath","args":["./x/**/*.jsontrailing."],"ok":{"~effect/Effect/args":"./x/**/*.jsontrailing."}}
+{"fn":"expandHomePath","args":["abc{name} has {count} items"],"ok":{"~effect/Effect/args":"abc{name} has {count} items"}}
+{"fn":"expandHomePath","args":["helloemoji 👍🏽 mix"],"ok":{"~effect/Effect/args":"helloemoji 👍🏽 mix"}}
+{"fn":"expandHomePath","args":["aba.b.c"],"ok":{"~effect/Effect/args":"aba.b.c"}}
+{"fn":"expandHomePath","args":["tab\tseparatedHELLO"],"ok":{"~effect/Effect/args":"tab\tseparatedHELLO"}}
+{"fn":"expandHomePath","args":["ns:key.patha"],"ok":{"~effect/Effect/args":"ns:key.patha"}}
+{"fn":"expandHomePath","args":["akey_name-1"],"ok":{"~effect/Effect/args":"akey_name-1"}}
+{"fn":"expandHomePath","args":["trailing.ünïcödé"],"ok":{"~effect/Effect/args":"trailing.ünïcödé"}}
+{"fn":"expandHomePath","args":["a..bsrc/a/b.ts"],"ok":{"~effect/Effect/args":"a..bsrc/a/b.ts"}}
+{"fn":"expandHomePath","args":["日本語のテキスト.leading"],"ok":{"~effect/Effect/args":"日本語のテキスト.leading"}}
+{"fn":"expandHomePath","args":["line1\nline2hello world"],"ok":{"~effect/Effect/args":"line1\nline2hello world"}}
+{"fn":"expandHomePath","args":["﻿bomkey_name-1"],"ok":{"~effect/Effect/args":"﻿bomkey_name-1"}}
+{"fn":"expandHomePath","args":["HELLOab"],"ok":{"~effect/Effect/args":"HELLOab"}}
+{"fn":"expandHomePath","args":["  padded  ΣΊΣΥΦΟΣ"],"ok":{"~effect/Effect/args":"  padded  ΣΊΣΥΦΟΣ"}}
+{"fn":"expandHomePath","args":["hello worldstraße"],"ok":{"~effect/Effect/args":"hello worldstraße"}}
+{"fn":"expandHomePath","args":["ünïcödéHello World"],"ok":{"~effect/Effect/args":"ünïcödéHello World"}}
+{"fn":"expandHomePath","args":["{name} has {count} itemsline1\nline2"],"ok":{"~effect/Effect/args":"{name} has {count} itemsline1\nline2"}}
+{"fn":"expandHomePath","args":["﻿boma"],"ok":{"~effect/Effect/args":"﻿boma"}}
+{"fn":"expandHomePath","args":["  padded    padded  "],"ok":{"~effect/Effect/args":"  padded    padded  "}}
+{"fn":"expandHomePath","args":["src/a/b.ts😀"],"ok":{"~effect/Effect/args":"src/a/b.ts😀"}}
+{"fn":"expandHomePath","args":["日本語のテキストHello World"],"ok":{"~effect/Effect/args":"日本語のテキストHello World"}}
+{"fn":"expandHomePath","args":[":HELLO"],"ok":{"~effect/Effect/args":":HELLO"}}
+{"fn":"expandHomePath","args":["straßea😀b😀c"],"ok":{"~effect/Effect/args":"straßea😀b😀c"}}
+{"fn":"expandHomePath","args":["İstanbul日本語のテキスト"],"ok":{"~effect/Effect/args":"İstanbul日本語のテキスト"}}
+{"fn":"expandHomePath","args":["﻿bom  padded  "],"ok":{"~effect/Effect/args":"﻿bom  padded  "}}
+{"fn":"expandHomePath","args":["a.b.ctab\tseparated"],"ok":{"~effect/Effect/args":"a.b.ctab\tseparated"}}
+{"fn":"expandHomePath","args":[":ab"],"ok":{"~effect/Effect/args":":ab"}}
+{"fn":"expandHomePath","args":["tab\tseparated.leading"],"ok":{"~effect/Effect/args":"tab\tseparated.leading"}}
+{"fn":"expandHomePath","args":["line1\nline2ns:key.path"],"ok":{"~effect/Effect/args":"line1\nline2ns:key.path"}}
+{"fn":"expandHomePath","args":["Hello World日本語のテキスト"],"ok":{"~effect/Effect/args":"Hello World日本語のテキスト"}}
+{"fn":"expandHomePath","args":["Hello Worldabc"],"ok":{"~effect/Effect/args":"Hello Worldabc"}}
+{"fn":"expandHomePath","args":["İstanbulabc"],"ok":{"~effect/Effect/args":"İstanbulabc"}}
+{"fn":"expandHomePath","args":["a:b:c😀"],"ok":{"~effect/Effect/args":"a:b:c😀"}}
+{"fn":"expandHomePath","args":["straßeHELLO"],"ok":{"~effect/Effect/args":"straßeHELLO"}}
+{"fn":"expandHomePath","args":["abemoji 👍🏽 mix"],"ok":{"~effect/Effect/args":"abemoji 👍🏽 mix"}}
+{"fn":"expandHomePath","args":["key_name-1emoji 👍🏽 mix"],"ok":{"~effect/Effect/args":"key_name-1emoji 👍🏽 mix"}}
+{"fn":"expandHomePath","args":["./x/**/*.jsonabc"],"ok":{"~effect/Effect/args":"./x/**/*.jsonabc"}}
+{"fn":"expandHomePath","args":["é:"],"ok":{"~effect/Effect/args":"é:"}}
+{"fn":"expandHomePath","args":["emoji 👍🏽 mix日本語のテキスト"],"ok":{"~effect/Effect/args":"emoji 👍🏽 mix日本語のテキスト"}}
+{"fn":"expandHomePath","args":["﻿bomé"],"ok":{"~effect/Effect/args":"﻿bomé"}}
+{"fn":"expandHomePath","args":["abHELLO"],"ok":{"~effect/Effect/args":"abHELLO"}}
+{"fn":"expandHomePath","args":["😀😀"],"ok":{"~effect/Effect/args":"😀😀"}}
+{"fn":"expandHomePath","args":["a😀b😀c﻿bom"],"ok":{"~effect/Effect/args":"a😀b😀c﻿bom"}}
+{"fn":"expandHomePath","args":["straßeHello World"],"ok":{"~effect/Effect/args":"straßeHello World"}}
+{"fn":"expandHomePath","args":["line1\nline2emoji 👍🏽 mix"],"ok":{"~effect/Effect/args":"line1\nline2emoji 👍🏽 mix"}}
+{"fn":"expandHomePath","args":["src/a/b.tshello"],"ok":{"~effect/Effect/args":"src/a/b.tshello"}}
+{"fn":"expandHomePath","args":["trailing.ΣΊΣΥΦΟΣ"],"ok":{"~effect/Effect/args":"trailing.ΣΊΣΥΦΟΣ"}}
+{"fn":"expandHomePath","args":["./x/**/*.json:"],"ok":{"~effect/Effect/args":"./x/**/*.json:"}}
+{"fn":"expandHomePath","args":["trailing.a"],"ok":{"~effect/Effect/args":"trailing.a"}}
+{"fn":"expandHomePath","args":["hello worldemoji 👍🏽 mix"],"ok":{"~effect/Effect/args":"hello worldemoji 👍🏽 mix"}}
+{"fn":"expandHomePath","args":["{name} has {count} itemsİstanbul"],"ok":{"~effect/Effect/args":"{name} has {count} itemsİstanbul"}}
+{"fn":"expandHomePath","args":["İstanbula:b:c"],"ok":{"~effect/Effect/args":"İstanbula:b:c"}}
+{"fn":"expandHomePath","args":["HELLOünïcödé"],"ok":{"~effect/Effect/args":"HELLOünïcödé"}}
+{"fn":"expandHomePath","args":["﻿bom日本語のテキスト"],"ok":{"~effect/Effect/args":"﻿bom日本語のテキスト"}}
+{"fn":"expandHomePath","args":["./x/**/*.json日本語のテキスト"],"ok":{"~effect/Effect/args":"./x/**/*.json日本語のテキスト"}}
+{"fn":"expandHomePath","args":["{name} has {count} itemssrc/a/b.ts"],"ok":{"~effect/Effect/args":"{name} has {count} itemssrc/a/b.ts"}}
+{"fn":"expandHomePath","args":["a..bemoji 👍🏽 mix"],"ok":{"~effect/Effect/args":"a..bemoji 👍🏽 mix"}}
+{"fn":"expandHomePath","args":["éhello"],"ok":{"~effect/Effect/args":"éhello"}}
+{"fn":"expandHomePath","args":["HELLOtab\tseparated"],"ok":{"~effect/Effect/args":"HELLOtab\tseparated"}}
+{"fn":"expandHomePath","args":["straße:"],"ok":{"~effect/Effect/args":"straße:"}}
+{"fn":"expandHomePath","args":["a😀b😀cab"],"ok":{"~effect/Effect/args":"a😀b😀cab"}}
+{"fn":"expandHomePath","args":["{name} has {count} itemsé"],"ok":{"~effect/Effect/args":"{name} has {count} itemsé"}}
+{"fn":"expandHomePath","args":["atab\tseparated"],"ok":{"~effect/Effect/args":"atab\tseparated"}}
+{"fn":"expandHomePath","args":["  padded  a.b.c"],"ok":{"~effect/Effect/args":"  padded  a.b.c"}}
+{"fn":"expandHomePath","args":["﻿bomline1\nline2"],"ok":{"~effect/Effect/args":"﻿bomline1\nline2"}}
+{"fn":"expandHomePath","args":["﻿bomabc"],"ok":{"~effect/Effect/args":"﻿bomabc"}}
+{"fn":"expandHomePath","args":["ΣΊΣΥΦΟΣHELLO"],"ok":{"~effect/Effect/args":"ΣΊΣΥΦΟΣHELLO"}}
+{"fn":"expandHomePath","args":["src/a/b.tsabc"],"ok":{"~effect/Effect/args":"src/a/b.tsabc"}}
+{"fn":"expandHomePath","args":["key_name-1hello"],"ok":{"~effect/Effect/args":"key_name-1hello"}}
+{"fn":"expandHomePath","args":["ünïcödéemoji 👍🏽 mix"],"ok":{"~effect/Effect/args":"ünïcödéemoji 👍🏽 mix"}}
+{"fn":"expandHomePath","args":["helloa:b:c"],"ok":{"~effect/Effect/args":"helloa:b:c"}}
+{"fn":"expandHomePath","args":["astraße"],"ok":{"~effect/Effect/args":"astraße"}}
+{"fn":"expandHomePath","args":["ünïcödéa.b.c"],"ok":{"~effect/Effect/args":"ünïcödéa.b.c"}}
+{"fn":"expandHomePath","args":["a😀b😀ctrailing."],"ok":{"~effect/Effect/args":"a😀b😀ctrailing."}}
+{"fn":"expandHomePath","args":["héllo wörld"],"ok":{"~effect/Effect/args":"héllo wörld"}}
+{"fn":"expandHomePath","args":["👍🏽 thumbs"],"ok":{"~effect/Effect/args":"👍🏽 thumbs"}}
+{"fn":"expandHomePath","args":["日本語"],"ok":{"~effect/Effect/args":"日本語"}}
+{"fn":"expandHomePath","args":["ılık ırmak"],"ok":{"~effect/Effect/args":"ılık ırmak"}}
+{"fn":"expandHomePath","args":["👨‍👩‍👧 family"],"ok":{"~effect/Effect/args":"👨‍👩‍👧 family"}}
+{"fn":"expandHomePath","args":["a b"],"ok":{"~effect/Effect/args":"a b"}}
+{"fn":"expandHomePath","args":["a😀b"],"ok":{"~effect/Effect/args":"a😀b"}}
+{"fn":"expandHomePath","args":["a²b x½ y①"],"ok":{"~effect/Effect/args":"a²b x½ y①"}}
+{"fn":"expandHomePath","args":["aⅠb Ⅻ"],"ok":{"~effect/Effect/args":"aⅠb Ⅻ"}}
+{"fn":"expandHomePath","args":["a𐐀b 𝐀bc"],"ok":{"~effect/Effect/args":"a𐐀b 𝐀bc"}}
+{"fn":"expandHomePath","args":["कि ٣٤"],"ok":{"~effect/Effect/args":"कि ٣٤"}}
+{"fn":"resolveBaseDir","args":[],"ok":{"~effect/Effect/args":"/Users/devin/.synara"}}
+{"fn":"resolveBaseDir","args":[{"$undefined":true}],"ok":{"~effect/Effect/args":"/Users/devin/.synara"}}
+{"fn":"resolveBaseDir","args":[""],"ok":{"~effect/Effect/args":"/Users/devin/.synara"}}
+{"fn":"expandHomePath","args":["~"],"ok":{"~effect/Effect/args":"/Users/devin"}}
+{"fn":"expandHomePath","args":["~/x"],"ok":{"~effect/Effect/args":"/Users/devin/x"}}
+{"fn":"expandHomePath","args":["~/a/b/c"],"ok":{"~effect/Effect/args":"/Users/devin/a/b/c"}}
+{"fn":"expandHomePath","args":["~\\x"],"ok":{"~effect/Effect/args":"/Users/devin/x"}}
+{"fn":"expandHomePath","args":["~user/x"],"ok":{"~effect/Effect/args":"~user/x"}}
+{"fn":"expandHomePath","args":["~~"],"ok":{"~effect/Effect/args":"~~"}}
+{"fn":"expandHomePath","args":["~/../evasion"],"ok":{"~effect/Effect/args":"/Users/evasion"}}
+{"fn":"resolveBaseDir","args":["/abs/path"],"ok":{"~effect/Effect/args":"/abs/path"}}
+{"fn":"resolveBaseDir","args":["/abs/../x"],"ok":{"~effect/Effect/args":"/x"}}
+{"fn":"resolveBaseDir","args":["/a//b/./c/"],"ok":{"~effect/Effect/args":"/a/b/c"}}
+{"fn":"resolveBaseDir","args":["/"],"ok":{"~effect/Effect/args":"/"}}
+{"fn":"resolveBaseDir","args":["/.."],"ok":{"~effect/Effect/args":"/"}}
+{"fn":"resolveBaseDir","args":["/../../etc"],"ok":{"~effect/Effect/args":"/etc"}}
+{"fn":"resolveBaseDir","args":["~"],"ok":{"~effect/Effect/args":"/Users/devin"}}
+{"fn":"resolveBaseDir","args":["~/foo/bar"],"ok":{"~effect/Effect/args":"/Users/devin/foo/bar"}}
+{"fn":"resolveBaseDir","args":["~\\win\\style"],"ok":{"~effect/Effect/args":"/Users/devin/win\\style"}}
+{"fn":"resolveBaseDir","args":["   "],"ok":{"~effect/Effect/args":"/Users/devin/.synara"}}
+{"fn":"resolveBaseDir","args":["  ~/padded  "],"ok":{"~effect/Effect/args":"/Users/devin/padded"}}
+{"fn":"resolveBaseDir","args":[null],"ok":{"~effect/Effect/args":"/Users/devin/.synara"}}

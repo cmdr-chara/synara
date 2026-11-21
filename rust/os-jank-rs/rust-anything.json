@@ -1,0 +1,55 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/os-jank.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "os-jank-rs",
+  "exports": [
+    {
+      "name": "expandHomePath",
+      "file": "apps/server/src/os-jank.ts",
+      "line": 85,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Effect.Effect<string>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveBaseDir",
+      "file": "apps/server/src/os-jank.ts",
+      "line": 88,
+      "params": [
+        {
+          "name": "raw",
+          "ts_type": "string | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Effect.Effect<string>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "fixPath",
+      "file": "apps/server/src/os-jank.ts",
+      "line": 23,
+      "reason": "takes or returns a function"
+    }
+  ]
+}

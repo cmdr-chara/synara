@@ -1,0 +1,17 @@
+{
+  "unit": "apps/server/src/os-jank.ts",
+  "files": 1,
+  "fingerprint": "b77bec47e95c05db",
+  "coverage": {
+    "lines": 76,
+    "reached": 21,
+    "files": [
+      {
+        "file": "apps/server/src/os-jank.ts",
+        "lines": 76,
+        "reached": 21,
+        "missed": "19-21, 24-34, 36, 38-42, 44, 46-53, 55-57, 59-65, 67-70, 72-83"
+      }
+    ]
+  }
+}

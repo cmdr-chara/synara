@@ -1,0 +1,50 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/desktop/src/migrationConsentHandoff.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "migrationconsenthandoff-rs",
+  "exports": [],
+  "classes": [
+    {
+      "name": "MigrationConsentHandoff",
+      "file": "apps/desktop/src/migrationConsentHandoff.ts",
+      "line": 1,
+      "constructor": [],
+      "methods": [
+        {
+          "name": "approve",
+          "file": "apps/desktop/src/migrationConsentHandoff.ts",
+          "line": 4,
+          "params": [
+            {
+              "name": "consentToken",
+              "ts_type": "string",
+              "optional": false,
+              "rest": false
+            }
+          ],
+          "returns": "void",
+          "is_async": false,
+          "is_generator": false,
+          "type_params": [],
+          "uses_instanceof": false
+        },
+        {
+          "name": "take",
+          "file": "apps/desktop/src/migrationConsentHandoff.ts",
+          "line": 8,
+          "params": [],
+          "returns": "string | null",
+          "is_async": false,
+          "is_generator": false,
+          "type_params": [],
+          "uses_instanceof": false
+        }
+      ],
+      "blocker": null
+    }
+  ],
+  "js_only": []
+}

@@ -1,0 +1,72 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/remoteResources.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "remoteresources-rs",
+  "exports": [
+    {
+      "name": "remoteResourceRoute",
+      "file": "packages/shared/src/remoteResources.ts",
+      "line": 15,
+      "params": [
+        {
+          "name": "resource",
+          "ts_type": "typeof typeof typeof typeof RemoteResource.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "{\n  path: string;\n  method: \"GET\" | \"POST\";\n  maxBodyBytes: number;\n}",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "decodeRemoteResourceReference",
+      "file": "packages/shared/src/remoteResources.ts",
+      "line": 92,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof RemoteResourceReference.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "remoteResourcePresentationUrl",
+      "file": "packages/shared/src/remoteResources.ts",
+      "line": 98,
+      "params": [
+        {
+          "name": "environmentId",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "encodedReference",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

@@ -1,0 +1,481 @@
+{"fn":"remoteResourceRoute","args":[null],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"remoteResourceRoute","args":[[]],"ok":{"path":"undefined","method":"GET","maxBodyBytes":0}}
+{"fn":"remoteResourceRoute","args":[{"a":{"b":"c"}}],"ok":{"path":"undefined","method":"GET","maxBodyBytes":0}}
+{"fn":"remoteResourceRoute","args":[{"a":"b"}],"ok":{"path":"undefined","method":"GET","maxBodyBytes":0}}
+{"fn":"remoteResourceRoute","args":[true],"ok":{"path":"undefined","method":"GET","maxBodyBytes":0}}
+{"fn":"remoteResourceRoute","args":["x"],"ok":{"path":"undefined","method":"GET","maxBodyBytes":0}}
+{"fn":"remoteResourceRoute","args":[{}],"ok":{"path":"undefined","method":"GET","maxBodyBytes":0}}
+{"fn":"remoteResourceRoute","args":[0],"ok":{"path":"undefined","method":"GET","maxBodyBytes":0}}
+{"fn":"remoteResourceRoute","args":[["a",1]],"ok":{"path":"undefined","method":"GET","maxBodyBytes":0}}
+{"fn":"decodeRemoteResourceReference","args":["İstanbul"],"error":"Unexpected token 'İ', \"İstanbul\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["a.b.c"],"error":"Unexpected token 'a', \"a.b.c\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["a:b:c"],"error":"Unexpected token 'a', \"a:b:c\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["trailing."],"error":"Unexpected token 'a', \"trailing.\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["😀"],"error":"Unexpected token '\ud83d', \"😀\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":[""],"error":"Unexpected end of JSON input"}
+{"fn":"decodeRemoteResourceReference","args":["./x/**/*.json"],"error":"Unexpected token '.', \"./x/**/*.json\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["tab\tseparated"],"error":"Unexpected token 'a', \"tab\tseparated\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["Hello World"],"error":"Unexpected token 'H', \"Hello World\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":[".leadinga..b"],"error":"Unexpected token '.', \".leadinga..b\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":[":"],"error":"Unexpected token ':', \":\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["{name} has {count} items"],"error":"Expected property name or '}' in JSON at position 1 (line 1 column 2)"}
+{"fn":"decodeRemoteResourceReference","args":["日本語のテキスト"],"error":"Unexpected token '日', \"日本語のテキスト\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["./x/**/*.jsonline1\nline2"],"error":"Unexpected token '.', \"./x/**/*.j\"... is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":[".leadingİstanbul"],"error":"Unexpected token '.', \".leadingİstanbul\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["ns:key.pathabc"],"error":"Unexpected token 's', \"ns:key.pathabc\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["  padded  a.b.c"],"error":"Unexpected token 'p', \"  padded  a.b.c\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["key_name-1"],"error":"Unexpected token 'k', \"key_name-1\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":[".leadingns:key.path"],"error":"Unexpected token '.', \".leadingns:key.path\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["line1\nline2"],"error":"Unexpected token 'l', \"line1\nline2\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":[".leading"],"error":"Unexpected token '.', \".leading\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["ns:key.path"],"error":"Unexpected token 's', \"ns:key.path\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["a"],"error":"Unexpected token 'a', \"a\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["abc"],"error":"Unexpected token 'a', \"abc\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["straße"],"error":"Unexpected token 's', \"straße\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["helloünïcödé"],"error":"Unexpected token 'h', \"helloünïcödé\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["ΣΊΣΥΦΟΣ"],"error":"Unexpected token 'Σ', \"ΣΊΣΥΦΟΣ\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["a:b:cHELLO"],"error":"Unexpected token 'a', \"a:b:cHELLO\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["a.b.ca😀b😀c"],"error":"Unexpected token 'a', \"a.b.ca😀b😀c\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["a..b"],"error":"Unexpected token 'a', \"a..b\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["HELLO"],"error":"Unexpected token 'H', \"HELLO\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["abstraße"],"error":"Unexpected token 'a', \"abstraße\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["src/a/b.tsHello World"],"error":"Unexpected token 's', \"src/a/b.ts\"... is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["é"],"error":"Unexpected token 'e', \"é\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["ünïcödé"],"error":"Unexpected token 'ü', \"ünïcödé\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["ünïcödéa"],"error":"Unexpected token 'ü', \"ünïcödéa\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["a😀b😀ctab\tseparated"],"error":"Unexpected token 'a', \"a😀b😀ctab\tseparated\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["  padded  "],"error":"Unexpected token 'p', \"  padded  \" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["src/a/b.ts{name} has {count} items"],"error":"Unexpected token 's', \"src/a/b.ts\"... is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["﻿bom"],"error":"Unexpected token '﻿', \"﻿bom\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["line1\nline2a..b"],"error":"Unexpected token 'l', \"line1\nline2a..b\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["src/a/b.tsa😀b😀c"],"error":"Unexpected token 's', \"src/a/b.tsa😀b😀c\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["Hello Worldünïcödé"],"error":"Unexpected token 'H', \"Hello Worldünïcödé\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["hello"],"error":"Unexpected token 'h', \"hello\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["HELLOİstanbul"],"error":"Unexpected token 'H', \"HELLOİstanbul\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["src/a/b.ts"],"error":"Unexpected token 's', \"src/a/b.ts\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["a:b:c./x/**/*.json"],"error":"Unexpected token 'a', \"a:b:c./x/**/*.json\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["ab"],"error":"Unexpected token 'a', \"ab\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["line1\nline2Hello World"],"error":"Unexpected token 'l', \"line1\nline\"... is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["  padded  abc"],"error":"Unexpected token 'p', \"  padded  abc\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["{name} has {count} itemsstraße"],"error":"Expected property name or '}' in JSON at position 1 (line 1 column 2)"}
+{"fn":"decodeRemoteResourceReference","args":["Hello Worlda"],"error":"Unexpected token 'H', \"Hello Worlda\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["trailing.emoji 👍🏽 mix"],"error":"Unexpected token 'a', \"trailing.emo\"... is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["ns:key.patha:b:c"],"error":"Unexpected token 's', \"ns:key.patha:b:c\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["{name} has {count} items😀"],"error":"Expected property name or '}' in JSON at position 1 (line 1 column 2)"}
+{"fn":"decodeRemoteResourceReference","args":["a😀b😀c"],"error":"Unexpected token 'a', \"a😀b😀c\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["abchello"],"error":"Unexpected token 'a', \"abchello\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["a.b.c﻿bom"],"error":"Unexpected token 'a', \"a.b.c﻿bom\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["a:b:csrc/a/b.ts"],"error":"Unexpected token 'a', \"a:b:csrc/a/b.ts\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["src/a/b.ts./x/**/*.json"],"error":"Unexpected token 's', \"src/a/b.ts\"... is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["emoji 👍🏽 mixtab\tseparated"],"error":"Unexpected token 'e', \"emoji 👍🏽\"... is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["src/a/b.tstrailing."],"error":"Unexpected token 's', \"src/a/b.tstrailing.\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["HELLOemoji 👍🏽 mix"],"error":"Unexpected token 'H', \"HELLOemoji 👍🏽 mix\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["aHELLO"],"error":"Unexpected token 'a', \"aHELLO\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["😀straße"],"error":"Unexpected token '\ud83d', \"😀straße\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["key_name-1line1\nline2"],"error":"Unexpected token 'k', \"key_name-1\"... is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["./x/**/*.jsoné"],"error":"Unexpected token '.', \"./x/**/*.jsoné\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["a😀b😀ca"],"error":"Unexpected token 'a', \"a😀b😀ca\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["a:b:ctrailing."],"error":"Unexpected token 'a', \"a:b:ctrailing.\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["ns:key.pathİstanbul"],"error":"Unexpected token 's', \"ns:key.pathİstanbul\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["emoji 👍🏽 mixünïcödé"],"error":"Unexpected token 'e', \"emoji 👍🏽\"... is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["﻿bomtab\tseparated"],"error":"Unexpected token '﻿', \"﻿bomtab\tseparated\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["{name} has {count} itemshello world"],"error":"Expected property name or '}' in JSON at position 1 (line 1 column 2)"}
+{"fn":"decodeRemoteResourceReference","args":["Hello Worldabc"],"error":"Unexpected token 'H', \"Hello Worldabc\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["tab\tseparatedline1\nline2"],"error":"Unexpected token 'a', \"tab\tseparat\"... is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["{name} has {count} itemssrc/a/b.ts"],"error":"Expected property name or '}' in JSON at position 1 (line 1 column 2)"}
+{"fn":"decodeRemoteResourceReference","args":["﻿bom{name} has {count} items"],"error":"Unexpected token '﻿', \"﻿bom{name}\"... is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["abcabc"],"error":"Unexpected token 'a', \"abcabc\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["a..babc"],"error":"Unexpected token 'a', \"a..babc\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["tab\tseparatedns:key.path"],"error":"Unexpected token 'a', \"tab\tseparat\"... is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":[":abc"],"error":"Unexpected token ':', \":abc\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["hello world"],"error":"Unexpected token 'h', \"hello world\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["HELLOline1\nline2"],"error":"Unexpected token 'H', \"HELLOline1\nline2\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["hello worldtrailing."],"error":"Unexpected token 'h', \"hello worldtrailing.\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["HELLO.leading"],"error":"Unexpected token 'H', \"HELLO.leading\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["./x/**/*.jsonstraße"],"error":"Unexpected token '.', \"./x/**/*.jsonstraße\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["emoji 👍🏽 mix"],"error":"Unexpected token 'e', \"emoji 👍🏽 mix\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["a.b.c日本語のテキスト"],"error":"Unexpected token 'a', \"a.b.c日本語のテキスト\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["﻿bomHello World"],"error":"Unexpected token '﻿', \"﻿bomHello World\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["a:b:c:"],"error":"Unexpected token 'a', \"a:b:c:\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":[":ns:key.path"],"error":"Unexpected token ':', \":ns:key.path\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["straßesrc/a/b.ts"],"error":"Unexpected token 's', \"straßesrc/a/b.ts\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":[":é"],"error":"Unexpected token ':', \":é\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["./x/**/*.json﻿bom"],"error":"Unexpected token '.', \"./x/**/*.json﻿bom\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":[":HELLO"],"error":"Unexpected token ':', \":HELLO\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["src/a/b.ts.leading"],"error":"Unexpected token 's', \"src/a/b.ts.leading\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":[":emoji 👍🏽 mix"],"error":"Unexpected token ':', \":emoji 👍🏽 mix\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":[":  padded  "],"error":"Unexpected token ':', \":  padded  \" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["emoji 👍🏽 mix﻿bom"],"error":"Unexpected token 'e', \"emoji 👍🏽 mix﻿bom\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["emoji 👍🏽 mixline1\nline2"],"error":"Unexpected token 'e', \"emoji 👍🏽\"... is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["日本語のテキスト.leading"],"error":"Unexpected token '日', \"日本語のテキスト.leading\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["a:b:cé"],"error":"Unexpected token 'a', \"a:b:cé\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["aba😀b😀c"],"error":"Unexpected token 'a', \"aba😀b😀c\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["ΣΊΣΥΦΟΣa..b"],"error":"Unexpected token 'Σ', \"ΣΊΣΥΦΟΣa..b\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["ünïcödéline1\nline2"],"error":"Unexpected token 'ü', \"ünïcödéline1\nline2\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":[".leadingtab\tseparated"],"error":"Unexpected token '.', \".leadingta\"... is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["  padded  日本語のテキスト"],"error":"Unexpected token 'p', \"  padded  日本語のテキスト\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["straßetab\tseparated"],"error":"Unexpected token 's', \"straßetab\tseparated\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["﻿bom😀"],"error":"Unexpected token '﻿', \"﻿bom😀\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["a😀b😀c.leading"],"error":"Unexpected token 'a', \"a😀b😀c.leading\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["İstanbulhello"],"error":"Unexpected token 'İ', \"İstanbulhello\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["a😀b😀cünïcödé"],"error":"Unexpected token 'a', \"a😀b😀cünïcödé\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["hello worldkey_name-1"],"error":"Unexpected token 'h', \"hello worl\"... is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":[".leadingΣΊΣΥΦΟΣ"],"error":"Unexpected token '.', \".leadingΣΊΣΥΦΟΣ\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["{name} has {count} itemsa"],"error":"Expected property name or '}' in JSON at position 1 (line 1 column 2)"}
+{"fn":"decodeRemoteResourceReference","args":["emoji 👍🏽 mixkey_name-1"],"error":"Unexpected token 'e', \"emoji 👍🏽\"... is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["abhello"],"error":"Unexpected token 'a', \"abhello\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["a:b:cİstanbul"],"error":"Unexpected token 'a', \"a:b:cİstanbul\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["src/a/b.tshello"],"error":"Unexpected token 's', \"src/a/b.tshello\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["trailing.trailing."],"error":"Unexpected token 'a', \"trailing.trailing.\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["src/a/b.tskey_name-1"],"error":"Unexpected token 's', \"src/a/b.tskey_name-1\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["emoji 👍🏽 mix  padded  "],"error":"Unexpected token 'e', \"emoji 👍🏽\"... is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["ünïcödé./x/**/*.json"],"error":"Unexpected token 'ü', \"ünïcödé./x/**/*.json\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["atrailing."],"error":"Unexpected token 'a', \"atrailing.\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["﻿bomstraße"],"error":"Unexpected token '﻿', \"﻿bomstraße\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["éHELLO"],"error":"Unexpected token 'e', \"éHELLO\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["{name} has {count} itemsemoji 👍🏽 mix"],"error":"Expected property name or '}' in JSON at position 1 (line 1 column 2)"}
+{"fn":"decodeRemoteResourceReference","args":["line1\nline2trailing."],"error":"Unexpected token 'l', \"line1\nline2trailing.\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["日本語のテキスト./x/**/*.json"],"error":"Unexpected token '日', \"日本語のテキスト./\"... is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["éΣΊΣΥΦΟΣ"],"error":"Unexpected token 'e', \"éΣΊΣΥΦΟΣ\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["a😀b😀ca.b.c"],"error":"Unexpected token 'a', \"a😀b😀ca.b.c\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["﻿bomΣΊΣΥΦΟΣ"],"error":"Unexpected token '﻿', \"﻿bomΣΊΣΥΦΟΣ\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["hello worldabc"],"error":"Unexpected token 'h', \"hello worldabc\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["étab\tseparated"],"error":"Unexpected token 'e', \"étab\tseparated\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["a.b.ca:b:c"],"error":"Unexpected token 'a', \"a.b.ca:b:c\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":[":﻿bom"],"error":"Unexpected token ':', \":﻿bom\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["日本語のテキストa..b"],"error":"Unexpected token '日', \"日本語のテキストa..b\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["hello{name} has {count} items"],"error":"Unexpected token 'h', \"hello{name\"... is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["😀﻿bom"],"error":"Unexpected token '\ud83d', \"😀﻿bom\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["  padded  straße"],"error":"Unexpected token 'p', \"  padded  straße\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["emoji 👍🏽 mixHELLO"],"error":"Unexpected token 'e', \"emoji 👍🏽 mixHELLO\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["line1\nline2a:b:c"],"error":"Unexpected token 'l', \"line1\nline2a:b:c\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["😀ab"],"error":"Unexpected token '\ud83d', \"😀ab\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["İstanbula"],"error":"Unexpected token 'İ', \"İstanbula\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["a:b:cünïcödé"],"error":"Unexpected token 'a', \"a:b:cünïcödé\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["emoji 👍🏽 mixa.b.c"],"error":"Unexpected token 'e', \"emoji 👍🏽 mixa.b.c\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["key_name-1a.b.c"],"error":"Unexpected token 'k', \"key_name-1a.b.c\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["key_name-1ΣΊΣΥΦΟΣ"],"error":"Unexpected token 'k', \"key_name-1ΣΊΣΥΦΟΣ\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["ns:key.pathkey_name-1"],"error":"Unexpected token 's', \"ns:key.path\"... is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["ΣΊΣΥΦΟΣtrailing."],"error":"Unexpected token 'Σ', \"ΣΊΣΥΦΟΣtrailing.\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["emoji 👍🏽 mixhello world"],"error":"Unexpected token 'e', \"emoji 👍🏽\"... is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["Hello World{name} has {count} items"],"error":"Unexpected token 'H', \"Hello Worl\"... is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["tab\tseparatedhello"],"error":"Unexpected token 'a', \"tab\tseparatedhello\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["hello:"],"error":"Unexpected token 'h', \"hello:\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["  padded  .leading"],"error":"Unexpected token 'p', \"  padded  .leading\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["Hello WorldHello World"],"error":"Unexpected token 'H', \"Hello Worl\"... is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["straßea"],"error":"Unexpected token 's', \"straßea\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["é😀"],"error":"Unexpected token 'e', \"é😀\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["a.b.c:"],"error":"Unexpected token 'a', \"a.b.c:\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["日本語のテキストhello world"],"error":"Unexpected token '日', \"日本語のテキストhello world\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["İstanbula..b"],"error":"Unexpected token 'İ', \"İstanbula..b\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["emoji 👍🏽 mixstraße"],"error":"Unexpected token 'e', \"emoji 👍🏽 mixstraße\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["ΣΊΣΥΦΟΣ日本語のテキスト"],"error":"Unexpected token 'Σ', \"ΣΊΣΥΦΟΣ日本語のテキスト\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["key_name-1src/a/b.ts"],"error":"Unexpected token 'k', \"key_name-1src/a/b.ts\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["tab\tseparatedemoji 👍🏽 mix"],"error":"Unexpected token 'a', \"tab\tseparat\"... is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["ΣΊΣΥΦΟΣkey_name-1"],"error":"Unexpected token 'Σ', \"ΣΊΣΥΦΟΣkey_name-1\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["src/a/b.tsa"],"error":"Unexpected token 's', \"src/a/b.tsa\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["trailing.:"],"error":"Unexpected token 'a', \"trailing.:\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["abcemoji 👍🏽 mix"],"error":"Unexpected token 'a', \"abcemoji 👍🏽 mix\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["HELLOtab\tseparated"],"error":"Unexpected token 'H', \"HELLOtab\tseparated\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["a..bkey_name-1"],"error":"Unexpected token 'a', \"a..bkey_name-1\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["src/a/b.tsline1\nline2"],"error":"Unexpected token 's', \"src/a/b.ts\"... is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["emoji 👍🏽 mixa:b:c"],"error":"Unexpected token 'e', \"emoji 👍🏽 mixa:b:c\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["日本語のテキストns:key.path"],"error":"Unexpected token '日', \"日本語のテキストns:key.path\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["key_name-1hello world"],"error":"Unexpected token 'k', \"key_name-1\"... is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["😀tab\tseparated"],"error":"Unexpected token '\ud83d', \"😀tab\tseparated\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["ünïcödéünïcödé"],"error":"Unexpected token 'ü', \"ünïcödéünïcödé\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["﻿bomtrailing."],"error":"Unexpected token '﻿', \"﻿bomtrailing.\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["İstanbul日本語のテキスト"],"error":"Unexpected token 'İ', \"İstanbul日本語のテキスト\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["﻿boma"],"error":"Unexpected token '﻿', \"﻿boma\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["ΣΊΣΥΦΟΣline1\nline2"],"error":"Unexpected token 'Σ', \"ΣΊΣΥΦΟΣline1\nline2\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":[":Hello World"],"error":"Unexpected token ':', \":Hello World\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["﻿bomé"],"error":"Unexpected token '﻿', \"﻿bomé\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["straßeline1\nline2"],"error":"Unexpected token 's', \"straßeline1\nline2\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["ünïcödé﻿bom"],"error":"Unexpected token 'ü', \"ünïcödé﻿bom\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["a..ba:b:c"],"error":"Unexpected token 'a', \"a..ba:b:c\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":[".leadinghello world"],"error":"Unexpected token '.', \".leadinghello world\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["İstanbulstraße"],"error":"Unexpected token 'İ', \"İstanbulstraße\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["ns:key.pathemoji 👍🏽 mix"],"error":"Unexpected token 's', \"ns:key.path\"... is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["hello.leading"],"error":"Unexpected token 'h', \"hello.leading\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["HELLOns:key.path"],"error":"Unexpected token 'H', \"HELLOns:key.path\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["trailing..leading"],"error":"Unexpected token 'a', \"trailing..leading\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["a..b{name} has {count} items"],"error":"Unexpected token 'a', \"a..b{name}\"... is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["tab\tseparatedstraße"],"error":"Unexpected token 'a', \"tab\tseparatedstraße\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":[".leading./x/**/*.json"],"error":"Unexpected token '.', \".leading./\"... is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["tab\tseparatedünïcödé"],"error":"Unexpected token 'a', \"tab\tseparatedünïcödé\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["straßeΣΊΣΥΦΟΣ"],"error":"Unexpected token 's', \"straßeΣΊΣΥΦΟΣ\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["a😀b😀csrc/a/b.ts"],"error":"Unexpected token 'a', \"a😀b😀csrc/a/b.ts\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["tab\tseparated./x/**/*.json"],"error":"Unexpected token 'a', \"tab\tseparat\"... is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["﻿bom.leading"],"error":"Unexpected token '﻿', \"﻿bom.leading\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["héllo wörld"],"error":"Unexpected token 'h', \"héllo wörld\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["👍🏽 thumbs"],"error":"Unexpected token '\ud83d', \"👍🏽 thumbs\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["日本語"],"error":"Unexpected token '日', \"日本語\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["ılık ırmak"],"error":"Unexpected token 'ı', \"ılık ırmak\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["👨‍👩‍👧 family"],"error":"Unexpected token '\ud83d', \"👨‍👩‍👧 family\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["a b"],"error":"Unexpected token 'a', \"a b\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["a😀b"],"error":"Unexpected token 'a', \"a😀b\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["a²b x½ y①"],"error":"Unexpected token 'a', \"a²b x½ y①\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["aⅠb Ⅻ"],"error":"Unexpected token 'a', \"aⅠb Ⅻ\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["a𐐀b 𝐀bc"],"error":"Unexpected token 'a', \"a𐐀b 𝐀bc\" is not valid JSON"}
+{"fn":"decodeRemoteResourceReference","args":["कि ٣٤"],"error":"Unexpected token 'क', \"कि ٣٤\" is not valid JSON"}
+{"fn":"remoteResourcePresentationUrl","args":["HELLO","src/a/b.tsé"],"ok":"synara://remote/HELLO/v2/resource/src%2Fa%2Fb.tse%CC%81"}
+{"fn":"remoteResourcePresentationUrl","args":["é",".leading"],"ok":"synara://remote/e%CC%81/v2/resource/.leading"}
+{"fn":"remoteResourcePresentationUrl","args":["日本語のテキスト","a:b:ca.b.c"],"ok":"synara://remote/%E6%97%A5%E6%9C%AC%E8%AA%9E%E3%81%AE%E3%83%86%E3%82%AD%E3%82%B9%E3%83%88/v2/resource/a%3Ab%3Aca.b.c"}
+{"fn":"remoteResourcePresentationUrl","args":["a.b.c",""],"ok":"synara://remote/a.b.c/v2/resource/"}
+{"fn":"remoteResourcePresentationUrl","args":["./x/**/*.jsoné","  padded  "],"ok":"synara://remote/.%2Fx%2F**%2F*.jsone%CC%81/v2/resource/%20%20padded%20%20"}
+{"fn":"remoteResourcePresentationUrl","args":["😀é","{name} has {count} items"],"ok":"synara://remote/%F0%9F%98%80e%CC%81/v2/resource/%7Bname%7D%20has%20%7Bcount%7D%20items"}
+{"fn":"remoteResourcePresentationUrl","args":["  padded  ","./x/**/*.json"],"ok":"synara://remote/%20%20padded%20%20/v2/resource/.%2Fx%2F**%2F*.json"}
+{"fn":"remoteResourcePresentationUrl","args":["line1\nline2","İstanbul"],"ok":"synara://remote/line1%0Aline2/v2/resource/%C4%B0stanbul"}
+{"fn":"remoteResourcePresentationUrl","args":["r","Hello World"],"ok":"synara://remote/r/v2/resource/Hello%20World"}
+{"fn":"remoteResourcePresentationUrl","args":["trailing.ab","./x/**/*.json😀"],"ok":"synara://remote/trailing.ab/v2/resource/.%2Fx%2F**%2F*.json%F0%9F%98%80"}
+{"fn":"remoteResourcePresentationUrl","args":["  padded  ","HELLO"],"ok":"synara://remote/%20%20padded%20%20/v2/resource/HELLO"}
+{"fn":"remoteResourcePresentationUrl","args":["i ","HELLOemoji 👍🏽 mix"],"ok":"synara://remote/i%20/v2/resource/HELLOemoji%20%F0%9F%91%8D%F0%9F%8F%BD%20mix"}
+{"fn":"remoteResourcePresentationUrl","args":["key_name-1",""],"ok":"synara://remote/key_name-1/v2/resource/"}
+{"fn":"remoteResourcePresentationUrl","args":["a..bİstanbul","Hello World"],"ok":"synara://remote/a..b%C4%B0stanbul/v2/resource/Hello%20World"}
+{"fn":"remoteResourcePresentationUrl","args":["abns:key.path","src/a/b.ts"],"ok":"synara://remote/abns%3Akey.path/v2/resource/src%2Fa%2Fb.ts"}
+{"fn":"remoteResourcePresentationUrl","args":["a:b:c","./x/**/*.json./x/**/*.json"],"ok":"synara://remote/a%3Ab%3Ac/v2/resource/.%2Fx%2F**%2F*.json.%2Fx%2F**%2F*.json"}
+{"fn":"remoteResourcePresentationUrl","args":["é","ns:key.path"],"ok":"synara://remote/e%CC%81/v2/resource/ns%3Akey.path"}
+{"fn":"remoteResourcePresentationUrl","args":["line1\nline","line1\nline2"],"ok":"synara://remote/line1%0Aline/v2/resource/line1%0Aline2"}
+{"fn":"remoteResourcePresentationUrl","args":["日本語のテキスト","ns:key.path"],"ok":"synara://remote/%E6%97%A5%E6%9C%AC%E8%AA%9E%E3%81%AE%E3%83%86%E3%82%AD%E3%82%B9%E3%83%88/v2/resource/ns%3Akey.path"}
+{"fn":"remoteResourcePresentationUrl","args":["ns:key.path","ns:key.path.leading"],"ok":"synara://remote/ns%3Akey.path/v2/resource/ns%3Akey.path.leading"}
+{"fn":"remoteResourcePresentationUrl","args":["abline1\nline2","key_name-1"],"ok":"synara://remote/abline1%0Aline2/v2/resource/key_name-1"}
+{"fn":"remoteResourcePresentationUrl","args":["a","日本語のテキスト"],"ok":"synara://remote/a/v2/resource/%E6%97%A5%E6%9C%AC%E8%AA%9E%E3%81%AE%E3%83%86%E3%82%AD%E3%82%B9%E3%83%88"}
+{"fn":"remoteResourcePresentationUrl","args":["src/a/b.ts",".leading"],"ok":"synara://remote/src%2Fa%2Fb.ts/v2/resource/.leading"}
+{"fn":"remoteResourcePresentationUrl","args":["a..b","src/a/b.ts"],"ok":"synara://remote/a..b/v2/resource/src%2Fa%2Fb.ts"}
+{"fn":"remoteResourcePresentationUrl","args":["﻿bom","trailing."],"ok":"synara://remote/%EF%BB%BFbom/v2/resource/trailing."}
+{"fn":"remoteResourcePresentationUrl","args":["a","src/a/b.ts"],"ok":"synara://remote/a/v2/resource/src%2Fa%2Fb.ts"}
+{"fn":"remoteResourcePresentationUrl","args":["a:b:c",""],"ok":"synara://remote/a%3Ab%3Ac/v2/resource/"}
+{"fn":"remoteResourcePresentationUrl","args":["a.b.c","日本語のテキスト"],"ok":"synara://remote/a.b.c/v2/resource/%E6%97%A5%E6%9C%AC%E8%AA%9E%E3%81%AE%E3%83%86%E3%82%AD%E3%82%B9%E3%83%88"}
+{"fn":"remoteResourcePresentationUrl","args":["HELLO","İstanbul"],"ok":"synara://remote/HELLO/v2/resource/%C4%B0stanbul"}
+{"fn":"remoteResourcePresentationUrl","args":["a:b:cİstanbul",""],"ok":"synara://remote/a%3Ab%3Ac%C4%B0stanbul/v2/resource/"}
+{"fn":"remoteResourcePresentationUrl","args":["tab\tseparated","tab\tseparated"],"ok":"synara://remote/tab%09separated/v2/resource/tab%09separated"}
+{"fn":"remoteResourcePresentationUrl","args":[":",":"],"ok":"synara://remote/%3A/v2/resource/%3A"}
+{"fn":"remoteResourcePresentationUrl","args":["./x/**/*.json",""],"ok":"synara://remote/.%2Fx%2F**%2F*.json/v2/resource/"}
+{"fn":"remoteResourcePresentationUrl","args":["a..b","﻿bom"],"ok":"synara://remote/a..b/v2/resource/%EF%BB%BFbom"}
+{"fn":"remoteResourcePresentationUrl","args":["eparat","tab\tseparated"],"ok":"synara://remote/eparat/v2/resource/tab%09separated"}
+{"fn":"remoteResourcePresentationUrl","args":[":","emoji 👍🏽 mixline1\nline2"],"ok":"synara://remote/%3A/v2/resource/emoji%20%F0%9F%91%8D%F0%9F%8F%BD%20mixline1%0Aline2"}
+{"fn":"remoteResourcePresentationUrl","args":["straßea..b","hello"],"ok":"synara://remote/stra%C3%9Fea..b/v2/resource/hello"}
+{"fn":"remoteResourcePresentationUrl","args":["key_name-1HELLO","tab\tseparated"],"ok":"synara://remote/key_name-1HELLO/v2/resource/tab%09separated"}
+{"fn":"remoteResourcePresentationUrl","args":["Hello Worldab","hello world"],"ok":"synara://remote/Hello%20Worldab/v2/resource/hello%20world"}
+{"fn":"remoteResourcePresentationUrl","args":["abc","Hello World"],"ok":"synara://remote/abc/v2/resource/Hello%20World"}
+{"fn":"remoteResourcePresentationUrl","args":["key_name-1","line1\nline2"],"ok":"synara://remote/key_name-1/v2/resource/line1%0Aline2"}
+{"fn":"remoteResourcePresentationUrl","args":["trailing../x/**/*.json","trailing.İstanbul"],"ok":"synara://remote/trailing..%2Fx%2F**%2F*.json/v2/resource/trailing.%C4%B0stanbul"}
+{"fn":"remoteResourcePresentationUrl","args":["key_name-1ns:key.path","a..b"],"ok":"synara://remote/key_name-1ns%3Akey.path/v2/resource/a..b"}
+{"fn":"remoteResourcePresentationUrl","args":["{name} has {count} items{name} has {count} items","ab"],"ok":"synara://remote/%7Bname%7D%20has%20%7Bcount%7D%20items%7Bname%7D%20has%20%7Bcount%7D%20items/v2/resource/ab"}
+{"fn":"remoteResourcePresentationUrl","args":[".leading","src/a/b.ts  padded  "],"ok":"synara://remote/.leading/v2/resource/src%2Fa%2Fb.ts%20%20padded%20%20"}
+{"fn":"remoteResourcePresentationUrl","args":["﻿bom","tab\tseparatedΣΊΣΥΦΟΣ"],"ok":"synara://remote/%EF%BB%BFbom/v2/resource/tab%09separated%CE%A3%CE%8A%CE%A3%CE%A5%CE%A6%CE%9F%CE%A3"}
+{"fn":"remoteResourcePresentationUrl","args":["ΣΊΣΥΦΟΣ","hello"],"ok":"synara://remote/%CE%A3%CE%8A%CE%A3%CE%A5%CE%A6%CE%9F%CE%A3/v2/resource/hello"}
+{"fn":"remoteResourcePresentationUrl","args":["ab","ab"],"ok":"synara://remote/ab/v2/resource/ab"}
+{"fn":"remoteResourcePresentationUrl","args":["😀","Hello World"],"ok":"synara://remote/%F0%9F%98%80/v2/resource/Hello%20World"}
+{"fn":"remoteResourcePresentationUrl","args":["a.b.ctrailing.","hello world"],"ok":"synara://remote/a.b.ctrailing./v2/resource/hello%20world"}
+{"fn":"remoteResourcePresentationUrl","args":["{name} has {count} items","İstanbul"],"ok":"synara://remote/%7Bname%7D%20has%20%7Bcount%7D%20items/v2/resource/%C4%B0stanbul"}
+{"fn":"remoteResourcePresentationUrl","args":[":","Hello World"],"ok":"synara://remote/%3A/v2/resource/Hello%20World"}
+{"fn":"remoteResourcePresentationUrl","args":["a:b:c","a:b:c.leading"],"ok":"synara://remote/a%3Ab%3Ac/v2/resource/a%3Ab%3Ac.leading"}
+{"fn":"remoteResourcePresentationUrl","args":["./x/**/*.json{name} has {count} items","a😀b😀c"],"ok":"synara://remote/.%2Fx%2F**%2F*.json%7Bname%7D%20has%20%7Bcount%7D%20items/v2/resource/a%F0%9F%98%80b%F0%9F%98%80c"}
+{"fn":"remoteResourcePresentationUrl","args":["🏽","İstanbulemoji 👍🏽 mix"],"ok":"synara://remote/%F0%9F%8F%BD/v2/resource/%C4%B0stanbulemoji%20%F0%9F%91%8D%F0%9F%8F%BD%20mix"}
+{"fn":"remoteResourcePresentationUrl","args":["a.b.c","a.b.c"],"ok":"synara://remote/a.b.c/v2/resource/a.b.c"}
+{"fn":"remoteResourcePresentationUrl","args":["hello world","aHELLO"],"ok":"synara://remote/hello%20world/v2/resource/aHELLO"}
+{"fn":"remoteResourcePresentationUrl","args":["ns:key.path","a😀b😀c"],"ok":"synara://remote/ns%3Akey.path/v2/resource/a%F0%9F%98%80b%F0%9F%98%80c"}
+{"fn":"remoteResourcePresentationUrl","args":["a","straße"],"ok":"synara://remote/a/v2/resource/stra%C3%9Fe"}
+{"fn":"remoteResourcePresentationUrl","args":[":","hello"],"ok":"synara://remote/%3A/v2/resource/hello"}
+{"fn":"remoteResourcePresentationUrl","args":["HELLO","😀"],"ok":"synara://remote/HELLO/v2/resource/%F0%9F%98%80"}
+{"fn":"remoteResourcePresentationUrl","args":["t} itemsns:","{name} has {count} itemsns:key.path"],"ok":"synara://remote/t%7D%20itemsns%3A/v2/resource/%7Bname%7D%20has%20%7Bcount%7D%20itemsns%3Akey.path"}
+{"fn":"remoteResourcePresentationUrl","args":["","{name} has {count} items"],"ok":"synara://remote//v2/resource/%7Bname%7D%20has%20%7Bcount%7D%20items"}
+{"fn":"remoteResourcePresentationUrl","args":["trailing.","line1\nline2"],"ok":"synara://remote/trailing./v2/resource/line1%0Aline2"}
+{"fn":"remoteResourcePresentationUrl","args":["trailing.straße","{name} has {count} items"],"ok":"synara://remote/trailing.stra%C3%9Fe/v2/resource/%7Bname%7D%20has%20%7Bcount%7D%20items"}
+{"fn":"remoteResourcePresentationUrl","args":["Σ./x/**/*","ΣΊΣΥΦΟΣ./x/**/*.json"],"ok":"synara://remote/%CE%A3.%2Fx%2F**%2F*/v2/resource/%CE%A3%CE%8A%CE%A3%CE%A5%CE%A6%CE%9F%CE%A3.%2Fx%2F**%2F*.json"}
+{"fn":"remoteResourcePresentationUrl","args":["src/a/b.ts","  padded  "],"ok":"synara://remote/src%2Fa%2Fb.ts/v2/resource/%20%20padded%20%20"}
+{"fn":"remoteResourcePresentationUrl","args":["helloa.b.c","a:b:c"],"ok":"synara://remote/helloa.b.c/v2/resource/a%3Ab%3Ac"}
+{"fn":"remoteResourcePresentationUrl","args":["HELLO","HELLO"],"ok":"synara://remote/HELLO/v2/resource/HELLO"}
+{"fn":"remoteResourcePresentationUrl","args":["line1\nline2","﻿bom"],"ok":"synara://remote/line1%0Aline2/v2/resource/%EF%BB%BFbom"}
+{"fn":"remoteResourcePresentationUrl","args":[".leading","tab\tseparated"],"ok":"synara://remote/.leading/v2/resource/tab%09separated"}
+{"fn":"remoteResourcePresentationUrl","args":["  padded  src/a/b.ts","a..b"],"ok":"synara://remote/%20%20padded%20%20src%2Fa%2Fb.ts/v2/resource/a..b"}
+{"fn":"remoteResourcePresentationUrl","args":["ns:key.path","hello"],"ok":"synara://remote/ns%3Akey.path/v2/resource/hello"}
+{"fn":"remoteResourcePresentationUrl","args":["hello","line1\nline2"],"ok":"synara://remote/hello/v2/resource/line1%0Aline2"}
+{"fn":"remoteResourcePresentationUrl","args":["trailing.","trailing.key_name-1"],"ok":"synara://remote/trailing./v2/resource/trailing.key_name-1"}
+{"fn":"remoteResourcePresentationUrl","args":["{name} has {count} items",":ΣΊΣΥΦΟΣ"],"ok":"synara://remote/%7Bname%7D%20has%20%7Bcount%7D%20items/v2/resource/%3A%CE%A3%CE%8A%CE%A3%CE%A5%CE%A6%CE%9F%CE%A3"}
+{"fn":"remoteResourcePresentationUrl","args":["a😀b😀c","a.b.c"],"ok":"synara://remote/a%F0%9F%98%80b%F0%9F%98%80c/v2/resource/a.b.c"}
+{"fn":"remoteResourcePresentationUrl","args":["﻿bom",""],"ok":"synara://remote/%EF%BB%BFbom/v2/resource/"}
+{"fn":"remoteResourcePresentationUrl","args":["e-1src/a/b.t","key_name-1src/a/b.ts"],"ok":"synara://remote/e-1src%2Fa%2Fb.t/v2/resource/key_name-1src%2Fa%2Fb.ts"}
+{"fn":"remoteResourcePresentationUrl","args":["日本語のテキスト","ünïcödé"],"ok":"synara://remote/%E6%97%A5%E6%9C%AC%E8%AA%9E%E3%81%AE%E3%83%86%E3%82%AD%E3%82%B9%E3%83%88/v2/resource/%C3%BCn%C3%AFc%C3%B6d%C3%A9"}
+{"fn":"remoteResourcePresentationUrl","args":["a","ab"],"ok":"synara://remote/a/v2/resource/ab"}
+{"fn":"remoteResourcePresentationUrl","args":["😀","a😀b😀c"],"ok":"synara://remote/%F0%9F%98%80/v2/resource/a%F0%9F%98%80b%F0%9F%98%80c"}
+{"fn":"remoteResourcePresentationUrl","args":["straße","a.b.c"],"ok":"synara://remote/stra%C3%9Fe/v2/resource/a.b.c"}
+{"fn":"remoteResourcePresentationUrl","args":["  padded  a","src/a/b.tsünïcödé"],"ok":"synara://remote/%20%20padded%20%20a/v2/resource/src%2Fa%2Fb.ts%C3%BCn%C3%AFc%C3%B6d%C3%A9"}
+{"fn":"remoteResourcePresentationUrl","args":["in",".leading"],"ok":"synara://remote/in/v2/resource/.leading"}
+{"fn":"remoteResourcePresentationUrl","args":["src/a/b.tsHello World","a.b.c"],"ok":"synara://remote/src%2Fa%2Fb.tsHello%20World/v2/resource/a.b.c"}
+{"fn":"remoteResourcePresentationUrl","args":["O","HELLO"],"ok":"synara://remote/O/v2/resource/HELLO"}
+{"fn":"remoteResourcePresentationUrl","args":["b","a..b"],"ok":"synara://remote/b/v2/resource/a..b"}
+{"fn":"remoteResourcePresentationUrl","args":["😀","trailing."],"ok":"synara://remote/%F0%9F%98%80/v2/resource/trailing."}
+{"fn":"remoteResourcePresentationUrl","args":["abc","a😀b😀c.leading"],"ok":"synara://remote/abc/v2/resource/a%F0%9F%98%80b%F0%9F%98%80c.leading"}
+{"fn":"remoteResourcePresentationUrl","args":["abc","日本語のテキスト"],"ok":"synara://remote/abc/v2/resource/%E6%97%A5%E6%9C%AC%E8%AA%9E%E3%81%AE%E3%83%86%E3%82%AD%E3%82%B9%E3%83%88"}
+{"fn":"remoteResourcePresentationUrl","args":["Hello World","helloHello World"],"ok":"synara://remote/Hello%20World/v2/resource/helloHello%20World"}
+{"fn":"remoteResourcePresentationUrl","args":["Hello World","key_name-1"],"ok":"synara://remote/Hello%20World/v2/resource/key_name-1"}
+{"fn":"remoteResourcePresentationUrl","args":[":","ünïcödé"],"ok":"synara://remote/%3A/v2/resource/%C3%BCn%C3%AFc%C3%B6d%C3%A9"}
+{"fn":"remoteResourcePresentationUrl","args":["trailing.","tab\tseparated"],"ok":"synara://remote/trailing./v2/resource/tab%09separated"}
+{"fn":"remoteResourcePresentationUrl","args":["Hello World","hello world"],"ok":"synara://remote/Hello%20World/v2/resource/hello%20world"}
+{"fn":"remoteResourcePresentationUrl","args":[":","abc"],"ok":"synara://remote/%3A/v2/resource/abc"}
+{"fn":"remoteResourcePresentationUrl","args":["ΣΊΣΥΦΟΣ","tab\tseparated"],"ok":"synara://remote/%CE%A3%CE%8A%CE%A3%CE%A5%CE%A6%CE%9F%CE%A3/v2/resource/tab%09separated"}
+{"fn":"remoteResourcePresentationUrl","args":["src/a/b.ts  padded  ","ΣΊΣΥΦΟΣ"],"ok":"synara://remote/src%2Fa%2Fb.ts%20%20padded%20%20/v2/resource/%CE%A3%CE%8A%CE%A3%CE%A5%CE%A6%CE%9F%CE%A3"}
+{"fn":"remoteResourcePresentationUrl","args":["","straße"],"ok":"synara://remote//v2/resource/stra%C3%9Fe"}
+{"fn":"remoteResourcePresentationUrl","args":["a","ab😀"],"ok":"synara://remote/a/v2/resource/ab%F0%9F%98%80"}
+{"fn":"remoteResourcePresentationUrl","args":["ji 👍🏽 mix","emoji 👍🏽 mix"],"ok":"synara://remote/ji%20%F0%9F%91%8D%F0%9F%8F%BD%20mix/v2/resource/emoji%20%F0%9F%91%8D%F0%9F%8F%BD%20mix"}
+{"fn":"remoteResourcePresentationUrl","args":["a","a😀b😀c"],"ok":"synara://remote/a/v2/resource/a%F0%9F%98%80b%F0%9F%98%80c"}
+{"fn":"remoteResourcePresentationUrl","args":["a:b:c","ünïcödé"],"ok":"synara://remote/a%3Ab%3Ac/v2/resource/%C3%BCn%C3%AFc%C3%B6d%C3%A9"}
+{"fn":"remoteResourcePresentationUrl","args":["a:b:c","a.b.c"],"ok":"synara://remote/a%3Ab%3Ac/v2/resource/a.b.c"}
+{"fn":"remoteResourcePresentationUrl","args":[".leading","ns:key.path"],"ok":"synara://remote/.leading/v2/resource/ns%3Akey.path"}
+{"fn":"remoteResourcePresentationUrl","args":["  ","  padded  😀"],"ok":"synara://remote/%20%20/v2/resource/%20%20padded%20%20%F0%9F%98%80"}
+{"fn":"remoteResourcePresentationUrl","args":["a..b","é./x/**/*.json"],"ok":"synara://remote/a..b/v2/resource/e%CC%81.%2Fx%2F**%2F*.json"}
+{"fn":"remoteResourcePresentationUrl","args":["ünïcödéhello world","ab"],"ok":"synara://remote/%C3%BCn%C3%AFc%C3%B6d%C3%A9hello%20world/v2/resource/ab"}
+{"fn":"remoteResourcePresentationUrl","args":["hello","key_name-1"],"ok":"synara://remote/hello/v2/resource/key_name-1"}
+{"fn":"remoteResourcePresentationUrl","args":["{name} has {count} itemsemoji 👍🏽 mix","straße"],"ok":"synara://remote/%7Bname%7D%20has%20%7Bcount%7D%20itemsemoji%20%F0%9F%91%8D%F0%9F%8F%BD%20mix/v2/resource/stra%C3%9Fe"}
+{"fn":"remoteResourcePresentationUrl","args":["ab{name} has {count} items","﻿bom"],"ok":"synara://remote/ab%7Bname%7D%20has%20%7Bcount%7D%20items/v2/resource/%EF%BB%BFbom"}
+{"fn":"remoteResourcePresentationUrl","args":["ns:key.path","trailing."],"ok":"synara://remote/ns%3Akey.path/v2/resource/trailing."}
+{"fn":"remoteResourcePresentationUrl","args":[".leading","key_name-1Hello World"],"ok":"synara://remote/.leading/v2/resource/key_name-1Hello%20World"}
+{"fn":"remoteResourcePresentationUrl","args":["tab\tseparatedé","{name} has {count} items日本語のテキスト"],"ok":"synara://remote/tab%09separatede%CC%81/v2/resource/%7Bname%7D%20has%20%7Bcount%7D%20items%E6%97%A5%E6%9C%AC%E8%AA%9E%E3%81%AE%E3%83%86%E3%82%AD%E3%82%B9%E3%83%88"}
+{"fn":"remoteResourcePresentationUrl","args":["a.b.cemoji 👍🏽 mix","src/a/b.ts"],"ok":"synara://remote/a.b.cemoji%20%F0%9F%91%8D%F0%9F%8F%BD%20mix/v2/resource/src%2Fa%2Fb.ts"}
+{"fn":"remoteResourcePresentationUrl","args":["a","ünïcödé"],"ok":"synara://remote/a/v2/resource/%C3%BCn%C3%AFc%C3%B6d%C3%A9"}
+{"fn":"remoteResourcePresentationUrl","args":["a.b.c","b.c"],"ok":"synara://remote/a.b.c/v2/resource/b.c"}
+{"fn":"remoteResourcePresentationUrl","args":["ab","İstanbul"],"ok":"synara://remote/ab/v2/resource/%C4%B0stanbul"}
+{"fn":"remoteResourcePresentationUrl","args":["line1\nline2","İstanbula..b"],"ok":"synara://remote/line1%0Aline2/v2/resource/%C4%B0stanbula..b"}
+{"fn":"remoteResourcePresentationUrl","args":["{name} has {count} items","  padded  tab\tseparated"],"ok":"synara://remote/%7Bname%7D%20has%20%7Bcount%7D%20items/v2/resource/%20%20padded%20%20tab%09separated"}
+{"fn":"remoteResourcePresentationUrl","args":["a😀b😀c","c"],"ok":"synara://remote/a%F0%9F%98%80b%F0%9F%98%80c/v2/resource/c"}
+{"fn":"remoteResourcePresentationUrl","args":["a..b","éemoji 👍🏽 mix"],"ok":"synara://remote/a..b/v2/resource/e%CC%81emoji%20%F0%9F%91%8D%F0%9F%8F%BD%20mix"}
+{"fn":"remoteResourcePresentationUrl","args":["a:b:cé","emoji 👍🏽 mix"],"ok":"synara://remote/a%3Ab%3Ace%CC%81/v2/resource/emoji%20%F0%9F%91%8D%F0%9F%8F%BD%20mix"}
+{"fn":"remoteResourcePresentationUrl","args":["hello","a"],"ok":"synara://remote/hello/v2/resource/a"}
+{"fn":"remoteResourcePresentationUrl","args":["emoji 👍🏽 mix","İstanbul"],"ok":"synara://remote/emoji%20%F0%9F%91%8D%F0%9F%8F%BD%20mix/v2/resource/%C4%B0stanbul"}
+{"fn":"remoteResourcePresentationUrl","args":["emoji 👍🏽 mix","{name} has {count} items"],"ok":"synara://remote/emoji%20%F0%9F%91%8D%F0%9F%8F%BD%20mix/v2/resource/%7Bname%7D%20has%20%7Bcount%7D%20items"}
+{"fn":"remoteResourcePresentationUrl","args":["﻿bom","key_name-1"],"ok":"synara://remote/%EF%BB%BFbom/v2/resource/key_name-1"}
+{"fn":"remoteResourcePresentationUrl","args":["日本語のテキスト","./x/**/*.json"],"ok":"synara://remote/%E6%97%A5%E6%9C%AC%E8%AA%9E%E3%81%AE%E3%83%86%E3%82%AD%E3%82%B9%E3%83%88/v2/resource/.%2Fx%2F**%2F*.json"}
+{"fn":"remoteResourcePresentationUrl","args":["a😀b😀c","src/a/b.ts"],"ok":"synara://remote/a%F0%9F%98%80b%F0%9F%98%80c/v2/resource/src%2Fa%2Fb.ts"}
+{"fn":"remoteResourcePresentationUrl","args":["a..bΣΊΣΥΦΟΣ","ΥΦΟ"],"ok":"synara://remote/a..b%CE%A3%CE%8A%CE%A3%CE%A5%CE%A6%CE%9F%CE%A3/v2/resource/%CE%A5%CE%A6%CE%9F"}
+{"fn":"remoteResourcePresentationUrl","args":[".leading","{name} has {count} items"],"ok":"synara://remote/.leading/v2/resource/%7Bname%7D%20has%20%7Bcount%7D%20items"}
+{"fn":"remoteResourcePresentationUrl","args":["trailing.","hello world"],"ok":"synara://remote/trailing./v2/resource/hello%20world"}
+{"fn":"remoteResourcePresentationUrl","args":[".leading","trailing."],"ok":"synara://remote/.leading/v2/resource/trailing."}
+{"fn":"remoteResourcePresentationUrl","args":["😀","key_name-1ΣΊΣΥΦΟΣ"],"ok":"synara://remote/%F0%9F%98%80/v2/resource/key_name-1%CE%A3%CE%8A%CE%A3%CE%A5%CE%A6%CE%9F%CE%A3"}
+{"fn":"remoteResourcePresentationUrl","args":["İstanbul","./x/**/*.json"],"ok":"synara://remote/%C4%B0stanbul/v2/resource/.%2Fx%2F**%2F*.json"}
+{"fn":"remoteResourcePresentationUrl","args":["abé","a..b:"],"ok":"synara://remote/abe%CC%81/v2/resource/a..b%3A"}
+{"fn":"remoteResourcePresentationUrl","args":["  padded  ","tab\tseparated.leading"],"ok":"synara://remote/%20%20padded%20%20/v2/resource/tab%09separated.leading"}
+{"fn":"remoteResourcePresentationUrl","args":["﻿bom","straße"],"ok":"synara://remote/%EF%BB%BFbom/v2/resource/stra%C3%9Fe"}
+{"fn":"remoteResourcePresentationUrl","args":["a.b.c","a..b"],"ok":"synara://remote/a.b.c/v2/resource/a..b"}
+{"fn":"remoteResourcePresentationUrl","args":["hello","  padded  "],"ok":"synara://remote/hello/v2/resource/%20%20padded%20%20"}
+{"fn":"remoteResourcePresentationUrl","args":["a.b.c","Hello World"],"ok":"synara://remote/a.b.c/v2/resource/Hello%20World"}
+{"fn":"remoteResourcePresentationUrl","args":["straße","ns:key.pathtrailing."],"ok":"synara://remote/stra%C3%9Fe/v2/resource/ns%3Akey.pathtrailing."}
+{"fn":"remoteResourcePresentationUrl","args":["n","ünïcödé"],"ok":"synara://remote/n/v2/resource/%C3%BCn%C3%AFc%C3%B6d%C3%A9"}
+{"fn":"remoteResourcePresentationUrl","args":["tab\tseparated","😀"],"ok":"synara://remote/tab%09separated/v2/resource/%F0%9F%98%80"}
+{"fn":"remoteResourcePresentationUrl","args":["HELLO","é"],"ok":"synara://remote/HELLO/v2/resource/e%CC%81"}
+{"fn":"remoteResourcePresentationUrl","args":["wo","hello world"],"ok":"synara://remote/wo/v2/resource/hello%20world"}
+{"fn":"remoteResourcePresentationUrl","args":["trailing.","a.b.cns:key.path"],"ok":"synara://remote/trailing./v2/resource/a.b.cns%3Akey.path"}
+{"fn":"remoteResourcePresentationUrl","args":["ünïcödé",""],"ok":"synara://remote/%C3%BCn%C3%AFc%C3%B6d%C3%A9/v2/resource/"}
+{"fn":"remoteResourcePresentationUrl","args":["日本語のテキスト","é"],"ok":"synara://remote/%E6%97%A5%E6%9C%AC%E8%AA%9E%E3%81%AE%E3%83%86%E3%82%AD%E3%82%B9%E3%83%88/v2/resource/e%CC%81"}
+{"fn":"remoteResourcePresentationUrl","args":["line1\nline2","é:"],"ok":"synara://remote/line1%0Aline2/v2/resource/e%CC%81%3A"}
+{"fn":"remoteResourcePresentationUrl","args":["./x/**/*.json","tab\tseparated"],"ok":"synara://remote/.%2Fx%2F**%2F*.json/v2/resource/tab%09separated"}
+{"fn":"remoteResourcePresentationUrl","args":["É","é😀"],"ok":"synara://remote/E%CC%81/v2/resource/e%CC%81%F0%9F%98%80"}
+{"fn":"remoteResourcePresentationUrl","args":["ünïcödé","日本語のテキスト"],"ok":"synara://remote/%C3%BCn%C3%AFc%C3%B6d%C3%A9/v2/resource/%E6%97%A5%E6%9C%AC%E8%AA%9E%E3%81%AE%E3%83%86%E3%82%AD%E3%82%B9%E3%83%88"}
+{"fn":"remoteResourcePresentationUrl","args":["ünïcödé","é"],"ok":"synara://remote/%C3%BCn%C3%AFc%C3%B6d%C3%A9/v2/resource/%C3%A9"}
+{"fn":"remoteResourcePresentationUrl","args":["ns:key.path","HELLO"],"ok":"synara://remote/ns%3Akey.path/v2/resource/HELLO"}
+{"fn":"remoteResourcePresentationUrl","args":["a😀b😀c","Hello Worldtrailing."],"ok":"synara://remote/a%F0%9F%98%80b%F0%9F%98%80c/v2/resource/Hello%20Worldtrailing."}
+{"fn":"remoteResourcePresentationUrl","args":["line1\nline2","key_name-1"],"ok":"synara://remote/line1%0Aline2/v2/resource/key_name-1"}
+{"fn":"remoteResourcePresentationUrl","args":["emoji 👍🏽 mix","a.b.c"],"ok":"synara://remote/emoji%20%F0%9F%91%8D%F0%9F%8F%BD%20mix/v2/resource/a.b.c"}
+{"fn":"remoteResourcePresentationUrl","args":["","line1\nline2ns:key.path"],"ok":"synara://remote//v2/resource/line1%0Aline2ns%3Akey.path"}
+{"fn":"remoteResourcePresentationUrl","args":["tab\tseparated","{name} has {count} items"],"ok":"synara://remote/tab%09separated/v2/resource/%7Bname%7D%20has%20%7Bcount%7D%20items"}
+{"fn":"remoteResourcePresentationUrl","args":["日本語のテキストstraße","ns:key.path"],"ok":"synara://remote/%E6%97%A5%E6%9C%AC%E8%AA%9E%E3%81%AE%E3%83%86%E3%82%AD%E3%82%B9%E3%83%88stra%C3%9Fe/v2/resource/ns%3Akey.path"}
+{"fn":"remoteResourcePresentationUrl","args":["hello world","HELLO"],"ok":"synara://remote/hello%20world/v2/resource/HELLO"}
+{"fn":"remoteResourcePresentationUrl","args":["abc","日本語のテキストhello"],"ok":"synara://remote/abc/v2/resource/%E6%97%A5%E6%9C%AC%E8%AA%9E%E3%81%AE%E3%83%86%E3%82%AD%E3%82%B9%E3%83%88hello"}
+{"fn":"remoteResourcePresentationUrl","args":["HELLO","LLO"],"ok":"synara://remote/HELLO/v2/resource/LLO"}
+{"fn":"remoteResourcePresentationUrl","args":["hello world","L"],"ok":"synara://remote/hello%20world/v2/resource/L"}
+{"fn":"remoteResourcePresentationUrl","args":["straße","HELLO"],"ok":"synara://remote/stra%C3%9Fe/v2/resource/HELLO"}
+{"fn":"remoteResourcePresentationUrl","args":["HELLO","a:b:c"],"ok":"synara://remote/HELLO/v2/resource/a%3Ab%3Ac"}
+{"fn":"remoteResourcePresentationUrl","args":["a😀b😀c","﻿bom"],"ok":"synara://remote/a%F0%9F%98%80b%F0%9F%98%80c/v2/resource/%EF%BB%BFbom"}
+{"fn":"remoteResourcePresentationUrl","args":["a.b.ca😀b😀c","Hello World"],"ok":"synara://remote/a.b.ca%F0%9F%98%80b%F0%9F%98%80c/v2/resource/Hello%20World"}
+{"fn":"remoteResourcePresentationUrl","args":["  padded  ",":Hello World"],"ok":"synara://remote/%20%20padded%20%20/v2/resource/%3AHello%20World"}
+{"fn":"remoteResourcePresentationUrl","args":["","a"],"ok":"synara://remote//v2/resource/a"}
+{"fn":"remoteResourcePresentationUrl","args":["key_name-1","ΣΊΣΥΦΟΣab"],"ok":"synara://remote/key_name-1/v2/resource/%CE%A3%CE%8A%CE%A3%CE%A5%CE%A6%CE%9F%CE%A3ab"}
+{"fn":"remoteResourcePresentationUrl","args":[".","trailing."],"ok":"synara://remote/./v2/resource/trailing."}
+{"fn":"remoteResourcePresentationUrl","args":["emoji 👍🏽 mix","tab\tseparated"],"ok":"synara://remote/emoji%20%F0%9F%91%8D%F0%9F%8F%BD%20mix/v2/resource/tab%09separated"}
+{"fn":"remoteResourcePresentationUrl","args":["HELLOkey_name-1","e-1"],"ok":"synara://remote/HELLOkey_name-1/v2/resource/e-1"}
+{"fn":"remoteResourcePresentationUrl","args":["ΣΊΣΥΦΟΣ","a😀b😀c"],"ok":"synara://remote/%CE%A3%CE%8A%CE%A3%CE%A5%CE%A6%CE%9F%CE%A3/v2/resource/a%F0%9F%98%80b%F0%9F%98%80c"}
+{"fn":"remoteResourcePresentationUrl","args":["a.b.c","hello world"],"ok":"synara://remote/a.b.c/v2/resource/hello%20world"}
+{"fn":"remoteResourcePresentationUrl","args":["a.b.c","key_name-1"],"ok":"synara://remote/a.b.c/v2/resource/key_name-1"}
+{"fn":"remoteResourcePresentationUrl","args":["a.b.c",".B"],"ok":"synara://remote/a.b.c/v2/resource/.B"}
+{"fn":"remoteResourcePresentationUrl","args":["a:b:c:","key_name-1"],"ok":"synara://remote/a%3Ab%3Ac%3A/v2/resource/key_name-1"}
+{"fn":"remoteResourcePresentationUrl","args":["ünïcödé","straße"],"ok":"synara://remote/%C3%BCn%C3%AFc%C3%B6d%C3%A9/v2/resource/stra%C3%9Fe"}
+{"fn":"remoteResourcePresentationUrl","args":["src/a/b.ts","﻿bom"],"ok":"synara://remote/src%2Fa%2Fb.ts/v2/resource/%EF%BB%BFbom"}
+{"fn":"remoteResourcePresentationUrl","args":["./x/**/*.json","İstanbul  padded  "],"ok":"synara://remote/.%2Fx%2F**%2F*.json/v2/resource/%C4%B0stanbul%20%20padded%20%20"}
+{"fn":"remoteResourcePresentationUrl","args":[".leading./x/**/*.json","a.b.c"],"ok":"synara://remote/.leading.%2Fx%2F**%2F*.json/v2/resource/a.b.c"}
+{"fn":"remoteResourcePresentationUrl","args":["line1\nline2",""],"ok":"synara://remote/line1%0Aline2/v2/resource/"}
+{"fn":"remoteResourcePresentationUrl","args":["  padded  line1\nline2","日本語のテキスト"],"ok":"synara://remote/%20%20padded%20%20line1%0Aline2/v2/resource/%E6%97%A5%E6%9C%AC%E8%AA%9E%E3%81%AE%E3%83%86%E3%82%AD%E3%82%B9%E3%83%88"}
+{"fn":"remoteResourcePresentationUrl","args":["﻿bom","emoji 👍🏽 mix"],"ok":"synara://remote/%EF%BB%BFbom/v2/resource/emoji%20%F0%9F%91%8D%F0%9F%8F%BD%20mix"}
+{"fn":"remoteResourcePresentationUrl","args":["ili","trailing."],"ok":"synara://remote/ili/v2/resource/trailing."}
+{"fn":"remoteResourcePresentationUrl","args":["tab\tseparated","a"],"ok":"synara://remote/tab%09separated/v2/resource/a"}
+{"fn":"remoteResourcePresentationUrl","args":["tab\tseparated","p"],"ok":"synara://remote/tab%09separated/v2/resource/p"}
+{"fn":"remoteResourcePresentationUrl","args":["a:b:c日本語のテキスト","trailing."],"ok":"synara://remote/a%3Ab%3Ac%E6%97%A5%E6%9C%AC%E8%AA%9E%E3%81%AE%E3%83%86%E3%82%AD%E3%82%B9%E3%83%88/v2/resource/trailing."}
+{"fn":"remoteResourcePresentationUrl","args":["İstanbul","Hello Worldab"],"ok":"synara://remote/%C4%B0stanbul/v2/resource/Hello%20Worldab"}
+{"fn":"remoteResourcePresentationUrl","args":["hello","Hello Worlda.b.c"],"ok":"synara://remote/hello/v2/resource/Hello%20Worlda.b.c"}
+{"fn":"remoteResourcePresentationUrl","args":["日本語のテキスト","HELLO:"],"ok":"synara://remote/%E6%97%A5%E6%9C%AC%E8%AA%9E%E3%81%AE%E3%83%86%E3%82%AD%E3%82%B9%E3%83%88/v2/resource/HELLO%3A"}
+{"fn":"remoteResourcePresentationUrl","args":["n",".leading"],"ok":"synara://remote/n/v2/resource/.leading"}
+{"fn":"remoteResourcePresentationUrl","args":["straße","e"],"ok":"synara://remote/stra%C3%9Fe/v2/resource/e"}
+{"fn":"remoteResourcePresentationUrl","args":["a😀b😀c","./x/**/*.json"],"ok":"synara://remote/a%F0%9F%98%80b%F0%9F%98%80c/v2/resource/.%2Fx%2F**%2F*.json"}
+{"fn":"remoteResourcePresentationUrl","args":["ΣΊΣΥΦΟΣ","hello world日本語のテキスト"],"ok":"synara://remote/%CE%A3%CE%8A%CE%A3%CE%A5%CE%A6%CE%9F%CE%A3/v2/resource/hello%20world%E6%97%A5%E6%9C%AC%E8%AA%9E%E3%81%AE%E3%83%86%E3%82%AD%E3%82%B9%E3%83%88"}
+{"fn":"remoteResourcePresentationUrl","args":["ns:key.path","  padded  "],"ok":"synara://remote/ns%3Akey.path/v2/resource/%20%20padded%20%20"}
+{"fn":"remoteResourcePresentationUrl","args":["héllo wörld","src/a/b.tsé"],"ok":"synara://remote/h%C3%A9llo%20w%C3%B6rld/v2/resource/src%2Fa%2Fb.tse%CC%81"}
+{"fn":"remoteResourcePresentationUrl","args":["👍🏽 thumbs","src/a/b.tsé"],"ok":"synara://remote/%F0%9F%91%8D%F0%9F%8F%BD%20thumbs/v2/resource/src%2Fa%2Fb.tse%CC%81"}
+{"fn":"remoteResourcePresentationUrl","args":["日本語","src/a/b.tsé"],"ok":"synara://remote/%E6%97%A5%E6%9C%AC%E8%AA%9E/v2/resource/src%2Fa%2Fb.tse%CC%81"}
+{"fn":"remoteResourcePresentationUrl","args":["","src/a/b.tsé"],"ok":"synara://remote//v2/resource/src%2Fa%2Fb.tse%CC%81"}
+{"fn":"remoteResourcePresentationUrl","args":["é","src/a/b.tsé"],"ok":"synara://remote/e%CC%81/v2/resource/src%2Fa%2Fb.tse%CC%81"}
+{"fn":"remoteResourcePresentationUrl","args":["İstanbul","src/a/b.tsé"],"ok":"synara://remote/%C4%B0stanbul/v2/resource/src%2Fa%2Fb.tse%CC%81"}
+{"fn":"remoteResourcePresentationUrl","args":["straße","src/a/b.tsé"],"ok":"synara://remote/stra%C3%9Fe/v2/resource/src%2Fa%2Fb.tse%CC%81"}
+{"fn":"remoteResourcePresentationUrl","args":["ılık ırmak","src/a/b.tsé"],"ok":"synara://remote/%C4%B1l%C4%B1k%20%C4%B1rmak/v2/resource/src%2Fa%2Fb.tse%CC%81"}
+{"fn":"remoteResourcePresentationUrl","args":["👨‍👩‍👧 family","src/a/b.tsé"],"ok":"synara://remote/%F0%9F%91%A8%E2%80%8D%F0%9F%91%A9%E2%80%8D%F0%9F%91%A7%20family/v2/resource/src%2Fa%2Fb.tse%CC%81"}
+{"fn":"remoteResourcePresentationUrl","args":["a b","src/a/b.tsé"],"ok":"synara://remote/a%C2%A0b/v2/resource/src%2Fa%2Fb.tse%CC%81"}
+{"fn":"remoteResourcePresentationUrl","args":["ΣΊΣΥΦΟΣ","src/a/b.tsé"],"ok":"synara://remote/%CE%A3%CE%8A%CE%A3%CE%A5%CE%A6%CE%9F%CE%A3/v2/resource/src%2Fa%2Fb.tse%CC%81"}
+{"fn":"remoteResourcePresentationUrl","args":["a😀b","src/a/b.tsé"],"ok":"synara://remote/a%F0%9F%98%80b/v2/resource/src%2Fa%2Fb.tse%CC%81"}
+{"fn":"remoteResourcePresentationUrl","args":["﻿bom","src/a/b.tsé"],"ok":"synara://remote/%EF%BB%BFbom/v2/resource/src%2Fa%2Fb.tse%CC%81"}
+{"fn":"remoteResourcePresentationUrl","args":["a²b x½ y①","src/a/b.tsé"],"ok":"synara://remote/a%C2%B2b%20x%C2%BD%20y%E2%91%A0/v2/resource/src%2Fa%2Fb.tse%CC%81"}
+{"fn":"remoteResourcePresentationUrl","args":["aⅠb Ⅻ","src/a/b.tsé"],"ok":"synara://remote/a%E2%85%A0b%20%E2%85%AB/v2/resource/src%2Fa%2Fb.tse%CC%81"}
+{"fn":"remoteResourcePresentationUrl","args":["a𐐀b 𝐀bc","src/a/b.tsé"],"ok":"synara://remote/a%F0%90%90%80b%20%F0%9D%90%80bc/v2/resource/src%2Fa%2Fb.tse%CC%81"}
+{"fn":"remoteResourcePresentationUrl","args":["कि ٣٤","src/a/b.tsé"],"ok":"synara://remote/%E0%A4%95%E0%A4%BF%20%D9%A3%D9%A4/v2/resource/src%2Fa%2Fb.tse%CC%81"}
+{"fn":"remoteResourcePresentationUrl","args":["HELLO","héllo wörld"],"ok":"synara://remote/HELLO/v2/resource/h%C3%A9llo%20w%C3%B6rld"}
+{"fn":"remoteResourcePresentationUrl","args":["HELLO","👍🏽 thumbs"],"ok":"synara://remote/HELLO/v2/resource/%F0%9F%91%8D%F0%9F%8F%BD%20thumbs"}
+{"fn":"remoteResourcePresentationUrl","args":["HELLO","日本語"],"ok":"synara://remote/HELLO/v2/resource/%E6%97%A5%E6%9C%AC%E8%AA%9E"}
+{"fn":"remoteResourcePresentationUrl","args":["HELLO",""],"ok":"synara://remote/HELLO/v2/resource/"}
+{"fn":"remoteResourcePresentationUrl","args":["HELLO","straße"],"ok":"synara://remote/HELLO/v2/resource/stra%C3%9Fe"}
+{"fn":"remoteResourcePresentationUrl","args":["HELLO","ılık ırmak"],"ok":"synara://remote/HELLO/v2/resource/%C4%B1l%C4%B1k%20%C4%B1rmak"}
+{"fn":"remoteResourcePresentationUrl","args":["HELLO","👨‍👩‍👧 family"],"ok":"synara://remote/HELLO/v2/resource/%F0%9F%91%A8%E2%80%8D%F0%9F%91%A9%E2%80%8D%F0%9F%91%A7%20family"}
+{"fn":"remoteResourcePresentationUrl","args":["HELLO","a b"],"ok":"synara://remote/HELLO/v2/resource/a%C2%A0b"}
+{"fn":"remoteResourcePresentationUrl","args":["HELLO","ΣΊΣΥΦΟΣ"],"ok":"synara://remote/HELLO/v2/resource/%CE%A3%CE%8A%CE%A3%CE%A5%CE%A6%CE%9F%CE%A3"}
+{"fn":"remoteResourcePresentationUrl","args":["HELLO","a😀b"],"ok":"synara://remote/HELLO/v2/resource/a%F0%9F%98%80b"}
+{"fn":"remoteResourcePresentationUrl","args":["HELLO","﻿bom"],"ok":"synara://remote/HELLO/v2/resource/%EF%BB%BFbom"}
+{"fn":"remoteResourcePresentationUrl","args":["HELLO","a²b x½ y①"],"ok":"synara://remote/HELLO/v2/resource/a%C2%B2b%20x%C2%BD%20y%E2%91%A0"}
+{"fn":"remoteResourcePresentationUrl","args":["HELLO","aⅠb Ⅻ"],"ok":"synara://remote/HELLO/v2/resource/a%E2%85%A0b%20%E2%85%AB"}
+{"fn":"remoteResourcePresentationUrl","args":["HELLO","a𐐀b 𝐀bc"],"ok":"synara://remote/HELLO/v2/resource/a%F0%90%90%80b%20%F0%9D%90%80bc"}
+{"fn":"remoteResourcePresentationUrl","args":["HELLO","कि ٣٤"],"ok":"synara://remote/HELLO/v2/resource/%E0%A4%95%E0%A4%BF%20%D9%A3%D9%A4"}
+{"fn":"decodeRemoteResourceReference","args":["{\"environmentId\": \"e\", \"resource\": {\"kind\": \"voice-upload\", \"provider\": \"p\", \"cwd\": \"c\", \"mimeType\": \"m\", \"sampleRateHz\": 8000, \"durationMs\": 1}}"],"ok":{"environmentId":"e","resource":{"kind":"voice-upload","provider":"p","cwd":"c","mimeType":"m","sampleRateHz":8000,"durationMs":1}}}
+{"fn":"decodeRemoteResourceReference","args":["{\"environmentId\": \"e\", \"resource\": {\"kind\": \"voice-upload\", \"provider\": \"p\", \"cwd\": \"c\", \"threadId\": \"t\", \"mimeType\": \"m\", \"sampleRateHz\": 8000, \"durationMs\": -1}}"],"error":"Expected a value between 1 and 3600000, got -1\n  at [\"resource\"][\"durationMs\"]"}
+{"fn":"decodeRemoteResourceReference","args":["{\"environmentId\": \"e\", \"resource\": {\"kind\": \"voice-upload\", \"provider\": \"p\", \"cwd\": \"c\", \"threadId\": \"t\", \"mimeType\": \"m\", \"sampleRateHz\": 8000, \"durationMs\": 0}}"],"error":"Expected a value between 1 and 3600000, got 0\n  at [\"resource\"][\"durationMs\"]"}
+{"fn":"decodeRemoteResourceReference","args":["{\"environmentId\": \"e\", \"resource\": {\"kind\": \"voice-upload\", \"provider\": \"p\", \"cwd\": \"c\", \"threadId\": \"t\", \"mimeType\": \"m\", \"sampleRateHz\": 8000, \"durationMs\": 1.5}}"],"ok":{"environmentId":"e","resource":{"kind":"voice-upload","provider":"p","cwd":"c","threadId":"t","mimeType":"m","sampleRateHz":8000,"durationMs":1.5}}}
+{"fn":"decodeRemoteResourceReference","args":["{\"environmentId\": \"e\", \"resource\": {\"kind\": \"voice-upload\", \"provider\": \"p\", \"cwd\": \"c\", \"threadId\": \"t\", \"mimeType\": \"m\", \"sampleRateHz\": 8000, \"durationMs\": 999999999}}"],"error":"Expected a value between 1 and 3600000, got 999999999\n  at [\"resource\"][\"durationMs\"]"}
+{"fn":"decodeRemoteResourceReference","args":["{\"environmentId\": \"e\", \"resource\": {\"kind\": \"voice-upload\", \"provider\": \"p\", \"cwd\": \"c\", \"threadId\": \"t\", \"mimeType\": \"m\", \"sampleRateHz\": 192000, \"durationMs\": 1}}"],"ok":{"environmentId":"e","resource":{"kind":"voice-upload","provider":"p","cwd":"c","threadId":"t","mimeType":"m","sampleRateHz":192000,"durationMs":1}}}
+{"fn":"decodeRemoteResourceReference","args":["{\"environmentId\": \"e\", \"resource\": {\"kind\": \"voice-upload\", \"provider\": \"p\", \"cwd\": \"c\", \"threadId\": \"t\", \"mimeType\": \"m\", \"sampleRateHz\": 192001, \"durationMs\": 1}}"],"error":"Expected a value between 8000 and 192000, got 192001\n  at [\"resource\"][\"sampleRateHz\"]"}
+{"fn":"decodeRemoteResourceReference","args":["{\"environmentId\": \"e\", \"resource\": {\"kind\": \"voice-upload\", \"provider\": \"  p  \", \"cwd\": \"  c  \", \"threadId\": \"  t  \", \"mimeType\": \"  m  \", \"sampleRateHz\": 8000, \"durationMs\": 1}}"],"error":"Expected a string matching the RegExp ^[A-Za-z0-9_-]{1,256}$, got \"  p  \"\n  at [\"resource\"][\"provider\"]"}
+{"fn":"decodeRemoteResourceReference","args":["{\"environmentId\": \"e\", \"resource\": {\"kind\": \"attachment-upload\", \"threadId\": \"t\", \"type\": \"image\", \"name\": \"  n  \", \"mimeType\": \"\"}}"],"error":"Expected a value with a length of at least 1, got \"\"\n  at [\"resource\"][\"mimeType\"]"}
+{"fn":"decodeRemoteResourceReference","args":["{\"environmentId\": \"e\", \"resource\": {\"kind\": \"attachment-upload\", \"threadId\": \"t\", \"type\": \"image\", \"name\": \"n\", \"mimeType\": \"  m  \"}}"],"ok":{"environmentId":"e","resource":{"kind":"attachment-upload","threadId":"t","type":"image","name":"n","mimeType":"m"}}}
+{"fn":"decodeRemoteResourceReference","args":["{\"environmentId\": \"e\", \"resource\": {\"kind\": \"workspace-preview\", \"path\": \"  p  \", \"cwd\": \"  c  \", \"extra\": 1}}"],"ok":{"environmentId":"e","resource":{"kind":"workspace-preview","cwd":"c","path":"p"}}}
+{"fn":"decodeRemoteResourceReference","args":["{\"environmentId\": \"e\", \"resource\": {\"kind\": \"project-favicon\", \"cwd\": \"  c  \"}}"],"ok":{"environmentId":"e","resource":{"kind":"project-favicon","cwd":"c"}}}
+{"fn":"decodeRemoteResourceReference","args":["{\"environmentId\": \"e\", \"resource\": {\"kind\": \"editor-icon\", \"editorId\": \"  x  \"}}"],"error":"Expected a string matching the RegExp ^[A-Za-z0-9_-]{1,256}$, got \"  x  \"\n  at [\"resource\"][\"editorId\"]"}
+{"fn":"decodeRemoteResourceReference","args":["{\"environmentId\": \"e\", \"resource\": {\"kind\": \"site-favicon\", \"domain\": \"a_b\"}}"],"error":"Expected a string matching the RegExp ^[A-Za-z0-9.-]{1,253}$, got \"a_b\"\n  at [\"resource\"][\"domain\"]"}
+{"fn":"decodeRemoteResourceReference","args":["{\"environmentId\": \"e\", \"resource\": {\"kind\": \"site-favicon\", \"domain\": \"\"}}"],"error":"Expected a string matching the RegExp ^[A-Za-z0-9.-]{1,253}$, got \"\"\n  at [\"resource\"][\"domain\"]"}
+{"fn":"decodeRemoteResourceReference","args":["{\"environmentId\": \"e\", \"resource\": {\"kind\": \"attachment\", \"attachmentId\": \"  a  \"}}"],"error":"Expected a string matching the RegExp ^[A-Za-z0-9_-]{1,256}$, got \"  a  \"\n  at [\"resource\"][\"attachmentId\"]"}
+{"fn":"decodeRemoteResourceReference","args":["{\"environmentId\": \"e\", \"resource\": {\"kind\": \"attachment-cancel\", \"threadId\": \"x\", \"whatever\": {}}}"],"ok":{"environmentId":"e","resource":{"kind":"attachment-cancel"}}}
+{"fn":"remoteResourceRoute","args":[{"kind":"voice-upload","provider":"p","cwd":"c","mimeType":"m","sampleRateHz":1,"durationMs":1}],"ok":{"path":"/api/voice/transcribe?provider=p&cwd=c&mimeType=m&sampleRateHz=1&durationMs=1","method":"POST","maxBodyBytes":10485760}}
+{"fn":"remoteResourceRoute","args":[{"kind":"voice-upload","provider":"p","cwd":"c","mimeType":"m","sampleRateHz":1,"durationMs":1,"threadId":""}],"ok":{"path":"/api/voice/transcribe?provider=p&cwd=c&mimeType=m&sampleRateHz=1&durationMs=1","method":"POST","maxBodyBytes":10485760}}
+{"fn":"remoteResourceRoute","args":[{"kind":"voice-upload","provider":"p","cwd":"c","mimeType":"m","sampleRateHz":1,"durationMs":1,"threadId":false}],"ok":{"path":"/api/voice/transcribe?provider=p&cwd=c&mimeType=m&sampleRateHz=1&durationMs=1","method":"POST","maxBodyBytes":10485760}}
+{"fn":"remoteResourceRoute","args":[{"kind":"attachment-upload","threadId":"t","name":"n","mimeType":"m"}],"ok":{"path":"/api/attachments/upload?threadId=t&type=undefined&name=n&mimeType=m","method":"POST","maxBodyBytes":26214400}}
+{"fn":"remoteResourceRoute","args":[{"kind":"attachment-upload"}],"ok":{"path":"/api/attachments/upload?threadId=undefined&type=undefined&name=undefined&mimeType=undefined","method":"POST","maxBodyBytes":26214400}}
+{"fn":"remoteResourceRoute","args":[{"kind":"attachment-upload","threadId":"!~'()*-._  /😀","type":"i","name":"n","mimeType":"m"}],"ok":{"path":"/api/attachments/upload?threadId=%21%7E%27%28%29*-._++%2F%F0%9F%98%80&type=i&name=n&mimeType=m","method":"POST","maxBodyBytes":26214400}}
+{"fn":"remoteResourceRoute","args":[{"kind":"site-favicon"}],"ok":{"path":"/api/site-favicon?domain=undefined","method":"GET","maxBodyBytes":0}}
+{"fn":"remoteResourceRoute","args":[{"kind":"editor-icon"}],"ok":{"path":"/api/editor-icon?id=undefined","method":"GET","maxBodyBytes":0}}
+{"fn":"remoteResourceRoute","args":[{"kind":"workspace-preview","path":"p"}],"ok":{"path":"/api/local-image?path=p","method":"GET","maxBodyBytes":0}}
+{"fn":"remoteResourceRoute","args":[{"kind":"workspace-preview","path":"p","cwd":"c"}],"ok":{"path":"/api/local-image?path=p&cwd=c","method":"GET","maxBodyBytes":0}}
+{"fn":"remoteResourceRoute","args":[{"kind":"thread-export","threadId":"x y"}],"ok":{"path":"/api/thread-export?threadId=x%C2%A0y","method":"GET","maxBodyBytes":0}}
+{"fn":"remoteResourceRoute","args":[{"kind":"attachment-upload","threadId":"t","type":"IMAGE","name":"n","mimeType":"m"}],"ok":{"path":"/api/attachments/upload?threadId=t&type=IMAGE&name=n&mimeType=m","method":"POST","maxBodyBytes":26214400}}

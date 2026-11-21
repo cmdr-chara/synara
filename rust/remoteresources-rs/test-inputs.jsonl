@@ -1,0 +1,6 @@
+{"fn":"decodeRemoteResourceReference","args":["{\"environmentId\":\"remote:environment\",\"resource\":{\"kind\":\"attachment-upload\",\"threadId\":\"ios:78B2F93C-528C-4AC3-A6E3-FD448E82695C:thread\",\"type\":\"image\",\"name\":\"Image.jpg\",\"mimeType\":\"image/jpeg\"}}"]}
+{"fn":"remoteResourceRoute","args":[{"kind":"attachment-upload","threadId":"ios:78B2F93C-528C-4AC3-A6E3-FD448E82695C:thread","type":"image","name":"Image.jpg","mimeType":"image/jpeg"}]}
+{"fn":"decodeRemoteResourceReference","args":["{\"environmentId\":\"remote:environment\",\"resource\":{\"kind\":\"thread-export\",\"threadId\":\"ios:78B2F93C-528C-4AC3-A6E3-FD448E82695C:thread\"}}"]}
+{"fn":"decodeRemoteResourceReference","args":["{\"environmentId\":\"remote:environment\",\"resource\":{\"kind\":\"voice-upload\",\"provider\":\"openai\",\"cwd\":\"/workspace\",\"threadId\":\"ios:78B2F93C-528C-4AC3-A6E3-FD448E82695C:thread\",\"mimeType\":\"audio/wav\",\"sampleRateHz\":24000,\"durationMs\":1200}}"]}
+{"fn":"decodeRemoteResourceReference","args":["{\"environmentId\":\"remote:environment\",\"resource\":{\"kind\":\"thread-export\",\"threadId\":\" \"}}"]}
+{"fn":"decodeRemoteResourceReference","args":["{\"environmentId\":\"remote:environment\",\"resource\":{\"kind\":\"attachment\",\"attachmentId\":\"../secret\"}}"]}

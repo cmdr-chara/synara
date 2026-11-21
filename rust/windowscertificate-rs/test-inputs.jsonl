@@ -1,0 +1,8 @@
+{"fn":"parseDistinguishedName","args":["CN=Synara, O=\"Acme, Inc.\", OU=Tools\\2C Desktop"]}
+{"fn":"matchesDistinguishedName","args":["CN=Synara, O=Acme Tools","C=US, O=Acme Tools, CN=Synara, SERIALNUMBER=1234"]}
+{"fn":"parseDistinguishedName","args":["CN=Synara, O=Acme Tools"]}
+{"fn":"parseDistinguishedName","args":["C=US, O=Acme Tools, CN=Synara, SERIALNUMBER=1234"]}
+{"fn":"matchesDistinguishedName","args":["CN=Synara","CN=Synara, O=Acme Tools"]}
+{"fn":"parseDistinguishedName","args":["CN=Synara"]}
+{"fn":"matchesDistinguishedName","args":["CN=Synara, O=Acme Tools","CN=Synara, O=Other Tools"]}
+{"fn":"parseDistinguishedName","args":["CN=Synara, O=Other Tools"]}

@@ -1,0 +1,17 @@
+{
+  "unit": "packages/shared/src/windowsCertificate.ts",
+  "files": 1,
+  "fingerprint": "8077ec1b2e391343",
+  "coverage": {
+    "lines": 89,
+    "reached": 89,
+    "files": [
+      {
+        "file": "packages/shared/src/windowsCertificate.ts",
+        "lines": 89,
+        "reached": 89,
+        "missed": ""
+      }
+    ]
+  }
+}

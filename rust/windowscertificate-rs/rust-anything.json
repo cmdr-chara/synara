@@ -1,0 +1,54 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/windowsCertificate.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "windowscertificate-rs",
+  "exports": [
+    {
+      "name": "parseDistinguishedName",
+      "file": "packages/shared/src/windowsCertificate.ts",
+      "line": 5,
+      "params": [
+        {
+          "name": "sequence",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Map<string, string>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "matchesDistinguishedName",
+      "file": "packages/shared/src/windowsCertificate.ts",
+      "line": 84,
+      "params": [
+        {
+          "name": "expected",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "actual",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

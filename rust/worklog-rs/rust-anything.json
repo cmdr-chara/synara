@@ -1,0 +1,318 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/workLog.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "worklog-rs",
+  "exports": [
+    {
+      "name": "isFileChangeWorkLogEntry",
+      "file": "apps/web/src/workLog.ts",
+      "line": 418,
+      "params": [
+        {
+          "name": "workEntry",
+          "ts_type": "Pick<WorkLogEntry, \"itemType\" | \"requestKind\">",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isProviderFileEditWorkLogEntry",
+      "file": "apps/web/src/workLog.ts",
+      "line": 425,
+      "params": [
+        {
+          "name": "workEntry",
+          "ts_type": "Pick<WorkLogEntry, \"changedFiles\" | \"itemType\" | \"requestKind\">",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "orderedActivities",
+      "file": "apps/web/src/workLog.ts",
+      "line": 482,
+      "params": [
+        {
+          "name": "activities",
+          "ts_type": "ReadonlyArray<typeof typeof typeof typeof OrchestrationThreadActivity.Type.Type.Type.Type>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ReadonlyArray<typeof typeof typeof typeof OrchestrationThreadActivity.Type.Type.Type.Type>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isRoutedSubagentWorkEntry",
+      "file": "apps/web/src/workLog.ts",
+      "line": 503,
+      "params": [
+        {
+          "name": "entry",
+          "ts_type": "Pick<WorkLogEntry, \"itemType\" | \"subagents\" | \"subagentAction\">",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isSubagentStateOnlyWorkEntry",
+      "file": "apps/web/src/workLog.ts",
+      "line": 520,
+      "params": [
+        {
+          "name": "entry",
+          "ts_type": "Pick<WorkLogEntry, \"subagentAction\">",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "omitRoutedSubagentWorkEntries",
+      "file": "apps/web/src/workLog.ts",
+      "line": 535,
+      "params": [
+        {
+          "name": "entries",
+          "ts_type": "ReadonlyArray<(WorkLogEntry)>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ReadonlyArray<(WorkLogEntry)>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isMissingCheckpointBaselineActivity",
+      "file": "apps/web/src/workLog.ts",
+      "line": 543,
+      "params": [
+        {
+          "name": "activity",
+          "ts_type": "typeof typeof typeof typeof OrchestrationThreadActivity.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "deriveWorkLogEntries",
+      "file": "apps/web/src/workLog.ts",
+      "line": 559,
+      "params": [
+        {
+          "name": "activities",
+          "ts_type": "ReadonlyArray<typeof typeof typeof typeof OrchestrationThreadActivity.Type.Type.Type.Type>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "latestTurnId",
+          "ts_type": "typeof typeof typeof typeof TurnId.Type.Type.Type.Type | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "options",
+          "ts_type": "{\n    visibleTurnIds?: ReadonlySet<typeof typeof typeof typeof TurnId.Type.Type.Type.Type | string>;\n    activeTurnId?: typeof typeof typeof typeof TurnId.Type.Type.Type.Type | null;\n    activeTurnStartedAt?: string | null;\n    latestTurnState?: typeof typeof typeof typeof OrchestrationLatestTurnState.Type.Type.Type.Type | null;\n    latestTurnCompletedAt?: string | null;\n    translate?: typeof t;\n    keepMissingCheckpointNotices?: boolean;\n  }",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "WorkLogEntry[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "deriveThreadBackgroundTasks",
+      "file": "apps/web/src/workLog.ts",
+      "line": 886,
+      "params": [
+        {
+          "name": "activities",
+          "ts_type": "ReadonlyArray<typeof typeof typeof typeof OrchestrationThreadActivity.Type.Type.Type.Type>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "WorkLogBackgroundTask[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "deriveSubagentTaskEnds",
+      "file": "apps/web/src/workLog.ts",
+      "line": 1041,
+      "params": [
+        {
+          "name": "activities",
+          "ts_type": "ReadonlyArray<typeof typeof typeof typeof OrchestrationThreadActivity.Type.Type.Type.Type>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ReadonlyMap<string, SubagentTaskEnd>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isCodexRuntimeWarningType",
+      "file": "apps/web/src/workLog.ts",
+      "line": 1403,
+      "params": [
+        {
+          "name": "nativeEventType",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "parseTaskListTasks",
+      "file": "apps/web/src/workLog.ts",
+      "line": 1747,
+      "params": [
+        {
+          "name": "payload",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "TaskListTaskSnapshot[] | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "extractProviderHandoffInfo",
+      "file": "apps/web/src/workLog.ts",
+      "line": 1802,
+      "params": [
+        {
+          "name": "payload",
+          "ts_type": "Record<string, unknown> | null",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "status",
+          "ts_type": "ProviderHandoffInfo[\"status\"]",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ProviderHandoffInfo | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "parseUserInputQuestions",
+      "file": "apps/web/src/workLog.ts",
+      "line": 1884,
+      "params": [
+        {
+          "name": "payload",
+          "ts_type": "Record<string, unknown> | null",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ReadonlyArray<typeof typeof typeof typeof UserInputQuestion.Type.Type.Type.Type> | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "deriveTimelineEntries",
+      "file": "apps/web/src/workLog.ts",
+      "line": 4394,
+      "params": [
+        {
+          "name": "messages",
+          "ts_type": "ChatMessage[]",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "proposedPlans",
+          "ts_type": "ProposedPlan[]",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "workEntries",
+          "ts_type": "WorkLogEntry[]",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "options",
+          "ts_type": "{ readonly suppressCoordinatorCheckins?: boolean }",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "(| {\n      id: string;\n      kind: \"message\";\n      createdAt: string;\n      message: ChatMessage;\n    }\n  | {\n      // One slice of a streamed assistant message that had tool calls inside\n      // its text span; positioned at the slice's own start time so reasoning\n      // interleaves with the tool rows instead of one block above them.\n      id: string;\n      kind: \"message-segment\";\n      createdAt: string;\n      sequence: number;\n      message: ChatMessage;\n      segmentIndex: number;\n    }\n  | {\n      id: string;\n      kind: \"proposed-plan\";\n      createdAt: string;\n      proposedPlan: ProposedPlan;\n    }\n  | {\n      id: string;\n      kind: \"work\";\n      createdAt: string;\n      sequence?: number;\n      entry: WorkLogEntry;\n    })[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

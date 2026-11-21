@@ -1,0 +1,23 @@
+{
+  "unit": "apps/server/src/codexHomePaths.ts",
+  "files": 1,
+  "fingerprint": "4005c10fb51cb551",
+  "coverage": {
+    "lines": 136,
+    "reached": 130,
+    "files": [
+      {
+        "file": "apps/server/src/codexHomePaths.ts",
+        "lines": 117,
+        "reached": 117,
+        "missed": ""
+      },
+      {
+        "file": "apps/server/src/providerAccountHomePath.ts",
+        "lines": 19,
+        "reached": 13,
+        "missed": "11-12, 17-20"
+      }
+    ]
+  }
+}

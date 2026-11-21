@@ -1,0 +1,120 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/codexHomePaths.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "codexhomepaths-rs",
+  "exports": [
+    {
+      "name": "resolveBaseCodexHomePath",
+      "file": "apps/server/src/codexHomePaths.ts",
+      "line": 26,
+      "params": [
+        {
+          "name": "env",
+          "ts_type": "NodeJS.ProcessEnv",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "explicitHomePath",
+          "ts_type": "string",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveSynaraCodexHomeOverlayPath",
+      "file": "apps/server/src/codexHomePaths.ts",
+      "line": 35,
+      "params": [
+        {
+          "name": "env",
+          "ts_type": "NodeJS.ProcessEnv",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "sourceHomePath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "accountSegment",
+          "ts_type": "string",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveCodexHomeOverlayAccountSegment",
+      "file": "apps/server/src/codexHomePaths.ts",
+      "line": 48,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "Pick<CodexHomePathsInput, \"accountId\" | \"homePath\" | \"shadowHomePath\">",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveActiveCodexHomeWritePath",
+      "file": "apps/server/src/codexHomePaths.ts",
+      "line": 74,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "CodexHomePathsInput",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveCodexHomeAllowlistCandidates",
+      "file": "apps/server/src/codexHomePaths.ts",
+      "line": 99,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "CodexHomePathsInput",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "readonly string[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

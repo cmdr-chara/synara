@@ -1,0 +1,23 @@
+{
+  "unit": "packages/shared/src/pendingInteractions.ts",
+  "files": 1,
+  "fingerprint": "402b3c4c9d94c981",
+  "coverage": {
+    "lines": 506,
+    "reached": 109,
+    "files": [
+      {
+        "file": "packages/shared/src/pendingInteractions.ts",
+        "lines": 123,
+        "reached": 65,
+        "missed": "30-87"
+      },
+      {
+        "file": "packages/shared/src/threadSummary.ts",
+        "lines": 383,
+        "reached": 44,
+        "missed": "31-32, 34-39, 41-52, 61-68, 73-79, 81-86, 88-90, 93-117, 120-133, 135-140, 142-154, 156-163, 166-170, 172-199, 201-218, 220-228, 232-261, 263-268, 270-276, 278-291, 293-296, 298-305, 307-312, 314-317, 319-326, 328-332, 339-345, 348-373, 375-380, 382-385, 387-396, 399-422"
+      }
+    ]
+  }
+}

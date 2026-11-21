@@ -1,0 +1,530 @@
+{"fn": "respondingInteractionReclaimCutoff", "args": [".leading"], "ok": ".leading"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["\ud83d\ude00"], "ok": "\ud83d\ude00"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["  padded  "], "ok": "  padded  "}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["{name} has {count} itemshello world"], "ok": "{name} has {count} itemshello world"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["a"], "ok": "a"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["line1\nline2"], "ok": "line1\nline2"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["abc"], "ok": "abc"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["a.b.c"], "ok": "a.b.c"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["Hello World"], "ok": "Hello World"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["hello"], "ok": "hello"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["\u0130stanbula.b.c"], "ok": "\u0130stanbula.b.c"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["src/a/b.ts"], "ok": "src/a/b.ts"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["a.b.c\u65e5\u672c\u8a9e\u306e\u30c6\u30ad\u30b9\u30c8"], "ok": "a.b.c\u65e5\u672c\u8a9e\u306e\u30c6\u30ad\u30b9\u30c8"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["tab\tseparated"], "ok": "tab\tseparated"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["\ufeffbom  padded  "], "ok": "\ufeffbom  padded  "}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["key_name-1"], "ok": "2001-01-01T07:59:30.000Z"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["a:b:c"], "ok": "a:b:c"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["ab"], "ok": "ab"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["abc\u00fcn\u00efc\u00f6d\u00e9"], "ok": "abc\u00fcn\u00efc\u00f6d\u00e9"}
+{"fn": "respondingInteractionReclaimCutoff", "args": [":"], "ok": ":"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["a.b.cstra\u00dfe"], "ok": "a.b.cstra\u00dfe"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["hello  padded  "], "ok": "hello  padded  "}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["abhello world"], "ok": "abhello world"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["e\u0301src/a/b.ts"], "ok": "e\u0301src/a/b.ts"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["\u03a3\u038a\u03a3\u03a5\u03a6\u039f\u03a3trailing."], "ok": "\u03a3\u038a\u03a3\u03a5\u03a6\u039f\u03a3trailing."}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["\ufeffbom"], "ok": "\ufeffbom"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["\u03a3\u038a\u03a3\u03a5\u03a6\u039f\u03a3Hello World"], "ok": "\u03a3\u038a\u03a3\u03a5\u03a6\u039f\u03a3Hello World"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["emoji \ud83d\udc4d\ud83c\udffd mix"], "ok": "emoji \ud83d\udc4d\ud83c\udffd mix"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["key_name-1\ufeffbom"], "ok": "key_name-1\ufeffbom"}
+{"fn": "respondingInteractionReclaimCutoff", "args": [""], "ok": ""}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["{name} has {count} items"], "ok": "{name} has {count} items"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["e\u0301a\ud83d\ude00b\ud83d\ude00c"], "ok": "e\u0301a\ud83d\ude00b\ud83d\ude00c"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["src/a/b.tsa..b"], "ok": "src/a/b.tsa..b"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["HELLO"], "ok": "HELLO"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["ns:key.path"], "ok": "ns:key.path"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["\u03a3\u038a\u03a3\u03a5\u03a6\u039f\u03a3"], "ok": "\u03a3\u038a\u03a3\u03a5\u03a6\u039f\u03a3"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["\u00fcn\u00efc\u00f6d\u00e9"], "ok": "\u00fcn\u00efc\u00f6d\u00e9"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["ahello world"], "ok": "ahello world"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["a.b.c{name} has {count} items"], "ok": "a.b.c{name} has {count} items"}
+{"fn": "respondingInteractionReclaimCutoff", "args": [".leadinga:b:c"], "ok": ".leadinga:b:c"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["a..ba.b.c"], "ok": "a..ba.b.c"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["\ud83d\ude00ns:key.path"], "ok": "\ud83d\ude00ns:key.path"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["stra\u00dfe"], "ok": "stra\u00dfe"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["trailing."], "ok": "trailing."}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["\u03a3\u038a\u03a3\u03a5\u03a6\u039f\u03a3emoji \ud83d\udc4d\ud83c\udffd mix"], "ok": "\u03a3\u038a\u03a3\u03a5\u03a6\u039f\u03a3emoji \ud83d\udc4d\ud83c\udffd mix"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["e\u0301"], "ok": "e\u0301"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["ab\ud83d\ude00"], "ok": "ab\ud83d\ude00"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["\ufeffbomemoji \ud83d\udc4d\ud83c\udffd mix"], "ok": "\ufeffbomemoji \ud83d\udc4d\ud83c\udffd mix"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["src/a/b.ts\u00fcn\u00efc\u00f6d\u00e9"], "ok": "src/a/b.ts\u00fcn\u00efc\u00f6d\u00e9"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["key_name-1./x/**/*.json"], "ok": "key_name-1./x/**/*.json"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["a:b:cemoji \ud83d\udc4d\ud83c\udffd mix"], "ok": "a:b:cemoji \ud83d\udc4d\ud83c\udffd mix"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["a.b.ctrailing."], "ok": "a.b.ctrailing."}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["aba\ud83d\ude00b\ud83d\ude00c"], "ok": "aba\ud83d\ude00b\ud83d\ude00c"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["./x/**/*.json"], "ok": "./x/**/*.json"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["\u0130stanbul"], "ok": "\u0130stanbul"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["{name} has {count} items.leading"], "ok": "{name} has {count} items.leading"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["abc\u0130stanbul"], "ok": "abc\u0130stanbul"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["\u65e5\u672c\u8a9e\u306e\u30c6\u30ad\u30b9\u30c8"], "ok": "\u65e5\u672c\u8a9e\u306e\u30c6\u30ad\u30b9\u30c8"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["{name} has {count} itemssrc/a/b.ts"], "ok": "{name} has {count} itemssrc/a/b.ts"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["ns:key.path:"], "ok": "ns:key.path:"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["Hello Worldsrc/a/b.ts"], "ok": "Hello Worldsrc/a/b.ts"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["hello\ud83d\ude00"], "ok": "hello\ud83d\ude00"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["HELLO  padded  "], "ok": "HELLO  padded  "}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["{name} has {count} itemshello"], "ok": "{name} has {count} itemshello"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["trailing.\ud83d\ude00"], "ok": "trailing.\ud83d\ude00"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["tab\tseparateda"], "ok": "tab\tseparateda"}
+{"fn": "respondingInteractionReclaimCutoff", "args": [":key_name-1"], "ok": "2001-01-01T07:59:30.000Z"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["hello world\ud83d\ude00"], "ok": "hello world\ud83d\ude00"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["a..be\u0301"], "ok": "a..be\u0301"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["ahello"], "ok": "ahello"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["abns:key.path"], "ok": "abns:key.path"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["\u0130stanbul\u0130stanbul"], "ok": "\u0130stanbul\u0130stanbul"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["ns:key.pathtab\tseparated"], "ok": "ns:key.pathtab\tseparated"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["line1\nline2{name} has {count} items"], "ok": "line1\nline2{name} has {count} items"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["helloa..b"], "ok": "helloa..b"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["a..b"], "ok": "a..b"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["ns:key.pathab"], "ok": "ns:key.pathab"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["\u0130stanbulemoji \ud83d\udc4d\ud83c\udffd mix"], "ok": "\u0130stanbulemoji \ud83d\udc4d\ud83c\udffd mix"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["trailing.\u0130stanbul"], "ok": "trailing.\u0130stanbul"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["key_name-1\ud83d\ude00"], "ok": "key_name-1\ud83d\ude00"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["\u03a3\u038a\u03a3\u03a5\u03a6\u039f\u03a3:"], "ok": "\u03a3\u038a\u03a3\u03a5\u03a6\u039f\u03a3:"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["ns:key.pathhello world"], "ok": "ns:key.pathhello world"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["a..b\u65e5\u672c\u8a9e\u306e\u30c6\u30ad\u30b9\u30c8"], "ok": "a..b\u65e5\u672c\u8a9e\u306e\u30c6\u30ad\u30b9\u30c8"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["trailing.HELLO"], "ok": "trailing.HELLO"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["a\ud83d\ude00b\ud83d\ude00c"], "ok": "a\ud83d\ude00b\ud83d\ude00c"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["emoji \ud83d\udc4d\ud83c\udffd mix\u00fcn\u00efc\u00f6d\u00e9"], "ok": "emoji \ud83d\udc4d\ud83c\udffd mix\u00fcn\u00efc\u00f6d\u00e9"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["stra\u00dfens:key.path"], "ok": "stra\u00dfens:key.path"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["\u03a3\u038a\u03a3\u03a5\u03a6\u039f\u03a3\u65e5\u672c\u8a9e\u306e\u30c6\u30ad\u30b9\u30c8"], "ok": "\u03a3\u038a\u03a3\u03a5\u03a6\u039f\u03a3\u65e5\u672c\u8a9e\u306e\u30c6\u30ad\u30b9\u30c8"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["a.b.c\u00fcn\u00efc\u00f6d\u00e9"], "ok": "a.b.c\u00fcn\u00efc\u00f6d\u00e9"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["\u0130stanbulsrc/a/b.ts"], "ok": "\u0130stanbulsrc/a/b.ts"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["trailing.ab"], "ok": "trailing.ab"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["stra\u00dfeHello World"], "ok": "stra\u00dfeHello World"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["e\u0301Hello World"], "ok": "e\u0301Hello World"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["{name} has {count} itemsa..b"], "ok": "{name} has {count} itemsa..b"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["emoji \ud83d\udc4d\ud83c\udffd mixHello World"], "ok": "emoji \ud83d\udc4d\ud83c\udffd mixHello World"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["line1\nline2.leading"], "ok": "line1\nline2.leading"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["key_name-1emoji \ud83d\udc4d\ud83c\udffd mix"], "ok": "key_name-1emoji \ud83d\udc4d\ud83c\udffd mix"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["src/a/b.tshello"], "ok": "src/a/b.tshello"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["  padded  line1\nline2"], "ok": "  padded  line1\nline2"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["a..bline1\nline2"], "ok": "a..bline1\nline2"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["a:b:ctrailing."], "ok": "a:b:ctrailing."}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["\u0130stanbul\u00fcn\u00efc\u00f6d\u00e9"], "ok": "\u0130stanbul\u00fcn\u00efc\u00f6d\u00e9"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["e\u0301a"], "ok": "e\u0301a"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["hello world"], "ok": "hello world"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["ns:key.path\u00fcn\u00efc\u00f6d\u00e9"], "ok": "ns:key.path\u00fcn\u00efc\u00f6d\u00e9"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["ns:key.path\ufeffbom"], "ok": "ns:key.path\ufeffbom"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["tab\tseparateda:b:c"], "ok": "tab\tseparateda:b:c"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["stra\u00dfee\u0301"], "ok": "stra\u00dfee\u0301"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["a.b.c\ud83d\ude00"], "ok": "a.b.c\ud83d\ude00"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["\u03a3\u038a\u03a3\u03a5\u03a6\u039f\u03a3hello world"], "ok": "\u03a3\u038a\u03a3\u03a5\u03a6\u039f\u03a3hello world"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["emoji \ud83d\udc4d\ud83c\udffd mixa..b"], "ok": "emoji \ud83d\udc4d\ud83c\udffd mixa..b"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["line1\nline2  padded  "], "ok": "line1\nline2  padded  "}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["emoji \ud83d\udc4d\ud83c\udffd mixhello"], "ok": "emoji \ud83d\udc4d\ud83c\udffd mixhello"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["line1\nline2ns:key.path"], "ok": "line1\nline2ns:key.path"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["Hello Worldline1\nline2"], "ok": "Hello Worldline1\nline2"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["  padded  \u00fcn\u00efc\u00f6d\u00e9"], "ok": "  padded  \u00fcn\u00efc\u00f6d\u00e9"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["hello worldns:key.path"], "ok": "hello worldns:key.path"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["stra\u00dfeab"], "ok": "stra\u00dfeab"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["tab\tseparateda..b"], "ok": "tab\tseparateda..b"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["line1\nline2trailing."], "ok": "line1\nline2trailing."}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["Hello Worlda\ud83d\ude00b\ud83d\ude00c"], "ok": "Hello Worlda\ud83d\ude00b\ud83d\ude00c"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["ab\u65e5\u672c\u8a9e\u306e\u30c6\u30ad\u30b9\u30c8"], "ok": "ab\u65e5\u672c\u8a9e\u306e\u30c6\u30ad\u30b9\u30c8"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["  padded    padded  "], "ok": "  padded    padded  "}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["tab\tseparatedabc"], "ok": "tab\tseparatedabc"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["hellotab\tseparated"], "ok": "hellotab\tseparated"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["\ud83d\ude00HELLO"], "ok": "\ud83d\ude00HELLO"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["ns:key.path\u65e5\u672c\u8a9e\u306e\u30c6\u30ad\u30b9\u30c8"], "ok": "ns:key.path\u65e5\u672c\u8a9e\u306e\u30c6\u30ad\u30b9\u30c8"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["a..ba\ud83d\ude00b\ud83d\ude00c"], "ok": "a..ba\ud83d\ude00b\ud83d\ude00c"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["ns:key.pathline1\nline2"], "ok": "ns:key.pathline1\nline2"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["a..bHello World"], "ok": "a..bHello World"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["ab\u0130stanbul"], "ok": "ab\u0130stanbul"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["key_name-1src/a/b.ts"], "ok": "key_name-1src/a/b.ts"}
+{"fn": "respondingInteractionReclaimCutoff", "args": [".leadingstra\u00dfe"], "ok": ".leadingstra\u00dfe"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["aa"], "ok": "aa"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["Hello WorldHELLO"], "ok": "Hello WorldHELLO"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["\ufeffbomkey_name-1"], "ok": "2001-01-01T07:59:30.000Z"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["\u65e5\u672c\u8a9e\u306e\u30c6\u30ad\u30b9\u30c8hello"], "ok": "\u65e5\u672c\u8a9e\u306e\u30c6\u30ad\u30b9\u30c8hello"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["\u00fcn\u00efc\u00f6d\u00e9stra\u00dfe"], "ok": "\u00fcn\u00efc\u00f6d\u00e9stra\u00dfe"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["a..ba:b:c"], "ok": "a..ba:b:c"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["e\u0301a.b.c"], "ok": "e\u0301a.b.c"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["line1\nline2\u03a3\u038a\u03a3\u03a5\u03a6\u039f\u03a3"], "ok": "line1\nline2\u03a3\u038a\u03a3\u03a5\u03a6\u039f\u03a3"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["\u03a3\u038a\u03a3\u03a5\u03a6\u039f\u03a3  padded  "], "ok": "\u03a3\u038a\u03a3\u03a5\u03a6\u039f\u03a3  padded  "}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["a..bns:key.path"], "ok": "a..bns:key.path"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["a.b.c./x/**/*.json"], "ok": "a.b.c./x/**/*.json"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["./x/**/*.jsontab\tseparated"], "ok": "./x/**/*.jsontab\tseparated"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["\u03a3\u038a\u03a3\u03a5\u03a6\u039f\u03a3HELLO"], "ok": "\u03a3\u038a\u03a3\u03a5\u03a6\u039f\u03a3HELLO"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["  padded  \u65e5\u672c\u8a9e\u306e\u30c6\u30ad\u30b9\u30c8"], "ok": "  padded  \u65e5\u672c\u8a9e\u306e\u30c6\u30ad\u30b9\u30c8"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["a\ud83d\ude00b\ud83d\ude00c:"], "ok": "a\ud83d\ude00b\ud83d\ude00c:"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["ans:key.path"], "ok": "ans:key.path"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["hello\u0130stanbul"], "ok": "hello\u0130stanbul"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["a\ud83d\ude00b\ud83d\ude00c\u00fcn\u00efc\u00f6d\u00e9"], "ok": "a\ud83d\ude00b\ud83d\ude00c\u00fcn\u00efc\u00f6d\u00e9"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["astra\u00dfe"], "ok": "astra\u00dfe"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["ns:key.patha.b.c"], "ok": "ns:key.patha.b.c"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["abHELLO"], "ok": "abHELLO"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["  padded  .leading"], "ok": "  padded  .leading"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["./x/**/*.jsonemoji \ud83d\udc4d\ud83c\udffd mix"], "ok": "./x/**/*.jsonemoji \ud83d\udc4d\ud83c\udffd mix"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["  padded  ./x/**/*.json"], "ok": "  padded  ./x/**/*.json"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["helloemoji \ud83d\udc4d\ud83c\udffd mix"], "ok": "helloemoji \ud83d\udc4d\ud83c\udffd mix"}
+{"fn": "respondingInteractionReclaimCutoff", "args": [".leading{name} has {count} items"], "ok": ".leading{name} has {count} items"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["./x/**/*.json\u03a3\u038a\u03a3\u03a5\u03a6\u039f\u03a3"], "ok": "./x/**/*.json\u03a3\u038a\u03a3\u03a5\u03a6\u039f\u03a3"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["emoji \ud83d\udc4d\ud83c\udffd mixa.b.c"], "ok": "emoji \ud83d\udc4d\ud83c\udffd mixa.b.c"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["\u0130stanbul{name} has {count} items"], "ok": "\u0130stanbul{name} has {count} items"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["tab\tseparatedstra\u00dfe"], "ok": "tab\tseparatedstra\u00dfe"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["line1\nline2e\u0301"], "ok": "line1\nline2e\u0301"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["HELLOstra\u00dfe"], "ok": "HELLOstra\u00dfe"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["\u65e5\u672c\u8a9e\u306e\u30c6\u30ad\u30b9\u30c8tab\tseparated"], "ok": "\u65e5\u672c\u8a9e\u306e\u30c6\u30ad\u30b9\u30c8tab\tseparated"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["./x/**/*.json:"], "ok": "./x/**/*.json:"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["stra\u00dfe\u0130stanbul"], "ok": "stra\u00dfe\u0130stanbul"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["\u00fcn\u00efc\u00f6d\u00e9{name} has {count} items"], "ok": "\u00fcn\u00efc\u00f6d\u00e9{name} has {count} items"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["\u03a3\u038a\u03a3\u03a5\u03a6\u039f\u03a3\u03a3\u038a\u03a3\u03a5\u03a6\u039f\u03a3"], "ok": "\u03a3\u038a\u03a3\u03a5\u03a6\u039f\u03a3\u03a3\u038a\u03a3\u03a5\u03a6\u039f\u03a3"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["trailing.stra\u00dfe"], "ok": "trailing.stra\u00dfe"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["Hello World{name} has {count} items"], "ok": "Hello World{name} has {count} items"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["Hello Worldhello"], "ok": "Hello Worldhello"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["emoji \ud83d\udc4d\ud83c\udffd mix.leading"], "ok": "emoji \ud83d\udc4d\ud83c\udffd mix.leading"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["src/a/b.tskey_name-1"], "ok": "2001-01-01T07:59:30.000Z"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["\u00fcn\u00efc\u00f6d\u00e9e\u0301"], "ok": "\u00fcn\u00efc\u00f6d\u00e9e\u0301"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["hello worldkey_name-1"], "ok": "2001-01-01T07:59:30.000Z"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["  padded  key_name-1"], "ok": "2001-01-01T07:59:30.000Z"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["Hello World\u03a3\u038a\u03a3\u03a5\u03a6\u039f\u03a3"], "ok": "Hello World\u03a3\u038a\u03a3\u03a5\u03a6\u039f\u03a3"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["stra\u00dfea"], "ok": "stra\u00dfea"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["stra\u00dfe:"], "ok": "stra\u00dfe:"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["line1\nline2a\ud83d\ude00b\ud83d\ude00c"], "ok": "line1\nline2a\ud83d\ude00b\ud83d\ude00c"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["\ufeffbomhello world"], "ok": "\ufeffbomhello world"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["ns:key.path  padded  "], "ok": "ns:key.path  padded  "}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["a.leading"], "ok": "a.leading"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["\ud83d\ude00line1\nline2"], "ok": "\ud83d\ude00line1\nline2"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["emoji \ud83d\udc4d\ud83c\udffd mix\ud83d\ude00"], "ok": "emoji \ud83d\udc4d\ud83c\udffd mix\ud83d\ude00"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["\ufeffbomsrc/a/b.ts"], "ok": "\ufeffbomsrc/a/b.ts"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["tab\tseparatedline1\nline2"], "ok": "tab\tseparatedline1\nline2"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["\u00fcn\u00efc\u00f6d\u00e9\u00fcn\u00efc\u00f6d\u00e9"], "ok": "\u00fcn\u00efc\u00f6d\u00e9\u00fcn\u00efc\u00f6d\u00e9"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["a:b:cline1\nline2"], "ok": "a:b:cline1\nline2"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["\u65e5\u672c\u8a9e\u306e\u30c6\u30ad\u30b9\u30c8a\ud83d\ude00b\ud83d\ude00c"], "ok": "\u65e5\u672c\u8a9e\u306e\u30c6\u30ad\u30b9\u30c8a\ud83d\ude00b\ud83d\ude00c"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["key_name-1\u0130stanbul"], "ok": "key_name-1\u0130stanbul"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["helloline1\nline2"], "ok": "helloline1\nline2"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["key_name-1a..b"], "ok": "key_name-1a..b"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["\u65e5\u672c\u8a9e\u306e\u30c6\u30ad\u30b9\u30c8a"], "ok": "\u65e5\u672c\u8a9e\u306e\u30c6\u30ad\u30b9\u30c8a"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["emoji \ud83d\udc4d\ud83c\udffd mixline1\nline2"], "ok": "emoji \ud83d\udc4d\ud83c\udffd mixline1\nline2"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["hellotrailing."], "ok": "hellotrailing."}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["key_name-1a:b:c"], "ok": "key_name-1a:b:c"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["\u03a3\u038a\u03a3\u03a5\u03a6\u039f\u03a3\ufeffbom"], "ok": "\u03a3\u038a\u03a3\u03a5\u03a6\u039f\u03a3\ufeffbom"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["h\u00e9llo w\u00f6rld"], "ok": "h\u00e9llo w\u00f6rld"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["\ud83d\udc4d\ud83c\udffd thumbs"], "ok": "\ud83d\udc4d\ud83c\udffd thumbs"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["\u65e5\u672c\u8a9e"], "ok": "\u65e5\u672c\u8a9e"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["\u0131l\u0131k \u0131rmak"], "ok": "\u0131l\u0131k \u0131rmak"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["\ud83d\udc68\u200d\ud83d\udc69\u200d\ud83d\udc67 family"], "ok": "\ud83d\udc68\u200d\ud83d\udc69\u200d\ud83d\udc67 family"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["a\u00a0b"], "ok": "a\u00a0b"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["a\ud83d\ude00b"], "ok": "a\ud83d\ude00b"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["a\u00b2b x\u00bd y\u2460"], "ok": "a\u00b2b x\u00bd y\u2460"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["a\u2160b \u216b"], "ok": "a\u2160b \u216b"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["a\ud801\udc00b \ud835\udc00bc"], "ok": "a\ud801\udc00b \ud835\udc00bc"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["\u0915\u093f \u0663\u0664"], "ok": "\u0915\u093f \u0663\u0664"}
+{"fn": "respondingInteractionReclaimAt", "args": ["e\u0301"], "ok": "e\u0301"}
+{"fn": "respondingInteractionReclaimAt", "args": ["trailing."], "ok": "trailing."}
+{"fn": "respondingInteractionReclaimAt", "args": ["hello"], "ok": "hello"}
+{"fn": "respondingInteractionReclaimAt", "args": ["\u65e5\u672c\u8a9e\u306e\u30c6\u30ad\u30b9\u30c8"], "ok": "\u65e5\u672c\u8a9e\u306e\u30c6\u30ad\u30b9\u30c8"}
+{"fn": "respondingInteractionReclaimAt", "args": ["\u0130stanbul"], "ok": "\u0130stanbul"}
+{"fn": "respondingInteractionReclaimAt", "args": ["\u03a3\u038a\u03a3\u03a5\u03a6\u039f\u03a3"], "ok": "\u03a3\u038a\u03a3\u03a5\u03a6\u039f\u03a3"}
+{"fn": "respondingInteractionReclaimAt", "args": ["abca\ud83d\ude00b\ud83d\ude00c"], "ok": "abca\ud83d\ude00b\ud83d\ude00c"}
+{"fn": "respondingInteractionReclaimAt", "args": ["hello world"], "ok": "hello world"}
+{"fn": "respondingInteractionReclaimAt", "args": ["a\ud83d\ude00b\ud83d\ude00c"], "ok": "a\ud83d\ude00b\ud83d\ude00c"}
+{"fn": "respondingInteractionReclaimAt", "args": ["{name} has {count} items"], "ok": "{name} has {count} items"}
+{"fn": "respondingInteractionReclaimAt", "args": [".leading"], "ok": ".leading"}
+{"fn": "respondingInteractionReclaimAt", "args": ["HELLO"], "ok": "HELLO"}
+{"fn": "respondingInteractionReclaimAt", "args": ["emoji \ud83d\udc4d\ud83c\udffd mix"], "ok": "emoji \ud83d\udc4d\ud83c\udffd mix"}
+{"fn": "respondingInteractionReclaimAt", "args": ["Hello World\u0130stanbul"], "ok": "Hello World\u0130stanbul"}
+{"fn": "respondingInteractionReclaimAt", "args": ["stra\u00dfee\u0301"], "ok": "stra\u00dfee\u0301"}
+{"fn": "respondingInteractionReclaimAt", "args": ["\ufeffbom./x/**/*.json"], "ok": "\ufeffbom./x/**/*.json"}
+{"fn": "respondingInteractionReclaimAt", "args": ["a"], "ok": "a"}
+{"fn": "respondingInteractionReclaimAt", "args": ["line1\nline2"], "ok": "line1\nline2"}
+{"fn": "respondingInteractionReclaimAt", "args": ["stra\u00dfe"], "ok": "stra\u00dfe"}
+{"fn": "respondingInteractionReclaimAt", "args": ["ns:key.path"], "ok": "ns:key.path"}
+{"fn": "respondingInteractionReclaimAt", "args": ["ab"], "ok": "ab"}
+{"fn": "respondingInteractionReclaimAt", "args": ["abctab\tseparated"], "ok": "abctab\tseparated"}
+{"fn": "respondingInteractionReclaimAt", "args": ["\ud83d\ude00./x/**/*.json"], "ok": "\ud83d\ude00./x/**/*.json"}
+{"fn": "respondingInteractionReclaimAt", "args": ["Hello World"], "ok": "Hello World"}
+{"fn": "respondingInteractionReclaimAt", "args": ["ab  padded  "], "ok": "ab  padded  "}
+{"fn": "respondingInteractionReclaimAt", "args": ["src/a/b.ts"], "ok": "src/a/b.ts"}
+{"fn": "respondingInteractionReclaimAt", "args": [""], "ok": ""}
+{"fn": "respondingInteractionReclaimAt", "args": ["\u03a3\u038a\u03a3\u03a5\u03a6\u039f\u03a3trailing."], "ok": "\u03a3\u038a\u03a3\u03a5\u03a6\u039f\u03a3trailing."}
+{"fn": "respondingInteractionReclaimAt", "args": ["\u00fcn\u00efc\u00f6d\u00e9  padded  "], "ok": "\u00fcn\u00efc\u00f6d\u00e9  padded  "}
+{"fn": "respondingInteractionReclaimAt", "args": ["\ud83d\ude00"], "ok": "\ud83d\ude00"}
+{"fn": "respondingInteractionReclaimAt", "args": ["a:b:ctab\tseparated"], "ok": "a:b:ctab\tseparated"}
+{"fn": "respondingInteractionReclaimAt", "args": ["HELLO:"], "ok": "HELLO:"}
+{"fn": "respondingInteractionReclaimAt", "args": ["\u65e5\u672c\u8a9e\u306e\u30c6\u30ad\u30b9\u30c8trailing."], "ok": "\u65e5\u672c\u8a9e\u306e\u30c6\u30ad\u30b9\u30c8trailing."}
+{"fn": "respondingInteractionReclaimAt", "args": ["emoji \ud83d\udc4d\ud83c\udffd mix:"], "ok": "emoji \ud83d\udc4d\ud83c\udffd mix:"}
+{"fn": "respondingInteractionReclaimAt", "args": ["\u00fcn\u00efc\u00f6d\u00e9"], "ok": "\u00fcn\u00efc\u00f6d\u00e9"}
+{"fn": "respondingInteractionReclaimAt", "args": ["\u0130stanbul\u65e5\u672c\u8a9e\u306e\u30c6\u30ad\u30b9\u30c8"], "ok": "\u0130stanbul\u65e5\u672c\u8a9e\u306e\u30c6\u30ad\u30b9\u30c8"}
+{"fn": "respondingInteractionReclaimAt", "args": ["a.b.c\u00fcn\u00efc\u00f6d\u00e9"], "ok": "a.b.c\u00fcn\u00efc\u00f6d\u00e9"}
+{"fn": "respondingInteractionReclaimAt", "args": [".leadingns:key.path"], "ok": ".leadingns:key.path"}
+{"fn": "respondingInteractionReclaimAt", "args": ["./x/**/*.json"], "ok": "./x/**/*.json"}
+{"fn": "respondingInteractionReclaimAt", "args": ["trailing.:"], "ok": "trailing.:"}
+{"fn": "respondingInteractionReclaimAt", "args": [":"], "ok": ":"}
+{"fn": "respondingInteractionReclaimAt", "args": ["a.b.c"], "ok": "a.b.c"}
+{"fn": "respondingInteractionReclaimAt", "args": ["\u03a3\u038a\u03a3\u03a5\u03a6\u039f\u03a3src/a/b.ts"], "ok": "\u03a3\u038a\u03a3\u03a5\u03a6\u039f\u03a3src/a/b.ts"}
+{"fn": "respondingInteractionReclaimAt", "args": ["a..babc"], "ok": "a..babc"}
+{"fn": "respondingInteractionReclaimAt", "args": ["\ufeffbomabc"], "ok": "\ufeffbomabc"}
+{"fn": "respondingInteractionReclaimAt", "args": ["\ufeffbom"], "ok": "\ufeffbom"}
+{"fn": "respondingInteractionReclaimAt", "args": ["  padded  "], "ok": "  padded  "}
+{"fn": "respondingInteractionReclaimAt", "args": ["ns:key.path{name} has {count} items"], "ok": "ns:key.path{name} has {count} items"}
+{"fn": "respondingInteractionReclaimAt", "args": ["key_name-1"], "ok": "2001-01-01T08:00:30.000Z"}
+{"fn": "respondingInteractionReclaimAt", "args": ["{name} has {count} itemsns:key.path"], "ok": "{name} has {count} itemsns:key.path"}
+{"fn": "respondingInteractionReclaimAt", "args": ["a.b.ce\u0301"], "ok": "a.b.ce\u0301"}
+{"fn": "respondingInteractionReclaimAt", "args": ["aemoji \ud83d\udc4d\ud83c\udffd mix"], "ok": "aemoji \ud83d\udc4d\ud83c\udffd mix"}
+{"fn": "respondingInteractionReclaimAt", "args": ["abc"], "ok": "abc"}
+{"fn": "respondingInteractionReclaimAt", "args": ["a:b:c"], "ok": "a:b:c"}
+{"fn": "respondingInteractionReclaimAt", "args": ["a..b"], "ok": "a..b"}
+{"fn": "respondingInteractionReclaimAt", "args": ["ab\ufeffbom"], "ok": "ab\ufeffbom"}
+{"fn": "respondingInteractionReclaimAt", "args": ["a:b:c\u65e5\u672c\u8a9e\u306e\u30c6\u30ad\u30b9\u30c8"], "ok": "a:b:c\u65e5\u672c\u8a9e\u306e\u30c6\u30ad\u30b9\u30c8"}
+{"fn": "respondingInteractionReclaimAt", "args": ["e\u0301\ud83d\ude00"], "ok": "e\u0301\ud83d\ude00"}
+{"fn": "respondingInteractionReclaimAt", "args": ["ab\u65e5\u672c\u8a9e\u306e\u30c6\u30ad\u30b9\u30c8"], "ok": "ab\u65e5\u672c\u8a9e\u306e\u30c6\u30ad\u30b9\u30c8"}
+{"fn": "respondingInteractionReclaimAt", "args": ["emoji \ud83d\udc4d\ud83c\udffd mix\u00fcn\u00efc\u00f6d\u00e9"], "ok": "emoji \ud83d\udc4d\ud83c\udffd mix\u00fcn\u00efc\u00f6d\u00e9"}
+{"fn": "respondingInteractionReclaimAt", "args": ["hello worldline1\nline2"], "ok": "hello worldline1\nline2"}
+{"fn": "respondingInteractionReclaimAt", "args": ["a:b:cns:key.path"], "ok": "a:b:cns:key.path"}
+{"fn": "respondingInteractionReclaimAt", "args": ["ns:key.pathstra\u00dfe"], "ok": "ns:key.pathstra\u00dfe"}
+{"fn": "respondingInteractionReclaimAt", "args": ["key_name-1HELLO"], "ok": "key_name-1HELLO"}
+{"fn": "respondingInteractionReclaimAt", "args": ["tab\tseparated"], "ok": "tab\tseparated"}
+{"fn": "respondingInteractionReclaimAt", "args": ["aHello World"], "ok": "aHello World"}
+{"fn": "respondingInteractionReclaimAt", "args": ["emoji \ud83d\udc4d\ud83c\udffd mixHELLO"], "ok": "emoji \ud83d\udc4d\ud83c\udffd mixHELLO"}
+{"fn": "respondingInteractionReclaimAt", "args": ["line1\nline2a.b.c"], "ok": "line1\nline2a.b.c"}
+{"fn": "respondingInteractionReclaimAt", "args": ["\u65e5\u672c\u8a9e\u306e\u30c6\u30ad\u30b9\u30c8emoji \ud83d\udc4d\ud83c\udffd mix"], "ok": "\u65e5\u672c\u8a9e\u306e\u30c6\u30ad\u30b9\u30c8emoji \ud83d\udc4d\ud83c\udffd mix"}
+{"fn": "respondingInteractionReclaimAt", "args": ["HELLOa..b"], "ok": "HELLOa..b"}
+{"fn": "respondingInteractionReclaimAt", "args": ["src/a/b.ts{name} has {count} items"], "ok": "src/a/b.ts{name} has {count} items"}
+{"fn": "respondingInteractionReclaimAt", "args": ["abcabc"], "ok": "abcabc"}
+{"fn": "respondingInteractionReclaimAt", "args": ["hello.leading"], "ok": "hello.leading"}
+{"fn": "respondingInteractionReclaimAt", "args": ["src/a/b.ts.leading"], "ok": "src/a/b.ts.leading"}
+{"fn": "respondingInteractionReclaimAt", "args": [".leading\u65e5\u672c\u8a9e\u306e\u30c6\u30ad\u30b9\u30c8"], "ok": ".leading\u65e5\u672c\u8a9e\u306e\u30c6\u30ad\u30b9\u30c8"}
+{"fn": "respondingInteractionReclaimAt", "args": ["stra\u00dfe{name} has {count} items"], "ok": "stra\u00dfe{name} has {count} items"}
+{"fn": "respondingInteractionReclaimAt", "args": ["\u0130stanbul.leading"], "ok": "\u0130stanbul.leading"}
+{"fn": "respondingInteractionReclaimAt", "args": ["ab\ud83d\ude00"], "ok": "ab\ud83d\ude00"}
+{"fn": "respondingInteractionReclaimAt", "args": ["hellotab\tseparated"], "ok": "hellotab\tseparated"}
+{"fn": "respondingInteractionReclaimAt", "args": ["abtrailing."], "ok": "abtrailing."}
+{"fn": "respondingInteractionReclaimAt", "args": ["a.b.ca:b:c"], "ok": "a.b.ca:b:c"}
+{"fn": "respondingInteractionReclaimAt", "args": ["Hello WorldHELLO"], "ok": "Hello WorldHELLO"}
+{"fn": "respondingInteractionReclaimAt", "args": ["ab\u03a3\u038a\u03a3\u03a5\u03a6\u039f\u03a3"], "ok": "ab\u03a3\u038a\u03a3\u03a5\u03a6\u039f\u03a3"}
+{"fn": "respondingInteractionReclaimAt", "args": ["a:b:cHELLO"], "ok": "a:b:cHELLO"}
+{"fn": "respondingInteractionReclaimAt", "args": ["e\u0301emoji \ud83d\udc4d\ud83c\udffd mix"], "ok": "e\u0301emoji \ud83d\udc4d\ud83c\udffd mix"}
+{"fn": "respondingInteractionReclaimAt", "args": ["a.b.ca"], "ok": "a.b.ca"}
+{"fn": "respondingInteractionReclaimAt", "args": ["\ud83d\ude00{name} has {count} items"], "ok": "\ud83d\ude00{name} has {count} items"}
+{"fn": "respondingInteractionReclaimAt", "args": ["line1\nline2\u03a3\u038a\u03a3\u03a5\u03a6\u039f\u03a3"], "ok": "line1\nline2\u03a3\u038a\u03a3\u03a5\u03a6\u039f\u03a3"}
+{"fn": "respondingInteractionReclaimAt", "args": ["hello worlde\u0301"], "ok": "hello worlde\u0301"}
+{"fn": "respondingInteractionReclaimAt", "args": ["a..bkey_name-1"], "ok": "2001-01-01T08:00:30.000Z"}
+{"fn": "respondingInteractionReclaimAt", "args": ["\u65e5\u672c\u8a9e\u306e\u30c6\u30ad\u30b9\u30c8\u65e5\u672c\u8a9e\u306e\u30c6\u30ad\u30b9\u30c8"], "ok": "\u65e5\u672c\u8a9e\u306e\u30c6\u30ad\u30b9\u30c8\u65e5\u672c\u8a9e\u306e\u30c6\u30ad\u30b9\u30c8"}
+{"fn": "respondingInteractionReclaimAt", "args": ["  padded  hello"], "ok": "  padded  hello"}
+{"fn": "respondingInteractionReclaimAt", "args": ["\u03a3\u038a\u03a3\u03a5\u03a6\u039f\u03a3\u00fcn\u00efc\u00f6d\u00e9"], "ok": "\u03a3\u038a\u03a3\u03a5\u03a6\u039f\u03a3\u00fcn\u00efc\u00f6d\u00e9"}
+{"fn": "respondingInteractionReclaimAt", "args": ["\u65e5\u672c\u8a9e\u306e\u30c6\u30ad\u30b9\u30c8\ud83d\ude00"], "ok": "\u65e5\u672c\u8a9e\u306e\u30c6\u30ad\u30b9\u30c8\ud83d\ude00"}
+{"fn": "respondingInteractionReclaimAt", "args": ["{name} has {count} items\ud83d\ude00"], "ok": "{name} has {count} items\ud83d\ude00"}
+{"fn": "respondingInteractionReclaimAt", "args": ["\u0130stanbul./x/**/*.json"], "ok": "\u0130stanbul./x/**/*.json"}
+{"fn": "respondingInteractionReclaimAt", "args": ["a\ud83d\ude00b\ud83d\ude00ctab\tseparated"], "ok": "a\ud83d\ude00b\ud83d\ude00ctab\tseparated"}
+{"fn": "respondingInteractionReclaimAt", "args": ["Hello Worldline1\nline2"], "ok": "Hello Worldline1\nline2"}
+{"fn": "respondingInteractionReclaimAt", "args": ["a.b.c./x/**/*.json"], "ok": "a.b.c./x/**/*.json"}
+{"fn": "respondingInteractionReclaimAt", "args": ["a.b.cHELLO"], "ok": "a.b.cHELLO"}
+{"fn": "respondingInteractionReclaimAt", "args": ["{name} has {count} itemsHello World"], "ok": "{name} has {count} itemsHello World"}
+{"fn": "respondingInteractionReclaimAt", "args": ["a:b:c\ufeffbom"], "ok": "a:b:c\ufeffbom"}
+{"fn": "respondingInteractionReclaimAt", "args": ["{name} has {count} itemshello world"], "ok": "{name} has {count} itemshello world"}
+{"fn": "respondingInteractionReclaimAt", "args": ["abkey_name-1"], "ok": "2001-01-01T08:00:30.000Z"}
+{"fn": "respondingInteractionReclaimAt", "args": ["ns:key.pathsrc/a/b.ts"], "ok": "ns:key.pathsrc/a/b.ts"}
+{"fn": "respondingInteractionReclaimAt", "args": ["helloline1\nline2"], "ok": "helloline1\nline2"}
+{"fn": "respondingInteractionReclaimAt", "args": ["abcstra\u00dfe"], "ok": "abcstra\u00dfe"}
+{"fn": "respondingInteractionReclaimAt", "args": [".leadingemoji \ud83d\udc4d\ud83c\udffd mix"], "ok": ".leadingemoji \ud83d\udc4d\ud83c\udffd mix"}
+{"fn": "respondingInteractionReclaimAt", "args": ["Hello Worldhello world"], "ok": "Hello Worldhello world"}
+{"fn": "respondingInteractionReclaimAt", "args": ["emoji \ud83d\udc4d\ud83c\udffd mix\ufeffbom"], "ok": "emoji \ud83d\udc4d\ud83c\udffd mix\ufeffbom"}
+{"fn": "respondingInteractionReclaimAt", "args": ["emoji \ud83d\udc4d\ud83c\udffd mixns:key.path"], "ok": "emoji \ud83d\udc4d\ud83c\udffd mixns:key.path"}
+{"fn": "respondingInteractionReclaimAt", "args": ["\u00fcn\u00efc\u00f6d\u00e9key_name-1"], "ok": "2001-01-01T08:00:30.000Z"}
+{"fn": "respondingInteractionReclaimAt", "args": ["  padded  {name} has {count} items"], "ok": "  padded  {name} has {count} items"}
+{"fn": "respondingInteractionReclaimAt", "args": ["abckey_name-1"], "ok": "2001-01-01T08:00:30.000Z"}
+{"fn": "respondingInteractionReclaimAt", "args": ["a\ud83d\ude00b\ud83d\ude00cemoji \ud83d\udc4d\ud83c\udffd mix"], "ok": "a\ud83d\ude00b\ud83d\ude00cemoji \ud83d\udc4d\ud83c\udffd mix"}
+{"fn": "respondingInteractionReclaimAt", "args": [".leading  padded  "], "ok": ".leading  padded  "}
+{"fn": "respondingInteractionReclaimAt", "args": ["a\ud83d\ude00b\ud83d\ude00c  padded  "], "ok": "a\ud83d\ude00b\ud83d\ude00c  padded  "}
+{"fn": "respondingInteractionReclaimAt", "args": ["::"], "ok": "::"}
+{"fn": "respondingInteractionReclaimAt", "args": ["HELLO./x/**/*.json"], "ok": "HELLO./x/**/*.json"}
+{"fn": "respondingInteractionReclaimAt", "args": ["emoji \ud83d\udc4d\ud83c\udffd mix  padded  "], "ok": "emoji \ud83d\udc4d\ud83c\udffd mix  padded  "}
+{"fn": "respondingInteractionReclaimAt", "args": ["trailing.\u65e5\u672c\u8a9e\u306e\u30c6\u30ad\u30b9\u30c8"], "ok": "trailing.\u65e5\u672c\u8a9e\u306e\u30c6\u30ad\u30b9\u30c8"}
+{"fn": "respondingInteractionReclaimAt", "args": ["\ufeffboma"], "ok": "\ufeffboma"}
+{"fn": "respondingInteractionReclaimAt", "args": ["src/a/b.tsstra\u00dfe"], "ok": "src/a/b.tsstra\u00dfe"}
+{"fn": "respondingInteractionReclaimAt", "args": ["a..bhello world"], "ok": "a..bhello world"}
+{"fn": "respondingInteractionReclaimAt", "args": ["Hello Worldhello"], "ok": "Hello Worldhello"}
+{"fn": "respondingInteractionReclaimAt", "args": ["emoji \ud83d\udc4d\ud83c\udffd mixa\ud83d\ude00b\ud83d\ude00c"], "ok": "emoji \ud83d\udc4d\ud83c\udffd mixa\ud83d\ude00b\ud83d\ude00c"}
+{"fn": "respondingInteractionReclaimAt", "args": ["\ud83d\ude00stra\u00dfe"], "ok": "\ud83d\ude00stra\u00dfe"}
+{"fn": "respondingInteractionReclaimAt", "args": ["tab\tseparatedstra\u00dfe"], "ok": "tab\tseparatedstra\u00dfe"}
+{"fn": "respondingInteractionReclaimAt", "args": ["e\u0301hello world"], "ok": "e\u0301hello world"}
+{"fn": "respondingInteractionReclaimAt", "args": ["\ud83d\ude00.leading"], "ok": "\ud83d\ude00.leading"}
+{"fn": "respondingInteractionReclaimAt", "args": ["abemoji \ud83d\udc4d\ud83c\udffd mix"], "ok": "abemoji \ud83d\udc4d\ud83c\udffd mix"}
+{"fn": "respondingInteractionReclaimAt", "args": ["\ufeffbomtab\tseparated"], "ok": "\ufeffbomtab\tseparated"}
+{"fn": "respondingInteractionReclaimAt", "args": ["src/a/b.ts\u0130stanbul"], "ok": "src/a/b.ts\u0130stanbul"}
+{"fn": "respondingInteractionReclaimAt", "args": ["ab:"], "ok": "ab:"}
+{"fn": "respondingInteractionReclaimAt", "args": ["\u0130stanbul\u03a3\u038a\u03a3\u03a5\u03a6\u039f\u03a3"], "ok": "\u0130stanbul\u03a3\u038a\u03a3\u03a5\u03a6\u039f\u03a3"}
+{"fn": "respondingInteractionReclaimAt", "args": ["src/a/b.tsa:b:c"], "ok": "src/a/b.tsa:b:c"}
+{"fn": "respondingInteractionReclaimAt", "args": ["trailing.a"], "ok": "trailing.a"}
+{"fn": "respondingInteractionReclaimAt", "args": ["abc\ud83d\ude00"], "ok": "abc\ud83d\ude00"}
+{"fn": "respondingInteractionReclaimAt", "args": [".leadingsrc/a/b.ts"], "ok": ".leadingsrc/a/b.ts"}
+{"fn": "respondingInteractionReclaimAt", "args": ["abchello"], "ok": "abchello"}
+{"fn": "respondingInteractionReclaimAt", "args": ["emoji \ud83d\udc4d\ud83c\udffd mixline1\nline2"], "ok": "emoji \ud83d\udc4d\ud83c\udffd mixline1\nline2"}
+{"fn": "respondingInteractionReclaimAt", "args": ["a\ud83d\ude00b\ud83d\ude00ca..b"], "ok": "a\ud83d\ude00b\ud83d\ude00ca..b"}
+{"fn": "respondingInteractionReclaimAt", "args": [".leadinga"], "ok": ".leadinga"}
+{"fn": "respondingInteractionReclaimAt", "args": ["tab\tseparated:"], "ok": "tab\tseparated:"}
+{"fn": "respondingInteractionReclaimAt", "args": ["HELLOHello World"], "ok": "HELLOHello World"}
+{"fn": "respondingInteractionReclaimAt", "args": ["Hello Worlda:b:c"], "ok": "Hello Worlda:b:c"}
+{"fn": "respondingInteractionReclaimAt", "args": ["\u0130stanbultab\tseparated"], "ok": "\u0130stanbultab\tseparated"}
+{"fn": "respondingInteractionReclaimAt", "args": ["HELLOns:key.path"], "ok": "HELLOns:key.path"}
+{"fn": "respondingInteractionReclaimAt", "args": ["\u0130stanbula\ud83d\ude00b\ud83d\ude00c"], "ok": "\u0130stanbula\ud83d\ude00b\ud83d\ude00c"}
+{"fn": "respondingInteractionReclaimAt", "args": ["trailing.{name} has {count} items"], "ok": "trailing.{name} has {count} items"}
+{"fn": "respondingInteractionReclaimAt", "args": ["a:b:ca\ud83d\ude00b\ud83d\ude00c"], "ok": "a:b:ca\ud83d\ude00b\ud83d\ude00c"}
+{"fn": "respondingInteractionReclaimAt", "args": ["  padded  \u00fcn\u00efc\u00f6d\u00e9"], "ok": "  padded  \u00fcn\u00efc\u00f6d\u00e9"}
+{"fn": "respondingInteractionReclaimAt", "args": ["\ud83d\ude00ab"], "ok": "\ud83d\ude00ab"}
+{"fn": "respondingInteractionReclaimAt", "args": ["ns:key.pathab"], "ok": "ns:key.pathab"}
+{"fn": "respondingInteractionReclaimAt", "args": ["abcab"], "ok": "abcab"}
+{"fn": "respondingInteractionReclaimAt", "args": ["trailing.HELLO"], "ok": "trailing.HELLO"}
+{"fn": "respondingInteractionReclaimAt", "args": ["hello worldemoji \ud83d\udc4d\ud83c\udffd mix"], "ok": "hello worldemoji \ud83d\udc4d\ud83c\udffd mix"}
+{"fn": "respondingInteractionReclaimAt", "args": ["key_name-1hello"], "ok": "key_name-1hello"}
+{"fn": "respondingInteractionReclaimAt", "args": ["a\ud83d\ude00b\ud83d\ude00ca.b.c"], "ok": "a\ud83d\ude00b\ud83d\ude00ca.b.c"}
+{"fn": "respondingInteractionReclaimAt", "args": ["a\ud83d\ude00b\ud83d\ude00c{name} has {count} items"], "ok": "a\ud83d\ude00b\ud83d\ude00c{name} has {count} items"}
+{"fn": "respondingInteractionReclaimAt", "args": ["e\u0301./x/**/*.json"], "ok": "e\u0301./x/**/*.json"}
+{"fn": "respondingInteractionReclaimAt", "args": ["\u0130stanbulline1\nline2"], "ok": "\u0130stanbulline1\nline2"}
+{"fn": "respondingInteractionReclaimAt", "args": ["\ud83d\ude00tab\tseparated"], "ok": "\ud83d\ude00tab\tseparated"}
+{"fn": "respondingInteractionReclaimAt", "args": ["e\u0301a\ud83d\ude00b\ud83d\ude00c"], "ok": "e\u0301a\ud83d\ude00b\ud83d\ude00c"}
+{"fn": "respondingInteractionReclaimAt", "args": ["\u00fcn\u00efc\u00f6d\u00e9a:b:c"], "ok": "\u00fcn\u00efc\u00f6d\u00e9a:b:c"}
+{"fn": "respondingInteractionReclaimAt", "args": ["\u65e5\u672c\u8a9e\u306e\u30c6\u30ad\u30b9\u30c8hello"], "ok": "\u65e5\u672c\u8a9e\u306e\u30c6\u30ad\u30b9\u30c8hello"}
+{"fn": "respondingInteractionReclaimAt", "args": ["./x/**/*.jsontab\tseparated"], "ok": "./x/**/*.jsontab\tseparated"}
+{"fn": "respondingInteractionReclaimAt", "args": ["a:b:c.leading"], "ok": "a:b:c.leading"}
+{"fn": "respondingInteractionReclaimAt", "args": ["a:b:ce\u0301"], "ok": "a:b:ce\u0301"}
+{"fn": "respondingInteractionReclaimAt", "args": ["stra\u00dfekey_name-1"], "ok": "2001-01-01T08:00:30.000Z"}
+{"fn": "respondingInteractionReclaimAt", "args": ["stra\u00dfea..b"], "ok": "stra\u00dfea..b"}
+{"fn": "respondingInteractionReclaimAt", "args": ["e\u0301abc"], "ok": "e\u0301abc"}
+{"fn": "respondingInteractionReclaimAt", "args": ["a:b:ctrailing."], "ok": "a:b:ctrailing."}
+{"fn": "respondingInteractionReclaimAt", "args": ["a:b:ca..b"], "ok": "a:b:ca..b"}
+{"fn": "respondingInteractionReclaimAt", "args": ["src/a/b.ts\ud83d\ude00"], "ok": "src/a/b.ts\ud83d\ude00"}
+{"fn": "respondingInteractionReclaimAt", "args": ["\u0130stanbulns:key.path"], "ok": "\u0130stanbulns:key.path"}
+{"fn": "respondingInteractionReclaimAt", "args": ["ns:key.pathhello world"], "ok": "ns:key.pathhello world"}
+{"fn": "respondingInteractionReclaimAt", "args": ["ab.leading"], "ok": "ab.leading"}
+{"fn": "respondingInteractionReclaimAt", "args": ["aa.b.c"], "ok": "aa.b.c"}
+{"fn": "respondingInteractionReclaimAt", "args": [":\ufeffbom"], "ok": ":\ufeffbom"}
+{"fn": "respondingInteractionReclaimAt", "args": ["ns:key.pathns:key.path"], "ok": "ns:key.pathns:key.path"}
+{"fn": "respondingInteractionReclaimAt", "args": ["\u00fcn\u00efc\u00f6d\u00e9trailing."], "ok": "\u00fcn\u00efc\u00f6d\u00e9trailing."}
+{"fn": "respondingInteractionReclaimAt", "args": ["tab\tseparateda.b.c"], "ok": "tab\tseparateda.b.c"}
+{"fn": "respondingInteractionReclaimAt", "args": ["a.b.chello"], "ok": "a.b.chello"}
+{"fn": "respondingInteractionReclaimAt", "args": ["a..be\u0301"], "ok": "a..be\u0301"}
+{"fn": "respondingInteractionReclaimAt", "args": ["\u03a3\u038a\u03a3\u03a5\u03a6\u039f\u03a3e\u0301"], "ok": "\u03a3\u038a\u03a3\u03a5\u03a6\u039f\u03a3e\u0301"}
+{"fn": "respondingInteractionReclaimAt", "args": ["HELLOa\ud83d\ude00b\ud83d\ude00c"], "ok": "HELLOa\ud83d\ude00b\ud83d\ude00c"}
+{"fn": "respondingInteractionReclaimAt", "args": ["\u00fcn\u00efc\u00f6d\u00e9\ud83d\ude00"], "ok": "\u00fcn\u00efc\u00f6d\u00e9\ud83d\ude00"}
+{"fn": "respondingInteractionReclaimAt", "args": ["src/a/b.tsa"], "ok": "src/a/b.tsa"}
+{"fn": "respondingInteractionReclaimAt", "args": ["a.b.c\ud83d\ude00"], "ok": "a.b.c\ud83d\ude00"}
+{"fn": "respondingInteractionReclaimAt", "args": ["\ud83d\ude00:"], "ok": "\ud83d\ude00:"}
+{"fn": "respondingInteractionReclaimAt", "args": ["trailing.hello world"], "ok": "trailing.hello world"}
+{"fn": "respondingInteractionReclaimAt", "args": ["\ufeffbomhello"], "ok": "\ufeffbomhello"}
+{"fn": "respondingInteractionReclaimAt", "args": ["line1\nline2hello world"], "ok": "line1\nline2hello world"}
+{"fn": "respondingInteractionReclaimAt", "args": ["\u03a3\u038a\u03a3\u03a5\u03a6\u039f\u03a3a.b.c"], "ok": "\u03a3\u038a\u03a3\u03a5\u03a6\u039f\u03a3a.b.c"}
+{"fn": "respondingInteractionReclaimAt", "args": ["key_name-1\ufeffbom"], "ok": "key_name-1\ufeffbom"}
+{"fn": "respondingInteractionReclaimAt", "args": ["a:b:ckey_name-1"], "ok": "2001-01-01T08:00:30.000Z"}
+{"fn": "respondingInteractionReclaimAt", "args": ["./x/**/*.jsonHello World"], "ok": "./x/**/*.jsonHello World"}
+{"fn": "respondingInteractionReclaimAt", "args": ["ns:key.patha\ud83d\ude00b\ud83d\ude00c"], "ok": "ns:key.patha\ud83d\ude00b\ud83d\ude00c"}
+{"fn": "respondingInteractionReclaimAt", "args": ["  padded  src/a/b.ts"], "ok": "  padded  src/a/b.ts"}
+{"fn": "respondingInteractionReclaimAt", "args": ["h\u00e9llo w\u00f6rld"], "ok": "h\u00e9llo w\u00f6rld"}
+{"fn": "respondingInteractionReclaimAt", "args": ["\ud83d\udc4d\ud83c\udffd thumbs"], "ok": "\ud83d\udc4d\ud83c\udffd thumbs"}
+{"fn": "respondingInteractionReclaimAt", "args": ["\u65e5\u672c\u8a9e"], "ok": "\u65e5\u672c\u8a9e"}
+{"fn": "respondingInteractionReclaimAt", "args": ["\u0131l\u0131k \u0131rmak"], "ok": "\u0131l\u0131k \u0131rmak"}
+{"fn": "respondingInteractionReclaimAt", "args": ["\ud83d\udc68\u200d\ud83d\udc69\u200d\ud83d\udc67 family"], "ok": "\ud83d\udc68\u200d\ud83d\udc69\u200d\ud83d\udc67 family"}
+{"fn": "respondingInteractionReclaimAt", "args": ["a\u00a0b"], "ok": "a\u00a0b"}
+{"fn": "respondingInteractionReclaimAt", "args": ["a\ud83d\ude00b"], "ok": "a\ud83d\ude00b"}
+{"fn": "respondingInteractionReclaimAt", "args": ["a\u00b2b x\u00bd y\u2460"], "ok": "a\u00b2b x\u00bd y\u2460"}
+{"fn": "respondingInteractionReclaimAt", "args": ["a\u2160b \u216b"], "ok": "a\u2160b \u216b"}
+{"fn": "respondingInteractionReclaimAt", "args": ["a\ud801\udc00b \ud835\udc00bc"], "ok": "a\ud801\udc00b \ud835\udc00bc"}
+{"fn": "respondingInteractionReclaimAt", "args": ["\u0915\u093f \u0663\u0664"], "ok": "\u0915\u093f \u0663\u0664"}
+{"fn": "isPendingInteractionAwaitingResponse", "args": [{"a": "b"}], "ok": false}
+{"fn": "isPendingInteractionAwaitingResponse", "args": [0], "ok": false}
+{"fn": "isPendingInteractionAwaitingResponse", "args": [{}], "ok": false}
+{"fn": "isPendingInteractionAwaitingResponse", "args": [{"a": {"b": "c"}}], "ok": false}
+{"fn": "isPendingInteractionAwaitingResponse", "args": [null], "ok": false}
+{"fn": "isPendingInteractionAwaitingResponse", "args": [true], "ok": false}
+{"fn": "isPendingInteractionAwaitingResponse", "args": [["a", 1]], "ok": false}
+{"fn": "isPendingInteractionAwaitingResponse", "args": ["x"], "ok": false}
+{"fn": "isPendingInteractionAwaitingResponse", "args": [[]], "ok": false}
+{"fn": "isPendingInteractionResponseClaimable", "args": [{"a": "b"}], "ok": false}
+{"fn": "isPendingInteractionResponseClaimable", "args": [true], "ok": false}
+{"fn": "isPendingInteractionResponseClaimable", "args": [["a", 1]], "ok": false}
+{"fn": "isPendingInteractionResponseClaimable", "args": [[]], "ok": false}
+{"fn": "isPendingInteractionResponseClaimable", "args": [{}], "ok": false}
+{"fn": "isPendingInteractionResponseClaimable", "args": [null], "error": "Cannot read properties of null (reading 'status')"}
+{"fn": "isPendingInteractionResponseClaimable", "args": [0], "ok": false}
+{"fn": "isPendingInteractionResponseClaimable", "args": [{"a": {"b": "c"}}], "ok": false}
+{"fn": "isPendingInteractionResponseClaimable", "args": ["x"], "ok": false}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["2024-01-15T10:30:00.000Z"], "ok": "2024-01-15T10:29:30.000Z"}
+{"fn": "respondingInteractionReclaimAt", "args": ["2024-01-15T10:30:00.000Z"], "ok": "2024-01-15T10:30:30.000Z"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["2026-11-20T23:00:00Z"], "ok": "2026-11-20T22:59:30.000Z"}
+{"fn": "respondingInteractionReclaimAt", "args": ["2026-11-20T23:00:00Z"], "ok": "2026-11-20T23:00:30.000Z"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["2020-02-29T00:00:00.000Z"], "ok": "2020-02-28T23:59:30.000Z"}
+{"fn": "respondingInteractionReclaimAt", "args": ["2020-02-29T00:00:00.000Z"], "ok": "2020-02-29T00:00:30.000Z"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["1970-01-01T00:00:00.000Z"], "ok": "1969-12-31T23:59:30.000Z"}
+{"fn": "respondingInteractionReclaimAt", "args": ["1970-01-01T00:00:00.000Z"], "ok": "1970-01-01T00:00:30.000Z"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["1969-12-31T23:59:00.000Z"], "ok": "1969-12-31T23:58:30.000Z"}
+{"fn": "respondingInteractionReclaimAt", "args": ["1969-12-31T23:59:00.000Z"], "ok": "1969-12-31T23:59:30.000Z"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["9999-12-31T23:59:59.999Z"], "ok": "9999-12-31T23:59:29.999Z"}
+{"fn": "respondingInteractionReclaimAt", "args": ["9999-12-31T23:59:59.999Z"], "ok": "+010000-01-01T00:00:29.999Z"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["0001-01-01T00:00:00.000Z"], "ok": "0000-12-31T23:59:30.000Z"}
+{"fn": "respondingInteractionReclaimAt", "args": ["0001-01-01T00:00:00.000Z"], "ok": "0001-01-01T00:00:30.000Z"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["2024-01-01"], "ok": "2023-12-31T23:59:30.000Z"}
+{"fn": "respondingInteractionReclaimAt", "args": ["2024-01-01"], "ok": "2024-01-01T00:00:30.000Z"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["2024-01"], "ok": "2023-12-31T23:59:30.000Z"}
+{"fn": "respondingInteractionReclaimAt", "args": ["2024-01"], "ok": "2024-01-01T00:00:30.000Z"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["2024"], "ok": "2023-12-31T23:59:30.000Z"}
+{"fn": "respondingInteractionReclaimAt", "args": ["2024"], "ok": "2024-01-01T00:00:30.000Z"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["2024-06-30T12:34:56.789+02:30"], "ok": "2024-06-30T10:04:26.789Z"}
+{"fn": "respondingInteractionReclaimAt", "args": ["2024-06-30T12:34:56.789+02:30"], "ok": "2024-06-30T10:05:26.789Z"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["2024-06-30T12:34:56.789-05:00"], "ok": "2024-06-30T17:34:26.789Z"}
+{"fn": "respondingInteractionReclaimAt", "args": ["2024-06-30T12:34:56.789-05:00"], "ok": "2024-06-30T17:35:26.789Z"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["2024-13-40T99:99:99Z"], "ok": "2024-13-40T99:99:99Z"}
+{"fn": "respondingInteractionReclaimAt", "args": ["2024-13-40T99:99:99Z"], "ok": "2024-13-40T99:99:99Z"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["garbage"], "ok": "garbage"}
+{"fn": "respondingInteractionReclaimAt", "args": ["garbage"], "ok": "garbage"}
+{"fn": "respondingInteractionReclaimCutoff", "args": [""], "ok": ""}
+{"fn": "respondingInteractionReclaimAt", "args": [""], "ok": ""}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["2024-02-30T00:00:00Z"], "ok": "2024-02-29T23:59:30.000Z"}
+{"fn": "respondingInteractionReclaimAt", "args": ["2024-02-30T00:00:00Z"], "ok": "2024-03-01T00:00:30.000Z"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["2024-01-15T10:30:00.000000Z"], "ok": "2024-01-15T10:29:30.000Z"}
+{"fn": "respondingInteractionReclaimAt", "args": ["2024-01-15T10:30:00.000000Z"], "ok": "2024-01-15T10:30:30.000Z"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["2024-01-15T10:30Z"], "ok": "2024-01-15T10:29:30.000Z"}
+{"fn": "respondingInteractionReclaimAt", "args": ["2024-01-15T10:30Z"], "ok": "2024-01-15T10:30:30.000Z"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["2024-01-15 10:30:00Z"], "ok": "2024-01-15T10:29:30.000Z"}
+{"fn": "respondingInteractionReclaimAt", "args": ["2024-01-15 10:30:00Z"], "ok": "2024-01-15T10:30:30.000Z"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["T10:00:00Z"], "ok": "T10:00:00Z"}
+{"fn": "respondingInteractionReclaimAt", "args": ["T10:00:00Z"], "ok": "T10:00:00Z"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["+010000-01-01T00:00:00Z"], "ok": "9999-12-31T23:59:30.000Z"}
+{"fn": "respondingInteractionReclaimAt", "args": ["+010000-01-01T00:00:00Z"], "ok": "+010000-01-01T00:00:30.000Z"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["-000100-01-01T00:00:00Z"], "ok": "-000101-12-31T23:59:30.000Z"}
+{"fn": "respondingInteractionReclaimAt", "args": ["-000100-01-01T00:00:00Z"], "ok": "-000100-01-01T00:00:30.000Z"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["2024-01-15T10:30:00.123456789Z"], "ok": "2024-01-15T10:29:30.123Z"}
+{"fn": "respondingInteractionReclaimAt", "args": ["2024-01-15T10:30:00.123456789Z"], "ok": "2024-01-15T10:30:30.123Z"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["2024-01-15T25:00:00Z"], "ok": "2024-01-15T25:00:00Z"}
+{"fn": "respondingInteractionReclaimAt", "args": ["2024-01-15T25:00:00Z"], "ok": "2024-01-15T25:00:00Z"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["1970-01-01T00:00:29.999Z"], "ok": "1969-12-31T23:59:59.999Z"}
+{"fn": "respondingInteractionReclaimAt", "args": ["1970-01-01T00:00:29.999Z"], "ok": "1970-01-01T00:00:59.999Z"}
+{"fn": "respondingInteractionReclaimCutoff", "args": ["1970-01-01T00:00:30.000Z"], "ok": "1970-01-01T00:00:00.000Z"}
+{"fn": "respondingInteractionReclaimAt", "args": ["1970-01-01T00:00:30.000Z"], "ok": "1970-01-01T00:01:00.000Z"}
+{"fn": "isPendingInteractionResponseClaimable", "args": [{"status": "responding", "responseRequestedAt": null, "requestedAt": "2024-01-15T10:30:00Z"}], "ok": true}
+{"fn": "isPendingInteractionResponseClaimable", "args": [{"status": "responding", "responseRequestedAt": "2024-01-15T10:29:31.000Z", "requestedAt": "2024-01-15T10:30:00Z"}], "ok": false}
+{"fn": "isPendingInteractionResponseClaimable", "args": [{"status": "responding", "responseRequestedAt": "2024-01-15T10:29:30.000Z", "requestedAt": "2024-01-15T10:30:00Z"}], "ok": true}
+{"fn": "isPendingInteractionResponseClaimable", "args": [{"status": "responding", "responseRequestedAt": "2024-01-15T10:29:29.999Z", "requestedAt": "2024-01-15T10:30:00Z"}], "ok": true}
+{"fn": "isPendingInteractionResponseClaimable", "args": [{"status": "responding", "responseRequestedAt": "2024-01-15T10:00:00.000Z", "requestedAt": "2024-01-15T10:30:00Z"}], "ok": true}
+{"fn": "isPendingInteractionResponseClaimable", "args": [{"status": "responding", "responseRequestedAt": "bad", "requestedAt": "2024-01-15T10:30:00Z"}], "ok": false}
+{"fn": "isPendingInteractionResponseClaimable", "args": [{"status": "responding", "responseRequestedAt": "2024-01-15T10:29:30.000Z", "requestedAt": "bad"}], "ok": true}
+{"fn": "isPendingInteractionResponseClaimable", "args": [{"status": "responding", "requestedAt": "2024-01-15T10:30:00Z"}], "ok": false}
+{"fn": "isPendingInteractionResponseClaimable", "args": [{"status": "responding", "responseRequestedAt": {"$undefined": true}, "requestedAt": "2024-01-15T10:30:00Z"}], "ok": false}
+{"fn": "isPendingInteractionResponseClaimable", "args": [{"status": "responding", "responseRequestedAt": 5, "requestedAt": "2024-01-15T10:30:00Z"}], "ok": false}
+{"fn": "isPendingInteractionResponseClaimable", "args": [{"status": "pending"}], "ok": true}
+{"fn": "isPendingInteractionResponseClaimable", "args": [{"status": "retryable"}], "ok": true}
+{"fn": "isPendingInteractionResponseClaimable", "args": [{"status": "uncertain"}], "ok": true}
+{"fn": "isPendingInteractionResponseClaimable", "args": [{"status": "confirmed"}], "ok": false}
+{"fn": "isPendingInteractionResponseClaimable", "args": [{"status": "responding"}], "ok": false}
+{"fn": "isPendingInteractionResponseClaimable", "args": [{"status": "RESPONDING"}], "ok": false}
+{"fn": "isPendingInteractionResponseClaimable", "args": [{"status": 5}], "ok": false}
+{"fn": "isPendingInteractionResponseClaimable", "args": [{}], "ok": false}
+{"fn": "isPendingInteractionResponseClaimable", "args": [{"status": null}], "ok": false}
+{"fn": "isPendingInteractionResponseClaimable", "args": ["x"], "ok": false}
+{"fn": "isPendingInteractionResponseClaimable", "args": [5], "ok": false}
+{"fn": "isPendingInteractionResponseClaimable", "args": [true], "ok": false}
+{"fn": "isPendingInteractionResponseClaimable", "args": [[]], "ok": false}
+{"fn": "isPendingInteractionResponseClaimable", "args": [{"status": "responding", "responseRequestedAt": null, "requestedAt": "2024-13-99"}], "ok": true}
+{"fn": "isPendingInteractionResponseClaimable", "args": [{"status": "responding", "responseRequestedAt": null, "requestedAt": null}], "ok": true}
+{"fn": "isPendingInteractionResponseClaimable", "args": [{"status": "responding", "responseRequestedAt": null, "requestedAt": 2024}], "ok": true}
+{"fn": "isPendingInteractionAwaitingResponse", "args": ["pending"], "ok": true}
+{"fn": "isPendingInteractionAwaitingResponse", "args": ["retryable"], "ok": true}
+{"fn": "isPendingInteractionAwaitingResponse", "args": ["uncertain"], "ok": false}
+{"fn": "isPendingInteractionAwaitingResponse", "args": ["responding"], "ok": false}
+{"fn": "isPendingInteractionAwaitingResponse", "args": ["confirmed"], "ok": false}
+{"fn": "isPendingInteractionAwaitingResponse", "args": [""], "ok": false}
+{"fn": "isPendingInteractionAwaitingResponse", "args": [null], "ok": false}
+{"fn": "isPendingInteractionAwaitingResponse", "args": [{"$undefined": true}], "ok": false}
+{"fn": "isPendingInteractionAwaitingResponse", "args": [5], "ok": false}
+{"fn": "isPendingInteractionAwaitingResponse", "args": [true], "ok": false}
+{"fn": "isPendingInteractionAwaitingResponse", "args": [["pending"]], "ok": false}
+{"fn": "isPendingInteractionAwaitingResponse", "args": [" pending"], "ok": false}

@@ -1,0 +1,91 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/pendingInteractions.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "pendinginteractions-rs",
+  "exports": [
+    {
+      "name": "respondingInteractionReclaimCutoff",
+      "file": "packages/shared/src/pendingInteractions.ts",
+      "line": 91,
+      "params": [
+        {
+          "name": "requestedAt",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "respondingInteractionReclaimAt",
+      "file": "packages/shared/src/pendingInteractions.ts",
+      "line": 98,
+      "params": [
+        {
+          "name": "responseRequestedAt",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isPendingInteractionAwaitingResponse",
+      "file": "packages/shared/src/pendingInteractions.ts",
+      "line": 109,
+      "params": [
+        {
+          "name": "status",
+          "ts_type": "typeof typeof typeof typeof OrchestrationPendingInteraction.Type.Type.Type.Type[\"status\"] | null",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isPendingInteractionResponseClaimable",
+      "file": "packages/shared/src/pendingInteractions.ts",
+      "line": 115,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly status: typeof typeof typeof typeof OrchestrationPendingInteraction.Type.Type.Type.Type[\"status\"];\n  readonly responseRequestedAt: string | null;\n  readonly requestedAt: string;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "createStalePendingInteractionMatcher",
+      "file": "packages/shared/src/pendingInteractions.ts",
+      "line": 29,
+      "reason": "takes or returns a function"
+    }
+  ]
+}

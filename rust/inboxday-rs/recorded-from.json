@@ -1,0 +1,17 @@
+{
+  "unit": "packages/shared/src/inboxDay.ts",
+  "files": 1,
+  "fingerprint": "c92f72bbea75fb1e",
+  "coverage": {
+    "lines": 83,
+    "reached": 83,
+    "files": [
+      {
+        "file": "packages/shared/src/inboxDay.ts",
+        "lines": 83,
+        "reached": 83,
+        "missed": ""
+      }
+    ]
+  }
+}

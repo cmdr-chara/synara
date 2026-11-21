@@ -1,0 +1,66 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/inboxDay.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "inboxday-rs",
+  "exports": [
+    {
+      "name": "resolveActivityDayStartMs",
+      "file": "packages/shared/src/inboxDay.ts",
+      "line": 3,
+      "params": [
+        {
+          "name": "nowMs",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "number",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveInboxDay",
+      "file": "packages/shared/src/inboxDay.ts",
+      "line": 74,
+      "params": [
+        {
+          "name": "nowMs",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "InboxDay",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "recapInputForRange",
+      "file": "packages/shared/src/inboxDay.ts",
+      "line": 88,
+      "params": [
+        {
+          "name": "range",
+          "ts_type": "InboxDayRange",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof StatsGetRecapInput.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

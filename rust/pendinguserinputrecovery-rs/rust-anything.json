@@ -1,0 +1,78 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/pendingUserInputRecovery.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "pendinguserinputrecovery-rs",
+  "exports": [
+    {
+      "name": "normalizePendingUserInputDrafts",
+      "file": "apps/web/src/pendingUserInputRecovery.ts",
+      "line": 36,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Record<string, PendingUserInputRecoveryDraft>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "expiredUserInputDrafts",
+      "file": "apps/web/src/pendingUserInputRecovery.ts",
+      "line": 66,
+      "params": [
+        {
+          "name": "drafts",
+          "ts_type": "Record<string, PendingUserInputRecoveryDraft>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "activities",
+          "ts_type": "ReadonlyArray<typeof typeof typeof typeof OrchestrationThreadActivity.Type.Type.Type.Type>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Array<[string, PendingUserInputRecoveryDraft]>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "restoreUserInputDraft",
+      "file": "apps/web/src/pendingUserInputRecovery.ts",
+      "line": 76,
+      "params": [
+        {
+          "name": "prompt",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "draft",
+          "ts_type": "PendingUserInputRecoveryDraft",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

@@ -1,0 +1,151 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/managedWorktrees.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "managedworktrees-rs",
+  "exports": [
+    {
+      "name": "managedWorktreeSnapshotsDir",
+      "file": "apps/server/src/managedWorktrees.ts",
+      "line": 22,
+      "params": [
+        {
+          "name": "homeDir",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isManagedWorktreePath",
+      "file": "apps/server/src/managedWorktrees.ts",
+      "line": 30,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly worktreesDir: string;\n  readonly worktreePath: string;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "classifyManagedWorktreeRemovalCandidates",
+      "file": "apps/server/src/managedWorktrees.ts",
+      "line": 250,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly inventory: ReadonlyArray<typeof typeof typeof typeof ServerManagedWorktree.Type.Type.Type.Type>;\n  readonly threads: ReadonlyArray<ManagedWorktreeThreadRef>;\n  readonly canonicalByRecordedPath: ReadonlyMap<string, string>;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ReadonlyArray<ManagedWorktreeRemovalCandidate>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "discardEmptyManagedWorktreeParent",
+      "file": "apps/server/src/managedWorktrees.ts",
+      "line": 522,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly worktreesDir: string;\n  readonly worktreePath: string;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Effect.Effect<void, never>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "discardManagedWorktreeResidue",
+      "file": "apps/server/src/managedWorktrees.ts",
+      "line": 563,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly worktreesDir: string;\n  readonly snapshotsDir: string;\n  readonly worktreePath: string;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Effect.Effect<void, never>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "pruneExpiredManagedWorktreeSnapshots",
+      "file": "apps/server/src/managedWorktrees.ts",
+      "line": 623,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly snapshotsDir: string;\n  readonly now?: number;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Effect.Effect<ReadonlyArray<string>, never>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "isManagedWorktreePathCanonical",
+      "file": "apps/server/src/managedWorktrees.ts",
+      "line": 47,
+      "reason": "checks `instanceof`: class identity does not survive the bridge"
+    },
+    {
+      "name": "archivedWorktreeHasNoOtherOwners",
+      "file": "apps/server/src/managedWorktrees.ts",
+      "line": 62,
+      "reason": "checks `instanceof`: class identity does not survive the bridge"
+    },
+    {
+      "name": "listManagedWorktrees",
+      "file": "apps/server/src/managedWorktrees.ts",
+      "line": 140,
+      "reason": "checks `instanceof`: class identity does not survive the bridge"
+    },
+    {
+      "name": "pruneArchivedManagedWorktrees",
+      "file": "apps/server/src/managedWorktrees.ts",
+      "line": 413,
+      "reason": "uses `GitCoreShape`, which has function members"
+    },
+    {
+      "name": "pruneProjectedArchivedManagedWorktrees",
+      "file": "apps/server/src/managedWorktrees.ts",
+      "line": 453,
+      "reason": "uses `ProjectionSnapshotQueryShape`, which has function members"
+    }
+  ]
+}

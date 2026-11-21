@@ -29,3 +29,9 @@ Decision: Any unit whose TS source appears on the derived list at ≥50% gets th
 - `terminal-links` (derived 62%) — will get the same treatment when bridged
 
 Consequences: Every future unit is checked against the derived list before porting; derived ones get extra probe rounds until their spec is complete enough to pass `gate`.
+
+## ADR-003: `gate` "error cases" may be unsatisfiable for lazy-Effect exports
+
+Status: accepted (2026-11-21)
+Context: The "error cases" check requires a recorded error case for every export whose TS span contains a `throw`. `discardEmptyManagedWorktreeParent` (`managedworktrees-rs`) has `throw cause` inside its `Effect.tryPromise` async body — the function returns a lazy Effect marker and reads no input eagerly, so no call-time input can ever produce an error (verified: null/undefined/primitives/objects all return the marker). Recording such a case is impossible without fabricating a divergence.
+Decision: An export is exempt from that check when its recorded output is a constant lazy-Effect marker AND a black-box probe shows no input errors at call time. The port then returns a plain `Value` (non-`Result`) since the function semantically cannot fail at the bridge boundary. Applied to `managedworktrees-rs` (the one "error cases" FAIL is this false positive; all other checks pass, 1078/1078 cases).

@@ -1,0 +1,84 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/browserAutomationCatalogue.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "browserautomationcatalogue-rs",
+  "exports": [
+    {
+      "name": "canonicalizeJson",
+      "file": "packages/shared/src/browserAutomationCatalogue.ts",
+      "line": 318,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(| (null | boolean | number | string)\n  | readonly (| (null | boolean | number | string)\n  | readonly (| (null | boolean | number | string)\n  | readonly (| JsonPrimitive\n  | readonly CanonicalJson[]\n  | { readonly [key: string]: CanonicalJson })[]\n  | { readonly [key: string]: (| JsonPrimitive\n  | readonly CanonicalJson[]\n  | { readonly [key: string]: CanonicalJson }) })[]\n  | { readonly [key: string]: (| (null | boolean | number | string)\n  | readonly (| JsonPrimitive\n  | readonly CanonicalJson[]\n  | { readonly [key: string]: CanonicalJson })[]\n  | { readonly [key: string]: (| JsonPrimitive\n  | readonly CanonicalJson[]\n  | { readonly [key: string]: CanonicalJson }) }) })[]\n  | { readonly [key: string]: (| (null | boolean | number | string)\n  | readonly (| (null | boolean | number | string)\n  | readonly (| JsonPrimitive\n  | readonly CanonicalJson[]\n  | { readonly [key: string]: CanonicalJson })[]\n  | { readonly [key: string]: (| JsonPrimitive\n  | readonly CanonicalJson[]\n  | { readonly [key: string]: CanonicalJson }) })[]\n  | { readonly [key: string]: (| (null | boolean | number | string)\n  | readonly (| JsonPrimitive\n  | readonly CanonicalJson[]\n  | { readonly [key: string]: CanonicalJson })[]\n  | { readonly [key: string]: (| JsonPrimitive\n  | readonly CanonicalJson[]\n  | { readonly [key: string]: CanonicalJson }) }) }) })",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "stableJsonStringify",
+      "file": "packages/shared/src/browserAutomationCatalogue.ts",
+      "line": 322,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "compactToolInputSchema",
+      "file": "packages/shared/src/browserAutomationCatalogue.ts",
+      "line": 398,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "projectBrowserToolDefinitions",
+      "file": "packages/shared/src/browserAutomationCatalogue.ts",
+      "line": 454,
+      "params": [
+        {
+          "name": "definitions",
+          "ts_type": "ReadonlyArray<BrowserToolDefinition>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "readonly BrowserToolCatalogueEntry[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

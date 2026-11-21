@@ -1,0 +1,17 @@
+{
+  "unit": "packages/shared/src/automationMode.ts",
+  "files": 1,
+  "fingerprint": "93688ef0fdd18fc1",
+  "coverage": {
+    "lines": 48,
+    "reached": 48,
+    "files": [
+      {
+        "file": "packages/shared/src/automationMode.ts",
+        "lines": 48,
+        "reached": 48,
+        "missed": ""
+      }
+    ]
+  }
+}

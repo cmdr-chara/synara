@@ -1,0 +1,102 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/automationMode.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "automationmode-rs",
+  "exports": [
+    {
+      "name": "automationContinuesThread",
+      "file": "packages/shared/src/automationMode.ts",
+      "line": 19,
+      "params": [
+        {
+          "name": "mode",
+          "ts_type": "typeof typeof typeof typeof AutomationMode.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "automationOwnsItsThread",
+      "file": "packages/shared/src/automationMode.ts",
+      "line": 24,
+      "params": [
+        {
+          "name": "mode",
+          "ts_type": "typeof typeof typeof typeof AutomationMode.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "automationRequiresTargetThread",
+      "file": "packages/shared/src/automationMode.ts",
+      "line": 29,
+      "params": [
+        {
+          "name": "mode",
+          "ts_type": "typeof typeof typeof typeof AutomationMode.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "automationContinuationThreadId",
+      "file": "packages/shared/src/automationMode.ts",
+      "line": 38,
+      "params": [
+        {
+          "name": "definition",
+          "ts_type": "{\n  readonly mode: typeof typeof typeof typeof AutomationMode.Type.Type.Type.Type;\n  readonly targetThreadId: typeof typeof typeof typeof ThreadId.Type.Type.Type.Type | null;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ThreadId.Type.Type.Type.Type | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isAutomationRunThread",
+      "file": "packages/shared/src/automationMode.ts",
+      "line": 50,
+      "params": [
+        {
+          "name": "thread",
+          "ts_type": "{\n  readonly creationSource?: typeof typeof typeof typeof ThreadCreationSource.Type.Type.Type.Type | null;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

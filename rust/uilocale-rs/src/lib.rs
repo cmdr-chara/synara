@@ -34,6 +34,7 @@ fn run<T>(f: impl FnOnce() -> Result<T, String>) -> napi::Result<T> {
 #[napi(js_name = "isUiMessageKey")]
 pub fn is_ui_message_key(message: String, namespaces: String) -> napi::Result<bool> {
     run(move || {
+        let message = crate::js::from_json(&message)?;
         let namespaces = crate::js::from_json(&namespaces)?;
         let out = port::is_ui_message_key(message, namespaces)?;
         Ok(out)
@@ -131,14 +132,15 @@ fn wire_io(
     })
 }
 
+static S_IS_UI_MESSAGE_KEY_0: wire::Schema = wire::Schema::Dyn;
 static S_IS_UI_MESSAGE_KEY_1: wire::Schema = wire::Schema::Dyn;
 
 /// `isUiMessageKey` over the binary wire.
 #[napi(js_name = "isUiMessageKeyWire")]
 pub fn is_ui_message_key_wire() -> napi::Result<f64> {
     wire_io(|r, w| {
-        let message: String = r.string16()?;
-        let namespaces: serde_json::Value = wire::read_value(r, &S_IS_UI_MESSAGE_KEY_1)?;
+        let message: Value = wire::read_value(r, &S_IS_UI_MESSAGE_KEY_0)?;
+        let namespaces: Value = wire::read_value(r, &S_IS_UI_MESSAGE_KEY_1)?;
         let out = &port::is_ui_message_key(message, namespaces)?;
         w.bool(*out);
         Ok(())

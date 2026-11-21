@@ -47,7 +47,7 @@ const fromUnits = (units) => {
 
 module.exports = { ...native }
 const specs = {
-  isUiMessageKey: [[0, 1], 'raw', false],
+  isUiMessageKey: [[1, 1], 'raw', false],
 }
 const classes = {
 
@@ -179,8 +179,7 @@ const json = module.exports.isUiMessageKey
 const call = native.isUiMessageKeyWire
 const encode = (a0, a1) => {
 at = 0
-if (typeof a0 !== 'string') return false
-wStr(a0)
+if (!wDyn(a0)) return false
 if (!wDyn(a1)) return false
 return true
 }
@@ -190,7 +189,6 @@ t = rU8() === 1
 return t
 }
 module.exports.isUiMessageKey = function isUiMessageKey (a0, a1) {
-  if (illFormed(a0)) throw new TypeError('argument 1 of isUiMessageKey has a lone surrogate, which a Rust String cannot hold')
   try {
     if (arguments.length <= 2 && encode(a0, a1) && wireCall(call)) return decode()
     return json(...arguments)

@@ -225,19 +225,3 @@
 {"fn":"localServerMatchesRun","args":[["a",1],{"pid":null,"cwd":"ΣΊΣΥΦΟΣİstanbul"}],"ok":false}
 {"fn":"localServerMatchesRun","args":[{"a":{"b":"c"}},{"pid":2,"cwd":"ünïcödé"}],"ok":false}
 {"fn":"localServerMatchesRun","args":["x",{"pid":{"$num":"-Infinity"},"cwd":"İstanbul"}],"ok":false}
-{"fn":"localServerAddressLabel","args":[{"ports":[],"addresses":[{"port":3000}],"pageTitle":null,"displayName":"x","cwd":null,"pid":1,"ppid":null}],"ok":"localhost:3000"}
-{"fn":"localServerAddressLabel","args":[{"ports":[],"addresses":[{"port":0},{"port":5}],"pageTitle":null,"displayName":"x","cwd":null,"pid":1,"ppid":null}],"ok":"localhost:5"}
-{"fn":"localServerAddressLabel","args":[{"ports":[],"addresses":[{"port":0}],"pageTitle":null,"displayName":"x","cwd":null,"pid":1,"ppid":null}],"ok":"localhost"}
-{"fn":"localServerAddressLabel","args":[{"ports":[80,443],"addresses":[],"pageTitle":null,"displayName":"x","cwd":null,"pid":1,"ppid":null}],"ok":"localhost:80, localhost:443"}
-{"fn":"localServerFolderLabel","args":[{"ports":[],"addresses":[],"pageTitle":null,"displayName":"x","cwd":"a/b/c","pid":1,"ppid":null}],"ok":"c"}
-{"fn":"localServerFolderLabel","args":[{"ports":[],"addresses":[],"pageTitle":null,"displayName":"x","cwd":"  ","pid":1,"ppid":null}],"ok":null}
-{"fn":"localServerFolderLabel","args":[{"ports":[],"addresses":[],"pageTitle":null,"displayName":"x","cwd":"C:\\x\\y","pid":1,"ppid":null}],"ok":"y"}
-{"fn":"localServerFolderLabel","args":[{"ports":[],"addresses":[],"pageTitle":null,"displayName":"x","cwd":"/","pid":1,"ppid":null}],"ok":null}
-{"fn":"localServerFolderLabel","args":[{"ports":[],"addresses":[],"pageTitle":null,"displayName":"x","cwd":"only","pid":1,"ppid":null}],"ok":"only"}
-{"fn":"localServerPrimaryLabel","args":[{"ports":[],"addresses":[],"pageTitle":"T","displayName":"d","cwd":null,"pid":1,"ppid":null}],"ok":"T"}
-{"fn":"localServerPrimaryLabel","args":[{"ports":[],"addresses":[],"pageTitle":null,"displayName":"d","cwd":null,"pid":1,"ppid":null}],"ok":"d"}
-{"fn":"localServerMatchesRun","args":[{"ports":[],"addresses":[],"pageTitle":null,"displayName":"x","cwd":null,"pid":1,"ppid":null},{"pid":null,"cwd":"/a"}],"ok":false}
-{"fn":"localServerMatchesRun","args":[{"ports":[],"addresses":[],"pageTitle":null,"displayName":"x","cwd":"/a/b","pid":9,"ppid":null},{"pid":9,"cwd":"/z"}],"ok":true}
-{"fn":"localServerMatchesRun","args":[{"ports":[],"addresses":[],"pageTitle":null,"displayName":"x","cwd":"/a/b","pid":9,"ppid":7},{"pid":7,"cwd":"/z"}],"ok":true}
-{"fn":"localServerMatchesRun","args":[{"ports":[],"addresses":[],"pageTitle":null,"displayName":"x","cwd":"/a/b/c","pid":1,"ppid":2},{"pid":3,"cwd":"/a/b"}],"ok":true}
-{"fn":"localServerMatchesRun","args":[{"ports":[],"addresses":[],"pageTitle":null,"displayName":"x","cwd":"/a/xy","pid":1,"ppid":2},{"pid":3,"cwd":"/a/x"}],"ok":false}

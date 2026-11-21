@@ -1,0 +1,42 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/threadRetention.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "threadretention-rs",
+  "exports": [
+    {
+      "name": "getRetentionArchiveRootIds",
+      "file": "apps/server/src/threadRetention.ts",
+      "line": 176,
+      "params": [
+        {
+          "name": "readModel",
+          "ts_type": "Pick<typeof typeof typeof typeof OrchestrationReadModel.Type.Type.Type.Type, \"threads\"> | Pick<typeof typeof typeof typeof OrchestrationShellSnapshot.Type.Type.Type.Type, \"threads\">",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "nowMs",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        },
+        {
+          "name": "protectedThreadIds",
+          "ts_type": "ReadonlySet<typeof typeof typeof typeof ThreadId.Type.Type.Type.Type>",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ThreadId.Type.Type.Type.Type[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

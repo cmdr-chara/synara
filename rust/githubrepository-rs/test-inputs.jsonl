@@ -1,0 +1,60 @@
+{"fn":"parseGitHubRepositoryInput","args":["openai/codex"]}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["openai/codex"]}
+{"fn":"parseGitHubRepositoryInput","args":[" https://github.com/openai/codex "]}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["https://github.com/openai/codex"]}
+{"fn":"parseGitHubRepositoryInput","args":["https://github.com/OpenAI/Codex.git/"]}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["https://github.com/OpenAI/Codex.git/"]}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["OpenAI/Codex"]}
+{"fn":"parseGitHubRepositoryInput","args":[""]}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":[""]}
+{"fn":"parseGitHubRepositoryInput","args":["https://example.com/openai/codex"]}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["https://example.com/openai/codex"]}
+{"fn":"parseGitHubRepositoryInput","args":["https://user:token@github.com/openai/codex"]}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["https://user:token@github.com/openai/codex"]}
+{"fn":"parseGitHubRepositoryInput","args":["https://github.com/openai/codex/issues"]}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["https://github.com/openai/codex/issues"]}
+{"fn":"parseGitHubRepositoryInput","args":["https://github.com/openai/codex?tab=readme"]}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["https://github.com/openai/codex?tab=readme"]}
+{"fn":"parseGitHubRepositoryInput","args":["git@github.com:openai/codex.git"]}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["git@github.com:openai/codex.git"]}
+{"fn":"parseGitHubRepositoryInput","args":["--upload-pack=malicious"]}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["--upload-pack=malicious"]}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["OpenAI/Codex.js"]}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["owner-1/repo_name"]}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["owner/.github"]}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["owner"]}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["owner/repo/extra"]}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["owner repo/name"]}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["-owner/name"]}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["owner-/name"]}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["owner/.."]}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["owner/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"]}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["git@github.com:openai/codex.git"]}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["ssh://git@github.com/openai/codex.git"]}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["https://github.com/openai/codex"]}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["git://github.com/openai/codex/"]}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":[" HTTPS://GITHUB.COM/OpenAI/Codex.git "]}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":[null]}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["https://gitlab.com/openai/codex"]}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["https://github.com/owner"]}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["https://github.com/-owner/repo"]}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["-owner/repo"]}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["https://github.com/OpenAI/Codex/pull/123/files"]}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["http://github.com/openai/codex/pull/123?diff=split"]}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":[null]}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["/"]}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["https://gitlab.com/openai/codex/pull/1"]}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["https://github.com/openai/codex/issues/1"]}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["https://github.com/-owner/codex/pull/1"]}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["-owner/codex"]}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["javascript:alert(1)"]}
+{"fn":"normalizeGitHubPullRequestUrl","args":[" https://github.com/Owner/Repo/pull/007/files?diff=split#top "]}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":[" https://github.com/Owner/Repo/pull/007/files?diff=split#top "]}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["Owner/Repo"]}
+{"fn":"normalizeGitHubPullRequestUrl","args":["https://github.com/o/r/pull/0"]}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["https://github.com/o/r/pull/0"]}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["o/r"]}
+{"fn":"normalizeGitHubPullRequestUrl","args":["https://github.com/o/r/pull/9007199254740993"]}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["https://github.com/o/r/pull/9007199254740993"]}
+{"fn":"normalizeGitHubPullRequestUrl","args":["https://github.com/o/r/pull/9999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999"]}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["https://github.com/o/r/pull/9999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999"]}

@@ -1,0 +1,1127 @@
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["./x/**/*.jsona"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["a.b.c"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["hello world"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["straße"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":[""],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["a😀b😀c"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["src/a/b.ts"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["İstanbul"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["a😀b😀c.leading"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["emoji 👍🏽 mix"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":[":"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["tab\tseparated"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["a..b"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["ns:key.pathünïcödé"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["line1\nline2{name} has {count} items"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["./x/**/*.json"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["trailing."],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["ns:key.path"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["hello"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["abc"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":[".leading"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["日本語のテキスト"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["{name} has {count} items"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["ünïcödé"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["Hello World:"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":[".leadingİstanbul"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["HELLOabc"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["ns:key.pathab"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["😀"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["éünïcödé"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["😀hello world"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["  padded  src/a/b.ts"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["a"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["line1\nline2"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["  padded  日本語のテキスト"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["straßestraße"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["İstanbula"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["é"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["a:b:c"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["HELLO"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":[":ünïcödé"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["Hello World"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["ns:key.pathtrailing."],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["  padded  "],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["trailing.ab"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["abcstraße"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["src/a/b.tsstraße"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["hello﻿bom"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["  padded  :"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["helloΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["ns:key.path.leading"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["ab"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["é.leading"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["﻿bom"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["ünïcödésrc/a/b.ts"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["İstanbul:"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["straßesrc/a/b.ts"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["key_name-1"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["asrc/a/b.ts"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["hello world  padded  "],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["abtrailing."],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["a..bline1\nline2"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["a..ba..b"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["./x/**/*.jsoné"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["line1\nline2a.b.c"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["ababc"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["abtab\tseparated"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["😀İstanbul"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["日本語のテキストhello"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["tab\tseparatedkey_name-1"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":[".leading./x/**/*.json"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["ns:key.pathé"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["ünïcödé./x/**/*.json"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["  padded  a"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["ns:key.pathstraße"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["HELLOkey_name-1"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["a😀b😀cemoji 👍🏽 mix"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":[".leadingline1\nline2"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["./x/**/*.jsona.b.c"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["emoji 👍🏽 mixa..b"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["./x/**/*.json.leading"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["src/a/b.tsns:key.path"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":[".leadingabc"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["./x/**/*.jsonΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["hello worldemoji 👍🏽 mix"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["a:b:c  padded  "],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["HELLOa"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":[":  padded  "],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["line1\nline2😀"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["helloünïcödé"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["hello./x/**/*.json"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["日本語のテキストtrailing."],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["{name} has {count} items.leading"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["éa😀b😀c"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["é  padded  "],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["éa:b:c"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["hello world日本語のテキスト"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["a:b:c.leading"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["a.b.c./x/**/*.json"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["a😀b😀c:"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["key_name-1{name} has {count} items"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["astraße"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["a.b.cünïcödé"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["tab\tseparatedab"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["tab\tseparated:"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["tab\tseparatedünïcödé"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["HELLOhello"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["trailing.😀"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["﻿bom./x/**/*.json"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["trailing.a..b"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["ab  padded  "],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["./x/**/*.jsonhello world"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["ünïcödé😀"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["a:b:cİstanbul"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["😀a:b:c"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["é./x/**/*.json"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["Hello Worldline1\nline2"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["HELLOa.b.c"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["src/a/b.tsline1\nline2"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["a.b.ckey_name-1"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["a😀b😀cHello World"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":[":a.b.c"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["ünïcödéa.b.c"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["HELLOline1\nline2"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["a..ba.b.c"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["a.b.ca😀b😀c"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["a.b.ca:b:c"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["a😀"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["{name} has {count} itemstrailing."],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["ésrc/a/b.ts"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":[":key_name-1"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["a:b:cünïcödé"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["trailing.a.b.c"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["  padded  İstanbul"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":[":hello"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["emoji 👍🏽 mix:"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["./x/**/*.jsona😀b😀c"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["ünïcödé{name} has {count} items"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["straßekey_name-1"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["trailing.emoji 👍🏽 mix"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["HELLO:"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["  padded  hello"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["line1\nline2emoji 👍🏽 mix"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["hello worldünïcödé"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["trailing.hello"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["{name} has {count} itemsa:b:c"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["éline1\nline2"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["./x/**/*.jsontab\tseparated"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["Hello World😀"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["ΣΊΣΥΦΟΣhello world"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["日本語のテキスト./x/**/*.json"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":[".leadingHELLO"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["日本語のテキストİstanbul"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["a:"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["日本語のテキストemoji 👍🏽 mix"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["{name} has {count} itemssrc/a/b.ts"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["tab\tseparateda.b.c"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["akey_name-1"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["a:b:csrc/a/b.ts"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["trailing.é"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":[".leadingΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["İstanbulsrc/a/b.ts"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["straßetrailing."],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["  padded  a😀b😀c"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["abctab\tseparated"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["İstanbula😀b😀c"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["key_name-1line1\nline2"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["tab\tseparatedsrc/a/b.ts"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["hello world./x/**/*.json"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["tab\tseparated  padded  "],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["éé"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["hello worldstraße"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["a😀b😀ca:b:c"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["emoji 👍🏽 mixstraße"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["ns:key.pathabc"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["tab\tseparatedabc"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["a:b:cstraße"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["ünïcödé.leading"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["straßeemoji 👍🏽 mix"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["a..bé"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["tab\tseparated./x/**/*.json"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["abline1\nline2"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["{name} has {count} itemskey_name-1"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["abc😀"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["tab\tseparatedstraße"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["😀﻿bom"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["line1\nline2key_name-1"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["😀./x/**/*.json"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["key_name-1a..b"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["hellotrailing."],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["ünïcödéns:key.path"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["./x/**/*.json./x/**/*.json"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["abcemoji 👍🏽 mix"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["ünïcödé日本語のテキスト"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["日本語のテキストkey_name-1"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":[":é"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["ns:key.patha"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["Hello WorldΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["./x/**/*.json:"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["héllo wörld"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["👍🏽 thumbs"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["日本語"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["ılık ırmak"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["👨‍👩‍👧 family"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["a b"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["a😀b"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["a²b x½ y①"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["aⅠb Ⅻ"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["a𐐀b 𝐀bc"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["कि ٣٤"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["Iı İi"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["K K k"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["ſ s S"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["x‍y 👨‍👩‍👧"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["a b c　d"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["١٢٣ ٤٥"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["𝟘𝟙 ²³"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["snake_case foo-bar o'neil"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["ǅungla Ǆ"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["one\r\ntwo threefour"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["café café"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["ΣΑΣ σας ς"],"ok":false}
+{"fn":"parseGitHubRepositoryInput","args":["a😀b😀ctrailing."],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["a:b:c"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":[],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":[{"$undefined":true}],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["ünïcödé"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["key_name-1"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["İstanbul"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["emoji 👍🏽 mixtab\tseparated"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["straße"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":[":"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["ab"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["Hello World"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["a.b.c"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["a"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["日本語のテキスト"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["ΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["HELLO"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["emoji 👍🏽 mixstraße"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["Hello World:"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["﻿bom"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["tab\tseparated"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["src/a/b.ts"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["abc"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["line1\nline2ns:key.path"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["ns:key.pathkey_name-1"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["{name} has {count} items"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["hello world"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["emoji 👍🏽 mix"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["line1\nline2"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["key_name-1a"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":[""],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["./x/**/*.json"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":[".leading"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["hello"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["  padded  "],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["a..b"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["a😀b😀ca"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["aHELLO"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["😀"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["ns:key.pathhello"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["﻿bomé"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["a:b:c日本語のテキスト"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["a:b:cemoji 👍🏽 mix"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["trailing."],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["tab\tseparated:"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["abhello"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["éHELLO"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["straße.leading"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["{name} has {count} items./x/**/*.json"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["hello worldΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["é"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["ünïcödétab\tseparated"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["ns:key.path"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["straßekey_name-1"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":[".leadinga..b"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["İstanbula:b:c"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["HELLOİstanbul"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["😀src/a/b.ts"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["abns:key.path"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["éa😀b😀c"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["a.b.chello"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["HELLOtrailing."],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["a..btrailing."],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["abchello"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["line1\nline2a..b"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["😀:"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["a😀b😀c"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["日本語のテキストemoji 👍🏽 mix"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["ΣΊΣΥΦΟΣ.leading"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["ab:"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["{name} has {count} itemsns:key.path"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["key_name-1Hello World"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["a.b.cİstanbul"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["İstanbul:"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["ünïcödé.leading"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["a:b:csrc/a/b.ts"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["emoji 👍🏽 mixhello world"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["hello:"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["ésrc/a/b.ts"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["﻿boma"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["aΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["İstanbul﻿bom"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["key_name-1hello"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["HELLOé"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["a😀b😀c😀"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["ns:key.path日本語のテキスト"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["./x/**/*.jsonsrc/a/b.ts"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["hello worldtrailing."],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":[":Hello World"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["ΣΊΣΥΦΟΣa.b.c"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["ünïcödéİstanbul"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":[":.leading"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["﻿bom日本語のテキスト"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["Hello World{name} has {count} items"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["İstanbula"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["{name} has {count} items  padded  "],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["abcns:key.path"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["./x/**/*.jsonhello"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["ünïcödéHello World"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["src/a/b.tsé"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["aba:b:c"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["straßea..b"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["a.b.c😀"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["key_name-1key_name-1"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["é:"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["ΣΊΣΥΦΟΣ😀"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["src/a/b.tsns:key.path"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["abcline1\nline2"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["日本語のテキストa.b.c"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["./x/**/*.json  padded  "],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":[":İstanbul"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["日本語のテキストa..b"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["ΣΊΣΥΦΟΣHello World"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["HELLOns:key.path"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["😀{name} has {count} items"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":[".leading:"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["  padded  straße"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["./x/**/*.jsonΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["trailing.{name} has {count} items"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["日本語のテキスト.leading"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["straße﻿bom"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["src/a/b.ts.leading"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["  padded  日本語のテキスト"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["a:b:cab"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["😀a..b"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["emoji 👍🏽 mixab"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["a😀b😀ca😀b😀c"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["ΣΊΣΥΦΟΣabc"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["😀emoji 👍🏽 mix"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["src/a/b.tsHello World"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["abca..b"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["trailing.ünïcödé"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["trailing.😀"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":[".leadinga😀b😀c"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["Hello Worldemoji 👍🏽 mix"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["tab\tseparatedns:key.path"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["trailing.﻿bom"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["abcabc"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["hello{name} has {count} items"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["trailing.abc"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["abcstraße"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["a:b:c{name} has {count} items"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["ΣΊΣΥΦΟΣ  padded  "],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["﻿bomtab\tseparated"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["éa..b"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["  padded    padded  "],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["ünïcödéstraße"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["aab"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["ünïcödéa😀b😀c"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["İstanbul日本語のテキスト"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["  padded  HELLO"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["Hello Worldtab\tseparated"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["  padded  a"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["a.b.cstraße"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["İstanbulns:key.path"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["  padded  abc"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["{name} has {count} itemskey_name-1"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["Hello World﻿bom"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["./x/**/*.jsontrailing."],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["ünïcödéabc"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["src/a/b.ts:"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["a..bHello World"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["./x/**/*.json:"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":[":abc"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["ΣΊΣΥΦΟΣsrc/a/b.ts"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["trailing.Hello World"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["abé"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["Hello Worldabc"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["a😀b😀c﻿bom"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["abHello World"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["aba..b"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["straßestraße"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["abünïcödé"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["HELLO{name} has {count} items"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["a.b.c  padded  "],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["Hello Worldns:key.path"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["line1\nline2:"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["emoji 👍🏽 mix  padded  "],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["﻿boma:b:c"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["ünïcödéa.b.c"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["日本語のテキストstraße"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":[":ΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["straßeΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["straße./x/**/*.json"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["straßehello world"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["line1\nline2hello world"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["ns:key.patha..b"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["key_name-1:"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["a.b.c﻿bom"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["{name} has {count} items:"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["ns:key.path.leading"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["emoji 👍🏽 mix./x/**/*.json"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":[":a:b:c"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["aa.b.c"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["abcab"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["line1\nline2😀"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["helloab"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["helloHELLO"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["HELLOa😀b😀c"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["ünïcödéé"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["héllo wörld"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["👍🏽 thumbs"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["日本語"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["ılık ırmak"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["👨‍👩‍👧 family"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["a b"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["a😀b"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["a²b x½ y①"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["aⅠb Ⅻ"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["a𐐀b 𝐀bc"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["कि ٣٤"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["a..b"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":[".leading"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["{name} has {count} items"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["日本語のテキスト"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["hello world"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["ab"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":[""],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":[],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["a:b:c"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["😀"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":[{"$undefined":true}],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["key_name-1"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["src/a/b.ts"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["line1\nline2ab"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["﻿bom"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["abc"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["trailing."],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["src/a/b.tsemoji 👍🏽 mix"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["a"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["a😀b😀cemoji 👍🏽 mix"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["é"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["straßetab\tseparated"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["a😀b😀c"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["straße"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["ΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["tab\tseparated"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["ünïcödé"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["İstanbul"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["HELLO"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["ab./x/**/*.json"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":[".leadinga"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["HELLOtrailing."],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["a.b.c"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["tab\tseparatedns:key.path"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["﻿bomabc"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["emoji 👍🏽 mix"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["ns:key.path"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["日本語のテキスト./x/**/*.json"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["a..bünïcödé"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["./x/**/*.json"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["a..bsrc/a/b.ts"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["key_name-1a..b"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["a..b😀"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["a.b.csrc/a/b.ts"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["  padded  "],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["{name} has {count} itemsHello World"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["a:b:csrc/a/b.ts"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["line1\nline2"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["﻿bomhello world"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["trailing.a"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["emoji 👍🏽 mix  padded  "],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["./x/**/*.jsona:b:c"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["Hello World"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["😀é"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":[".leading{name} has {count} items"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["emoji 👍🏽 mixa.b.c"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["straße./x/**/*.json"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["ünïcödé:"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["tab\tseparatedHELLO"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["Hello World.leading"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["ns:key.path.leading"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["a.b.c  padded  "],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["tab\tseparateda😀b😀c"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":[":a.b.c"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["aa.b.c"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["{name} has {count} itemstab\tseparated"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["abab"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["a😀b😀cHELLO"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["éİstanbul"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["ünïcödé{name} has {count} items"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["key_name-1trailing."],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["ünïcödé  padded  "],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["ünïcödétab\tseparated"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["hello"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["absrc/a/b.ts"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["helloΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["aa:b:c"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":[":"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["日本語のテキストΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["HELLOa.b.c"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["straßeab"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["./x/**/*.jsona.b.c"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["😀hello world"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["a:b:cünïcödé"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["😀src/a/b.ts"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["helloabc"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["ünïcödéΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["ΣΊΣΥΦΟΣ日本語のテキスト"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["HELLOHELLO"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["ns:key.pathünïcödé"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["日本語のテキストsrc/a/b.ts"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["emoji 👍🏽 mixé"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["abcemoji 👍🏽 mix"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":[":a"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["  padded  ab"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["straßeabc"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["aünïcödé"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["a{name} has {count} items"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["emoji 👍🏽 mixhello"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["line1\nline2a..b"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["a:b:chello world"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["ünïcödéns:key.path"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["ünïcödéa..b"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["﻿bomünïcödé"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["line1\nline2key_name-1"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["HELLOa😀b😀c"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":[":tab\tseparated"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["aa"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["tab\tseparatedkey_name-1"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["abc./x/**/*.json"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["﻿boma"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["a..ba"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["./x/**/*.json./x/**/*.json"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["{name} has {count} itemsline1\nline2"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["😀.leading"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["😀İstanbul"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["hello worldİstanbul"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["a.b.c:"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["a😀b😀c日本語のテキスト"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["a.b.cΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["﻿bomHELLO"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["a  padded  "],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":[".leadingns:key.path"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["hellons:key.path"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["hello worldHELLO"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["straßea.b.c"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["src/a/b.ts日本語のテキスト"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["straßeİstanbul"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["a😀b😀c:"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["src/a/b.ts😀"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["ans:key.path"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["a:b:c:"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["﻿bomtrailing."],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["abstraße"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["astraße"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["a.b.c😀"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["ünïcödéHELLO"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["trailing.a.b.c"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["HELLOünïcödé"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["tab\tseparatedabc"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["./x/**/*.jsonhello"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["hello﻿bom"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["HELLOé"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["éhello"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["helloHELLO"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["emoji 👍🏽 mix{name} has {count} items"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["a😀b😀ca"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["a..b  padded  "],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["ns:key.pathtrailing."],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["key_name-1:"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["emoji 👍🏽 mixab"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["ünïcödétrailing."],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":[".leadingline1\nline2"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["hellosrc/a/b.ts"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["ΣΊΣΥΦΟΣHELLO"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["{name} has {count} items:"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["  padded  emoji 👍🏽 mix"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["İstanbul{name} has {count} items"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["src/a/b.ts:"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["ns:key.pathstraße"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["éns:key.path"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["key_name-1HELLO"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["hello worlda.b.c"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["a.b.ca"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["straßea"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["emoji 👍🏽 mixHELLO"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["emoji 👍🏽 mix.leading"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["./x/**/*.json.leading"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["a😀b😀ca:b:c"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["aba"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["a.b.c﻿bom"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["src/a/b.tsHello World"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["ünïcödé./x/**/*.json"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["İstanbulİstanbul"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["./x/**/*.jsona"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["ΣΊΣΥΦΟΣ﻿bom"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["abca..b"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["İstanbula..b"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["{name} has {count} itemsns:key.path"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["line1\nline2straße"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["HELLOa..b"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["emoji 👍🏽 mixİstanbul"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["key_name-1./x/**/*.json"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["﻿bomemoji 👍🏽 mix"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["a😀b😀c😀"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["a.b.cab"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["hello world日本語のテキスト"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["hello worldsrc/a/b.ts"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["İstanbulé"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["hello worldemoji 👍🏽 mix"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["trailing.hello world"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["trailing.ns:key.path"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["{name} has {count} items./x/**/*.json"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":[".leadinghello"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["İstanbulHello World"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":[":hello world"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["﻿bomtab\tseparated"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["HELLO﻿bom"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["line1\nline2ns:key.path"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["abhello world"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["héllo wörld"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["👍🏽 thumbs"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["日本語"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["ılık ırmak"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["👨‍👩‍👧 family"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["a b"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["a😀b"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["a²b x½ y①"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["aⅠb Ⅻ"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["a𐐀b 𝐀bc"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["कि ٣٤"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["a:b:c"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":[{"$undefined":true}],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["{name} has {count} items😀"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["a"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["a😀b😀ca.b.c"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":[],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":[".leading"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":[""],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["﻿bom"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["日本語のテキスト"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["İstanbul"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["😀"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["a😀b😀c"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["trailing."],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":[":emoji 👍🏽 mix"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["hello world"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["a.b.c"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["tab\tseparated"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["é"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["Hello World"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["{name} has {count} items"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["日本語のテキストline1\nline2"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["a..b"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["line1\nline2ünïcödé"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["src/a/b.tsé"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["a:b:c  padded  "],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["ab"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["hello"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["ΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["abc"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["{name} has {count} itemsa:b:c"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["aba..b"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["abünïcödé"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["./x/**/*.json"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["ns:key.path"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["line1\nline2😀"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["key_name-1"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["  padded  "],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["emoji 👍🏽 mix"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["straße"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":[":"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["HELLO"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["line1\nline2"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["a..b﻿bom"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["ΣΊΣΥΦΟΣ﻿bom"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["İstanbulemoji 👍🏽 mix"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["Hello Worlda"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["abcsrc/a/b.ts"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["key_name-1line1\nline2"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["tab\tseparatedİstanbul"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["trailing.Hello World"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["src/a/b.ts"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["a:b:ca.b.c"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["ns:key.patha:b:c"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["ünïcödé"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["abctab\tseparated"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["  padded  ab"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["./x/**/*.jsonhello"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["src/a/b.tsab"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":[".leadingstraße"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["./x/**/*.json日本語のテキスト"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["hello worldns:key.path"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["key_name-1src/a/b.ts"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["aemoji 👍🏽 mix"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["日本語のテキスト日本語のテキスト"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["HELLOé"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["hello worldhello world"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["aé"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["ahello world"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["tab\tseparateda.b.c"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["a😀b😀c{name} has {count} items"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["./x/**/*.jsona😀b😀c"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["line1\nline2tab\tseparated"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["a﻿bom"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["a😀b😀cab"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["a.b.c  padded  "],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["ns:key.patha.b.c"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["  padded  hello"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["src/a/b.tsemoji 👍🏽 mix"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["straße  padded  "],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["a.b.ca:b:c"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["HELLOline1\nline2"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["  padded  a.b.c"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["src/a/b.tsa😀b😀c"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":[".leadingline1\nline2"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["İstanbulHELLO"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["tab\tseparatedhello world"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["a😀b😀c日本語のテキスト"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":[".leadinghello"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["./x/**/*.json:"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["😀straße"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["日本語のテキスト  padded  "],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["key_name-1﻿bom"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["trailing.  padded  "],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["straßehello"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["ns:key.pathns:key.path"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["﻿bomemoji 👍🏽 mix"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["﻿boma..b"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["straßeabc"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":[".leading{name} has {count} items"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["hello worldHello World"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["helloemoji 👍🏽 mix"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["ΣΊΣΥΦΟΣünïcödé"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["hellokey_name-1"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["a:b:c:"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["😀./x/**/*.json"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":[".leadingΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["a..bΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["é.leading"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["éstraße"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["hello worldtrailing."],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["trailing.a:b:c"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":[".leadinga"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["key_name-1hello"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["abline1\nline2"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["key_name-1İstanbul"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["😀a😀b😀c"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["key_name-1a.b.c"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["﻿bomkey_name-1"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["src/a/b.tsstraße"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["emoji 👍🏽 mix{name} has {count} items"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["日本語のテキストabc"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["key_name-1é"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["ΣΊΣΥΦΟΣΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["abstraße"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["tab\tseparatedünïcödé"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["﻿bomünïcödé"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["{name} has {count} itemsΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["a😀b😀cHELLO"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["日本語のテキストHello World"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["ab﻿bom"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["emoji 👍🏽 mix.leading"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["{name} has {count} itemsa"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["absrc/a/b.ts"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["ΣΊΣΥΦΟΣabc"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["helloa.b.c"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["İstanbulline1\nline2"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["emoji 👍🏽 mixns:key.path"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["ünïcödé日本語のテキスト"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["abca..b"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["  padded  a:b:c"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["abc日本語のテキスト"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":[":ünïcödé"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["Hello World﻿bom"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":[":﻿bom"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["./x/**/*.jsonemoji 👍🏽 mix"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["abca.b.c"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["ünïcödéé"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["  padded  abc"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["aa"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["line1\nline2straße"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["key_name-1日本語のテキスト"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["abcİstanbul"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["a.b.c./x/**/*.json"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["İstanbulhello world"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["./x/**/*.jsonΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["ns:key.pathtab\tseparated"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["HELLOstraße"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":[":.leading"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["日本語のテキストemoji 👍🏽 mix"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":[":  padded  "],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["a..bhello world"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["{name} has {count} itemstab\tseparated"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["﻿boma:b:c"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["src/a/b.tsHELLO"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["a.b.cstraße"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["line1\nline2key_name-1"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["abcünïcödé"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["Hello World{name} has {count} items"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["{name} has {count} itemshello"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["src/a/b.tskey_name-1"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":[":hello world"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["key_name-1tab\tseparated"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["日本語のテキストhello world"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["﻿bomé"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["{name} has {count} itemsa..b"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["a{name} has {count} items"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["  padded  a..b"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["{name} has {count} items.leading"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["ns:key.pathkey_name-1"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["Hello World./x/**/*.json"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["straßeİstanbul"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["ΣΊΣΥΦΟΣhello"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":[":Hello World"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["Hello World日本語のテキスト"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["asrc/a/b.ts"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["hello world.leading"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["éa"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["a..bsrc/a/b.ts"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["İstanbulsrc/a/b.ts"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["ünïcödé{name} has {count} items"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["key_name-1a😀b😀c"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["tab\tseparateda"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["a.b.ca😀b😀c"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["aa..b"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["日本語のテキストünïcödé"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["tab\tseparatedΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["😀.leading"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["😀Hello World"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["日本語のテキストsrc/a/b.ts"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["héllo wörld"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["👍🏽 thumbs"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["日本語"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["ılık ırmak"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["👨‍👩‍👧 family"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["a b"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["a😀b"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["a²b x½ y①"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["aⅠb Ⅻ"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["a𐐀b 𝐀bc"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["कि ٣٤"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":[{"$undefined":true}],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["hello world"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":[],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["tab\tseparated"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["hello worldkey_name-1"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["trailing..leading"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["  padded  "],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["hello"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":[""],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["日本語のテキスト"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["a😀b😀c"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["ünïcödé﻿bom"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["hello world😀"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["straße"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["abc"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["a..b"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["İstanbul"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["{name} has {count} items"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":[".leadinga:b:c"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["ünïcödé"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":[".leading"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["ab"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["src/a/b.ts"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["emoji 👍🏽 mix"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["😀"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["src/a/b.tstab\tseparated"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["trailing."],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["é"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["ΣΊΣΥΦΟΣsrc/a/b.ts"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["hello world./x/**/*.json"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["emoji 👍🏽 mixΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["HELLO"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["tab\tseparatedΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":[":"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["ns:key.path"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["trailing.Hello World"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["line1\nline2"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["ΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["trailing.abc"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["tab\tseparatedabc"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["a.b.c"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["a"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["./x/**/*.json"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["﻿bom"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["a:b:c"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["abc{name} has {count} items"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":[":.leading"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["key_name-1"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["a:b:chello world"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["a..ba..b"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["key_name-1a😀b😀c"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["ns:key.pathé"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["tab\tseparated😀"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["hello worldhello"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["trailing.é"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["日本語のテキストhello world"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["日本語のテキスト{name} has {count} items"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["a..bHELLO"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["straße  padded  "],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["a.b.ca"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["  padded  ns:key.path"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["tab\tseparated.leading"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["Hello World日本語のテキスト"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["{name} has {count} itemsstraße"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":[".leading./x/**/*.json"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["abctrailing."],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["ans:key.path"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["hello  padded  "],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["a.b.cé"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["ns:key.pathtab\tseparated"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["straßesrc/a/b.ts"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["a.b.ca😀b😀c"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["src/a/b.tsline1\nline2"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["trailing.hello world"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["ns:key.path:"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["Hello World"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["straßeab"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["Hello Worlda"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["straßeHello World"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["日本語のテキストtrailing."],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["abHello World"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["hello:"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["HELLOΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["HELLO:"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["é  padded  "],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["hellostraße"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["﻿bom  padded  "],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["emoji 👍🏽 mixns:key.path"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["{name} has {count} items  padded  "],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["tab\tseparatedİstanbul"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["HELLOİstanbul"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["HELLOa..b"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["{name} has {count} itemsab"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["İstanbulabc"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["hello worldtab\tseparated"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":[".leadingΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["line1\nline2key_name-1"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":[".leading﻿bom"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["key_name-1ab"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["﻿bomsrc/a/b.ts"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["straßeHELLO"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["emoji 👍🏽 mixline1\nline2"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["helloünïcödé"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["line1\nline2.leading"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["😀a😀b😀c"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["emoji 👍🏽 mixtrailing."],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["emoji 👍🏽 mixünïcödé"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["a😀b😀c./x/**/*.json"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["abca😀b😀c"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["abHELLO"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["ΣΊΣΥΦΟΣ﻿bom"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["日本語のテキスト日本語のテキスト"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["hellons:key.path"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["tab\tseparatedhello"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["﻿bom﻿bom"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["a..b﻿bom"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["日本語のテキストünïcödé"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":[":Hello World"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["{name} has {count} itemsa:b:c"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["emoji 👍🏽 mixé"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["ababc"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["éHello World"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["helloab"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":[":é"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["abcé"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["straße./x/**/*.json"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["a😀b😀ca..b"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["éa😀b😀c"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":[":ab"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["a..b./x/**/*.json"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["straßens:key.path"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["abemoji 👍🏽 mix"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["HELLOhello world"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["helloHELLO"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["Hello World:"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["😀hello world"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["a:b:c😀"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["ab./x/**/*.json"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["straßekey_name-1"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["﻿bomkey_name-1"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["tab\tseparated:"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["hello world﻿bom"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["key_name-1a:b:c"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["é:"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["İstanbulemoji 👍🏽 mix"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["straße😀"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["abcHello World"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["line1\nline2﻿bom"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["{name} has {count} items./x/**/*.json"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["helloemoji 👍🏽 mix"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["  padded  :"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["Hello WorldΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["ns:key.pathΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["hello world.leading"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":[":./x/**/*.json"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["  padded  a"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["日本語のテキストab"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["tab\tseparatedé"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["ns:key.patha..b"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["﻿bom.leading"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["a..b日本語のテキスト"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["src/a/b.ts﻿bom"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["  padded  ﻿bom"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["src/a/b.tsa"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["./x/**/*.json.leading"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["ΣΊΣΥΦΟΣ日本語のテキスト"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["line1\nline2  padded  "],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["a  padded  "],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["aa.b.c"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["abca.b.c"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["trailing.tab\tseparated"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["😀:"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["aé"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["﻿bomΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["key_name-1line1\nline2"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":[":  padded  "],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["a..bHello World"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["éİstanbul"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["tab\tseparatedtab\tseparated"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["helloa:b:c"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["a.b.cΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["line1\nline2:"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["éns:key.path"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["ns:key.pathtrailing."],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["emoji 👍🏽 mix:"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["abhello world"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["日本語のテキストHello World"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["  padded  src/a/b.ts"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["  padded  a😀b😀c"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["line1\nline2😀"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["HELLOsrc/a/b.ts"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":[".leadingstraße"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["hello worldHello World"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["a.b.c日本語のテキスト"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["ünïcödé日本語のテキスト"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["tab\tseparatedstraße"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["./x/**/*.jsontrailing."],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["😀key_name-1"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["tab\tseparateda.b.c"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["aemoji 👍🏽 mix"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["héllo wörld"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["👍🏽 thumbs"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["日本語"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["ılık ırmak"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["👨‍👩‍👧 family"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["a b"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["a😀b"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["a²b x½ y①"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["aⅠb Ⅻ"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["a𐐀b 𝐀bc"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":["कि ٣٤"],"ok":null}
+{"fn":"parseGitHubRepositoryInput","args":["openai/codex"],"ok":"openai/codex"}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["openai/codex"],"ok":true}
+{"fn":"parseGitHubRepositoryInput","args":[" https://github.com/openai/codex "],"ok":"openai/codex"}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["https://github.com/openai/codex"],"ok":false}
+{"fn":"parseGitHubRepositoryInput","args":["https://github.com/OpenAI/Codex.git/"],"ok":"OpenAI/Codex"}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["https://github.com/OpenAI/Codex.git/"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["OpenAI/Codex"],"ok":true}
+{"fn":"parseGitHubRepositoryInput","args":[""],"ok":null}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":[""],"ok":false}
+{"fn":"parseGitHubRepositoryInput","args":["https://example.com/openai/codex"],"ok":null}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["https://example.com/openai/codex"],"ok":false}
+{"fn":"parseGitHubRepositoryInput","args":["https://user:token@github.com/openai/codex"],"ok":null}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["https://user:token@github.com/openai/codex"],"ok":false}
+{"fn":"parseGitHubRepositoryInput","args":["https://github.com/openai/codex/issues"],"ok":null}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["https://github.com/openai/codex/issues"],"ok":false}
+{"fn":"parseGitHubRepositoryInput","args":["https://github.com/openai/codex?tab=readme"],"ok":null}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["https://github.com/openai/codex?tab=readme"],"ok":false}
+{"fn":"parseGitHubRepositoryInput","args":["git@github.com:openai/codex.git"],"ok":null}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["git@github.com:openai/codex.git"],"ok":false}
+{"fn":"parseGitHubRepositoryInput","args":["--upload-pack=malicious"],"ok":null}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["--upload-pack=malicious"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["OpenAI/Codex.js"],"ok":true}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["owner-1/repo_name"],"ok":true}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["owner/.github"],"ok":true}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["owner"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["owner/repo/extra"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["owner repo/name"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["-owner/name"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["owner-/name"],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["owner/.."],"ok":false}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["owner/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"],"ok":false}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["git@github.com:openai/codex.git"],"ok":"openai/codex"}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["ssh://git@github.com/openai/codex.git"],"ok":"openai/codex"}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["https://github.com/openai/codex"],"ok":"openai/codex"}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["git://github.com/openai/codex/"],"ok":"openai/codex"}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":[" HTTPS://GITHUB.COM/OpenAI/Codex.git "],"ok":"OpenAI/Codex"}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":[null],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["https://gitlab.com/openai/codex"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["https://github.com/owner"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromRemoteUrl","args":["https://github.com/-owner/repo"],"ok":null}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["-owner/repo"],"ok":false}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["https://github.com/OpenAI/Codex/pull/123/files"],"ok":"OpenAI/Codex"}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["http://github.com/openai/codex/pull/123?diff=split"],"ok":"openai/codex"}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":[null],"ok":null}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["/"],"ok":false}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["https://gitlab.com/openai/codex/pull/1"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["https://github.com/openai/codex/issues/1"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["https://github.com/-owner/codex/pull/1"],"ok":null}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["-owner/codex"],"ok":false}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["javascript:alert(1)"],"ok":null}
+{"fn":"normalizeGitHubPullRequestUrl","args":[" https://github.com/Owner/Repo/pull/007/files?diff=split#top "],"ok":"https://github.com/owner/repo/pull/7"}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":[" https://github.com/Owner/Repo/pull/007/files?diff=split#top "],"ok":"Owner/Repo"}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["Owner/Repo"],"ok":true}
+{"fn":"normalizeGitHubPullRequestUrl","args":["https://github.com/o/r/pull/0"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["https://github.com/o/r/pull/0"],"ok":"o/r"}
+{"fn":"isValidGitHubRepositoryNameWithOwner","args":["o/r"],"ok":true}
+{"fn":"normalizeGitHubPullRequestUrl","args":["https://github.com/o/r/pull/9007199254740993"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["https://github.com/o/r/pull/9007199254740993"],"ok":"o/r"}
+{"fn":"normalizeGitHubPullRequestUrl","args":["https://github.com/o/r/pull/9999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999"],"ok":null}
+{"fn":"parseGitHubRepositoryNameWithOwnerFromPullRequestUrl","args":["https://github.com/o/r/pull/9999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999"],"ok":"o/r"}

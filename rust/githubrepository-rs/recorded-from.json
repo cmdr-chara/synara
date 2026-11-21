@@ -1,0 +1,23 @@
+{
+  "unit": "packages/shared/src/githubRepository.ts",
+  "files": 1,
+  "fingerprint": "1f38c29cdcab5da1",
+  "coverage": {
+    "lines": 210,
+    "reached": 98,
+    "files": [
+      {
+        "file": "packages/shared/src/githubRepository.ts",
+        "lines": 72,
+        "reached": 72,
+        "missed": ""
+      },
+      {
+        "file": "packages/shared/src/pullRequestList.ts",
+        "lines": 138,
+        "reached": 26,
+        "missed": "15-18, 22-34, 37-41, 44-51, 53-71, 73-81, 83-93, 104-113, 115-130, 134-150"
+      }
+    ]
+  }
+}

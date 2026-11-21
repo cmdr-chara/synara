@@ -1,0 +1,102 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/githubRepository.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "githubrepository-rs",
+  "exports": [
+    {
+      "name": "isValidGitHubRepositoryNameWithOwner",
+      "file": "packages/shared/src/githubRepository.ts",
+      "line": 2,
+      "params": [
+        {
+          "name": "repository",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "parseGitHubRepositoryInput",
+      "file": "packages/shared/src/githubRepository.ts",
+      "line": 20,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "string | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "parseGitHubRepositoryNameWithOwnerFromRemoteUrl",
+      "file": "packages/shared/src/githubRepository.ts",
+      "line": 32,
+      "params": [
+        {
+          "name": "url",
+          "ts_type": "string | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "parseGitHubRepositoryNameWithOwnerFromPullRequestUrl",
+      "file": "packages/shared/src/githubRepository.ts",
+      "line": 49,
+      "params": [
+        {
+          "name": "url",
+          "ts_type": "string | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "normalizeGitHubPullRequestUrl",
+      "file": "packages/shared/src/githubRepository.ts",
+      "line": 62,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "string | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

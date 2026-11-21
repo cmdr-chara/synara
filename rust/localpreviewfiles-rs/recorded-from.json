@@ -1,0 +1,17 @@
+{
+  "unit": "packages/shared/src/localPreviewFiles.ts",
+  "files": 1,
+  "fingerprint": "3a1e356ee3d66eb4",
+  "coverage": {
+    "lines": 80,
+    "reached": 80,
+    "files": [
+      {
+        "file": "packages/shared/src/localPreviewFiles.ts",
+        "lines": 80,
+        "reached": 80,
+        "missed": ""
+      }
+    ]
+  }
+}

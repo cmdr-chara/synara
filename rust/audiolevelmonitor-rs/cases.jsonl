@@ -1,0 +1,654 @@
+{"fn":"parseAudioLevelMessage","args":["a./x/**/*.json"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["日本語のテキスト.leading"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["  padded  ünïcödé"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["a..b"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["  padded  "],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["ékey_name-1"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["ab"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["HELLO"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["abc"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["hello"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["﻿bom"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["é"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":[":"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["tab\tseparated"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":[".leading"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["a.b.c"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["{name} has {count} items"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["src/a/b.ts"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["İstanbul"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["a😀b😀csrc/a/b.ts"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["HELLOa.b.c"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["emoji 👍🏽 mix"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["😀"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["trailing.tab\tseparated"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":[":a.b.c"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["line1\nline2😀"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["ΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["ns:key.path"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["key_name-1"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["ünïcödé"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["a:b:c"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["abcİstanbul"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["key_name-1😀"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":[""],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["HELLOtrailing."],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["ns:key.path:"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["./x/**/*.json"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["İstanbulabc"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["a"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["line1\nline2./x/**/*.json"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["HELLOtab\tseparated"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["Hello World"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["a😀b😀c"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["straßehello world"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["hello world"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["ΣΊΣΥΦΟΣ日本語のテキスト"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["😀{name} has {count} items"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["Hello Worlda:b:c"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["line1\nline2a..b"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":[".leading./x/**/*.json"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["./x/**/*.json日本語のテキスト"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["line1\nline2"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["line1\nline2abc"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["a😀b😀cline1\nline2"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["a:b:cline1\nline2"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["a😀b😀c{name} has {count} items"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["a:b:chello world"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["ab./x/**/*.json"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["key_name-1ünïcödé"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["trailing."],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["hello  padded  "],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["日本語のテキスト"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["日本語のテキストé"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["straße"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["a😀b😀ca..b"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["trailing.ΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["a:b:c{name} has {count} items"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["straße﻿bom"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["Hello Worldsrc/a/b.ts"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["ns:key.pathhello world"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["emoji 👍🏽 mixns:key.path"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["😀ns:key.path"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["./x/**/*.jsona..b"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":[".leadinghello world"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["emoji 👍🏽 mix.leading"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["ünïcödéé"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["Hello World  padded  "],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["a日本語のテキスト"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["a😀b😀c日本語のテキスト"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["key_name-1abc"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":[":abc"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["{name} has {count} itemsa.b.c"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["straße日本語のテキスト"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["{name} has {count} items{name} has {count} items"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["abca..b"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["İstanbulemoji 👍🏽 mix"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["./x/**/*.jsontab\tseparated"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["ns:key.pathé"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["Hello Worldline1\nline2"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["İstanbula:b:c"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["a.b.c./x/**/*.json"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["hello worldsrc/a/b.ts"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["src/a/b.tstrailing."],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["helloHello World"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["tab\tseparated.leading"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["HELLOkey_name-1"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["  padded  :"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["étrailing."],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["abckey_name-1"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["line1\nline2:"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["{name} has {count} items日本語のテキスト"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["a.b.cHELLO"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["  padded  a:b:c"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["Hello World😀"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":[":./x/**/*.json"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["src/a/b.ts:"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["straßeünïcödé"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["key_name-1key_name-1"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["straßetab\tseparated"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["ünïcödé日本語のテキスト"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["astraße"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["a..bhello world"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["a.b.c😀"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["﻿bomab"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["straßeHELLO"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["trailing.key_name-1"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["src/a/b.tsHello World"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["abc{name} has {count} items"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["﻿bomabc"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["HELLOns:key.path"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["😀  padded  "],"ok":null}
+{"fn":"parseAudioLevelMessage","args":[":a..b"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["ns:key.pathab"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["ns:key.patha"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["helloünïcödé"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["key_name-1﻿bom"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["line1\nline2é"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["  padded  hello"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["abİstanbul"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["{name} has {count} itemsemoji 👍🏽 mix"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["a.leading"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["abc:"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["abc😀"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["ünïcödéHELLO"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["a..bünïcödé"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["line1\nline2ab"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["emoji 👍🏽 mix😀"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["İstanbulab"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["é😀"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["ns:key.path  padded  "],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["key_name-1tab\tseparated"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["{name} has {count} itemsline1\nline2"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["日本語のテキストtab\tseparated"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["😀﻿bom"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":[":line1\nline2"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["ünïcödétab\tseparated"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["tab\tseparatedİstanbul"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["İstanbula..b"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["trailing.a.b.c"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["tab\tseparatedünïcödé"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["a.b.csrc/a/b.ts"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["a.b.c  padded  "],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["ünïcödékey_name-1"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["ΣΊΣΥΦΟΣabc"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["hello😀"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["ab﻿bom"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["a😀b😀c😀"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["aHello World"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["ΣΊΣΥΦΟΣ﻿bom"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":[".leadingHELLO"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["İstanbul./x/**/*.json"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["straßea.b.c"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":[".leadingns:key.path"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["abtab\tseparated"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["a..b{name} has {count} items"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["a.b.cΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":[".leadinga"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":[".leading﻿bom"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["a😀b😀c﻿bom"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["a:b:ckey_name-1"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["﻿bom﻿bom"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["emoji 👍🏽 mixtrailing."],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["./x/**/*.jsona:b:c"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["  padded  emoji 👍🏽 mix"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["😀İstanbul"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["straße./x/**/*.json"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["src/a/b.tsünïcödé"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["﻿bomhello"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["ünïcödé:"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["日本語のテキスト  padded  "],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["tab\tseparatedabc"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["a:b:c日本語のテキスト"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["😀a:b:c"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["a.b.cé"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["İstanbulHELLO"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["ünïcödéa😀b😀c"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["abchello world"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["aa..b"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":[":é"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["a.b.cHello World"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":[":key_name-1"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["abc  padded  "],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["{name} has {count} itemsa"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["abünïcödé"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":[":.leading"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["tab\tseparatedab"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["  padded  hello world"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["İstanbul  padded  "],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["  padded  key_name-1"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["ΣΊΣΥΦΟΣa.b.c"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["héllo wörld"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["👍🏽 thumbs"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["日本語"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["ılık ırmak"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["👨‍👩‍👧 family"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["a b"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["a😀b"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["a²b x½ y①"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["aⅠb Ⅻ"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["a𐐀b 𝐀bc"],"ok":null}
+{"fn":"parseAudioLevelMessage","args":["कि ٣٤"],"ok":null}
+{"fn":"combineAudioLevelSources","args":[[]],"ok":null}
+{"fn":"combineAudioLevelSources","args":[null],"error":"sources is not iterable"}
+{"fn":"combineAudioLevelSources","args":[["a",1]],"ok":"both"}
+{"fn":"combineAudioLevelSources","args":[{"a":{"b":"c"}}],"error":"sources is not iterable"}
+{"fn":"combineAudioLevelSources","args":[0],"error":"sources is not iterable"}
+{"fn":"combineAudioLevelSources","args":[true],"error":"sources is not iterable"}
+{"fn":"combineAudioLevelSources","args":[{}],"error":"sources is not iterable"}
+{"fn":"combineAudioLevelSources","args":["x"],"ok":"both"}
+{"fn":"combineAudioLevelSources","args":[{"a":"b"}],"error":"sources is not iterable"}
+{"fn":"combineAudioLevelSubscriptions","args":[["a",1]],"ok":{"source":"both","microphoneId":{"$undefined":true}}}
+{"fn":"combineAudioLevelSubscriptions","args":["x"],"ok":{"source":"both","microphoneId":{"$undefined":true}}}
+{"fn":"combineAudioLevelSubscriptions","args":[{"a":{"b":"c"}}],"error":"subscriptions is not iterable"}
+{"fn":"combineAudioLevelSubscriptions","args":[true],"error":"subscriptions is not iterable"}
+{"fn":"combineAudioLevelSubscriptions","args":[[]],"ok":null}
+{"fn":"combineAudioLevelSubscriptions","args":[{}],"error":"subscriptions is not iterable"}
+{"fn":"combineAudioLevelSubscriptions","args":[null],"error":"subscriptions is not iterable"}
+{"fn":"combineAudioLevelSubscriptions","args":[0],"error":"subscriptions is not iterable"}
+{"fn":"combineAudioLevelSubscriptions","args":[{"a":"b"}],"error":"subscriptions is not iterable"}
+{"fn":"parseAudioInputsMessage","args":["abc"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["  padded  "],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["日本語のテキスト"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["HELLO"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["😀"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["tab\tseparated"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["a😀b😀c"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["ns:key.path"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["﻿bomab"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["ab"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["src/a/b.ts"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["tab\tseparatedtrailing."],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["a:b:cİstanbul"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["Hello WorldHello World"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["﻿bomΣΊΣΥΦΟΣ"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["hello"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":[":"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["a😀b😀cİstanbul"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["emoji 👍🏽 mix"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["İstanbul"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["hello world"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["Hello World"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["key_name-1"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":[""],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["a..b"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":[":a.b.c"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":[".leading"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["a:b:c"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["é"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["{name} has {count} items"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["straße"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["abc.leading"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["./x/**/*.json"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["ΣΊΣΥΦΟΣ"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["﻿bom"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":[":abc"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["line1\nline2"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["a.b.c"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["hello:"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["straßeΣΊΣΥΦΟΣ"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["trailing."],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["Hello World  padded  "],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["{name} has {count} itemsa"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":[".leadingemoji 👍🏽 mix"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["./x/**/*.jsonabc"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["abhello world"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["﻿bom  padded  "],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["日本語のテキスト  padded  "],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":[".leadingkey_name-1"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["日本語のテキストns:key.path"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["a"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["hello worldhello world"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["abcİstanbul"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["src/a/b.ts  padded  "],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["a.b.c.leading"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["key_name-1src/a/b.ts"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["éa😀b😀c"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["ünïcödéa:b:c"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["İstanbul.leading"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":[":line1\nline2"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["ünïcödé"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["ΣΊΣΥΦΟΣé"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["src/a/b.ts{name} has {count} items"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["aabc"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["a.b.c日本語のテキスト"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["a😀b😀cabc"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["emoji 👍🏽 mixΣΊΣΥΦΟΣ"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["key_name-1a.b.c"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["😀line1\nline2"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["emoji 👍🏽 mixabc"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["ünïcödéΣΊΣΥΦΟΣ"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["a.b.c😀"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["tab\tseparated{name} has {count} items"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["helloabc"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["emoji 👍🏽 mixHELLO"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["./x/**/*.jsonhello"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["ΣΊΣΥΦΟΣ日本語のテキスト"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["Hello World.leading"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["a..ba:b:c"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["﻿bomHELLO"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["abc./x/**/*.json"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["Hello Worldİstanbul"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["Hello Worldabc"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["tab\tseparatedHELLO"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["éΣΊΣΥΦΟΣ"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["ünïcödéhello world"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["ns:key.pathΣΊΣΥΦΟΣ"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["trailing.{name} has {count} items"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["hello worldns:key.path"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["aemoji 👍🏽 mix"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["tab\tseparated.leading"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["line1\nline2😀"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["a:b:c{name} has {count} items"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["ns:key.pathline1\nline2"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["ünïcödé./x/**/*.json"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["line1\nline2HELLO"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["tab\tseparatedhello world"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["./x/**/*.jsoné"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["  padded  tab\tseparated"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["﻿bomhello"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["a.b.cabc"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["emoji 👍🏽 mixa:b:c"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["hello./x/**/*.json"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["ünïcödétab\tseparated"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["a😀b😀chello"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["hello worldé"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["src/a/b.ts日本語のテキスト"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["ns:key.path  padded  "],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":[":ab"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["﻿bom./x/**/*.json"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["trailing.src/a/b.ts"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["hello world日本語のテキスト"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["日本語のテキストsrc/a/b.ts"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["HELLOhello world"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["Hello Worlda:b:c"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["  padded  HELLO"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["ΣΊΣΥΦΟΣΣΊΣΥΦΟΣ"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["a.b.c{name} has {count} items"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["ns:key.pathİstanbul"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["{name} has {count} items./x/**/*.json"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":[".leadingns:key.path"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["line1\nline2a:b:c"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["abab"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["İstanbul  padded  "],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["İstanbulns:key.path"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["HELLO.leading"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["日本語のテキストkey_name-1"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":[":emoji 👍🏽 mix"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["./x/**/*.jsonkey_name-1"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["src/a/b.tsline1\nline2"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["abchello"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["abline1\nline2"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["tab\tseparatedline1\nline2"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["😀Hello World"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["﻿bomtab\tseparated"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["HELLOabc"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["ΣΊΣΥΦΟΣ😀"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["étab\tseparated"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["İstanbulHELLO"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["ΣΊΣΥΦΟΣa"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["ns:key.pathHELLO"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":[":ünïcödé"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["a.b.cİstanbul"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["aba..b"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["İstanbula😀b😀c"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["emoji 👍🏽 mixkey_name-1"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["{name} has {count} itemsHELLO"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["a:b:chello world"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["😀src/a/b.ts"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["tab\tseparateda:b:c"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["straßeünïcödé"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["İstanbul﻿bom"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["line1\nline2日本語のテキスト"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["a:b:cemoji 👍🏽 mix"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["a:b:c:"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["line1\nline2abc"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["straße  padded  "],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["abHELLO"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["a..bΣΊΣΥΦΟΣ"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["a😀b😀c:"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["src/a/b.tstrailing."],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["trailing../x/**/*.json"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["trailing.é"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":[":key_name-1"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["helloemoji 👍🏽 mix"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["  padded  a😀b😀c"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["hello worldabc"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":[".leadinghello"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["ünïcödé:"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["tab\tseparatedhello"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["tab\tseparatedsrc/a/b.ts"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["ΣΊΣΥΦΟΣhello world"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["éa.b.c"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["straße{name} has {count} items"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["helloİstanbul"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["ünïcödé😀"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["src/a/b.tsa"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["./x/**/*.jsonsrc/a/b.ts"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["😀.leading"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["  padded  ünïcödé"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["emoji 👍🏽 mixHello World"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["a.b.cΣΊΣΥΦΟΣ"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["hellostraße"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["./x/**/*.jsonns:key.path"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["abc😀"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["asrc/a/b.ts"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["a😀b😀cline1\nline2"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["abstraße"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["src/a/b.tsé"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["a..btab\tseparated"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["./x/**/*.jsonİstanbul"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["  padded  Hello World"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["😀İstanbul"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["ΣΊΣΥΦΟΣline1\nline2"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":[".leadingé"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":[".leadinga"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["a..bns:key.path"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["ünïcödéİstanbul"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["a..bünïcödé"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["hello worldtrailing."],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["héllo wörld"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["👍🏽 thumbs"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["日本語"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["ılık ırmak"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["👨‍👩‍👧 family"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["a b"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["a😀b"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["a²b x½ y①"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["aⅠb Ⅻ"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["a𐐀b 𝐀bc"],"ok":[]}
+{"fn":"parseAudioInputsMessage","args":["कि ٣٤"],"ok":[]}
+{"fn":"listAudioInputDevices","args":["ab",null],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["key_name-1",{}],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["日本語のテキスト",true],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["hello worldHELLO",["a",1]],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":[":",{}],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["hello","x"],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["a..b"],"ok":[]}
+{"fn":"listAudioInputDevices","args":["hello{name} has {count} items",{"a":{"b":"c"}}],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["İstanbul",{}],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["é",{"$undefined":true}],"ok":[]}
+{"fn":"listAudioInputDevices","args":["abc",{}],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["a😀b😀c",null],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["","x"],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["a😀b😀c",[]],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["hello",{"a":{"b":"c"}}],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["a😀b😀c",{"a":{"b":"c"}}],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["a😀b😀c",{}],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["straße",{"a":{"b":"c"}}],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["tab\tseparated",{"a":"b"}],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["",[]],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["trailing."],"ok":[]}
+{"fn":"listAudioInputDevices","args":["./x/**/*.jsonabc",{"a":"b"}],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["  padded  ",null],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["{name} has {count} items",[]],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["HELLO",0],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["a😀b😀c",{"$undefined":true}],"ok":[]}
+{"fn":"listAudioInputDevices","args":["./x/**/*.json",{"a":"b"}],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["straße"],"ok":[]}
+{"fn":"listAudioInputDevices","args":["é",null],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["😀","x"],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":[":",0],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["emoji 👍🏽 mix",0],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["a",0],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["İstanbul",null],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["line1\nline2"],"ok":[]}
+{"fn":"listAudioInputDevices","args":["ΣΊΣΥΦΟΣ",[]],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["hello world",true],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["trailing.",true],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["src/a/b.ts",0],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["a:b:c",{}],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":[":ünïcödé",{"a":{"b":"c"}}],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["line1\nline2",0],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["a.b.c.leading",{"a":"b"}],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["./x/**/*.json"],"ok":[]}
+{"fn":"listAudioInputDevices","args":["﻿bom",null],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["﻿bom",{"a":"b"}],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["ns:key.path",true],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["hello",{"$undefined":true}],"ok":[]}
+{"fn":"listAudioInputDevices","args":["line1\nline2",{"$undefined":true}],"ok":[]}
+{"fn":"listAudioInputDevices","args":["tab\tseparated"],"ok":[]}
+{"fn":"listAudioInputDevices","args":["a😀b😀c",["a",1]],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["",{}],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["a..b",true],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":[".leading",{"a":{"b":"c"}}],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["ünïcödé",{"a":"b"}],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["straße",{"$undefined":true}],"ok":[]}
+{"fn":"listAudioInputDevices","args":["Hello World",[]],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["./x/**/*.json",{}],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["İstanbul",{"a":{"b":"c"}}],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["  padded  ",{"a":"b"}],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["ab  padded  ",[]],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["straße",{}],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["﻿bom",{"$undefined":true}],"ok":[]}
+{"fn":"listAudioInputDevices","args":["HELLO",{"a":"b"}],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["abc",{"a":"b"}],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["./x/**/*.jsonΣΊΣΥΦΟΣ",[]],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":[".leading",{"$undefined":true}],"ok":[]}
+{"fn":"listAudioInputDevices","args":["straße",[]],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["ünïcödé",[]],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["ns:key.path",{"$undefined":true}],"ok":[]}
+{"fn":"listAudioInputDevices","args":["ab",["a",1]],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["abc","abc"],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["tab\tseparatedkey_name-1",{"a":"b"}],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":[".leading",{"a":"b"}],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["key_name-1",[]],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["é"],"ok":[]}
+{"fn":"listAudioInputDevices","args":["aba..b",["a",1]],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["a.b.c",0],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["tab\tseparated",{"a":{"b":"c"}}],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["emoji 👍🏽 mix",true],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["Hello Worldhello",0],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["a😀b😀c",{"a":"b"}],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["a.b.c",["a",1]],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["﻿bom",["a",1]],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["  padded  tab\tseparated",null],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["hello world",0],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["straße",["a",1]],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["hello",["a",1]],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["a",{"a":{"b":"c"}}],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["hello world  padded  "],"ok":[]}
+{"fn":"listAudioInputDevices","args":["a..b",{"$undefined":true}],"ok":[]}
+{"fn":"listAudioInputDevices","args":["a.b.cİstanbul",0],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["Hello World",{"$undefined":true}],"ok":[]}
+{"fn":"listAudioInputDevices","args":["é:","x"],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["ünïcödé",{"$undefined":true}],"ok":[]}
+{"fn":"listAudioInputDevices","args":["ns:key.path","x"],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":[":",true],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["Hello Worldtab\tseparated"],"ok":[]}
+{"fn":"listAudioInputDevices","args":["HELLO😀",true],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["a"],"ok":[]}
+{"fn":"listAudioInputDevices","args":["emoji 👍🏽 mix",[]],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["﻿bom",[]],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["  padded  ",0],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["  padded  ",[]],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["ns:key.path",0],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["abchello",{"a":"b"}],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["key_name-1",{"a":"b"}],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["日本語のテキスト",{"$undefined":true}],"ok":[]}
+{"fn":"listAudioInputDevices","args":["HELLO",{}],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":[":  padded  ",0],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["a",{}],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["ünïcödé",0],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["ΣΊΣΥΦΟΣ",{"a":"b"}],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["﻿bom",{}],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["abc",[]],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["ünïcödé",{"a":{"b":"c"}}],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["日本語のテキストtrailing.",{}],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["hello",[]],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["{name} has {count} items",null],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["abc","x"],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["ns:key.path",{}],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["key_name-1",{"a":{"b":"c"}}],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["a.b.ca:b:c",true],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["src/a/b.ts.leading"],"ok":[]}
+{"fn":"listAudioInputDevices","args":["tab\tseparated",null],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["😀",{"a":{"b":"c"}}],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["ns:key.path",[]],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["trailing.",{"a":"b"}],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["src/a/b.ts",true],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["hello world",["a",1]],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["a.b.c",{"a":{"b":"c"}}],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["",{"$undefined":true}],"error":"The argument 'file' cannot be empty. Received ''"}
+{"fn":"listAudioInputDevices","args":["😀line1\nline2",["a",1]],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["src/a/b.ts",{}],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["日本語のテキスト日本語のテキスト",["a",1]],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["emoji 👍🏽 mix",{"$undefined":true}],"ok":[]}
+{"fn":"listAudioInputDevices","args":["line1\nline2",{"a":{"b":"c"}}],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":[":",["a",1]],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["﻿bom",{"a":{"b":"c"}}],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["ab","x"],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["line1\nline2",{"a":"b"}],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["ab",0],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["a:b:c",null],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["a:b:chello",{"a":"b"}],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["aba..b",{"a":{"b":"c"}}],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["ab",{"a":{"b":"c"}}],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["hello world",{"$undefined":true}],"ok":[]}
+{"fn":"listAudioInputDevices","args":["",["a",1]],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["line1\nline2  padded  ",true],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["a:b:c",true],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["abc",{"a":{"b":"c"}}],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["{name} has {count} items",0],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["key_name-1"],"ok":[]}
+{"fn":"listAudioInputDevices","args":["trailing.",["a",1]],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["hello worldİstanbul",{"$undefined":true}],"ok":[]}
+{"fn":"listAudioInputDevices","args":["hellohello"],"ok":[]}
+{"fn":"listAudioInputDevices","args":["HELLO","x"],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["trailing.",null],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["hello world",null],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["İstanbul",[]],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["a😀b😀c","x"],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["trailing.a:b:c",{"a":{"b":"c"}}],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["key_name-1straße",true],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["  padded  ",{}],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["éé",null],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["a.b.c",true],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["日本語のテキスト  padded  "],"ok":[]}
+{"fn":"listAudioInputDevices","args":["hello world","x"],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["﻿bom"],"ok":[]}
+{"fn":"listAudioInputDevices","args":["a",null],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["trailing.",{}],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["abc",null],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["ns:key.path日本語のテキスト",{}],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":[":","x"],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["a😀b😀c"],"ok":[]}
+{"fn":"listAudioInputDevices","args":["key_name-1ünïcödé",{"$undefined":true}],"ok":[]}
+{"fn":"listAudioInputDevices","args":["a..b","x"],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["tab\tseparated","x"],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["",0],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["akey_name-1"],"ok":[]}
+{"fn":"listAudioInputDevices","args":["{name} has {count} itemsab",["a",1]],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["tab\tseparated{name} has {count} items"],"ok":[]}
+{"fn":"listAudioInputDevices","args":["a..b",null],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["İstanbul",["a",1]],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["  padded  ",{"$undefined":true}],"ok":[]}
+{"fn":"listAudioInputDevices","args":["./x/**/*.json","x"],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["Hello World",{"a":{"b":"c"}}],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["Hello World",0],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["  padded  ",{"a":{"b":"c"}}],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["emoji 👍🏽 mix",{}],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":[".leading",null],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["a:b:c",0],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["src/a/b.ts",{"$undefined":true}],"ok":[]}
+{"fn":"listAudioInputDevices","args":["İstanbul",true],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["X","x"],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["  padded  ",["a",1]],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["a..btab\tseparated",{"a":{"b":"c"}}],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["Hello Worldhello world"],"ok":[]}
+{"fn":"listAudioInputDevices","args":[""],"error":"The argument 'file' cannot be empty. Received ''"}
+{"fn":"listAudioInputDevices","args":["﻿boma..b"],"ok":[]}
+{"fn":"listAudioInputDevices","args":["héllo wörld",null],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["👍🏽 thumbs",null],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["日本語",null],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["",null],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["straße",null],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["ılık ırmak",null],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["👨‍👩‍👧 family",null],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["a b",null],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["ΣΊΣΥΦΟΣ",null],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["a😀b",null],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["a²b x½ y①",null],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["aⅠb Ⅻ",null],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["a𐐀b 𝐀bc",null],"error":"execFile is not a function"}
+{"fn":"listAudioInputDevices","args":["कि ٣٤",null],"error":"execFile is not a function"}

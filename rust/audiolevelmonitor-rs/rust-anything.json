@@ -1,0 +1,115 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/desktop/src/audioLevelMonitor.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "audiolevelmonitor-rs",
+  "exports": [
+    {
+      "name": "parseAudioLevelMessage",
+      "file": "apps/desktop/src/audioLevelMonitor.ts",
+      "line": 27,
+      "params": [
+        {
+          "name": "line",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(| { type: \"ready\" }\n  | { type: \"audio-level\"; level: number }\n  | { type: \"error\"; code: string; message: string }) | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "combineAudioLevelSources",
+      "file": "apps/desktop/src/audioLevelMonitor.ts",
+      "line": 55,
+      "params": [
+        {
+          "name": "sources",
+          "ts_type": "Iterable<(\"system\" | \"microphone\" | \"both\")>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(\"system\" | \"microphone\" | \"both\") | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "combineAudioLevelSubscriptions",
+      "file": "apps/desktop/src/audioLevelMonitor.ts",
+      "line": 74,
+      "params": [
+        {
+          "name": "subscriptions",
+          "ts_type": "Iterable<AudioLevelSubscription>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "AudioLevelSubscription | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "parseAudioInputsMessage",
+      "file": "apps/desktop/src/audioLevelMonitor.ts",
+      "line": 106,
+      "params": [
+        {
+          "name": "output",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "DesktopAudioInputDevice[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "listAudioInputDevices",
+      "file": "apps/desktop/src/audioLevelMonitor.ts",
+      "line": 141,
+      "params": [
+        {
+          "name": "helperPath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "execFile",
+          "ts_type": "typeof ChildProcess.execFile",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<DesktopAudioInputDevice[]>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "AudioLevelMonitor",
+      "file": "apps/desktop/src/audioLevelMonitor.ts",
+      "line": 175,
+      "reason": "class: accessor `status`, accessor `isRunning`"
+    }
+  ]
+}

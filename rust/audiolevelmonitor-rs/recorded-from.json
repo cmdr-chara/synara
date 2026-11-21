@@ -1,0 +1,17 @@
+{
+  "unit": "apps/desktop/src/audioLevelMonitor.ts",
+  "files": 1,
+  "fingerprint": "4b8a2a61d536959e",
+  "coverage": {
+    "lines": 259,
+    "reached": 114,
+    "files": [
+      {
+        "file": "apps/desktop/src/audioLevelMonitor.ts",
+        "lines": 259,
+        "reached": 114,
+        "missed": "35-40, 42-43, 45-51, 89-94, 96-104, 115, 117-136, 176-180, 183-186, 188-190, 192-194, 197-203, 205-216, 218-222, 224-230, 232-242, 244-249, 251-270, 272-282"
+      }
+    ]
+  }
+}

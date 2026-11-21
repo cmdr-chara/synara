@@ -1,0 +1,95 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/wsNativeApi.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "wsnativeapi-rs",
+  "exports": [
+    {
+      "name": "readWsServerCapabilities",
+      "file": "apps/web/src/wsNativeApi.ts",
+      "line": 95,
+      "params": [],
+      "returns": "ReadonlyArray<string> | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resetWsNativeApiForTest",
+      "file": "apps/web/src/wsNativeApi.ts",
+      "line": 1389,
+      "params": [],
+      "returns": "Promise<void>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "onWsServerCapabilitiesChange",
+      "file": "apps/web/src/wsNativeApi.ts",
+      "line": 99,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "onServerWelcome",
+      "file": "apps/web/src/wsNativeApi.ts",
+      "line": 399,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "onServerConfigUpdated",
+      "file": "apps/web/src/wsNativeApi.ts",
+      "line": 408,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "onServerProviderStatusesUpdated",
+      "file": "apps/web/src/wsNativeApi.ts",
+      "line": 423,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "onServerMaintenanceUpdated",
+      "file": "apps/web/src/wsNativeApi.ts",
+      "line": 435,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "onServerSettingsUpdated",
+      "file": "apps/web/src/wsNativeApi.ts",
+      "line": 447,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "onServerKeepAwakeUpdated",
+      "file": "apps/web/src/wsNativeApi.ts",
+      "line": 460,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "onThreadStreamFailure",
+      "file": "apps/web/src/wsNativeApi.ts",
+      "line": 477,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "onShellStreamFailure",
+      "file": "apps/web/src/wsNativeApi.ts",
+      "line": 485,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "createWsNativeApi",
+      "file": "apps/web/src/wsNativeApi.ts",
+      "line": 492,
+      "reason": "checks `instanceof`: class identity does not survive the bridge"
+    }
+  ]
+}

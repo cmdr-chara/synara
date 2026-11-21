@@ -1,0 +1,17 @@
+{
+  "unit": "packages/shared/src/groupSlug.ts",
+  "files": 1,
+  "fingerprint": "304d60ac55853921",
+  "coverage": {
+    "lines": 13,
+    "reached": 13,
+    "files": [
+      {
+        "file": "packages/shared/src/groupSlug.ts",
+        "lines": 13,
+        "reached": 13,
+        "missed": ""
+      }
+    ]
+  }
+}

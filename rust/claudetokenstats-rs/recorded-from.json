@@ -1,0 +1,17 @@
+{
+  "unit": "apps/server/src/claudeTokenStats.ts",
+  "files": 1,
+  "fingerprint": "fb0021ced6791fb8",
+  "coverage": {
+    "lines": 371,
+    "reached": 330,
+    "files": [
+      {
+        "file": "apps/server/src/claudeTokenStats.ts",
+        "lines": 371,
+        "reached": 330,
+        "missed": "33-48, 51-57, 60-77"
+      }
+    ]
+  }
+}

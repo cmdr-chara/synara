@@ -1,0 +1,66 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/claudeTokenStats.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "claudetokenstats-rs",
+  "exports": [
+    {
+      "name": "tokenStatsThreadFilter",
+      "file": "apps/server/src/claudeTokenStats.ts",
+      "line": 16,
+      "params": [
+        {
+          "name": "sql",
+          "ts_type": "SqlClient.SqlClient",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "column",
+          "ts_type": "Statement.Fragment",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "scope",
+          "ts_type": "(| { readonly threadId: string }\n  | { readonly threadIdsQuery: Statement.Fragment }) | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Statement.Fragment",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "claudeTokenActivityCtes",
+      "file": "apps/server/src/claudeTokenStats.ts",
+      "line": 79,
+      "params": [
+        {
+          "name": "sql",
+          "ts_type": "SqlClient.SqlClient",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "scope",
+          "ts_type": "(| { readonly threadId: string }\n  | { readonly threadIdsQuery: Statement.Fragment })",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

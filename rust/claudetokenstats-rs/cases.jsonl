@@ -1,0 +1,400 @@
+{"fn":"tokenStatsThreadFilter","args":[{},["a",1]],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[0,{"a":"b"},{"a":"b"}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[[],{"a":{"b":"c"}},{"$undefined":true}],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[true,"x"],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":["x",{}],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":["x",{},{"$undefined":true}],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":["x",["a",1],{"$undefined":true}],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[0,[],{"threadIdsQuery":[]}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[["a",1],{"a":"b"}],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[true,{"a":{"b":"c"}},{"threadIdsQuery":["a",1]}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[["a",1],[],{"$undefined":true}],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[{"a":"b"},"x",{"threadId":"ns:key.patha:b:c"}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[{},{"a":{"b":"c"}},{"threadIdsQuery":[]}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[{"a":"b"},"x",{"$undefined":true}],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[{},"x",{"a":"b"}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[0,0],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[{"a":{"b":"c"}},true,{"$undefined":true}],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":["x",true,{"$undefined":true}],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[true,true,{"$undefined":true}],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[{"a":{"b":"c"}},{"a":{"b":"c"}},{"$undefined":true}],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[0,true,{"threadIdsQuery":[]}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[["a",1],true,{"$undefined":true}],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[{"a":"b"},{"a":{"b":"c"}},{"a":"b"}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[["a",1],[]],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[[],true,{"threadIdsQuery":0}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[["a",1],{"a":{"b":"c"}},{"$undefined":true}],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[null,{"a":{"b":"c"}},{"$undefined":true}],"error":"Cannot read properties of null (reading 'literal')"}
+{"fn":"tokenStatsThreadFilter","args":["x",[],0],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":["x",null,{"threadId":"a..b"}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[{},null,{"$undefined":true}],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[true,{"a":"b"},{"threadId":"line1\nline2src/a/b.ts"}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[["a",1],{},{"a":{"b":"c"}}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[true,0],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[{},{"a":{"b":"c"}},{"$undefined":true}],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[true,{"a":"b"},"x"],"error":"Cannot use 'in' operator to search for 'threadId' in x"}
+{"fn":"tokenStatsThreadFilter","args":["x","x",{"threadIdsQuery":"x"}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[true,null,true],"error":"Cannot use 'in' operator to search for 'threadId' in true"}
+{"fn":"tokenStatsThreadFilter","args":[0,[],{"$undefined":true}],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[null,["a",1],{"threadIdsQuery":null}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[[],{}],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[{"a":"b"},[],{"threadIdsQuery":[]}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[[],true,{"threadIdsQuery":null}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[0,"x",{"$undefined":true}],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[{"a":{"b":"c"}},"x"],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[[],["a",1],{"threadIdsQuery":{}}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[{"a":{"b":"c"}},[],"x"],"error":"Cannot use 'in' operator to search for 'threadId' in x"}
+{"fn":"tokenStatsThreadFilter","args":[{"a":"b"},{"a":{"b":"c"}},{"threadIdsQuery":0}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[true,{},{"$undefined":true}],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[null,[],{"a":"b"}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[[],{"a":{"b":"c"}}],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[null,[],0],"error":"Cannot read properties of null (reading 'literal')"}
+{"fn":"tokenStatsThreadFilter","args":[{},0,{"threadId":"src/a/b.ts"}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[["a",1],{"a":{"b":"c"}},{"threadId":"{name} has {count} items"}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[null,"x",true],"error":"Cannot use 'in' operator to search for 'threadId' in true"}
+{"fn":"tokenStatsThreadFilter","args":[0,"x",{"a":{"b":"c"}}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[0,{"a":{"b":"c"}},{"threadIdsQuery":"x"}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[[],0,{"threadId":"trailing."}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[[],{},{"threadIdsQuery":{}}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[true,"x",["a",1]],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[{"a":{"b":"c"}},{}],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[true,null,{"threadId":"a"}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[{"a":"b"},["a",1],{"$undefined":true}],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[[],true,{"threadId":"  padded  "}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[true,{"a":"b"}],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[[],null,{"threadId":"src/a/b.ts"}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[[],"x"],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[{},[],{"$undefined":true}],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":["x",{},{"threadIdsQuery":{"a":"b"}}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[{"a":{"b":"c"}},[],{"$undefined":true}],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[{"a":"b"},{"a":"b"},{"threadIdsQuery":["a",1]}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[true,{},{"a":"b"}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[{},{"a":"b"}],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[["a",1],null],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[{"a":{"b":"c"}},[],{}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[["a",1],"x",{"threadId":"ns:key.path"}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[{"a":"b"},0],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[["a",1],{"a":{"b":"c"}},{"threadIdsQuery":null}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[true,["a",1],{"threadIdsQuery":null}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[["a",1],{"a":"b"},{"$undefined":true}],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[true,true,{"threadIdsQuery":{"a":{"b":"c"}}}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[[],null,{"threadIdsQuery":"x"}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[null,[],{"$undefined":true}],"error":"Cannot read properties of null (reading 'literal')"}
+{"fn":"tokenStatsThreadFilter","args":[{},{"a":{"b":"c"}},null],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[[],{"a":{"b":"c"}},{}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":["x","x",{"$undefined":true}],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[0,0,{"threadIdsQuery":[]}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[{"a":{"b":"c"}},{},{"$undefined":true}],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[null,{}],"error":"Cannot read properties of null (reading 'literal')"}
+{"fn":"tokenStatsThreadFilter","args":[[],null,true],"error":"Cannot use 'in' operator to search for 'threadId' in true"}
+{"fn":"tokenStatsThreadFilter","args":[{"a":"b"},["a",1],{"threadIdsQuery":{}}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[{},null,{"threadId":"./x/**/*.jsonstraße"}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[{"a":"b"},"x",true],"error":"Cannot use 'in' operator to search for 'threadId' in true"}
+{"fn":"tokenStatsThreadFilter","args":[{"a":{"b":"c"}},{"a":{"b":"c"}},{}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[0,{"a":{"b":"c"}},{"threadId":".leading"}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[{"a":"b"},null,{"threadId":"HELLO"}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[null,0,"x"],"error":"Cannot use 'in' operator to search for 'threadId' in x"}
+{"fn":"tokenStatsThreadFilter","args":[0,"x",{"threadId":"trailing."}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[["a",1],null,{"threadId":"hello world"}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[{"a":{"b":"c"}},null],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[true,"x",{"threadId":"😀"}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[true,[],{"$undefined":true}],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[["a",1],{},{}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[{"a":{"b":"c"}},[],{"threadIdsQuery":true}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[["a",1],null,{"threadId":"hello"}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":["x",{"a":"b"}],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[{},{},null],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[{"a":{"b":"c"}},["a",1]],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[0,{"a":{"b":"c"}},{"$undefined":true}],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[true,null],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":["x",null,{"threadIdsQuery":{"a":"b"}}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[{"a":"b"},0,{"$undefined":true}],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[["a",1],{"a":{"b":"c"}},{"threadIdsQuery":[]}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[null,{"a":"b"},[]],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[0,true,{"threadId":"a.b.c"}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[["a",1],true,{"threadIdsQuery":null}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[true,["a",1],{"$undefined":true}],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[{},["a",1],["a",1]],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[[],{"a":"b"}],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[{"a":{"b":"c"}},{"a":{"b":"c"}},0],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[true,null,{"threadId":"😀a😀b😀c"}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[[],true],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[0,{},{}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[["a",1],{},{"$undefined":true}],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[{"a":"b"},"x",{"threadIdsQuery":0}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":["x",{"a":{"b":"c"}},{"threadId":"﻿bom"}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[{"a":{"b":"c"}},{"a":{"b":"c"}},{"threadId":".leading"}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[{},0,{"$undefined":true}],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":["x",{"a":{"b":"c"}},{"threadId":"  padded  "}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[[],true,{"threadId":"HELLO"}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[{},["a",1],{"threadId":":"}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[null,{"a":{"b":"c"}},true],"error":"Cannot use 'in' operator to search for 'threadId' in true"}
+{"fn":"tokenStatsThreadFilter","args":[0,{},{"$undefined":true}],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[true,[]],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[{},["a",1],{"threadId":"  padded  "}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[0,true,{"threadId":"src/a/b.ts"}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[0,["a",1],{"$undefined":true}],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[null,0,{"threadId":"tab\tseparated"}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[true,{"a":"b"},{"$undefined":true}],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[{"a":"b"},"x"],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[{},true,{"threadId":"﻿bom"}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[{"a":{"b":"c"}},[],null],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[0,{"a":{"b":"c"}},null],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":["x",{"a":"b"},{"$undefined":true}],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[["a",1],"x",{"threadIdsQuery":{"a":{"b":"c"}}}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[[],"x",{"threadId":"{name} has {count} items"}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[0,{"a":"b"},{"threadId":"straße"}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[{"a":{"b":"c"}},["a",1],{"a":{"b":"c"}}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[[],"x",{"threadIdsQuery":{"a":"b"}}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[{"a":{"b":"c"}},0,0],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[{"a":"b"},{},{"threadId":"日本語のテキスト"}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[null,null,null],"error":"Cannot read properties of null (reading 'literal')"}
+{"fn":"tokenStatsThreadFilter","args":[["a",1],[],{"threadId":"a.b.c"}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[{"a":{"b":"c"}},0,{"threadIdsQuery":[]}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":["x",{"a":{"b":"c"}},{"threadId":"ΣΊΣΥΦΟΣ"}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[{"a":"b"},{},{"$undefined":true}],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":["x",true,{}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[["a",1],"x",{"threadId":"src/a/b.ts"}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[0,0,{"$undefined":true}],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[true,{"a":"b"},{"threadIdsQuery":null}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[{"a":"b"},{"a":{"b":"c"}},{"threadId":"key_name-1"}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":["x","x"],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[0,null,{"threadId":"hello world"}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[{"a":{"b":"c"}},["a",1],{"threadIdsQuery":[]}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[["a",1],"x",{"threadIdsQuery":"x"}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[0,"x",{"threadIdsQuery":["a",1]}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[["a",1],["a",1],{"$undefined":true}],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[true,["a",1],{"threadId":"key_name-1"}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[0,"x",{"threadIdsQuery":{}}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[0,null,{"threadId":"ΣΊΣΥΦΟΣ"}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[{},null],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[["a",1],{"a":"b"},{"threadId":"src/a/b.ts"}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":["x",{},{"threadId":"日本語のテキスト"}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[["a",1],{}],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[[],0,{"threadIdsQuery":["a",1]}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[{},null,{"a":"b"}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[{"a":"b"},{"a":"b"},{"threadId":"trailing."}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[{"a":{"b":"c"}},true,{"a":{"b":"c"}}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[{"a":{"b":"c"}},0,{"$undefined":true}],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[{"a":"b"},{"a":"b"}],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[0,{"a":{"b":"c"}}],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[["a",1],{"a":"b"},{"threadId":"a:b:c"}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[{"a":{"b":"c"}},[]],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":["x",0,{"threadIdsQuery":{"a":{"b":"c"}}}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[{"a":"b"},{"a":{"b":"c"}},{"threadId":"Hello World  padded  "}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[["a",1],{"a":{"b":"c"}}],"error":"sql.literal is not a function"}
+{"fn":"tokenStatsThreadFilter","args":["x",["a",1],"x"],"error":"Cannot use 'in' operator to search for 'threadId' in x"}
+{"fn":"tokenStatsThreadFilter","args":[{"a":"b"},[],{"a":{"b":"c"}}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[["a",1],true,{"threadId":"ΣΊΣΥΦΟΣ"}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[null,{"a":"b"},true],"error":"Cannot use 'in' operator to search for 'threadId' in true"}
+{"fn":"tokenStatsThreadFilter","args":[[],[],{"threadId":"ΣΊΣΥΦΟΣ"}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[true,["a",1],{}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":["x",0,{"threadId":"ns:key.path"}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[null,0],"error":"Cannot read properties of null (reading 'literal')"}
+{"fn":"tokenStatsThreadFilter","args":[null,true,{"threadIdsQuery":true}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[null,{},{"a":{"b":"c"}}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[["a",1],["a",1],{"threadIdsQuery":null}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[null,{"a":"b"}],"error":"Cannot read properties of null (reading 'literal')"}
+{"fn":"tokenStatsThreadFilter","args":[["a",1],"x",{"threadIdsQuery":["a",1]}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[["a",1],null,{"threadId":"Hello World"}],"error":"sql is not a function"}
+{"fn":"tokenStatsThreadFilter","args":[null,null,{"$undefined":true}],"error":"Cannot read properties of null (reading 'literal')"}
+{"fn":"claudeTokenActivityCtes","args":["x",{}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[0],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[null,{"a":{"b":"c"}}],"error":"Cannot read properties of null (reading 'literal')"}
+{"fn":"claudeTokenActivityCtes","args":[{"a":"b"},{"threadId":"src/a/b.ts"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[null,{"threadIdsQuery":"x"}],"error":"Cannot read properties of null (reading 'literal')"}
+{"fn":"claudeTokenActivityCtes","args":["x",true],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[{},null],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[0,{"threadIdsQuery":true}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[true],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[{"a":{"b":"c"}},{"threadIdsQuery":"x"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[["a",1],{"threadId":"key_name-1"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[{"a":{"b":"c"}},{"threadId":"a..b"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[0,{"threadIdsQuery":{"a":{"b":"c"}}}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[["a",1],{"threadId":"😀ns:key.path"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[0,{"threadId":"tab\tseparated"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[true,{"$undefined":true}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[[],"x"],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[[],{"threadId":"ns:key.path"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":["x",{"$undefined":true}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[true,{"threadId":"trailing.ns:key.path"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[{"a":"b"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[{"a":"b"},{"threadIdsQuery":true}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[null,{"threadIdsQuery":[]}],"error":"Cannot read properties of null (reading 'literal')"}
+{"fn":"claudeTokenActivityCtes","args":[{},{"$undefined":true}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":["x",{"threadIdsQuery":"x"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[true,{"threadIdsQuery":null}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[{},{"threadIdsQuery":["a",1]}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[0,{"a":{"b":"c"}}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[["a",1],{"threadId":"src/a/b.ts"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[["a",1],{"threadIdsQuery":null}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[[],{"threadId":"a😀b😀ca😀b😀c"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[true,{"threadId":"abtab\tseparated"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[{"a":"b"},{"threadId":"HELLO"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[0,{"$undefined":true}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[[],{"threadIdsQuery":[]}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[0,{"threadIdsQuery":"x"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":["x",{"threadId":"src/a/b.ts"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[["a",1],{"threadId":"hello"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[{},{"threadId":"hello world"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[{"a":{"b":"c"}},{"threadIdsQuery":["a",1]}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":["x"],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[["a",1]],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[true,{"threadIdsQuery":["a",1]}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[[],{"threadId":"line1\nline2"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[0,{"threadId":"hello world"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[{},{"threadIdsQuery":{"a":{"b":"c"}}}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[true,{"threadIdsQuery":{}}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":["x",{"threadId":"emoji 👍🏽 mix"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[0,{"threadIdsQuery":[]}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[["a",1],{"threadId":":"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[{"a":{"b":"c"}},{"threadIdsQuery":[]}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[0,true],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[{"a":"b"},{"threadId":"a:b:c"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":["x",{"threadId":"  padded  "}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[[]],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[true,{"threadId":"ΣΊΣΥΦΟΣ"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":["x",{"threadId":"a..bHello World"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":["x",{"threadIdsQuery":0}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[[],{"threadId":"{name} has {count} items"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[{"a":{"b":"c"}},{"threadIdsQuery":null}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[null,{"threadId":".leading"}],"error":"Cannot read properties of null (reading 'literal')"}
+{"fn":"claudeTokenActivityCtes","args":[{"a":"b"},{"threadId":"a..b"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[["a",1],{"threadIdsQuery":{}}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[{},{"threadId":"😀"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[[],{"threadIdsQuery":null}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[[],{"$undefined":true}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[{},{}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[{},{"threadIdsQuery":true}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[[],{"threadIdsQuery":{"a":"b"}}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[{},{"threadId":"a.b.c"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[{"a":"b"},{"threadId":"line1\nline2"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[["a",1],{"threadId":"./x/**/*.jsonns:key.path"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[{},{"threadId":":"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[[],{"threadIdsQuery":["a",1]}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[true,{"threadIdsQuery":[]}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":["x",{"a":{"b":"c"}}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":["x",{"threadIdsQuery":{"a":{"b":"c"}}}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[{"a":"b"},"x"],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[{"a":{"b":"c"}},{"threadId":"src/a/b.ts"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[{},{"threadIdsQuery":{}}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[["a",1],{"threadId":"ΣΊΣΥΦΟΣ"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[{"a":{"b":"c"}},{"threadId":"straße"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[null],"error":"Cannot read properties of null (reading 'literal')"}
+{"fn":"claudeTokenActivityCtes","args":["x",[]],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[{"a":"b"},{"threadIdsQuery":["a",1]}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[[],{"threadIdsQuery":0}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[{"a":"b"},{"threadId":"emoji 👍🏽 mixab"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[true,{"threadId":"abc"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[true,{"threadIdsQuery":{"a":{"b":"c"}}}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[["a",1],{"threadId":"tab\tseparated"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[true,{"threadId":"日本語のテキスト"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[["a",1],{"threadId":"a:b:c"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[true,{"threadIdsQuery":{"a":"b"}}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[0,{}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[true,{"threadIdsQuery":"x"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[["a",1],{"threadIdsQuery":0}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[0,{"threadIdsQuery":null}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[{"a":"b"},{"threadIdsQuery":0}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[[],{"threadId":".leading"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":["x",{"threadId":".leading"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[{"a":{"b":"c"}}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[{},{"threadIdsQuery":0}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[{},{"threadId":"﻿bom"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[true,{"threadId":":"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[0,{"threadId":"a.b.c{name} has {count} items"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[[],true],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[true,{"a":{"b":"c"}}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":["x",{"threadId":"İstanbul"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[["a",1],{"threadId":"İstanbul"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[null,{"threadId":"a:b:c"}],"error":"Cannot read properties of null (reading 'literal')"}
+{"fn":"claudeTokenActivityCtes","args":[["a",1],null],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[null,{"threadIdsQuery":{"a":{"b":"c"}}}],"error":"Cannot read properties of null (reading 'literal')"}
+{"fn":"claudeTokenActivityCtes","args":[{},{"threadId":"ab.leading"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[0,{"threadId":"😀"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[true,{"threadId":".leading"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[{"a":"b"},{"threadId":"😀"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[{},{"threadId":"line1\nline2"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[[],{"threadId":"emoji 👍🏽 mix"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[0,{"threadIdsQuery":{"a":"b"}}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[{"a":"b"},{"threadId":"hello"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":["x",{"threadId":"trailing.ab"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[{},{"threadId":"trailing."}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[{"a":"b"},[]],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[{"a":{"b":"c"}},{"threadId":"a.b.chello world"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[["a",1],{"threadIdsQuery":["a",1]}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[{"a":"b"},{"$undefined":true}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[[],{"threadIdsQuery":{}}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[null,{"threadIdsQuery":["a",1]}],"error":"Cannot read properties of null (reading 'literal')"}
+{"fn":"claudeTokenActivityCtes","args":[["a",1],{"a":"b"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[0,{"threadIdsQuery":{}}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":["x",{"threadIdsQuery":["a",1]}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[["a",1],{"threadId":"a😀b😀c"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[null,{"threadId":"line1\nline2"}],"error":"Cannot read properties of null (reading 'literal')"}
+{"fn":"claudeTokenActivityCtes","args":[0,{"threadIdsQuery":0}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[["a",1],{"a":{"b":"c"}}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[null,{"$undefined":true}],"error":"Cannot read properties of null (reading 'literal')"}
+{"fn":"claudeTokenActivityCtes","args":[["a",1],{"$undefined":true}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[{},{"threadId":".leadinghello world"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[["a",1],{"threadIdsQuery":{"a":{"b":"c"}}}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[{},{"threadId":"a"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":["x",{"threadId":"HELLO"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[true,{"threadId":"Hello World{name} has {count} items"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[["a",1],{"threadId":"éa😀b😀c"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":["x",{"threadIdsQuery":[]}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":["x",{"threadIdsQuery":{"a":"b"}}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[{},{"threadId":"hello"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[null,{"threadIdsQuery":{"a":"b"}}],"error":"Cannot read properties of null (reading 'literal')"}
+{"fn":"claudeTokenActivityCtes","args":[0,{"threadId":"./x/**/*.json"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[{"a":"b"},{"threadIdsQuery":[]}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":["x",{"threadId":"a.b.c"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[[],{"threadIdsQuery":"x"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":["x",{"threadId":"line1\nline2  padded  "}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[["a",1],{"threadIdsQuery":"x"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[null,{"threadId":"line1\nline2.leading"}],"error":"Cannot read properties of null (reading 'literal')"}
+{"fn":"claudeTokenActivityCtes","args":[null,{"threadId":"ns:key.path"}],"error":"Cannot read properties of null (reading 'literal')"}
+{"fn":"claudeTokenActivityCtes","args":[{"a":{"b":"c"}},{"threadIdsQuery":true}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[{"a":{"b":"c"}},{"threadId":"ns:key.path"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":["x",{"threadIdsQuery":{}}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[["a",1],{"threadId":"ns:key.path"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[true,{"threadId":"﻿bomkey_name-1"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[{"a":"b"},{"threadIdsQuery":null}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[true,{"threadId":"src/a/b.ts"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[[],{"threadIdsQuery":true}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[{}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[null,{"threadId":"İstanbul"}],"error":"Cannot read properties of null (reading 'literal')"}
+{"fn":"claudeTokenActivityCtes","args":[null,{"threadIdsQuery":null}],"error":"Cannot read properties of null (reading 'literal')"}
+{"fn":"claudeTokenActivityCtes","args":[{},{"threadIdsQuery":[]}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[[],{"threadIdsQuery":{"a":{"b":"c"}}}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[0,{"threadId":"emoji 👍🏽 mixa.b.c"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[true,{}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[{},{"threadId":"emoji 👍🏽 mixa😀b😀c"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[{"a":{"b":"c"}},{"threadIdsQuery":{"a":{"b":"c"}}}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[{"a":{"b":"c"}},{"$undefined":true}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[["a",1],{"threadId":"a..ba"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":["x",0],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[["a",1],{"threadIdsQuery":[]}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[true,{"threadId":"tab\tseparated"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[[],{"threadId":"hello world"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":["x",{"threadId":"ünïcödé"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[null,{"threadIdsQuery":{}}],"error":"Cannot read properties of null (reading 'literal')"}
+{"fn":"claudeTokenActivityCtes","args":[["a",1],{"threadIdsQuery":{"a":"b"}}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[0,{"a":"b"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[0,{"threadId":"src/a/b.ts"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[0,"x"],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[null,{"threadId":""}],"error":"Cannot read properties of null (reading 'literal')"}
+{"fn":"claudeTokenActivityCtes","args":[["a",1],"x"],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[[],{"threadId":"HELLO"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[{"a":{"b":"c"}},{}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[null,{"threadId":":"}],"error":"Cannot read properties of null (reading 'literal')"}
+{"fn":"claudeTokenActivityCtes","args":[{"a":{"b":"c"}},{"threadId":":"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[null,{"threadId":"key_name-1"}],"error":"Cannot read properties of null (reading 'literal')"}
+{"fn":"claudeTokenActivityCtes","args":[{"a":"b"},{"a":{"b":"c"}}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[[],{"threadId":":"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[{"a":"b"},{"threadId":"ns:key.path"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[["a",1],{"threadId":"emoji 👍🏽 mix"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[0,["a",1]],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[true,{"threadId":"ab"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[[],{"threadId":"a😀b😀c"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[{},{"threadIdsQuery":"x"}],"error":"sql.literal is not a function"}
+{"fn":"claudeTokenActivityCtes","args":[{},{"threadId":"日本語のテキスト"}],"error":"sql.literal is not a function"}

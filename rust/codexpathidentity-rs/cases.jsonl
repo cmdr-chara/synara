@@ -1,0 +1,445 @@
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/  padded  ΣΊΣΥΦΟΣ"], "ok": "/codexidroot/  padded  ΣΊΣΥΦΟΣ"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/abc"], "ok": "/codexidroot/abc"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/ünïcödé"], "ok": "/codexidroot/ünïcödé"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/﻿bom"], "ok": "/codexidroot/﻿bom"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/HELLO"], "ok": "/codexidroot/HELLO"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/a"], "ok": "/codexidroot/a"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/.leading"], "ok": "/codexidroot/.leading"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/ns:key.path"], "ok": "/codexidroot/ns:key.path"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/İstanbul"], "ok": "/codexidroot/İstanbul"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/straße"], "ok": "/codexidroot/straße"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/a😀b😀c"], "ok": "/codexidroot/a😀b😀c"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/./x/**/*.json"], "ok": "/codexidroot/x/**/*.json"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/ΣΊΣΥΦΟΣ"], "ok": "/codexidroot/ΣΊΣΥΦΟΣ"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/a.b.c"], "ok": "/codexidroot/a.b.c"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/ΣΊΣΥΦΟΣHELLO"], "ok": "/codexidroot/ΣΊΣΥΦΟΣHELLO"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/"], "ok": "/codexidroot"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/é"], "ok": "/codexidroot/é"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/src/a/b.ts"], "ok": "/codexidroot/src/a/b.ts"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/trailing."], "ok": "/codexidroot/trailing."}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/hello world"], "ok": "/codexidroot/hello world"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/a..b"], "ok": "/codexidroot/a..b"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/  padded  "], "ok": "/codexidroot/  padded  "}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/日本語のテキスト"], "ok": "/codexidroot/日本語のテキスト"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/Hello World.leading"], "ok": "/codexidroot/Hello World.leading"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/tab\tseparated"], "ok": "/codexidroot/tab\tseparated"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/😀"], "ok": "/codexidroot/😀"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/HELLOa:b:c"], "ok": "/codexidroot/HELLOa:b:c"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/emoji 👍🏽 mix"], "ok": "/codexidroot/emoji 👍🏽 mix"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/key_name-1"], "ok": "/codexidroot/key_name-1"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/hellohello world"], "ok": "/codexidroot/hellohello world"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/emoji 👍🏽 mixkey_name-1"], "ok": "/codexidroot/emoji 👍🏽 mixkey_name-1"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/hello"], "ok": "/codexidroot/hello"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/ab"], "ok": "/codexidroot/ab"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/./x/**/*.jsontab\tseparated"], "ok": "/codexidroot/x/**/*.jsontab\tseparated"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/ΣΊΣΥΦΟΣab"], "ok": "/codexidroot/ΣΊΣΥΦΟΣab"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/helloa..b"], "ok": "/codexidroot/helloa..b"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/{name} has {count} items"], "ok": "/codexidroot/{name} has {count} items"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/key_name-1ünïcödé"], "ok": "/codexidroot/key_name-1ünïcödé"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/😀src/a/b.ts"], "ok": "/codexidroot/😀src/a/b.ts"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/ünïcödéİstanbul"], "ok": "/codexidroot/ünïcödéİstanbul"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/a:b:c"], "ok": "/codexidroot/a:b:c"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/:"], "ok": "/codexidroot/:"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/  padded  tab\tseparated"], "ok": "/codexidroot/  padded  tab\tseparated"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/key_name-1tab\tseparated"], "ok": "/codexidroot/key_name-1tab\tseparated"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/line1\nline2abc"], "ok": "/codexidroot/line1\nline2abc"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/a:b:c日本語のテキスト"], "ok": "/codexidroot/a:b:c日本語のテキスト"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/ünïcödéemoji 👍🏽 mix"], "ok": "/codexidroot/ünïcödéemoji 👍🏽 mix"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/a﻿bom"], "ok": "/codexidroot/a﻿bom"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/line1\nline2"], "ok": "/codexidroot/line1\nline2"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/  padded  hello world"], "ok": "/codexidroot/  padded  hello world"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/ünïcödéa.b.c"], "ok": "/codexidroot/ünïcödéa.b.c"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/{name} has {count} itemsünïcödé"], "ok": "/codexidroot/{name} has {count} itemsünïcödé"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/./x/**/*.jsonHello World"], "ok": "/codexidroot/x/**/*.jsonHello World"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/.leading  padded  "], "ok": "/codexidroot/.leading  padded  "}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/﻿bomtrailing."], "ok": "/codexidroot/﻿bomtrailing."}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/ünïcödétab\tseparated"], "ok": "/codexidroot/ünïcödétab\tseparated"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/😀a"], "ok": "/codexidroot/😀a"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/.leading😀"], "ok": "/codexidroot/.leading😀"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/😀{name} has {count} items"], "ok": "/codexidroot/😀{name} has {count} items"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/ns:key.patha.b.c"], "ok": "/codexidroot/ns:key.patha.b.c"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/HELLOa.b.c"], "ok": "/codexidroot/HELLOa.b.c"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/abcé"], "ok": "/codexidroot/abcé"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/trailing.﻿bom"], "ok": "/codexidroot/trailing.﻿bom"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/ΣΊΣΥΦΟΣtab\tseparated"], "ok": "/codexidroot/ΣΊΣΥΦΟΣtab\tseparated"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/é./x/**/*.json"], "ok": "/codexidroot/é./x/**/*.json"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/ΣΊΣΥΦΟΣHello World"], "ok": "/codexidroot/ΣΊΣΥΦΟΣHello World"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/:a"], "ok": "/codexidroot/:a"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/tab\tseparateda.b.c"], "ok": "/codexidroot/tab\tseparateda.b.c"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/😀ünïcödé"], "ok": "/codexidroot/😀ünïcödé"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/Hello World"], "ok": "/codexidroot/Hello World"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/İstanbulHello World"], "ok": "/codexidroot/İstanbulHello World"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/ΣΊΣΥΦΟΣemoji 👍🏽 mix"], "ok": "/codexidroot/ΣΊΣΥΦΟΣemoji 👍🏽 mix"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/trailing.tab\tseparated"], "ok": "/codexidroot/trailing.tab\tseparated"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/tab\tseparatedtab\tseparated"], "ok": "/codexidroot/tab\tseparatedtab\tseparated"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/src/a/b.tssrc/a/b.ts"], "ok": "/codexidroot/src/a/b.tssrc/a/b.ts"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/ΣΊΣΥΦΟΣa.b.c"], "ok": "/codexidroot/ΣΊΣΥΦΟΣa.b.c"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/trailing.HELLO"], "ok": "/codexidroot/trailing.HELLO"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/ΣΊΣΥΦΟΣline1\nline2"], "ok": "/codexidroot/ΣΊΣΥΦΟΣline1\nline2"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/a:b:chello"], "ok": "/codexidroot/a:b:chello"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/ΣΊΣΥΦΟΣhello world"], "ok": "/codexidroot/ΣΊΣΥΦΟΣhello world"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/trailing.a:b:c"], "ok": "/codexidroot/trailing.a:b:c"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/HELLOab"], "ok": "/codexidroot/HELLOab"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/ns:key.patha😀b😀c"], "ok": "/codexidroot/ns:key.patha😀b😀c"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/ünïcödéa..b"], "ok": "/codexidroot/ünïcödéa..b"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/{name} has {count} items:"], "ok": "/codexidroot/{name} has {count} items:"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/key_name-1abc"], "ok": "/codexidroot/key_name-1abc"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/tab\tseparatedhello"], "ok": "/codexidroot/tab\tseparatedhello"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/日本語のテキストHello World"], "ok": "/codexidroot/日本語のテキストHello World"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/tab\tseparateda..b"], "ok": "/codexidroot/tab\tseparateda..b"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/a😀b😀cabc"], "ok": "/codexidroot/a😀b😀cabc"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/ns:key.pathns:key.path"], "ok": "/codexidroot/ns:key.pathns:key.path"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/straße﻿bom"], "ok": "/codexidroot/straße﻿bom"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/trailing.ns:key.path"], "ok": "/codexidroot/trailing.ns:key.path"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/éstraße"], "ok": "/codexidroot/éstraße"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/  padded  abc"], "ok": "/codexidroot/  padded  abc"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/éé"], "ok": "/codexidroot/éé"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/:ns:key.path"], "ok": "/codexidroot/:ns:key.path"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/a..bhello world"], "ok": "/codexidroot/a..bhello world"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/abcns:key.path"], "ok": "/codexidroot/abcns:key.path"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/日本語のテキストİstanbul"], "ok": "/codexidroot/日本語のテキストİstanbul"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/éa"], "ok": "/codexidroot/éa"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/ΣΊΣΥΦΟΣ.leading"], "ok": "/codexidroot/ΣΊΣΥΦΟΣ.leading"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/hellostraße"], "ok": "/codexidroot/hellostraße"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/abckey_name-1"], "ok": "/codexidroot/abckey_name-1"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/a😀b😀c﻿bom"], "ok": "/codexidroot/a😀b😀c﻿bom"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/./x/**/*.jsonHELLO"], "ok": "/codexidroot/x/**/*.jsonHELLO"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/ΣΊΣΥΦΟΣ日本語のテキスト"], "ok": "/codexidroot/ΣΊΣΥΦΟΣ日本語のテキスト"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/Hello World😀"], "ok": "/codexidroot/Hello World😀"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/😀  padded  "], "ok": "/codexidroot/😀  padded  "}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/Hello Worldé"], "ok": "/codexidroot/Hello Worldé"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/a.b.ctrailing."], "ok": "/codexidroot/a.b.ctrailing."}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/./x/**/*.json./x/**/*.json"], "ok": "/codexidroot/x/**/*.json./x/**/*.json"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/Hello Worldhello world"], "ok": "/codexidroot/Hello Worldhello world"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/src/a/b.ts  padded  "], "ok": "/codexidroot/src/a/b.ts  padded  "}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/﻿boma..b"], "ok": "/codexidroot/﻿boma..b"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/hello worldkey_name-1"], "ok": "/codexidroot/hello worldkey_name-1"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/emoji 👍🏽 mixHello World"], "ok": "/codexidroot/emoji 👍🏽 mixHello World"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/😀hello"], "ok": "/codexidroot/😀hello"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/ns:key.pathline1\nline2"], "ok": "/codexidroot/ns:key.pathline1\nline2"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/a.b.cünïcödé"], "ok": "/codexidroot/a.b.cünïcödé"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/ünïcödésrc/a/b.ts"], "ok": "/codexidroot/ünïcödésrc/a/b.ts"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/line1\nline2:"], "ok": "/codexidroot/line1\nline2:"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/a.b.ca..b"], "ok": "/codexidroot/a.b.ca..b"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/helloHELLO"], "ok": "/codexidroot/helloHELLO"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/tab\tseparatedhello world"], "ok": "/codexidroot/tab\tseparatedhello world"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/aa..b"], "ok": "/codexidroot/aa..b"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/hello worldns:key.path"], "ok": "/codexidroot/hello worldns:key.path"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/ns:key.path./x/**/*.json"], "ok": "/codexidroot/ns:key.path./x/**/*.json"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/trailing.abc"], "ok": "/codexidroot/trailing.abc"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/helloabc"], "ok": "/codexidroot/helloabc"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/abab"], "ok": "/codexidroot/abab"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/é.leading"], "ok": "/codexidroot/é.leading"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/İstanbulé"], "ok": "/codexidroot/İstanbulé"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/İstanbulline1\nline2"], "ok": "/codexidroot/İstanbulline1\nline2"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/abca😀b😀c"], "ok": "/codexidroot/abca😀b😀c"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/{name} has {count} itemsa😀b😀c"], "ok": "/codexidroot/{name} has {count} itemsa😀b😀c"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/a😀b😀cab"], "ok": "/codexidroot/a😀b😀cab"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/﻿bomHello World"], "ok": "/codexidroot/﻿bomHello World"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/😀日本語のテキスト"], "ok": "/codexidroot/😀日本語のテキスト"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/straßehello"], "ok": "/codexidroot/straßehello"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/tab\tseparatedkey_name-1"], "ok": "/codexidroot/tab\tseparatedkey_name-1"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/﻿boma:b:c"], "ok": "/codexidroot/﻿boma:b:c"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/Hello World﻿bom"], "ok": "/codexidroot/Hello World﻿bom"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/﻿bomemoji 👍🏽 mix"], "ok": "/codexidroot/﻿bomemoji 👍🏽 mix"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/./x/**/*.jsona.b.c"], "ok": "/codexidroot/x/**/*.jsona.b.c"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/hello.leading"], "ok": "/codexidroot/hello.leading"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/HELLO😀"], "ok": "/codexidroot/HELLO😀"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/hellokey_name-1"], "ok": "/codexidroot/hellokey_name-1"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/trailing.hello world"], "ok": "/codexidroot/trailing.hello world"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/abc😀"], "ok": "/codexidroot/abc😀"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/./x/**/*.jsonstraße"], "ok": "/codexidroot/x/**/*.jsonstraße"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/helloline1\nline2"], "ok": "/codexidroot/helloline1\nline2"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/src/a/b.tsé"], "ok": "/codexidroot/src/a/b.tsé"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/helloHello World"], "ok": "/codexidroot/helloHello World"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/﻿bom日本語のテキスト"], "ok": "/codexidroot/﻿bom日本語のテキスト"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/:{name} has {count} items"], "ok": "/codexidroot/:{name} has {count} items"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/a:b:ctab\tseparated"], "ok": "/codexidroot/a:b:ctab\tseparated"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/﻿bomhello world"], "ok": "/codexidroot/﻿bomhello world"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/a:b:c:"], "ok": "/codexidroot/a:b:c:"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/line1\nline2a"], "ok": "/codexidroot/line1\nline2a"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/:a.b.c"], "ok": "/codexidroot/:a.b.c"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/./x/**/*.jsontrailing."], "ok": "/codexidroot/x/**/*.jsontrailing."}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/helloab"], "ok": "/codexidroot/helloab"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/﻿bomsrc/a/b.ts"], "ok": "/codexidroot/﻿bomsrc/a/b.ts"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/Hello World  padded  "], "ok": "/codexidroot/Hello World  padded  "}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/hello worldHello World"], "ok": "/codexidroot/hello worldHello World"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/src/a/b.tsa..b"], "ok": "/codexidroot/src/a/b.tsa..b"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/{name} has {count} itemsa.b.c"], "ok": "/codexidroot/{name} has {count} itemsa.b.c"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/line1\nline2hello world"], "ok": "/codexidroot/line1\nline2hello world"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/a.b.ckey_name-1"], "ok": "/codexidroot/a.b.ckey_name-1"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/aba"], "ok": "/codexidroot/aba"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/line1\nline2ns:key.path"], "ok": "/codexidroot/line1\nline2ns:key.path"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/ékey_name-1"], "ok": "/codexidroot/ékey_name-1"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/trailing.ΣΊΣΥΦΟΣ"], "ok": "/codexidroot/trailing.ΣΊΣΥΦΟΣ"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/line1\nline2a..b"], "ok": "/codexidroot/line1\nline2a..b"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/hello worldhello"], "ok": "/codexidroot/hello worldhello"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/ΣΊΣΥΦΟΣé"], "ok": "/codexidroot/ΣΊΣΥΦΟΣé"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/line1\nline2a:b:c"], "ok": "/codexidroot/line1\nline2a:b:c"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/a😀b😀cHello World"], "ok": "/codexidroot/a😀b😀cHello World"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/tab\tseparatedé"], "ok": "/codexidroot/tab\tseparatedé"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/straße:"], "ok": "/codexidroot/straße:"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/a.b.cns:key.path"], "ok": "/codexidroot/a.b.cns:key.path"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/a.leading"], "ok": "/codexidroot/a.leading"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/a..bemoji 👍🏽 mix"], "ok": "/codexidroot/a..bemoji 👍🏽 mix"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/a:b:c😀"], "ok": "/codexidroot/a:b:c😀"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/abcline1\nline2"], "ok": "/codexidroot/abcline1\nline2"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/emoji 👍🏽 mixa"], "ok": "/codexidroot/emoji 👍🏽 mixa"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/HELLO  padded  "], "ok": "/codexidroot/HELLO  padded  "}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/日本語のテキスト.leading"], "ok": "/codexidroot/日本語のテキスト.leading"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/😀a..b"], "ok": "/codexidroot/😀a..b"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/éünïcödé"], "ok": "/codexidroot/éünïcödé"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/hello worlda😀b😀c"], "ok": "/codexidroot/hello worlda😀b😀c"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/tab\tseparateda😀b😀c"], "ok": "/codexidroot/tab\tseparateda😀b😀c"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/key_name-1Hello World"], "ok": "/codexidroot/key_name-1Hello World"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/a..bsrc/a/b.ts"], "ok": "/codexidroot/a..bsrc/a/b.ts"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/line1\nline2a😀b😀c"], "ok": "/codexidroot/line1\nline2a😀b😀c"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/a..bé"], "ok": "/codexidroot/a..bé"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/İstanbula..b"], "ok": "/codexidroot/İstanbula..b"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/straßehello world"], "ok": "/codexidroot/straßehello world"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/Hello World./x/**/*.json"], "ok": "/codexidroot/Hello World./x/**/*.json"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/héllo wörld"], "ok": "/codexidroot/héllo wörld"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/👍🏽 thumbs"], "ok": "/codexidroot/👍🏽 thumbs"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/日本語"], "ok": "/codexidroot/日本語"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/ılık ırmak"], "ok": "/codexidroot/ılık ırmak"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/👨‍👩‍👧 family"], "ok": "/codexidroot/👨‍👩‍👧 family"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/a b"], "ok": "/codexidroot/a b"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/a😀b"], "ok": "/codexidroot/a😀b"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/a²b x½ y①"], "ok": "/codexidroot/a²b x½ y①"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/aⅠb Ⅻ"], "ok": "/codexidroot/aⅠb Ⅻ"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/a𐐀b 𝐀bc"], "ok": "/codexidroot/a𐐀b 𝐀bc"}
+{"fn": "resolveCodexPathIdentity", "args": ["/codexidroot/कि ٣٤"], "ok": "/codexidroot/कि ٣٤"}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/dé  ", "/codexidroot/ünïcödé  padded  "], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/ab./x/**/*.json", "/codexidroot/  padded  "], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/./x/**/*.json", "/codexidroot/*.j"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/a😀b😀c", "/codexidroot/B"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/{name} has {count} items", "/codexidroot/ünïcödé"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/😀", "/codexidroot/ünïcödé"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/{name} has {count} itemsemoji 👍🏽 mix", "/codexidroot/line1\nline2"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/", "/codexidroot/İstanbul"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/.leading:", "/codexidroot/abc"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/Hello World", "/codexidroot/a"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/İstanbul", "/codexidroot/tab\tseparated"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/key_name-1", "/codexidroot/tab\tseparated"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/hello", "/codexidroot/.leadingline1\nline2"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/ünïcödé:", "/codexidroot/İstanbul"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/ΣΊΣΥΦΟΣ", "/codexidroot/a.b.c"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/ADDE", "/codexidroot/  padded  "], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/emoji 👍🏽 mixa", "/codexidroot/a"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/l", "/codexidroot/Hello World"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/tab\tseparated", "/codexidroot/emoji 👍🏽 mix./x/**/*.json"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/emoji 👍🏽 mix", "/codexidroot/{name} has {count} items"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/a:b:c", "/codexidroot/straße﻿bom"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/c", "/codexidroot/a:b:c"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/a.b.c", "/codexidroot/hello"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/{name} has {count} items", "/codexidroot/😀a:b:c"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/{name} has {count} items", "/codexidroot/a"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/abc", "/codexidroot/b"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/ünïcödétab\tseparated", "/codexidroot/:"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/trailing.", "/codexidroot/abc"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/key_name-1é", "/codexidroot/é"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/ΣΊΣΥΦΟΣ", "/codexidroot/a😀b😀c"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/{name} has {count} items", "/codexidroot/a.b.c"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/ünïcödéΣΊΣΥΦΟΣ", "/codexidroot/a:b:c"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/trailing.", "/codexidroot/a..b"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/abc", "/codexidroot/é"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/😀", "/codexidroot/Hello World"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/HELLO", "/codexidroot/ΣΊΣΥΦΟΣtab\tseparated"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/  padded  emoji 👍🏽 mix", "/codexidroot/key_name-1"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/日本語のテキスト", "/codexidroot/a😀b😀c"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/ns:key.path", "/codexidroot/at"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/./x/**/*.jsonünïcödé", "/codexidroot/😀"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/İstanbul", "/codexidroot/Hello World"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/﻿bom", "/codexidroot/😀İstanbul"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/ns:key.path", "/codexidroot/ns:key.pat"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/./x/**/*.json", "/codexidroot/İstanbul"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/", "/codexidroot/{name} has {count} items"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/a😀b😀c", "/codexidroot/ab"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/a", "/codexidroot/ΣΊΣΥΦΟΣ"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/r", "/codexidroot/tab\tseparated"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/./x/**/*.jsonünïcödé", "/codexidroot/hello"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/ΣΊΣΥΦΟΣ", "/codexidroot/ünïcödé"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/l", "/codexidroot/hello world"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/tab\tseparated", "/codexidroot/src/a/b.tskey_name-1"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/./x/**/*.json", "/codexidroot/abc"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/lo World", "/codexidroot/Hello World"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/日本語のテキストa", "/codexidroot/hellohello world"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/a😀b😀cé", "/codexidroot/😀CÉ"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/emoji 👍🏽 mixkey_name-1", "/codexidroot/ΣΊΣΥΦΟΣ"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/:", "/codexidroot/:"], "ok": true}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/key_name-1", "/codexidroot/HELLOünïcödé"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/./x/**/*.json", "/codexidroot/.js"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/traili", "/codexidroot/trailing."], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/abc", "/codexidroot/ab"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/", "/codexidroot/hello world"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/  padded  ", "/codexidroot/a:b:c"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/ab", "/codexidroot/tab\tseparated"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/é", "/codexidroot/﻿bom"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/﻿bom", "/codexidroot/a..b"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/src/a/b.ts", "/codexidroot/ΣΊΣΥΦΟΣ"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/abc{name} has {count} items", "/codexidroot/ünïcödé.leading"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/  padded  ", "/codexidroot/tab\tseparated"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/ns:key.path", "/codexidroot/é"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/😀", "/codexidroot/a"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/tab\tseparated.leading", "/codexidroot/abchello world"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/ünïcödé", "/codexidroot/Hello World"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/😀", "/codexidroot/trailing."], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/:", "/codexidroot/{name} has {count} items"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/a", "/codexidroot/"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/hello world", "/codexidroot/a"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/trailing.", "/codexidroot/straße"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/hello worldΣΊΣΥΦΟΣ", "/codexidroot/lo worldΣ"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/a:b:c", "/codexidroot/﻿bom"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/hello", "/codexidroot/﻿bom"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/e", "/codexidroot/key_name-1"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/src/a/b.ts日本語のテキスト", "/codexidroot/ab"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/é", "/codexidroot/./x/**/*.json"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/:", "/codexidroot/  padded  "], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/Hello World", "/codexidroot/straßehello"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/hello", "/codexidroot/a.b.c{name} has {count} items"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/é./x/**/*.json", "/codexidroot/.leadingns:key.path"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/a", "/codexidroot/a"], "ok": true}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/日本語のテキスト", "/codexidroot/のテ"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/key_name-1", "/codexidroot/straße"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/😀", "/codexidroot/😀"], "ok": true}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/:", "/codexidroot/line1\nline2"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/Hello World", "/codexidroot/.leading"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/emoji 👍🏽 mix", "/codexidroot/👍🏽 MI"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/key_name-1", "/codexidroot/M"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/straße日本語のテキスト", "/codexidroot/hello"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/Hello World", "/codexidroot/İstanbulkey_name-1"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/İstanbul", "/codexidroot/nb"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/a:b:ca", "/codexidroot/a:b:c"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/é", "/codexidroot/a😀b😀cünïcödé"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/﻿bom", "/codexidroot/a:b:c"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/😀ab", "/codexidroot/a.b.c"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/a", "/codexidroot/tab\tseparated"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/E2", "/codexidroot/a..bline1\nline2"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/src/a/b.ts", "/codexidroot/TS"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/trailing.HELLO", "/codexidroot/aili"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/src/a/b.ts", "/codexidroot/src/a/b.ts"], "ok": true}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/./x/**/*.json", "/codexidroot/ab"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/src/a/b.ts", "/codexidroot/B.TS"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/日本語のテキスト", "/codexidroot/emoji 👍🏽 mix"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/a", "/codexidroot/ab"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/hello", "/codexidroot/é"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/key_name-1straße", "/codexidroot/emoji 👍🏽 mixsrc/a/b.ts"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/a😀b😀cİstanbul", "/codexidroot/l"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/abc", "/codexidroot/a.b.ca..b"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/日本語のテキスト", "/codexidroot/trailing."], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/ns:key.path", "/codexidroot/straße"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/a..bİstanbul", "/codexidroot/a..b"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/abc", "/codexidroot/bc"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/key_name-1", "/codexidroot/Y_"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/emoji 👍🏽 mixHELLO", "/codexidroot/ab"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/hello world", "/codexidroot/d"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/ello", "/codexidroot/hello world"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/ab", "/codexidroot/a.b.c"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/a😀b😀c", "/codexidroot/a:b:c"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/HELLO", "/codexidroot/emoji 👍🏽 mix"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/key_name-1", "/codexidroot/.leading"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/ünïcödé", "/codexidroot/é"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/_nam", "/codexidroot/key_name-1"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/line1\nline2", "/codexidroot/a:b:c"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/a.b.cΣΊΣΥΦΟΣ", "/codexidroot/a:b:c"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/Hello World", "/codexidroot/abc"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/s", "/codexidroot/./x/**/*.json"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/ab", "/codexidroot/"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/hello world", "/codexidroot/.leading"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/./x/**/*.json", "/codexidroot/./x/**/*.json"], "ok": true}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/hello world", "/codexidroot/ELLO WORL"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/  padded  ", "/codexidroot/key_name-1"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/trailing.ünïcödé", "/codexidroot/./x/**/*.json"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/aße", "/codexidroot/straße"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/é", "/codexidroot/ab"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/.pa", "/codexidroot/ns:key.path"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/a:b:c", "/codexidroot/日本語のテキスト"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/HELLO", "/codexidroot/src/a/b.ts"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/abİstanbul", "/codexidroot/ΣΊΣΥΦΟΣünïcödé"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/key_name-1", "/codexidroot/ab"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/a:b:c", "/codexidroot/hello world"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/key_name-1", "/codexidroot/﻿bom"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/ns:key.path", "/codexidroot/abtab\tseparated"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/Ο", "/codexidroot/ΣΊΣΥΦΟΣ"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/ab", "/codexidroot/hello"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/tab\tseparatedab", "/codexidroot/abc"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/./x/**/*.jsona😀b😀c", "/codexidroot/:"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/trailing.", "/codexidroot/./x/**/*.json"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/HELLO", "/codexidroot/{name} has {count} items"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/tab\tseparated", "/codexidroot/a..b"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/trailing.", "/codexidroot/aba..b"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/:", "/codexidroot/src/a/b.ts"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/ns:key.path", "/codexidroot/tab\tseparated"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/./x/**/*.json", "/codexidroot/:"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/Hello World", "/codexidroot/o "], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/HELLO", "/codexidroot/a.b.cé"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/a..b:", "/codexidroot/İstanbulhello"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/trailing.", "/codexidroot/a.b.c"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/key_name-1", "/codexidroot/ns:key.path"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/:", "/codexidroot/ünïcödé"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/trailing.", "/codexidroot/line1\nline2"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/tab\tseparated﻿bom", "/codexidroot/a:b:c"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/abc", "/codexidroot/a"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/😀", "/codexidroot/HELLO"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/hello world", "/codexidroot/src/a/b.ts"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/rc/a/b", "/codexidroot/src/a/b.ts"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/a..b", "/codexidroot/  padded  "], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/:", "/codexidroot/emoji 👍🏽 mix"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/straßeab", "/codexidroot/"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/line1\nline2", "/codexidroot/İstanbul"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/./x/**/*.json", "/codexidroot/﻿bom"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/emoji 👍🏽 mix﻿bom", "/codexidroot/İstanbulé"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/a..b", "/codexidroot/ΣΊΣΥΦΟΣ./x/**/*.json"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/straße", "/codexidroot/abc"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/日本語のテキスト", "/codexidroot/:"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/a.b.ca..b", "/codexidroot/İstanbul:"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/İstanbul", "/codexidroot/İstanbulsrc/a/b.ts"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/ünïcödé", "/codexidroot/ünïcödé"], "ok": true}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/./x/**/*.json", "/codexidroot/trailing."], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/src/a/b.ts", "/codexidroot/asrc/a/b.ts"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/{name} has {count} items", "/codexidroot/Hello World"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/a😀b😀c", "/codexidroot/😀"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/ed ", "/codexidroot/  padded  "], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/ΣΊΣΥΦΟΣ", "/codexidroot/ab"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/o", "/codexidroot/hello"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/İstanbul", "/codexidroot/straße"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/:", "/codexidroot/a.b.c"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/trailing.", "/codexidroot/é"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/Hello Worldtab\tseparated", "/codexidroot/.leading"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/İstanbulns:key.path", "/codexidroot/{name} has {count} items"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/hello", "/codexidroot/hello"], "ok": true}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/HELLO", "/codexidroot/E"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/héllo wörld", "/codexidroot/ünïcödé  padded  "], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/👍🏽 thumbs", "/codexidroot/ünïcödé  padded  "], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/日本語", "/codexidroot/ünïcödé  padded  "], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/", "/codexidroot/ünïcödé  padded  "], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/é", "/codexidroot/ünïcödé  padded  "], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/İstanbul", "/codexidroot/ünïcödé  padded  "], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/straße", "/codexidroot/ünïcödé  padded  "], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/ılık ırmak", "/codexidroot/ünïcödé  padded  "], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/👨‍👩‍👧 family", "/codexidroot/ünïcödé  padded  "], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/a b", "/codexidroot/ünïcödé  padded  "], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/ΣΊΣΥΦΟΣ", "/codexidroot/ünïcödé  padded  "], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/a😀b", "/codexidroot/ünïcödé  padded  "], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/﻿bom", "/codexidroot/ünïcödé  padded  "], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/a²b x½ y①", "/codexidroot/ünïcödé  padded  "], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/aⅠb Ⅻ", "/codexidroot/ünïcödé  padded  "], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/a𐐀b 𝐀bc", "/codexidroot/ünïcödé  padded  "], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/कि ٣٤", "/codexidroot/ünïcödé  padded  "], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/dé  ", "/codexidroot/héllo wörld"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/dé  ", "/codexidroot/👍🏽 thumbs"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/dé  ", "/codexidroot/日本語"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/dé  ", "/codexidroot/"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/dé  ", "/codexidroot/é"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/dé  ", "/codexidroot/İstanbul"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/dé  ", "/codexidroot/straße"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/dé  ", "/codexidroot/ılık ırmak"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/dé  ", "/codexidroot/👨‍👩‍👧 family"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/dé  ", "/codexidroot/a b"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/dé  ", "/codexidroot/ΣΊΣΥΦΟΣ"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/dé  ", "/codexidroot/a😀b"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/dé  ", "/codexidroot/﻿bom"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/dé  ", "/codexidroot/a²b x½ y①"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/dé  ", "/codexidroot/aⅠb Ⅻ"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/dé  ", "/codexidroot/a𐐀b 𝐀bc"], "ok": false}
+{"fn": "codexPathsReferenceSameLocation", "args": ["/codexidroot/dé  ", "/codexidroot/कि ٣٤"], "ok": false}

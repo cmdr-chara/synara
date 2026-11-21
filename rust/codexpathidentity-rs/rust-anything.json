@@ -1,0 +1,67 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/codexPathIdentity.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "codexpathidentity-rs",
+  "exports": [
+    {
+      "name": "resolveCodexPathIdentity",
+      "file": "apps/server/src/codexPathIdentity.ts",
+      "line": 14,
+      "params": [
+        {
+          "name": "inputPath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "codexPathsReferenceSameLocation",
+      "file": "apps/server/src/codexPathIdentity.ts",
+      "line": 40,
+      "params": [
+        {
+          "name": "left",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "right",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "resolveCodexPathIdentityIo",
+      "file": "apps/server/src/codexPathIdentity.ts",
+      "line": 18,
+      "reason": "generator: returns a lazy iterator"
+    },
+    {
+      "name": "codexPathsReferenceSameLocationIo",
+      "file": "apps/server/src/codexPathIdentity.ts",
+      "line": 44,
+      "reason": "generator: returns a lazy iterator"
+    }
+  ]
+}

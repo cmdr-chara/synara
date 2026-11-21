@@ -1,0 +1,36 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/processArgumentRedaction.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "processargumentredaction-rs",
+  "exports": [
+    {
+      "name": "redactSensitiveProcessArgs",
+      "file": "apps/server/src/processArgumentRedaction.ts",
+      "line": 349,
+      "params": [
+        {
+          "name": "args",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "options",
+          "ts_type": "RedactSensitiveProcessArgsOptions",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

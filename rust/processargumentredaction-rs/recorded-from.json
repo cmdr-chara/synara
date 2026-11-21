@@ -1,0 +1,17 @@
+{
+  "unit": "apps/server/src/processArgumentRedaction.ts",
+  "files": 1,
+  "fingerprint": "a90723331696f0b9",
+  "coverage": {
+    "lines": 347,
+    "reached": 39,
+    "files": [
+      {
+        "file": "apps/server/src/processArgumentRedaction.ts",
+        "lines": 347,
+        "reached": 39,
+        "missed": "14-18, 22-28, 30-35, 39-70, 72-75, 77-91, 93-109, 111, 113-130, 132-284, 286-305, 307-329, 335-341"
+      }
+    ]
+  }
+}

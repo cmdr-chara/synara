@@ -1,0 +1,17 @@
+{
+  "unit": "apps/desktop/src/windowsShellIco.ts",
+  "files": 1,
+  "fingerprint": "fb8a2927186fb558",
+  "coverage": {
+    "lines": 132,
+    "reached": 83,
+    "files": [
+      {
+        "file": "apps/desktop/src/windowsShellIco.ts",
+        "lines": 132,
+        "reached": 83,
+        "missed": "29-31, 38-41, 66-79, 83-97, 111-122, 143"
+      }
+    ]
+  }
+}

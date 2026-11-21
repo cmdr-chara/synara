@@ -1,0 +1,73 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/desktop/src/windowsShellIco.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "windowsshellico-rs",
+  "exports": [
+    {
+      "name": "inspectIcoEntries",
+      "file": "apps/desktop/src/windowsShellIco.ts",
+      "line": 27,
+      "params": [
+        {
+          "name": "ico",
+          "ts_type": "Buffer",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "IcoEntryInfo[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "extractIcoPngImages",
+      "file": "apps/desktop/src/windowsShellIco.ts",
+      "line": 35,
+      "params": [
+        {
+          "name": "ico",
+          "ts_type": "Buffer",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "IcoPngImage[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "encodeWindowsShellIco",
+      "file": "apps/desktop/src/windowsShellIco.ts",
+      "line": 45,
+      "params": [
+        {
+          "name": "images",
+          "ts_type": "readonly ShellIcoBitmap[]",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Buffer",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "toWindowsShellIco",
+      "file": "apps/desktop/src/windowsShellIco.ts",
+      "line": 82,
+      "reason": "takes or returns a function"
+    }
+  ]
+}

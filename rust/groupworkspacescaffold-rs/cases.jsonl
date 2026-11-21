@@ -1,0 +1,200 @@
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"{name} has {count} itemsemoji 👍🏽 mix","groupsWorkspaceRoot":":"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"tab\tseparated","groupsWorkspaceRoot":"ΣΊΣΥΦΟΣns:key.path"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"ΣΊΣΥΦΟΣ","groupsWorkspaceRoot":"abc"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"﻿bom","groupsWorkspaceRoot":"Hello World"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"tab\tseparated","groupsWorkspaceRoot":""}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"straße","groupsWorkspaceRoot":"a😀b😀c"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"key_name-1.leading","groupsWorkspaceRoot":"line1\nline2a😀b😀c"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"ns:key.path","groupsWorkspaceRoot":"😀"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"a😀b😀c","groupsWorkspaceRoot":"Hello World"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"./x/**/*.json","groupsWorkspaceRoot":"straße"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"{name} has {count} items","groupsWorkspaceRoot":"a:b:c"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"a.b.ca","groupsWorkspaceRoot":"﻿bom.leading"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[0],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"a😀b😀c","groupsWorkspaceRoot":"hello world"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"","groupsWorkspaceRoot":"ünïcödé:"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"a..b","groupsWorkspaceRoot":"日本語のテキスト"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"a😀b😀c","groupsWorkspaceRoot":""}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"line1\nline2","groupsWorkspaceRoot":"ns:key.path"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"ab","groupsWorkspaceRoot":"İstanbul"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"straße","groupsWorkspaceRoot":"tab\tseparated"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"日本語のテキスト","groupsWorkspaceRoot":"a.b.c"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"a..b","groupsWorkspaceRoot":"trailing..leading"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"😀","groupsWorkspaceRoot":"ab"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"a..b","groupsWorkspaceRoot":"ab日本語のテキスト"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"é","groupsWorkspaceRoot":"ünïcödé"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"a:b:c","groupsWorkspaceRoot":"straße"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[[]],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"aba😀b😀c","groupsWorkspaceRoot":"ΣΊΣΥΦΟΣİstanbul"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"a..b","groupsWorkspaceRoot":"﻿bom"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"hello","groupsWorkspaceRoot":"日本語のテキストünïcödé"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"a","groupsWorkspaceRoot":"ünïcödé"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"😀","groupsWorkspaceRoot":"ns:key.path"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"trailing.","groupsWorkspaceRoot":"a😀b😀cemoji 👍🏽 mix"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"hello world","groupsWorkspaceRoot":"line1\nline2"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"{name} has {count} items","groupsWorkspaceRoot":"İstanbul:"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"hello","groupsWorkspaceRoot":"aba..b"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"a:b:c","groupsWorkspaceRoot":"日本語のテキスト"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"😀","groupsWorkspaceRoot":".leading"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"aΣΊΣΥΦΟΣ","groupsWorkspaceRoot":""}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"a.b.ca","groupsWorkspaceRoot":"{name} has {count} items"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"emoji 👍🏽 mix./x/**/*.json","groupsWorkspaceRoot":"﻿bom"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":".leading","groupsWorkspaceRoot":"straße"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"Hello World","groupsWorkspaceRoot":"😀"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"a.b.c","groupsWorkspaceRoot":"trailing."}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"straße","groupsWorkspaceRoot":"  padded  "}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"a","groupsWorkspaceRoot":"日本語のテキストünïcödé"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"İstanbul","groupsWorkspaceRoot":"a..b"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"src/a/b.tstab\tseparated","groupsWorkspaceRoot":"a😀b😀c  padded  "}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"é","groupsWorkspaceRoot":"abc"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"key_name-1hello world","groupsWorkspaceRoot":"{name} has {count} items"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"tab\tseparateda😀b😀c","groupsWorkspaceRoot":":"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"a😀b😀c","groupsWorkspaceRoot":"ns:key.path"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"helloé","groupsWorkspaceRoot":"a😀b😀ctab\tseparated"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"hello world","groupsWorkspaceRoot":"😀  padded  "}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"İstanbul","groupsWorkspaceRoot":"ns:key.path"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"hello world","groupsWorkspaceRoot":"emoji 👍🏽 mix"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"a:b:c","groupsWorkspaceRoot":"hello"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"a":"b"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"HELLO","groupsWorkspaceRoot":".leading"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[["a",1]],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"straße","groupsWorkspaceRoot":"é"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"aHello World","groupsWorkspaceRoot":"😀"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"a","groupsWorkspaceRoot":"key_name-1"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"ünïcödé","groupsWorkspaceRoot":"straße"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"a😀b😀c","groupsWorkspaceRoot":"ΣΊΣΥΦΟΣ"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"😀","groupsWorkspaceRoot":"İstanbul"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"hello日本語のテキスト","groupsWorkspaceRoot":"a.b.c"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[null],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"hello world","groupsWorkspaceRoot":"a😀b😀c"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"straße","groupsWorkspaceRoot":"éHello World"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"key_name-1﻿bom","groupsWorkspaceRoot":"line1\nline2"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"a","groupsWorkspaceRoot":"tab\tseparated"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"line1\nline2","groupsWorkspaceRoot":"./x/**/*.json"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"straße:","groupsWorkspaceRoot":"tab\tseparated"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":".leading","groupsWorkspaceRoot":"﻿boma"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"Hello World","groupsWorkspaceRoot":"  padded  "}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"a😀b😀c","groupsWorkspaceRoot":":a..b"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"line1\nline2","groupsWorkspaceRoot":"a..b"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":".leadinghello","groupsWorkspaceRoot":"hello"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"hello world","groupsWorkspaceRoot":"ΣΊΣΥΦΟΣ"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"src/a/b.ts","groupsWorkspaceRoot":":"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"日本語のテキストa😀b😀c","groupsWorkspaceRoot":"日本語のテキスト"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"ns:key.path","groupsWorkspaceRoot":"{name} has {count} items"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"a.b.c","groupsWorkspaceRoot":"{name} has {count} items日本語のテキスト"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"trailing.a","groupsWorkspaceRoot":"./x/**/*.json"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"hellohello world","groupsWorkspaceRoot":"ab"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"tab\tseparated","groupsWorkspaceRoot":"ünïcödétab\tseparated"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"","groupsWorkspaceRoot":"ns:key.path"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"日本語のテキスト","groupsWorkspaceRoot":"﻿bom"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"trailing.","groupsWorkspaceRoot":"ΣΊΣΥΦΟΣ"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"ΣΊΣΥΦΟΣ","groupsWorkspaceRoot":"tab\tseparated😀"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"ab./x/**/*.json","groupsWorkspaceRoot":"İstanbul"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"src/a/b.ts","groupsWorkspaceRoot":"hello"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"src/a/b.ts","groupsWorkspaceRoot":"Hello Worldsrc/a/b.ts"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":":","groupsWorkspaceRoot":"key_name-1ΣΊΣΥΦΟΣ"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"abcstraße","groupsWorkspaceRoot":"ünïcödé"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"trailing.src/a/b.ts","groupsWorkspaceRoot":"a..b"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":".leading","groupsWorkspaceRoot":"ab"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"a.b.cİstanbul","groupsWorkspaceRoot":"ns:key.path"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"ΣΊΣΥΦΟΣ","groupsWorkspaceRoot":"hello"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"a","groupsWorkspaceRoot":"ab"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"Hello World","groupsWorkspaceRoot":"src/a/b.ts"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"a..b","groupsWorkspaceRoot":"hello world"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"trailing.","groupsWorkspaceRoot":"abc"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"ΣΊΣΥΦΟΣ","groupsWorkspaceRoot":"ns:key.path"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"a.b.c","groupsWorkspaceRoot":"a😀b😀c"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"﻿bom","groupsWorkspaceRoot":"a..b"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"{name} has {count} items","groupsWorkspaceRoot":"a😀b😀ca😀b😀c"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"Hello World:","groupsWorkspaceRoot":"a"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"😀","groupsWorkspaceRoot":"hello world"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"é","groupsWorkspaceRoot":"HELLO"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"{name} has {count} items","groupsWorkspaceRoot":"ab"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"日本語のテキスト","groupsWorkspaceRoot":"  padded  "}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"日本語のテキスト","groupsWorkspaceRoot":"a😀b😀c"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"src/a/b.tsİstanbul","groupsWorkspaceRoot":"tab\tseparated"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"abc","groupsWorkspaceRoot":"{name} has {count} items"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"ns:key.path","groupsWorkspaceRoot":"a.b.c"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"a:b:c","groupsWorkspaceRoot":"a"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"line1\nline2","groupsWorkspaceRoot":"HELLO"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"key_name-1","groupsWorkspaceRoot":".leading"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"src/a/b.ts","groupsWorkspaceRoot":"abc"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":".leadingtrailing.","groupsWorkspaceRoot":"hello"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"{name} has {count} items","groupsWorkspaceRoot":"HELLO"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"key_name-1","groupsWorkspaceRoot":""}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"a😀b😀c","groupsWorkspaceRoot":"{name} has {count} items"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"key_name-1","groupsWorkspaceRoot":"İstanbul"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"a:b:c","groupsWorkspaceRoot":"tab\tseparated"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"emoji 👍🏽 mixline1\nline2","groupsWorkspaceRoot":"ns:key.path"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"é","groupsWorkspaceRoot":"é"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"emoji 👍🏽 mix","groupsWorkspaceRoot":"line1\nline2"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"a..b","groupsWorkspaceRoot":".leading"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"😀line1\nline2","groupsWorkspaceRoot":"é"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"a","groupsWorkspaceRoot":"line1\nline2"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"a","groupsWorkspaceRoot":"ΣΊΣΥΦΟΣsrc/a/b.ts"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"HELLOline1\nline2","groupsWorkspaceRoot":"{name} has {count} itemsa:b:c"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"Hello World","groupsWorkspaceRoot":"ünïcödé"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"a","groupsWorkspaceRoot":"  padded  "}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"ünïcödé","groupsWorkspaceRoot":"a:b:ctab\tseparated"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"ns:key.path","groupsWorkspaceRoot":"  padded  "}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[true],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":":","groupsWorkspaceRoot":"Hello World日本語のテキスト"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"ns:key.pathtab\tseparated","groupsWorkspaceRoot":"helloHello World"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"line1\nline2","groupsWorkspaceRoot":"a"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":".leading","groupsWorkspaceRoot":"hello.leading"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"HELLO","groupsWorkspaceRoot":"Hello Worldhello world"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"./x/**/*.json","groupsWorkspaceRoot":"ns:key.path"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"key_name-1tab\tseparated","groupsWorkspaceRoot":"hello world"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"","groupsWorkspaceRoot":"😀src/a/b.ts"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"aba","groupsWorkspaceRoot":"  padded  "}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"﻿bom","groupsWorkspaceRoot":"İstanbul"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"ns:key.pathé","groupsWorkspaceRoot":"a:b:c"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"Hello World","groupsWorkspaceRoot":":"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"a..b","groupsWorkspaceRoot":"  padded  日本語のテキスト"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"hello world","groupsWorkspaceRoot":"HELLO"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"a":{"b":"c"}}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"é","groupsWorkspaceRoot":"line1\nline2"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"ünïcödé","groupsWorkspaceRoot":"hello"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"HELLO","groupsWorkspaceRoot":".leadinga..b"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"emoji 👍🏽 mix{name} has {count} items","groupsWorkspaceRoot":"Hello World"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"tab\tseparated","groupsWorkspaceRoot":"./x/**/*.json"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"{name} has {count} items","groupsWorkspaceRoot":"日本語のテキスト"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"﻿bom","groupsWorkspaceRoot":""}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"  padded  ","groupsWorkspaceRoot":"straßeünïcödé"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"{name} has {count} items","groupsWorkspaceRoot":"emoji 👍🏽 mix"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":["x"],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"a😀b😀c","groupsWorkspaceRoot":"a😀b😀c"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"hellohello world","groupsWorkspaceRoot":"abc.leading"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"ns:key.path","groupsWorkspaceRoot":"﻿bom"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"src/a/b.ts","groupsWorkspaceRoot":"日本語のテキスト"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"{name} has {count} items","groupsWorkspaceRoot":"é"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":".leading","groupsWorkspaceRoot":"ns:key.path"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"a:b:cemoji 👍🏽 mix","groupsWorkspaceRoot":"Hello World"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"ünïcödéİstanbul","groupsWorkspaceRoot":"ünïcödé😀"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"日本語のテキストemoji 👍🏽 mix","groupsWorkspaceRoot":"hello"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"日本語のテキスト","groupsWorkspaceRoot":"tab\tseparated"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"trailing.","groupsWorkspaceRoot":"日本語のテキスト"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"ünïcödé","groupsWorkspaceRoot":"a😀b😀c"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"Hello World","groupsWorkspaceRoot":"{name} has {count} items"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"straßetab\tseparated","groupsWorkspaceRoot":"a:b:c"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"a.b.c","groupsWorkspaceRoot":"ünïcödéa😀b😀c"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"a.b.c","groupsWorkspaceRoot":""}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"tab\tseparated","groupsWorkspaceRoot":"line1\nline2:"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"HELLO","groupsWorkspaceRoot":"HELLO"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"Hello Worldstraße","groupsWorkspaceRoot":":"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"./x/**/*.json","groupsWorkspaceRoot":".leading"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"HELLOkey_name-1","groupsWorkspaceRoot":"﻿bom"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":".leading  padded  ","groupsWorkspaceRoot":"src/a/b.ts"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"Hello World","groupsWorkspaceRoot":"Hello World./x/**/*.json"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"😀","groupsWorkspaceRoot":"ΣΊΣΥΦΟΣ"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"ns:key.path","groupsWorkspaceRoot":".leadingtrailing."}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"src/a/b.ts","groupsWorkspaceRoot":"key_name-1"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":".leading./x/**/*.json","groupsWorkspaceRoot":"ns:key.path"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"line1\nline2a","groupsWorkspaceRoot":""}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"","groupsWorkspaceRoot":"HELLO"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"a:b:c","groupsWorkspaceRoot":"😀"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"ΣΊΣΥΦΟΣ","groupsWorkspaceRoot":"  padded  "}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":":","groupsWorkspaceRoot":"{name} has {count} items"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"tab\tseparated","groupsWorkspaceRoot":"line1\nline2"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}
+{"fn":"cleanupGroupWorkspaceRoot","args":[{"workspaceRoot":"ns:key.path","groupsWorkspaceRoot":"hello world"}],"ok":{"~effect/Effect/args":{"0":{"$function":""},"1":false}}}

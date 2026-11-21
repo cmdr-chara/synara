@@ -1,0 +1,17 @@
+{
+  "unit": "apps/server/src/groupWorkspaceScaffold.ts",
+  "files": 1,
+  "fingerprint": "c3b220c876de1504",
+  "coverage": {
+    "lines": 111,
+    "reached": 61,
+    "files": [
+      {
+        "file": "apps/server/src/groupWorkspaceScaffold.ts",
+        "lines": 111,
+        "reached": 61,
+        "missed": "44-47, 49-56, 60-62, 90-124"
+      }
+    ]
+  }
+}

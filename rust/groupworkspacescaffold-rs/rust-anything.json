@@ -1,0 +1,30 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/groupWorkspaceScaffold.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "groupworkspacescaffold-rs",
+  "exports": [
+    {
+      "name": "cleanupGroupWorkspaceRoot",
+      "file": "apps/server/src/groupWorkspaceScaffold.ts",
+      "line": 85,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly workspaceRoot: string;\n  readonly groupsWorkspaceRoot: string;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Effect.Effect<GroupWorkspaceCleanupResult>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

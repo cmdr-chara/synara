@@ -1,0 +1,17 @@
+{
+  "unit": "packages/shared/src/browserSession.ts",
+  "files": 1,
+  "fingerprint": "441acca4281e81bb",
+  "coverage": {
+    "lines": 284,
+    "reached": 223,
+    "files": [
+      {
+        "file": "packages/shared/src/browserSession.ts",
+        "lines": 284,
+        "reached": 223,
+        "missed": "65-71, 93-94, 96-97, 99-100, 172-202, 210-213, 222-225, 260-263, 287-291"
+      }
+    ]
+  }
+}

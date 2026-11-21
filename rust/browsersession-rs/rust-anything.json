@@ -1,0 +1,210 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/browserSession.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "browsersession-rs",
+  "exports": [
+    {
+      "name": "resolveFloatingBrowserGuestLayout",
+      "file": "packages/shared/src/browserSession.ts",
+      "line": 31,
+      "params": [
+        {
+          "name": "slot",
+          "ts_type": "{\n  width: number;\n  height: number;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "FloatingBrowserGuestLayout",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "normalizeBrowserPageZoomFactor",
+      "file": "packages/shared/src/browserSession.ts",
+      "line": 49,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "number",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "normalizeBrowserUrlInput",
+      "file": "packages/shared/src/browserSession.ts",
+      "line": 84,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "string | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveCopyableBrowserTabUrl",
+      "file": "packages/shared/src/browserSession.ts",
+      "line": 132,
+      "params": [
+        {
+          "name": "tab",
+          "ts_type": "BrowserTabUrlLike | null | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "liveUrl",
+          "ts_type": "string | null",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isBlankBrowserTabUrl",
+      "file": "packages/shared/src/browserSession.ts",
+      "line": 150,
+      "params": [
+        {
+          "name": "tab",
+          "ts_type": "BrowserTabUrlLike | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "classifyBrowserWindowOpen",
+      "file": "packages/shared/src/browserSession.ts",
+      "line": 208,
+      "params": [
+        {
+          "name": "intent",
+          "ts_type": "BrowserWindowOpenIntent",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(\"popup\" | \"tab\")",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "deriveChromeUserAgent",
+      "file": "packages/shared/src/browserSession.ts",
+      "line": 237,
+      "params": [
+        {
+          "name": "baseUserAgent",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "appProductTokens",
+          "ts_type": "readonly string[]",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "chromeClientHintPlatform",
+      "file": "packages/shared/src/browserSession.ts",
+      "line": 258,
+      "params": [
+        {
+          "name": "platform",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "buildChromeClientHints",
+      "file": "packages/shared/src/browserSession.ts",
+      "line": 279,
+      "params": [
+        {
+          "name": "userAgent",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "platform",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ChromeClientHintHeaders | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "buildAcceptLanguageHeader",
+      "file": "packages/shared/src/browserSession.ts",
+      "line": 296,
+      "params": [
+        {
+          "name": "languages",
+          "ts_type": "readonly string[]",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

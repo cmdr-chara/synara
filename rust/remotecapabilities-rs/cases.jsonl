@@ -1,0 +1,431 @@
+{"fn":"remoteMethodUnavailable","args":["ab"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["ünïcödé"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["hello"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["emoji 👍🏽 mix"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["ünïcödé😀"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["abc"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":[":"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["a:b:c"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["é"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["😀"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":[""],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["a.b.c"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["tab\tseparated"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["日本語のテキスト"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["straße"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["a😀b😀c"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["HELLO:"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["a..b"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["abcünïcödé"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["hello world"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["./x/**/*.json"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["HELLO"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["emoji 👍🏽 mix{name} has {count} items"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["ns:key.pathé"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["İstanbul"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["src/a/b.ts"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["key_name-1"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["a..b😀"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["a.b.cİstanbul"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["a"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["﻿bom"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["line1\nline2"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["src/a/b.tsa"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["emoji 👍🏽 mix日本語のテキスト"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["  padded  "],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["{name} has {count} items"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["ns:key.path"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["trailing."],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["a😀b😀cab"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":[".leading"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["abchello"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["😀a.b.c"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["::"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["a😀b😀c./x/**/*.json"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["éa"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["Hello World"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["﻿bomab"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["é  padded  "],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["HELLOa:b:c"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["hello worldhello world"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["éa😀b😀c"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["a😀b😀cstraße"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["﻿bomabc"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["tab\tseparatedHELLO"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["helloa..b"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["abé"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["{name} has {count} itemsa:b:c"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["İstanbulsrc/a/b.ts"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["HELLOemoji 👍🏽 mix"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["tab\tseparatedhello"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["src/a/b.tskey_name-1"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["src/a/b.ts日本語のテキスト"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["日本語のテキスト😀"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":[":ab"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":[":é"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["emoji 👍🏽 mixkey_name-1"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["İstanbulkey_name-1"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["ΣΊΣΥΦΟΣé"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["ünïcödéhello"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["hello worlda"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["😀﻿bom"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["tab\tseparatedemoji 👍🏽 mix"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["abctab\tseparated"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["helloé"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["日本語のテキストHello World"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["日本語のテキストstraße"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["éstraße"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["Hello World{name} has {count} items"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["hello worldsrc/a/b.ts"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["line1\nline2src/a/b.ts"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["straßea"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["helloHELLO"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["straßens:key.path"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":[":abc"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["  padded  a.b.c"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["trailing../x/**/*.json"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":[":straße"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["a:b:cünïcödé"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["trailing.İstanbul"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["abΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["hello:"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["abca.b.c"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["trailing.a..b"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["a..bkey_name-1"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["ans:key.path"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["trailing.a:b:c"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":[":tab\tseparated"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["﻿bomΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["line1\nline2a:b:c"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["key_name-1key_name-1"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":[":İstanbul"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["﻿bom./x/**/*.json"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["日本語のテキストa.b.c"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["emoji 👍🏽 mixa"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["./x/**/*.json😀"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["a:b:c:"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["src/a/b.tsab"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["line1\nline2./x/**/*.json"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["日本語のテキスト:"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":[".leading😀"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["  padded  ﻿bom"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["éΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["absrc/a/b.ts"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["ab./x/**/*.json"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["helloabc"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":[":a😀b😀c"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["src/a/b.ts﻿bom"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["Hello Worlda"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["a./x/**/*.json"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["ab:"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["a:b:cé"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["trailing.ns:key.path"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["a:b:c日本語のテキスト"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["ünïcödé日本語のテキスト"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["a:b:chello"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["a😀b😀ckey_name-1"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":[":a:b:c"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["aa:b:c"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["😀Hello World"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":[".leadingabc"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["﻿bom.leading"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["abc:"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["a:"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["ünïcödé:"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":[".leadinghello"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["emoji 👍🏽 mixns:key.path"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["straße./x/**/*.json"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["a:b:cİstanbul"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["aa..b"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["😀  padded  "],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["{name} has {count} itemshello"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["hello worldünïcödé"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["a😀b😀c日本語のテキスト"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["a😀b😀ca:b:c"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["ünïcödétab\tseparated"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["straßeemoji 👍🏽 mix"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["  padded  HELLO"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["ababc"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["aline1\nline2"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["ünïcödé./x/**/*.json"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["aHELLO"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["src/a/b.tsa😀b😀c"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["Hello World.leading"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["key_name-1a😀b😀c"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["éa.b.c"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["  padded  {name} has {count} items"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["line1\nline2é"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["key_name-1a"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["key_name-1src/a/b.ts"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["abab"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":[".leading﻿bom"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":[":./x/**/*.json"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":[".leadingsrc/a/b.ts"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["{name} has {count} itemsa.b.c"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["helloa:b:c"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["aa.b.c"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["abcsrc/a/b.ts"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["ΣΊΣΥΦΟΣns:key.path"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["straßea.b.c"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["line1\nline2tab\tseparated"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["日本語のテキスト日本語のテキスト"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["./x/**/*.jsonHello World"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["a.b.ckey_name-1"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["日本語のテキストa😀b😀c"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["a:b:c  padded  "],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["İstanbulHELLO"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["a..babc"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["a:b:c{name} has {count} items"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["éhello world"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["{name} has {count} itemsns:key.path"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["ahello world"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["./x/**/*.json.leading"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["trailing.:"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["﻿bom😀"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["./x/**/*.jsona:b:c"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["line1\nline2a😀b😀c"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["straßeİstanbul"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["emoji 👍🏽 mixemoji 👍🏽 mix"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["./x/**/*.json{name} has {count} items"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["İstanbul{name} has {count} items"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["src/a/b.ts  padded  "],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["abline1\nline2"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["﻿bom:"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["Hello World﻿bom"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["abc﻿bom"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["a:b:cstraße"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["trailing.key_name-1"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["aba😀b😀c"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["a.b.cHELLO"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["héllo wörld"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["👍🏽 thumbs"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["日本語"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["ılık ırmak"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["👨‍👩‍👧 family"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["a b"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["a😀b"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["a²b x½ y①"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["aⅠb Ⅻ"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["a𐐀b 𝐀bc"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["कि ٣٤"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["account.authenticateOtp"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["account.beginSso"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["account.billingCheckout"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["account.billingPortal"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["account.billingStatus"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["account.cancelSso"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["account.completeSso"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["account.delete"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["account.deleteAvatar"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["account.deleteInboxRecap"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["account.listInboxRecaps"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["account.openVerificationUrl"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["account.saveInboxRecap"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["account.sendOtp"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["account.signOut"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["account.status"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["account.updateProfile"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["account.uploadAvatar"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["account.usageSummary"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["agentGateway.call"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["automation.archiveRun"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["automation.cancelRun"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["automation.create"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["automation.delete"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["automation.event"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["automation.getMemory"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["automation.list"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["automation.markRunRead"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["automation.resolveProposal"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["automation.runNow"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["automation.subscribe"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["automation.update"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["editor.intelligence"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["filesystem.browse"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["git.actionProgress"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["git.blameLine"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["git.checkout"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["git.createBranch"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["git.createDetachedWorktree"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["git.createWorktree"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["git.githubRepository"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["git.handoffThread"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["git.init"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["git.listBranches"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["git.listRecentCommits"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["git.preparePullRequestThread"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["git.pull"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["git.pullRequestSnapshot"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["git.readFileAtRev"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["git.readWorkingTreeDiff"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["git.removeIndexLock"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["git.removeWorktree"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["git.resolvePullRequest"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["git.runStackedAction"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["git.stageFiles"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["git.stashAndCheckout"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["git.stashDrop"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["git.stashInfo"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["git.status"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["git.summarizeDiff"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["git.unstageFiles"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["git.workingTreeDiffStats"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["git.worktreeSetupProgress"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["githubInbox.issueComment"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["githubInbox.issueDetail"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["githubInbox.list"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["hosts.approveDeviceLink"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["hosts.beginSyncKeyPairing"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["hosts.confirmSyncKey"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["hosts.connect"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["hosts.delete"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["hosts.disconnect"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["hosts.endSession"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["hosts.enrollment"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["hosts.list"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["hosts.listConnections"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["hosts.listDevices"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["hosts.listSessions"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["hosts.offerSyncKey"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["hosts.receiveSyncKey"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["hosts.remoteAccess"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["hosts.requestGrant"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["hosts.revokeDevice"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["hosts.unlinkLocalHost"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["hosts.update"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["orchestration.subscribeDomainEvents"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["project.devServerEvent"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["project.provisionProgress"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["projectAgent.archive"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["projectAgent.backfillSummaries"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["projectAgent.configure"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["projectAgent.createTask"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["projectAgent.delete"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["projectAgent.event"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["projectAgent.excludeThread"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["projectAgent.exportDocuments"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["projectAgent.getOverview"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["projectAgent.linkProject"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["projectAgent.listActivity"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["projectAgent.listDocuments"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["projectAgent.listEvidence"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["projectAgent.listSummaries"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["projectAgent.listTasks"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["projectAgent.listThreadIndex"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["projectAgent.pause"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["projectAgent.pauseGoal"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["projectAgent.readDocument"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["projectAgent.refreshDigest"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["projectAgent.resolveWorker"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["projectAgent.restartCoordinator"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["projectAgent.resume"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["projectAgent.resumeGoal"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["projectAgent.startGoal"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["projectAgent.stopGoal"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["projectAgent.subscribe"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["projectAgent.unarchive"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["projectAgent.unlinkProject"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["projectAgent.updateGoal"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["projectAgent.updateTask"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["projectAgent.writeDocument"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["projects.createLocalFilePreviewGrant"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["projects.discoverScripts"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["projects.listDevServers"],"ok":true}
+{"fn":"remoteMethodUnavailable","args":["projects.listDirectories"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["projects.prewarmSearchIndex"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["projects.provisionFromGitHub"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["projects.readFile"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["projects.resolveOutOfRootFileReference"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["projects.resolveWorkspaceFileReferences"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["projects.runDevServer"],"ok":true}
+{"fn":"remoteMethodUnavailable","args":["projects.searchContent"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["projects.searchEntries"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["projects.searchLocalEntries"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["projects.stopDevServer"],"ok":true}
+{"fn":"remoteMethodUnavailable","args":["projects.subscribeDevServerEvents"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["projects.subscribeFileChange"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["projects.writeFile"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["provider.compactThread"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["provider.getComposerCapabilities"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["provider.listAgents"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["provider.listCommands"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["provider.listModels"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["provider.listPlugins"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["provider.listSkills"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["provider.listSkillsCatalog"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["provider.prewarmThread"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["provider.readPlugin"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["pullRequests.action"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["pullRequests.comment"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["pullRequests.detail"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["pullRequests.diff"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["pullRequests.getAutoFix"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["pullRequests.setAutoFix"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["pullRequests.setPinned"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["server.configUpdated"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["server.connectMcpConnector"],"ok":true}
+{"fn":"remoteMethodUnavailable","args":["server.consumeCodexResetCredit"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["server.createExternalMcpIntegration"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["server.desktopUpdate"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["server.desktopUpdateStatus"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["server.disconnectMcpConnector"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["server.editKeybindings"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["server.generateAutomationIntent"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["server.generateComposerPrediction"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["server.generateThreadRecap"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["server.getConfig"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["server.getDiagnostics"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["server.getEnvironment"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["server.getMcpConnectorSetup"],"ok":true}
+{"fn":"remoteMethodUnavailable","args":["server.getProviderUsageSnapshot"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["server.getRuntimeStatus"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["server.getSettings"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["server.keepAwakeUpdated"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["server.listExternalMcpIntegrations"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["server.listLocalServers"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["server.listMcpConnectorProposals"],"ok":true}
+{"fn":"remoteMethodUnavailable","args":["server.listMcpConnectors"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["server.listProviderUsage"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["server.listWorktrees"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["server.maintenanceUpdated"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["server.prewarmVoice"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["server.providerStatusesUpdated"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["server.readThreadDiagnostics"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["server.refreshExternalMcpPairing"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["server.refreshProviders"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["server.resolveMcpConnectorProposal"],"ok":true}
+{"fn":"remoteMethodUnavailable","args":["server.revokeExternalMcpIntegration"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["server.settingsUpdated"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["server.stopLocalServer"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["server.subscribeConfig"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["server.subscribeKeepAwake"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["server.subscribeLifecycle"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["server.subscribeProviderStatuses"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["server.subscribeSettings"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["server.transcribeVoice"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["server.updateProvider"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["server.updateSettings"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["server.upsertKeybinding"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["server.welcome"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["shell.openInEditor"],"ok":true}
+{"fn":"remoteMethodUnavailable","args":["stats.getProfileStats"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["stats.getProfileTokenStats"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["stats.getRecap"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["stats.getUsageAnalytics"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["studio.listThreadOutputs"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["terminal.ackOutput"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["terminal.clear"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["terminal.close"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["terminal.event"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["terminal.open"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["terminal.resize"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["terminal.restart"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["terminal.subscribeEvents"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["terminal.write"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["todo.create"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["todo.delete"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["todo.event"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["todo.list"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["todo.subscribe"],"ok":false}
+{"fn":"remoteMethodUnavailable","args":["todo.update"],"ok":false}

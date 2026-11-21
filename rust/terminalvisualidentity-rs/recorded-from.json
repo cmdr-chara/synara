@@ -1,0 +1,17 @@
+{
+  "unit": "apps/web/src/terminalVisualIdentity.ts",
+  "files": 1,
+  "fingerprint": "eb503d5ea0e1ac59",
+  "coverage": {
+    "lines": 98,
+    "reached": 81,
+    "files": [
+      {
+        "file": "apps/web/src/terminalVisualIdentity.ts",
+        "lines": 98,
+        "reached": 81,
+        "missed": "18-29, 44-45, 101-102, 105"
+      }
+    ]
+  }
+}

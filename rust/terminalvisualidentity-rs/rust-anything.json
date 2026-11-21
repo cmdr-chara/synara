@@ -1,0 +1,48 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/terminalVisualIdentity.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "terminalvisualidentity-rs",
+  "exports": [
+    {
+      "name": "resolveTerminalVisualIdentityMap",
+      "file": "apps/web/src/terminalVisualIdentity.ts",
+      "line": 49,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  runningTerminalIds: readonly string[];\n  terminalAttentionStatesById: Record<string, \"attention\" | \"review\">;\n  terminalCliKindsById: Record<string, (\"codex\" | \"claude\" | \"antigravity\")>;\n  terminalIds: readonly string[];\n  terminalLabelsById: Record<string, string>;\n  terminalTitleOverridesById: Record<string, string>;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ReadonlyMap<string, ResolvedTerminalVisualIdentity>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "selectRepresentativeTerminalVisualIdentity",
+      "file": "apps/web/src/terminalVisualIdentity.ts",
+      "line": 79,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  activeTerminalId?: string | null | undefined;\n  terminalIds: readonly string[];\n  terminalVisualIdentityById: ReadonlyMap<string, ResolvedTerminalVisualIdentity>;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "RepresentativeTerminalVisualIdentity | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

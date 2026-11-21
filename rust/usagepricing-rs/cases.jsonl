@@ -1,0 +1,549 @@
+{"fn":"parseRateTable","args":[["a",1]],"ok":{"$map":[]}}
+{"fn":"parseRateTable","args":[null],"ok":{"$map":[]}}
+{"fn":"parseRateTable","args":["x"],"ok":{"$map":[]}}
+{"fn":"parseRateTable","args":[[]],"ok":{"$map":[]}}
+{"fn":"parseRateTable","args":[{"a":"b"}],"ok":{"$map":[]}}
+{"fn":"parseRateTable","args":[true],"ok":{"$map":[]}}
+{"fn":"parseRateTable","args":[{"a":{"b":"c"}}],"ok":{"$map":[]}}
+{"fn":"parseRateTable","args":[0],"ok":{"$map":[]}}
+{"fn":"parseRateTable","args":[{}],"ok":{"$map":[]}}
+{"fn":"parseRateTable","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6}],"ok":{"$map":[]}}
+{"fn":"parseRateTable","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7}],"ok":{"$map":[]}}
+{"fn":"parseRateTable","args":[[3,1,2]],"ok":{"$map":[]}}
+{"fn":"lookupRate","args":[{},"a.b.c"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[[],"a:b:c"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[true,"ünïcödé"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[null,"İstanbulhello"],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"lookupRate","args":[null,"a.b.cemoji 👍🏽 mix"],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"lookupRate","args":[{},"İstanbul"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{"a":{"b":"c"}},"emoji 👍🏽 mix"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[null,"HELLO"],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"lookupRate","args":[["a",1],"abc"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[0,"éns:key.path"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[true,"  padded  "],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[[],"HELLO"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[[],"a..b"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":["x","x"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[null,"a.b.c"],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"lookupRate","args":[null,"hello"],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"lookupRate","args":[{},"{name} has {count} items"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[0,"😀"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[null,"straße"],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"lookupRate","args":[{"a":"b"},""],"ok":null}
+{"fn":"lookupRate","args":[{},"hello"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":["x","src/a/b.ts"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[true,"HELLO"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{"a":"b"},"emoji 👍🏽 mixa.b.c"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[["a",1],"éstraße"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[[],"{name} has {count} itemsa"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[null,"emoji 👍🏽 mix"],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"lookupRate","args":[true,"tab\tseparated"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[["a",1],"HELLO"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[null,"a😀b😀c"],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"lookupRate","args":[["a",1],"  padded  "],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":["x","﻿bom"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[0,"hello"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[0,"hello world"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{},"a:b:c"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[[],"a..bns:key.path"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[[],"İstanbul"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":["x","X"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{},"hello world"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[0,"a..b"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[true,"HELLOhello"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{},"src/a/b.ts"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{"a":{"b":"c"}},"😀"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[null,"a:b:c"],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"lookupRate","args":[["a",1],"a..ba"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{"a":"b"},"ab"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":["x","  padded  "],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[["a",1],":"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{"a":"b"},"HELLO"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[0,"a:b:c"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{},"a😀b😀c"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{"a":{"b":"c"}},"a"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[[],"trailing."],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[true,"é"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[true,"key_name-1"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[["a",1],"{name} has {count} items"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{"a":{"b":"c"}},"ünïcödé"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[["a",1],"a😀b😀c"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":["x","a😀b😀c"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[true,"emoji 👍🏽 mix"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[[],"src/a/b.ts"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[0,"﻿bomab"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[0,"é"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[["a",1],"İstanbul"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{"a":"b"},"  padded  "],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[null,"  padded  "],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"lookupRate","args":[true,"日本語のテキスト"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{},"HELLO"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":["x","line1\nline2"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":["x","{name} has {count} itemsabc"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{"a":"b"},"a😀b😀c"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{},"straße"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[[],"ΣΊΣΥΦΟΣ"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{"a":{"b":"c"}},"./x/**/*.jsontab\tseparated"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[null,"ΣΊΣΥΦΟΣ"],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"lookupRate","args":[{"a":"b"},"abc"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[true,"trailing.日本語のテキスト"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[0,"line1\nline2"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[[],"Hello Worlda"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{"a":"b"},"ünïcödé  padded  "],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{"a":"b"},"  padded  😀"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[["a",1],""],"ok":null}
+{"fn":"lookupRate","args":[{},":"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[["a",1],"ab"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{"a":"b"},"Hello Worldtab\tseparated"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[0,"a😀b😀c"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[0,"  padded  "],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[0,"İstanbulabc"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{},"  padded  "],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{},"./x/**/*.json"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[null,"a..b"],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"lookupRate","args":[["a",1],"line1\nline2Hello World"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{"a":"b"},"{name} has {count} itemsİstanbul"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{},".leadingns:key.path"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[true,"trailing."],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[["a",1],"日本語のテキスト"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[["a",1],"﻿bom"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{},"日本語のテキスト"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[0,"src/a/b.ts"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[null,"src/a/b.ts"],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"lookupRate","args":[{},"﻿bom"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[true,"hello world"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{"a":"b"},".leading"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[["a",1],"é"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[true,"😀ΣΊΣΥΦΟΣ"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{"a":{"b":"c"}},"line1\nline2"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[["a",1],"a..ba:b:c"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[["a",1],"a"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{"a":{"b":"c"}},"hello world"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{"a":{"b":"c"}},"İstanbul"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[["a",1],"hello"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[[],"line1\nline2"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[["a",1],"src/a/b.ts  padded  "],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[0,"éHello World"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[[],"key_name-1"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[null,"abc"],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"lookupRate","args":[{"a":"b"},"straße"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[true,"{name} has {count} itemsa..b"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{"a":"b"},"😀"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[[],"tab\tseparated"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":["s:","ns:key.path"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[[],":"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{"a":{"b":"c"}},"日本語のテキスト"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[true,"﻿bom"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[true,"line1\nline2"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{"a":"b"},"line1\nline2"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[0,"ns:key.path"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":["x","./x/**/*.json"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[[],"straße"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[true,"./x/**/*.jsonns:key.path"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[0,"日本語のテキスト"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[["a",1],".leading./x/**/*.json"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[[],"a"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[null,"ünïcödé"],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"lookupRate","args":[{"a":{"b":"c"}},"key_name-1"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{"a":"b"},"ns:key.pathsrc/a/b.ts"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[null,"HELLOİstanbul"],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"lookupRate","args":["x","é"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[true,"ΣΊΣΥΦΟΣ"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{},"a"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":["a","  padded  "],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[["a",1],"emoji 👍🏽 mix"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{},"line1\nline2"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{"a":"b"},"﻿bomΣΊΣΥΦΟΣ"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[["a",1],".leading"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{"a":{"b":"c"}},"a..b"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{},"İstanbulHELLO"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":["O","HELLO"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[true,"src/a/b.ts"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[true,"a.b.c"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{"a":"b"},"日本語のテキスト"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{},"Hello World"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{"a":"b"},"é"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[[],"hellohello world"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{"a":{"b":"c"}},"ns:key.path"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[[],"./x/**/*.json"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":["x","src/a/b.ts:"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[0,"./x/**/*.json"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[0,"a"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[[],".leading"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[[],""],"ok":null}
+{"fn":"lookupRate","args":[{},"tab\tseparated"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{"a":{"b":"c"}},"ΣΊΣΥΦΟΣ"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[[],"a.b.c"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[null,"trailing.a.b.c"],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"lookupRate","args":[{"a":"b"},"Hello Worldé"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[null,"a"],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"lookupRate","args":[{"a":"b"},"./x/**/*.json"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[null,"line1\nline2😀"],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"lookupRate","args":["x","ΣΊΣΥΦΟΣ"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[[],"é"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{"a":"b"},"a:b:c"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[[],"hello"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[0,"Hello World"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{},"a😀b😀c  padded  "],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{},"hello worlda😀b😀c"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{"a":{"b":"c"}},".leadingkey_name-1"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":["n","./x/**/*.json"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[["a",1],"trailing."],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{},"straße日本語のテキスト"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{"a":{"b":"c"}},"a:b:ca..b"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":["x","hello worldab"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[[],"日本語のテキストabc"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[["a",1],"trailing.İstanbul"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{},"a:b:ca"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{"a":"b"},"tab\tseparated"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[[],"ünïcödé"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[["a",1],"straße  padded  "],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[[],"trailing.straße"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":["x","İstanbul"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[[],"Hello World"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{"a":{"b":"c"}},"ns:key.patha:b:c"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[true,"helloİstanbul"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[0,"ünïcödéa.b.c"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{"a":"b"},"{name} has {count} items"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[["a",1],"emoji 👍🏽 mixabc"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":["x","{name} has {count} itemsHello World"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{"a":"b"},"tab\tseparatedé"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{},"abcé"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[true,"a..b"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{},"héllo wörld"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{},"👍🏽 thumbs"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{},"日本語"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{},""],"ok":null}
+{"fn":"lookupRate","args":[{},"é"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{},"ılık ırmak"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{},"👨‍👩‍👧 family"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{},"a b"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{},"ΣΊΣΥΦΟΣ"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{},"a😀b"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{},"a²b x½ y①"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{},"aⅠb Ⅻ"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{},"a𐐀b 𝐀bc"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{},"कि ٣٤"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{},"Iı İi"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{},"K K k"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{},"ſ s S"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{},"x‍y 👨‍👩‍👧"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{},"a b c　d"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{},"١٢٣ ٤٥"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{},"𝟘𝟙 ²³"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{},"snake_case foo-bar o'neil"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{},"ǅungla Ǆ"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{},"one\r\ntwo threefour"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{},"café café"],"error":"table.get is not a function"}
+{"fn":"lookupRate","args":[{},"ΣΑΣ σας ς"],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[["a",1],"a..b",[]],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[{"a":{"b":"c"}},"İstanbultrailing.",{"inputTokens":1000,"cacheReadTokens":-2.5,"cacheWriteTokens":0,"outputTokens":0}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[null,"  padded  HELLO",{"inputTokens":1000000,"cacheReadTokens":1000000,"cacheWriteTokens":-1,"outputTokens":100}],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"priceTokens","args":[0,"line1\nline2",{"inputTokens":{"$num":"-0"},"cacheReadTokens":{"$num":"-0"},"cacheWriteTokens":2,"outputTokens":1000000}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[0,"tab\tseparated",{"inputTokens":42,"cacheReadTokens":3,"cacheWriteTokens":2147483648,"outputTokens":10}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[{},"a..b",{"inputTokens":2,"cacheReadTokens":0,"cacheWriteTokens":-2.5,"outputTokens":42}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[[],"./x/**/*.json",{"inputTokens":0.5,"cacheReadTokens":-1,"cacheWriteTokens":{"$num":"-0"},"outputTokens":9007199254740992}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[0,"İstanbul",{"inputTokens":0.5,"cacheReadTokens":2,"cacheWriteTokens":2147483648,"outputTokens":0.5}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[[],"tab\tseparated",{"inputTokens":0.5,"cacheReadTokens":1,"cacheWriteTokens":{"$num":"NaN"},"outputTokens":0}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[["a",1],"a..b","x"],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[{"a":"b"},"absrc/a/b.ts",{"inputTokens":9007199254740992,"cacheReadTokens":2147483648,"cacheWriteTokens":100,"outputTokens":-2.5}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[{},"😀",{"inputTokens":3,"cacheReadTokens":1000,"cacheWriteTokens":{"$num":"NaN"},"outputTokens":-2.5}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[0,"ünïcödé",{"inputTokens":42,"cacheReadTokens":-1,"cacheWriteTokens":2,"outputTokens":1000000}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[null,"ab",{"inputTokens":9007199254740992,"cacheReadTokens":0,"cacheWriteTokens":42,"outputTokens":1000}],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"priceTokens","args":[{"a":"b"},"ΣΊΣΥΦΟΣ",0],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[{},"é",{"inputTokens":{"$num":"-Infinity"},"cacheReadTokens":-2.5,"cacheWriteTokens":-1,"outputTokens":2}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[["a",1],"日本語のテキストa..b",{"inputTokens":2,"cacheReadTokens":42,"cacheWriteTokens":-2.5,"outputTokens":1}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[{},"hello world",{"inputTokens":{"$num":"-Infinity"},"cacheReadTokens":1,"cacheWriteTokens":42,"outputTokens":1}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[{},"a.b.cünïcödé",{"inputTokens":0.5,"cacheReadTokens":{"$num":"Infinity"},"cacheWriteTokens":3,"outputTokens":10}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[0,"ünïcödé",{"inputTokens":{"$num":"NaN"},"cacheReadTokens":-2.5,"cacheWriteTokens":-1,"outputTokens":10}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[null,"HELLO  padded  ",{"inputTokens":2147483648,"cacheReadTokens":{"$num":"-0"},"cacheWriteTokens":100,"outputTokens":0}],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"priceTokens","args":[true,"tab\tseparated",{"inputTokens":1000000,"cacheReadTokens":1000000,"cacheWriteTokens":0.5,"outputTokens":1000000}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[{"a":{"b":"c"}},"./x/**/*.json",{"inputTokens":3,"cacheReadTokens":1000,"cacheWriteTokens":{"$num":"NaN"},"outputTokens":9007199254740992}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[0,"key_name-1",{"inputTokens":0,"cacheReadTokens":10,"cacheWriteTokens":1,"outputTokens":-2.5}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[{"a":{"b":"c"}},"ΣΊΣΥΦΟΣ",{"inputTokens":1000000,"cacheReadTokens":-2.5,"cacheWriteTokens":0,"outputTokens":9007199254740992}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[{},"",{"inputTokens":1,"cacheReadTokens":42,"cacheWriteTokens":{"$num":"Infinity"},"outputTokens":-2.5}],"ok":null}
+{"fn":"priceTokens","args":[{"a":{"b":"c"}},":",true],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[0,"Hello Worldsrc/a/b.ts",{"inputTokens":10,"cacheReadTokens":100,"cacheWriteTokens":0,"outputTokens":10}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[["a",1],"ünïcödé",{"inputTokens":1000000,"cacheReadTokens":{"$num":"NaN"},"cacheWriteTokens":1000000,"outputTokens":-1}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[[],"straße",{"inputTokens":-1,"cacheReadTokens":3,"cacheWriteTokens":100,"outputTokens":-2.5}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[0,"a😀b😀c",{"inputTokens":{"$num":"-Infinity"},"cacheReadTokens":0.5,"cacheWriteTokens":-2.5,"outputTokens":-1}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[["a",1],"a..b",{"inputTokens":42,"cacheReadTokens":2,"cacheWriteTokens":3,"outputTokens":2147483648}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[[],":",{"inputTokens":2147483648,"cacheReadTokens":1000000,"cacheWriteTokens":2147483648,"outputTokens":1000000}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[{},"HELLO",{"inputTokens":{"$num":"-Infinity"},"cacheReadTokens":1,"cacheWriteTokens":2,"outputTokens":-2.5}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[{"a":"b"},"ΣΊΣΥΦΟΣ",{"inputTokens":-2.5,"cacheReadTokens":0.5,"cacheWriteTokens":-2.5,"outputTokens":{"$num":"NaN"}}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[true,"日本語のテキスト",{"inputTokens":{"$num":"-Infinity"},"cacheReadTokens":{"$num":"-0"},"cacheWriteTokens":{"$num":"-0"},"outputTokens":-2.5}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[[],"😀abc",{"inputTokens":-2.5,"cacheReadTokens":1000000,"cacheWriteTokens":1,"outputTokens":-1}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[true,"ΣΊΣΥΦΟΣ",{"inputTokens":-2.5,"cacheReadTokens":1000000,"cacheWriteTokens":1000,"outputTokens":3}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[{},"tab\tseparated",{"inputTokens":10,"cacheReadTokens":{"$num":"-Infinity"},"cacheWriteTokens":0,"outputTokens":100}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[{"a":"b"},"ab",{"a":"b"}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[{"a":"b"},"",{"inputTokens":1000000,"cacheReadTokens":{"$num":"Infinity"},"cacheWriteTokens":42,"outputTokens":{"$num":"NaN"}}],"ok":null}
+{"fn":"priceTokens","args":[["a",1],"abc",{"inputTokens":{"$num":"Infinity"},"cacheReadTokens":2,"cacheWriteTokens":3,"outputTokens":2147483648}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[{},"İstanbul",{"inputTokens":{"$num":"NaN"},"cacheReadTokens":0.5,"cacheWriteTokens":0,"outputTokens":100}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[null,"abc",{"inputTokens":2147483648,"cacheReadTokens":2,"cacheWriteTokens":1000000,"outputTokens":-2.5}],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"priceTokens","args":[{},"tab\tseparated",{"inputTokens":9007199254740992,"cacheReadTokens":42,"cacheWriteTokens":0,"outputTokens":1}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[["a",1],"a😀b😀c",{"inputTokens":0,"cacheReadTokens":100,"cacheWriteTokens":3,"outputTokens":2}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[true,"trailing.日本語のテキスト",{"inputTokens":-1,"cacheReadTokens":{"$num":"-0"},"cacheWriteTokens":1,"outputTokens":1000}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[null,"emoji 👍🏽 mix",{"inputTokens":{"$num":"NaN"},"cacheReadTokens":3,"cacheWriteTokens":{"$num":"-Infinity"},"outputTokens":10}],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"priceTokens","args":[[],"tab\tseparated",{"inputTokens":0,"cacheReadTokens":{"$num":"-0"},"cacheWriteTokens":0,"outputTokens":{"$num":"Infinity"}}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[true,"a😀b😀c",{"inputTokens":100,"cacheReadTokens":-1,"cacheWriteTokens":10,"outputTokens":1000}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[[],"日本語のテキスト",{"inputTokens":{"$num":"NaN"},"cacheReadTokens":0,"cacheWriteTokens":{"$num":"Infinity"},"outputTokens":2147483648}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[["a",1],"ünïcödé",{"inputTokens":{"$num":"Infinity"},"cacheReadTokens":42,"cacheWriteTokens":{"$num":"-0"},"outputTokens":2}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":["x","😀",{"inputTokens":1,"cacheReadTokens":-1,"cacheWriteTokens":-2.5,"outputTokens":1000000}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[{"a":"b"},"key_name-1",{"inputTokens":9007199254740992,"cacheReadTokens":{"$num":"Infinity"},"cacheWriteTokens":1000,"outputTokens":1}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[0,"Hello World",{"inputTokens":0,"cacheReadTokens":1000,"cacheWriteTokens":0,"outputTokens":1}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":["ea",".leading",{"inputTokens":3,"cacheReadTokens":-1,"cacheWriteTokens":0.5,"outputTokens":-1}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[null,":","x"],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"priceTokens","args":[{"a":{"b":"c"}},"emoji 👍🏽 mix",{"inputTokens":42,"cacheReadTokens":9007199254740992,"cacheWriteTokens":0,"outputTokens":100}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":["x","X",{"inputTokens":3,"cacheReadTokens":1000,"cacheWriteTokens":3,"outputTokens":100}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[[],"HELLO",[]],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[[],":",["a",1]],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[{"a":{"b":"c"}},"ab",{"inputTokens":2,"cacheReadTokens":9007199254740992,"cacheWriteTokens":100,"outputTokens":3}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[null,"line1\nline2",{"inputTokens":0,"cacheReadTokens":42,"cacheWriteTokens":1000,"outputTokens":10}],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"priceTokens","args":[{},"{name} has {count} itemshello",{}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[0,"line1\nline2",{"inputTokens":9007199254740992,"cacheReadTokens":{"$num":"-0"},"cacheWriteTokens":-1,"outputTokens":3}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":["x","😀tab\tseparated",{"inputTokens":1000000,"cacheReadTokens":1000000,"cacheWriteTokens":1,"outputTokens":2}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[{},"a😀b😀c",{"inputTokens":0,"cacheReadTokens":9007199254740992,"cacheWriteTokens":2,"outputTokens":0}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[{"a":"b"},"ns:key.path",{"a":"b"}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[{},"hello world",{"inputTokens":0,"cacheReadTokens":10,"cacheWriteTokens":{"$num":"NaN"},"outputTokens":{"$num":"Infinity"}}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[true,"﻿bom",{"inputTokens":1,"cacheReadTokens":-1,"cacheWriteTokens":0.5,"outputTokens":1000}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[true,"ΣΊΣΥΦΟΣ",{"inputTokens":1000,"cacheReadTokens":{"$num":"-Infinity"},"cacheWriteTokens":2147483648,"outputTokens":3}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[0,"a😀b😀c",{"inputTokens":3,"cacheReadTokens":{"$num":"-0"},"cacheWriteTokens":{"$num":"Infinity"},"outputTokens":{"$num":"-Infinity"}}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[{"a":"b"},"ab",{"inputTokens":100,"cacheReadTokens":2147483648,"cacheWriteTokens":{"$num":"-0"},"outputTokens":2147483648}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":["x","éa.b.c",{"inputTokens":2147483648,"cacheReadTokens":{"$num":"NaN"},"cacheWriteTokens":{"$num":"-0"},"outputTokens":{"$num":"NaN"}}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[["a",1],"abctab\tseparated",{"inputTokens":9007199254740992,"cacheReadTokens":{"$num":"-Infinity"},"cacheWriteTokens":100,"outputTokens":-2.5}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[null,"İstanbul",{"inputTokens":10,"cacheReadTokens":{"$num":"Infinity"},"cacheWriteTokens":{"$num":"-0"},"outputTokens":-1}],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"priceTokens","args":[[],"😀",{"inputTokens":-1,"cacheReadTokens":1000,"cacheWriteTokens":{"$num":"NaN"},"outputTokens":-2.5}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[["a",1],"hello",{"inputTokens":-2.5,"cacheReadTokens":-1,"cacheWriteTokens":0,"outputTokens":2}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[{"a":{"b":"c"}},"﻿bom",{"inputTokens":0,"cacheReadTokens":3,"cacheWriteTokens":2147483648,"outputTokens":{"$num":"-Infinity"}}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[{"a":{"b":"c"}},":",{"inputTokens":-2.5,"cacheReadTokens":-2.5,"cacheWriteTokens":42,"outputTokens":10}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[["a",1],"ns:key.path",{"inputTokens":1000000,"cacheReadTokens":3,"cacheWriteTokens":10,"outputTokens":100}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[[],"a..b",{"inputTokens":1000000,"cacheReadTokens":1000,"cacheWriteTokens":1000000,"outputTokens":42}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[{"a":"b"},"ünïcödé",{"inputTokens":{"$num":"-0"},"cacheReadTokens":0,"cacheWriteTokens":42,"outputTokens":2147483648}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[{"a":"b"},"ab",[]],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[{},"ns:key.path{name} has {count} items",{"inputTokens":0,"cacheReadTokens":{"$num":"Infinity"},"cacheWriteTokens":0,"outputTokens":{"$num":"Infinity"}}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[true,"😀tab\tseparated",{"inputTokens":{"$num":"Infinity"},"cacheReadTokens":10,"cacheWriteTokens":2,"outputTokens":2147483648}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[[],"src/a/b.ts",["a",1]],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[[],"a..b",{"inputTokens":1000,"cacheReadTokens":10,"cacheWriteTokens":2,"outputTokens":{"$num":"-0"}}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[{},"é",{"inputTokens":1,"cacheReadTokens":2147483648,"cacheWriteTokens":1,"outputTokens":{"$num":"-0"}}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[{"a":"b"},"é",{"inputTokens":10,"cacheReadTokens":0.5,"cacheWriteTokens":1000,"outputTokens":1000000}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[true,"😀",{"inputTokens":{"$num":"NaN"},"cacheReadTokens":10,"cacheWriteTokens":100,"outputTokens":0}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[{"a":"b"},"ünïcödéHello World",{"inputTokens":{"$num":"-Infinity"},"cacheReadTokens":1000000,"cacheWriteTokens":2147483648,"outputTokens":3}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[true,"İstanbul",{"inputTokens":100,"cacheReadTokens":{"$num":"-Infinity"},"cacheWriteTokens":{"$num":"Infinity"},"outputTokens":1000}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[["a",1],"a",{"inputTokens":-2.5,"cacheReadTokens":2,"cacheWriteTokens":9007199254740992,"outputTokens":0.5}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[{"a":{"b":"c"}},":",{"inputTokens":42,"cacheReadTokens":42,"cacheWriteTokens":{"$num":"-Infinity"},"outputTokens":1000}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[true,"helloünïcödé",{"inputTokens":{"$num":"-Infinity"},"cacheReadTokens":1000000,"cacheWriteTokens":1,"outputTokens":100}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[["a",1],"a😀b😀c",{"inputTokens":0,"cacheReadTokens":0.5,"cacheWriteTokens":10,"outputTokens":{"$num":"NaN"}}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[null,"tab\tseparated",{"inputTokens":0.5,"cacheReadTokens":2147483648,"cacheWriteTokens":2147483648,"outputTokens":10}],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"priceTokens","args":[0,"a.b.c:",{"inputTokens":{"$num":"-0"},"cacheReadTokens":2147483648,"cacheWriteTokens":10,"outputTokens":100}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[true,"a.b.ca:b:c",{"inputTokens":42,"cacheReadTokens":1,"cacheWriteTokens":1,"outputTokens":100}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[{"a":"b"},"tab\tseparated",{}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[[],"ΣΊΣΥΦΟΣ",{"inputTokens":-1,"cacheReadTokens":2,"cacheWriteTokens":3,"outputTokens":-2.5}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[["a",1],"😀",{"inputTokens":{"$num":"-Infinity"},"cacheReadTokens":{"$num":"-Infinity"},"cacheWriteTokens":100,"outputTokens":0}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[{"a":{"b":"c"}},"./x/**/*.jsonab",{"inputTokens":-1,"cacheReadTokens":0,"cacheWriteTokens":3,"outputTokens":9007199254740992}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[{"a":"b"},"a:b:c",{"inputTokens":{"$num":"-Infinity"},"cacheReadTokens":2,"cacheWriteTokens":1,"outputTokens":{"$num":"NaN"}}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[0,"😀",{"inputTokens":10,"cacheReadTokens":10,"cacheWriteTokens":{"$num":"Infinity"},"outputTokens":1000000}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":["x","x",{"inputTokens":1000000,"cacheReadTokens":2147483648,"cacheWriteTokens":3,"outputTokens":-2.5}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[true,"ab",{"inputTokens":2,"cacheReadTokens":{"$num":"-Infinity"},"cacheWriteTokens":100,"outputTokens":9007199254740992}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[0,"ΣΊΣΥΦΟΣ",{"inputTokens":{"$num":"Infinity"},"cacheReadTokens":9007199254740992,"cacheWriteTokens":2,"outputTokens":1000000}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[[],"a.b.c",{"inputTokens":0.5,"cacheReadTokens":1,"cacheWriteTokens":{"$num":"-Infinity"},"outputTokens":9007199254740992}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[0,"a:b:c",{"inputTokens":100,"cacheReadTokens":100,"cacheWriteTokens":100,"outputTokens":2147483648}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[null,"line1\nline2",{"inputTokens":9007199254740992,"cacheReadTokens":{"$num":"-0"},"cacheWriteTokens":-1,"outputTokens":0.5}],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"priceTokens","args":[{"a":"b"},"a:b:c",null],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[{},"ab",{"inputTokens":10,"cacheReadTokens":2,"cacheWriteTokens":3,"outputTokens":2147483648}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[null,"{name} has {count} items",{"inputTokens":0.5,"cacheReadTokens":1000000,"cacheWriteTokens":{"$num":"NaN"},"outputTokens":9007199254740992}],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"priceTokens","args":["x","key_name-1",{"inputTokens":42,"cacheReadTokens":1000,"cacheWriteTokens":0.5,"outputTokens":{"$num":"-0"}}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[0,"tab\tseparated",{"inputTokens":100,"cacheReadTokens":1000,"cacheWriteTokens":0.5,"outputTokens":-1}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":["x","{name} has {count} items",{"inputTokens":{"$num":"-0"},"cacheReadTokens":10,"cacheWriteTokens":-2.5,"outputTokens":0.5}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[{"a":"b"},"日本語のテキスト",{"inputTokens":10,"cacheReadTokens":42,"cacheWriteTokens":-1,"outputTokens":1000}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":["x","ΣΊΣΥΦΟΣ",{"inputTokens":42,"cacheReadTokens":{"$num":"-0"},"cacheWriteTokens":2,"outputTokens":0}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[{},"./x/**/*.jsontrailing.",{"inputTokens":1000,"cacheReadTokens":100,"cacheWriteTokens":-2.5,"outputTokens":2147483648}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[{"a":"b"},"tab\tseparateda.b.c",{"inputTokens":1000,"cacheReadTokens":-2.5,"cacheWriteTokens":2,"outputTokens":0.5}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[["a",1],"é",{"a":"b"}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[{"a":"b"},"ns:key.pathtab\tseparated",{"inputTokens":1000,"cacheReadTokens":42,"cacheWriteTokens":2147483648,"outputTokens":-2.5}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[true,"😀",{"inputTokens":100,"cacheReadTokens":{"$num":"-Infinity"},"cacheWriteTokens":1000,"outputTokens":10}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[true,"a.b.c",{"inputTokens":{"$num":"-0"},"cacheReadTokens":{"$num":"Infinity"},"cacheWriteTokens":9007199254740992,"outputTokens":{"$num":"-Infinity"}}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[{},"HELLO",{"inputTokens":2,"cacheReadTokens":0.5,"cacheWriteTokens":1000000,"outputTokens":{"$num":"Infinity"}}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[[],"😀",{"inputTokens":{"$num":"Infinity"},"cacheReadTokens":1000,"cacheWriteTokens":2147483648,"outputTokens":42}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[{"a":{"b":"c"}},"éa..b",{"inputTokens":{"$num":"-0"},"cacheReadTokens":10,"cacheWriteTokens":1,"outputTokens":2}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[{"a":"b"},"line1\nline2",{"inputTokens":1000,"cacheReadTokens":{"$num":"Infinity"},"cacheWriteTokens":1000,"outputTokens":9007199254740992}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":["x","a.b.c",{"inputTokens":{"$num":"NaN"},"cacheReadTokens":0.5,"cacheWriteTokens":10,"outputTokens":{"$num":"-Infinity"}}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":["x","﻿bom",{"inputTokens":2,"cacheReadTokens":42,"cacheWriteTokens":{"$num":"-0"},"outputTokens":0}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":["b","a..b",{"inputTokens":1000000,"cacheReadTokens":1000000,"cacheWriteTokens":2147483648,"outputTokens":{"$num":"-Infinity"}}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[true,"key_name-1",{"inputTokens":{"$num":"-0"},"cacheReadTokens":0,"cacheWriteTokens":42,"outputTokens":2147483648}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":["x","aHello World",{"inputTokens":3,"cacheReadTokens":0.5,"cacheWriteTokens":42,"outputTokens":100}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[["a",1],"tab\tseparated",{"inputTokens":1000000,"cacheReadTokens":2147483648,"cacheWriteTokens":0,"outputTokens":10}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[{"a":{"b":"c"}},"a..b",{"inputTokens":{"$num":"NaN"},"cacheReadTokens":3,"cacheWriteTokens":2,"outputTokens":3}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[["a",1],"a😀b😀c",{"inputTokens":9007199254740992,"cacheReadTokens":10,"cacheWriteTokens":100,"outputTokens":{"$num":"NaN"}}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[["a",1],"﻿bomsrc/a/b.ts",{"inputTokens":1000000,"cacheReadTokens":10,"cacheWriteTokens":1000000,"outputTokens":3}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[true,"src/a/b.ts",true],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":["x","hello world",{"inputTokens":2147483648,"cacheReadTokens":{"$num":"Infinity"},"cacheWriteTokens":10,"outputTokens":-1}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[true,"é",{"inputTokens":-2.5,"cacheReadTokens":1000,"cacheWriteTokens":0.5,"outputTokens":{"$num":"NaN"}}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[{},".leading",{}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[0,"日本語のテキスト",{"inputTokens":2,"cacheReadTokens":-2.5,"cacheWriteTokens":-2.5,"outputTokens":0.5}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[[],"ahello",{"inputTokens":{"$num":"-Infinity"},"cacheReadTokens":-1,"cacheWriteTokens":1000000,"outputTokens":9007199254740992}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[":",":",{"inputTokens":{"$num":"Infinity"},"cacheReadTokens":1000000,"cacheWriteTokens":{"$num":"-0"},"outputTokens":1}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[null,"  padded  ",{"inputTokens":0.5,"cacheReadTokens":{"$num":"Infinity"},"cacheWriteTokens":42,"outputTokens":-1}],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"priceTokens","args":[{},"./x/**/*.json",0],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[0,"./x/**/*.json",{"inputTokens":{"$num":"-0"},"cacheReadTokens":3,"cacheWriteTokens":-2.5,"outputTokens":{"$num":"-0"}}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[["a",1],"İstanbul",{"inputTokens":2147483648,"cacheReadTokens":-1,"cacheWriteTokens":100,"outputTokens":0.5}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[{"a":{"b":"c"}},"src/a/b.ts",{"inputTokens":-1,"cacheReadTokens":2147483648,"cacheWriteTokens":42,"outputTokens":42}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[0,"{name} has {count} items",{"inputTokens":{"$num":"Infinity"},"cacheReadTokens":0.5,"cacheWriteTokens":2,"outputTokens":-1}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":["x","",{"inputTokens":-2.5,"cacheReadTokens":{"$num":"Infinity"},"cacheWriteTokens":{"$num":"-Infinity"},"outputTokens":42}],"ok":null}
+{"fn":"priceTokens","args":[{},"hello",{"inputTokens":100,"cacheReadTokens":10,"cacheWriteTokens":{"$num":"-Infinity"},"outputTokens":9007199254740992}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":["x","é",{"inputTokens":-1,"cacheReadTokens":{"$num":"-Infinity"},"cacheWriteTokens":0.5,"outputTokens":{"$num":"NaN"}}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[0,"é",{"inputTokens":3,"cacheReadTokens":42,"cacheWriteTokens":3,"outputTokens":1000000}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[{"a":{"b":"c"}},"straße",[]],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[{},"key_name-1",{"inputTokens":42,"cacheReadTokens":2,"cacheWriteTokens":{"$num":"Infinity"},"outputTokens":1000}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[null,"hello world",{"inputTokens":1000000,"cacheReadTokens":2147483648,"cacheWriteTokens":-1,"outputTokens":9007199254740992}],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"priceTokens","args":[0,"hello",{"inputTokens":{"$num":"-Infinity"},"cacheReadTokens":3,"cacheWriteTokens":{"$num":"Infinity"},"outputTokens":-2.5}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[["a",1],"trailing.","x"],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[{"a":{"b":"c"}},"ab",{"inputTokens":42,"cacheReadTokens":0.5,"cacheWriteTokens":{"$num":"NaN"},"outputTokens":2}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[0,"tab\tseparated",{"inputTokens":42,"cacheReadTokens":-2.5,"cacheWriteTokens":-2.5,"outputTokens":3}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[{"a":"b"},"ünïcödé",{"inputTokens":1,"cacheReadTokens":{"$num":"Infinity"},"cacheWriteTokens":{"$num":"NaN"},"outputTokens":{"$num":"NaN"}}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[{},"😀",{"inputTokens":{"$num":"Infinity"},"cacheReadTokens":2147483648,"cacheWriteTokens":2147483648,"outputTokens":{"$num":"-Infinity"}}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[null,"ünïcödé",{"inputTokens":10,"cacheReadTokens":1,"cacheWriteTokens":3,"outputTokens":{"$num":"-0"}}],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"priceTokens","args":[[],"./x/**/*.json",{"inputTokens":2,"cacheReadTokens":100,"cacheWriteTokens":3,"outputTokens":{"$num":"Infinity"}}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[[],".leadinghello",{"inputTokens":{"$num":"-0"},"cacheReadTokens":3,"cacheWriteTokens":-1,"outputTokens":1}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[true,"tab\tseparated",{"inputTokens":2147483648,"cacheReadTokens":0,"cacheWriteTokens":2147483648,"outputTokens":0.5}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[{"a":"b"},"a:b:c",{"inputTokens":1000000,"cacheReadTokens":1000000,"cacheWriteTokens":{"$num":"-Infinity"},"outputTokens":9007199254740992}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[null,"key_name-1",{"inputTokens":1000,"cacheReadTokens":{"$num":"-0"},"cacheWriteTokens":{"$num":"NaN"},"outputTokens":-2.5}],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"priceTokens","args":[{},"tab\tseparated",{"inputTokens":-1,"cacheReadTokens":1,"cacheWriteTokens":2,"outputTokens":1}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[{},"a.b.c",{"inputTokens":{"$num":"-Infinity"},"cacheReadTokens":100,"cacheWriteTokens":10,"outputTokens":{"$num":"NaN"}}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[{"a":{"b":"c"}},":",{"inputTokens":2,"cacheReadTokens":10,"cacheWriteTokens":10,"outputTokens":{"$num":"NaN"}}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[["a",1],"hello world./x/**/*.json",{"inputTokens":1000,"cacheReadTokens":3,"cacheWriteTokens":{"$num":"Infinity"},"outputTokens":-1}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[{"a":"b"},"trailing.",{"inputTokens":{"$num":"-0"},"cacheReadTokens":10,"cacheWriteTokens":100,"outputTokens":-2.5}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[{"a":"b"},"ΣΊΣΥΦΟΣ",{"inputTokens":1000000,"cacheReadTokens":10,"cacheWriteTokens":3,"outputTokens":-2.5}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[null,"abc",{"inputTokens":10,"cacheReadTokens":-2.5,"cacheWriteTokens":0,"outputTokens":0.5}],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"priceTokens","args":[["a",1],"abc",{"inputTokens":{"$num":"-0"},"cacheReadTokens":{"$num":"-0"},"cacheWriteTokens":0.5,"outputTokens":2147483648}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[{"a":"b"},"İstanbul",{"inputTokens":0.5,"cacheReadTokens":-1,"cacheWriteTokens":42,"outputTokens":42}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[["a",1],"a..b",{"inputTokens":9007199254740992,"cacheReadTokens":1,"cacheWriteTokens":1000000,"outputTokens":9007199254740992}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[{"a":"b"},"Hello World",{"inputTokens":1,"cacheReadTokens":3,"cacheWriteTokens":0.5,"outputTokens":100}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[true,"a",{"inputTokens":{"$num":"NaN"},"cacheReadTokens":9007199254740992,"cacheWriteTokens":9007199254740992,"outputTokens":10}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[[],"",{"inputTokens":{"$num":"Infinity"},"cacheReadTokens":{"$num":"-Infinity"},"cacheWriteTokens":{"$num":"-Infinity"},"outputTokens":-2.5}],"ok":null}
+{"fn":"priceTokens","args":[{"a":"b"},"Hello World",{"inputTokens":0.5,"cacheReadTokens":1000000,"cacheWriteTokens":9007199254740992,"outputTokens":{"$num":"Infinity"}}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[true,"ünïcödé",true],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[null,"日本語のテキスト",{"inputTokens":1,"cacheReadTokens":42,"cacheWriteTokens":-2.5,"outputTokens":{"$num":"-0"}}],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"priceTokens","args":[["a",1],"ΣΊΣΥΦΟΣ",{"inputTokens":{"$num":"Infinity"},"cacheReadTokens":2,"cacheWriteTokens":100,"outputTokens":2147483648}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[{"a":{"b":"c"}},"😀",{"inputTokens":3,"cacheReadTokens":-2.5,"cacheWriteTokens":-1,"outputTokens":42}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":["x","./x/**/*.json",{"inputTokens":{"$num":"-0"},"cacheReadTokens":0.5,"cacheWriteTokens":0,"outputTokens":1000}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[{"a":"b"},"ns:key.path",{"inputTokens":-1,"cacheReadTokens":1000000,"cacheWriteTokens":0.5,"outputTokens":2147483648}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[[],"ab",{"inputTokens":9007199254740992,"cacheReadTokens":10,"cacheWriteTokens":3,"outputTokens":1000000}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[true,"straße",{"inputTokens":100,"cacheReadTokens":-2.5,"cacheWriteTokens":0.5,"outputTokens":42}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[{"a":"b"},"line1\nline2./x/**/*.json",{"inputTokens":2,"cacheReadTokens":{"$num":"Infinity"},"cacheWriteTokens":3,"outputTokens":{"$num":"-Infinity"}}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[{},"a😀b😀c",{"inputTokens":2147483648,"cacheReadTokens":{"$num":"Infinity"},"cacheWriteTokens":1000,"outputTokens":1}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[0,"a..b",{"inputTokens":9007199254740992,"cacheReadTokens":100,"cacheWriteTokens":2,"outputTokens":42}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[0,"straße",{"a":"b"}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[null,"tab\tseparated",{"inputTokens":{"$num":"-0"},"cacheReadTokens":2,"cacheWriteTokens":1000000,"outputTokens":{"$num":"Infinity"}}],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"priceTokens","args":[[],"日本語のテキスト",{"inputTokens":2,"cacheReadTokens":-1,"cacheWriteTokens":{"$num":"NaN"},"outputTokens":{"$num":"-0"}}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[{"a":"b"},"  padded    padded  ",{}],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[["a",1],"héllo wörld",[]],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[["a",1],"👍🏽 thumbs",[]],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[["a",1],"日本語",[]],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[["a",1],"",[]],"ok":null}
+{"fn":"priceTokens","args":[["a",1],"é",[]],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[["a",1],"İstanbul",[]],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[["a",1],"straße",[]],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[["a",1],"ılık ırmak",[]],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[["a",1],"👨‍👩‍👧 family",[]],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[["a",1],"a b",[]],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[["a",1],"ΣΊΣΥΦΟΣ",[]],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[["a",1],"a😀b",[]],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[["a",1],"﻿bom",[]],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[["a",1],"a²b x½ y①",[]],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[["a",1],"aⅠb Ⅻ",[]],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[["a",1],"a𐐀b 𝐀bc",[]],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[["a",1],"कि ٣٤",[]],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[["a",1],"Iı İi",[]],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[["a",1],"K K k",[]],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[["a",1],"ſ s S",[]],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[["a",1],"x‍y 👨‍👩‍👧",[]],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[["a",1],"a b c　d",[]],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[["a",1],"١٢٣ ٤٥",[]],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[["a",1],"𝟘𝟙 ²³",[]],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[["a",1],"snake_case foo-bar o'neil",[]],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[["a",1],"ǅungla Ǆ",[]],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[["a",1],"one\r\ntwo threefour",[]],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[["a",1],"café café",[]],"error":"table.get is not a function"}
+{"fn":"priceTokens","args":[["a",1],"ΣΑΣ σας ς",[]],"error":"table.get is not a function"}
+{"fn":"priceTranscriptUsage","args":[0,true],"ok":{"$undefined":true}}
+{"fn":"priceTranscriptUsage","args":[true,null],"error":"Cannot read properties of null (reading 'reportedCostUsd')"}
+{"fn":"priceTranscriptUsage","args":[["a",1],true],"ok":{"$undefined":true}}
+{"fn":"priceTranscriptUsage","args":["x",null],"error":"Cannot read properties of null (reading 'reportedCostUsd')"}
+{"fn":"priceTranscriptUsage","args":[null,["a",1]],"ok":{"$undefined":true}}
+{"fn":"priceTranscriptUsage","args":[[],{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"priceTranscriptUsage","args":[0,"x"],"ok":{"$undefined":true}}
+{"fn":"priceTranscriptUsage","args":[true,["a",1]],"ok":{"$undefined":true}}
+{"fn":"priceTranscriptUsage","args":[0,{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"priceTranscriptUsage","args":[true,[]],"ok":{"$undefined":true}}
+{"fn":"priceTranscriptUsage","args":[0,null],"error":"Cannot read properties of null (reading 'reportedCostUsd')"}
+{"fn":"priceTranscriptUsage","args":[{},"x"],"ok":{"$undefined":true}}
+{"fn":"priceTranscriptUsage","args":[{},["a",1]],"ok":{"$undefined":true}}
+{"fn":"priceTranscriptUsage","args":[null,{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"priceTranscriptUsage","args":[null,"x"],"ok":{"$undefined":true}}
+{"fn":"priceTranscriptUsage","args":["x",{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"priceTranscriptUsage","args":[[],["a",1]],"ok":{"$undefined":true}}
+{"fn":"priceTranscriptUsage","args":["x",{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"priceTranscriptUsage","args":[{"a":{"b":"c"}},[]],"ok":{"$undefined":true}}
+{"fn":"priceTranscriptUsage","args":[0,[]],"ok":{"$undefined":true}}
+{"fn":"priceTranscriptUsage","args":[true,"x"],"ok":{"$undefined":true}}
+{"fn":"priceTranscriptUsage","args":[null,true],"ok":{"$undefined":true}}
+{"fn":"priceTranscriptUsage","args":[null,0],"ok":{"$undefined":true}}
+{"fn":"priceTranscriptUsage","args":[true,{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"priceTranscriptUsage","args":[["a",1],[]],"ok":{"$undefined":true}}
+{"fn":"priceTranscriptUsage","args":[{"a":"b"},true],"ok":{"$undefined":true}}
+{"fn":"priceTranscriptUsage","args":[{"a":"b"},[]],"ok":{"$undefined":true}}
+{"fn":"priceTranscriptUsage","args":[{"a":"b"},{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"priceTranscriptUsage","args":[{"a":"b"},{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"priceTranscriptUsage","args":[[],{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"priceTranscriptUsage","args":[{"a":{"b":"c"}},{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"priceTranscriptUsage","args":[{"a":{"b":"c"}},null],"error":"Cannot read properties of null (reading 'reportedCostUsd')"}
+{"fn":"priceTranscriptUsage","args":[null,{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"priceTranscriptUsage","args":[[],true],"ok":{"$undefined":true}}
+{"fn":"priceTranscriptUsage","args":[["a",1],["a",1]],"ok":{"$undefined":true}}
+{"fn":"priceTranscriptUsage","args":[true,{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"priceTranscriptUsage","args":["x",0],"ok":{"$undefined":true}}
+{"fn":"priceTranscriptUsage","args":[{"a":{"b":"c"}},["a",1]],"ok":{"$undefined":true}}
+{"fn":"priceTranscriptUsage","args":[[],"x"],"ok":{"$undefined":true}}
+{"fn":"priceTranscriptUsage","args":["x",{}],"ok":{"$undefined":true}}
+{"fn":"priceTranscriptUsage","args":[["a",1],{}],"ok":{"$undefined":true}}
+{"fn":"priceTranscriptUsage","args":[{},0],"ok":{"$undefined":true}}
+{"fn":"priceTranscriptUsage","args":[{"a":{"b":"c"}},0],"ok":{"$undefined":true}}
+{"fn":"priceTranscriptUsage","args":[["a",1],{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"priceTranscriptUsage","args":[[],null],"error":"Cannot read properties of null (reading 'reportedCostUsd')"}
+{"fn":"priceTranscriptUsage","args":[null,[]],"ok":{"$undefined":true}}
+{"fn":"priceTranscriptUsage","args":[0,["a",1]],"ok":{"$undefined":true}}
+{"fn":"priceTranscriptUsage","args":[true,{}],"ok":{"$undefined":true}}
+{"fn":"priceTranscriptUsage","args":[true,0],"ok":{"$undefined":true}}
+{"fn":"priceTranscriptUsage","args":[[],[]],"ok":{"$undefined":true}}
+{"fn":"priceTranscriptUsage","args":[{"a":"b"},null],"error":"Cannot read properties of null (reading 'reportedCostUsd')"}
+{"fn":"priceTranscriptUsage","args":[{"a":"b"},{}],"ok":{"$undefined":true}}
+{"fn":"priceTranscriptUsage","args":[{},{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"priceTranscriptUsage","args":[true,true],"ok":{"$undefined":true}}
+{"fn":"priceTranscriptUsage","args":[[],{}],"ok":{"$undefined":true}}
+{"fn":"priceTranscriptUsage","args":[{"a":{"b":"c"}},true],"ok":{"$undefined":true}}
+{"fn":"priceTranscriptUsage","args":[{"a":{"b":"c"}},{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"priceTranscriptUsage","args":[{},null],"error":"Cannot read properties of null (reading 'reportedCostUsd')"}
+{"fn":"priceTranscriptUsage","args":["x","x"],"ok":{"$undefined":true}}
+{"fn":"priceTranscriptUsage","args":[0,{}],"ok":{"$undefined":true}}
+{"fn":"priceTranscriptUsage","args":[["a",1],0],"ok":{"$undefined":true}}
+{"fn":"priceTranscriptUsage","args":["x",["a",1]],"ok":{"$undefined":true}}
+{"fn":"priceTranscriptUsage","args":[{"a":"b"},"x"],"ok":{"$undefined":true}}
+{"fn":"priceTranscriptUsage","args":[["a",1],"x"],"ok":{"$undefined":true}}
+{"fn":"priceTranscriptUsage","args":[["a",1],{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"priceTranscriptUsage","args":[[],0],"ok":{"$undefined":true}}
+{"fn":"priceTranscriptUsage","args":[["a",1],null],"error":"Cannot read properties of null (reading 'reportedCostUsd')"}
+{"fn":"priceTranscriptUsage","args":[null,null],"error":"Cannot read properties of null (reading 'reportedCostUsd')"}
+{"fn":"priceTranscriptUsage","args":[{"a":{"b":"c"}},{}],"ok":{"$undefined":true}}
+{"fn":"priceTranscriptUsage","args":[{"a":"b"},0],"ok":{"$undefined":true}}
+{"fn":"priceTranscriptUsage","args":[{},{}],"ok":{"$undefined":true}}
+{"fn":"priceTranscriptUsage","args":[{"a":{"b":"c"}},"x"],"ok":{"$undefined":true}}
+{"fn":"priceTranscriptUsage","args":[null,{}],"ok":{"$undefined":true}}
+{"fn":"priceTranscriptUsage","args":[0,{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"priceTranscriptUsage","args":["x",true],"ok":{"$undefined":true}}
+{"fn":"priceTranscriptUsage","args":[{"a":"b"},["a",1]],"ok":{"$undefined":true}}
+{"fn":"priceTranscriptUsage","args":[{},true],"ok":{"$undefined":true}}
+{"fn":"priceTranscriptUsage","args":[{},{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"priceTranscriptUsage","args":[0,0],"ok":{"$undefined":true}}
+{"fn":"priceTranscriptUsage","args":[{},[]],"ok":{"$undefined":true}}
+{"fn":"priceTranscriptUsage","args":["x",[]],"ok":{"$undefined":true}}
+{"fn":"priceTranscriptUsage","args":["X","x"],"ok":{"$undefined":true}}

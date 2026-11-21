@@ -1,0 +1,35 @@
+{
+  "unit": "apps/server/src/usagePricing.ts",
+  "files": 1,
+  "fingerprint": "b30cbc99e8c9a2e1",
+  "coverage": {
+    "lines": 918,
+    "reached": 288,
+    "files": [
+      {
+        "file": "apps/server/src/atomicWrite.ts",
+        "lines": 172,
+        "reached": 27,
+        "missed": "15-74, 76-86, 89-95, 97-111, 113-118, 121-138, 142-147, 149-153, 166-171, 173-183"
+      },
+      {
+        "file": "apps/server/src/privatePathPermissions.ts",
+        "lines": 177,
+        "reached": 25,
+        "missed": "20-25, 28-35, 38-44, 46-62, 65-86, 89-101, 103-119, 122-148, 155-158, 160-188, 190-191"
+      },
+      {
+        "file": "apps/server/src/transcriptUsageParsers.ts",
+        "lines": 290,
+        "reached": 92,
+        "missed": "58-65, 69-70, 72-76, 78-80, 82-84, 86-90, 92-98, 108-110, 113-124, 128-130, 132-143, 145-151, 153-157, 159-185, 204-212, 222-227, 229-234, 242-248, 250-261, 263-276, 278-283, 285-287, 289-295, 297-308, 310-323"
+      },
+      {
+        "file": "apps/server/src/usagePricing.ts",
+        "lines": 279,
+        "reached": 144,
+        "missed": "63-65, 88, 96-111, 116-118, 137-142, 165-170, 183-194, 217-229, 232-238, 240-244, 246-258, 260-290, 292-297, 299-311"
+      }
+    ]
+  }
+}

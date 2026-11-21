@@ -1,0 +1,115 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/usagePricing.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "usagepricing-rs",
+  "exports": [
+    {
+      "name": "parseRateTable",
+      "file": "apps/server/src/usagePricing.ts",
+      "line": 126,
+      "params": [
+        {
+          "name": "document",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ReadonlyMap<string, ModelRate>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "lookupRate",
+      "file": "apps/server/src/usagePricing.ts",
+      "line": 151,
+      "params": [
+        {
+          "name": "table",
+          "ts_type": "ReadonlyMap<string, ModelRate>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "model",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ModelRate | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "priceTokens",
+      "file": "apps/server/src/usagePricing.ts",
+      "line": 162,
+      "params": [
+        {
+          "name": "table",
+          "ts_type": "ReadonlyMap<string, ModelRate>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "model",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "tokens",
+          "ts_type": "PricedTokens",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "number | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "priceTranscriptUsage",
+      "file": "apps/server/src/usagePricing.ts",
+      "line": 178,
+      "params": [
+        {
+          "name": "table",
+          "ts_type": "ReadonlyMap<string, ModelRate>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "usage",
+          "ts_type": "Extract<(| {\n      readonly kind: \"usage\";\n      readonly provider: (\"claudeAgent\" | \"codex\");\n      readonly timestampMs: number;\n      readonly model: string;\n      /** Working directory of the session, for project attribution. */\n      readonly cwd: string;\n      readonly tokens: TranscriptTokenCounts;\n      /** A cost written in the session file itself; null when there is none. */\n      readonly reportedCostUsd: number | null;\n      /** Claude fast mode, billed at a model-specific multiple. */\n      readonly fast: boolean;\n      /** True for a request that ended in an API error instead of a response. */\n      readonly failed: boolean;\n      /**\n       * Claude repeats one response's usage on every content block, and resumed\n       * sessions copy earlier responses into new files: records with the same key\n       * are one response. Null when the record is unique.\n       */\n      readonly dedupeKey: string | null;\n    }\n  | {\n      readonly kind: \"turn\";\n      readonly provider: (\"claudeAgent\" | \"codex\");\n      readonly timestampMs: number;\n      readonly model: string;\n      readonly cwd: string;\n      /** Resumed and forked sessions copy earlier turns; one key is one turn. */\n      readonly dedupeKey: string;\n    }), { kind: \"usage\" }>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "number | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "makeUsagePricingSource",
+      "file": "apps/server/src/usagePricing.ts",
+      "line": 231,
+      "reason": "takes or returns a function"
+    }
+  ]
+}

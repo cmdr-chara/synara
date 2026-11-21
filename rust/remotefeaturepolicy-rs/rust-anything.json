@@ -1,0 +1,99 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/remoteFeaturePolicy.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "remotefeaturepolicy-rs",
+  "exports": [
+    {
+      "name": "remoteConnectionsUnavailableReason",
+      "file": "apps/server/src/remoteFeaturePolicy.ts",
+      "line": 11,
+      "params": [
+        {
+          "name": "stateDir",
+          "ts_type": "string",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "accountLiveActivityEnabled",
+      "file": "apps/server/src/remoteFeaturePolicy.ts",
+      "line": 37,
+      "params": [
+        {
+          "name": "stateDir",
+          "ts_type": "string",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "requireRemoteConnections",
+      "file": "apps/server/src/remoteFeaturePolicy.ts",
+      "line": 42,
+      "params": [
+        {
+          "name": "stateDir",
+          "ts_type": "string",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "accountProfileSyncUnavailableReason",
+      "file": "apps/server/src/remoteFeaturePolicy.ts",
+      "line": 47,
+      "params": [],
+      "returns": "string | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "requireAccountProfileSync",
+      "file": "apps/server/src/remoteFeaturePolicy.ts",
+      "line": 60,
+      "params": [],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "requireHostSecretsSync",
+      "file": "apps/server/src/remoteFeaturePolicy.ts",
+      "line": 65,
+      "params": [],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

@@ -1,0 +1,636 @@
+{"fn":"remoteConnectionsUnavailableReason","args":["abc"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["src/a/b.ts"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":[{"$undefined":true}],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":[],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":[".leading"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["  padded  "],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["straße"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["straßehello"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["trailing.a.b.c"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["日本語のテキスト"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["ns:key.path"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["tab\tseparated"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["trailing."],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["emoji 👍🏽 mix./x/**/*.json"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["a😀b😀c"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":[":{name} has {count} items"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["key_name-1"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["HELLO"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["a..b"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["straßea.b.c"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["a:"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["Hello World"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["line1\nline2"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":[":"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["ab"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["src/a/b.tsé"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["é"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["a.b.c"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["abc./x/**/*.json"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["hello world"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["emoji 👍🏽 mix"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":[":trailing."],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["./x/**/*.json"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["hello"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["😀"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["😀a"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["İstanbul"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["a"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["ΣΊΣΥΦΟΣİstanbul"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["src/a/b.tsns:key.path"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":[""],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["{name} has {count} items"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["{name} has {count} itemsab"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["﻿bom"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["ΣΊΣΥΦΟΣ"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["trailing.straße"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["﻿bom﻿bom"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["ünïcödé"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["hello worlda.b.c"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["trailing.日本語のテキスト"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["abcns:key.path"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["emoji 👍🏽 mixİstanbul"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["line1\nline2{name} has {count} items"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["ΣΊΣΥΦΟΣ.leading"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":[".leadingé"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":[".leadingabc"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["hello worldkey_name-1"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["HELLOemoji 👍🏽 mix"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["a😀b😀cns:key.path"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["hello worldabc"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["a:b:c"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["İstanbula😀b😀c"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["{name} has {count} items:"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["./x/**/*.json:"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":[":ΣΊΣΥΦΟΣ"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["line1\nline2a..b"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["éns:key.path"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["ésrc/a/b.ts"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["abca"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["日本語のテキスト.leading"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["{name} has {count} itemsünïcödé"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["a.b.ca"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["./x/**/*.jsona:b:c"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["ΣΊΣΥΦΟΣtrailing."],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":[".leadingİstanbul"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["a😀b😀ca.b.c"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["straßeHello World"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["trailing../x/**/*.json"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["😀ünïcödé"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["  padded  {name} has {count} items"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["straße  padded  "],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":[".leadinga.b.c"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["﻿boma"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["a..ba😀b😀c"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["İstanbulHello World"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["./x/**/*.jsonemoji 👍🏽 mix"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["  padded    padded  "],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["ns:key.path日本語のテキスト"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["ünïcödéHello World"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["ünïcödékey_name-1"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["İstanbulabc"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["straße😀"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["tab\tseparatedemoji 👍🏽 mix"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["abHELLO"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["line1\nline2src/a/b.ts"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["Hello Worldünïcödé"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["abca.b.c"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["é日本語のテキスト"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["HELLO./x/**/*.json"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["a:b:cab"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["  padded  a..b"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["emoji 👍🏽 mixstraße"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":[".leadingline1\nline2"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["ΣΊΣΥΦΟΣabc"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["src/a/b.tsHELLO"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["  padded  hello"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["src/a/b.tsstraße"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["ns:key.pathHELLO"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["key_name-1﻿bom"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["日本語のテキストhello"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["abc  padded  "],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["tab\tseparatedtrailing."],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["ns:key.patha"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["a😀b😀c  padded  "],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["😀ab"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["﻿bom:"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["ns:key.path.leading"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["﻿bomns:key.path"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["ékey_name-1"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["a😀b😀c./x/**/*.json"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["emoji 👍🏽 mixa.b.c"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["Hello World😀"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["trailing..leading"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["abhello"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["ΣΊΣΥΦΟΣns:key.path"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["a😀b😀cé"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["ab﻿bom"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["Hello Worldhello world"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["İstanbulHELLO"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["a.b.cİstanbul"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["Hello Worlda:b:c"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["hello worldemoji 👍🏽 mix"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["astraße"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["a.b.cabc"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["{name} has {count} items日本語のテキスト"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["😀a.b.c"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["é﻿bom"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["éstraße"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["hellotrailing."],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["ns:key.pathé"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["日本語のテキストΣΊΣΥΦΟΣ"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["abcİstanbul"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["helloemoji 👍🏽 mix"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["Hello Worldtab\tseparated"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["key_name-1line1\nline2"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["helloa:b:c"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["日本語のテキストünïcödé"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["emoji 👍🏽 mix  padded  "],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["a.b.chello world"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["line1\nline2line1\nline2"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["abcHELLO"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["./x/**/*.jsonline1\nline2"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["a..ba..b"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["😀  padded  "],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["line1\nline2a😀b😀c"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["./x/**/*.json日本語のテキスト"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["﻿bomΣΊΣΥΦΟΣ"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["İstanbultrailing."],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["abc😀"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["ab  padded  "],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["Hello Worldabc"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["{name} has {count} items😀"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["﻿bomabc"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["ΣΊΣΥΦΟΣhello world"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["straßeabc"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["aba😀b😀c"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":[".leadingns:key.path"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["a:b:c日本語のテキスト"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["key_name-1abc"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["key_name-1İstanbul"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["ΣΊΣΥΦΟΣtab\tseparated"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["hello worldline1\nline2"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":[":emoji 👍🏽 mix"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":[".leading.leading"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["{name} has {count} items.leading"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["src/a/b.ts.leading"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["{name} has {count} itemsa..b"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["line1\nline2:"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["{name} has {count} itemsa.b.c"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["./x/**/*.json😀"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["日本語のテキスト{name} has {count} items"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["./x/**/*.jsontab\tseparated"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["ns:key.pathab"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["./x/**/*.jsonΣΊΣΥΦΟΣ"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["a😀b😀c日本語のテキスト"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["HELLOİstanbul"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["atrailing."],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["line1\nline2日本語のテキスト"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["{name} has {count} itemsHello World"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["ünïcödéHELLO"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["日本語のテキストé"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["日本語のテキストabc"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["emoji 👍🏽 mixa..b"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["emoji 👍🏽 mixa😀b😀c"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["  padded  ünïcödé"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["ns:key.pathünïcödé"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["😀﻿bom"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["a.b.cemoji 👍🏽 mix"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":[".leading{name} has {count} items"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["a﻿bom"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["héllo wörld"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["👍🏽 thumbs"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["日本語"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["ılık ırmak"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["👨‍👩‍👧 family"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["a b"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["a😀b"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["a²b x½ y①"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["aⅠb Ⅻ"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["a𐐀b 𝐀bc"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"remoteConnectionsUnavailableReason","args":["कि ٣٤"],"ok":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"accountLiveActivityEnabled","args":["ab"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["a..b"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["a.b.c"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["emoji 👍🏽 mix"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":[],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":[{"$undefined":true}],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":[":"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["a"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["ünïcödé"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["tab\tseparated"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["日本語のテキストé"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["ns:key.path"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["hello"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["日本語のテキスト"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":[".leading"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["tab\tseparated:"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["straßeünïcödé"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["é"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["{name} has {count} items"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["abctab\tseparated"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["hello world"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["{name} has {count} itemsstraße"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["./x/**/*.json"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["src/a/b.ts"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["ünïcödé日本語のテキスト"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["key_name-1"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["tab\tseparatedline1\nline2"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["key_name-1a"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["line1\nline2"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["  padded  "],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["éline1\nline2"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["ΣΊΣΥΦΟΣ"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["ünïcödésrc/a/b.ts"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["Hello World"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["line1\nline2é"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["a.b.chello"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["src/a/b.tshello world"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["İstanbul"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["  padded  :"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["ΣΊΣΥΦΟΣé"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":[".leadingns:key.path"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["a:b:c"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["trailing.line1\nline2"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["HELLO"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["ab  padded  "],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["straßeemoji 👍🏽 mix"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["src/a/b.tsabc"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["abc"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["src/a/b.tsé"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["trailing../x/**/*.json"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["😀"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["﻿bom"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["hello worldtab\tseparated"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":[""],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["😀a.b.c"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":[".leading.leading"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["日本語のテキストsrc/a/b.ts"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["./x/**/*.jsonline1\nline2"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["emoji 👍🏽 mixab"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["ns:key.patha:b:c"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["ΣΊΣΥΦΟΣHello World"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["a😀b😀c"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["a..b😀"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["a.b.cab"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["  padded  line1\nline2"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["key_name-1ns:key.path"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["abtrailing."],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["İstanbul.leading"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["abc﻿bom"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":[".leading日本語のテキスト"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["src/a/b.tsab"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["trailing."],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["emoji 👍🏽 mixa😀b😀c"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["ΣΊΣΥΦΟΣΣΊΣΥΦΟΣ"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["{name} has {count} itemsa.b.c"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["a:b:c日本語のテキスト"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":[".leading﻿bom"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["straße"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["src/a/b.ts.leading"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["key_name-1hello world"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["ab😀"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["trailing.ünïcödé"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["hellostraße"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["日本語のテキストa😀b😀c"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["İstanbulHello World"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["﻿bomHello World"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["ns:key.pathsrc/a/b.ts"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["helloünïcödé"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["hello worlda😀b😀c"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["a:b:cstraße"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["ünïcödé😀"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["abİstanbul"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["Hello Worldsrc/a/b.ts"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["﻿bomtrailing."],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["ünïcödéHELLO"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":[".leadingsrc/a/b.ts"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["日本語のテキスト﻿bom"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["hello world日本語のテキスト"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["a..bns:key.path"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["a😀b😀c.leading"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["hello worlda:b:c"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["ns:key.path{name} has {count} items"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["./x/**/*.json.leading"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["日本語のテキストHello World"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["line1\nline2ab"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["aünïcödé"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["abcünïcödé"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["İstanbula😀b😀c"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["Hello Worlda:b:c"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["aHELLO"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["日本語のテキストabc"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["asrc/a/b.ts"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["Hello World{name} has {count} items"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["helloHELLO"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["a😀b😀ckey_name-1"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["emoji 👍🏽 mixabc"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["src/a/b.tsİstanbul"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["aa..b"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["﻿bomHELLO"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["  padded  ab"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["ΣΊΣΥΦΟΣ日本語のテキスト"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["﻿bomé"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["  padded  HELLO"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["  padded  ns:key.path"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["line1\nline2﻿bom"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["ns:key.pathns:key.path"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["a😀b😀cns:key.path"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["Hello Worldtrailing."],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["key_name-1ünïcödé"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["hello world:"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["HELLOtrailing."],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["src/a/b.tstrailing."],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["line1\nline2a"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["Hello Worldtab\tseparated"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":[".leadingstraße"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["日本語のテキストemoji 👍🏽 mix"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["a:b:cHELLO"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["emoji 👍🏽 mixHELLO"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["a😀b😀cab"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["ΣΊΣΥΦΟΣ{name} has {count} items"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["abcab"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["hellokey_name-1"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["{name} has {count} itemskey_name-1"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["İstanbulns:key.path"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["a😀b😀cünïcödé"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["a:b:ctrailing."],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["ΣΊΣΥΦΟΣ😀"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["ünïcödé.leading"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["HELLOkey_name-1"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["trailing.é"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["src/a/b.tsünïcödé"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["a.b.ca..b"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["line1\nline2a:b:c"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["trailing.a..b"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["line1\nline2İstanbul"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["{name} has {count} itemsa😀b😀c"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["{name} has {count} itemshello"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["trailing.a.b.c"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["HELLO  padded  "],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["éa.b.c"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["😀😀"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["key_name-1﻿bom"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["key_name-1key_name-1"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["tab\tseparatedHELLO"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["line1\nline2a😀b😀c"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["a:b:cünïcödé"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["key_name-1ab"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["tab\tseparated😀"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["HELLO﻿bom"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["日本語のテキストhello world"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["key_name-1straße"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":[":abc"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["ΣΊΣΥΦΟΣ﻿bom"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["helloHello World"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["﻿bomns:key.path"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["ab:"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["src/a/b.tsa..b"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["﻿bomemoji 👍🏽 mix"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["line1\nline2tab\tseparated"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["atab\tseparated"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["HELLOünïcödé"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["hello worlda"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["abca.b.c"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":[":日本語のテキスト"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["a..bemoji 👍🏽 mix"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["key_name-1  padded  "],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["{name} has {count} items😀"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["﻿bomİstanbul"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["emoji 👍🏽 mixsrc/a/b.ts"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["helloa😀b😀c"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["trailing.{name} has {count} items"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["a  padded  "],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["tab\tseparateda:b:c"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["a:b:cab"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["a.b.c  padded  "],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["ünïcödétrailing."],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["hello worldünïcödé"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["src/a/b.ts  padded  "],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["a😀b😀ca..b"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["line1\nline2./x/**/*.json"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["héllo wörld"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["👍🏽 thumbs"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["日本語"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["ılık ırmak"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["👨‍👩‍👧 family"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["a b"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["a😀b"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["a²b x½ y①"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["aⅠb Ⅻ"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["a𐐀b 𝐀bc"],"ok":true}
+{"fn":"accountLiveActivityEnabled","args":["कि ٣٤"],"ok":true}
+{"fn":"requireRemoteConnections","args":[".leading"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":[":"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["ΣΊΣΥΦΟΣ"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":[".leadingline1\nline2"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":[{"$undefined":true}],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["  padded  a😀b😀c"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":[],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["ab"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["a..b"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["line1\nline2"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["hello"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["src/a/b.ts"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["trailing."],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["a:b:c"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["./x/**/*.json"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["hello world"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["日本語のテキスト"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["a😀b😀c"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["İstanbul"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["﻿bom"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["abc"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["ahello"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["a"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["ns:key.pathhello"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["ünïcödéHello World"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["emoji 👍🏽 mix"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["é"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["😀"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["tab\tseparated"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["abcünïcödé"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["ns:key.path"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["é.leading"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["a.b.c"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["HELLO"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["straße"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["absrc/a/b.ts"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":[""],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["﻿boma:b:c"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["Hello World"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["a  padded  "],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":[".leadingHELLO"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["  padded  "],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["Hello World:"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["HELLO./x/**/*.json"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["straßeünïcödé"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["key_name-1"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["ns:key.path﻿bom"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["./x/**/*.json﻿bom"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["aa..b"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["ünïcödé:"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["./x/**/*.json./x/**/*.json"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["abns:key.path"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["abcline1\nline2"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["{name} has {count} items"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["  padded  a"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["{name} has {count} items./x/**/*.json"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":[".leadingİstanbul"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["line1\nline2a"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["﻿bomHello World"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["ünïcödé"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["line1\nline2a:b:c"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["./x/**/*.jsona..b"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["./x/**/*.jsonHello World"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["ns:key.pathsrc/a/b.ts"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["hello worldkey_name-1"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["tab\tseparateda😀b😀c"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["key_name-1src/a/b.ts"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["﻿bomünïcödé"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["src/a/b.ts日本語のテキスト"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["a..ba:b:c"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":[":a..b"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["emoji 👍🏽 mixa:b:c"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["﻿bomtab\tseparated"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["emoji 👍🏽 mix./x/**/*.json"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["hello﻿bom"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["ns:key.path./x/**/*.json"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["HELLOns:key.path"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["a:b:chello"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["{name} has {count} itemstab\tseparated"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["src/a/b.ts{name} has {count} items"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["a😀b😀cline1\nline2"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["hello world{name} has {count} items"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["abc{name} has {count} items"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["key_name-1日本語のテキスト"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["é{name} has {count} items"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["straßestraße"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["ünïcödéab"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":[":emoji 👍🏽 mix"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["trailing..leading"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["abchello"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["tab\tseparatedtrailing."],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["abHELLO"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["emoji 👍🏽 mix﻿bom"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["key_name-1key_name-1"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["😀hello"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["a😀b😀cns:key.path"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["tab\tseparated:"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["abcab"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["日本語のテキストİstanbul"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["key_name-1abc"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["line1\nline2ünïcödé"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["  padded  日本語のテキスト"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["emoji 👍🏽 mixns:key.path"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["a..babc"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["HELLOkey_name-1"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["tab\tseparatedabc"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["line1\nline2ab"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":[".leadinghello"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["{name} has {count} itemsa😀b😀c"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["abİstanbul"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":[".leadingHello World"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["straßetrailing."],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["a:b:cns:key.path"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["a😀b😀csrc/a/b.ts"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["ΣΊΣΥΦΟΣΣΊΣΥΦΟΣ"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["ünïcödétrailing."],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["a:b:cé"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["ünïcödé{name} has {count} items"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["😀ΣΊΣΥΦΟΣ"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["﻿bomsrc/a/b.ts"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["straßeHELLO"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["emoji 👍🏽 mixtab\tseparated"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":[":trailing."],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["日本語のテキストsrc/a/b.ts"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["{name} has {count} itemsHello World"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":[".leadinga.b.c"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["hellotab\tseparated"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["./x/**/*.jsontab\tseparated"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["😀a😀b😀c"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["straßeemoji 👍🏽 mix"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["﻿bomΣΊΣΥΦΟΣ"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["hello{name} has {count} items"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["aba😀b😀c"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["./x/**/*.jsona.b.c"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["emoji 👍🏽 mixHELLO"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["a.b.ca:b:c"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["trailing.key_name-1"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["éa:b:c"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["hello worldline1\nline2"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["a..bİstanbul"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["emoji 👍🏽 mix{name} has {count} items"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["a..ba..b"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["Hello Worldabc"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["HELLOİstanbul"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["abtab\tseparated"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["abΣΊΣΥΦΟΣ"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["line1\nline2é"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["ahello world"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["src/a/b.tsemoji 👍🏽 mix"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["ünïcödéa..b"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["é日本語のテキスト"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["abc  padded  "],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["key_name-1a😀b😀c"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["ΣΊΣΥΦΟΣab"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["ns:key.pathHello World"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":[":  padded  "],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["  padded  a:b:c"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":[":{name} has {count} items"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["tab\tseparatedtab\tseparated"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["abc:"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["  padded  tab\tseparated"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["İstanbulline1\nline2"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["key_name-1a:b:c"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["ab日本語のテキスト"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["trailing.hello world"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["İstanbulstraße"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["ünïcödéabc"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["ΣΊΣΥΦΟΣhello world"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":[".leadinga:b:c"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["éHello World"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["{name} has {count} items.leading"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["ns:key.path:"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":[":ünïcödé"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["a..bstraße"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["emoji 👍🏽 mixa😀b😀c"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["日本語のテキストns:key.path"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["{name} has {count} itemsé"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["HELLO😀"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["a.b.cİstanbul"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["😀tab\tseparated"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["😀:"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["hello worldstraße"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["İstanbul﻿bom"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["é:"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["src/a/b.tstab\tseparated"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["ns:key.pathHELLO"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["éa..b"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["emoji 👍🏽 mixHello World"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["hello world  padded  "],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":[".leading./x/**/*.json"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["trailing.a..b"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["{name} has {count} itemsstraße"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["a:b:c./x/**/*.json"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["a😀b😀ca..b"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["aba.b.c"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["helloa.b.c"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["ΣΊΣΥΦΟΣa..b"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["helloa😀b😀c"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["é  padded  "],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["aHELLO"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["héllo wörld"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["👍🏽 thumbs"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["日本語"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["ılık ırmak"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["👨‍👩‍👧 family"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["a b"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["a😀b"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["a²b x½ y①"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["aⅠb Ⅻ"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["a𐐀b 𝐀bc"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"requireRemoteConnections","args":["कि ٣٤"],"error":"Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections."}
+{"fn":"accountProfileSyncUnavailableReason","args":[],"ok":"Account profile sync is unavailable until SYNARA_ACCOUNT_PROFILE_SYNC=1 is set."}
+{"fn":"requireAccountProfileSync","args":[],"error":"Account profile sync is unavailable until SYNARA_ACCOUNT_PROFILE_SYNC=1 is set."}
+{"fn":"requireHostSecretsSync","args":[],"error":"Host secrets sync is unavailable in this build."}

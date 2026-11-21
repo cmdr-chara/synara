@@ -1,0 +1,54 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/contracts/src/browserAutomationBounds.ts",
+  "language": "ts",
+  "kind": "wasm",
+  "crate_name": "browserautomationbounds-rs",
+  "exports": [
+    {
+      "name": "utf8ByteLength",
+      "file": "packages/contracts/src/browserAutomationBounds.ts",
+      "line": 5,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "number",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "BoundedUtf8String",
+      "file": "packages/contracts/src/browserAutomationBounds.ts",
+      "line": 7,
+      "params": [
+        {
+          "name": "maxBytes",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "minBytes",
+          "ts_type": "number",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

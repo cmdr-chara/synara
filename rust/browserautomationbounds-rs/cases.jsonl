@@ -1,0 +1,427 @@
+{"fn":"utf8ByteLength","args":["a"],"ok":1}
+{"fn":"utf8ByteLength","args":["emoji 👍🏽 mix"],"ok":18}
+{"fn":"utf8ByteLength","args":["src/a/b.tstab\tseparated"],"ok":23}
+{"fn":"utf8ByteLength","args":["abc"],"ok":3}
+{"fn":"utf8ByteLength","args":["é"],"ok":3}
+{"fn":"utf8ByteLength","args":["key_name-1abc"],"ok":13}
+{"fn":"utf8ByteLength","args":["src/a/b.ts"],"ok":10}
+{"fn":"utf8ByteLength","args":["{name} has {count} items"],"ok":24}
+{"fn":"utf8ByteLength","args":["trailing."],"ok":9}
+{"fn":"utf8ByteLength","args":["hello./x/**/*.json"],"ok":18}
+{"fn":"utf8ByteLength","args":["ünïcödé"],"ok":11}
+{"fn":"utf8ByteLength","args":["Hello Worlda😀b😀c"],"ok":22}
+{"fn":"utf8ByteLength","args":["aİstanbul"],"ok":10}
+{"fn":"utf8ByteLength","args":["emoji 👍🏽 mixabc"],"ok":21}
+{"fn":"utf8ByteLength","args":["trailing.ünïcödé"],"ok":20}
+{"fn":"utf8ByteLength","args":["Hello World"],"ok":11}
+{"fn":"utf8ByteLength","args":["Hello World./x/**/*.json"],"ok":24}
+{"fn":"utf8ByteLength","args":["straße"],"ok":7}
+{"fn":"utf8ByteLength","args":["a😀b😀c"],"ok":11}
+{"fn":"utf8ByteLength","args":["akey_name-1"],"ok":11}
+{"fn":"utf8ByteLength","args":["ab"],"ok":2}
+{"fn":"utf8ByteLength","args":["{name} has {count} itemshello world"],"ok":35}
+{"fn":"utf8ByteLength","args":["hello"],"ok":5}
+{"fn":"utf8ByteLength","args":["﻿bom"],"ok":6}
+{"fn":"utf8ByteLength","args":["a..b"],"ok":4}
+{"fn":"utf8ByteLength","args":["abc😀"],"ok":7}
+{"fn":"utf8ByteLength","args":["ΣΊΣΥΦΟΣ"],"ok":14}
+{"fn":"utf8ByteLength","args":["hello world"],"ok":11}
+{"fn":"utf8ByteLength","args":[".leading:"],"ok":9}
+{"fn":"utf8ByteLength","args":["  padded  "],"ok":10}
+{"fn":"utf8ByteLength","args":[":line1\nline2"],"ok":12}
+{"fn":"utf8ByteLength","args":["ns:key.pathns:key.path"],"ok":22}
+{"fn":"utf8ByteLength","args":["日本語のテキスト"],"ok":24}
+{"fn":"utf8ByteLength","args":["😀"],"ok":4}
+{"fn":"utf8ByteLength","args":["a:b:c"],"ok":5}
+{"fn":"utf8ByteLength","args":["İstanbul./x/**/*.json"],"ok":22}
+{"fn":"utf8ByteLength","args":["tab\tseparated"],"ok":13}
+{"fn":"utf8ByteLength","args":["line1\nline2"],"ok":11}
+{"fn":"utf8ByteLength","args":["emoji 👍🏽 mix.leading"],"ok":26}
+{"fn":"utf8ByteLength","args":[""],"ok":0}
+{"fn":"utf8ByteLength","args":[":"],"ok":1}
+{"fn":"utf8ByteLength","args":["hello world{name} has {count} items"],"ok":35}
+{"fn":"utf8ByteLength","args":[".leading"],"ok":8}
+{"fn":"utf8ByteLength","args":["HELLO"],"ok":5}
+{"fn":"utf8ByteLength","args":["ns:key.path"],"ok":11}
+{"fn":"utf8ByteLength","args":["İstanbul"],"ok":9}
+{"fn":"utf8ByteLength","args":["ésrc/a/b.ts"],"ok":13}
+{"fn":"utf8ByteLength","args":["tab\tseparatedkey_name-1"],"ok":23}
+{"fn":"utf8ByteLength","args":["key_name-1ab"],"ok":12}
+{"fn":"utf8ByteLength","args":["a..b﻿bom"],"ok":10}
+{"fn":"utf8ByteLength","args":["hello worlda.b.c"],"ok":16}
+{"fn":"utf8ByteLength","args":["a:b:ca😀b😀c"],"ok":16}
+{"fn":"utf8ByteLength","args":["straße日本語のテキスト"],"ok":31}
+{"fn":"utf8ByteLength","args":["﻿bomünïcödé"],"ok":17}
+{"fn":"utf8ByteLength","args":["  padded  .leading"],"ok":18}
+{"fn":"utf8ByteLength","args":["helloa..b"],"ok":9}
+{"fn":"utf8ByteLength","args":["a{name} has {count} items"],"ok":25}
+{"fn":"utf8ByteLength","args":["hellotrailing."],"ok":14}
+{"fn":"utf8ByteLength","args":["ΣΊΣΥΦΟΣ./x/**/*.json"],"ok":27}
+{"fn":"utf8ByteLength","args":["{name} has {count} items./x/**/*.json"],"ok":37}
+{"fn":"utf8ByteLength","args":["HELLO😀"],"ok":9}
+{"fn":"utf8ByteLength","args":["😀key_name-1"],"ok":14}
+{"fn":"utf8ByteLength","args":["a.b.c"],"ok":5}
+{"fn":"utf8ByteLength","args":["ünïcödé.leading"],"ok":19}
+{"fn":"utf8ByteLength","args":["日本語のテキストHELLO"],"ok":29}
+{"fn":"utf8ByteLength","args":["abé"],"ok":5}
+{"fn":"utf8ByteLength","args":["src/a/b.tstrailing."],"ok":19}
+{"fn":"utf8ByteLength","args":["  padded  line1\nline2"],"ok":21}
+{"fn":"utf8ByteLength","args":["日本語のテキストabc"],"ok":27}
+{"fn":"utf8ByteLength","args":["emoji 👍🏽 mixHELLO"],"ok":23}
+{"fn":"utf8ByteLength","args":["ns:key.pathemoji 👍🏽 mix"],"ok":29}
+{"fn":"utf8ByteLength","args":["key_name-1"],"ok":10}
+{"fn":"utf8ByteLength","args":["a﻿bom"],"ok":7}
+{"fn":"utf8ByteLength","args":["line1\nline2hello world"],"ok":22}
+{"fn":"utf8ByteLength","args":["  padded  trailing."],"ok":19}
+{"fn":"utf8ByteLength","args":["./x/**/*.json"],"ok":13}
+{"fn":"utf8ByteLength","args":["a..b  padded  "],"ok":14}
+{"fn":"utf8ByteLength","args":["  padded  key_name-1"],"ok":20}
+{"fn":"utf8ByteLength","args":["./x/**/*.jsonİstanbul"],"ok":22}
+{"fn":"utf8ByteLength","args":["straßekey_name-1"],"ok":17}
+{"fn":"utf8ByteLength","args":["  padded    padded  "],"ok":20}
+{"fn":"utf8ByteLength","args":["日本語のテキスト.leading"],"ok":32}
+{"fn":"utf8ByteLength","args":["straßeΣΊΣΥΦΟΣ"],"ok":21}
+{"fn":"utf8ByteLength","args":["ns:key.pathtab\tseparated"],"ok":24}
+{"fn":"utf8ByteLength","args":["src/a/b.ts{name} has {count} items"],"ok":34}
+{"fn":"utf8ByteLength","args":["日本語のテキスト{name} has {count} items"],"ok":48}
+{"fn":"utf8ByteLength","args":["Hello Worldİstanbul"],"ok":20}
+{"fn":"utf8ByteLength","args":["a.b.cline1\nline2"],"ok":16}
+{"fn":"utf8ByteLength","args":["tab\tseparated😀"],"ok":17}
+{"fn":"utf8ByteLength","args":["abchello world"],"ok":14}
+{"fn":"utf8ByteLength","args":["aa..b"],"ok":5}
+{"fn":"utf8ByteLength","args":["a..bsrc/a/b.ts"],"ok":14}
+{"fn":"utf8ByteLength","args":["﻿bom😀"],"ok":10}
+{"fn":"utf8ByteLength","args":["./x/**/*.json日本語のテキスト"],"ok":37}
+{"fn":"utf8ByteLength","args":["emoji 👍🏽 mix日本語のテキスト"],"ok":42}
+{"fn":"utf8ByteLength","args":["helloHello World"],"ok":16}
+{"fn":"utf8ByteLength","args":["a:b:c:"],"ok":6}
+{"fn":"utf8ByteLength","args":[":./x/**/*.json"],"ok":14}
+{"fn":"utf8ByteLength","args":["a:b:c.leading"],"ok":13}
+{"fn":"utf8ByteLength","args":["hello worldsrc/a/b.ts"],"ok":21}
+{"fn":"utf8ByteLength","args":["日本語のテキスト😀"],"ok":28}
+{"fn":"utf8ByteLength","args":["hello worldabc"],"ok":14}
+{"fn":"utf8ByteLength","args":["a.b.ctrailing."],"ok":14}
+{"fn":"utf8ByteLength","args":["ünïcödé./x/**/*.json"],"ok":24}
+{"fn":"utf8ByteLength","args":["😀hello"],"ok":9}
+{"fn":"utf8ByteLength","args":["Hello Worldtab\tseparated"],"ok":24}
+{"fn":"utf8ByteLength","args":["Hello Worlda..b"],"ok":15}
+{"fn":"utf8ByteLength","args":["  padded  a"],"ok":11}
+{"fn":"utf8ByteLength","args":["éa:b:c"],"ok":8}
+{"fn":"utf8ByteLength","args":["abcünïcödé"],"ok":14}
+{"fn":"utf8ByteLength","args":["ünïcödé:"],"ok":12}
+{"fn":"utf8ByteLength","args":["ns:key.path.leading"],"ok":19}
+{"fn":"utf8ByteLength","args":["日本語のテキストtab\tseparated"],"ok":37}
+{"fn":"utf8ByteLength","args":["abctrailing."],"ok":12}
+{"fn":"utf8ByteLength","args":["trailing.  padded  "],"ok":19}
+{"fn":"utf8ByteLength","args":["İstanbulkey_name-1"],"ok":19}
+{"fn":"utf8ByteLength","args":["Hello World:"],"ok":12}
+{"fn":"utf8ByteLength","args":["😀a"],"ok":5}
+{"fn":"utf8ByteLength","args":["a:b:cns:key.path"],"ok":16}
+{"fn":"utf8ByteLength","args":[":trailing."],"ok":10}
+{"fn":"utf8ByteLength","args":["﻿bomkey_name-1"],"ok":16}
+{"fn":"utf8ByteLength","args":["HELLOtab\tseparated"],"ok":18}
+{"fn":"utf8ByteLength","args":["key_name-1é"],"ok":13}
+{"fn":"utf8ByteLength","args":["Hello Worldhello world"],"ok":22}
+{"fn":"utf8ByteLength","args":["日本語のテキストhello world"],"ok":35}
+{"fn":"utf8ByteLength","args":["  padded  😀"],"ok":14}
+{"fn":"utf8ByteLength","args":["a😀b😀cstraße"],"ok":18}
+{"fn":"utf8ByteLength","args":["日本語のテキスト日本語のテキスト"],"ok":48}
+{"fn":"utf8ByteLength","args":["emoji 👍🏽 mix  padded  "],"ok":28}
+{"fn":"utf8ByteLength","args":["a:b:ca.b.c"],"ok":10}
+{"fn":"utf8ByteLength","args":["  padded  straße"],"ok":17}
+{"fn":"utf8ByteLength","args":["asrc/a/b.ts"],"ok":11}
+{"fn":"utf8ByteLength","args":[".leadingİstanbul"],"ok":17}
+{"fn":"utf8ByteLength","args":["ΣΊΣΥΦΟΣsrc/a/b.ts"],"ok":24}
+{"fn":"utf8ByteLength","args":["tab\tseparated  padded  "],"ok":23}
+{"fn":"utf8ByteLength","args":["emoji 👍🏽 mixemoji 👍🏽 mix"],"ok":36}
+{"fn":"utf8ByteLength","args":["HELLOa.b.c"],"ok":10}
+{"fn":"utf8ByteLength","args":["{name} has {count} itemstab\tseparated"],"ok":37}
+{"fn":"utf8ByteLength","args":["./x/**/*.json./x/**/*.json"],"ok":26}
+{"fn":"utf8ByteLength","args":["line1\nline2a😀b😀c"],"ok":22}
+{"fn":"utf8ByteLength","args":["hello worldünïcödé"],"ok":22}
+{"fn":"utf8ByteLength","args":["key_name-1a.b.c"],"ok":15}
+{"fn":"utf8ByteLength","args":["abcline1\nline2"],"ok":14}
+{"fn":"utf8ByteLength","args":["trailing../x/**/*.json"],"ok":22}
+{"fn":"utf8ByteLength","args":["tab\tseparated./x/**/*.json"],"ok":26}
+{"fn":"utf8ByteLength","args":[":ns:key.path"],"ok":12}
+{"fn":"utf8ByteLength","args":["abΣΊΣΥΦΟΣ"],"ok":16}
+{"fn":"utf8ByteLength","args":["HELLOa..b"],"ok":9}
+{"fn":"utf8ByteLength","args":["key_name-1src/a/b.ts"],"ok":20}
+{"fn":"utf8ByteLength","args":["{name} has {count} itemssrc/a/b.ts"],"ok":34}
+{"fn":"utf8ByteLength","args":["😀a:b:c"],"ok":9}
+{"fn":"utf8ByteLength","args":["tab\tseparatedünïcödé"],"ok":24}
+{"fn":"utf8ByteLength","args":[":emoji 👍🏽 mix"],"ok":19}
+{"fn":"utf8ByteLength","args":["ΣΊΣΥΦΟΣline1\nline2"],"ok":25}
+{"fn":"utf8ByteLength","args":["  padded  a😀b😀c"],"ok":21}
+{"fn":"utf8ByteLength","args":["tab\tseparateda:b:c"],"ok":18}
+{"fn":"utf8ByteLength","args":[".leadingns:key.path"],"ok":19}
+{"fn":"utf8ByteLength","args":["key_name-1Hello World"],"ok":21}
+{"fn":"utf8ByteLength","args":[":src/a/b.ts"],"ok":11}
+{"fn":"utf8ByteLength","args":["{name} has {count} items😀"],"ok":28}
+{"fn":"utf8ByteLength","args":["ab日本語のテキスト"],"ok":26}
+{"fn":"utf8ByteLength","args":["é日本語のテキスト"],"ok":27}
+{"fn":"utf8ByteLength","args":["ns:key.pathkey_name-1"],"ok":21}
+{"fn":"utf8ByteLength","args":["ns:key.pathabc"],"ok":14}
+{"fn":"utf8ByteLength","args":["﻿bomsrc/a/b.ts"],"ok":16}
+{"fn":"utf8ByteLength","args":["ab{name} has {count} items"],"ok":26}
+{"fn":"utf8ByteLength","args":[".leading  padded  "],"ok":18}
+{"fn":"utf8ByteLength","args":["hello.leading"],"ok":13}
+{"fn":"utf8ByteLength","args":["😀abc"],"ok":7}
+{"fn":"utf8ByteLength","args":["tab\tseparatedΣΊΣΥΦΟΣ"],"ok":27}
+{"fn":"utf8ByteLength","args":["ab.leading"],"ok":10}
+{"fn":"utf8ByteLength","args":["a.leading"],"ok":9}
+{"fn":"utf8ByteLength","args":["straßea..b"],"ok":11}
+{"fn":"utf8ByteLength","args":["tab\tseparatedsrc/a/b.ts"],"ok":23}
+{"fn":"utf8ByteLength","args":["HELLO日本語のテキスト"],"ok":29}
+{"fn":"utf8ByteLength","args":["😀a..b"],"ok":8}
+{"fn":"utf8ByteLength","args":["a..bab"],"ok":6}
+{"fn":"utf8ByteLength","args":["tab\tseparatedabc"],"ok":16}
+{"fn":"utf8ByteLength","args":["日本語のテキストtrailing."],"ok":33}
+{"fn":"utf8ByteLength","args":["ns:key.patha:b:c"],"ok":16}
+{"fn":"utf8ByteLength","args":["ΣΊΣΥΦΟΣΣΊΣΥΦΟΣ"],"ok":28}
+{"fn":"utf8ByteLength","args":["a😀b😀cünïcödé"],"ok":22}
+{"fn":"utf8ByteLength","args":["./x/**/*.jsonsrc/a/b.ts"],"ok":23}
+{"fn":"utf8ByteLength","args":["./x/**/*.jsontab\tseparated"],"ok":26}
+{"fn":"utf8ByteLength","args":["{name} has {count} itemsa"],"ok":25}
+{"fn":"utf8ByteLength","args":["a😀b😀cé"],"ok":14}
+{"fn":"utf8ByteLength","args":["﻿bomΣΊΣΥΦΟΣ"],"ok":20}
+{"fn":"utf8ByteLength","args":["src/a/b.tsa😀b😀c"],"ok":21}
+{"fn":"utf8ByteLength","args":["abtab\tseparated"],"ok":15}
+{"fn":"utf8ByteLength","args":["HELLOline1\nline2"],"ok":16}
+{"fn":"utf8ByteLength","args":["日本語のテキストstraße"],"ok":31}
+{"fn":"utf8ByteLength","args":["abcé"],"ok":6}
+{"fn":"utf8ByteLength","args":[".leadingab"],"ok":10}
+{"fn":"utf8ByteLength","args":["ahello world"],"ok":12}
+{"fn":"utf8ByteLength","args":["hello world.leading"],"ok":19}
+{"fn":"utf8ByteLength","args":["😀  padded  "],"ok":14}
+{"fn":"utf8ByteLength","args":["{name} has {count} items日本語のテキスト"],"ok":48}
+{"fn":"utf8ByteLength","args":["Hello Worldab"],"ok":13}
+{"fn":"utf8ByteLength","args":["ΣΊΣΥΦΟΣhello world"],"ok":25}
+{"fn":"utf8ByteLength","args":[":a:b:c"],"ok":6}
+{"fn":"utf8ByteLength","args":["héllo wörld"],"ok":13}
+{"fn":"utf8ByteLength","args":["👍🏽 thumbs"],"ok":15}
+{"fn":"utf8ByteLength","args":["日本語"],"ok":9}
+{"fn":"utf8ByteLength","args":["ılık ırmak"],"ok":13}
+{"fn":"utf8ByteLength","args":["👨‍👩‍👧 family"],"ok":25}
+{"fn":"utf8ByteLength","args":["a b"],"ok":4}
+{"fn":"utf8ByteLength","args":["a😀b"],"ok":6}
+{"fn":"utf8ByteLength","args":["a²b x½ y①"],"ok":13}
+{"fn":"utf8ByteLength","args":["aⅠb Ⅻ"],"ok":9}
+{"fn":"utf8ByteLength","args":["a𐐀b 𝐀bc"],"ok":13}
+{"fn":"utf8ByteLength","args":["कि ٣٤"],"ok":11}
+{"fn":"BoundedUtf8String","args":[10,2],"ok":{"ast":{"~effect/Schema":"~effect/Schema","annotations":{"$undefined":true},"checks":[{"_tag":"Filter","run":{"$function":""},"annotations":{"$undefined":true},"aborted":false}],"encoding":{"$undefined":true},"context":{"$undefined":true},"_tag":"String"},"rebuild":{"$function":""},"makeUnsafe":{"$function":""},"makeOption":{"$function":""}}}
+{"fn":"BoundedUtf8String","args":[1000000,-1],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[10,2147483648],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[0,-2.5],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[2147483648,{"$num":"-Infinity"}],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[{"$num":"-0"},1],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[1000],"ok":{"ast":{"~effect/Schema":"~effect/Schema","annotations":{"$undefined":true},"checks":[{"_tag":"Filter","run":{"$function":""},"annotations":{"$undefined":true},"aborted":false}],"encoding":{"$undefined":true},"context":{"$undefined":true},"_tag":"String"},"rebuild":{"$function":""},"makeUnsafe":{"$function":""},"makeOption":{"$function":""}}}
+{"fn":"BoundedUtf8String","args":[1000,1000],"ok":{"ast":{"~effect/Schema":"~effect/Schema","annotations":{"$undefined":true},"checks":[{"_tag":"Filter","run":{"$function":""},"annotations":{"$undefined":true},"aborted":false}],"encoding":{"$undefined":true},"context":{"$undefined":true},"_tag":"String"},"rebuild":{"$function":""},"makeUnsafe":{"$function":""},"makeOption":{"$function":""}}}
+{"fn":"BoundedUtf8String","args":[{"$num":"-0"},9007199254740992],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[1],"ok":{"ast":{"~effect/Schema":"~effect/Schema","annotations":{"$undefined":true},"checks":[{"_tag":"Filter","run":{"$function":""},"annotations":{"$undefined":true},"aborted":false}],"encoding":{"$undefined":true},"context":{"$undefined":true},"_tag":"String"},"rebuild":{"$function":""},"makeUnsafe":{"$function":""},"makeOption":{"$function":""}}}
+{"fn":"BoundedUtf8String","args":[2147483648,42],"ok":{"ast":{"~effect/Schema":"~effect/Schema","annotations":{"$undefined":true},"checks":[{"_tag":"Filter","run":{"$function":""},"annotations":{"$undefined":true},"aborted":false}],"encoding":{"$undefined":true},"context":{"$undefined":true},"_tag":"String"},"rebuild":{"$function":""},"makeUnsafe":{"$function":""},"makeOption":{"$function":""}}}
+{"fn":"BoundedUtf8String","args":[100,{"$undefined":true}],"ok":{"ast":{"~effect/Schema":"~effect/Schema","annotations":{"$undefined":true},"checks":[{"_tag":"Filter","run":{"$function":""},"annotations":{"$undefined":true},"aborted":false}],"encoding":{"$undefined":true},"context":{"$undefined":true},"_tag":"String"},"rebuild":{"$function":""},"makeUnsafe":{"$function":""},"makeOption":{"$function":""}}}
+{"fn":"BoundedUtf8String","args":[0,100],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[2,1000],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[-1,1],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[{"$num":"Infinity"}],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[0.5,{"$undefined":true}],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[-2.5,3],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[{"$num":"-Infinity"},3],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[1,-1],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[1,1000],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[100,100],"ok":{"ast":{"~effect/Schema":"~effect/Schema","annotations":{"$undefined":true},"checks":[{"_tag":"Filter","run":{"$function":""},"annotations":{"$undefined":true},"aborted":false}],"encoding":{"$undefined":true},"context":{"$undefined":true},"_tag":"String"},"rebuild":{"$function":""},"makeUnsafe":{"$function":""},"makeOption":{"$function":""}}}
+{"fn":"BoundedUtf8String","args":[1000,{"$undefined":true}],"ok":{"ast":{"~effect/Schema":"~effect/Schema","annotations":{"$undefined":true},"checks":[{"_tag":"Filter","run":{"$function":""},"annotations":{"$undefined":true},"aborted":false}],"encoding":{"$undefined":true},"context":{"$undefined":true},"_tag":"String"},"rebuild":{"$function":""},"makeUnsafe":{"$function":""},"makeOption":{"$function":""}}}
+{"fn":"BoundedUtf8String","args":[{"$num":"NaN"},{"$undefined":true}],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[1000000,2],"ok":{"ast":{"~effect/Schema":"~effect/Schema","annotations":{"$undefined":true},"checks":[{"_tag":"Filter","run":{"$function":""},"annotations":{"$undefined":true},"aborted":false}],"encoding":{"$undefined":true},"context":{"$undefined":true},"_tag":"String"},"rebuild":{"$function":""},"makeUnsafe":{"$function":""},"makeOption":{"$function":""}}}
+{"fn":"BoundedUtf8String","args":[42],"ok":{"ast":{"~effect/Schema":"~effect/Schema","annotations":{"$undefined":true},"checks":[{"_tag":"Filter","run":{"$function":""},"annotations":{"$undefined":true},"aborted":false}],"encoding":{"$undefined":true},"context":{"$undefined":true},"_tag":"String"},"rebuild":{"$function":""},"makeUnsafe":{"$function":""},"makeOption":{"$function":""}}}
+{"fn":"BoundedUtf8String","args":[{"$num":"NaN"},-2.5],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[2147483648],"ok":{"ast":{"~effect/Schema":"~effect/Schema","annotations":{"$undefined":true},"checks":[{"_tag":"Filter","run":{"$function":""},"annotations":{"$undefined":true},"aborted":false}],"encoding":{"$undefined":true},"context":{"$undefined":true},"_tag":"String"},"rebuild":{"$function":""},"makeUnsafe":{"$function":""},"makeOption":{"$function":""}}}
+{"fn":"BoundedUtf8String","args":[10,0],"ok":{"ast":{"~effect/Schema":"~effect/Schema","annotations":{"$undefined":true},"checks":[{"_tag":"Filter","run":{"$function":""},"annotations":{"$undefined":true},"aborted":false}],"encoding":{"$undefined":true},"context":{"$undefined":true},"_tag":"String"},"rebuild":{"$function":""},"makeUnsafe":{"$function":""},"makeOption":{"$function":""}}}
+{"fn":"BoundedUtf8String","args":[1,10],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[0.5,{"$num":"Infinity"}],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[1,{"$undefined":true}],"ok":{"ast":{"~effect/Schema":"~effect/Schema","annotations":{"$undefined":true},"checks":[{"_tag":"Filter","run":{"$function":""},"annotations":{"$undefined":true},"aborted":false}],"encoding":{"$undefined":true},"context":{"$undefined":true},"_tag":"String"},"rebuild":{"$function":""},"makeUnsafe":{"$function":""},"makeOption":{"$function":""}}}
+{"fn":"BoundedUtf8String","args":[-2.5,{"$num":"-0"}],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[42,{"$num":"-Infinity"}],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[9007199254740992,-1],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[1,3],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[{"$num":"Infinity"},{"$undefined":true}],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[{"$num":"-0"},{"$num":"NaN"}],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[42,9007199254740992],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[-2.5],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[{"$num":"NaN"},-1],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[{"$num":"-Infinity"},-2.5],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[{"$num":"-Infinity"}],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[{"$num":"-0"},100],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[1000000,{"$num":"-0"}],"ok":{"ast":{"~effect/Schema":"~effect/Schema","annotations":{"$undefined":true},"checks":[{"_tag":"Filter","run":{"$function":""},"annotations":{"$undefined":true},"aborted":false}],"encoding":{"$undefined":true},"context":{"$undefined":true},"_tag":"String"},"rebuild":{"$function":""},"makeUnsafe":{"$function":""},"makeOption":{"$function":""}}}
+{"fn":"BoundedUtf8String","args":[-1,{"$num":"-0"}],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[{"$num":"Infinity"},10],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[2,0],"ok":{"ast":{"~effect/Schema":"~effect/Schema","annotations":{"$undefined":true},"checks":[{"_tag":"Filter","run":{"$function":""},"annotations":{"$undefined":true},"aborted":false}],"encoding":{"$undefined":true},"context":{"$undefined":true},"_tag":"String"},"rebuild":{"$function":""},"makeUnsafe":{"$function":""},"makeOption":{"$function":""}}}
+{"fn":"BoundedUtf8String","args":[42,{"$undefined":true}],"ok":{"ast":{"~effect/Schema":"~effect/Schema","annotations":{"$undefined":true},"checks":[{"_tag":"Filter","run":{"$function":""},"annotations":{"$undefined":true},"aborted":false}],"encoding":{"$undefined":true},"context":{"$undefined":true},"_tag":"String"},"rebuild":{"$function":""},"makeUnsafe":{"$function":""},"makeOption":{"$function":""}}}
+{"fn":"BoundedUtf8String","args":[{"$num":"-Infinity"},2],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[0,0.5],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[{"$num":"-0"},3],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[2,{"$num":"-Infinity"}],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[1000000,1],"ok":{"ast":{"~effect/Schema":"~effect/Schema","annotations":{"$undefined":true},"checks":[{"_tag":"Filter","run":{"$function":""},"annotations":{"$undefined":true},"aborted":false}],"encoding":{"$undefined":true},"context":{"$undefined":true},"_tag":"String"},"rebuild":{"$function":""},"makeUnsafe":{"$function":""},"makeOption":{"$function":""}}}
+{"fn":"BoundedUtf8String","args":[{"$num":"NaN"},0],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[{"$num":"NaN"},10],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[10,-2.5],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[10,0.5],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[9007199254740992,9007199254740992],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[{"$num":"-Infinity"},{"$undefined":true}],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[9007199254740992,3],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[0,0],"ok":{"ast":{"~effect/Schema":"~effect/Schema","annotations":{"$undefined":true},"checks":[{"_tag":"Filter","run":{"$function":""},"annotations":{"$undefined":true},"aborted":false}],"encoding":{"$undefined":true},"context":{"$undefined":true},"_tag":"String"},"rebuild":{"$function":""},"makeUnsafe":{"$function":""},"makeOption":{"$function":""}}}
+{"fn":"BoundedUtf8String","args":[1000,10],"ok":{"ast":{"~effect/Schema":"~effect/Schema","annotations":{"$undefined":true},"checks":[{"_tag":"Filter","run":{"$function":""},"annotations":{"$undefined":true},"aborted":false}],"encoding":{"$undefined":true},"context":{"$undefined":true},"_tag":"String"},"rebuild":{"$function":""},"makeUnsafe":{"$function":""},"makeOption":{"$function":""}}}
+{"fn":"BoundedUtf8String","args":[2,-1],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[100,{"$num":"NaN"}],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[10,100],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[{"$num":"-0"}],"ok":{"ast":{"~effect/Schema":"~effect/Schema","annotations":{"$undefined":true},"checks":[{"_tag":"Filter","run":{"$function":""},"annotations":{"$undefined":true},"aborted":false}],"encoding":{"$undefined":true},"context":{"$undefined":true},"_tag":"String"},"rebuild":{"$function":""},"makeUnsafe":{"$function":""},"makeOption":{"$function":""}}}
+{"fn":"BoundedUtf8String","args":[9007199254740992,0],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[9007199254740992,{"$undefined":true}],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[100,0],"ok":{"ast":{"~effect/Schema":"~effect/Schema","annotations":{"$undefined":true},"checks":[{"_tag":"Filter","run":{"$function":""},"annotations":{"$undefined":true},"aborted":false}],"encoding":{"$undefined":true},"context":{"$undefined":true},"_tag":"String"},"rebuild":{"$function":""},"makeUnsafe":{"$function":""},"makeOption":{"$function":""}}}
+{"fn":"BoundedUtf8String","args":[10,{"$num":"Infinity"}],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[2147483648,0.5],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[0,42],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[3,3],"ok":{"ast":{"~effect/Schema":"~effect/Schema","annotations":{"$undefined":true},"checks":[{"_tag":"Filter","run":{"$function":""},"annotations":{"$undefined":true},"aborted":false}],"encoding":{"$undefined":true},"context":{"$undefined":true},"_tag":"String"},"rebuild":{"$function":""},"makeUnsafe":{"$function":""},"makeOption":{"$function":""}}}
+{"fn":"BoundedUtf8String","args":[0,2],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[1,-2.5],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[0,1000000],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[{"$num":"NaN"},1000000],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[3,2],"ok":{"ast":{"~effect/Schema":"~effect/Schema","annotations":{"$undefined":true},"checks":[{"_tag":"Filter","run":{"$function":""},"annotations":{"$undefined":true},"aborted":false}],"encoding":{"$undefined":true},"context":{"$undefined":true},"_tag":"String"},"rebuild":{"$function":""},"makeUnsafe":{"$function":""},"makeOption":{"$function":""}}}
+{"fn":"BoundedUtf8String","args":[2],"ok":{"ast":{"~effect/Schema":"~effect/Schema","annotations":{"$undefined":true},"checks":[{"_tag":"Filter","run":{"$function":""},"annotations":{"$undefined":true},"aborted":false}],"encoding":{"$undefined":true},"context":{"$undefined":true},"_tag":"String"},"rebuild":{"$function":""},"makeUnsafe":{"$function":""},"makeOption":{"$function":""}}}
+{"fn":"BoundedUtf8String","args":[1000,-1],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[3,{"$undefined":true}],"ok":{"ast":{"~effect/Schema":"~effect/Schema","annotations":{"$undefined":true},"checks":[{"_tag":"Filter","run":{"$function":""},"annotations":{"$undefined":true},"aborted":false}],"encoding":{"$undefined":true},"context":{"$undefined":true},"_tag":"String"},"rebuild":{"$function":""},"makeUnsafe":{"$function":""},"makeOption":{"$function":""}}}
+{"fn":"BoundedUtf8String","args":[{"$num":"NaN"},1000],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[0,2147483648],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[{"$num":"NaN"},{"$num":"-0"}],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[3,10],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[1000000,-2.5],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[1000,100],"ok":{"ast":{"~effect/Schema":"~effect/Schema","annotations":{"$undefined":true},"checks":[{"_tag":"Filter","run":{"$function":""},"annotations":{"$undefined":true},"aborted":false}],"encoding":{"$undefined":true},"context":{"$undefined":true},"_tag":"String"},"rebuild":{"$function":""},"makeUnsafe":{"$function":""},"makeOption":{"$function":""}}}
+{"fn":"BoundedUtf8String","args":[100,42],"ok":{"ast":{"~effect/Schema":"~effect/Schema","annotations":{"$undefined":true},"checks":[{"_tag":"Filter","run":{"$function":""},"annotations":{"$undefined":true},"aborted":false}],"encoding":{"$undefined":true},"context":{"$undefined":true},"_tag":"String"},"rebuild":{"$function":""},"makeUnsafe":{"$function":""},"makeOption":{"$function":""}}}
+{"fn":"BoundedUtf8String","args":[1000,{"$num":"-Infinity"}],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[-1,{"$undefined":true}],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[{"$num":"-Infinity"},9007199254740992],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[10],"ok":{"ast":{"~effect/Schema":"~effect/Schema","annotations":{"$undefined":true},"checks":[{"_tag":"Filter","run":{"$function":""},"annotations":{"$undefined":true},"aborted":false}],"encoding":{"$undefined":true},"context":{"$undefined":true},"_tag":"String"},"rebuild":{"$function":""},"makeUnsafe":{"$function":""},"makeOption":{"$function":""}}}
+{"fn":"BoundedUtf8String","args":[{"$num":"Infinity"},1000000],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[{"$num":"NaN"},2],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[-1,{"$num":"Infinity"}],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[-2.5,{"$undefined":true}],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[-1,2147483648],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[{"$num":"Infinity"},42],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[{"$num":"Infinity"},9007199254740992],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[{"$num":"Infinity"},0.5],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[100],"ok":{"ast":{"~effect/Schema":"~effect/Schema","annotations":{"$undefined":true},"checks":[{"_tag":"Filter","run":{"$function":""},"annotations":{"$undefined":true},"aborted":false}],"encoding":{"$undefined":true},"context":{"$undefined":true},"_tag":"String"},"rebuild":{"$function":""},"makeUnsafe":{"$function":""},"makeOption":{"$function":""}}}
+{"fn":"BoundedUtf8String","args":[0,10],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[1000,0],"ok":{"ast":{"~effect/Schema":"~effect/Schema","annotations":{"$undefined":true},"checks":[{"_tag":"Filter","run":{"$function":""},"annotations":{"$undefined":true},"aborted":false}],"encoding":{"$undefined":true},"context":{"$undefined":true},"_tag":"String"},"rebuild":{"$function":""},"makeUnsafe":{"$function":""},"makeOption":{"$function":""}}}
+{"fn":"BoundedUtf8String","args":[100,1000000],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[1000000,1000000],"ok":{"ast":{"~effect/Schema":"~effect/Schema","annotations":{"$undefined":true},"checks":[{"_tag":"Filter","run":{"$function":""},"annotations":{"$undefined":true},"aborted":false}],"encoding":{"$undefined":true},"context":{"$undefined":true},"_tag":"String"},"rebuild":{"$function":""},"makeUnsafe":{"$function":""},"makeOption":{"$function":""}}}
+{"fn":"BoundedUtf8String","args":[{"$num":"-0"},2],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[2147483648,0],"ok":{"ast":{"~effect/Schema":"~effect/Schema","annotations":{"$undefined":true},"checks":[{"_tag":"Filter","run":{"$function":""},"annotations":{"$undefined":true},"aborted":false}],"encoding":{"$undefined":true},"context":{"$undefined":true},"_tag":"String"},"rebuild":{"$function":""},"makeUnsafe":{"$function":""},"makeOption":{"$function":""}}}
+{"fn":"BoundedUtf8String","args":[0,9007199254740992],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[-1,42],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[{"$num":"NaN"},9007199254740992],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[2147483648,-2.5],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[1000,2147483648],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[1000000,0.5],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[1000,9007199254740992],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[-2.5,0],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[2,2],"ok":{"ast":{"~effect/Schema":"~effect/Schema","annotations":{"$undefined":true},"checks":[{"_tag":"Filter","run":{"$function":""},"annotations":{"$undefined":true},"aborted":false}],"encoding":{"$undefined":true},"context":{"$undefined":true},"_tag":"String"},"rebuild":{"$function":""},"makeUnsafe":{"$function":""},"makeOption":{"$function":""}}}
+{"fn":"BoundedUtf8String","args":[{"$num":"Infinity"},3],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[3,{"$num":"NaN"}],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[9007199254740992,{"$num":"NaN"}],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[1000000,{"$undefined":true}],"ok":{"ast":{"~effect/Schema":"~effect/Schema","annotations":{"$undefined":true},"checks":[{"_tag":"Filter","run":{"$function":""},"annotations":{"$undefined":true},"aborted":false}],"encoding":{"$undefined":true},"context":{"$undefined":true},"_tag":"String"},"rebuild":{"$function":""},"makeUnsafe":{"$function":""},"makeOption":{"$function":""}}}
+{"fn":"BoundedUtf8String","args":[{"$num":"NaN"},{"$num":"Infinity"}],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[-2.5,2147483648],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[{"$num":"NaN"}],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[100,3],"ok":{"ast":{"~effect/Schema":"~effect/Schema","annotations":{"$undefined":true},"checks":[{"_tag":"Filter","run":{"$function":""},"annotations":{"$undefined":true},"aborted":false}],"encoding":{"$undefined":true},"context":{"$undefined":true},"_tag":"String"},"rebuild":{"$function":""},"makeUnsafe":{"$function":""},"makeOption":{"$function":""}}}
+{"fn":"BoundedUtf8String","args":[100,{"$num":"-0"}],"ok":{"ast":{"~effect/Schema":"~effect/Schema","annotations":{"$undefined":true},"checks":[{"_tag":"Filter","run":{"$function":""},"annotations":{"$undefined":true},"aborted":false}],"encoding":{"$undefined":true},"context":{"$undefined":true},"_tag":"String"},"rebuild":{"$function":""},"makeUnsafe":{"$function":""},"makeOption":{"$function":""}}}
+{"fn":"BoundedUtf8String","args":[-1,1000000],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[1000000,9007199254740992],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[3,1000000],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[1000000,{"$num":"Infinity"}],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[-1,100],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[2147483648,-1],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[-2.5,{"$num":"Infinity"}],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[10,1],"ok":{"ast":{"~effect/Schema":"~effect/Schema","annotations":{"$undefined":true},"checks":[{"_tag":"Filter","run":{"$function":""},"annotations":{"$undefined":true},"aborted":false}],"encoding":{"$undefined":true},"context":{"$undefined":true},"_tag":"String"},"rebuild":{"$function":""},"makeUnsafe":{"$function":""},"makeOption":{"$function":""}}}
+{"fn":"BoundedUtf8String","args":[1,0.5],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[100,-1],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[0,1],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[10,42],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[-2.5,-2.5],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[{"$num":"-0"},-1],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[2147483648,{"$undefined":true}],"ok":{"ast":{"~effect/Schema":"~effect/Schema","annotations":{"$undefined":true},"checks":[{"_tag":"Filter","run":{"$function":""},"annotations":{"$undefined":true},"aborted":false}],"encoding":{"$undefined":true},"context":{"$undefined":true},"_tag":"String"},"rebuild":{"$function":""},"makeUnsafe":{"$function":""},"makeOption":{"$function":""}}}
+{"fn":"BoundedUtf8String","args":[1000000],"ok":{"ast":{"~effect/Schema":"~effect/Schema","annotations":{"$undefined":true},"checks":[{"_tag":"Filter","run":{"$function":""},"annotations":{"$undefined":true},"aborted":false}],"encoding":{"$undefined":true},"context":{"$undefined":true},"_tag":"String"},"rebuild":{"$function":""},"makeUnsafe":{"$function":""},"makeOption":{"$function":""}}}
+{"fn":"BoundedUtf8String","args":[0.5,2147483648],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[3],"ok":{"ast":{"~effect/Schema":"~effect/Schema","annotations":{"$undefined":true},"checks":[{"_tag":"Filter","run":{"$function":""},"annotations":{"$undefined":true},"aborted":false}],"encoding":{"$undefined":true},"context":{"$undefined":true},"_tag":"String"},"rebuild":{"$function":""},"makeUnsafe":{"$function":""},"makeOption":{"$function":""}}}
+{"fn":"BoundedUtf8String","args":[2,2147483648],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[{"$num":"-Infinity"},1000000],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[1,{"$num":"-Infinity"}],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[3,-1],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[100,{"$num":"-Infinity"}],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[0,{"$undefined":true}],"ok":{"ast":{"~effect/Schema":"~effect/Schema","annotations":{"$undefined":true},"checks":[{"_tag":"Filter","run":{"$function":""},"annotations":{"$undefined":true},"aborted":false}],"encoding":{"$undefined":true},"context":{"$undefined":true},"_tag":"String"},"rebuild":{"$function":""},"makeUnsafe":{"$function":""},"makeOption":{"$function":""}}}
+{"fn":"BoundedUtf8String","args":[9007199254740992],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[-1],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[{"$num":"-0"},{"$num":"-Infinity"}],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[-2.5,42],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[9007199254740992,2],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[42,-1],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[100,2147483648],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[-1,3],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[10,{"$num":"-0"}],"ok":{"ast":{"~effect/Schema":"~effect/Schema","annotations":{"$undefined":true},"checks":[{"_tag":"Filter","run":{"$function":""},"annotations":{"$undefined":true},"aborted":false}],"encoding":{"$undefined":true},"context":{"$undefined":true},"_tag":"String"},"rebuild":{"$function":""},"makeUnsafe":{"$function":""},"makeOption":{"$function":""}}}
+{"fn":"BoundedUtf8String","args":[-2.5,-1],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[3,9007199254740992],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[3,2147483648],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[{"$num":"Infinity"},2147483648],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[2,0.5],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[0.5],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[10,{"$undefined":true}],"ok":{"ast":{"~effect/Schema":"~effect/Schema","annotations":{"$undefined":true},"checks":[{"_tag":"Filter","run":{"$function":""},"annotations":{"$undefined":true},"aborted":false}],"encoding":{"$undefined":true},"context":{"$undefined":true},"_tag":"String"},"rebuild":{"$function":""},"makeUnsafe":{"$function":""},"makeOption":{"$function":""}}}
+{"fn":"BoundedUtf8String","args":[10,-1],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[3,1],"ok":{"ast":{"~effect/Schema":"~effect/Schema","annotations":{"$undefined":true},"checks":[{"_tag":"Filter","run":{"$function":""},"annotations":{"$undefined":true},"aborted":false}],"encoding":{"$undefined":true},"context":{"$undefined":true},"_tag":"String"},"rebuild":{"$function":""},"makeUnsafe":{"$function":""},"makeOption":{"$function":""}}}
+{"fn":"BoundedUtf8String","args":[-1,-2.5],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[-1,2],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[-2.5,100],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[1000,{"$num":"Infinity"}],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[1000,3],"ok":{"ast":{"~effect/Schema":"~effect/Schema","annotations":{"$undefined":true},"checks":[{"_tag":"Filter","run":{"$function":""},"annotations":{"$undefined":true},"aborted":false}],"encoding":{"$undefined":true},"context":{"$undefined":true},"_tag":"String"},"rebuild":{"$function":""},"makeUnsafe":{"$function":""},"makeOption":{"$function":""}}}
+{"fn":"BoundedUtf8String","args":[2147483648,3],"ok":{"ast":{"~effect/Schema":"~effect/Schema","annotations":{"$undefined":true},"checks":[{"_tag":"Filter","run":{"$function":""},"annotations":{"$undefined":true},"aborted":false}],"encoding":{"$undefined":true},"context":{"$undefined":true},"_tag":"String"},"rebuild":{"$function":""},"makeUnsafe":{"$function":""},"makeOption":{"$function":""}}}
+{"fn":"BoundedUtf8String","args":[0,{"$num":"Infinity"}],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[{"$num":"NaN"},42],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[{"$num":"-Infinity"},1],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[0.5,100],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[100,2],"ok":{"ast":{"~effect/Schema":"~effect/Schema","annotations":{"$undefined":true},"checks":[{"_tag":"Filter","run":{"$function":""},"annotations":{"$undefined":true},"aborted":false}],"encoding":{"$undefined":true},"context":{"$undefined":true},"_tag":"String"},"rebuild":{"$function":""},"makeUnsafe":{"$function":""},"makeOption":{"$function":""}}}
+{"fn":"BoundedUtf8String","args":[0.5,2],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[2,{"$num":"-0"}],"ok":{"ast":{"~effect/Schema":"~effect/Schema","annotations":{"$undefined":true},"checks":[{"_tag":"Filter","run":{"$function":""},"annotations":{"$undefined":true},"aborted":false}],"encoding":{"$undefined":true},"context":{"$undefined":true},"_tag":"String"},"rebuild":{"$function":""},"makeUnsafe":{"$function":""},"makeOption":{"$function":""}}}
+{"fn":"BoundedUtf8String","args":[42,1000000],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[100,10],"ok":{"ast":{"~effect/Schema":"~effect/Schema","annotations":{"$undefined":true},"checks":[{"_tag":"Filter","run":{"$function":""},"annotations":{"$undefined":true},"aborted":false}],"encoding":{"$undefined":true},"context":{"$undefined":true},"_tag":"String"},"rebuild":{"$function":""},"makeUnsafe":{"$function":""},"makeOption":{"$function":""}}}
+{"fn":"BoundedUtf8String","args":[{"$num":"-Infinity"},2147483648],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[2147483648,{"$num":"Infinity"}],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[100,0.5],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[{"$num":"-Infinity"},0.5],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[42,3],"ok":{"ast":{"~effect/Schema":"~effect/Schema","annotations":{"$undefined":true},"checks":[{"_tag":"Filter","run":{"$function":""},"annotations":{"$undefined":true},"aborted":false}],"encoding":{"$undefined":true},"context":{"$undefined":true},"_tag":"String"},"rebuild":{"$function":""},"makeUnsafe":{"$function":""},"makeOption":{"$function":""}}}
+{"fn":"BoundedUtf8String","args":[0.5,1000],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[10,1000],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[2147483648,2],"ok":{"ast":{"~effect/Schema":"~effect/Schema","annotations":{"$undefined":true},"checks":[{"_tag":"Filter","run":{"$function":""},"annotations":{"$undefined":true},"aborted":false}],"encoding":{"$undefined":true},"context":{"$undefined":true},"_tag":"String"},"rebuild":{"$function":""},"makeUnsafe":{"$function":""},"makeOption":{"$function":""}}}
+{"fn":"BoundedUtf8String","args":[{"$num":"Infinity"},-2.5],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[42,2147483648],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[9007199254740992,{"$num":"-0"}],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[1,1],"ok":{"ast":{"~effect/Schema":"~effect/Schema","annotations":{"$undefined":true},"checks":[{"_tag":"Filter","run":{"$function":""},"annotations":{"$undefined":true},"aborted":false}],"encoding":{"$undefined":true},"context":{"$undefined":true},"_tag":"String"},"rebuild":{"$function":""},"makeUnsafe":{"$function":""},"makeOption":{"$function":""}}}
+{"fn":"BoundedUtf8String","args":[2,10],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[9007199254740992,0.5],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[0.5,1],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[-1,9007199254740992],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[{"$num":"-0"},1000000],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[-7.5,2],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[0.1,2],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[0.30000000000000004,2],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[1e+21,2],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[1e-7,2],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[5e-324,2],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[1.7976931348623157e+308,2],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[10,-7.5],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[10,0.1],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[10,0.30000000000000004],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[10,1e+21],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[10,1e-7],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[10,5e-324],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[10,1.7976931348623157e+308],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"BoundedUtf8String","args":[10,9007199254740992],"error":"UTF-8 byte bounds must be non-negative safe integers with min <= max"}
+{"fn":"utf8ByteLength","args":[{"$symbol":"x"}],"ok":15}

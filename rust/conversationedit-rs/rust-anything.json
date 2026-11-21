@@ -1,0 +1,66 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/conversationEdit.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "conversationedit-rs",
+  "exports": [
+    {
+      "name": "collectTailTurnIds",
+      "file": "packages/shared/src/conversationEdit.ts",
+      "line": 50,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly messages: ReadonlyArray<TurnMessageLike<(string)>>;\n  readonly messageId: string;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(string)[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveTailUserMessageEditTarget",
+      "file": "packages/shared/src/conversationEdit.ts",
+      "line": 78,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly messages: ReadonlyArray<(TurnMessageLike & {\n  readonly role: string;\n  readonly source?: string | undefined;\n  readonly asyncUserInput?:\n    | { readonly response?: { readonly messageId: string } | undefined }\n    | undefined;\n})>;\n  readonly messageId: string;\n  readonly activeTurnId?: string | null | undefined;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(| {\n      readonly editable: true;\n      readonly messageId: string;\n      readonly messageIndex: number;\n      readonly mode: \"rollback\" | \"active-tail\";\n      readonly rollbackTurnCount: number;\n      readonly removedTurnIds: ReadonlyArray<string>;\n    }\n  | {\n      readonly editable: false;\n      readonly reason:\n        | \"missing-message\"\n        | \"not-user-message\"\n        | \"non-native-message\"\n        | \"structured-answer\"\n        | \"not-latest-native-user-message\"\n        | \"missing-turn-metadata\"\n        | \"spans-multiple-turns\";\n    })",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveLatestTailUserMessageEditTarget",
+      "file": "packages/shared/src/conversationEdit.ts",
+      "line": 137,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly messages: ReadonlyArray<(TurnMessageLike & {\n  readonly role: string;\n  readonly source?: string | undefined;\n  readonly asyncUserInput?:\n    | { readonly response?: { readonly messageId: string } | undefined }\n    | undefined;\n})>;\n  readonly activeTurnId?: string | null | undefined;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(| {\n      readonly editable: true;\n      readonly messageId: string;\n      readonly messageIndex: number;\n      readonly mode: \"rollback\" | \"active-tail\";\n      readonly rollbackTurnCount: number;\n      readonly removedTurnIds: ReadonlyArray<string>;\n    }\n  | {\n      readonly editable: false;\n      readonly reason:\n        | \"missing-message\"\n        | \"not-user-message\"\n        | \"non-native-message\"\n        | \"structured-answer\"\n        | \"not-latest-native-user-message\"\n        | \"missing-turn-metadata\"\n        | \"spans-multiple-turns\";\n    })",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

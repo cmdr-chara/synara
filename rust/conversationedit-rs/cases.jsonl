@@ -1,0 +1,626 @@
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"ns:key.path","turnId":null}],"messageId":"src/a/b.ts"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[],"messageId":"trailing."}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"ΣΊΣΥΦΟΣ","turnId":null},{"id":"ns:key.path","turnId":null},{"id":"trailing.","turnId":{"$undefined":true}}],"messageId":"Hello World"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"﻿bom","turnId":null}],"messageId":"./x/**/*.json"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"straße","turnId":{"a":"b"}},{"id":"a:b:c"}],"messageId":"hello world"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[],"messageId":"src/a/b.tshello world"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"﻿bom","turnId":null},{"id":"hello world{name} has {count} items","turnId":{"$undefined":true}},{"id":"a:b:csrc/a/b.ts","turnId":{"$undefined":true}}],"messageId":"ab"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":["x"],"error":"Cannot read properties of undefined (reading 'findIndex')"}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"a","turnId":null},{"id":"日本語のテキスト","turnId":null},{"id":"hello world","turnId":{"$undefined":true}}],"messageId":"straße"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"  padded  ","turnId":{"$undefined":true}}],"messageId":"./x/**/*.json"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[],"messageId":".leading./x/**/*.json"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"İstanbulΣΊΣΥΦΟΣ","turnId":{"a":"b"}},{"id":"﻿bom","turnId":{"$undefined":true}}],"messageId":"line1\nline2"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"hello world","turnId":true},{"id":"key_name-1","turnId":{"$undefined":true}},{"id":"a..b","turnId":"x"}],"messageId":"tab\tseparated"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":""}],"messageId":""}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"﻿bom","turnId":{"$undefined":true}},{"id":"﻿bom","turnId":"x"}],"messageId":"ab.leading"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":":","turnId":null},{"id":"😀HELLO","turnId":{"$undefined":true}},{"id":"Hello World","turnId":{}}],"messageId":"ünïcödéline1\nline2"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[],"messageId":"ünïcödé"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"﻿bomkey_name-1","turnId":{"$undefined":true}},{"id":"key_name-1","turnId":null}],"messageId":"hello"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[true],"error":"Cannot read properties of undefined (reading 'findIndex')"}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"ns:key.path","turnId":[]},{"id":"emoji 👍🏽 mix","turnId":{"$undefined":true}},{"id":"hellokey_name-1","turnId":{"$undefined":true}}],"messageId":"ΣΊΣΥΦΟΣ"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"a":"b"}],"error":"Cannot read properties of undefined (reading 'findIndex')"}
+{"fn":"collectTailTurnIds","args":[{"messages":[],"messageId":"key_name-1"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"İstanbul","turnId":{"$undefined":true}},{"id":"emoji 👍🏽 mixabc"}],"messageId":"tab\tseparated{name} has {count} items"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[],"messageId":"straße"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":""}],"messageId":"key_name-1a:b:c"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[0],"error":"Cannot read properties of undefined (reading 'findIndex')"}
+{"fn":"collectTailTurnIds","args":[{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'findIndex')"}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":":"},{"id":"a😀b😀c","turnId":{"$undefined":true}},{"id":"HELLO","turnId":0}],"messageId":"a:b:c"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"a","turnId":null},{"id":"é﻿bom"}],"messageId":"line1\nline2"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"HELLO","turnId":{"$undefined":true}},{"id":"helloa.b.c","turnId":[]}],"messageId":"﻿bomkey_name-1"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"😀","turnId":{"$undefined":true}}],"messageId":"straße"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[],"messageId":"abHELLO"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"emoji 👍🏽 mix"}],"messageId":"😀hello"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[],"messageId":"ns:key.pathhello world"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"trailing.","turnId":{"$undefined":true}}],"messageId":"tab\tseparated﻿bom"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"ab","turnId":null},{"id":"﻿bom.leading","turnId":null}],"messageId":"emoji 👍🏽 mix"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"tab\tseparated","turnId":{"$undefined":true}},{"id":"﻿bom","turnId":["a",1]},{"id":"a:"}],"messageId":"﻿bom"}],"ok":[["a",1]]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"é","turnId":null},{"id":"{name} has {count} items","turnId":null},{"id":"tab\tseparated","turnId":{"$undefined":true}}],"messageId":"éa"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"ΣΊΣΥΦΟΣİstanbul","turnId":null}],"messageId":"a..b"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":":.leading","turnId":{"a":{"b":"c"}}},{"id":"İstanbul","turnId":null}],"messageId":"abΣΊΣΥΦΟΣ"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"abcünïcödé","turnId":null}],"messageId":"ns:key.path"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":":","turnId":["a",1]}],"messageId":".leading"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"straße","turnId":{"$undefined":true}},{"id":"straße","turnId":{"$undefined":true}},{"id":"﻿bom"}],"messageId":"abc"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[],"messageId":"{name} has {count} items"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"src/a/b.ts","turnId":{"$undefined":true}}],"messageId":"日本語のテキスト  padded  "}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"a:b:c","turnId":{"$undefined":true}},{"id":"﻿bom","turnId":{"$undefined":true}},{"id":"a..b","turnId":{"a":{"b":"c"}}}],"messageId":"a.b.c"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":".leading","turnId":null},{"id":"src/a/b.ts","turnId":null},{"id":"a","turnId":{"$undefined":true}}],"messageId":"hello worldünïcödé"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"a:b:c","turnId":{"$undefined":true}}],"messageId":"key_name-1"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"a:b:c","turnId":null},{"id":"a","turnId":"x"}],"messageId":".leading"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[["a",1]],"error":"Cannot read properties of undefined (reading 'findIndex')"}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"line1\nline2","turnId":null},{"id":"hello","turnId":null},{"id":"trailing.","turnId":null}],"messageId":".leading"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"﻿bom","turnId":null},{"id":"a:b:cé","turnId":null},{"id":"line1\nline2straße"}],"messageId":"a😀b😀c"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"key_name-1","turnId":null}],"messageId":""}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"","turnId":0},{"id":"{name} has {count} itemsab","turnId":{"$undefined":true}},{"id":"hello world","turnId":[]}],"messageId":"src/a/b.ts"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[],"messageId":"helloünïcödé"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"./x/**/*.json","turnId":{}},{"id":"{name} has {count} items"},{"id":"Hello World"}],"messageId":"hello world{name} has {count} items"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"hello world","turnId":{"a":{"b":"c"}}},{"id":"ab","turnId":null},{"id":"./x/**/*.json"}],"messageId":""}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[],"messageId":"ΣΊΣΥΦΟΣhello world"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"  padded  "},{"id":"","turnId":{"$undefined":true}},{"id":"a..ba..b","turnId":null}],"messageId":"  padded  "}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"a"}],"messageId":"HELLO"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"./x/**/*.json","turnId":null},{"id":"src/a/b.ts","turnId":{"a":"b"}}],"messageId":"abc"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"😀"}],"messageId":"a:b:c"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[],"messageId":"hello world"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"Hello World","turnId":["a",1]}],"messageId":"./x/**/*.json"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[],"messageId":"emoji 👍🏽 mix"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"HELLO","turnId":0},{"id":"a.b.c"}],"messageId":"ns:key.path"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{}],"error":"Cannot read properties of undefined (reading 'findIndex')"}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"  padded  {name} has {count} items","turnId":[]},{"id":"{name} has {count} itemsa.b.c","turnId":null},{"id":"ünïcödé","turnId":null}],"messageId":"😀"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"ΣΊΣΥΦΟΣ","turnId":null},{"id":"a:b:ca.b.c","turnId":null},{"id":"é","turnId":true}],"messageId":"a😀b😀c"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"abcİstanbul","turnId":{"$undefined":true}},{"id":"hello world","turnId":0},{"id":"ab","turnId":{"$undefined":true}}],"messageId":"hello world"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"straße","turnId":null},{"id":"a:b:c","turnId":{"$undefined":true}}],"messageId":"ns:key.path"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"src/a/b.tsa.b.c","turnId":{"a":{"b":"c"}}},{"id":"Hello World","turnId":{"$undefined":true}}],"messageId":"😀"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"a:b:c","turnId":{"$undefined":true}},{"id":"straße"},{"id":"abc"}],"messageId":"﻿bom"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"abc","turnId":0},{"id":"tab\tseparated","turnId":{"a":{"b":"c"}}},{"id":"line1\nline2"}],"messageId":"abc"}],"ok":[{"a":{"b":"c"}}]}
+{"fn":"collectTailTurnIds","args":[{"messages":[],"messageId":"hello"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[],"messageId":"ΣΊΣΥΦΟΣ:"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"日本語のテキスト","turnId":{"a":"b"}}],"messageId":"a😀b😀c"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":".leading","turnId":null},{"id":"a..b"},{"id":":{name} has {count} items","turnId":null}],"messageId":"abcab"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"trailing.","turnId":true}],"messageId":".leading"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":".leading"},{"id":"HELLO","turnId":{"a":{"b":"c"}}}],"messageId":"./x/**/*.json"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"ns:key.path","turnId":{"$undefined":true}},{"id":"hello","turnId":{"$undefined":true}},{"id":"aa","turnId":{"a":{"b":"c"}}}],"messageId":"😀a😀b😀c"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"./x/**/*.json","turnId":"x"},{"id":"{name} has {count} items","turnId":null},{"id":"./x/**/*.json","turnId":{"$undefined":true}}],"messageId":"a..b"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[],"messageId":"ns:key.path"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[],"messageId":"İstanbul"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[],"messageId":"a:b:c"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"{name} has {count} itemsns:key.path","turnId":{"$undefined":true}}],"messageId":"{name} has {count} items"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[],"messageId":"a.b.ca..b"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"ünïcödé","turnId":null},{"id":"😀","turnId":null},{"id":"straße﻿bom","turnId":null}],"messageId":"src/a/b.ts"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"a","turnId":null}],"messageId":"a:b:c"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"HELLO","turnId":null}],"messageId":"﻿bomé"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"emoji 👍🏽 mixkey_name-1","turnId":"x"},{"id":"a..b","turnId":null},{"id":"line1\nline2","turnId":null}],"messageId":"helloa..b"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"trailing.","turnId":null},{"id":"HELLO","turnId":{"$undefined":true}},{"id":"./x/**/*.json","turnId":"x"}],"messageId":"日本語のテキスト"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"ΣΊΣΥΦΟΣ","turnId":{"$undefined":true}}],"messageId":"tab\tseparatedab"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[],"messageId":":tab\tseparated"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"日本語のテキスト","turnId":null},{"id":"a..b","turnId":null}],"messageId":"src/a/b.ts"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"key_name-1"}],"messageId":"./x/**/*.json"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"abc","turnId":{"a":"b"}},{"id":".leading","turnId":{}}],"messageId":"{name} has {count} items"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"a","turnId":null},{"id":"😀Hello World","turnId":{"$undefined":true}},{"id":"emoji 👍🏽 mix","turnId":null}],"messageId":"ΣΊΣΥΦΟΣ"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"hello worldline1\nline2","turnId":null},{"id":"tab\tseparated"}],"messageId":"ab"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":".leading","turnId":null},{"id":":abc"}],"messageId":"a:b:c"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":".leading","turnId":{}},{"id":"./x/**/*.json","turnId":{"$undefined":true}}],"messageId":"a..b"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[],"messageId":"İstanbulünïcödé"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[],"messageId":"ΣΊΣΥΦΟΣ"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"a","turnId":null}],"messageId":""}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"a:b:c","turnId":null},{"id":"😀","turnId":null},{"id":"abc","turnId":{"$undefined":true}}],"messageId":"straße"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"a:b:c"},{"id":"a😀b😀c"},{"id":"emoji 👍🏽 mix","turnId":{"$undefined":true}}],"messageId":"ΣΊΣΥΦΟΣ"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"hello world"},{"id":"::"}],"messageId":"日本語のテキスト"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"abc日本語のテキスト","turnId":["a",1]}],"messageId":"ab  padded  "}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"ΣΊΣΥΦΟΣ"},{"id":"line1\nline2é"},{"id":"emoji 👍🏽 mix"}],"messageId":"a"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"src/a/b.ts"},{"id":"a..b","turnId":null}],"messageId":"abc"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"line1\nline2","turnId":{"a":"b"}}],"messageId":"hello world"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"aa.b.c"},{"id":"日本語のテキスト"}],"messageId":"src/a/b.ts"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"key_name-1","turnId":{"$undefined":true}},{"id":"","turnId":null},{"id":"a😀b😀c","turnId":null}],"messageId":"Hello World"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[],"messageId":"é"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"Hello World","turnId":null}],"messageId":"﻿bomns:key.path"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"a..bΣΊΣΥΦΟΣ","turnId":null}],"messageId":"hello"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":".leadingemoji 👍🏽 mix","turnId":[]}],"messageId":"Hello World"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"ab","turnId":null}],"messageId":"line1\nline2ns:key.path"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[],"messageId":"HELLO"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[[]],"error":"Cannot read properties of undefined (reading 'findIndex')"}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"atrailing."},{"id":"Hello World","turnId":"x"}],"messageId":"a:b:c"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"a😀b😀c"},{"id":".leading"}],"messageId":".leading{name} has {count} items"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"ab"}],"messageId":"./x/**/*.json"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"a😀b😀cé","turnId":{"$undefined":true}},{"id":"a😀b😀c","turnId":null}],"messageId":"HELLO"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"straße","turnId":{"a":"b"}}],"messageId":"ΣΊΣΥΦΟΣ"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[],"messageId":"a😀b😀c"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[],"messageId":"src/a/b.ts"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"﻿bom"}],"messageId":"hello worldsrc/a/b.ts"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"Hello World","turnId":null}],"messageId":"straße"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"ΣΊΣΥΦΟΣ","turnId":0},{"id":"src/a/b.ts","turnId":{"a":"b"}}],"messageId":"Hello World"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"a.b.cHello World"},{"id":"﻿bom","turnId":null},{"id":":"}],"messageId":"key_name-1"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"a..bab","turnId":{"$undefined":true}},{"id":":","turnId":null}],"messageId":"Hello World"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"﻿bom","turnId":{"$undefined":true}},{"id":"src/a/b.ts"},{"id":"hello worlda:b:c","turnId":null}],"messageId":"ünïcödé"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"src/a/b.ts","turnId":["a",1]},{"id":"tab\tseparated","turnId":null},{"id":".leading","turnId":{"$undefined":true}}],"messageId":""}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"a😀b😀c.leading","turnId":{"$undefined":true}},{"id":""}],"messageId":"hello worlda:b:c"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"ns:key.path","turnId":{"a":"b"}},{"id":"ns:key.path","turnId":"x"},{"id":"hello","turnId":{"a":"b"}}],"messageId":"./x/**/*.json"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[],"messageId":"hello world./x/**/*.json"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[],"messageId":"ünïcödéΣΊΣΥΦΟΣ"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[],"messageId":"﻿bom"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"a.b.c","turnId":true}],"messageId":"straßetab\tseparated"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"ünïcödé"}],"messageId":"  padded  "}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"trailing.a😀b😀c","turnId":true},{"id":"tab\tseparated","turnId":null},{"id":"日本語のテキスト","turnId":null}],"messageId":"﻿bom"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"./x/**/*.json","turnId":{"$undefined":true}}],"messageId":"a..b"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[],"messageId":"😀"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"hello world","turnId":{"$undefined":true}}],"messageId":"a😀b😀c"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[],"messageId":".leading"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"{name} has {count} items","turnId":{"$undefined":true}}],"messageId":"﻿bom"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"ab","turnId":{"$undefined":true}},{"id":"src/a/b.ts","turnId":null}],"messageId":"abé"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":".leading","turnId":null},{"id":"tab\tseparated"},{"id":":"}],"messageId":"a😀b😀c"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"hello world","turnId":["a",1]}],"messageId":"a"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"{name} has {count} items","turnId":{"a":{"b":"c"}}},{"id":"é","turnId":true},{"id":"😀a..b","turnId":{"$undefined":true}}],"messageId":"ΣΊΣΥΦΟΣ"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"é","turnId":{"$undefined":true}}],"messageId":"hello world"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"a.b.c","turnId":null},{"id":"tab\tseparated","turnId":"x"}],"messageId":"﻿bom"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[null],"error":"Cannot read properties of null (reading 'messages')"}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"a..b","turnId":null},{"id":"ab"},{"id":"ab","turnId":null}],"messageId":"key_name-1"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"é","turnId":null}],"messageId":"./x/**/*.json"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"tab\tseparated{name} has {count} items","turnId":0},{"id":"ΣΊΣΥΦΟΣ","turnId":{"$undefined":true}}],"messageId":"straße"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"tab\tseparated"}],"messageId":"日本語のテキスト"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"Hello World","turnId":{"$undefined":true}},{"id":"./x/**/*.json","turnId":null},{"id":"﻿bom","turnId":[]}],"messageId":":"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"﻿bomkey_name-1"},{"id":"src/a/b.ts","turnId":0}],"messageId":"ΣΊΣΥΦΟΣ"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"emoji 👍🏽 mix","turnId":null}],"messageId":"日本語のテキスト"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"Hello World","turnId":0}],"messageId":"./x/**/*.json"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"a:"},{"id":"日本語のテキスト","turnId":[]},{"id":"Hello World{name} has {count} items"}],"messageId":"{name} has {count} items"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"a","turnId":{"a":{"b":"c"}}},{"id":"a😀b😀c"},{"id":"ΣΊΣΥΦΟΣ","turnId":["a",1]}],"messageId":"é{name} has {count} items"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[],"messageId":"日本語のテキスト"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[],"messageId":"ab"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"hello world","turnId":{"a":{"b":"c"}}}],"messageId":"hello world"}],"ok":[{"a":{"b":"c"}}]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"a","turnId":null},{"id":"a.b.c","turnId":{"$undefined":true}},{"id":"emoji 👍🏽 mix","turnId":["a",1]}],"messageId":"hello"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"./x/**/*.json","turnId":null},{"id":"helloHELLO"}],"messageId":"./x/**/*.json"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[],"messageId":"  padded  "}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"ab","turnId":{"$undefined":true}}],"messageId":"ΣΊΣΥΦΟΣabc"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"日本語のテキスト","turnId":{"$undefined":true}}],"messageId":"emoji 👍🏽 mixtab\tseparated"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"line1\nline2","turnId":{"$undefined":true}},{"id":"abc"}],"messageId":"ns:key.path"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[],"messageId":"ΣΊΣΥΦΟΣé"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"","turnId":null}],"messageId":"tab\tseparated"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[],"messageId":"hello worldtrailing."}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"src/a/b.ts","turnId":null},{"id":"trailing.","turnId":null},{"id":"ababc"}],"messageId":"a:b:ckey_name-1"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[],"messageId":"tab\tseparated"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"key_name-1","turnId":{"$undefined":true}},{"id":"src/a/b.tsabc","turnId":null},{"id":"./x/**/*.json","turnId":{"$undefined":true}}],"messageId":"straße  padded  "}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"İstanbul","turnId":null},{"id":":","turnId":null}],"messageId":"a"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"{name} has {count} items","turnId":{"$undefined":true}}],"messageId":"straße"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"./x/**/*.json","turnId":{}},{"id":"ΣΊΣΥΦΟΣ"}],"messageId":"tab\tseparated"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[],"messageId":"a"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"a😀b😀c","turnId":{"$undefined":true}},{"id":"straße","turnId":[]}],"messageId":"abHello World"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"hello","turnId":{"$undefined":true}},{"id":"a😀b😀c","turnId":null}],"messageId":"abc"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"Hello World","turnId":{"$undefined":true}},{"id":"a","turnId":true},{"id":"日本語のテキスト","turnId":{"$undefined":true}}],"messageId":"ΣΊΣΥΦΟΣ"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"a:b:c","turnId":{"a":"b"}},{"id":"hello world","turnId":{"$undefined":true}}],"messageId":"😀"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"😀","turnId":0}],"messageId":"a:b:c"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[],"messageId":"ünïcödé./x/**/*.json"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[],"messageId":"Hello World"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"ns:key.path"}],"messageId":"éns:key.path"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"a.b.c","turnId":true},{"id":""},{"id":"a😀b😀c"}],"messageId":"trailing."}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"Hello World","turnId":null},{"id":"ns:key.path"}],"messageId":"a😀b😀c"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"a..b"}],"messageId":"emoji 👍🏽 mix"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"line1\nline2","turnId":{"$undefined":true}},{"id":""}],"messageId":"ab"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"  padded  "},{"id":"éemoji 👍🏽 mix","turnId":null},{"id":"ns:key.path","turnId":{"a":"b"}}],"messageId":"key_name-1hello"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"ns:key.path","turnId":null}],"messageId":"é"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"Hello World"},{"id":"Hello World","turnId":null}],"messageId":"a😀b😀c"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"ab","turnId":{"$undefined":true}}],"messageId":".leading"}],"ok":[]}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"straße./x/**/*.json","turnId":{"$undefined":true}},{"id":"  padded  "}],"messageId":"./x/**/*.json"}],"ok":[]}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[],"messageId":"trailing.","activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'findIndex')"}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"  padded  ","turnId":true}],"messageId":"abc","activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"tab\tseparated","turnId":null},{"id":"tab\tseparated","turnId":null},{"id":"﻿bomünïcödé","turnId":{"$undefined":true}}],"messageId":"ünïcödé","activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[],"messageId":"a..b","activeTurnId":"HELLO"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"ünïcödé"}],"messageId":"日本語のテキスト","activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[],"messageId":"abc","activeTurnId":""}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"ab"},{"id":"src/a/b.ts","turnId":null},{"id":"tab\tseparated","turnId":null}],"messageId":"key_name-1","activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"key_name-1:","turnId":{"$undefined":true}},{"id":"İstanbul"},{"id":"hello worlda.b.c","turnId":{"$undefined":true}}],"messageId":":a","activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"Hello World","turnId":null},{"id":"ünïcödétrailing.","turnId":null}],"messageId":"😀","activeTurnId":"😀"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[],"messageId":"hello world","activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"﻿bom","turnId":{}},{"id":"hello","turnId":{"a":{"b":"c"}}},{"id":"line1\nline2","turnId":[]}],"messageId":"İstanbul","activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"abc","turnId":{}}],"messageId":"emoji 👍🏽 mix"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[["a",1]],"error":"Cannot read properties of undefined (reading 'findIndex')"}
+{"fn":"resolveTailUserMessageEditTarget","args":[null],"error":"Cannot read properties of null (reading 'messages')"}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"a😀b😀c","turnId":{}},{"id":"ΣΊΣΥΦΟΣ","turnId":0}],"messageId":"emoji 👍🏽 mix","activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"a..b﻿bom","turnId":null}],"messageId":"ékey_name-1","activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[true],"error":"Cannot read properties of undefined (reading 'findIndex')"}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"a:b:c","turnId":{"$undefined":true}}],"messageId":"a..b","activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"abc","turnId":null}],"messageId":"😀line1\nline2"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"a":"b"}],"error":"Cannot read properties of undefined (reading 'findIndex')"}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":""}],"messageId":"src/a/b.tsa","activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"{name} has {count} items","turnId":{"$undefined":true}},{"id":"﻿boma.b.c","turnId":null}],"messageId":"ns:key.path","activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"key_name-1ünïcödé","turnId":{"$undefined":true}},{"id":"Hello World","turnId":{}},{"id":"./x/**/*.json"}],"messageId":"a:b:c","activeTurnId":"a.b.c"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[[]],"error":"Cannot read properties of undefined (reading 'findIndex')"}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[],"messageId":"ΣΊΣΥΦΟΣé"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[],"messageId":"./x/**/*.jsonns:key.path","activeTurnId":"a.b.c"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"é"},{"id":"./x/**/*.json","turnId":null},{"id":"trailing.","turnId":null}],"messageId":"a","activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"emoji 👍🏽 mix"},{"id":"trailing.ab","turnId":{"a":"b"}}],"messageId":"a.b.c"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"  padded  "},{"id":"  padded  ","turnId":"x"}],"messageId":"key_name-1","activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[],"messageId":"ΣΊΣΥΦΟΣ","activeTurnId":"ünïcödé"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[],"messageId":"tab\tseparated","activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{}],"error":"Cannot read properties of undefined (reading 'findIndex')"}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[],"messageId":"abc"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"straße"},{"id":"src/a/b.ts","turnId":null}],"messageId":"helloline1\nline2","activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"a😀b😀c","turnId":{"$undefined":true}},{"id":"a..b","turnId":{"$undefined":true}},{"id":"ns:key.path"}],"messageId":"line1\nline2a:b:c","activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"日本語のテキスト"}],"messageId":"abc:","activeTurnId":"hello world"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[],"messageId":"ns:key.patha..b","activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[],"messageId":"./x/**/*.jsonline1\nline2","activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"{name} has {count} items"},{"id":"İstanbul","turnId":{}},{"id":"","turnId":null}],"messageId":"a"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[],"messageId":"tab\tseparated","activeTurnId":"Hello World"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[],"messageId":":é"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"a😀b😀ca:b:c","turnId":"x"},{"id":"hello world","turnId":{"a":{"b":"c"}}},{"id":"key_name-1é","turnId":null}],"messageId":"﻿bomHELLO","activeTurnId":"ab"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"Hello World","turnId":null}],"messageId":"","activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"ns:key.path"}],"messageId":"a日本語のテキスト","activeTurnId":"İstanbul"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"HELLO"},{"id":".leading","turnId":null}],"messageId":":","activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"a😀b😀c"},{"id":"a:b:c"},{"id":"a","turnId":{"$undefined":true}}],"messageId":"emoji 👍🏽 mixline1\nline2","activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"hello","turnId":{"$undefined":true}},{"id":"ΣΊΣΥΦΟΣ","turnId":0},{"id":".leading","turnId":{}}],"messageId":"a😀b😀c","activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"hello world","turnId":{"a":"b"}}],"messageId":"straße","activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"İstanbul","turnId":null},{"id":"日本語のテキスト","turnId":null},{"id":"{name} has {count} items","turnId":{"$undefined":true}}],"messageId":"hello world","activeTurnId":"日本語のテキスト"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"é","turnId":null}],"messageId":"a.b.c","activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"é","turnId":null}],"messageId":"﻿bom"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[],"messageId":"a:b:c","activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"line1\nline2","turnId":true},{"id":"key_name-1","turnId":0}],"messageId":"Hello World"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"﻿bom","turnId":{"$undefined":true}},{"id":"{name} has {count} items"},{"id":"emoji 👍🏽 mix"}],"messageId":"HELLO","activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"İstanbul"}],"messageId":"😀","activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[],"messageId":"HELLO","activeTurnId":""}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"key_name-1","turnId":{"$undefined":true}}],"messageId":"日本語のテキスト"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"日本語のテキスト﻿bom","turnId":true},{"id":"src/a/b.ts","turnId":null}],"messageId":"  padded  ","activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[],"messageId":"key_name-1"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":":","turnId":["a",1]},{"id":"a:b:cünïcödé","turnId":null},{"id":"src/a/b.ts","turnId":{"$undefined":true}}],"messageId":"a😀b😀cabc"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"./x/**/*.json"}],"messageId":"a","activeTurnId":"hello worldünïcödé"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[],"messageId":"abé","activeTurnId":"日本語のテキスト"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"abc","turnId":{"$undefined":true}},{"id":"﻿bom"},{"id":"line1\nline2","turnId":null}],"messageId":"HELLO{name} has {count} items","activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"line1\nline2","turnId":null},{"id":"Hello WorldHello World","turnId":null},{"id":"tab\tseparated","turnId":{"$undefined":true}}],"messageId":"ΣΊΣΥΦΟΣ","activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[],"messageId":"helloab","activeTurnId":"trailing."}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"ab","turnId":null},{"id":"﻿bom","turnId":null}],"messageId":"a:b:c","activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"a:b:c","turnId":{"$undefined":true}},{"id":"Hello World","turnId":null},{"id":"日本語のテキスト","turnId":{"$undefined":true}}],"messageId":"a:b:c"}],"ok":{"editable":false,"reason":"not-user-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[],"messageId":"a.b.c","activeTurnId":"./x/**/*.json"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"😀","turnId":{"$undefined":true}}],"messageId":"hello"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[],"messageId":"key_name-1","activeTurnId":"hello worldstraße"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[],"messageId":"straße"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"hello"}],"messageId":"a😀b😀cab","activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"ns:key.path","turnId":null}],"messageId":"{name} has {count} items","activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"src/a/b.ts","turnId":{"$undefined":true}},{"id":"Hello World","turnId":{"$undefined":true}},{"id":"a.b.c","turnId":{"$undefined":true}}],"messageId":"ΣΊΣΥΦΟΣ﻿bom","activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"a:b:c﻿bom","turnId":null},{"id":"emoji 👍🏽 mix","turnId":null}],"messageId":"line1\nline2hello world"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"","turnId":{"$undefined":true}},{"id":"HELLOé","turnId":null}],"messageId":"emoji 👍🏽 mix"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"emoji 👍🏽 mix","turnId":null},{"id":"a😀b😀c","turnId":{"$undefined":true}}],"messageId":"{name} has {count} items","activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"ünïcödé"}],"messageId":"./x/**/*.json"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"tab\tseparated","turnId":true},{"id":"src/a/b.ts","turnId":null},{"id":"src/a/b.ts"}],"messageId":"HELLO"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[],"messageId":"HELLO","activeTurnId":"  padded  "}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"tab\tseparated"}],"messageId":"日本語のテキスト","activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[],"messageId":"abc","activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[0],"error":"Cannot read properties of undefined (reading 'findIndex')"}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"src/a/b.ts","turnId":null},{"id":"src/a/b.ts","turnId":{"$undefined":true}},{"id":"hello"}],"messageId":"日本語のテキスト"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"é","turnId":"x"}],"messageId":"ns:key.path./x/**/*.json","activeTurnId":""}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[],"messageId":"emoji 👍🏽 mix","activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[],"messageId":"hello world","activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[],"messageId":"helloİstanbul","activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"line1\nline2"},{"id":"aba","turnId":{"$undefined":true}},{"id":"ΣΊΣΥΦΟΣ","turnId":{"$undefined":true}}],"messageId":"ünïcödé","activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[],"messageId":"ab.leading","activeTurnId":"emoji 👍🏽 mix"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"abHELLO","turnId":true},{"id":"helloab"}],"messageId":"ΣΊΣΥΦΟΣ","activeTurnId":"a:b:ctrailing."}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"﻿bom","turnId":null}],"messageId":"helloünïcödé","activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"a..bsrc/a/b.ts","turnId":{"$undefined":true}},{"id":"  padded    padded  ","turnId":null},{"id":"hello","turnId":0}],"messageId":"emoji 👍🏽 mix","activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[],"messageId":"a😀b😀c","activeTurnId":""}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"a"}],"messageId":"a.b.c","activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[],"messageId":".leading","activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"a","turnId":null}],"messageId":"","activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"a.b.c"},{"id":"ab","turnId":null},{"id":"ns:key.path"}],"messageId":"HELLO"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[],"messageId":"﻿bom","activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"a..b","turnId":[]}],"messageId":"😀"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"HELLO.leading","turnId":true},{"id":"","turnId":"x"}],"messageId":"ab./x/**/*.json","activeTurnId":"Hello World"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"hello.leading"},{"id":"é"},{"id":"HELLO.leading","turnId":["a",1]}],"messageId":":","activeTurnId":"abHello World"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"HELLO","turnId":null},{"id":"HELLO"},{"id":"key_name-1","turnId":0}],"messageId":"straße","activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"emoji 👍🏽 mix😀","turnId":{"a":"b"}},{"id":":"},{"id":"hello world"}],"messageId":"trailing.","activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"İstanbul","turnId":{"$undefined":true}}],"messageId":"a😀b😀c","activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"ΣΊΣΥΦΟΣ","turnId":{"$undefined":true}},{"id":"a","turnId":{}}],"messageId":"ünïcödéΣΊΣΥΦΟΣ","activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"ünïcödé","turnId":"x"}],"messageId":"ab","activeTurnId":":日本語のテキスト"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"Hello World😀","turnId":null},{"id":"﻿bom","turnId":[]}],"messageId":"a:b:c","activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"İstanbula:b:c"}],"messageId":"key_name-1","activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":":","turnId":{"$undefined":true}},{"id":"emoji 👍🏽 mix","turnId":[]}],"messageId":"ΣΊΣΥΦΟΣ"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"é﻿bom","turnId":null},{"id":"İstanbul"},{"id":"abc","turnId":{"$undefined":true}}],"messageId":"a..b"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":["x"],"error":"Cannot read properties of undefined (reading 'findIndex')"}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[],"messageId":"😀","activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"src/a/b.ts","turnId":null},{"id":"a..btab\tseparated","turnId":null},{"id":"emoji 👍🏽 mixtrailing.","turnId":["a",1]}],"messageId":"  padded  "}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[],"messageId":"","activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"a:b:c","turnId":null},{"id":"😀","turnId":{"$undefined":true}},{"id":"😀","turnId":{"$undefined":true}}],"messageId":"日本語のテキスト"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"ΣΊΣΥΦΟΣé","turnId":null},{"id":"é","turnId":"x"},{"id":"İstanbul","turnId":true}],"messageId":"Hello World","activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"  padded  "}],"messageId":"{name} has {count} items","activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"hello","turnId":{"$undefined":true}}],"messageId":"  padded  ","activeTurnId":""}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"hello world","turnId":"x"},{"id":"  padded  "}],"messageId":".leading","activeTurnId":"./x/**/*.json"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"  padded  "}],"messageId":"a😀b😀c./x/**/*.json","activeTurnId":"key_name-1"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[],"messageId":"","activeTurnId":"😀"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"ab日本語のテキスト","turnId":{}},{"id":"tab\tseparated","turnId":{}}],"messageId":"src/a/b.ts","activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"😀","turnId":0}],"messageId":"straße"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"./x/**/*.json"}],"messageId":"Hello World","activeTurnId":":.leading"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"a.b.c"}],"messageId":"a.b.c"}],"ok":{"editable":false,"reason":"not-user-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"a.b.c","turnId":null},{"id":"a.b.c","turnId":{"$undefined":true}},{"id":"😀","turnId":null}],"messageId":"abc","activeTurnId":""}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"日本語のテキスト"}],"messageId":"😀:","activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"HELLO","turnId":{"a":"b"}},{"id":"😀","turnId":null},{"id":"hello./x/**/*.json","turnId":null}],"messageId":"  padded  ","activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"abc"},{"id":"HELLO"},{"id":"ab{name} has {count} items","turnId":{"$undefined":true}}],"messageId":"ab","activeTurnId":"a:b:c"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"ΣΊΣΥΦΟΣ","turnId":[]},{"id":"İstanbul","turnId":["a",1]},{"id":"a..b","turnId":null}],"messageId":"key_name-1","activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"  padded  ","turnId":null},{"id":"emoji 👍🏽 mix"}],"messageId":"abtab\tseparated"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[],"messageId":"ünïcödé","activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"ab","turnId":null}],"messageId":"./x/**/*.json:"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"Hello World"},{"id":"a:b:c","turnId":null},{"id":"﻿bom","turnId":{"$undefined":true}}],"messageId":"日本語のテキスト","activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"tab\tseparated","turnId":{"$undefined":true}},{"id":"İstanbulhello"}],"messageId":"line1\nline2"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"ΣΊΣΥΦΟΣ","turnId":{"$undefined":true}},{"id":":","turnId":null}],"messageId":"hello world"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"a😀b😀c"}],"messageId":"Hello World"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"trailing.","turnId":{"$undefined":true}}],"messageId":"tab\tseparated"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"src/a/b.ts"}],"messageId":"é"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"a.b.c","turnId":null},{"id":"trailing."},{"id":"ns:key.path"}],"messageId":"a:b:c"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[],"messageId":"é","activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"straße"},{"id":"😀"},{"id":"src/a/b.ts","turnId":["a",1]}],"messageId":"ns:key.path","activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"ab","turnId":null},{"id":"hello worlda..b"},{"id":"a","turnId":null}],"messageId":"Hello Worldİstanbul","activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"HELLO"},{"id":"  padded  "},{"id":"emoji 👍🏽 mix","turnId":null}],"messageId":"","activeTurnId":"straße"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"ünïcödéa..b","turnId":null},{"id":"hello","turnId":null},{"id":"{name} has {count} items","turnId":null}],"messageId":"ünïcödé"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"src/a/b.ts","turnId":{"$undefined":true}},{"id":"a.b.c","turnId":null},{"id":":","turnId":null}],"messageId":"key_name-1","activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"😀"},{"id":"a:b:c","turnId":["a",1]}],"messageId":"İstanbul","activeTurnId":"ΣΊΣΥΦΟΣ"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[],"messageId":"straße﻿bom","activeTurnId":"abc"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[],"messageId":"helloemoji 👍🏽 mix","activeTurnId":".leading"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"日本語のテキスト"},{"id":"trailing..leading","turnId":null},{"id":"😀","turnId":null}],"messageId":":","activeTurnId":"Hello World😀"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[],"messageId":"a","activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"","turnId":{"$undefined":true}}],"messageId":"trailing."}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[],"messageId":"İstanbul","activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"a.b.c","turnId":null}],"messageId":"a..b","activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"straße"},{"id":"key_name-1","turnId":{"$undefined":true}},{"id":"İstanbul","turnId":{}}],"messageId":"a😀","activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"HELLO"},{"id":"a"},{"id":"HELLO"}],"messageId":"﻿bom","activeTurnId":"a😀b😀c"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"hello","turnId":null},{"id":"{name} has {count} items","turnId":{"$undefined":true}},{"id":"trailing.","turnId":null}],"messageId":"ünïcödéabc","activeTurnId":"hello world"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":".leading"}],"messageId":"","activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"﻿bom","turnId":{"$undefined":true}},{"id":"hello world"}],"messageId":".leading","activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[],"messageId":"ΣΊΣΥΦΟΣtrailing."}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"ünïcödé","turnId":{"$undefined":true}},{"id":"key_name-1","turnId":["a",1]}],"messageId":"a..b","activeTurnId":"éHello World"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[],"messageId":"日本語のテキスト"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"hello worlda😀b😀c","turnId":["a",1]},{"id":"trailing.","turnId":{"$undefined":true}},{"id":"hello","turnId":{"$undefined":true}}],"messageId":"atrailing.","activeTurnId":".leading"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[],"messageId":"emoji 👍🏽 mix","activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"ns:key.path","turnId":null},{"id":"key_name-1./x/**/*.json"},{"id":"HELLOsrc/a/b.ts","turnId":null}],"messageId":"straße","activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"hello world","turnId":{"$undefined":true}}],"messageId":"{name} has {count} items"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"./x/**/*.json","turnId":{"a":"b"}},{"id":"ns:key.path","turnId":null}],"messageId":"a😀b😀c","activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"src/a/b.ts","turnId":null},{"id":"straße","turnId":null}],"messageId":"src/a/b.tstab\tseparated","activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[],"messageId":"a😀b😀chello world"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"emoji 👍🏽 mix","turnId":0},{"id":"key_name-1","turnId":null},{"id":"HELLO","turnId":{"$undefined":true}}],"messageId":"akey_name-1","activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"emoji 👍🏽 mix"},{"id":"HELLO","turnId":null},{"id":"trailing.","turnId":null}],"messageId":"absrc/a/b.ts"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[],"messageId":"a.b.c","activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"HELLO","turnId":{"$undefined":true}}],"messageId":"ns:key.path","activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"trailing.","turnId":null}],"messageId":"key_name-1","activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"trailing.","turnId":{"$undefined":true}}],"messageId":"a..b","activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":".leading","turnId":{"$undefined":true}}],"messageId":"a..b","activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"{name} has {count} items","turnId":{"$undefined":true}},{"id":":","turnId":null}],"messageId":"HELLO","activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"ΣΊΣΥΦΟΣ","turnId":true},{"id":"﻿bom","turnId":true},{"id":"a:b:ca:b:c","turnId":null}],"messageId":"","activeTurnId":"trailing."}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"a","turnId":null},{"id":"﻿bomHELLO","turnId":{"$undefined":true}}],"messageId":"  padded  ","activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"emoji 👍🏽 mix","turnId":{"$undefined":true}},{"id":"a😀b😀c","turnId":{"$undefined":true}},{"id":"src/a/b.ts"}],"messageId":"ΣΊΣΥΦΟΣİstanbul"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[],"messageId":"","activeTurnId":"trailing.a..b"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"./x/**/*.json﻿bom","turnId":{"$undefined":true}}],"messageId":"  padded  ","activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"a😀b😀c"},{"id":"a😀b😀c","turnId":null},{"id":"İstanbul","turnId":{"$undefined":true}}],"messageId":"src/a/b.ts","activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"ns:key.path","turnId":"x"}],"messageId":".leadingé","activeTurnId":"HELLO"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[],"messageId":"a.b.ca..b","activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[],"messageId":"abc","activeTurnId":"{name} has {count} items"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"a.b.c","turnId":true}],"messageId":"{name} has {count} items"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"ΣΊΣΥΦΟΣ","turnId":{"a":"b"}}],"messageId":"ab","activeTurnId":".leading"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"a😀b😀c"}],"messageId":"ünïcödé"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[],"messageId":"hello world","activeTurnId":"key_name-1"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"HELLOİstanbul","turnId":{"a":{"b":"c"}}}],"messageId":"ΣΊΣΥΦΟΣ"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[],"messageId":"a😀b😀c","activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"a😀b😀cns:key.path","turnId":["a",1]},{"id":"a.b.c","turnId":["a",1]},{"id":"{name} has {count} items","turnId":null}],"messageId":"Hello World","activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"ΣΊΣΥΦΟΣ","turnId":true}],"messageId":"straße","activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[],"messageId":"line1\nline2","activeTurnId":":key_name-1"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"line1\nline2","turnId":null},{"id":"./x/**/*.json","turnId":null},{"id":"a..bkey_name-1"}],"messageId":"hello world","activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"é","turnId":null},{"id":"a","turnId":"x"},{"id":"abc","turnId":{}}],"messageId":".leading","activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"line1\nline2","turnId":null},{"id":"a..b"}],"messageId":"src/a/b.ts","activeTurnId":"src/a/b.ts"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"a..b"},{"id":"é","turnId":{}},{"id":"line1\nline2İstanbul","turnId":null}],"activeTurnId":"ab"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"emoji 👍🏽 mix","turnId":["a",1]}],"activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"ünïcödé","turnId":{"$undefined":true}}],"activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[],"activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"./x/**/*.json","turnId":null},{"id":"ababc","turnId":0},{"id":"😀"}],"activeTurnId":"ns:key.path"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"emoji 👍🏽 mix","turnId":null}],"activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"trailing.﻿bom","turnId":{"$undefined":true}},{"id":"line1\nline2","turnId":{"$undefined":true}},{"id":"a😀b😀c","turnId":{"$undefined":true}}]}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[true],"error":"Cannot read properties of undefined (reading 'length')"}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"  padded  ","turnId":null}],"activeTurnId":"  padded  "}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"./x/**/*.json"},{"id":"ns:key.pathsrc/a/b.ts","turnId":{}},{"id":"ünïcödé","turnId":{"$undefined":true}}],"activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"HELLO","turnId":null},{"id":"a😀b😀c"}]}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[]}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"étrailing.","turnId":null}]}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"src/a/b.ts","turnId":null},{"id":"a:b:c","turnId":{"$undefined":true}},{"id":"İstanbul日本語のテキスト","turnId":null}]}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"Hello World","turnId":{"$undefined":true}},{"id":"a.b.c","turnId":null},{"id":"  padded  ","turnId":true}],"activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"{name} has {count} items","turnId":null}],"activeTurnId":"{name} has {count} items"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"é","turnId":[]},{"id":"ΣΊΣΥΦΟΣ","turnId":{"$undefined":true}}],"activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"İstanbul","turnId":null},{"id":"straßetab\tseparated","turnId":null},{"id":".leading","turnId":null}],"activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"line1\nline2","turnId":{"$undefined":true}}]}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[],"activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":".leadingstraße","turnId":null},{"id":"emoji 👍🏽 mix","turnId":{"$undefined":true}},{"id":"trailing.","turnId":null}],"activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"./x/**/*.json","turnId":{"$undefined":true}}]}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"hello world","turnId":0},{"id":"ab","turnId":{"$undefined":true}},{"id":"{name} has {count} items","turnId":null}],"activeTurnId":"tab\tseparatedünïcödé"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"hello","turnId":null},{"id":"😀","turnId":null},{"id":"a😀b😀c","turnId":{}}],"activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"abc  padded  ","turnId":{"$undefined":true}},{"id":"tab\tseparated","turnId":null},{"id":"key_name-1","turnId":null}]}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"emoji 👍🏽 mix","turnId":{"$undefined":true}}],"activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"a😀b😀c","turnId":null},{"id":"a😀b😀c","turnId":{"$undefined":true}}],"activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[],"activeTurnId":"src/a/b.tshello world"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[[]],"error":"Cannot read properties of undefined (reading 'length')"}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"Hello World","turnId":0},{"id":"abc","turnId":{"$undefined":true}},{"id":"ΣΊΣΥΦΟΣ.leading"}],"activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"a..b","turnId":"x"},{"id":"src/a/b.ts","turnId":{"$undefined":true}}],"activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"a😀b😀chello world","turnId":true},{"id":"a😀b😀c","turnId":{}}],"activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":["x"],"error":"Cannot read properties of undefined (reading 'length')"}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"abc"}],"activeTurnId":".leading"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"a😀b😀c","turnId":{"$undefined":true}},{"id":"a..b"}],"activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"tab\tseparated","turnId":{"$undefined":true}},{"id":"straße","turnId":null}]}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"emoji 👍🏽 mix"},{"id":"emoji 👍🏽 mixtrailing.","turnId":{"$undefined":true}},{"id":"key_name-1"}],"activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[],"activeTurnId":"😀"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"a:b:chello world","turnId":{}},{"id":"a{name} has {count} items","turnId":{"$undefined":true}}],"activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"a":"b"}],"error":"Cannot read properties of undefined (reading 'length')"}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"﻿bom","turnId":"x"}]}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"a😀b😀c","turnId":{"$undefined":true}},{"id":"a.b.c  padded  "},{"id":"é.leading","turnId":0}],"activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"a😀b😀c","turnId":null}],"activeTurnId":"😀"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"emoji 👍🏽 mix","turnId":["a",1]},{"id":"ΣΊΣΥΦΟΣa.b.c","turnId":{"$undefined":true}}],"activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"a..bünïcödé"},{"id":"ünïcödéhello","turnId":null},{"id":"HELLO","turnId":null}]}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"a.b.c"},{"id":"ünïcödé","turnId":null}],"activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"😀","turnId":["a",1]}],"activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"abc","turnId":{"$undefined":true}},{"id":"İstanbula..b","turnId":{"$undefined":true}}],"activeTurnId":"😀a"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"ab"},{"id":"a","turnId":[]},{"id":"line1\nline2abc","turnId":null}],"activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"a..b","turnId":null},{"id":"ünïcödé"}]}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"a.b.c","turnId":null},{"id":"a.b.cΣΊΣΥΦΟΣ"},{"id":"key_name-1"}],"activeTurnId":"./x/**/*.json"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"./x/**/*.json"},{"id":"abc","turnId":0},{"id":"line1\nline2","turnId":null}],"activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"hello","turnId":null},{"id":"ns:key.path","turnId":["a",1]},{"id":"ab","turnId":{"$undefined":true}}],"activeTurnId":"ns:key.path"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":":日本語のテキスト","turnId":{"$undefined":true}}]}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":":","turnId":{"$undefined":true}},{"id":"key_name-1","turnId":{"$undefined":true}},{"id":"a..b","turnId":null}],"activeTurnId":"trailing."}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"tab\tseparated","turnId":null},{"id":"a:b:c","turnId":{}},{"id":"{name} has {count} items","turnId":"x"}],"activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"a..b./x/**/*.json","turnId":["a",1]},{"id":"a.b.c","turnId":null},{"id":"HELLO","turnId":{"$undefined":true}}]}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[],"activeTurnId":"hello worldline1\nline2"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"  padded  ","turnId":{"$undefined":true}}],"activeTurnId":"./x/**/*.json"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":":","turnId":null},{"id":"a:b:c","turnId":{"$undefined":true}}]}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"hello","turnId":null},{"id":"a:b:c","turnId":[]},{"id":"a","turnId":null}]}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"a:b:c","turnId":{"$undefined":true}},{"id":"hello world","turnId":{"$undefined":true}},{"id":"emoji 👍🏽 mix"}],"activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"İstanbul﻿bom","turnId":[]},{"id":"﻿bom","turnId":{"$undefined":true}}],"activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{}],"error":"Cannot read properties of undefined (reading 'length')"}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"a😀b😀c","turnId":null},{"id":"a","turnId":{"a":"b"}}],"activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[null],"error":"Cannot read properties of null (reading 'messages')"}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"a😀b😀c","turnId":{"$undefined":true}},{"id":"Hello Worldsrc/a/b.ts","turnId":{"$undefined":true}},{"id":"ΣΊΣΥΦΟΣ","turnId":0}],"activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'length')"}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"日本語のテキスト","turnId":{"$undefined":true}},{"id":"a.b.c","turnId":{"$undefined":true}},{"id":"","turnId":"x"}],"activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"trailing.","turnId":{"$undefined":true}},{"id":"trailing.hello","turnId":{"$undefined":true}},{"id":"a","turnId":{"a":"b"}}]}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"{name} has {count} items","turnId":{"$undefined":true}},{"id":"line1\nline2","turnId":{"$undefined":true}},{"id":"  padded  ","turnId":null}]}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[],"activeTurnId":"./x/**/*.json"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":".leading","turnId":["a",1]}]}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"trailing.","turnId":null},{"id":"tab\tseparated"},{"id":"./x/**/*.json","turnId":null}],"activeTurnId":"HELLO"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"trailing."},{"id":"😀"}],"activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"tab\tseparated./x/**/*.json","turnId":null},{"id":"a..b","turnId":{"$undefined":true}},{"id":"hello world","turnId":{"$undefined":true}}]}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"a..ba"},{"id":"key_name-1"}],"activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"a😀b😀c","turnId":{"$undefined":true}},{"id":"","turnId":{"$undefined":true}},{"id":"ünïcödéemoji 👍🏽 mix","turnId":{"$undefined":true}}],"activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"  padded  ","turnId":{"$undefined":true}},{"id":"./x/**/*.json"},{"id":"{name} has {count} items","turnId":{"$undefined":true}}],"activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"line1\nline2","turnId":{"a":"b"}},{"id":"Hello World","turnId":true}]}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"a","turnId":{"$undefined":true}},{"id":"hello world","turnId":null},{"id":""}],"activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"﻿bom"}],"activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"é{name} has {count} items","turnId":{"$undefined":true}}],"activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"a:b:c","turnId":{"$undefined":true}},{"id":"hello world","turnId":{"$undefined":true}}],"activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"日本語のテキスト","turnId":{}},{"id":"hello"},{"id":"  padded  ab","turnId":null}],"activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[["a",1]],"error":"Cannot read properties of undefined (reading 'length')"}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"﻿bom"}]}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"key_name-1{name} has {count} items","turnId":null},{"id":"tab\tseparated","turnId":null},{"id":"straße","turnId":[]}],"activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"{name} has {count} items./x/**/*.json","turnId":null},{"id":"a..b","turnId":{"a":"b"}}],"activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"line1\nline2"}],"activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"aa😀b😀c","turnId":{"$undefined":true}},{"id":"﻿bom","turnId":null},{"id":"src/a/b.ts","turnId":{"$undefined":true}}]}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"ünïcödéhello world","turnId":null}]}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":":","turnId":"x"}],"activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"ns:key.pathtab\tseparated","turnId":{"$undefined":true}}]}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"  padded  "},{"id":"ünïcödé","turnId":0}]}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"﻿bom{name} has {count} items","turnId":[]},{"id":"日本語のテキスト{name} has {count} items","turnId":["a",1]},{"id":":","turnId":null}]}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":":","turnId":{"$undefined":true}},{"id":"ns:key.patha.b.c","turnId":{"$undefined":true}},{"id":"hello","turnId":null}],"activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"  padded  ","turnId":null},{"id":"日本語のテキスト"},{"id":"😀日本語のテキスト","turnId":{"a":{"b":"c"}}}],"activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"a"}],"activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"  padded  :","turnId":null},{"id":"ns:key.path","turnId":null}],"activeTurnId":"src/a/b.ts"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"./x/**/*.jsonΣΊΣΥΦΟΣ","turnId":{"$undefined":true}},{"id":"key_name-1","turnId":true}],"activeTurnId":"trailing."}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"a","turnId":null},{"id":".leadinga"},{"id":"straße"}],"activeTurnId":"ünïcödé"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":".leadingns:key.path","turnId":{"a":"b"}}],"activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"日本語のテキスト","turnId":null},{"id":"straße"}],"activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":".leading.leading","turnId":null},{"id":"abctrailing.","turnId":{"$undefined":true}}],"activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"日本語のテキスト","turnId":null},{"id":"﻿bom","turnId":{"$undefined":true}}],"activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"ΣΊΣΥΦΟΣ","turnId":null},{"id":"a..b"},{"id":"./x/**/*.json"}],"activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"hello","turnId":{"a":{"b":"c"}}},{"id":"tab\tseparated","turnId":{"$undefined":true}},{"id":"﻿bom","turnId":0}],"activeTurnId":"ünïcödé"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"é"}],"activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[],"activeTurnId":":a"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"a😀b😀c"},{"id":"straße"}],"activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"ΣΊΣΥΦΟΣ","turnId":null},{"id":"a.b.c","turnId":null},{"id":"a..b"}],"activeTurnId":"emoji 👍🏽 mixhello"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":""},{"id":"straße","turnId":{"$undefined":true}}],"activeTurnId":":"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"hello"},{"id":"line1\nline2İstanbul"}],"activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[],"activeTurnId":"HELLO"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"a","turnId":{"$undefined":true}}],"activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"ab"},{"id":"hello"}],"activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"straße"}],"activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[],"activeTurnId":"日本語のテキストtab\tseparated"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"ΣΊΣΥΦΟΣ"},{"id":"a","turnId":null}],"activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"İstanbulhello world","turnId":null},{"id":"emoji 👍🏽 mixHELLO"},{"id":"ns:key.path"}],"activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"trailing.","turnId":["a",1]}],"activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"﻿bom{name} has {count} items","turnId":null}],"activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"a:b:c","turnId":null}]}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"HELLOsrc/a/b.ts"}],"activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"emoji 👍🏽 mix"},{"id":"emoji 👍🏽 mix","turnId":[]},{"id":"é"}],"activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"日本語のテキスト","turnId":null},{"id":"a.b.c"},{"id":"emoji 👍🏽 mix日本語のテキスト","turnId":{"$undefined":true}}],"activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[0],"error":"Cannot read properties of undefined (reading 'length')"}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"ΣΊΣΥΦΟΣ","turnId":{"$undefined":true}}],"activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"Hello World","turnId":"x"}],"activeTurnId":"./x/**/*.jsonns:key.path"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"ΣΊΣΥΦΟΣ","turnId":{"$undefined":true}},{"id":"HELLO"},{"id":"日本語のテキスト","turnId":null}],"activeTurnId":"ab"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"HELLO","turnId":null}]}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[],"activeTurnId":"a:b:c"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"key_name-1a.b.c","turnId":{"a":{"b":"c"}}},{"id":"","turnId":{"$undefined":true}}],"activeTurnId":"a..ba.b.c"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"a","turnId":{"$undefined":true}},{"id":"日本語のテキスト","turnId":{}}]}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"ünïcödéns:key.path","turnId":0}],"activeTurnId":"key_name-1"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"İstanbul","turnId":null}],"activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"src/a/b.ts","turnId":{"$undefined":true}},{"id":"a:b:c","turnId":["a",1]}],"activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":":","turnId":{"$undefined":true}}]}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"é","turnId":{"$undefined":true}},{"id":"a😀b😀c","turnId":null},{"id":"./x/**/*.json","turnId":{"$undefined":true}}],"activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"key_name-1hello world","turnId":null},{"id":"ünïcödé","turnId":{"a":"b"}},{"id":"ΣΊΣΥΦΟΣ","turnId":[]}]}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":":"}],"activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"./x/**/*.json","turnId":null}],"activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"ab","turnId":null},{"id":"hello./x/**/*.json"}],"activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"ünïcödéHello World","turnId":{"$undefined":true}},{"id":"a","turnId":0},{"id":"ab.leading","turnId":null}],"activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"trailing.","turnId":null},{"id":"a😀b😀c","turnId":{"$undefined":true}}],"activeTurnId":"日本語のテキスト"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"straße","turnId":null},{"id":"İstanbul{name} has {count} items","turnId":["a",1]}],"activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"ns:key.path","turnId":null},{"id":"src/a/b.ts","turnId":{"a":{"b":"c"}}}],"activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"straße","turnId":{"$undefined":true}}],"activeTurnId":":"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"a:b:c","turnId":null},{"id":"hello world","turnId":{"$undefined":true}},{"id":"abkey_name-1","turnId":"x"}]}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"日本語のテキスト","turnId":{"$undefined":true}},{"id":"é","turnId":null},{"id":"日本語のテキスト","turnId":{"$undefined":true}}],"activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"abc.leading"},{"id":"src/a/b.ts","turnId":0},{"id":"abc","turnId":{"$undefined":true}}],"activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"ΣΊΣΥΦΟΣ","turnId":[]},{"id":"a","turnId":{"$undefined":true}}],"activeTurnId":"a😀b😀c"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"日本語のテキスト","turnId":{"$undefined":true}},{"id":"emoji 👍🏽 mix","turnId":{"$undefined":true}}]}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"hello","turnId":null},{"id":"./x/**/*.json","turnId":{"a":{"b":"c"}}}],"activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"a","turnId":[]}],"activeTurnId":"HELLO"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"src/a/b.ts","turnId":{"$undefined":true}}],"activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"trailing.","turnId":{}},{"id":"日本語のテキスト","turnId":{"$undefined":true}},{"id":"a..b","turnId":null}],"activeTurnId":"key_name-1"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"ünïcödé:","turnId":{"$undefined":true}},{"id":"ns:key.path","turnId":null}],"activeTurnId":"line1\nline2"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"a😀b😀c","turnId":{"$undefined":true}},{"id":"HELLO","turnId":null}]}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"ΣΊΣΥΦΟΣ","turnId":0},{"id":"","turnId":{"$undefined":true}}],"activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"hello"},{"id":"a","turnId":null}]}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"abc","turnId":0}],"activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"日本語のテキスト"},{"id":"ab","turnId":{"a":{"b":"c"}}},{"id":"helloHello World","turnId":{"$undefined":true}}],"activeTurnId":"a"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"a😀b😀chello world","turnId":null},{"id":"a"},{"id":"hello world","turnId":null}],"activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"","turnId":{"$undefined":true}}],"activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"emoji 👍🏽 mix./x/**/*.json","turnId":null}],"activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"tab\tseparated","turnId":{"$undefined":true}},{"id":"a"}],"activeTurnId":"line1\nline2İstanbul"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"ns:key.path","turnId":null}]}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"ΣΊΣΥΦΟΣΣΊΣΥΦΟΣ","turnId":{"$undefined":true}},{"id":"ΣΊΣΥΦΟΣ"}]}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"﻿bomİstanbul","turnId":null}],"activeTurnId":""}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"a😀b😀c","turnId":0}]}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"a😀b😀c"}],"activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"ahello"}],"activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"a.b.c","turnId":true},{"id":"HELLO","turnId":{"$undefined":true}}],"activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"ünïcödé"},{"id":"😀emoji 👍🏽 mix","turnId":{"a":"b"}}],"activeTurnId":"ünïcödé"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"tab\tseparated","turnId":0},{"id":"ΣΊΣΥΦΟΣ","turnId":{"a":"b"}}]}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"ünïcödé","turnId":{"$undefined":true}},{"id":"😀","turnId":"x"},{"id":"./x/**/*.json","turnId":{"$undefined":true}}],"activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"trailing."}],"activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":":a"},{"id":"a..b","turnId":null}]}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"日本語のテキスト","turnId":null}],"activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"a.b.c"},{"id":"﻿bom","turnId":"x"}],"activeTurnId":"emoji 👍🏽 mix"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[],"activeTurnId":"ab"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"src/a/b.ts"},{"id":":"}]}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"ns:key.path","turnId":{"$undefined":true}},{"id":"İstanbul","turnId":true}],"activeTurnId":"ünïcödé"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"Hello Worldhello","turnId":{"$undefined":true}}],"activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"","turnId":null}],"activeTurnId":"😀Hello World"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[],"activeTurnId":"a😀b😀c"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"hello world","turnId":null}],"activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"key_name-1","turnId":null}],"activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"HELLO"},{"id":"  padded  a:b:c","turnId":["a",1]}],"activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"src/a/b.ts","turnId":{"a":"b"}},{"id":"ns:key.path","turnId":0}]}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"emoji 👍🏽 mix","turnId":{"a":{"b":"c"}}},{"id":"  padded  ","turnId":{"$undefined":true}},{"id":"key_name-1"}],"activeTurnId":"a..b"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":".leadingemoji 👍🏽 mix","turnId":{"$undefined":true}},{"id":"é","turnId":null}]}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"line1\nline2"}]}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"日本語のテキスト","turnId":{"$undefined":true}}],"activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"HELLO  padded  "},{"id":"key_name-1"}],"activeTurnId":"tab\tseparatedkey_name-1"}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"HELLO日本語のテキスト","turnId":null}],"activeTurnId":null}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"{name} has {count} items:","turnId":{"$undefined":true}},{"id":"﻿bom"},{"id":"a.b.c","turnId":null}]}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"hello","turnId":null},{"id":"a😀b😀c"},{"id":"tab\tseparated","turnId":null}]}],"ok":{"editable":false,"reason":"missing-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"prompt","role":"user","source":"native","turnId":"turn-1"},{"id":"answer","role":"user","source":"async-user-input","turnId":null}],"activeTurnId":"turn-1"}],"ok":{"editable":false,"reason":"non-native-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"prompt","role":"user","source":"native","turnId":"turn-1"},{"id":"answer","role":"user","source":"async-user-input","turnId":null}],"messageId":"answer","activeTurnId":"turn-1"}],"ok":{"editable":false,"reason":"non-native-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"prompt","role":"user","source":"native","turnId":"turn-1"},{"id":"answer","role":"user","source":"async-user-input","turnId":null}],"messageId":"prompt","activeTurnId":"turn-1"}],"ok":{"editable":false,"reason":"not-latest-native-user-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"prompt","role":"user","source":"native","turnId":"turn-1"},{"id":"answer","role":"user","source":"async-user-input","turnId":"turn-1"}],"activeTurnId":"turn-1"}],"ok":{"editable":false,"reason":"non-native-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"prompt","role":"user","source":"native","turnId":"turn-1"},{"id":"answer","role":"user","source":"async-user-input","turnId":"turn-1"}],"messageId":"answer","activeTurnId":"turn-1"}],"ok":{"editable":false,"reason":"non-native-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"prompt","role":"user","source":"native","turnId":"turn-1"},{"id":"answer","role":"user","source":"async-user-input","turnId":"turn-1"}],"messageId":"prompt","activeTurnId":"turn-1"}],"ok":{"editable":false,"reason":"not-latest-native-user-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"prompt","role":"user","source":"native","turnId":"turn-1"},{"id":"answer","role":"user","source":"async-user-input","turnId":"turn-2"}],"activeTurnId":"turn-1"}],"ok":{"editable":false,"reason":"non-native-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"prompt","role":"user","source":"native","turnId":"turn-1"},{"id":"answer","role":"user","source":"async-user-input","turnId":"turn-2"}],"messageId":"answer","activeTurnId":"turn-1"}],"ok":{"editable":false,"reason":"non-native-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"prompt","role":"user","source":"native","turnId":"turn-1"},{"id":"answer","role":"user","source":"async-user-input","turnId":"turn-2"}],"messageId":"prompt","activeTurnId":"turn-1"}],"ok":{"editable":false,"reason":"not-latest-native-user-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"answer","role":"user","source":"async-user-input","turnId":"turn-1"},{"id":"prompt","role":"user","source":"native","turnId":"turn-2"}]}],"ok":{"editable":true,"messageId":"prompt","messageIndex":1,"mode":"rollback","rollbackTurnCount":1,"removedTurnIds":["turn-2"]}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"answer","role":"user","source":"async-user-input","turnId":"turn-1"},{"id":"prompt","role":"user","source":"native","turnId":"turn-2"}],"messageId":"prompt","activeTurnId":{"$undefined":true}}],"ok":{"editable":true,"messageId":"prompt","messageIndex":1,"mode":"rollback","rollbackTurnCount":1,"removedTurnIds":["turn-2"]}}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"answer","role":"user","source":"async-user-input","turnId":"turn-1"},{"id":"prompt","role":"user","source":"native","turnId":"turn-2"}],"messageId":"prompt"}],"ok":["turn-2"]}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"answer","role":"user","source":"async-user-input","turnId":"turn-2"}]}],"ok":{"editable":false,"reason":"non-native-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"answer","role":"user","source":"async-user-input","turnId":"turn-2"}],"messageId":"answer","activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"non-native-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"answer","role":"user","source":"async-user-input","turnId":"turn-2"}],"messageId":"answer"}],"ok":{"editable":false,"reason":"non-native-message"}}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"question","role":"assistant","asyncUserInput":{"response":{"messageId":"answer"}}},{"id":"answer","role":"user","source":"native","turnId":"turn-2"}]}],"ok":{"editable":false,"reason":"structured-answer"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"question","role":"assistant","asyncUserInput":{"response":{"messageId":"answer"}}},{"id":"answer","role":"user","source":"native","turnId":"turn-2"}],"messageId":"answer","activeTurnId":{"$undefined":true}}],"ok":{"editable":false,"reason":"structured-answer"}}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"m1","turnId":"turn-1"},{"id":"m2","turnId":null},{"id":"m3","turnId":"turn-2"},{"id":"m4","turnId":"turn-2"}],"messageId":"m2"}],"ok":["turn-2"]}
+{"fn":"resolveLatestTailUserMessageEditTarget","args":[{"messages":[{"id":"user-1","role":"user","source":"native","turnId":null},{"id":"assistant-1","role":"assistant","source":"native","turnId":"turn-1"}]}],"ok":{"editable":true,"messageId":"user-1","messageIndex":0,"mode":"rollback","rollbackTurnCount":1,"removedTurnIds":["turn-1"]}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"user-1","role":"user","source":"native","turnId":null},{"id":"assistant-1","role":"assistant","source":"native","turnId":"turn-1"}],"messageId":"user-1","activeTurnId":{"$undefined":true}}],"ok":{"editable":true,"messageId":"user-1","messageIndex":0,"mode":"rollback","rollbackTurnCount":1,"removedTurnIds":["turn-1"]}}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"user-1","role":"user","source":"native","turnId":null},{"id":"assistant-1","role":"assistant","source":"native","turnId":"turn-1"}],"messageId":"user-1"}],"ok":["turn-1"]}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"user-active","role":"user","source":"native","turnId":null}],"messageId":"user-active","activeTurnId":"turn-active"}],"ok":{"editable":true,"messageId":"user-active","messageIndex":0,"mode":"active-tail","rollbackTurnCount":0,"removedTurnIds":[]}}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"user-active","role":"user","source":"native","turnId":null}],"messageId":"user-active"}],"ok":[]}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"user-1","role":"user","source":"native","turnId":null},{"id":"assistant-1","role":"assistant","source":"native","turnId":"turn-1"},{"id":"user-2","role":"user","source":"native","turnId":null},{"id":"assistant-2","role":"assistant","source":"native","turnId":"turn-2"}],"messageId":"user-1"}],"ok":{"editable":false,"reason":"not-latest-native-user-message"}}
+{"fn":"resolveTailUserMessageEditTarget","args":[{"messages":[{"id":"user-old","role":"user","source":"native","turnId":null},{"id":"assistant-old","role":"assistant","source":"native","turnId":null}],"messageId":"user-old"}],"ok":{"editable":false,"reason":"missing-turn-metadata"}}
+{"fn":"collectTailTurnIds","args":[{"messages":[{"id":"user-old","role":"user","source":"native","turnId":null},{"id":"assistant-old","role":"assistant","source":"native","turnId":null}],"messageId":"user-old"}],"ok":[]}

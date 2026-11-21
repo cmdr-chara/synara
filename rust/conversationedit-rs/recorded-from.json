@@ -1,0 +1,17 @@
+{
+  "unit": "packages/shared/src/conversationEdit.ts",
+  "files": 1,
+  "fingerprint": "e3e5b6795f9850c0",
+  "coverage": {
+    "lines": 136,
+    "reached": 134,
+    "files": [
+      {
+        "file": "packages/shared/src/conversationEdit.ts",
+        "lines": 136,
+        "reached": 134,
+        "missed": "109-110"
+      }
+    ]
+  }
+}

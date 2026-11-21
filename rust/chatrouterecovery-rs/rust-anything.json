@@ -1,0 +1,30 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/chatRouteRecovery.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "chatrouterecovery-rs",
+  "exports": [
+    {
+      "name": "waitForEmptyRouteRestoreFallbackDelay",
+      "file": "apps/web/src/chatRouteRecovery.ts",
+      "line": 14,
+      "params": [],
+      "returns": "Promise<void>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "refreshEmptyRouteRestoreSnapshot",
+      "file": "apps/web/src/chatRouteRecovery.ts",
+      "line": 22,
+      "reason": "uses `NativeApi`, which has function members"
+    }
+  ]
+}

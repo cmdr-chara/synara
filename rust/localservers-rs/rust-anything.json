@@ -1,0 +1,90 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/localServers.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "localservers-rs",
+  "exports": [
+    {
+      "name": "localServerAddressLabel",
+      "file": "packages/shared/src/localServers.ts",
+      "line": 23,
+      "params": [
+        {
+          "name": "server",
+          "ts_type": "typeof typeof typeof typeof ServerLocalServerProcess.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "localServerPrimaryLabel",
+      "file": "packages/shared/src/localServers.ts",
+      "line": 35,
+      "params": [
+        {
+          "name": "server",
+          "ts_type": "typeof typeof typeof typeof ServerLocalServerProcess.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "localServerFolderLabel",
+      "file": "packages/shared/src/localServers.ts",
+      "line": 45,
+      "params": [
+        {
+          "name": "server",
+          "ts_type": "typeof typeof typeof typeof ServerLocalServerProcess.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "localServerMatchesRun",
+      "file": "packages/shared/src/localServers.ts",
+      "line": 57,
+      "params": [
+        {
+          "name": "server",
+          "ts_type": "typeof typeof typeof typeof ServerLocalServerProcess.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "run",
+          "ts_type": "LocalServerRunIdentity",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

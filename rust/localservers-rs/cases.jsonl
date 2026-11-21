@@ -1,0 +1,243 @@
+{"fn":"localServerAddressLabel","args":[true],"error":"Cannot read properties of undefined (reading 'length')"}
+{"fn":"localServerAddressLabel","args":[null],"error":"Cannot read properties of null (reading 'ports')"}
+{"fn":"localServerAddressLabel","args":[0],"error":"Cannot read properties of undefined (reading 'length')"}
+{"fn":"localServerAddressLabel","args":[["a",1]],"error":"Cannot read properties of undefined (reading 'length')"}
+{"fn":"localServerAddressLabel","args":[{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'length')"}
+{"fn":"localServerAddressLabel","args":[{"a":"b"}],"error":"Cannot read properties of undefined (reading 'length')"}
+{"fn":"localServerAddressLabel","args":["x"],"error":"Cannot read properties of undefined (reading 'length')"}
+{"fn":"localServerAddressLabel","args":[{}],"error":"Cannot read properties of undefined (reading 'length')"}
+{"fn":"localServerAddressLabel","args":[[]],"error":"Cannot read properties of undefined (reading 'length')"}
+{"fn":"localServerPrimaryLabel","args":[{}],"ok":{"$undefined":true}}
+{"fn":"localServerPrimaryLabel","args":[{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"localServerPrimaryLabel","args":["x"],"ok":{"$undefined":true}}
+{"fn":"localServerPrimaryLabel","args":[["a",1]],"ok":{"$undefined":true}}
+{"fn":"localServerPrimaryLabel","args":[null],"error":"Cannot read properties of null (reading 'pageTitle')"}
+{"fn":"localServerPrimaryLabel","args":[true],"ok":{"$undefined":true}}
+{"fn":"localServerPrimaryLabel","args":[[]],"ok":{"$undefined":true}}
+{"fn":"localServerPrimaryLabel","args":[{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"localServerPrimaryLabel","args":[0],"ok":{"$undefined":true}}
+{"fn":"localServerFolderLabel","args":[0],"ok":null}
+{"fn":"localServerFolderLabel","args":[["a",1]],"ok":null}
+{"fn":"localServerFolderLabel","args":[[]],"ok":null}
+{"fn":"localServerFolderLabel","args":[{}],"ok":null}
+{"fn":"localServerFolderLabel","args":[{"a":"b"}],"ok":null}
+{"fn":"localServerFolderLabel","args":[true],"ok":null}
+{"fn":"localServerFolderLabel","args":[null],"error":"Cannot read properties of null (reading 'cwd')"}
+{"fn":"localServerFolderLabel","args":["x"],"ok":null}
+{"fn":"localServerFolderLabel","args":[{"a":{"b":"c"}}],"ok":null}
+{"fn":"localServerMatchesRun","args":[[],{"pid":null,"cwd":"a"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[null,{"pid":{"$num":"-Infinity"},"cwd":"Hello World"}],"error":"Cannot read properties of null (reading 'pid')"}
+{"fn":"localServerMatchesRun","args":["x",{"pid":null,"cwd":"ΣΊΣΥΦΟΣ"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[0,{"pid":42,"cwd":".leading"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[0,{"pid":0,"cwd":"tab\tseparated"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[{"a":{"b":"c"}},{"pid":null,"cwd":"a..b"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[["a",1],0],"ok":true}
+{"fn":"localServerMatchesRun","args":[{"a":"b"},{"pid":null,"cwd":"ΣΊΣΥΦΟΣ"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[{"a":{"b":"c"}},{"pid":null,"cwd":"key_name-1"}],"ok":false}
+{"fn":"localServerMatchesRun","args":["x",{"pid":null,"cwd":"a..b"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[0,{"pid":-1,"cwd":"a.b.c"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[true,{"pid":{"$num":"-0"},"cwd":"ns:key.pathHello World"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[0,{"pid":null,"cwd":"ns:key.path"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[[],{"pid":0,"cwd":"emoji 👍🏽 mix"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[null,{"pid":null,"cwd":"hello world"}],"error":"Cannot read properties of null (reading 'cwd')"}
+{"fn":"localServerMatchesRun","args":[{},{"pid":1000,"cwd":""}],"ok":false}
+{"fn":"localServerMatchesRun","args":["x",null],"error":"Cannot read properties of null (reading 'pid')"}
+{"fn":"localServerMatchesRun","args":[["a",1],{"pid":null,"cwd":":"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[["a",1],{"pid":{"$num":"-Infinity"},"cwd":"key_name-1straße"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[0,{"pid":null,"cwd":":"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[{"a":{"b":"c"}},{"pid":null,"cwd":"a😀b😀cstraße"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[[],{"pid":1,"cwd":"﻿bom"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[true,{"pid":null,"cwd":"ns:key.path"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[{"a":"b"},{"pid":-1,"cwd":"﻿bom"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[["a",1],{"pid":null,"cwd":"a.b.c"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[["a",1],{"pid":null,"cwd":"a..b"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[{},{"pid":null,"cwd":"é"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[{"a":"b"},{"pid":null,"cwd":"trailing.{name} has {count} items"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[["a",1],{"pid":0,"cwd":"src/a/b.ts"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[{},{"pid":null,"cwd":"﻿bom"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[["a",1],{"pid":null,"cwd":"Hello World"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[{},null],"error":"Cannot read properties of null (reading 'pid')"}
+{"fn":"localServerMatchesRun","args":[{"a":"b"},null],"error":"Cannot read properties of null (reading 'pid')"}
+{"fn":"localServerMatchesRun","args":[{"a":{"b":"c"}},0],"ok":true}
+{"fn":"localServerMatchesRun","args":[{"a":{"b":"c"}},null],"error":"Cannot read properties of null (reading 'pid')"}
+{"fn":"localServerMatchesRun","args":[0,{"pid":1000000,"cwd":"  padded  "}],"ok":false}
+{"fn":"localServerMatchesRun","args":[null,{"pid":null,"cwd":"a😀b😀c"}],"error":"Cannot read properties of null (reading 'cwd')"}
+{"fn":"localServerMatchesRun","args":[null,{"pid":null,"cwd":"ünïcödé"}],"error":"Cannot read properties of null (reading 'cwd')"}
+{"fn":"localServerMatchesRun","args":[null,{"pid":9007199254740992,"cwd":"{name} has {count} items日本語のテキスト"}],"error":"Cannot read properties of null (reading 'pid')"}
+{"fn":"localServerMatchesRun","args":[[],{"pid":null,"cwd":"a:b:c"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[[],{"pid":1000,"cwd":"hello"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[{},{"pid":1000000,"cwd":"./x/**/*.json"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[[],{"pid":null,"cwd":"line1\nline2"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[[],{"pid":null,"cwd":"hello world"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[{"a":{"b":"c"}},{"pid":-2.5,"cwd":"{name} has {count} items"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[{"a":"b"},{"a":{"b":"c"}}],"ok":true}
+{"fn":"localServerMatchesRun","args":[true,{"pid":1000000,"cwd":"﻿bomemoji 👍🏽 mix"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[{},{"pid":0,"cwd":"tab\tseparatedHello World"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[0,{"pid":null,"cwd":"emoji 👍🏽 mix"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[0,null],"error":"Cannot read properties of null (reading 'pid')"}
+{"fn":"localServerMatchesRun","args":[0,[]],"ok":true}
+{"fn":"localServerMatchesRun","args":[{"a":"b"},{"pid":9007199254740992,"cwd":"ns:key.path"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[[],{"pid":null,"cwd":"key_name-1"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[0,{"pid":null,"cwd":".leading"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[{},{"pid":{"$num":"-0"},"cwd":"ab"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[null,{"pid":{"$num":"NaN"},"cwd":"hello world:"}],"error":"Cannot read properties of null (reading 'pid')"}
+{"fn":"localServerMatchesRun","args":[true,{"pid":-2.5,"cwd":"hello world"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[0,{"pid":{"$num":"Infinity"},"cwd":"😀a"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[true,{"pid":null,"cwd":"a"}],"ok":false}
+{"fn":"localServerMatchesRun","args":["x",{"pid":null,"cwd":"a"}],"ok":false}
+{"fn":"localServerMatchesRun","args":["x",{"pid":-1,"cwd":"./x/**/*.json"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[[],{"pid":null,"cwd":"{name} has {count} items  padded  "}],"ok":false}
+{"fn":"localServerMatchesRun","args":[{},{"pid":null,"cwd":"a..bstraße"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[true,{"pid":null,"cwd":"ΣΊΣΥΦΟΣhello"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[{"a":"b"},{"pid":{"$num":"-Infinity"},"cwd":"ns:key.path"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[{},{"pid":null,"cwd":"hello"}],"ok":false}
+{"fn":"localServerMatchesRun","args":["x",{"pid":null,"cwd":"é"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[true,{"pid":{"$num":"-0"},"cwd":".leading"}],"ok":false}
+{"fn":"localServerMatchesRun","args":["x",{"pid":42,"cwd":"a.b.c"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[[],0],"ok":true}
+{"fn":"localServerMatchesRun","args":[{},{"pid":0,"cwd":"hello world"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[["a",1],null],"error":"Cannot read properties of null (reading 'pid')"}
+{"fn":"localServerMatchesRun","args":[0,{"a":{"b":"c"}}],"ok":true}
+{"fn":"localServerMatchesRun","args":[{"a":{"b":"c"}},{"pid":null,"cwd":"a😀b😀c"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[[],{"pid":{"$num":"NaN"},"cwd":"aemoji 👍🏽 mix"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[{"a":"b"},{"pid":null,"cwd":"日本語のテキスト"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[{"a":"b"},{"pid":9007199254740992,"cwd":"straße"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[["a",1],{"pid":null,"cwd":"İstanbul"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[{},{"pid":null,"cwd":"a.b.cHello World"}],"ok":false}
+{"fn":"localServerMatchesRun","args":["x",{"pid":1,"cwd":"é"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[[],{"pid":null,"cwd":"é"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[{"a":"b"},{"pid":1,"cwd":""}],"ok":false}
+{"fn":"localServerMatchesRun","args":["x",{"pid":-1,"cwd":"a"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[{"a":"b"},{"pid":9007199254740992,"cwd":"ab:"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[0,{"pid":1000000,"cwd":"a"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[{},{"pid":null,"cwd":"日本語のテキストab"}],"ok":false}
+{"fn":"localServerMatchesRun","args":["x",{"pid":null,"cwd":"a😀b😀c"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[true,{"pid":{"$num":"-0"},"cwd":"emoji 👍🏽 mix  padded  "}],"ok":false}
+{"fn":"localServerMatchesRun","args":[0,{"pid":null,"cwd":"trailing."}],"ok":false}
+{"fn":"localServerMatchesRun","args":[{"a":"b"},{"pid":null,"cwd":"ünïcödé"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[["a",1],{"pid":{"$num":"-Infinity"},"cwd":"emoji 👍🏽 mix"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[null,["a",1]],"error":"Cannot read properties of null (reading 'pid')"}
+{"fn":"localServerMatchesRun","args":[[],{"a":"b"}],"ok":true}
+{"fn":"localServerMatchesRun","args":["x",{"pid":null,"cwd":"  padded  "}],"ok":false}
+{"fn":"localServerMatchesRun","args":[0,{"pid":1000000,"cwd":"  padded  ab"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[{"a":{"b":"c"}},{"pid":{"$num":"-0"},"cwd":"line1\nline2"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[0,{"pid":2,"cwd":"  padded  key_name-1"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[null,[]],"error":"Cannot read properties of null (reading 'pid')"}
+{"fn":"localServerMatchesRun","args":[["a",1],{"a":{"b":"c"}}],"ok":true}
+{"fn":"localServerMatchesRun","args":[0,0],"ok":true}
+{"fn":"localServerMatchesRun","args":[{"a":{"b":"c"}},{}],"ok":true}
+{"fn":"localServerMatchesRun","args":[{"a":"b"},"x"],"ok":true}
+{"fn":"localServerMatchesRun","args":[{},{"pid":10,"cwd":"line1\nline2"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[{"a":{"b":"c"}},{"pid":1000,"cwd":"trailing."}],"ok":false}
+{"fn":"localServerMatchesRun","args":[null,{"pid":null,"cwd":"😀"}],"error":"Cannot read properties of null (reading 'cwd')"}
+{"fn":"localServerMatchesRun","args":[0,{"pid":2147483648,"cwd":"tab\tseparated"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[[],{"pid":{"$num":"-0"},"cwd":":"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[true,{"pid":3,"cwd":"hello world"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[["a",1],{"pid":1000000,"cwd":":"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[{},["a",1]],"ok":true}
+{"fn":"localServerMatchesRun","args":[true,{"pid":1000000,"cwd":":"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[{},{"pid":-2.5,"cwd":"straßeHello World"}],"ok":false}
+{"fn":"localServerMatchesRun","args":["x",{"pid":null,"cwd":"ünïcödé"}],"ok":false}
+{"fn":"localServerMatchesRun","args":["x",{"pid":null,"cwd":"😀"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[["a",1],{"pid":2,"cwd":"line1\nline2"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[["a",1],{"pid":{"$num":"Infinity"},"cwd":"é"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[[],{"pid":100,"cwd":"a😀b😀c"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[["a",1],{"pid":null,"cwd":"HELLO"}],"ok":false}
+{"fn":"localServerMatchesRun","args":["x",{"pid":null,"cwd":"a:b:cab"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[null,{"pid":1,"cwd":"  padded  "}],"error":"Cannot read properties of null (reading 'pid')"}
+{"fn":"localServerMatchesRun","args":["x",{"pid":42,"cwd":"emoji 👍🏽 mix"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[{"a":"b"},{}],"ok":true}
+{"fn":"localServerMatchesRun","args":[{"a":{"b":"c"}},{"pid":{"$num":"-0"},"cwd":"﻿bom"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[["a",1],{"pid":null,"cwd":"emoji 👍🏽 mix"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[null,{"pid":null,"cwd":"a..b"}],"error":"Cannot read properties of null (reading 'cwd')"}
+{"fn":"localServerMatchesRun","args":[0,{"pid":null,"cwd":"HELLO"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[true,{"pid":null,"cwd":"key_name-1"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[{"a":{"b":"c"}},{"pid":1,"cwd":"ns:key.path"}],"ok":false}
+{"fn":"localServerMatchesRun","args":["x",{"pid":{"$num":"Infinity"},"cwd":"日本語のテキスト"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[[],{"pid":null,"cwd":"{name} has {count} items"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[["a",1],{"pid":null,"cwd":"﻿bom"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[0,{"pid":null,"cwd":"a"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[{"a":"b"},[]],"ok":true}
+{"fn":"localServerMatchesRun","args":[["a",1],{"pid":null,"cwd":"{name} has {count} items"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[true,{"pid":2147483648,"cwd":"src/a/b.tsHELLO"}],"ok":false}
+{"fn":"localServerMatchesRun","args":["x",{"pid":1,"cwd":"key_name-1"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[true,{"pid":-1,"cwd":"日本語のテキスト"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[{},{"a":{"b":"c"}}],"ok":true}
+{"fn":"localServerMatchesRun","args":[{"a":{"b":"c"}},{"pid":null,"cwd":"tab\tseparated"}],"ok":false}
+{"fn":"localServerMatchesRun","args":["x",{"pid":null,"cwd":"src/a/b.ts"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[true,{"pid":null,"cwd":"hello world"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[0,{"pid":1000000,"cwd":"ab"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[["a",1],{"pid":10,"cwd":"HELLO"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[[],{"pid":null,"cwd":"a..b"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[true,{"pid":1000000,"cwd":"abc"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[0,{"pid":{"$num":"Infinity"},"cwd":"ab"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[["a",1],{"pid":{"$num":"-Infinity"},"cwd":"İstanbul"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[true,{"pid":0.5,"cwd":"src/a/b.ts"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[{"a":"b"},{"pid":null,"cwd":"a.b.c"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[null,{"pid":null,"cwd":"src/a/b.ts"}],"error":"Cannot read properties of null (reading 'cwd')"}
+{"fn":"localServerMatchesRun","args":[0,{"pid":-2.5,"cwd":":emoji 👍🏽 mix"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[0,{"pid":null,"cwd":"﻿bom"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[0,{"pid":null,"cwd":"abc"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[null,{"pid":1000,"cwd":"tab\tseparated"}],"error":"Cannot read properties of null (reading 'pid')"}
+{"fn":"localServerMatchesRun","args":[{"a":"b"},{"pid":null,"cwd":"İstanbula"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[[],{"pid":0.5,"cwd":"a..b"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[true,{"pid":{"$num":"Infinity"},"cwd":"İstanbul"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[["a",1],{"pid":null,"cwd":"日本語のテキスト"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[0,{"pid":{"$num":"-Infinity"},"cwd":"HELLO"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[["a",1],{"pid":2,"cwd":"日本語のテキストünïcödé"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[null,"x"],"error":"Cannot read properties of null (reading 'pid')"}
+{"fn":"localServerMatchesRun","args":["x",{"pid":-1,"cwd":"atrailing."}],"ok":false}
+{"fn":"localServerMatchesRun","args":[true,{"pid":null,"cwd":"ΣΊΣΥΦΟΣ"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[true,{"pid":100,"cwd":"a"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[null,{"pid":null,"cwd":"ab"}],"error":"Cannot read properties of null (reading 'cwd')"}
+{"fn":"localServerMatchesRun","args":[[],{"pid":{"$num":"Infinity"},"cwd":"straße"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[["a",1],{"pid":null,"cwd":"trailing."}],"ok":false}
+{"fn":"localServerMatchesRun","args":[null,null],"error":"Cannot read properties of null (reading 'pid')"}
+{"fn":"localServerMatchesRun","args":[{"a":{"b":"c"}},{"pid":10,"cwd":"Hello World"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[["a",1],{"pid":1000000,"cwd":"tab\tseparated"}],"ok":false}
+{"fn":"localServerMatchesRun","args":["x",{"pid":null,"cwd":"a:b:c"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[null,{"pid":1000,"cwd":"﻿bom"}],"error":"Cannot read properties of null (reading 'pid')"}
+{"fn":"localServerMatchesRun","args":[true,{"pid":null,"cwd":"İstanbul"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[0,{"pid":0,"cwd":"hello world"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[null,{"pid":{"$num":"-0"},"cwd":"straße"}],"error":"Cannot read properties of null (reading 'pid')"}
+{"fn":"localServerMatchesRun","args":[{},{"pid":3,"cwd":"日本語のテキスト"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[null,{"pid":null,"cwd":"hello"}],"error":"Cannot read properties of null (reading 'cwd')"}
+{"fn":"localServerMatchesRun","args":[{"a":{"b":"c"}},{"pid":2147483648,"cwd":""}],"ok":false}
+{"fn":"localServerMatchesRun","args":[{},{"pid":42,"cwd":"./x/**/*.json"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[{"a":"b"},{"pid":null,"cwd":"ünïcödé😀"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[true,{"pid":2147483648,"cwd":"emoji 👍🏽 mix"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[["a",1],{"pid":null,"cwd":"aemoji 👍🏽 mix"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[[],{"pid":42,"cwd":"hello"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[{"a":"b"},{"pid":1,"cwd":"abc"}],"ok":false}
+{"fn":"localServerMatchesRun","args":["x",{"pid":{"$num":"NaN"},"cwd":"emoji 👍🏽 mix"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[{"a":"b"},{"pid":null,"cwd":"hellohello world"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[[],{"pid":0,"cwd":"a"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[null,true],"error":"Cannot read properties of null (reading 'pid')"}
+{"fn":"localServerMatchesRun","args":[true,{"pid":1000000,"cwd":"ΣΊΣΥΦΟΣ"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[[],{"pid":-2.5,"cwd":"hello"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[{"a":"b"},{"pid":10,"cwd":"trailing."}],"ok":false}
+{"fn":"localServerMatchesRun","args":[[],{"pid":null,"cwd":"trailing."}],"ok":false}
+{"fn":"localServerMatchesRun","args":[{},true],"ok":true}
+{"fn":"localServerMatchesRun","args":[[],{"pid":{"$num":"-0"},"cwd":"ab"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[["a",1],{"pid":2,"cwd":"ünïcödé"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[true,{"pid":null,"cwd":"日本語のテキストab"}],"ok":false}
+{"fn":"localServerMatchesRun","args":["x",{"pid":null,"cwd":":"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[["a",1],{"pid":null,"cwd":"ΣΊΣΥΦΟΣİstanbul"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[{"a":{"b":"c"}},{"pid":2,"cwd":"ünïcödé"}],"ok":false}
+{"fn":"localServerMatchesRun","args":["x",{"pid":{"$num":"-Infinity"},"cwd":"İstanbul"}],"ok":false}
+{"fn":"localServerAddressLabel","args":[{"ports":[],"addresses":[{"port":3000}],"pageTitle":null,"displayName":"x","cwd":null,"pid":1,"ppid":null}],"ok":"localhost:3000"}
+{"fn":"localServerAddressLabel","args":[{"ports":[],"addresses":[{"port":0},{"port":5}],"pageTitle":null,"displayName":"x","cwd":null,"pid":1,"ppid":null}],"ok":"localhost:5"}
+{"fn":"localServerAddressLabel","args":[{"ports":[],"addresses":[{"port":0}],"pageTitle":null,"displayName":"x","cwd":null,"pid":1,"ppid":null}],"ok":"localhost"}
+{"fn":"localServerAddressLabel","args":[{"ports":[80,443],"addresses":[],"pageTitle":null,"displayName":"x","cwd":null,"pid":1,"ppid":null}],"ok":"localhost:80, localhost:443"}
+{"fn":"localServerFolderLabel","args":[{"ports":[],"addresses":[],"pageTitle":null,"displayName":"x","cwd":"a/b/c","pid":1,"ppid":null}],"ok":"c"}
+{"fn":"localServerFolderLabel","args":[{"ports":[],"addresses":[],"pageTitle":null,"displayName":"x","cwd":"  ","pid":1,"ppid":null}],"ok":null}
+{"fn":"localServerFolderLabel","args":[{"ports":[],"addresses":[],"pageTitle":null,"displayName":"x","cwd":"C:\\x\\y","pid":1,"ppid":null}],"ok":"y"}
+{"fn":"localServerFolderLabel","args":[{"ports":[],"addresses":[],"pageTitle":null,"displayName":"x","cwd":"/","pid":1,"ppid":null}],"ok":null}
+{"fn":"localServerFolderLabel","args":[{"ports":[],"addresses":[],"pageTitle":null,"displayName":"x","cwd":"only","pid":1,"ppid":null}],"ok":"only"}
+{"fn":"localServerPrimaryLabel","args":[{"ports":[],"addresses":[],"pageTitle":"T","displayName":"d","cwd":null,"pid":1,"ppid":null}],"ok":"T"}
+{"fn":"localServerPrimaryLabel","args":[{"ports":[],"addresses":[],"pageTitle":null,"displayName":"d","cwd":null,"pid":1,"ppid":null}],"ok":"d"}
+{"fn":"localServerMatchesRun","args":[{"ports":[],"addresses":[],"pageTitle":null,"displayName":"x","cwd":null,"pid":1,"ppid":null},{"pid":null,"cwd":"/a"}],"ok":false}
+{"fn":"localServerMatchesRun","args":[{"ports":[],"addresses":[],"pageTitle":null,"displayName":"x","cwd":"/a/b","pid":9,"ppid":null},{"pid":9,"cwd":"/z"}],"ok":true}
+{"fn":"localServerMatchesRun","args":[{"ports":[],"addresses":[],"pageTitle":null,"displayName":"x","cwd":"/a/b","pid":9,"ppid":7},{"pid":7,"cwd":"/z"}],"ok":true}
+{"fn":"localServerMatchesRun","args":[{"ports":[],"addresses":[],"pageTitle":null,"displayName":"x","cwd":"/a/b/c","pid":1,"ppid":2},{"pid":3,"cwd":"/a/b"}],"ok":true}
+{"fn":"localServerMatchesRun","args":[{"ports":[],"addresses":[],"pageTitle":null,"displayName":"x","cwd":"/a/xy","pid":1,"ppid":2},{"pid":3,"cwd":"/a/x"}],"ok":false}

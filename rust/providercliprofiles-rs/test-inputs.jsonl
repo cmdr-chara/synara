@@ -1,0 +1,12 @@
+{"fn":"providerCliCommandName","args":[{"provider":"claudeAgent","instanceId":"claude_work"}]}
+{"fn":"normalizeProviderCliAlias","args":[{"$undefined":true}]}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","instanceId":"codex_personal"}]}
+{"fn":"providerCliCommandName","args":[{"provider":"cursor","instanceId":"cursor_team"}]}
+{"fn":"providerCliCommandName","args":[{"provider":"claudeAgent","instanceId":"claudeAgent"}]}
+{"fn":"providerCliCommandName","args":[{"provider":"antigravity","instanceId":"antigravity"}]}
+{"fn":"providerCliCommandName","args":[{"provider":"pi","instanceId":"pi_work","config":{"cliAlias":"pairing-pi"}}]}
+{"fn":"normalizeProviderCliAlias","args":["pairing-pi"]}
+{"fn":"normalizeProviderCliAlias","args":["claude work"]}
+{"fn":"normalizeProviderCliAlias","args":["claude-work; rm -rf /"]}
+{"fn":"normalizeProviderCliAlias","args":["claude"]}
+{"fn":"normalizeProviderCliAlias","args":["codex"]}

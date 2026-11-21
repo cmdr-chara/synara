@@ -1,0 +1,48 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/providerCliProfiles.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "providercliprofiles-rs",
+  "exports": [
+    {
+      "name": "normalizeProviderCliAlias",
+      "file": "packages/shared/src/providerCliProfiles.ts",
+      "line": 23,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "providerCliCommandName",
+      "file": "packages/shared/src/providerCliProfiles.ts",
+      "line": 51,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly provider: typeof typeof typeof typeof ProviderKind.Type.Type.Type.Type;\n  readonly instanceId: typeof typeof typeof typeof ProviderInstanceId.Type.Type.Type.Type;\n  readonly config?: Readonly<Record<string, unknown>> | undefined;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

@@ -1,0 +1,1114 @@
+{"fn":"normalizeProviderCliAlias","args":[["a",1]],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[null],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[[]],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[{}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":["x"],"ok":"x"}
+{"fn":"normalizeProviderCliAlias","args":[{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[0],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[true],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[[3,1,2]],"ok":{"$undefined":true}}
+{"fn":"providerCliCommandName","args":[{"a":"b"}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":["x"],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[[]],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[["a",1]],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[true],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[null],"error":"Cannot read properties of null (reading 'config')"}
+{"fn":"providerCliCommandName","args":[{"a":{"b":"c"}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[0],"ok":"undefined-default"}
+{"fn":"normalizeProviderCliAlias","args":[["a",1]],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[null],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[[]],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[{}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":["x"],"ok":"x"}
+{"fn":"normalizeProviderCliAlias","args":[{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[0],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[true],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[[3,1,2]],"ok":{"$undefined":true}}
+{"fn":"providerCliCommandName","args":[{"a":"b"}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":["x"],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[[]],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[["a",1]],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[true],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[null],"error":"Cannot read properties of null (reading 'config')"}
+{"fn":"providerCliCommandName","args":[{"a":{"b":"c"}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[0],"ok":"undefined-default"}
+{"fn":"normalizeProviderCliAlias","args":[["a",1]],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[null],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[[]],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[{}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":["x"],"ok":"x"}
+{"fn":"normalizeProviderCliAlias","args":[{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[0],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[true],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[[3,1,2]],"ok":{"$undefined":true}}
+{"fn":"providerCliCommandName","args":[{"a":"b"}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":["x"],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[[]],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[["a",1]],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[true],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[null],"error":"Cannot read properties of null (reading 'config')"}
+{"fn":"providerCliCommandName","args":[{"a":{"b":"c"}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[0],"ok":"undefined-default"}
+{"fn":"normalizeProviderCliAlias","args":[["a",1]],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[null],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[[]],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[{}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":["x"],"ok":"x"}
+{"fn":"normalizeProviderCliAlias","args":[{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[0],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[true],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[[3,1,2]],"ok":{"$undefined":true}}
+{"fn":"providerCliCommandName","args":[{"a":"b"}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":["x"],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[[]],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[["a",1]],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[true],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[null],"error":"Cannot read properties of null (reading 'config')"}
+{"fn":"providerCliCommandName","args":[{"a":{"b":"c"}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[0],"ok":"undefined-default"}
+{"fn":"normalizeProviderCliAlias","args":[["a",1]],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[null],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[[]],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[{}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":["x"],"ok":"x"}
+{"fn":"normalizeProviderCliAlias","args":[{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[0],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[true],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[[3,1,2]],"ok":{"$undefined":true}}
+{"fn":"providerCliCommandName","args":[{"a":"b"}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":["x"],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[[]],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[["a",1]],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[true],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[null],"error":"Cannot read properties of null (reading 'config')"}
+{"fn":"providerCliCommandName","args":[{"a":{"b":"c"}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[0],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{"provider":"claudeAgent","instanceId":"claude_work"}],"ok":"claude-work"}
+{"fn":"normalizeProviderCliAlias","args":[{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","instanceId":"codex_personal"}],"ok":"codex-personal"}
+{"fn":"providerCliCommandName","args":[{"provider":"cursor","instanceId":"cursor_team"}],"ok":"cursor-agent-team"}
+{"fn":"providerCliCommandName","args":[{"provider":"claudeAgent","instanceId":"claudeAgent"}],"ok":"claude-default"}
+{"fn":"providerCliCommandName","args":[{"provider":"antigravity","instanceId":"antigravity"}],"ok":"agy-default"}
+{"fn":"providerCliCommandName","args":[{"provider":"pi","instanceId":"pi_work","config":{"cliAlias":"pairing-pi"}}],"ok":"pairing-pi"}
+{"fn":"normalizeProviderCliAlias","args":["pairing-pi"],"ok":"pairing-pi"}
+{"fn":"normalizeProviderCliAlias","args":["claude work"],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":["claude-work; rm -rf /"],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":["claude"],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":["codex"],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[["a",1]],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[null],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[[]],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[{}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":["x"],"ok":"x"}
+{"fn":"normalizeProviderCliAlias","args":[{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[0],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[true],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[[3,1,2]],"ok":{"$undefined":true}}
+{"fn":"providerCliCommandName","args":[{"a":"b"}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":["x"],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[[]],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[["a",1]],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[true],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[null],"error":"Cannot read properties of null (reading 'config')"}
+{"fn":"providerCliCommandName","args":[{"a":{"b":"c"}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[0],"ok":"undefined-default"}
+{"fn":"normalizeProviderCliAlias","args":[["a",1]],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[null],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[[]],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[{}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":["x"],"ok":"x"}
+{"fn":"normalizeProviderCliAlias","args":[{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[0],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[true],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[[3,1,2]],"ok":{"$undefined":true}}
+{"fn":"providerCliCommandName","args":[{"a":"b"}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":["x"],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[[]],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[["a",1]],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[true],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[null],"error":"Cannot read properties of null (reading 'config')"}
+{"fn":"providerCliCommandName","args":[{"a":{"b":"c"}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[0],"ok":"undefined-default"}
+{"fn":"normalizeProviderCliAlias","args":[["a",1]],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[null],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[[]],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[{}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":["x"],"ok":"x"}
+{"fn":"normalizeProviderCliAlias","args":[{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[0],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[true],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[[3,1,2]],"ok":{"$undefined":true}}
+{"fn":"providerCliCommandName","args":[{"a":"b"}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":["x"],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[[]],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[["a",1]],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[true],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[null],"error":"Cannot read properties of null (reading 'config')"}
+{"fn":"providerCliCommandName","args":[{"a":{"b":"c"}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[0],"ok":"undefined-default"}
+{"fn":"normalizeProviderCliAlias","args":[["a",1]],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[null],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[[]],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[{}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":["x"],"ok":"x"}
+{"fn":"normalizeProviderCliAlias","args":[{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[0],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[true],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[[3,1,2]],"ok":{"$undefined":true}}
+{"fn":"providerCliCommandName","args":[{"a":"b"}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":["x"],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[[]],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[["a",1]],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[true],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[null],"error":"Cannot read properties of null (reading 'config')"}
+{"fn":"providerCliCommandName","args":[{"a":{"b":"c"}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[0],"ok":"undefined-default"}
+{"fn":"normalizeProviderCliAlias","args":[["a",1]],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[null],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[[]],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[{}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":["x"],"ok":"x"}
+{"fn":"normalizeProviderCliAlias","args":[{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[0],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[true],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[[3,1,2]],"ok":{"$undefined":true}}
+{"fn":"providerCliCommandName","args":[{"a":"b"}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":["x"],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[[]],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[["a",1]],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[true],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[null],"error":"Cannot read properties of null (reading 'config')"}
+{"fn":"providerCliCommandName","args":[{"a":{"b":"c"}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[0],"ok":"undefined-default"}
+{"fn":"normalizeProviderCliAlias","args":[["a",1]],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[null],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[[]],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[{}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":["x"],"ok":"x"}
+{"fn":"normalizeProviderCliAlias","args":[{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[0],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[true],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[[3,1,2]],"ok":{"$undefined":true}}
+{"fn":"providerCliCommandName","args":[{"a":"b"}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":["x"],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[[]],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[["a",1]],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[true],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[null],"error":"Cannot read properties of null (reading 'config')"}
+{"fn":"providerCliCommandName","args":[{"a":{"b":"c"}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[0],"ok":"undefined-default"}
+{"fn":"normalizeProviderCliAlias","args":[["a",1]],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[null],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[[]],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[{}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":["x"],"ok":"x"}
+{"fn":"normalizeProviderCliAlias","args":[{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[0],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[true],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[[3,1,2]],"ok":{"$undefined":true}}
+{"fn":"providerCliCommandName","args":[{"a":"b"}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":["x"],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[[]],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[["a",1]],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[true],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[null],"error":"Cannot read properties of null (reading 'config')"}
+{"fn":"providerCliCommandName","args":[{"a":{"b":"c"}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[0],"ok":"undefined-default"}
+{"fn":"normalizeProviderCliAlias","args":[["a",1]],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[null],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[[]],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[{}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":["x"],"ok":"x"}
+{"fn":"normalizeProviderCliAlias","args":[{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[0],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[true],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[[3,1,2]],"ok":{"$undefined":true}}
+{"fn":"providerCliCommandName","args":[{"a":"b"}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":["x"],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[[]],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[["a",1]],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[true],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[null],"error":"Cannot read properties of null (reading 'config')"}
+{"fn":"providerCliCommandName","args":[{"a":{"b":"c"}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[0],"ok":"undefined-default"}
+{"fn":"normalizeProviderCliAlias","args":[["a",1]],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[null],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[[]],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[{}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":["x"],"ok":"x"}
+{"fn":"normalizeProviderCliAlias","args":[{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[0],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[true],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[[3,1,2]],"ok":{"$undefined":true}}
+{"fn":"providerCliCommandName","args":[{"a":"b"}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":["x"],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[[]],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[["a",1]],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[true],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[null],"error":"Cannot read properties of null (reading 'config')"}
+{"fn":"providerCliCommandName","args":[{"a":{"b":"c"}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[0],"ok":"undefined-default"}
+{"fn":"normalizeProviderCliAlias","args":[["a",1]],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[null],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[[]],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[{}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":["x"],"ok":"x"}
+{"fn":"normalizeProviderCliAlias","args":[{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[0],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[true],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[[3,1,2]],"ok":{"$undefined":true}}
+{"fn":"providerCliCommandName","args":[{"a":"b"}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":["x"],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[[]],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[["a",1]],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[true],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[null],"error":"Cannot read properties of null (reading 'config')"}
+{"fn":"providerCliCommandName","args":[{"a":{"b":"c"}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[0],"ok":"undefined-default"}
+{"fn":"normalizeProviderCliAlias","args":[["a",1]],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[null],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[[]],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[{}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":["x"],"ok":"x"}
+{"fn":"normalizeProviderCliAlias","args":[{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[0],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[true],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[[3,1,2]],"ok":{"$undefined":true}}
+{"fn":"providerCliCommandName","args":[{"a":"b"}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":["x"],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[[]],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[["a",1]],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[true],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[null],"error":"Cannot read properties of null (reading 'config')"}
+{"fn":"providerCliCommandName","args":[{"a":{"b":"c"}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[0],"ok":"undefined-default"}
+{"fn":"normalizeProviderCliAlias","args":[["a",1]],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[null],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[[]],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[{}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":["x"],"ok":"x"}
+{"fn":"normalizeProviderCliAlias","args":[{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[0],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[true],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7}],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[[3,1,2]],"ok":{"$undefined":true}}
+{"fn":"providerCliCommandName","args":[{"a":"b"}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":["x"],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[[]],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[["a",1]],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[true],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[null],"error":"Cannot read properties of null (reading 'config')"}
+{"fn":"providerCliCommandName","args":[{"a":{"b":"c"}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[0],"ok":"undefined-default"}
+{"fn":"normalizeProviderCliAlias","args":["claude"],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":["Claude"],"ok":"Claude"}
+{"fn":"normalizeProviderCliAlias","args":["anthropic"],"ok":"anthropic"}
+{"fn":"normalizeProviderCliAlias","args":["codex"],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":["openai"],"ok":"openai"}
+{"fn":"normalizeProviderCliAlias","args":["gemini"],"ok":"gemini"}
+{"fn":"normalizeProviderCliAlias","args":["google"],"ok":"google"}
+{"fn":"normalizeProviderCliAlias","args":["cursor"],"ok":"cursor"}
+{"fn":"normalizeProviderCliAlias","args":["aider"],"ok":"aider"}
+{"fn":"normalizeProviderCliAlias","args":["  claude  "],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[""],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[null],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[5],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":["CLAUDE"],"ok":"CLAUDE"}
+{"fn":"normalizeProviderCliAlias","args":["claude-code"],"ok":"claude-code"}
+{"fn":"normalizeProviderCliAlias","args":["unknown-xyz"],"ok":"unknown-xyz"}
+{"fn":"providerCliCommandName","args":["claude"],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":["codex"],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":["gemini"],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":["anthropic"],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":["unknown-xyz"],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[null],"error":"Cannot read properties of null (reading 'config')"}
+{"fn":"providerCliCommandName","args":[""],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{"id":"claude"}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{"providerId":"claude"}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{"cli":"claude"}],"ok":"undefined-default"}
+{"fn":"normalizeProviderCliAlias","args":["amp"],"ok":"amp"}
+{"fn":"normalizeProviderCliAlias","args":["goose"],"ok":"goose"}
+{"fn":"normalizeProviderCliAlias","args":["opencode"],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":["droid"],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":["kilo"],"ok":"kilo"}
+{"fn":"normalizeProviderCliAlias","args":["copilot"],"ok":"copilot"}
+{"fn":"normalizeProviderCliAlias","args":["qwen"],"ok":"qwen"}
+{"fn":"normalizeProviderCliAlias","args":["kimi"],"ok":"kimi"}
+{"fn":"normalizeProviderCliAlias","args":["deepseek"],"ok":"deepseek"}
+{"fn":"normalizeProviderCliAlias","args":["mistral"],"ok":"mistral"}
+{"fn":"normalizeProviderCliAlias","args":["ollama"],"ok":"ollama"}
+{"fn":"normalizeProviderCliAlias","args":["claude-code-cli"],"ok":"claude-code-cli"}
+{"fn":"normalizeProviderCliAlias","args":["claude_code"],"ok":"claude_code"}
+{"fn":"normalizeProviderCliAlias","args":["claudecode"],"ok":"claudecode"}
+{"fn":"normalizeProviderCliAlias","args":["open-code"],"ok":"open-code"}
+{"fn":"normalizeProviderCliAlias","args":["cline"],"ok":"cline"}
+{"fn":"normalizeProviderCliAlias","args":["aichat"],"ok":"aichat"}
+{"fn":"normalizeProviderCliAlias","args":["gpt"],"ok":"gpt"}
+{"fn":"normalizeProviderCliAlias","args":["chatgpt"],"ok":"chatgpt"}
+{"fn":"normalizeProviderCliAlias","args":["anthropic-claude"],"ok":"anthropic-claude"}
+{"fn":"normalizeProviderCliAlias","args":["amazonq"],"ok":"amazonq"}
+{"fn":"normalizeProviderCliAlias","args":["windsurf"],"ok":"windsurf"}
+{"fn":"normalizeProviderCliAlias","args":["zed"],"ok":"zed"}
+{"fn":"normalizeProviderCliAlias","args":["crush"],"ok":"crush"}
+{"fn":"normalizeProviderCliAlias","args":["forge"],"ok":"forge"}
+{"fn":"normalizeProviderCliAlias","args":["jules"],"ok":"jules"}
+{"fn":"providerCliCommandName","args":[{"config":{"cliCommand":"my-cli"}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{"config":{"command":"my-cli"}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{"config":{"cli":"my-cli"}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{"config":{"providerId":"claude"}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{"config":{"provider":"claude"}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{"config":{"id":"claude"}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{"config":{"providerId":"claude","cliCommand":"custom"}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{"config":{"providerId":"codex"}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{"config":{"providerId":"gemini"}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{"config":{"providerId":"amp"}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{"config":{}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{"config":null}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{"id":"p","config":{"providerId":"codex"}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{"providerId":"codex","config":{}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{"providerId":"codex"}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{"config":{"binaryName":"x"}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{"config":{"commandName":"x"}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{"config":{"cli":{"command":"x"}}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{"config":{"name":"x"}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{"config":{"cliName":"x"}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{"config":{"executable":"x"}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{"config":{"provider":"codex","command":"c"}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{"config":{"cliProfile":"p"}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{"cliProfile":{"providerId":"codex"},"config":{}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{"profile":{"providerId":"codex"},"config":{}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{"config":{"provider":"codex"}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{"config":{"providerId":"codex","cliCommandName":"ccn"}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{"config":{"providerId":"codex","cli":{"name":"ccn"}}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{"config":{"providerId":"codex","commandName":"ccn"}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{"config":{"providerId":"codex","cliProfileName":"ccn"}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{"config":{"providerId":"codex","profileName":"ccn"}}],"ok":"undefined-default"}
+{"fn":"normalizeProviderCliAlias","args":["kimi-cli"],"ok":"kimi-cli"}
+{"fn":"normalizeProviderCliAlias","args":["codex-cli"],"ok":"codex-cli"}
+{"fn":"normalizeProviderCliAlias","args":["openhands"],"ok":"openhands"}
+{"fn":"normalizeProviderCliAlias","args":["open-hand"],"ok":"open-hand"}
+{"fn":"normalizeProviderCliAlias","args":["devin"],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":["devika"],"ok":"devika"}
+{"fn":"normalizeProviderCliAlias","args":["swe-agent"],"ok":"swe-agent"}
+{"fn":"normalizeProviderCliAlias","args":["terminal-bench"],"ok":"terminal-bench"}
+{"fn":"normalizeProviderCliAlias","args":["claude-agent"],"ok":"claude-agent"}
+{"fn":"normalizeProviderCliAlias","args":["anthropic-cli"],"ok":"anthropic-cli"}
+{"fn":"normalizeProviderCliAlias","args":["gemini-cli"],"ok":"gemini-cli"}
+{"fn":"normalizeProviderCliAlias","args":["google-gemini"],"ok":"google-gemini"}
+{"fn":"normalizeProviderCliAlias","args":["openai-codex"],"ok":"openai-codex"}
+{"fn":"normalizeProviderCliAlias","args":["codex-cli-tool"],"ok":"codex-cli-tool"}
+{"fn":"normalizeProviderCliAlias","args":["opencode-ai"],"ok":"opencode-ai"}
+{"fn":"normalizeProviderCliAlias","args":["droid-cli"],"ok":"droid-cli"}
+{"fn":"normalizeProviderCliAlias","args":["factory"],"ok":"factory"}
+{"fn":"normalizeProviderCliAlias","args":["factory-droid"],"ok":"factory-droid"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"name":"codex","config":{}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{"cli":"codex","config":{}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{"command":"codex","config":{}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{"id":"codex","config":{}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{"kind":"codex","config":{}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{"slug":"codex","config":{}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{"config":{"slug":"codex"}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{"config":{"kind":"codex"}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{"config":{"agentProvider":"codex"}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{"config":{"providerSlug":"codex"}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{"config":{"providerName":"codex"}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{"config":{"cliProvider":"codex"}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{"config":{"cliProviderId":"codex"}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{"config":{"agentCli":"codex"}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{"config":{"tool":"codex"}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{"config":{"binary":"codex"}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{"config":{"program":"codex"}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{"config":{"provider_id":"codex"}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{"config":{"provider-id":"codex"}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{"config":{"default":{"provider":"codex"}}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{"config":{"provider":{"id":"codex"}}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{"config":{"provider":{"name":"codex"}}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{"config":{"provider":{"cli":"codex"}}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{"config":{"provider":{"command":"codex"}}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{"config":{"command":{"name":"codex"}}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{"config":{"cli":{"provider":"codex"}}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{"config":{"cli":{"providerId":"codex"}}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{"config":{"profile":{"provider":"codex"}}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{"config":{"flavor":"codex"}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{"config":{"variant":"codex"}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{"config":{"app":"codex"}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{"config":{"vendor":"codex"}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{"config":{"engine":"codex"}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{"config":{"backend":"codex"}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","flavor":"beta","config":{}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","channel":"beta","config":{}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","variant":"beta","config":{}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","mode":"m","config":{}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","tier":"t","config":{}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","profile":"p","config":{}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","name":"n","config":{}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","env":"beta","config":{}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","environment":"beta","config":{}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","release":"beta","config":{}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","branch":"beta","config":{}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","label":"beta","config":{}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"profile":"p"}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"name":"n"}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"flavor":"beta"}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"variant":"v"}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"channel":"beta"}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"mode":"m"}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"tier":"t"}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"env":"beta"}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"environment":"beta"}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"release":"beta"}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"branch":"beta"}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"label":"beta"}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"slug":"s"}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"version":"v"}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"suffix":"s"}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"edition":"e"}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"build":"b"}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"dist":"d"}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"app":"a"}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"id":"i"}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"cliProfile":"p"}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"default":"d"}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"provider":"inner"}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"claude","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"claude","providerVariant":"beta","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"cliFlavor":"x"}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"providerVariant":"x"}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"cliVariant":"x"}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"distTag":"x"}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"track":"x"}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"stream":"x"}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"subProvider":"x"}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"override":"x"}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"providerOverride":"x"}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"cliProviderOverride":"x"}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"betaChannel":"x"}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"canary":"x"}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"beta":"x"}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"preview":"x"}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"commandName":"x"}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"cliCommand":"x"}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"cli":"x"}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"command":"x"}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"binaryName":"x"}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"binary":"x"}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"executable":"x"}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"exe":"x"}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"programName":"x"}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"exec":"x"}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"cmd":"x"}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"alias":"x"}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"cliAlias":"x"}}],"ok":"x"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"providerAlias":"x"}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"cliProviderAlias":"x"}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"toolName":"x"}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"cliTool":"x"}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"cliName":"x"}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"displayName":"x"}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"providerKey":"x"}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"key":"x"}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"provider":"x","flavor":"y"}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"providerId":"gemini"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"providerId":"codex"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"providerId":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"cliProviderId":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"id":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"provider":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"provider":"codex"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"agentProvider":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"providerAlias":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"provider":"zzz","id":"i"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"model":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"defaultModel":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"type":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"family":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"group":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"platform":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"engine":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"tool":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"toolId":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"cliToolId":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"cliProvider":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"agentCli":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"cli":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"cliCommand":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"command":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"commandName":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"binary":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"bin":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"executable":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"binaryName":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"providerName":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"profile":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"profileId":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"profileName":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"cliProfileName":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"name":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"variant":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"cliVariant":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"providerVariant":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"flavor":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"cliFlavor":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"edition":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"version":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"channel":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"release":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"mode":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"tier":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"env":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"slug":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"key":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"alias":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"cliAlias":"zzz"}}],"ok":"zzz"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"toolName":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"program":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"programName":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"exe":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"exec":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"cmd":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"binName":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"binaryPath":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"commandLine":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"cliId":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"cliKey":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"providerCliId":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"providerCli":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"cliProviderName":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"providerCliName":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"providerCommand":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"providerCliCommand":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"providerCommandName":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"commandId":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"cliCommandId":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"executableName":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"appName":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"app":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"product":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"productName":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"brand":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"vendor":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"suffix":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"default":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"sub":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"subProvider":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"override":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"providerOverride":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"environment":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"environmentId":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"workspace":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"workspaceId":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"distTag":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"track":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"stream":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"beta":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"canary":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"preview":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"label":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"tag":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"branch":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"ref":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"kind":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"category":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"class":"zzz"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"opencode","config":{}}],"ok":"opencode-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"droid","config":{}}],"ok":"droid-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"devin","config":{}}],"ok":"devin-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"amp","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"aider","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"gemini","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"kimi","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"goose","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"cursor","config":{}}],"ok":"cursor-agent-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"cline","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"kilo","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"roo","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"qwen","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"grok","config":{}}],"ok":"grok-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"copilot","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"claude-code","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"anthropic","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"x":"str"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"x":{"cliCommand":"CMD"}}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"x":{"cliCommandName":"CMD"}}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"x":{"command":"CMD"}}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"x":{"name":"CMD"}}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"codex":"str"}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"codex":{"cliCommand":"CMD"}}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"x":{"cli":"CMD"}}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"x":{"binary":"CMD"}}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"x":{"provider":"CMD"}}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"x":{"commandName":"CMD"}}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"providers":{"x":{"cliCommand":"CMD"}}}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"agents":{"x":{"cliCommand":"CMD"}}}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","command":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","cliCommand":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","cliCommandName":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","cli":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","binary":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","executable":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","name":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","commandName":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","bin":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","exe":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","cmd":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","programName":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","cliName":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","cliTool":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","toolName":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","displayName":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","providerName":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","providerCommand":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","providerCliCommand":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","args":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","argv":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","flavor":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","variant":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","channel":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","env":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","mode":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","cliProviderName":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","providerAlias":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","alias":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","cliAlias":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","slug":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","id":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","cliId":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","profile":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","profileName":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","cliProfile":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","cliProfileName":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","providerProfile":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","providerCliName":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","defaultCliCommand":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","cliProvider":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","agentCli":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","agentCliCommand":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","providerCli":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","cliProviderId":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","providerId":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","defaultCli":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","executableName":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","binaryName":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","binName":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","commandLine":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","cliProviderCommand":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","providerCommandName":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","cliCommandOverride":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","commandOverride":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","override":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","cliOverride":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","providerCommandOverride":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","subcommand":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","subCommand":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","cliSubcommand":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","action":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","verb":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","operation":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","tool":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","toolId":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","agent":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","agentName":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","cliAgent":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","kind":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","type":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","key":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","label":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","tag":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","edition":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","release":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","version":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","dist":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","distTag":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","track":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","beta":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","app":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","appName":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","product":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","productName":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","family":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","group":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","tier":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","environment":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","branch":"CMD","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x"}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":null}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":"str"}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":5}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":[]}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":true}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex"}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":null}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":"str"}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"claude"}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"cursor"}],"ok":"cursor-agent-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"alias":"x"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"providerAlias":"x"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"provider":{"alias":"x"}}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"cli":{"provider":"x"}}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"profiles":{"x":"y"}}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"cliProfiles":{"x":"y"}}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"providerProfiles":{"x":"y"}}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"default":{"provider":"x"}}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"providers":{"x":{"command":"CMD"}}}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"providers":{"x":"CMD"}}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"cli":{"command":"CMD"}}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"cli":{"commandName":"CMD"}}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"cli":{"name":"CMD"}}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"cli":{"binary":"CMD"}}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"cli":{"alias":"CMD"}}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"provider":{"cliCommand":"CMD"}}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"provider":{"command":"CMD"}}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"provider":{"cli":{"command":"CMD"}}}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"default":{"cliCommand":"CMD"}}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"default":{"command":"CMD"}}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"default":{"provider":{"cliCommand":"CMD"}}}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"defaultProvider":{"cliCommand":"CMD"}}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"agent":{"cliCommand":"CMD"}}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"agent":{"command":"CMD"}}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"agents":{"x":{"cliCommand":"CMD"}}}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"agents":{"x":{"command":"CMD"}}}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"agents":{"x":"CMD"}}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"agentCli":{"command":"CMD"}}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"cli":{"providers":{"x":"CMD"}}}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"cli":{"providers":{"x":{"command":"CMD"}}}}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"cli":{"commands":{"x":"CMD"}}}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"commands":{"x":"CMD"}}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"commands":{"x":{"cli":"CMD"}}}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"cli":{"agent":{"command":"CMD"}}}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"tools":{"x":"CMD"}}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"binaries":{"x":"CMD"}}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"aliases":{"x":"CMD"}}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"cli":{"aliases":{"x":"CMD"}}}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"cli":{"commandName":{"x":"CMD"}}}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"cliCommands":{"x":"CMD"}}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"command":{"x":"CMD"}}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"command":{"x":{"cli":"CMD"}}}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"env":{"cliCommand":"CMD"}}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"app":{"cliCommand":"CMD"}}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"synara":{"cliCommand":"CMD"}}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"desktop":{"cliCommand":"CMD"}}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"experimental":{"cliCommand":"CMD"}}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"providerCli":{"command":"CMD"}}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"providerCli":{"x":"CMD"}}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"providerCliCommands":{"x":"CMD"}}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"providerCommands":{"x":"CMD"}}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"cli":{"providerCliCommands":{"x":"CMD"}}}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"orchestration":{"cliCommand":"CMD"}}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"orchestration":{"provider":{"cliCommand":"CMD"}}}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"providers":{"x":{"cliCommandName":"CMD"}}}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"providers":{"x":{"cli":"CMD"}}}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"providers":{"x":{"binary":"CMD"}}}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"providers":{"x":{"name":"CMD"}}}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"providers":{"x":{"commandName":"CMD"}}}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"providers":{"x":{"alias":"CMD"}}}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"providers":{"x":{"executable":"CMD"}}}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","cliAlias":"UPPER"}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","cliAlias":"Mixed-Case"}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"cliAlias":"UPPER Mix"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"cliAlias":""}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"cliAlias":null}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"cliAlias":5}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"cliAlias":true}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"cliAlias":0}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"cliAlias":"UPPER"}}],"ok":"UPPER"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","cliAlias":"TOP"}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","cliAlias":"TOP","config":{"cliAlias":"INNER"}}],"ok":"INNER"}
+{"fn":"providerCliCommandName","args":[{"provider":"claude","config":{"cliAlias":"CC"}}],"ok":"CC"}
+{"fn":"providerCliCommandName","args":[{"provider":"cursor","config":{"cliAlias":"CUR"}}],"ok":"CUR"}
+{"fn":"providerCliCommandName","args":[{"cliAlias":"X","config":{}}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{"config":{"cliAlias":"X"}}],"ok":"X"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"cliAlias":"  "}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"cliAlias":" a "}}],"ok":"a"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"cliAlias":[]}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"cliAlias":{}}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"grok","config":{"cliAlias":""}}],"ok":"grok-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"cliAlias":null}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"cliAlias":0}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"cliAlias":false}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"cliAlias":"A-B"}}],"ok":"A-B"}
+{"fn":"providerCliCommandName","args":[{"provider":"devin"}],"ok":"devin-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"opencode"}],"ok":"opencode-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"droid"}],"ok":"droid-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"grok"}],"ok":"grok-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":""}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":null}],"error":"Cannot read properties of null (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":0}],"error":"provider.toLowerCase is not a function"}
+{"fn":"providerCliCommandName","args":[{"provider":false}],"error":"provider.toLowerCase is not a function"}
+{"fn":"providerCliCommandName","args":[{"provider":5}],"error":"provider.toLowerCase is not a function"}
+{"fn":"providerCliCommandName","args":[{"provider":"CODEX"}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"Codex"}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":" codex "}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"CURSOR"}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"cursor-agent"}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"cursor-agent","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"","config":{}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":null,"config":{}}],"error":"Cannot read properties of null (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":0,"config":{}}],"error":"provider.toLowerCase is not a function"}
+{"fn":"providerCliCommandName","args":[{"provider":false,"config":{}}],"error":"provider.toLowerCase is not a function"}
+{"fn":"providerCliCommandName","args":[{"provider":5,"config":{}}],"error":"provider.toLowerCase is not a function"}
+{"fn":"providerCliCommandName","args":[{"provider":"","config":{"cliAlias":"A"}}],"ok":"A"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"cliAlias":"a  b"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"cliAlias":" a "}}],"ok":"a"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"cliAlias":" a "}}],"ok":"a"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"cliAlias":"a\nb"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"cliAlias":"\ta\t"}}],"ok":"a"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"cliAlias":5}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"cliAlias":true}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"cliAlias":"A","provider":"codex"}}],"ok":"A"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"cliAlias":{"nested":1}}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"cliAlias":[1]}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"cliAlias":" "}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"claude","cliAlias":"T"}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"claude","config":{"cliAlias":" "}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"pi","instanceId":"pi_work"}],"ok":"pi-work"}
+{"fn":"providerCliCommandName","args":[{"provider":"pi","instanceId":"pi"}],"ok":"pi-default"}
+{"fn":"providerCliCommandName","args":[{"provider":"pi","instanceId":"pi_team_x"}],"ok":"pi-team-x"}
+{"fn":"providerCliCommandName","args":[{"provider":"claudeAgent","instanceId":"claude_work_2"}],"ok":"claude-work-2"}
+{"fn":"providerCliCommandName","args":[{"provider":"claudeAgent","instanceId":"work"}],"ok":"claude-work"}
+{"fn":"providerCliCommandName","args":[{"provider":"claudeAgent","instanceId":"other_x"}],"ok":"claude-other-x"}
+{"fn":"providerCliCommandName","args":[{"provider":"claudeAgent"}],"ok":"claude-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"claudeAgent","instanceId":null}],"ok":"claude-null"}
+{"fn":"providerCliCommandName","args":[{"provider":"claudeAgent","instanceId":""}],"ok":"claude-"}
+{"fn":"providerCliCommandName","args":[{"provider":"claudeAgent","instanceId":"claude"}],"ok":"claude-claude"}
+{"fn":"providerCliCommandName","args":[{"provider":"claudeAgent","instanceId":"claude_"}],"ok":"claude-claude_"}
+{"fn":"providerCliCommandName","args":[{"provider":"claudeAgent","instanceId":"_work"}],"ok":"claude-work"}
+{"fn":"providerCliCommandName","args":[{"provider":"CLAUDEAGENT","instanceId":"x"}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"ClaudeAgent","instanceId":"x"}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"claude-agent","instanceId":"x"}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"claude_agent","instanceId":"x"}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"ANTIGRAVITY","instanceId":"x"}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"AntiGravity","instanceId":"x"}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"anti-gravity","instanceId":"x"}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"PI","instanceId":"x"}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"Pi","instanceId":"x"}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"pi"}],"ok":"pi-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"antigravity"}],"ok":"agy-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"claudeAgent","instanceId":5}],"ok":"claude-5"}
+{"fn":"providerCliCommandName","args":[{"provider":"claudeAgent","instanceId":{"$undefined":true}}],"ok":"claude-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","instanceId":"codex_a_b_c"}],"ok":"codex-a-b-c"}
+{"fn":"providerCliCommandName","args":[{"provider":"cursor","instanceId":"cursor"}],"ok":"cursor-agent-default"}
+{"fn":"providerCliCommandName","args":[{"provider":"cursor","instanceId":"cursor-agent_x"}],"ok":"cursor-agent-x"}
+{"fn":"providerCliCommandName","args":[{"provider":"cursor","instanceId":"cursor_agent"}],"ok":"cursor-agent-agent"}
+{"fn":"providerCliCommandName","args":[{"provider":"cursor","instanceId":"curs_team"}],"ok":"cursor-agent-curs-team"}
+{"fn":"providerCliCommandName","args":[{"provider":"opencode","instanceId":"opencode_main"}],"ok":"opencode-main"}
+{"fn":"providerCliCommandName","args":[{"provider":"grok","instanceId":"grok_x"}],"ok":"grok-x"}
+{"fn":"providerCliCommandName","args":[{"provider":"devin","instanceId":"devin_x"}],"ok":"devin-x"}
+{"fn":"providerCliCommandName","args":[{"provider":"droid","instanceId":"droid_x"}],"ok":"droid-x"}
+{"fn":"providerCliCommandName","args":[{"provider":"claudeAgent","instanceId":"claude_work","config":{"cliAlias":" "}}],"ok":"claude-work"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","instanceId":"x_y"}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","instanceId":""}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","instanceId":null}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"instanceId":"claude_work"}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"claudeAgent","instanceId":"claude_work","config":{"cliAlias":"ALIAS"}}],"ok":"ALIAS"}
+{"fn":"normalizeProviderCliAlias","args":["a_b"],"ok":"a_b"}
+{"fn":"normalizeProviderCliAlias","args":["a.b"],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":["a-b"],"ok":"a-b"}
+{"fn":"normalizeProviderCliAlias","args":["a b"],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":["a;b"],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":["-a"],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":["a-"],"ok":"a-"}
+{"fn":"normalizeProviderCliAlias","args":["-"],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":["A1"],"ok":"A1"}
+{"fn":"normalizeProviderCliAlias","args":[" zzz "],"ok":"zzz"}
+{"fn":"normalizeProviderCliAlias","args":["claudeAgent"],"ok":"claudeAgent"}
+{"fn":"normalizeProviderCliAlias","args":["antigravity"],"ok":"antigravity"}
+{"fn":"normalizeProviderCliAlias","args":["pi"],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":["cursor"],"ok":"cursor"}
+{"fn":"normalizeProviderCliAlias","args":["grok"],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":["agy"],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":["cursor-agent"],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":["CLAUDE WORK"],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":["claude\twork"],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":["claude\nwork"],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":["a/b"],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":["a\\b"],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":["a:b"],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":["a@b"],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":["codex;"],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":["claude--work"],"ok":"claude--work"}
+{"fn":"normalizeProviderCliAlias","args":["claude_work"],"ok":"claude_work"}
+{"fn":"providerCliCommandName","args":[{"provider":"antigravity","instanceId":"antigravity_x"}],"ok":"agy-x"}
+{"fn":"providerCliCommandName","args":[{"provider":"antigravity","instanceId":"agy_x"}],"ok":"agy-x"}
+{"fn":"providerCliCommandName","args":[{"provider":"claudeAgent","instanceId":"claudeAgent_x"}],"ok":"claude-x"}
+{"fn":"providerCliCommandName","args":[{"provider":"claudeAgent","instanceId":"claudeagent_x"}],"ok":"claude-x"}
+{"fn":"providerCliCommandName","args":[{"provider":"claude","instanceId":"claude_x"}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"claude","instanceId":"claude"}],"ok":"undefined-default"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","instanceId":"co_x"}],"ok":"codex-co-x"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","instanceId":"_x"}],"ok":"codex-x"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","instanceId":"codex_"}],"ok":"codex-codex_"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","instanceId":"codex__a"}],"ok":"codex-a"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","instanceId":"a_codex"}],"ok":"codex-a-codex"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","instanceId":"CODEX_x"}],"ok":"codex-x"}
+{"fn":"providerCliCommandName","args":[{"provider":"cursor","instanceId":"agent_x"}],"ok":"cursor-agent-agent-x"}
+{"fn":"providerCliCommandName","args":[{"provider":"cursor","instanceId":"cursor_"}],"ok":"cursor-agent-cursor_"}
+{"fn":"providerCliCommandName","args":[{"provider":"claudeAgent","instanceId":"claude_agent"}],"ok":"claude-agent"}
+{"fn":"providerCliCommandName","args":[{"provider":"claudeAgent","instanceId":"claude-agent_x"}],"ok":"claude-agent-x"}
+{"fn":"providerCliCommandName","args":[{"provider":"claudeAgent","instanceId":true}],"ok":"claude-true"}
+{"fn":"providerCliCommandName","args":[{"provider":"claudeAgent","instanceId":{"a":1}}],"ok":"claude-object-object"}
+{"fn":"providerCliCommandName","args":[{"provider":"claudeAgent","instanceId":[1,2]}],"ok":"claude-1-2"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","instanceId":"codex"}],"ok":"codex-default"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","instanceId":"Codex"}],"ok":"codex-codex"}
+{"fn":"normalizeProviderCliAlias","args":["codex-agent"],"ok":"codex-agent"}
+{"fn":"normalizeProviderCliAlias","args":["claude-agent"],"ok":"claude-agent"}
+{"fn":"normalizeProviderCliAlias","args":["agy-cli"],"ok":"agy-cli"}
+{"fn":"normalizeProviderCliAlias","args":["  "],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":["-"],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":["a--b"],"ok":"a--b"}
+{"fn":"normalizeProviderCliAlias","args":["a__b"],"ok":"a__b"}
+{"fn":"normalizeProviderCliAlias","args":["_a"],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":["9a"],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":["a9"],"ok":"a9"}
+{"fn":"normalizeProviderCliAlias","args":["é"],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":["aBc"],"ok":"aBc"}
+{"fn":"normalizeProviderCliAlias","args":["claudeAgent-x"],"ok":"claudeAgent-x"}
+{"fn":"providerCliCommandName","args":[{"provider":"kilocode","instanceId":"x"}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"roo","instanceId":"x"}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"cline","instanceId":"x"}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"gemini","instanceId":"x"}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"aider","instanceId":"x"}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"amp","instanceId":"x"}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"goose","instanceId":"x"}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"qwen","instanceId":"x"}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"copilot","instanceId":"x"}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"anthropic","instanceId":"x"}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"claude-code","instanceId":"x"}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"swe-agent","instanceId":"x"}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"windsurf","instanceId":"x"}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"zed","instanceId":"x"}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"kiro","instanceId":"x"}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"trae","instanceId":"x"}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"amazon-q","instanceId":"x"}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"q","instanceId":"x"}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"crush","instanceId":"x"}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"charm","instanceId":"x"}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"forge","instanceId":"x"}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"openhands","instanceId":"x"}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"plandex","instanceId":"x"}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"mentat","instanceId":"x"}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"continue","instanceId":"x"}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"junie","instanceId":"x"}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"ollama","instanceId":"x"}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"pi","instanceId":"other_x"}],"ok":"pi-other-x"}
+{"fn":"providerCliCommandName","args":[{"provider":"pi","instanceId":"p_x"}],"ok":"pi-p-x"}
+{"fn":"providerCliCommandName","args":[{"provider":"pi","instanceId":"pi_"}],"ok":"pi-pi_"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","instanceId":"-x"}],"ok":"codex-x"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","instanceId":"x-"}],"ok":"codex-x"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","instanceId":" x "}],"ok":"codex-x"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","instanceId":"x.y"}],"ok":"codex-x-y"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","instanceId":"a-b"}],"ok":"codex-a-b"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","instanceId":"a b"}],"ok":"codex-a-b"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","instanceId":"A_B"}],"ok":"codex-a-b"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","instanceId":"CODEX"}],"ok":"codex-codex"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","instanceId":"Codex_y"}],"ok":"codex-y"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","instanceId":"codEx_x"}],"ok":"codex-x"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","instanceId":"a.b_c"}],"ok":"codex-a-b-c"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","instanceId":"a,b"}],"ok":"codex-a-b"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","instanceId":"a/b"}],"ok":"codex-a-b"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","instanceId":"a--b"}],"ok":"codex-a-b"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","instanceId":"aé_b"}],"ok":"codex-a-b"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","instanceId":"_"}],"ok":"codex-_"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","instanceId":"__"}],"ok":"codex-__"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","instanceId":"_codex"}],"ok":"codex-codex"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","instanceId":"codex.codex"}],"ok":"codex-codex-codex"}
+{"fn":"providerCliCommandName","args":[{"provider":"claudeAgent","instanceId":"claudeAgent_x_y"}],"ok":"claude-x-y"}
+{"fn":"providerCliCommandName","args":[{"provider":"claudeAgent","instanceId":"CLAUDEAGENT_x"}],"ok":"claude-x"}
+{"fn":"providerCliCommandName","args":[{"provider":"cursor","instanceId":"cursor-Agent_x"}],"ok":"cursor-agent-x"}
+{"fn":"providerCliCommandName","args":[{"provider":"cursor","instanceId":"CURSOR_x"}],"ok":"cursor-agent-x"}
+{"fn":"providerCliCommandName","args":[{"provider":"antigravity","instanceId":"AGY_x"}],"ok":"agy-x"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"cliAlias":"codex"}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"cliAlias":"claude"}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"cliAlias":"pi"}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","config":{"cliAlias":"cursor-agent"}}],"ok":"codex-undefined"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"cliAlias":"codex"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"cliAlias":"9a"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"cliAlias":"_a"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"cliAlias":"a-b_c"}}],"ok":"a-b_c"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","config":{"cliAlias":"a-b_c","cliAlias2":"y"}}],"ok":"a-b_c"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","instanceId":"codex_personal","config":{"cliAlias":"x y"}}],"ok":"codex-personal"}
+{"fn":"providerCliCommandName","args":[{"provider":"codex","instanceId":"codex_personal","config":{"cliAlias":"x-y"}}],"ok":"x-y"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","instanceId":"y"}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":null,"instanceId":"y"}],"error":"Cannot read properties of null (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":5,"instanceId":"y"}],"error":"provider.toLowerCase is not a function"}
+{"fn":"providerCliCommandName","args":[{"provider":"x","instanceId":{"$undefined":true}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"providerCliCommandName","args":[{"provider":"claudeAgent","instanceId":"x.y_z"}],"ok":"claude-x-y-z"}
+{"fn":"providerCliCommandName","args":[{"provider":"claudeAgent","instanceId":"x..y"}],"ok":"claude-x-y"}
+{"fn":"providerCliCommandName","args":[{"provider":"claudeAgent","instanceId":"x--y"}],"ok":"claude-x-y"}
+{"fn":"providerCliCommandName","args":[{"provider":"claudeAgent","instanceId":"x@@y"}],"ok":"claude-x-y"}
+{"fn":"providerCliCommandName","args":[{"provider":"claudeAgent","instanceId":"x,y,z"}],"ok":"claude-x-y-z"}
+{"fn":"providerCliCommandName","args":[{"provider":"claudeAgent","instanceId":"x  y"}],"ok":"claude-x-y"}
+{"fn":"normalizeProviderCliAlias","args":["aBc-D_e"],"ok":"aBc-D_e"}
+{"fn":"normalizeProviderCliAlias","args":["9"],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":["_"],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":["a b c"],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":[" claude "],"ok":{"$undefined":true}}
+{"fn":"normalizeProviderCliAlias","args":["claudeAgent "],"ok":"claudeAgent"}
+{"fn":"normalizeProviderCliAlias","args":["antigravity "],"ok":"antigravity"}

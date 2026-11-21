@@ -1,0 +1,17 @@
+{
+  "unit": "packages/shared/src/providerCliProfiles.ts",
+  "files": 1,
+  "fingerprint": "585b3968029d1363",
+  "coverage": {
+    "lines": 127,
+    "reached": 127,
+    "files": [
+      {
+        "file": "packages/shared/src/providerCliProfiles.ts",
+        "lines": 127,
+        "reached": 127,
+        "missed": ""
+      }
+    ]
+  }
+}

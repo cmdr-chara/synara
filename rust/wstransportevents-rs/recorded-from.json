@@ -1,0 +1,17 @@
+{
+  "unit": "apps/web/src/wsTransportEvents.ts",
+  "files": 1,
+  "fingerprint": "0111de3045a68dac",
+  "coverage": {
+    "lines": 123,
+    "reached": 51,
+    "files": [
+      {
+        "file": "apps/web/src/wsTransportEvents.ts",
+        "lines": 123,
+        "reached": 51,
+        "missed": "29-33, 37-53, 68-69, 74-78, 83-91, 93-97, 99-103, 113-114, 118-122, 126-142"
+      }
+    ]
+  }
+}

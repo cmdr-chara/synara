@@ -1,0 +1,106 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/wsTransportEvents.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "wstransportevents-rs",
+  "exports": [
+    {
+      "name": "readLatestWsTransportState",
+      "file": "apps/web/src/wsTransportEvents.ts",
+      "line": 16,
+      "params": [],
+      "returns": "(\"connecting\" | \"open\" | \"closed\" | \"incompatible\" | \"disposed\") | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "getWsSettlingThreadIds",
+      "file": "apps/web/src/wsTransportEvents.ts",
+      "line": 24,
+      "params": [],
+      "returns": "ReadonlySet<typeof typeof typeof typeof ThreadId.Type.Type.Type.Type>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "emitWsTransportState",
+      "file": "apps/web/src/wsTransportEvents.ts",
+      "line": 64,
+      "params": [
+        {
+          "name": "state",
+          "ts_type": "(\"connecting\" | \"open\" | \"closed\" | \"incompatible\" | \"disposed\")",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "readLatestWsCompatibilityIssue",
+      "file": "apps/web/src/wsTransportEvents.ts",
+      "line": 105,
+      "params": [],
+      "returns": "WsCompatibilityError | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "emitWsCompatibilityIssue",
+      "file": "apps/web/src/wsTransportEvents.ts",
+      "line": 109,
+      "params": [
+        {
+          "name": "issue",
+          "ts_type": "WsCompatibilityError | null",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "subscribeWsTurnSettlements",
+      "file": "apps/web/src/wsTransportEvents.ts",
+      "line": 28,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "trackWsTurnSettlement",
+      "file": "apps/web/src/wsTransportEvents.ts",
+      "line": 36,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "addWsTransportStateListener",
+      "file": "apps/web/src/wsTransportEvents.ts",
+      "line": 82,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "addWsCompatibilityIssueListener",
+      "file": "apps/web/src/wsTransportEvents.ts",
+      "line": 125,
+      "reason": "takes or returns a function"
+    }
+  ]
+}

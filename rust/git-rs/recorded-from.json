@@ -1,0 +1,17 @@
+{
+  "unit": "packages/shared/src/git.ts",
+  "files": 1,
+  "fingerprint": "46dfb8b6869bf221",
+  "coverage": {
+    "lines": 163,
+    "reached": 125,
+    "files": [
+      {
+        "file": "packages/shared/src/git.ts",
+        "lines": 163,
+        "reached": 125,
+        "missed": "67-68, 71-72, 79-94, 121, 141, 162-163, 169-182"
+      }
+    ]
+  }
+}

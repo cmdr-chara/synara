@@ -1,0 +1,163 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/git.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "git-rs",
+  "exports": [
+    {
+      "name": "sanitizeBranchFragment",
+      "file": "packages/shared/src/git.ts",
+      "line": 24,
+      "params": [
+        {
+          "name": "raw",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "sanitizeFeatureBranchName",
+      "file": "packages/shared/src/git.ts",
+      "line": 46,
+      "params": [
+        {
+          "name": "raw",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveAutoFeatureBranchName",
+      "file": "packages/shared/src/git.ts",
+      "line": 101,
+      "params": [
+        {
+          "name": "existingBranchNames",
+          "ts_type": "readonly string[]",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "preferredBranch",
+          "ts_type": "string",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "buildSynaraBranchName",
+      "file": "packages/shared/src/git.ts",
+      "line": 112,
+      "params": [
+        {
+          "name": "preferredBranch",
+          "ts_type": "string | null",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveUniqueSynaraBranchName",
+      "file": "packages/shared/src/git.ts",
+      "line": 128,
+      "params": [
+        {
+          "name": "existingBranchNames",
+          "ts_type": "readonly string[]",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "preferredBranch",
+          "ts_type": "string | null",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isTemporaryWorktreeBranch",
+      "file": "packages/shared/src/git.ts",
+      "line": 136,
+      "params": [
+        {
+          "name": "branch",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveThreadBranchRegressionGuard",
+      "file": "packages/shared/src/git.ts",
+      "line": 152,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  currentBranch: string | null;\n  nextBranch: string | null;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "mergeGitStatusParts",
+      "file": "packages/shared/src/git.ts",
+      "line": 168,
+      "reason": "generic over `Local`: values of any shape, functions included"
+    },
+    {
+      "name": "buildTemporaryWorktreeBranchName",
+      "file": "packages/shared/src/git.ts",
+      "line": 145,
+      "reason": "crypto.randomUUID(): nondeterministic, no recorded input"
+    }
+  ]
+}

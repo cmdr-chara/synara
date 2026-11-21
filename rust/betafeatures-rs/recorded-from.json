@@ -1,0 +1,17 @@
+{
+  "unit": "packages/shared/src/betaFeatures.ts",
+  "files": 1,
+  "fingerprint": "f3de0337c05ac05d",
+  "coverage": {
+    "lines": 109,
+    "reached": 95,
+    "files": [
+      {
+        "file": "packages/shared/src/betaFeatures.ts",
+        "lines": 109,
+        "reached": 95,
+        "missed": "84-85, 88-89, 108-117"
+      }
+    ]
+  }
+}

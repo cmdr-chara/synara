@@ -1,0 +1,78 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/betaFeatures.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "betafeatures-rs",
+  "exports": [
+    {
+      "name": "isBetaFeatureEnabled",
+      "file": "packages/shared/src/betaFeatures.ts",
+      "line": 68,
+      "params": [
+        {
+          "name": "feature",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "flavor",
+          "ts_type": "(| \"production\"\n  | \"development\"\n  | \"canary\"\n  | \"cua\"\n  | \"beta\"\n  | \"remote\") | \"unknown\"",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "desktopFlavorFromBundleId",
+      "file": "packages/shared/src/betaFeatures.ts",
+      "line": 76,
+      "params": [
+        {
+          "name": "bundleId",
+          "ts_type": "string | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(| \"production\"\n  | \"development\"\n  | \"canary\"\n  | \"cua\"\n  | \"beta\"\n  | \"remote\") | \"unknown\"",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "desktopFlavorFromProtocol",
+      "file": "packages/shared/src/betaFeatures.ts",
+      "line": 103,
+      "params": [
+        {
+          "name": "protocol",
+          "ts_type": "string | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "isDevBuild",
+          "ts_type": "boolean",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(| \"production\"\n  | \"development\"\n  | \"canary\"\n  | \"cua\"\n  | \"beta\"\n  | \"remote\") | \"unknown\"",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

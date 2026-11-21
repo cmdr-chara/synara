@@ -1,0 +1,17 @@
+{
+  "unit": "packages/shared/src/projectDirectoryName.ts",
+  "files": 1,
+  "fingerprint": "73dc97d9ed248650",
+  "coverage": {
+    "lines": 19,
+    "reached": 19,
+    "files": [
+      {
+        "file": "packages/shared/src/projectDirectoryName.ts",
+        "lines": 19,
+        "reached": 19,
+        "missed": ""
+      }
+    ]
+  }
+}

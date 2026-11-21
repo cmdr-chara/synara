@@ -1,0 +1,15 @@
+{"fn":"normalizeProjectDirectoryName","args":["codex"]}
+{"fn":"normalizeProjectDirectoryName","args":[".github"]}
+{"fn":"normalizeProjectDirectoryName","args":["project.v2"]}
+{"fn":"normalizeProjectDirectoryName","args":[" name "]}
+{"fn":"normalizeProjectDirectoryName","args":[""]}
+{"fn":"normalizeProjectDirectoryName","args":["."]}
+{"fn":"normalizeProjectDirectoryName","args":[".."]}
+{"fn":"normalizeProjectDirectoryName","args":["a/b"]}
+{"fn":"normalizeProjectDirectoryName","args":["a\\b"]}
+{"fn":"normalizeProjectDirectoryName","args":["CON"]}
+{"fn":"normalizeProjectDirectoryName","args":["name."]}
+{"fn":"normalizeProjectDirectoryName","args":["aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"]}
+{"fn":"normalizeProjectDirectoryName","args":["aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"]}
+{"fn":"normalizeProjectDirectoryName","args":["😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀"]}
+{"fn":"normalizeProjectDirectoryName","args":["😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀"]}

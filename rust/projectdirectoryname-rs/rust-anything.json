@@ -1,0 +1,30 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/projectDirectoryName.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "projectdirectoryname-rs",
+  "exports": [
+    {
+      "name": "normalizeProjectDirectoryName",
+      "file": "packages/shared/src/projectDirectoryName.ts",
+      "line": 5,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

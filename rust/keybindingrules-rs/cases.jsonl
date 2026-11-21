@@ -1,0 +1,1110 @@
+{"fn":"parseKeybindingShortcut","args":["hello"],"ok":{"key":"hello","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ΣΊΣΥΦΟΣ"],"ok":{"key":"σίσυφος","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["tab\tseparated"],"ok":{"key":"tab\tseparated","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["./x/**/*.json"],"ok":{"key":"./x/**/*.json","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["a😀b😀c"],"ok":{"key":"a😀b😀c","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["hello world"],"ok":{"key":"hello world","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["a.b.c"],"ok":{"key":"a.b.c","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["key_name-1"],"ok":{"key":"key_name-1","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["abca.b.c"],"ok":{"key":"abca.b.c","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ns:key.path"],"ok":{"key":"ns:key.path","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ünïcödé"],"ok":{"key":"ünïcödé","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["﻿bom"],"ok":{"key":"bom","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":[".leading"],"ok":{"key":".leading","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["trailing."],"ok":{"key":"trailing.","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ab"],"ok":{"key":"ab","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["İstanbul:"],"ok":{"key":"i̇stanbul:","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["src/a/b.ts日本語のテキスト"],"ok":{"key":"src/a/b.ts日本語のテキスト","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["İstanbul"],"ok":{"key":"i̇stanbul","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["./x/**/*.jsona:b:c"],"ok":{"key":"./x/**/*.jsona:b:c","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["abc"],"ok":{"key":"abc","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["a"],"ok":{"key":"a","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["HELLOsrc/a/b.ts"],"ok":{"key":"hellosrc/a/b.ts","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":[":key_name-1"],"ok":{"key":":key_name-1","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["é"],"ok":{"key":"é","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ns:key.patha"],"ok":{"key":"ns:key.patha","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["a:b:c  padded  "],"ok":{"key":"a:b:c  padded","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["HELLO"],"ok":{"key":"hello","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["emoji 👍🏽 mix"],"ok":{"key":"emoji 👍🏽 mix","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["  padded  "],"ok":{"key":"padded","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["./x/**/*.jsonİstanbul"],"ok":{"key":"./x/**/*.jsoni̇stanbul","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":[":😀"],"ok":{"key":":😀","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["abHELLO"],"ok":{"key":"abhello","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["a:b:c"],"ok":{"key":"a:b:c","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["a😀b😀c.leading"],"ok":{"key":"a😀b😀c.leading","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["straße"],"ok":{"key":"straße","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["a😀b😀c﻿bom"],"ok":{"key":"a😀b😀c﻿bom","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["line1\nline2"],"ok":{"key":"line1\nline2","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["  padded  :"],"ok":{"key":"padded  :","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":[""],"ok":{"key":"+","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["😀"],"ok":{"key":"😀","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["{name} has {count} items"],"ok":{"key":"{name} has {count} items","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["日本語のテキスト"],"ok":{"key":"日本語のテキスト","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["HELLOa.b.c"],"ok":{"key":"helloa.b.c","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["a..b"],"ok":{"key":"a..b","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ünïcödé./x/**/*.json"],"ok":{"key":"ünïcödé./x/**/*.json","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["😀abc"],"ok":{"key":"😀abc","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["Hello World"],"ok":{"key":"hello world","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["src/a/b.ts"],"ok":{"key":"src/a/b.ts","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["tab\tseparatedkey_name-1"],"ok":{"key":"tab\tseparatedkey_name-1","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":[":"],"ok":{"key":":","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["src/a/b.tsünïcödé"],"ok":{"key":"src/a/b.tsünïcödé","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ünïcödé.leading"],"ok":{"key":"ünïcödé.leading","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["{name} has {count} itemsns:key.path"],"ok":{"key":"{name} has {count} itemsns:key.path","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["emoji 👍🏽 mix日本語のテキスト"],"ok":{"key":"emoji 👍🏽 mix日本語のテキスト","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["trailing.ünïcödé"],"ok":{"key":"trailing.ünïcödé","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["hello worldabc"],"ok":{"key":"hello worldabc","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["HELLOa..b"],"ok":{"key":"helloa..b","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["a😀b😀ckey_name-1"],"ok":{"key":"a😀b😀ckey_name-1","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["helloΣΊΣΥΦΟΣ"],"ok":{"key":"helloσίσυφος","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["helloİstanbul"],"ok":{"key":"helloi̇stanbul","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["HELLO.leading"],"ok":{"key":"hello.leading","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["{name} has {count} itemsa😀b😀c"],"ok":{"key":"{name} has {count} itemsa😀b😀c","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["hello worldline1\nline2"],"ok":{"key":"hello worldline1\nline2","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["{name} has {count} items  padded  "],"ok":{"key":"{name} has {count} items  padded","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["a.b.cemoji 👍🏽 mix"],"ok":{"key":"a.b.cemoji 👍🏽 mix","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ns:key.pathİstanbul"],"ok":{"key":"ns:key.pathi̇stanbul","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":[".leadinga..b"],"ok":{"key":".leadinga..b","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ünïcödé{name} has {count} items"],"ok":{"key":"ünïcödé{name} has {count} items","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ΣΊΣΥΦΟΣhello"],"ok":{"key":"σίσυφοσhello","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["./x/**/*.jsonabc"],"ok":{"key":"./x/**/*.jsonabc","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ΣΊΣΥΦΟΣhello world"],"ok":{"key":"σίσυφοσhello world","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["trailing.key_name-1"],"ok":{"key":"trailing.key_name-1","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["a😀b😀cline1\nline2"],"ok":{"key":"a😀b😀cline1\nline2","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["trailing.trailing."],"ok":{"key":"trailing.trailing.","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":[".leading﻿bom"],"ok":{"key":".leading﻿bom","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["hello worlda😀b😀c"],"ok":{"key":"hello worlda😀b😀c","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["hello:"],"ok":{"key":"hello:","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["HELLOemoji 👍🏽 mix"],"ok":{"key":"helloemoji 👍🏽 mix","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["abΣΊΣΥΦΟΣ"],"ok":{"key":"abσίσυφος","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ΣΊΣΥΦΟΣab"],"ok":{"key":"σίσυφοσab","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ΣΊΣΥΦΟΣstraße"],"ok":{"key":"σίσυφοσstraße","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["İstanbul😀"],"ok":{"key":"i̇stanbul😀","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["日本語のテキストé"],"ok":{"key":"日本語のテキストé","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["emoji 👍🏽 mixab"],"ok":{"key":"emoji 👍🏽 mixab","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["tab\tseparated.leading"],"ok":{"key":"tab\tseparated.leading","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["a:b:ca.b.c"],"ok":{"key":"a:b:ca.b.c","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ékey_name-1"],"ok":{"key":"ékey_name-1","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["abns:key.path"],"ok":{"key":"abns:key.path","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["﻿bomtrailing."],"ok":{"key":"bomtrailing.","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["İstanbulkey_name-1"],"ok":{"key":"i̇stanbulkey_name-1","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["a:b:csrc/a/b.ts"],"ok":{"key":"a:b:csrc/a/b.ts","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["hello world﻿bom"],"ok":{"key":"hello world﻿bom","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ΣΊΣΥΦΟΣabc"],"ok":{"key":"σίσυφοσabc","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ünïcödétab\tseparated"],"ok":{"key":"ünïcödétab\tseparated","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ünïcödéstraße"],"ok":{"key":"ünïcödéstraße","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["Hello Worlda"],"ok":{"key":"hello worlda","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["hello worldsrc/a/b.ts"],"ok":{"key":"hello worldsrc/a/b.ts","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["a..b日本語のテキスト"],"ok":{"key":"a..b日本語のテキスト","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["a:b:chello"],"ok":{"key":"a:b:chello","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ünïcödéhello world"],"ok":{"key":"ünïcödéhello world","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["emoji 👍🏽 mixtrailing."],"ok":{"key":"emoji 👍🏽 mixtrailing.","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["a.b.cΣΊΣΥΦΟΣ"],"ok":{"key":"a.b.cσίσυφος","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ünïcödésrc/a/b.ts"],"ok":{"key":"ünïcödésrc/a/b.ts","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["﻿bom:"],"ok":{"key":"bom:","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["﻿boma"],"ok":{"key":"boma","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["a:b:cemoji 👍🏽 mix"],"ok":{"key":"a:b:cemoji 👍🏽 mix","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":[".leadingkey_name-1"],"ok":{"key":".leadingkey_name-1","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["  padded  ./x/**/*.json"],"ok":{"key":"padded  ./x/**/*.json","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["a..b:"],"ok":{"key":"a..b:","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["hellotab\tseparated"],"ok":{"key":"hellotab\tseparated","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["helloabc"],"ok":{"key":"helloabc","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["a.b.chello world"],"ok":{"key":"a.b.chello world","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":[".leadinghello"],"ok":{"key":".leadinghello","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["./x/**/*.json日本語のテキスト"],"ok":{"key":"./x/**/*.json日本語のテキスト","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["tab\tseparatedİstanbul"],"ok":{"key":"tab\tseparatedi̇stanbul","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["::"],"ok":{"key":"::","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["éa.b.c"],"ok":{"key":"éa.b.c","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["Hello Worldline1\nline2"],"ok":{"key":"hello worldline1\nline2","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ünïcödé😀"],"ok":{"key":"ünïcödé😀","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["abcHello World"],"ok":{"key":"abchello world","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ΣΊΣΥΦΟΣemoji 👍🏽 mix"],"ok":{"key":"σίσυφοσemoji 👍🏽 mix","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ab:"],"ok":{"key":"ab:","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ns:key.pathtab\tseparated"],"ok":{"key":"ns:key.pathtab\tseparated","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["./x/**/*.jsonemoji 👍🏽 mix"],"ok":{"key":"./x/**/*.jsonemoji 👍🏽 mix","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ns:key.patha:b:c"],"ok":{"key":"ns:key.patha:b:c","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ab{name} has {count} items"],"ok":{"key":"ab{name} has {count} items","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["abc  padded  "],"ok":{"key":"abc  padded","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["line1\nline2ünïcödé"],"ok":{"key":"line1\nline2ünïcödé","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["  padded  tab\tseparated"],"ok":{"key":"padded  tab\tseparated","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["  padded  abc"],"ok":{"key":"padded  abc","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["日本語のテキスト日本語のテキスト"],"ok":{"key":"日本語のテキスト日本語のテキスト","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["tab\tseparatedsrc/a/b.ts"],"ok":{"key":"tab\tseparatedsrc/a/b.ts","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["a:b:c﻿bom"],"ok":{"key":"a:b:c﻿bom","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["a😀b😀cabc"],"ok":{"key":"a😀b😀cabc","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["a..b﻿bom"],"ok":{"key":"a..b﻿bom","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ns:key.pathabc"],"ok":{"key":"ns:key.pathabc","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["line1\nline2straße"],"ok":{"key":"line1\nline2straße","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":[":.leading"],"ok":{"key":":.leading","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["😀a"],"ok":{"key":"😀a","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["a﻿bom"],"ok":{"key":"a﻿bom","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["﻿bomns:key.path"],"ok":{"key":"bomns:key.path","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["日本語のテキストa"],"ok":{"key":"日本語のテキストa","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ab.leading"],"ok":{"key":"ab.leading","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["./x/**/*.jsonab"],"ok":{"key":"./x/**/*.jsonab","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["Hello World﻿bom"],"ok":{"key":"hello world﻿bom","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["a😀b😀cünïcödé"],"ok":{"key":"a😀b😀cünïcödé","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["a😀b😀c{name} has {count} items"],"ok":{"key":"a😀b😀c{name} has {count} items","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["helloé"],"ok":{"key":"helloé","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["aba"],"ok":{"key":"aba","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["﻿bomab"],"ok":{"key":"bomab","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["  padded    padded  "],"ok":{"key":"padded    padded","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["a.b.cünïcödé"],"ok":{"key":"a.b.cünïcödé","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["line1\nline2😀"],"ok":{"key":"line1\nline2😀","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["İstanbulİstanbul"],"ok":{"key":"i̇stanbuli̇stanbul","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["tab\tseparatedtrailing."],"ok":{"key":"tab\tseparatedtrailing.","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["  padded  ﻿bom"],"ok":{"key":"padded  ﻿bom","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["İstanbul  padded  "],"ok":{"key":"i̇stanbul  padded","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["a:b:c😀"],"ok":{"key":"a:b:c😀","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["{name} has {count} itemsHello World"],"ok":{"key":"{name} has {count} itemshello world","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["a:b:cline1\nline2"],"ok":{"key":"a:b:cline1\nline2","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["tab\tseparatedab"],"ok":{"key":"tab\tseparatedab","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["😀hello"],"ok":{"key":"😀hello","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["a😀b😀ctrailing."],"ok":{"key":"a😀b😀ctrailing.","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["src/a/b.ts{name} has {count} items"],"ok":{"key":"src/a/b.ts{name} has {count} items","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["﻿bom.leading"],"ok":{"key":"bom.leading","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["İstanbula"],"ok":{"key":"i̇stanbula","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["abc.leading"],"ok":{"key":"abc.leading","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["HELLOé"],"ok":{"key":"helloé","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["src/a/b.tsΣΊΣΥΦΟΣ"],"ok":{"key":"src/a/b.tsσίσυφος","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["abctrailing."],"ok":{"key":"abctrailing.","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["😀.leading"],"ok":{"key":"😀.leading","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["hello worldns:key.path"],"ok":{"key":"hello worldns:key.path","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ns:key.pathHELLO"],"ok":{"key":"ns:key.pathhello","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["é﻿bom"],"ok":{"key":"é﻿bom","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["tab\tseparatedhello"],"ok":{"key":"tab\tseparatedhello","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["tab\tseparateda:b:c"],"ok":{"key":"tab\tseparateda:b:c","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["a😀b😀cab"],"ok":{"key":"a😀b😀cab","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["key_name-1src/a/b.ts"],"ok":{"key":"key_name-1src/a/b.ts","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["日本語のテキスト./x/**/*.json"],"ok":{"key":"日本語のテキスト./x/**/*.json","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":[":ünïcödé"],"ok":{"key":":ünïcödé","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["a..bé"],"ok":{"key":"a..bé","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["aa..b"],"ok":{"key":"aa..b","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["﻿bomé"],"ok":{"key":"bomé","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["aé"],"ok":{"key":"aé","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ünïcödékey_name-1"],"ok":{"key":"ünïcödékey_name-1","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["﻿bomHELLO"],"ok":{"key":"bomhello","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["a:b:c./x/**/*.json"],"ok":{"key":"a:b:c./x/**/*.json","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["straßeemoji 👍🏽 mix"],"ok":{"key":"straßeemoji 👍🏽 mix","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["  padded  hello world"],"ok":{"key":"padded  hello world","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ΣΊΣΥΦΟΣ:"],"ok":{"key":"σίσυφος:","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["  padded  emoji 👍🏽 mix"],"ok":{"key":"padded  emoji 👍🏽 mix","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["İstanbulab"],"ok":{"key":"i̇stanbulab","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["étab\tseparated"],"ok":{"key":"étab\tseparated","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["{name} has {count} itemskey_name-1"],"ok":{"key":"{name} has {count} itemskey_name-1","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["日本語のテキストΣΊΣΥΦΟΣ"],"ok":{"key":"日本語のテキストσίσυφος","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["trailing.İstanbul"],"ok":{"key":"trailing.i̇stanbul","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ns:key.path😀"],"ok":{"key":"ns:key.path😀","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["😀src/a/b.ts"],"ok":{"key":"😀src/a/b.ts","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["hello worldemoji 👍🏽 mix"],"ok":{"key":"hello worldemoji 👍🏽 mix","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ünïcödéΣΊΣΥΦΟΣ"],"ok":{"key":"ünïcödéσίσυφος","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["héllo wörld"],"ok":{"key":"héllo wörld","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["👍🏽 thumbs"],"ok":{"key":"👍🏽 thumbs","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["日本語"],"ok":{"key":"日本語","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ılık ırmak"],"ok":{"key":"ılık ırmak","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["👨‍👩‍👧 family"],"ok":{"key":"👨‍👩‍👧 family","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["a b"],"ok":{"key":"a b","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["a😀b"],"ok":{"key":"a😀b","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["a²b x½ y①"],"ok":{"key":"a²b x½ y①","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["aⅠb Ⅻ"],"ok":{"key":"aⅰb ⅻ","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["a𐐀b 𝐀bc"],"ok":{"key":"a𐐨b 𝐀bc","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["कि ٣٤"],"ok":{"key":"कि ٣٤","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["Iı İi"],"ok":{"key":"iı i̇i","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["K K k"],"ok":{"key":"k k k","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ſ s S"],"ok":{"key":"ſ s s","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["x‍y 👨‍👩‍👧"],"ok":{"key":"x‍y 👨‍👩‍👧","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["a b c　d"],"ok":{"key":"a b c　d","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["١٢٣ ٤٥"],"ok":{"key":"١٢٣ ٤٥","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["𝟘𝟙 ²³"],"ok":{"key":"𝟘𝟙 ²³","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["snake_case foo-bar o'neil"],"ok":{"key":"snake_case foo-bar o'neil","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ǅungla Ǆ"],"ok":{"key":"ǆungla ǆ","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["one\r\ntwo threefour"],"ok":{"key":"one\r\ntwo threefour","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["café café"],"ok":{"key":"café café","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ΣΑΣ σας ς"],"ok":{"key":"σας σας ς","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingWhenExpression","args":["﻿bom"],"ok":{"type":"identifier","name":"bom"}}
+{"fn":"parseKeybindingWhenExpression","args":[".leading"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["emoji 👍🏽 mix"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["ΣΊΣΥΦΟΣab"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["a..b"],"ok":{"type":"identifier","name":"a..b"}}
+{"fn":"parseKeybindingWhenExpression","args":["é"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["a😀b😀c"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["  padded  "],"ok":{"type":"identifier","name":"padded"}}
+{"fn":"parseKeybindingWhenExpression","args":[":HELLO"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["İstanbul"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["ns:key.path"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["HELLO"],"ok":{"type":"identifier","name":"HELLO"}}
+{"fn":"parseKeybindingWhenExpression","args":["./x/**/*.json"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":[":ab"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["ünïcödéa😀b😀c"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["line1\nline2hello"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["helloa..b"],"ok":{"type":"identifier","name":"helloa..b"}}
+{"fn":"parseKeybindingWhenExpression","args":["tab\tseparatedΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["hello world"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["Hello Worldline1\nline2"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["ünïcödé"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["ΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["😀"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["a..b﻿bom"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["Hello World"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["﻿bomΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["{name} has {count} items"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["absrc/a/b.ts"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["ünïcödétab\tseparated"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["abc"],"ok":{"type":"identifier","name":"abc"}}
+{"fn":"parseKeybindingWhenExpression","args":["a"],"ok":{"type":"identifier","name":"a"}}
+{"fn":"parseKeybindingWhenExpression","args":["straßea"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["ab"],"ok":{"type":"identifier","name":"ab"}}
+{"fn":"parseKeybindingWhenExpression","args":["key_name-1"],"ok":{"type":"identifier","name":"key_name-1"}}
+{"fn":"parseKeybindingWhenExpression","args":["straße"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["日本語のテキスト"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["a:b:c"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["trailing."],"ok":{"type":"identifier","name":"trailing."}}
+{"fn":"parseKeybindingWhenExpression","args":[""],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["line1\nline2"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["ΣΊΣΥΦΟΣhello"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["a.b.c"],"ok":{"type":"identifier","name":"a.b.c"}}
+{"fn":"parseKeybindingWhenExpression","args":["a..b./x/**/*.json"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["ékey_name-1"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["Hello Worlda.b.c"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["key_name-1ab"],"ok":{"type":"identifier","name":"key_name-1ab"}}
+{"fn":"parseKeybindingWhenExpression","args":["tab\tseparated"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["hello"],"ok":{"type":"identifier","name":"hello"}}
+{"fn":"parseKeybindingWhenExpression","args":["é﻿bom"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["ΣΊΣΥΦΟΣ./x/**/*.json"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":[":straße"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["line1\nline2  padded  "],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["straßeemoji 👍🏽 mix"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["hellotab\tseparated"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["src/a/b.ts"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["./x/**/*.json{name} has {count} items"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["a😀b😀c.leading"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["abca"],"ok":{"type":"identifier","name":"abca"}}
+{"fn":"parseKeybindingWhenExpression","args":["a..bab"],"ok":{"type":"identifier","name":"a..bab"}}
+{"fn":"parseKeybindingWhenExpression","args":["😀Hello World"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["ünïcödé.leading"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["::"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["./x/**/*.jsontrailing."],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["😀straße"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["hellohello world"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["{name} has {count} itemstrailing."],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["ΣΊΣΥΦΟΣhello world"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["  padded  key_name-1"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["./x/**/*.jsonline1\nline2"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["a.b.csrc/a/b.ts"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["{name} has {count} items.leading"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["tab\tseparatedHELLO"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["  padded  ab"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["emoji 👍🏽 mixstraße"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["日本語のテキストΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["a:b:ca"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["aΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["a.leading"],"ok":{"type":"identifier","name":"a.leading"}}
+{"fn":"parseKeybindingWhenExpression","args":["  padded  hello"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["  padded  ns:key.path"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["Hello Worldtrailing."],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["hello worldünïcödé"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":[":"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["ahello world"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["a.b.ca..b"],"ok":{"type":"identifier","name":"a.b.ca..b"}}
+{"fn":"parseKeybindingWhenExpression","args":["trailing.src/a/b.ts"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["é{name} has {count} items"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["a..ba😀b😀c"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["İstanbul﻿bom"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["helloemoji 👍🏽 mix"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["😀a😀b😀c"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["HELLO{name} has {count} items"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["./x/**/*.json.leading"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["key_name-1tab\tseparated"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["src/a/b.ts日本語のテキスト"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["{name} has {count} itemsünïcödé"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["abchello world"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["./x/**/*.jsontab\tseparated"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":[":a:b:c"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["line1\nline2./x/**/*.json"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["éemoji 👍🏽 mix"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["  padded  trailing."],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["Hello World{name} has {count} items"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["ns:key.patha.b.c"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["trailing.日本語のテキスト"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["key_name-1.leading"],"ok":{"type":"identifier","name":"key_name-1.leading"}}
+{"fn":"parseKeybindingWhenExpression","args":["line1\nline2a😀b😀c"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["hello world﻿bom"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["😀  padded  "],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["line1\nline2line1\nline2"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":[".leadingab"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["hello worldİstanbul"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["{name} has {count} itemstab\tseparated"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["key_name-1a"],"ok":{"type":"identifier","name":"key_name-1a"}}
+{"fn":"parseKeybindingWhenExpression","args":["éa"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["hello﻿bom"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["straße😀"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["a.b.ca"],"ok":{"type":"identifier","name":"a.b.ca"}}
+{"fn":"parseKeybindingWhenExpression","args":["日本語のテキストemoji 👍🏽 mix"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["﻿bomabc"],"ok":{"type":"identifier","name":"bomabc"}}
+{"fn":"parseKeybindingWhenExpression","args":["abcsrc/a/b.ts"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["key_name-1line1\nline2"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["İstanbula.b.c"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["ans:key.path"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["a..ba:b:c"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["HELLO  padded  "],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["ΣΊΣΥΦΟΣ{name} has {count} items"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["😀a:b:c"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["hello worldemoji 👍🏽 mix"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["éa..b"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["  padded  ΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["a😀b😀ca:b:c"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["HELLOHELLO"],"ok":{"type":"identifier","name":"HELLOHELLO"}}
+{"fn":"parseKeybindingWhenExpression","args":["src/a/b.ts:"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["src/a/b.ts😀"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["hello worldtrailing."],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["tab\tseparateda:b:c"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["abé"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["hello worlda:b:c"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["hello worlda..b"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["  padded  emoji 👍🏽 mix"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["a﻿bom"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["a:b:ca.b.c"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["emoji 👍🏽 mixΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["ünïcödéa"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["日本語のテキストa"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["tab\tseparatedünïcödé"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["hello world{name} has {count} items"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["{name} has {count} items﻿bom"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["HELLOhello"],"ok":{"type":"identifier","name":"HELLOhello"}}
+{"fn":"parseKeybindingWhenExpression","args":["Hello World😀"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":[".leadingkey_name-1"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["tab\tseparatedhello"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["a:b:c./x/**/*.json"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["İstanbulHELLO"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["Hello WorldHELLO"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["ΣΊΣΥΦΟΣé"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["HELLO:"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["abcstraße"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":[".leading﻿bom"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["a:b:c:"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":[".leadingé"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["😀trailing."],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["a.b.ctab\tseparated"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["key_name-1:"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["日本語のテキストab"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["😀./x/**/*.json"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["./x/**/*.jsonstraße"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["helloΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["line1\nline2key_name-1"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["﻿bom.leading"],"ok":{"type":"identifier","name":"bom.leading"}}
+{"fn":"parseKeybindingWhenExpression","args":["日本語のテキスト.leading"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["a:b:c日本語のテキスト"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["a😀b😀cΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["İstanbul./x/**/*.json"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["HELLOab"],"ok":{"type":"identifier","name":"HELLOab"}}
+{"fn":"parseKeybindingWhenExpression","args":["ns:key.pathtrailing."],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["a.b.c:"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["ünïcödéabc"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["ΣΊΣΥΦΟΣΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["aba😀b😀c"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["a.b.c日本語のテキスト"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["aba.b.c"],"ok":{"type":"identifier","name":"aba.b.c"}}
+{"fn":"parseKeybindingWhenExpression","args":["a..bline1\nline2"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["helloa:b:c"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["helloabc"],"ok":{"type":"identifier","name":"helloabc"}}
+{"fn":"parseKeybindingWhenExpression","args":["trailing.trailing."],"ok":{"type":"identifier","name":"trailing.trailing."}}
+{"fn":"parseKeybindingWhenExpression","args":["é:"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["aa:b:c"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["straße{name} has {count} items"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["Hello WorldΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["trailing.a.b.c"],"ok":{"type":"identifier","name":"trailing.a.b.c"}}
+{"fn":"parseKeybindingWhenExpression","args":["ΣΊΣΥΦΟΣabc"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["😀key_name-1"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["Hello Worlda"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["ΣΊΣΥΦΟΣ﻿bom"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["a.b.cHello World"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["key_name-1abc"],"ok":{"type":"identifier","name":"key_name-1abc"}}
+{"fn":"parseKeybindingWhenExpression","args":["key_name-1﻿bom"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["aé"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["héllo wörld"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["👍🏽 thumbs"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["日本語"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["ılık ırmak"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["👨‍👩‍👧 family"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["a b"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["a😀b"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["a²b x½ y①"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["aⅠb Ⅻ"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["a𐐀b 𝐀bc"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["कि ٣٤"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["Iı İi"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["K K k"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["ſ s S"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["x‍y 👨‍👩‍👧"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["a b c　d"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["١٢٣ ٤٥"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["𝟘𝟙 ²³"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["snake_case foo-bar o'neil"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["ǅungla Ǆ"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["one\r\ntwo threefour"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["café café"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["ΣΑΣ σας ς"],"ok":null}
+{"fn":"compileKeybindingRule","args":[{"a":"b"}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"compileKeybindingRule","args":[[]],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"compileKeybindingRule","args":[0],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"compileKeybindingRule","args":[null],"error":"Cannot read properties of null (reading 'key')"}
+{"fn":"compileKeybindingRule","args":[{}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"compileKeybindingRule","args":[true],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"compileKeybindingRule","args":[{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"compileKeybindingRule","args":["x"],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"compileKeybindingRule","args":[["a",1]],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"encodeKeybindingShortcut","args":["x"],"ok":null}
+{"fn":"encodeKeybindingShortcut","args":[{"a":"b"}],"ok":null}
+{"fn":"encodeKeybindingShortcut","args":[["a",1]],"ok":null}
+{"fn":"encodeKeybindingShortcut","args":[null],"error":"Cannot read properties of null (reading 'modKey')"}
+{"fn":"encodeKeybindingShortcut","args":[true],"ok":null}
+{"fn":"encodeKeybindingShortcut","args":[{"a":{"b":"c"}}],"ok":null}
+{"fn":"encodeKeybindingShortcut","args":[[]],"ok":null}
+{"fn":"encodeKeybindingShortcut","args":[{}],"ok":null}
+{"fn":"encodeKeybindingShortcut","args":[0],"ok":null}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"not","node":{"type":"identifier","name":"İstanbul"}},"right":{"type":"and","left":{"type":"and","left":{"type":"or","left":{"type":"and","left":null,"right":null},"right":{"type":"and","left":null,"right":null}},"right":{"type":"and","left":{"type":"or","left":null,"right":null},"right":{"type":"identifier","name":""}}},"right":{"type":"and","left":{"type":"identifier","name":"😀"},"right":{"type":"identifier","name":""}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"or","left":{"type":"not","node":{"type":"and","left":{"type":"not","node":{"type":"not","node":null}},"right":{"type":"and","left":{"type":"identifier","name":"hello"},"right":{"type":"not","node":null}}}},"right":{"type":"and","left":{"type":"and","left":{"type":"identifier","name":"ns:key.path"},"right":{"type":"or","left":{"type":"not","node":null},"right":{"type":"or","left":null,"right":null}}},"right":{"type":"not","node":{"type":"identifier","name":"straßetab\tseparated"}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"identifier","name":"./x/**/*.json"}],"ok":"./x/**/*.json"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"or","left":{"type":"or","left":{"type":"and","left":{"type":"not","node":null},"right":{"type":"not","node":null}},"right":{"type":"and","left":{"type":"not","node":null},"right":{"type":"or","left":null,"right":null}}},"right":{"type":"or","left":{"type":"identifier","name":"日本語のテキスト"},"right":{"type":"and","left":{"type":"not","node":null},"right":{"type":"and","left":null,"right":null}}}},"right":{"type":"identifier","name":"line1\nline2"}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"or","left":{"type":"and","left":{"type":"not","node":{"type":"identifier","name":""}},"right":{"type":"or","left":{"type":"and","left":null,"right":null},"right":{"type":"or","left":null,"right":null}}},"right":{"type":"and","left":{"type":"identifier","name":"日本語のテキスト"},"right":{"type":"and","left":{"type":"identifier","name":"ünïcödé"},"right":{"type":"and","left":null,"right":null}}}},"right":{"type":"or","left":{"type":"or","left":{"type":"not","node":{"type":"not","node":null}},"right":{"type":"and","left":{"type":"not","node":null},"right":{"type":"identifier","name":"straße"}}},"right":{"type":"or","left":{"type":"or","left":{"type":"or","left":null,"right":null},"right":{"type":"identifier","name":"﻿bom"}},"right":{"type":"and","left":{"type":"not","node":null},"right":{"type":"or","left":null,"right":null}}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[true],"ok":{"$undefined":true}}
+{"fn":"encodeKeybindingWhen","args":[{"type":"or","left":{"type":"or","left":{"type":"and","left":{"type":"identifier","name":"a.b.c"},"right":{"type":"and","left":{"type":"not","node":null},"right":{"type":"and","left":null,"right":null}}},"right":{"type":"and","left":{"type":"or","left":{"type":"not","node":null},"right":{"type":"or","left":null,"right":null}},"right":{"type":"or","left":{"type":"not","node":null},"right":{"type":"identifier","name":"ünïcödé"}}}},"right":{"type":"and","left":{"type":"and","left":{"type":"not","node":{"type":"or","left":null,"right":null}},"right":{"type":"identifier","name":"abc"}},"right":{"type":"identifier","name":"{name} has {count} itemsab"}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"and","left":{"type":"identifier","name":"tab\tseparated"},"right":{"type":"or","left":{"type":"and","left":{"type":"and","left":null,"right":null},"right":{"type":"identifier","name":"  padded  "}},"right":{"type":"and","left":{"type":"identifier","name":"a😀b😀c"},"right":{"type":"not","node":null}}}},"right":{"type":"not","node":{"type":"not","node":{"type":"or","left":{"type":"or","left":null,"right":null},"right":{"type":"or","left":null,"right":null}}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"encodeKeybindingWhen","args":[{"type":"not","node":{"type":"and","left":{"type":"not","node":{"type":"and","left":{"type":"identifier","name":"line1\nline2"},"right":{"type":"and","left":null,"right":null}}},"right":{"type":"identifier","name":"Hello World"}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"identifier","name":"a..b"}],"ok":"a..b"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"and","left":{"type":"not","node":{"type":"identifier","name":"a😀b😀c"}},"right":{"type":"or","left":{"type":"identifier","name":"emoji 👍🏽 mixhello"},"right":{"type":"not","node":{"type":"and","left":null,"right":null}}}},"right":{"type":"or","left":{"type":"not","node":{"type":"not","node":{"type":"identifier","name":"İstanbul"}}},"right":{"type":"or","left":{"type":"not","node":{"type":"not","node":null}},"right":{"type":"not","node":{"type":"or","left":null,"right":null}}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"not","node":{"type":"or","left":{"type":"identifier","name":"ünïcödé"},"right":{"type":"and","left":{"type":"not","node":{"type":"and","left":null,"right":null}},"right":{"type":"identifier","name":"İstanbulHELLO"}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"not","node":{"type":"identifier","name":"ab"}}],"ok":"!ab"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"not","node":{"type":"identifier","name":":"}}],"ok":"!:"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"identifier","name":"emoji 👍🏽 mix"}],"ok":"emoji 👍🏽 mix"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"not","node":{"type":"or","left":{"type":"not","node":{"type":"identifier","name":"ünïcödé"}},"right":{"type":"not","node":{"type":"not","node":{"type":"or","left":null,"right":null}}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"identifier","name":"a😀b😀c"}],"ok":"a😀b😀c"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"identifier","name":"emoji 👍🏽 mix"},"right":{"type":"and","left":{"type":"and","left":{"type":"and","left":{"type":"and","left":null,"right":null},"right":{"type":"not","node":null}},"right":{"type":"not","node":{"type":"identifier","name":"a😀b😀cstraße"}}},"right":{"type":"identifier","name":"日本語のテキストtab\tseparated"}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"not","node":{"type":"or","left":{"type":"or","left":{"type":"or","left":null,"right":null},"right":{"type":"identifier","name":"  padded  a"}},"right":{"type":"and","left":{"type":"or","left":null,"right":null},"right":{"type":"and","left":null,"right":null}}}},"right":{"type":"identifier","name":"  padded  "}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"or","left":{"type":"not","node":{"type":"and","left":{"type":"and","left":{"type":"or","left":null,"right":null},"right":{"type":"or","left":null,"right":null}},"right":{"type":"not","node":{"type":"not","node":null}}}},"right":{"type":"not","node":{"type":"identifier","name":"İstanbul"}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"not","node":{"type":"identifier","name":"ünïcödé"}},"right":{"type":"and","left":{"type":"or","left":{"type":"or","left":{"type":"or","left":null,"right":null},"right":{"type":"not","node":null}},"right":{"type":"identifier","name":":"}},"right":{"type":"identifier","name":"a😀b😀c"}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[null],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"not","node":{"type":"and","left":{"type":"and","left":{"type":"and","left":{"type":"and","left":null,"right":null},"right":{"type":"identifier","name":"{name} has {count} items"}},"right":{"type":"and","left":{"type":"and","left":null,"right":null},"right":{"type":"identifier","name":"{name} has {count} items"}}},"right":{"type":"not","node":{"type":"or","left":{"type":"or","left":null,"right":null},"right":{"type":"not","node":null}}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"identifier","name":"ΣΊΣΥΦΟΣ"},"right":{"type":"and","left":{"type":"identifier","name":"key_name-1"},"right":{"type":"and","left":{"type":"or","left":{"type":"or","left":null,"right":null},"right":{"type":"identifier","name":"src/a/b.tsa"}},"right":{"type":"and","left":{"type":"or","left":null,"right":null},"right":{"type":"identifier","name":"trailing.tab\tseparated"}}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"identifier","name":"日本語のテキスト"}],"ok":"日本語のテキスト"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"not","node":{"type":"not","node":{"type":"not","node":{"type":"identifier","name":"  padded  "}}}}],"ok":"!!!  padded  "}
+{"fn":"encodeKeybindingWhen","args":[{"type":"not","node":{"type":"identifier","name":"hello world"}}],"ok":"!hello world"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"or","left":{"type":"and","left":{"type":"and","left":{"type":"identifier","name":"﻿bom"},"right":{"type":"identifier","name":"emoji 👍🏽 mix"}},"right":{"type":"or","left":{"type":"identifier","name":"İstanbul"},"right":{"type":"and","left":null,"right":null}}},"right":{"type":"and","left":{"type":"and","left":{"type":"identifier","name":".leading"},"right":{"type":"identifier","name":"ünïcödé"}},"right":{"type":"not","node":{"type":"not","node":null}}}},"right":{"type":"or","left":{"type":"and","left":{"type":"identifier","name":"Hello World"},"right":{"type":"and","left":{"type":"not","node":null},"right":{"type":"not","node":null}}},"right":{"type":"and","left":{"type":"identifier","name":"😀"},"right":{"type":"and","left":{"type":"and","left":null,"right":null},"right":{"type":"identifier","name":"a😀b😀cemoji 👍🏽 mix"}}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"or","left":{"type":"and","left":{"type":"not","node":{"type":"not","node":null}},"right":{"type":"identifier","name":"trailing."}},"right":{"type":"and","left":{"type":"or","left":{"type":"identifier","name":"./x/**/*.json"},"right":{"type":"or","left":null,"right":null}},"right":{"type":"and","left":{"type":"and","left":null,"right":null},"right":{"type":"or","left":null,"right":null}}}},"right":{"type":"or","left":{"type":"and","left":{"type":"and","left":{"type":"and","left":null,"right":null},"right":{"type":"identifier","name":"a"}},"right":{"type":"or","left":{"type":"or","left":null,"right":null},"right":{"type":"not","node":null}}},"right":{"type":"identifier","name":"line1\nline2"}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"or","left":{"type":"or","left":{"type":"or","left":{"type":"not","node":{"type":"identifier","name":"straße"}},"right":{"type":"not","node":{"type":"or","left":null,"right":null}}},"right":{"type":"and","left":{"type":"and","left":{"type":"not","node":null},"right":{"type":"not","node":null}},"right":{"type":"not","node":{"type":"identifier","name":"key_name-1line1\nline2"}}}},"right":{"type":"or","left":{"type":"and","left":{"type":"identifier","name":"hello"},"right":{"type":"identifier","name":"emoji 👍🏽 mix"}},"right":{"type":"or","left":{"type":"not","node":{"type":"and","left":null,"right":null}},"right":{"type":"and","left":{"type":"identifier","name":"  padded  "},"right":{"type":"identifier","name":"trailing."}}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"identifier","name":"hello"}],"ok":"hello"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"identifier","name":"emoji 👍🏽 mix"},"right":{"type":"identifier","name":"straße"}}],"ok":"emoji 👍🏽 mix && straße"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"not","node":{"type":"identifier","name":"emoji 👍🏽 mix"}}],"ok":"!emoji 👍🏽 mix"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"not","node":{"type":"identifier","name":"ünïcödé"}}],"ok":"!ünïcödé"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"identifier","name":"tab\tseparated"}],"ok":"tab\tseparated"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"not","node":{"type":"not","node":{"type":"or","left":{"type":"identifier","name":"key_name-1"},"right":{"type":"and","left":null,"right":null}}}},"right":{"type":"not","node":{"type":"not","node":{"type":"or","left":{"type":"or","left":null,"right":null},"right":{"type":"and","left":null,"right":null}}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"identifier","name":"Hello World"}],"ok":"Hello World"}
+{"fn":"encodeKeybindingWhen","args":[["a",1]],"ok":{"$undefined":true}}
+{"fn":"encodeKeybindingWhen","args":[{"type":"identifier","name":"hello world"}],"ok":"hello world"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"or","left":{"type":"not","node":{"type":"identifier","name":"trailing."}},"right":{"type":"and","left":{"type":"and","left":{"type":"not","node":{"type":"and","left":null,"right":null}},"right":{"type":"and","left":{"type":"or","left":null,"right":null},"right":{"type":"and","left":null,"right":null}}},"right":{"type":"and","left":{"type":"identifier","name":"ns:key.path"},"right":{"type":"and","left":{"type":"identifier","name":"a.b.c"},"right":{"type":"not","node":null}}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"and","left":{"type":"or","left":{"type":"not","node":{"type":"or","left":null,"right":null}},"right":{"type":"identifier","name":"a😀b😀c"}},"right":{"type":"not","node":{"type":"and","left":{"type":"not","node":null},"right":{"type":"identifier","name":":ünïcödé"}}}},"right":{"type":"identifier","name":"abcemoji 👍🏽 mix"}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"not","node":{"type":"identifier","name":"﻿bom"}}],"ok":"!﻿bom"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"or","left":{"type":"or","left":{"type":"not","node":{"type":"not","node":null}},"right":{"type":"not","node":{"type":"not","node":null}}},"right":{"type":"and","left":{"type":"and","left":{"type":"and","left":null,"right":null},"right":{"type":"and","left":null,"right":null}},"right":{"type":"and","left":{"type":"and","left":null,"right":null},"right":{"type":"not","node":null}}}},"right":{"type":"and","left":{"type":"or","left":{"type":"and","left":{"type":"not","node":null},"right":{"type":"and","left":null,"right":null}},"right":{"type":"identifier","name":"﻿bom😀"}},"right":{"type":"not","node":{"type":"or","left":{"type":"identifier","name":"ΣΊΣΥΦΟΣ"},"right":{"type":"and","left":null,"right":null}}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"or","left":{"type":"not","node":{"type":"identifier","name":"Hello World"}},"right":{"type":"identifier","name":"HELLOa..b"}}],"ok":"!Hello World || HELLOa..b"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"identifier","name":"helloemoji 👍🏽 mix"}],"ok":"helloemoji 👍🏽 mix"}
+{"fn":"encodeKeybindingWhen","args":[{}],"ok":{"$undefined":true}}
+{"fn":"encodeKeybindingWhen","args":["x"],"ok":{"$undefined":true}}
+{"fn":"encodeKeybindingWhen","args":[{"type":"or","left":{"type":"identifier","name":"{name} has {count} items"},"right":{"type":"not","node":{"type":"and","left":{"type":"not","node":{"type":"not","node":null}},"right":{"type":"not","node":{"type":"and","left":null,"right":null}}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"or","left":{"type":"not","node":{"type":"or","left":{"type":"and","left":{"type":"not","node":null},"right":{"type":"not","node":null}},"right":{"type":"identifier","name":".leading"}}},"right":{"type":"and","left":{"type":"identifier","name":"tab\tseparated"},"right":{"type":"and","left":{"type":"and","left":{"type":"not","node":null},"right":{"type":"identifier","name":"é"}},"right":{"type":"identifier","name":"a"}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"or","left":{"type":"not","node":{"type":"not","node":{"type":"or","left":{"type":"or","left":null,"right":null},"right":{"type":"identifier","name":"  padded  "}}}},"right":{"type":"not","node":{"type":"or","left":{"type":"not","node":{"type":"and","left":null,"right":null}},"right":{"type":"identifier","name":"日本語のテキスト"}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[[]],"ok":{"$undefined":true}}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"and","left":{"type":"and","left":{"type":"identifier","name":"ΣΊΣΥΦΟΣ.leading"},"right":{"type":"or","left":{"type":"not","node":null},"right":{"type":"and","left":null,"right":null}}},"right":{"type":"identifier","name":"  padded  "}},"right":{"type":"or","left":{"type":"identifier","name":"ΣΊΣΥΦΟΣ"},"right":{"type":"identifier","name":"hello world"}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"not","node":{"type":"not","node":{"type":"and","left":{"type":"not","node":{"type":"identifier","name":""}},"right":{"type":"or","left":{"type":"not","node":null},"right":{"type":"identifier","name":"./x/**/*.json"}}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"identifier","name":":hello"}],"ok":":hello"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"or","left":{"type":"not","node":{"type":"identifier","name":"./x/**/*.json"}},"right":{"type":"or","left":{"type":"and","left":{"type":"identifier","name":"ΣΊΣΥΦΟΣ"},"right":{"type":"identifier","name":"HELLOtrailing."}},"right":{"type":"not","node":{"type":"not","node":{"type":"and","left":null,"right":null}}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"not","node":{"type":"or","left":{"type":"identifier","name":"日本語のテキスト"},"right":{"type":"not","node":{"type":"not","node":{"type":"and","left":null,"right":null}}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"and","left":{"type":"identifier","name":"tab\tseparated"},"right":{"type":"or","left":{"type":"identifier","name":"﻿bom"},"right":{"type":"and","left":{"type":"not","node":null},"right":{"type":"not","node":null}}}},"right":{"type":"identifier","name":"emoji 👍🏽 mix"}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"identifier","name":"abc"},"right":{"type":"not","node":{"type":"not","node":{"type":"not","node":{"type":"identifier","name":".leading"}}}}}],"ok":"abc && !!!.leading"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"and","left":{"type":"identifier","name":"./x/**/*.jsonstraße"},"right":{"type":"identifier","name":"trailing."}},"right":{"type":"and","left":{"type":"not","node":{"type":"not","node":{"type":"or","left":null,"right":null}}},"right":{"type":"and","left":{"type":"or","left":{"type":"not","node":null},"right":{"type":"identifier","name":"日本語のテキスト"}},"right":{"type":"not","node":{"type":"not","node":null}}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"identifier","name":"ΣΊΣΥΦΟΣ"}],"ok":"ΣΊΣΥΦΟΣ"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"not","node":{"type":"identifier","name":"abc"}},"right":{"type":"or","left":{"type":"and","left":{"type":"identifier","name":"ΣΊΣΥΦΟΣ"},"right":{"type":"identifier","name":"ΣΊΣΥΦΟΣ"}},"right":{"type":"and","left":{"type":"not","node":{"type":"identifier","name":"﻿bom"}},"right":{"type":"identifier","name":"  padded  tab\tseparated"}}}}],"ok":"!abc && (ΣΊΣΥΦΟΣ && ΣΊΣΥΦΟΣ || !﻿bom &&   padded  tab\tseparated)"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"not","node":{"type":"identifier","name":"İstanbulHello World"}}],"ok":"!İstanbulHello World"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"not","node":{"type":"not","node":{"type":"identifier","name":"emoji 👍🏽 mix"}}},"right":{"type":"not","node":{"type":"or","left":{"type":"and","left":{"type":"or","left":null,"right":null},"right":{"type":"and","left":null,"right":null}},"right":{"type":"or","left":{"type":"identifier","name":"trailing."},"right":{"type":"not","node":null}}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"not","node":{"type":"or","left":{"type":"identifier","name":"hello worldabc"},"right":{"type":"not","node":{"type":"and","left":{"type":"and","left":null,"right":null},"right":{"type":"identifier","name":"a.b.ckey_name-1"}}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[0],"ok":{"$undefined":true}}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"not","node":{"type":"not","node":{"type":"or","left":{"type":"or","left":null,"right":null},"right":{"type":"or","left":null,"right":null}}}},"right":{"type":"and","left":{"type":"or","left":{"type":"or","left":{"type":"not","node":null},"right":{"type":"identifier","name":"trailing."}},"right":{"type":"and","left":{"type":"identifier","name":"src/a/b.ts"},"right":{"type":"and","left":null,"right":null}}},"right":{"type":"identifier","name":"emoji 👍🏽 mix:"}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"or","left":{"type":"identifier","name":"ns:key.path"},"right":{"type":"or","left":{"type":"and","left":{"type":"or","left":null,"right":null},"right":{"type":"identifier","name":"ünïcödé"}},"right":{"type":"identifier","name":"日本語のテキスト"}}},"right":{"type":"identifier","name":"straße"}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"not","node":{"type":"or","left":{"type":"not","node":{"type":"and","left":{"type":"or","left":null,"right":null},"right":{"type":"identifier","name":"tab\tseparated"}}},"right":{"type":"not","node":{"type":"identifier","name":"straße"}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"or","left":{"type":"not","node":{"type":"and","left":{"type":"or","left":{"type":"and","left":null,"right":null},"right":{"type":"not","node":null}},"right":{"type":"identifier","name":"abc"}}},"right":{"type":"and","left":{"type":"or","left":{"type":"and","left":{"type":"identifier","name":"İstanbul"},"right":{"type":"or","left":null,"right":null}},"right":{"type":"or","left":{"type":"not","node":null},"right":{"type":"identifier","name":"abcstraße"}}},"right":{"type":"not","node":{"type":"identifier","name":":"}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"or","left":{"type":"not","node":{"type":"or","left":{"type":"or","left":{"type":"not","node":null},"right":{"type":"or","left":null,"right":null}},"right":{"type":"or","left":{"type":"not","node":null},"right":{"type":"not","node":null}}}},"right":{"type":"identifier","name":"İstanbul"}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"or","left":{"type":"not","node":{"type":"and","left":{"type":"or","left":{"type":"not","node":null},"right":{"type":"and","left":null,"right":null}},"right":{"type":"identifier","name":"HELLO"}}},"right":{"type":"not","node":{"type":"or","left":{"type":"or","left":{"type":"identifier","name":":"},"right":{"type":"and","left":null,"right":null}},"right":{"type":"not","node":{"type":"identifier","name":"  padded  "}}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"identifier","name":"trailing."}],"ok":"trailing."}
+{"fn":"encodeKeybindingWhen","args":[{"type":"identifier","name":".leading日本語のテキスト"}],"ok":".leading日本語のテキスト"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"or","left":{"type":"identifier","name":"ab"},"right":{"type":"not","node":{"type":"identifier","name":"Hello World"}}}],"ok":"ab || !Hello World"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"not","node":{"type":"not","node":{"type":"and","left":{"type":"and","left":{"type":"identifier","name":"Hello World"},"right":{"type":"not","node":null}},"right":{"type":"and","left":{"type":"identifier","name":"line1\nline2"},"right":{"type":"not","node":null}}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"or","left":{"type":"or","left":{"type":"identifier","name":"é"},"right":{"type":"or","left":{"type":"not","node":null},"right":{"type":"identifier","name":"trailing."}}},"right":{"type":"and","left":{"type":"or","left":{"type":"and","left":null,"right":null},"right":{"type":"or","left":null,"right":null}},"right":{"type":"identifier","name":"ab"}}},"right":{"type":"and","left":{"type":"not","node":{"type":"and","left":{"type":"not","node":null},"right":{"type":"and","left":null,"right":null}}},"right":{"type":"identifier","name":"ns:key.path"}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"and","left":{"type":"and","left":{"type":"not","node":{"type":"and","left":null,"right":null}},"right":{"type":"identifier","name":":"}},"right":{"type":"identifier","name":"trailing."}},"right":{"type":"and","left":{"type":"or","left":{"type":"or","left":{"type":"or","left":null,"right":null},"right":{"type":"not","node":null}},"right":{"type":"or","left":{"type":"identifier","name":":"},"right":{"type":"or","left":null,"right":null}}},"right":{"type":"and","left":{"type":"or","left":{"type":"or","left":null,"right":null},"right":{"type":"identifier","name":"straße"}},"right":{"type":"not","node":{"type":"and","left":null,"right":null}}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"and","left":{"type":"identifier","name":"key_name-1"},"right":{"type":"not","node":{"type":"identifier","name":"ns:key.path"}}},"right":{"type":"not","node":{"type":"and","left":{"type":"not","node":{"type":"and","left":null,"right":null}},"right":{"type":"identifier","name":"é"}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"not","node":{"type":"not","node":{"type":"or","left":{"type":"identifier","name":"é:"},"right":{"type":"or","left":{"type":"or","left":null,"right":null},"right":{"type":"or","left":null,"right":null}}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"and","left":{"type":"or","left":{"type":"and","left":{"type":"and","left":null,"right":null},"right":{"type":"or","left":null,"right":null}},"right":{"type":"or","left":{"type":"and","left":null,"right":null},"right":{"type":"not","node":null}}},"right":{"type":"identifier","name":"😀./x/**/*.json"}},"right":{"type":"identifier","name":"tab\tseparatedns:key.path"}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"not","node":{"type":"not","node":{"type":"not","node":{"type":"and","left":{"type":"not","node":null},"right":{"type":"not","node":null}}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"not","node":{"type":"and","left":{"type":"and","left":{"type":"or","left":{"type":"and","left":null,"right":null},"right":{"type":"and","left":null,"right":null}},"right":{"type":"or","left":{"type":"not","node":null},"right":{"type":"not","node":null}}},"right":{"type":"or","left":{"type":"not","node":{"type":"identifier","name":"abc"}},"right":{"type":"or","left":{"type":"and","left":null,"right":null},"right":{"type":"and","left":null,"right":null}}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"identifier","name":"straße"}],"ok":"straße"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"or","left":{"type":"and","left":{"type":"and","left":{"type":"not","node":{"type":"not","node":null}},"right":{"type":"and","left":{"type":"identifier","name":"a😀b😀c"},"right":{"type":"identifier","name":"line1\nline2"}}},"right":{"type":"and","left":{"type":"not","node":{"type":"or","left":null,"right":null}},"right":{"type":"identifier","name":"é"}}},"right":{"type":"and","left":{"type":"and","left":{"type":"not","node":{"type":"not","node":null}},"right":{"type":"or","left":{"type":"and","left":null,"right":null},"right":{"type":"not","node":null}}},"right":{"type":"not","node":{"type":"not","node":{"type":"not","node":null}}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"and","left":{"type":"not","node":{"type":"and","left":{"type":"identifier","name":"HELLO日本語のテキスト"},"right":{"type":"identifier","name":"tab\tseparated"}}},"right":{"type":"not","node":{"type":"or","left":{"type":"identifier","name":"é"},"right":{"type":"not","node":null}}}},"right":{"type":"identifier","name":"İstanbul"}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"identifier","name":"HELLO"}],"ok":"HELLO"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"or","left":{"type":"not","node":{"type":"or","left":{"type":"identifier","name":""},"right":{"type":"identifier","name":"﻿bom"}}},"right":{"type":"and","left":{"type":"and","left":{"type":"not","node":{"type":"and","left":null,"right":null}},"right":{"type":"identifier","name":"hello world"}},"right":{"type":"and","left":{"type":"and","left":{"type":"or","left":null,"right":null},"right":{"type":"not","node":null}},"right":{"type":"identifier","name":"ns:key.path"}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"identifier","name":"😀"},"right":{"type":"and","left":{"type":"and","left":{"type":"identifier","name":"{name} has {count} items"},"right":{"type":"and","left":{"type":"and","left":null,"right":null},"right":{"type":"or","left":null,"right":null}}},"right":{"type":"or","left":{"type":"or","left":{"type":"not","node":null},"right":{"type":"and","left":null,"right":null}},"right":{"type":"identifier","name":"a.b.cab"}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"or","left":{"type":"not","node":{"type":"and","left":{"type":"and","left":{"type":"or","left":null,"right":null},"right":{"type":"not","node":null}},"right":{"type":"or","left":{"type":"and","left":null,"right":null},"right":{"type":"and","left":null,"right":null}}}},"right":{"type":"identifier","name":"﻿bomhello"}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"not","node":{"type":"not","node":{"type":"identifier","name":"src/a/b.ts"}}}],"ok":"!!src/a/b.ts"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"identifier","name":"  padded  "}],"ok":"  padded  "}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"and","left":{"type":"and","left":{"type":"not","node":{"type":"identifier","name":"abc"}},"right":{"type":"or","left":{"type":"or","left":null,"right":null},"right":{"type":"or","left":null,"right":null}}},"right":{"type":"identifier","name":"😀"}},"right":{"type":"identifier","name":"HELLOline1\nline2"}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"identifier","name":"ab"},"right":{"type":"identifier","name":"straße"}}],"ok":"ab && straße"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"not","node":{"type":"or","left":{"type":"and","left":{"type":"or","left":null,"right":null},"right":{"type":"and","left":null,"right":null}},"right":{"type":"not","node":{"type":"identifier","name":"a.b.ctrailing."}}}},"right":{"type":"and","left":{"type":"identifier","name":"é"},"right":{"type":"and","left":{"type":"not","node":{"type":"identifier","name":"İstanbul"}},"right":{"type":"not","node":{"type":"or","left":null,"right":null}}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"and","left":{"type":"and","left":{"type":"not","node":{"type":"and","left":null,"right":null}},"right":{"type":"and","left":{"type":"or","left":null,"right":null},"right":{"type":"and","left":null,"right":null}}},"right":{"type":"and","left":{"type":"not","node":{"type":"not","node":null}},"right":{"type":"identifier","name":"line1\nline2"}}},"right":{"type":"identifier","name":"﻿bom"}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"and","left":{"type":"identifier","name":".leading"},"right":{"type":"not","node":{"type":"and","left":{"type":"identifier","name":"ns:key.path"},"right":{"type":"and","left":null,"right":null}}}},"right":{"type":"or","left":{"type":"not","node":{"type":"not","node":{"type":"not","node":null}}},"right":{"type":"identifier","name":"{name} has {count} items{name} has {count} items"}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"identifier","name":"é"}],"ok":"é"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"identifier","name":"a:b:cHello World"}],"ok":"a:b:cHello World"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"and","left":{"type":"not","node":{"type":"or","left":{"type":"identifier","name":""},"right":{"type":"not","node":null}}},"right":{"type":"not","node":{"type":"or","left":{"type":"identifier","name":"ΣΊΣΥΦΟΣ"},"right":{"type":"not","node":null}}}},"right":{"type":"and","left":{"type":"not","node":{"type":"not","node":{"type":"or","left":null,"right":null}}},"right":{"type":"and","left":{"type":"or","left":{"type":"or","left":null,"right":null},"right":{"type":"identifier","name":"a..b"}},"right":{"type":"identifier","name":""}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"or","left":{"type":"not","node":{"type":"or","left":{"type":"and","left":null,"right":null},"right":{"type":"or","left":null,"right":null}}},"right":{"type":"not","node":{"type":"not","node":{"type":"or","left":null,"right":null}}}},"right":{"type":"or","left":{"type":"and","left":{"type":"or","left":{"type":"not","node":null},"right":{"type":"not","node":null}},"right":{"type":"or","left":{"type":"and","left":null,"right":null},"right":{"type":"and","left":null,"right":null}}},"right":{"type":"not","node":{"type":"not","node":{"type":"identifier","name":"Hello World"}}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"identifier","name":"ab{name} has {count} items"}],"ok":"ab{name} has {count} items"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"identifier","name":"İstanbul"}],"ok":"İstanbul"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"identifier","name":"é"},"right":{"type":"not","node":{"type":"and","left":{"type":"identifier","name":"a.b.c"},"right":{"type":"identifier","name":"éHELLO"}}}}],"ok":"é && !(a.b.c && éHELLO)"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"not","node":{"type":"or","left":{"type":"not","node":{"type":"or","left":null,"right":null}},"right":{"type":"and","left":{"type":"not","node":null},"right":{"type":"identifier","name":"HELLO"}}}},"right":{"type":"not","node":{"type":"not","node":{"type":"and","left":{"type":"and","left":null,"right":null},"right":{"type":"not","node":null}}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"not","node":{"type":"identifier","name":"İstanbul"}}],"ok":"!İstanbul"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"or","left":{"type":"not","node":{"type":"and","left":{"type":"identifier","name":"a😀b😀c"},"right":{"type":"identifier","name":"src/a/b.ts"}}},"right":{"type":"identifier","name":"key_name-1line1\nline2"}}],"ok":"!(a😀b😀c && src/a/b.ts) || key_name-1line1\nline2"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"identifier","name":"ns:key.path"}],"ok":"ns:key.path"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"not","node":{"type":"not","node":{"type":"identifier","name":"Hello World"}}},"right":{"type":"or","left":{"type":"and","left":{"type":"or","left":{"type":"and","left":null,"right":null},"right":{"type":"identifier","name":"src/a/b.ts"}},"right":{"type":"not","node":{"type":"not","node":null}}},"right":{"type":"identifier","name":":"}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"identifier","name":""},"right":{"type":"and","left":{"type":"not","node":{"type":"identifier","name":"ΣΊΣΥΦΟΣ"}},"right":{"type":"identifier","name":"./x/**/*.json"}}}],"ok":" && (!ΣΊΣΥΦΟΣ && ./x/**/*.json)"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"or","left":{"type":"and","left":{"type":"and","left":{"type":"or","left":null,"right":null},"right":{"type":"identifier","name":":"}},"right":{"type":"not","node":{"type":"identifier","name":"ΣΊΣΥΦΟΣa"}}},"right":{"type":"identifier","name":"ΣΊΣΥΦΟΣa:b:c"}},"right":{"type":"identifier","name":"trailing."}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"or","left":{"type":"identifier","name":"ünïcödé"},"right":{"type":"not","node":{"type":"or","left":{"type":"and","left":{"type":"identifier","name":"abc"},"right":{"type":"and","left":null,"right":null}},"right":{"type":"identifier","name":"abc"}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"not","node":{"type":"and","left":{"type":"and","left":{"type":"identifier","name":".leadingabc"},"right":{"type":"not","node":{"type":"or","left":null,"right":null}}},"right":{"type":"not","node":{"type":"not","node":{"type":"identifier","name":"a:b:c"}}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"not","node":{"type":"and","left":{"type":"or","left":{"type":"and","left":{"type":"or","left":null,"right":null},"right":{"type":"or","left":null,"right":null}},"right":{"type":"or","left":{"type":"and","left":null,"right":null},"right":{"type":"and","left":null,"right":null}}},"right":{"type":"and","left":{"type":"identifier","name":"ΣΊΣΥΦΟΣ"},"right":{"type":"identifier","name":"abcHELLO"}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"not","node":{"type":"and","left":{"type":"not","node":{"type":"and","left":{"type":"or","left":null,"right":null},"right":{"type":"or","left":null,"right":null}}},"right":{"type":"identifier","name":".leading"}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"or","left":{"type":"or","left":{"type":"and","left":{"type":"identifier","name":"😀é"},"right":{"type":"or","left":{"type":"identifier","name":".leading"},"right":{"type":"and","left":null,"right":null}}},"right":{"type":"identifier","name":"hello"}},"right":{"type":"or","left":{"type":"or","left":{"type":"or","left":{"type":"or","left":null,"right":null},"right":{"type":"identifier","name":"a..bab"}},"right":{"type":"or","left":{"type":"not","node":null},"right":{"type":"identifier","name":"HELLO"}}},"right":{"type":"identifier","name":"ab"}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"identifier","name":":"}],"ok":":"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"or","left":{"type":"and","left":{"type":"or","left":{"type":"or","left":{"type":"not","node":null},"right":{"type":"identifier","name":"tab\tseparated"}},"right":{"type":"not","node":{"type":"and","left":null,"right":null}}},"right":{"type":"identifier","name":"{name} has {count} items"}},"right":{"type":"and","left":{"type":"or","left":{"type":"not","node":{"type":"or","left":null,"right":null}},"right":{"type":"or","left":{"type":"identifier","name":"tab\tseparated"},"right":{"type":"not","node":null}}},"right":{"type":"identifier","name":"İstanbulsrc/a/b.ts"}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"identifier","name":"ab:"},"right":{"type":"and","left":{"type":"or","left":{"type":"and","left":{"type":"and","left":null,"right":null},"right":{"type":"not","node":null}},"right":{"type":"identifier","name":"ab"}},"right":{"type":"not","node":{"type":"identifier","name":"trailing."}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"and","left":{"type":"identifier","name":"a:b:cİstanbul"},"right":{"type":"or","left":{"type":"identifier","name":"./x/**/*.json"},"right":{"type":"or","left":{"type":"and","left":null,"right":null},"right":{"type":"identifier","name":"Hello World"}}}},"right":{"type":"and","left":{"type":"or","left":{"type":"identifier","name":"trailing."},"right":{"type":"and","left":{"type":"and","left":null,"right":null},"right":{"type":"not","node":null}}},"right":{"type":"not","node":{"type":"identifier","name":"HELLOünïcödé"}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"not","node":{"type":"identifier","name":"😀"}}],"ok":"!😀"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"identifier","name":".leading"}],"ok":".leading"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"not","node":{"type":"or","left":{"type":"and","left":{"type":"or","left":{"type":"and","left":null,"right":null},"right":{"type":"not","node":null}},"right":{"type":"or","left":{"type":"not","node":null},"right":{"type":"identifier","name":"./x/**/*.json"}}},"right":{"type":"not","node":{"type":"or","left":{"type":"identifier","name":"hello worldhello"},"right":{"type":"identifier","name":":"}}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"or","left":{"type":"and","left":{"type":"and","left":{"type":"or","left":{"type":"and","left":null,"right":null},"right":{"type":"not","node":null}},"right":{"type":"identifier","name":"日本語のテキスト"}},"right":{"type":"or","left":{"type":"identifier","name":"日本語のテキスト"},"right":{"type":"or","left":{"type":"or","left":null,"right":null},"right":{"type":"identifier","name":"a:b:c"}}}},"right":{"type":"identifier","name":"key_name-1"}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"not","node":{"type":"and","left":{"type":"identifier","name":"ΣΊΣΥΦΟΣ"},"right":{"type":"identifier","name":"a..b"}}}],"ok":"!(ΣΊΣΥΦΟΣ && a..b)"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"identifier","name":"a.b.c"}],"ok":"a.b.c"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"or","left":{"type":"not","node":{"type":"or","left":{"type":"or","left":{"type":"or","left":null,"right":null},"right":{"type":"and","left":null,"right":null}},"right":{"type":"and","left":{"type":"or","left":null,"right":null},"right":{"type":"and","left":null,"right":null}}}},"right":{"type":"or","left":{"type":"or","left":{"type":"or","left":{"type":"identifier","name":".leading"},"right":{"type":"not","node":null}},"right":{"type":"and","left":{"type":"identifier","name":"é"},"right":{"type":"not","node":null}}},"right":{"type":"not","node":{"type":"and","left":{"type":"identifier","name":"straße"},"right":{"type":"and","left":null,"right":null}}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"identifier","name":"abc"}],"ok":"abc"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"or","left":{"type":"or","left":{"type":"identifier","name":"HELLO"},"right":{"type":"not","node":{"type":"and","left":{"type":"or","left":null,"right":null},"right":{"type":"identifier","name":"a:b:c"}}}},"right":{"type":"and","left":{"type":"or","left":{"type":"or","left":{"type":"not","node":null},"right":{"type":"or","left":null,"right":null}},"right":{"type":"or","left":{"type":"identifier","name":"ΣΊΣΥΦΟΣ"},"right":{"type":"not","node":null}}},"right":{"type":"not","node":{"type":"identifier","name":":"}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"or","left":{"type":"identifier","name":"a:b:c"},"right":{"type":"identifier","name":"a..b"}}],"ok":"a:b:c || a..b"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"identifier","name":"abchello"}],"ok":"abchello"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"and","left":{"type":"identifier","name":"ünïcödé"},"right":{"type":"or","left":{"type":"and","left":{"type":"or","left":null,"right":null},"right":{"type":"or","left":null,"right":null}},"right":{"type":"not","node":{"type":"not","node":null}}}},"right":{"type":"or","left":{"type":"identifier","name":"日本語のテキストHELLO"},"right":{"type":"and","left":{"type":"not","node":{"type":"identifier","name":"Hello World"}},"right":{"type":"not","node":{"type":"or","left":null,"right":null}}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"not","node":{"type":"and","left":{"type":"identifier","name":"a.b.c"},"right":{"type":"identifier","name":""}}}],"ok":"!(a.b.c && )"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"not","node":{"type":"identifier","name":"a😀b😀c"}}],"ok":"!a😀b😀c"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"identifier","name":"tab\tseparated日本語のテキスト"}],"ok":"tab\tseparated日本語のテキスト"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"or","left":{"type":"or","left":{"type":"and","left":{"type":"or","left":{"type":"not","node":null},"right":{"type":"and","left":null,"right":null}},"right":{"type":"not","node":{"type":"identifier","name":"Hello World.leading"}}},"right":{"type":"identifier","name":"ns:key.path"}},"right":{"type":"identifier","name":"ΣΊΣΥΦΟΣa.b.c"}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"or","left":{"type":"and","left":{"type":"identifier","name":":"},"right":{"type":"or","left":{"type":"identifier","name":"日本語のテキスト"},"right":{"type":"or","left":{"type":"not","node":null},"right":{"type":"and","left":null,"right":null}}}},"right":{"type":"and","left":{"type":"or","left":{"type":"or","left":{"type":"or","left":null,"right":null},"right":{"type":"or","left":null,"right":null}},"right":{"type":"not","node":{"type":"and","left":null,"right":null}}},"right":{"type":"not","node":{"type":"identifier","name":"./x/**/*.json.leading"}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"not","node":{"type":"identifier","name":""}}],"ok":"!"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"not","node":{"type":"not","node":{"type":"or","left":{"type":"or","left":{"type":"or","left":null,"right":null},"right":{"type":"not","node":null}},"right":{"type":"and","left":{"type":"not","node":null},"right":{"type":"identifier","name":"a.b.c"}}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"not","node":{"type":"identifier","name":"a:b:csrc/a/b.ts"}},"right":{"type":"identifier","name":"key_name-1"}}],"ok":"!a:b:csrc/a/b.ts && key_name-1"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"and","left":{"type":"or","left":{"type":"or","left":{"type":"identifier","name":"ünïcödé"},"right":{"type":"identifier","name":"emoji 👍🏽 mix"}},"right":{"type":"identifier","name":"./x/**/*.json"}},"right":{"type":"or","left":{"type":"and","left":{"type":"not","node":null},"right":{"type":"and","left":null,"right":null}},"right":{"type":"identifier","name":"helloé"}}},"right":{"type":"or","left":{"type":"and","left":{"type":"identifier","name":"İstanbul"},"right":{"type":"or","left":{"type":"or","left":null,"right":null},"right":{"type":"not","node":null}}},"right":{"type":"not","node":{"type":"and","left":{"type":"and","left":null,"right":null},"right":{"type":"identifier","name":"é:"}}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"not","node":{"type":"and","left":{"type":"or","left":{"type":"not","node":{"type":"and","left":null,"right":null}},"right":{"type":"identifier","name":"﻿bom.leading"}},"right":{"type":"or","left":{"type":"not","node":{"type":"not","node":null}},"right":{"type":"or","left":{"type":"and","left":null,"right":null},"right":{"type":"identifier","name":"./x/**/*.json"}}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"or","left":{"type":"not","node":{"type":"and","left":{"type":"and","left":{"type":"or","left":null,"right":null},"right":{"type":"identifier","name":"abc"}},"right":{"type":"and","left":{"type":"or","left":null,"right":null},"right":{"type":"identifier","name":"abc"}}}},"right":{"type":"identifier","name":"a:b:cİstanbul"}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"not","node":{"type":"or","left":{"type":"or","left":{"type":"identifier","name":"😀"},"right":{"type":"or","left":{"type":"not","node":null},"right":{"type":"identifier","name":"a.b.c:"}}},"right":{"type":"not","node":{"type":"not","node":{"type":"or","left":null,"right":null}}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"or","left":{"type":"identifier","name":"HELLOtab\tseparated"},"right":{"type":"and","left":{"type":"and","left":{"type":"or","left":{"type":"and","left":null,"right":null},"right":{"type":"or","left":null,"right":null}},"right":{"type":"identifier","name":"a..bline1\nline2"}},"right":{"type":"or","left":{"type":"and","left":{"type":"and","left":null,"right":null},"right":{"type":"not","node":null}},"right":{"type":"and","left":{"type":"and","left":null,"right":null},"right":{"type":"or","left":null,"right":null}}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"not","node":{"type":"or","left":{"type":"and","left":{"type":"or","left":null,"right":null},"right":{"type":"or","left":null,"right":null}},"right":{"type":"and","left":{"type":"identifier","name":"é"},"right":{"type":"not","node":null}}}},"right":{"type":"or","left":{"type":"or","left":{"type":"identifier","name":"src/a/b.tstab\tseparated"},"right":{"type":"or","left":{"type":"identifier","name":"ns:key.path"},"right":{"type":"and","left":null,"right":null}}},"right":{"type":"identifier","name":"emoji 👍🏽 mix"}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"not","node":{"type":"or","left":{"type":"identifier","name":"hello"},"right":{"type":"not","node":{"type":"and","left":{"type":"or","left":null,"right":null},"right":{"type":"identifier","name":"src/a/b.ts"}}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"identifier","name":"src/a/b.ts"}],"ok":"src/a/b.ts"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"or","left":{"type":"and","left":{"type":"not","node":{"type":"identifier","name":"trailing."}},"right":{"type":"not","node":{"type":"and","left":{"type":"or","left":null,"right":null},"right":{"type":"identifier","name":"a😀b😀c"}}}},"right":{"type":"not","node":{"type":"and","left":{"type":"not","node":{"type":"not","node":null}},"right":{"type":"or","left":{"type":"or","left":null,"right":null},"right":{"type":"or","left":null,"right":null}}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"or","left":{"type":"or","left":{"type":"identifier","name":"straße"},"right":{"type":"identifier","name":"ΣΊΣΥΦΟΣ"}},"right":{"type":"identifier","name":"é"}}],"ok":"straße || ΣΊΣΥΦΟΣ || é"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"and","left":{"type":"or","left":{"type":"and","left":{"type":"not","node":null},"right":{"type":"and","left":null,"right":null}},"right":{"type":"or","left":{"type":"not","node":null},"right":{"type":"or","left":null,"right":null}}},"right":{"type":"not","node":{"type":"not","node":{"type":"and","left":null,"right":null}}}},"right":{"type":"not","node":{"type":"or","left":{"type":"and","left":{"type":"and","left":null,"right":null},"right":{"type":"identifier","name":"./x/**/*.json"}},"right":{"type":"identifier","name":"./x/**/*.jsona.b.c"}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"identifier","name":""},"right":{"type":"identifier","name":"a😀b😀c"}}],"ok":" && a😀b😀c"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"or","left":{"type":"not","node":{"type":"and","left":{"type":"and","left":{"type":"identifier","name":"a..b./x/**/*.json"},"right":{"type":"identifier","name":"Hello World"}},"right":{"type":"and","left":{"type":"or","left":null,"right":null},"right":{"type":"not","node":null}}}},"right":{"type":"or","left":{"type":"or","left":{"type":"or","left":{"type":"or","left":null,"right":null},"right":{"type":"and","left":null,"right":null}},"right":{"type":"or","left":{"type":"not","node":null},"right":{"type":"identifier","name":"a.b.cHELLO"}}},"right":{"type":"identifier","name":"a.b.c"}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"or","left":{"type":"or","left":{"type":"or","left":{"type":"or","left":null,"right":null},"right":{"type":"and","left":null,"right":null}},"right":{"type":"and","left":{"type":"identifier","name":"a.b.c"},"right":{"type":"or","left":null,"right":null}}},"right":{"type":"or","left":{"type":"not","node":{"type":"or","left":null,"right":null}},"right":{"type":"identifier","name":"src/a/b.ts"}}},"right":{"type":"identifier","name":"ab"}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"not","node":{"type":"and","left":{"type":"identifier","name":"HELLO"},"right":{"type":"identifier","name":"hello"}}}],"ok":"!(HELLO && hello)"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"not","node":{"type":"not","node":{"type":"or","left":{"type":"and","left":null,"right":null},"right":{"type":"identifier","name":"a.b.c"}}}},"right":{"type":"identifier","name":"hello"}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"not","node":{"type":"not","node":{"type":"not","node":{"type":"and","left":null,"right":null}}}},"right":{"type":"and","left":{"type":"not","node":{"type":"or","left":{"type":"or","left":null,"right":null},"right":{"type":"not","node":null}}},"right":{"type":"identifier","name":"src/a/b.ts"}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"not","node":{"type":"not","node":{"type":"and","left":{"type":"not","node":{"type":"not","node":null}},"right":{"type":"identifier","name":"./x/**/*.json"}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"or","left":{"type":"identifier","name":""},"right":{"type":"identifier","name":"HELLO"}}],"ok":" || HELLO"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"not","node":{"type":"and","left":{"type":"and","left":{"type":"not","node":{"type":"identifier","name":"a..b日本語のテキスト"}},"right":{"type":"and","left":{"type":"or","left":null,"right":null},"right":{"type":"or","left":null,"right":null}}},"right":{"type":"identifier","name":"ΣΊΣΥΦΟΣ"}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"or","left":{"type":"identifier","name":"line1\nline2"},"right":{"type":"not","node":{"type":"not","node":{"type":"or","left":null,"right":null}}}},"right":{"type":"and","left":{"type":"and","left":{"type":"or","left":{"type":"not","node":null},"right":{"type":"or","left":null,"right":null}},"right":{"type":"identifier","name":"src/a/b.tsa"}},"right":{"type":"identifier","name":"日本語のテキスト"}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"identifier","name":"straße  padded  "}],"ok":"straße  padded  "}
+{"fn":"encodeKeybindingWhen","args":[{"type":"identifier","name":"a:b:c"}],"ok":"a:b:c"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"or","left":{"type":"or","left":{"type":"or","left":{"type":"identifier","name":"a:b:c"},"right":{"type":"not","node":{"type":"or","left":null,"right":null}}},"right":{"type":"and","left":{"type":"not","node":{"type":"not","node":null}},"right":{"type":"or","left":{"type":"not","node":null},"right":{"type":"and","left":null,"right":null}}}},"right":{"type":"or","left":{"type":"identifier","name":".leadingünïcödé"},"right":{"type":"or","left":{"type":"and","left":{"type":"not","node":null},"right":{"type":"and","left":null,"right":null}},"right":{"type":"or","left":{"type":"or","left":null,"right":null},"right":{"type":"and","left":null,"right":null}}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"and","left":{"type":"not","node":{"type":"identifier","name":"key_name-1"}},"right":{"type":"and","left":{"type":"not","node":{"type":"identifier","name":"HELLOΣΊΣΥΦΟΣ"}},"right":{"type":"and","left":{"type":"and","left":null,"right":null},"right":{"type":"or","left":null,"right":null}}}},"right":{"type":"or","left":{"type":"or","left":{"type":"identifier","name":""},"right":{"type":"or","left":{"type":"and","left":null,"right":null},"right":{"type":"identifier","name":":"}}},"right":{"type":"and","left":{"type":"and","left":{"type":"identifier","name":"src/a/b.tsa..b"},"right":{"type":"identifier","name":"é"}},"right":{"type":"not","node":{"type":"or","left":null,"right":null}}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"not","node":{"type":"and","left":{"type":"and","left":{"type":"not","node":{"type":"not","node":null}},"right":{"type":"or","left":{"type":"identifier","name":":"},"right":{"type":"not","node":null}}},"right":{"type":"and","left":{"type":"or","left":{"type":"or","left":null,"right":null},"right":{"type":"or","left":null,"right":null}},"right":{"type":"and","left":{"type":"identifier","name":"abc:"},"right":{"type":"identifier","name":"line1\nline2﻿bom"}}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"not","node":{"type":"or","left":{"type":"not","node":{"type":"and","left":{"type":"and","left":null,"right":null},"right":{"type":"and","left":null,"right":null}}},"right":{"type":"and","left":{"type":"and","left":{"type":"identifier","name":"src/a/b.ts"},"right":{"type":"not","node":null}},"right":{"type":"identifier","name":"HELLO"}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"not","node":{"type":"or","left":{"type":"identifier","name":"a😀b😀csrc/a/b.ts"},"right":{"type":"not","node":{"type":"or","left":{"type":"and","left":null,"right":null},"right":{"type":"not","node":null}}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"identifier","name":"a﻿bom"},"right":{"type":"or","left":{"type":"and","left":{"type":"or","left":{"type":"or","left":null,"right":null},"right":{"type":"not","node":null}},"right":{"type":"or","left":{"type":"or","left":null,"right":null},"right":{"type":"and","left":null,"right":null}}},"right":{"type":"or","left":{"type":"or","left":{"type":"or","left":null,"right":null},"right":{"type":"and","left":null,"right":null}},"right":{"type":"identifier","name":"src/a/b.ts"}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"and","left":{"type":"or","left":{"type":"not","node":{"type":"or","left":null,"right":null}},"right":{"type":"identifier","name":"ab"}},"right":{"type":"and","left":{"type":"or","left":{"type":"and","left":null,"right":null},"right":{"type":"or","left":null,"right":null}},"right":{"type":"identifier","name":"hello worlda"}}},"right":{"type":"or","left":{"type":"or","left":{"type":"and","left":{"type":"identifier","name":"a.b.c"},"right":{"type":"and","left":null,"right":null}},"right":{"type":"and","left":{"type":"identifier","name":"straße"},"right":{"type":"not","node":null}}},"right":{"type":"or","left":{"type":"not","node":{"type":"not","node":null}},"right":{"type":"or","left":{"type":"or","left":null,"right":null},"right":{"type":"not","node":null}}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"or","left":{"type":"and","left":{"type":"identifier","name":"ünïcödé"},"right":{"type":"identifier","name":"a..bé"}},"right":{"type":"identifier","name":"a.b.c"}}],"ok":"ünïcödé && a..bé || a.b.c"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"not","node":{"type":"not","node":{"type":"not","node":{"type":"not","node":{"type":"identifier","name":"a😀b😀c"}}}}}],"ok":"!!!!a😀b😀c"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"or","left":{"type":"not","node":{"type":"or","left":{"type":"identifier","name":""},"right":{"type":"or","left":{"type":"and","left":null,"right":null},"right":{"type":"identifier","name":"hello world"}}}},"right":{"type":"or","left":{"type":"or","left":{"type":"not","node":{"type":"or","left":null,"right":null}},"right":{"type":"or","left":{"type":"not","node":null},"right":{"type":"and","left":null,"right":null}}},"right":{"type":"not","node":{"type":"and","left":{"type":"identifier","name":"﻿bom"},"right":{"type":"and","left":null,"right":null}}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"or","left":{"type":"or","left":{"type":"or","left":{"type":"not","node":{"type":"or","left":null,"right":null}},"right":{"type":"and","left":{"type":"and","left":null,"right":null},"right":{"type":"or","left":null,"right":null}}},"right":{"type":"not","node":{"type":"identifier","name":"./x/**/*.jsonsrc/a/b.ts"}}},"right":{"type":"identifier","name":"a.b.c"}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"or","left":{"type":"not","node":{"type":"and","left":{"type":"identifier","name":"Hello World"},"right":{"type":"or","left":null,"right":null}}},"right":{"type":"identifier","name":"a.b.c"}},"right":{"type":"identifier","name":"ΣΊΣΥΦΟΣtrailing."}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"or","left":{"type":"not","node":{"type":"identifier","name":"é"}},"right":{"type":"or","left":{"type":"identifier","name":".leading"},"right":{"type":"not","node":{"type":"not","node":{"type":"and","left":null,"right":null}}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"not","node":{"type":"not","node":{"type":"not","node":{"type":"or","left":{"type":"identifier","name":"ünïcödé"},"right":{"type":"or","left":null,"right":null}}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"not","node":{"type":"and","left":{"type":"not","node":{"type":"identifier","name":"éa:b:c"}},"right":{"type":"not","node":{"type":"identifier","name":"ns:key.path"}}}},"right":{"type":"not","node":{"type":"identifier","name":"é  padded  "}}}],"ok":"!(!éa:b:c && !ns:key.path) && !é  padded  "}
+{"fn":"encodeKeybindingWhen","args":[{"type":"not","node":{"type":"and","left":{"type":"and","left":{"type":"not","node":{"type":"and","left":null,"right":null}},"right":{"type":"identifier","name":"  padded  "}},"right":{"type":"or","left":{"type":"identifier","name":"emoji 👍🏽 mix"},"right":{"type":"or","left":{"type":"or","left":null,"right":null},"right":{"type":"or","left":null,"right":null}}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"and","left":{"type":"identifier","name":"./x/**/*.json"},"right":{"type":"not","node":{"type":"not","node":{"type":"identifier","name":"abc"}}}},"right":{"type":"not","node":{"type":"identifier","name":"İstanbul"}}}],"ok":"./x/**/*.json && !!abc && !İstanbul"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"not","node":{"type":"not","node":{"type":"and","left":{"type":"or","left":null,"right":null},"right":{"type":"identifier","name":"ns:key.path"}}}},"right":{"type":"not","node":{"type":"identifier","name":"日本語のテキスト"}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"and","left":{"type":"or","left":{"type":"identifier","name":"  padded  "},"right":{"type":"not","node":{"type":"not","node":null}}},"right":{"type":"and","left":{"type":"and","left":{"type":"identifier","name":"ns:key.path"},"right":{"type":"or","left":null,"right":null}},"right":{"type":"or","left":{"type":"identifier","name":".leading"},"right":{"type":"or","left":null,"right":null}}}},"right":{"type":"not","node":{"type":"identifier","name":"😀"}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"and","left":{"type":"or","left":{"type":"not","node":{"type":"not","node":null}},"right":{"type":"not","node":{"type":"and","left":null,"right":null}}},"right":{"type":"not","node":{"type":"and","left":{"type":"and","left":null,"right":null},"right":{"type":"identifier","name":"a..b"}}}},"right":{"type":"and","left":{"type":"or","left":{"type":"and","left":{"type":"and","left":null,"right":null},"right":{"type":"not","node":null}},"right":{"type":"not","node":{"type":"identifier","name":"a.b.cΣΊΣΥΦΟΣ"}}},"right":{"type":"and","left":{"type":"identifier","name":"﻿bom"},"right":{"type":"not","node":{"type":"or","left":null,"right":null}}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"identifier","name":"line1\nline2"},"right":{"type":"not","node":{"type":"not","node":{"type":"not","node":{"type":"and","left":null,"right":null}}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"identifier","name":"ns:key.path"},"right":{"type":"or","left":{"type":"or","left":{"type":"not","node":{"type":"identifier","name":"  padded  "}},"right":{"type":"identifier","name":"./x/**/*.json"}},"right":{"type":"and","left":{"type":"or","left":{"type":"and","left":null,"right":null},"right":{"type":"and","left":null,"right":null}},"right":{"type":"not","node":{"type":"identifier","name":"a:b:c"}}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"not","node":{"type":"or","left":{"type":"and","left":{"type":"identifier","name":":ns:key.path"},"right":{"type":"or","left":{"type":"not","node":null},"right":{"type":"and","left":null,"right":null}}},"right":{"type":"or","left":{"type":"or","left":{"type":"and","left":null,"right":null},"right":{"type":"and","left":null,"right":null}},"right":{"type":"and","left":{"type":"and","left":null,"right":null},"right":{"type":"identifier","name":"﻿bom"}}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"or","left":{"type":"not","node":{"type":"not","node":{"type":"identifier","name":"aba..b"}}},"right":{"type":"identifier","name":"İstanbul"}},"right":{"type":"not","node":{"type":"or","left":{"type":"or","left":{"type":"and","left":null,"right":null},"right":{"type":"not","node":null}},"right":{"type":"not","node":{"type":"and","left":null,"right":null}}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"not","node":{"type":"identifier","name":"  padded  "}}],"ok":"!  padded  "}
+{"fn":"encodeKeybindingWhen","args":[{"type":"not","node":{"type":"not","node":{"type":"not","node":{"type":"or","left":{"type":"or","left":null,"right":null},"right":{"type":"and","left":null,"right":null}}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"identifier","name":"ab"}],"ok":"ab"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"not","node":{"type":"not","node":{"type":"identifier","name":"a:b:c"}}}],"ok":"!!a:b:c"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"or","left":{"type":"or","left":{"type":"and","left":{"type":"not","node":{"type":"identifier","name":"hello world"}},"right":{"type":"and","left":{"type":"not","node":null},"right":{"type":"and","left":null,"right":null}}},"right":{"type":"or","left":{"type":"or","left":{"type":"or","left":null,"right":null},"right":{"type":"and","left":null,"right":null}},"right":{"type":"or","left":{"type":"not","node":null},"right":{"type":"and","left":null,"right":null}}}},"right":{"type":"not","node":{"type":"not","node":{"type":"identifier","name":"ns:key.pathünïcödé"}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"not","node":{"type":"identifier","name":"﻿bomkey_name-1"}}],"ok":"!﻿bomkey_name-1"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"or","left":{"type":"identifier","name":"straßeünïcödé"},"right":{"type":"not","node":{"type":"identifier","name":"  padded  "}}}],"ok":"straßeünïcödé || !  padded  "}
+{"fn":"encodeKeybindingWhen","args":[{"type":"not","node":{"type":"identifier","name":"trailing.a😀b😀c"}}],"ok":"!trailing.a😀b😀c"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"and","left":{"type":"not","node":{"type":"and","left":{"type":"not","node":null},"right":{"type":"not","node":null}}},"right":{"type":"and","left":{"type":"and","left":{"type":"and","left":null,"right":null},"right":{"type":"not","node":null}},"right":{"type":"and","left":{"type":"not","node":null},"right":{"type":"not","node":null}}}},"right":{"type":"not","node":{"type":"not","node":{"type":"and","left":{"type":"not","node":null},"right":{"type":"and","left":null,"right":null}}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"or","left":{"type":"or","left":{"type":"and","left":{"type":"or","left":{"type":"identifier","name":"a"},"right":{"type":"and","left":null,"right":null}},"right":{"type":"identifier","name":":"}},"right":{"type":"or","left":{"type":"not","node":{"type":"or","left":null,"right":null}},"right":{"type":"not","node":{"type":"or","left":null,"right":null}}}},"right":{"type":"identifier","name":"emoji 👍🏽 mix"}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"not","node":{"type":"or","left":{"type":"and","left":{"type":"identifier","name":"a.b.c"},"right":{"type":"and","left":{"type":"and","left":null,"right":null},"right":{"type":"and","left":null,"right":null}}},"right":{"type":"and","left":{"type":"and","left":{"type":"or","left":null,"right":null},"right":{"type":"not","node":null}},"right":{"type":"identifier","name":"helloHELLO"}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"not","node":{"type":"and","left":{"type":"identifier","name":".leading"},"right":{"type":"or","left":{"type":"and","left":null,"right":null},"right":{"type":"identifier","name":"tab\tseparated"}}}},"right":{"type":"or","left":{"type":"or","left":{"type":"and","left":{"type":"or","left":null,"right":null},"right":{"type":"identifier","name":"a"}},"right":{"type":"not","node":{"type":"identifier","name":""}}},"right":{"type":"or","left":{"type":"identifier","name":"ünïcödé"},"right":{"type":"not","node":{"type":"identifier","name":"trailing.trailing."}}}}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingRule","args":[[]],"error":"Cannot read properties of undefined (reading 'key')"}
+{"fn":"encodeKeybindingRule","args":[{}],"error":"Cannot read properties of undefined (reading 'key')"}
+{"fn":"encodeKeybindingRule","args":[{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'key')"}
+{"fn":"encodeKeybindingRule","args":[["a",1]],"error":"Cannot read properties of undefined (reading 'key')"}
+{"fn":"encodeKeybindingRule","args":[0],"error":"Cannot read properties of undefined (reading 'key')"}
+{"fn":"encodeKeybindingRule","args":[null],"error":"Cannot read properties of null (reading 'shortcut')"}
+{"fn":"encodeKeybindingRule","args":[true],"error":"Cannot read properties of undefined (reading 'key')"}
+{"fn":"encodeKeybindingRule","args":[{"a":"b"}],"error":"Cannot read properties of undefined (reading 'key')"}
+{"fn":"encodeKeybindingRule","args":["x"],"error":"Cannot read properties of undefined (reading 'key')"}
+{"fn":"resolvedKeybindingRuleIdentity","args":[{}],"error":"Cannot read properties of undefined (reading 'key')"}
+{"fn":"resolvedKeybindingRuleIdentity","args":[["a",1]],"error":"Cannot read properties of undefined (reading 'key')"}
+{"fn":"resolvedKeybindingRuleIdentity","args":["x"],"error":"Cannot read properties of undefined (reading 'key')"}
+{"fn":"resolvedKeybindingRuleIdentity","args":[0],"error":"Cannot read properties of undefined (reading 'key')"}
+{"fn":"resolvedKeybindingRuleIdentity","args":[{"a":"b"}],"error":"Cannot read properties of undefined (reading 'key')"}
+{"fn":"resolvedKeybindingRuleIdentity","args":[true],"error":"Cannot read properties of undefined (reading 'key')"}
+{"fn":"resolvedKeybindingRuleIdentity","args":[[]],"error":"Cannot read properties of undefined (reading 'key')"}
+{"fn":"resolvedKeybindingRuleIdentity","args":[{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'key')"}
+{"fn":"resolvedKeybindingRuleIdentity","args":[null],"error":"Cannot read properties of null (reading 'shortcut')"}
+{"fn":"keybindingRuleIdentity","args":[true],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"keybindingRuleIdentity","args":[0],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"keybindingRuleIdentity","args":["x"],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"keybindingRuleIdentity","args":[["a",1]],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"keybindingRuleIdentity","args":[{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"keybindingRuleIdentity","args":[[]],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"keybindingRuleIdentity","args":[null],"error":"Cannot read properties of null (reading 'key')"}
+{"fn":"keybindingRuleIdentity","args":[{}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"keybindingRuleIdentity","args":[{"a":"b"}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"isUnassignedKeybindingShortcut","args":["x"],"ok":false}
+{"fn":"isUnassignedKeybindingShortcut","args":[{"a":{"b":"c"}}],"ok":false}
+{"fn":"isUnassignedKeybindingShortcut","args":[null],"error":"Cannot read properties of null (reading 'key')"}
+{"fn":"isUnassignedKeybindingShortcut","args":[[]],"ok":false}
+{"fn":"isUnassignedKeybindingShortcut","args":[true],"ok":false}
+{"fn":"isUnassignedKeybindingShortcut","args":[{"a":"b"}],"ok":false}
+{"fn":"isUnassignedKeybindingShortcut","args":[0],"ok":false}
+{"fn":"isUnassignedKeybindingShortcut","args":[{}],"ok":false}
+{"fn":"isUnassignedKeybindingShortcut","args":[["a",1]],"ok":false}
+{"fn":"isUnassignedKeybindingRule","args":["x"],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"isUnassignedKeybindingRule","args":[0],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"isUnassignedKeybindingRule","args":[{}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"isUnassignedKeybindingRule","args":[null],"error":"Cannot read properties of null (reading 'key')"}
+{"fn":"isUnassignedKeybindingRule","args":[[]],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"isUnassignedKeybindingRule","args":[["a",1]],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"isUnassignedKeybindingRule","args":[{"a":"b"}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"isUnassignedKeybindingRule","args":[{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"isUnassignedKeybindingRule","args":[true],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"parseKeybindingShortcut","args":["ctrl+k ctrl+c"],"ok":null}
+{"fn":"parseKeybindingShortcut","args":["cmd+shift+p"],"ok":{"key":"p","metaKey":true,"ctrlKey":false,"shiftKey":true,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["mod+a"],"ok":{"key":"a","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":true}}
+{"fn":"parseKeybindingShortcut","args":["ctrl+alt+shift+meta+f5"],"ok":{"key":"f5","metaKey":true,"ctrlKey":true,"shiftKey":true,"altKey":true,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["+a"],"ok":null}
+{"fn":"parseKeybindingShortcut","args":["ctrl+"],"ok":{"key":"+","metaKey":false,"ctrlKey":true,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":[""],"ok":{"key":"+","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["  ctrl + k  "],"ok":{"key":"k","metaKey":false,"ctrlKey":true,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["CTRL+K"],"ok":{"key":"k","metaKey":false,"ctrlKey":true,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ctrl++"],"ok":{"key":"+","metaKey":false,"ctrlKey":true,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ctrl+shift"],"ok":null}
+{"fn":"parseKeybindingShortcut","args":["arrowup"],"ok":{"key":"arrowup","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ArrowUp"],"ok":{"key":"arrowup","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["up"],"ok":{"key":"up","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["f13"],"ok":{"key":"f13","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["escape"],"ok":{"key":"escape","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["esc"],"ok":{"key":"escape","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["space"],"ok":{"key":" ","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ctrl+space"],"ok":{"key":" ","metaKey":false,"ctrlKey":true,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ctrl+1"],"ok":{"key":"1","metaKey":false,"ctrlKey":true,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ctrl+a ctrl+b ctrl+c"],"ok":null}
+{"fn":"parseKeybindingShortcut","args":["cmdorctrl+x"],"ok":null}
+{"fn":"parseKeybindingShortcut","args":["meta+x"],"ok":{"key":"x","metaKey":true,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["option+x"],"ok":{"key":"x","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":true,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["opt+x"],"ok":null}
+{"fn":"parseKeybindingShortcut","args":["altgr+x"],"ok":null}
+{"fn":"parseKeybindingShortcut","args":["a b"],"ok":{"key":"a b","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["a+b"],"ok":null}
+{"fn":"parseKeybindingShortcut","args":["ctrl+a+b"],"ok":null}
+{"fn":"parseKeybindingShortcut","args":["ctrl ctrl"],"ok":{"key":"ctrl ctrl","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ctrl+ctrl"],"ok":null}
+{"fn":"parseKeybindingShortcut","args":["enter"],"ok":{"key":"enter","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["return"],"ok":{"key":"return","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["backspace"],"ok":{"key":"backspace","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["delete"],"ok":{"key":"delete","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["del"],"ok":{"key":"del","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["tab"],"ok":{"key":"tab","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["home"],"ok":{"key":"home","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["end"],"ok":{"key":"end","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["pageup"],"ok":{"key":"pageup","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["pagedown"],"ok":{"key":"pagedown","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["insert"],"ok":{"key":"insert","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["minus"],"ok":{"key":"minus","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["-"],"ok":{"key":"-","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ctrl+-"],"ok":{"key":"-","metaKey":false,"ctrlKey":true,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ctrl+="],"ok":{"key":"=","metaKey":false,"ctrlKey":true,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["="],"ok":{"key":"=","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":[","],"ok":{"key":",","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ctrl+,"],"ok":{"key":",","metaKey":false,"ctrlKey":true,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ctrl+."],"ok":{"key":".","metaKey":false,"ctrlKey":true,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ctrl+/"],"ok":{"key":"/","metaKey":false,"ctrlKey":true,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ctrl+;"],"ok":{"key":";","metaKey":false,"ctrlKey":true,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ctrl+'"],"ok":{"key":"'","metaKey":false,"ctrlKey":true,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ctrl+["],"ok":{"key":"[","metaKey":false,"ctrlKey":true,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ctrl+]"],"ok":{"key":"]","metaKey":false,"ctrlKey":true,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ctrl+\\"],"ok":{"key":"\\","metaKey":false,"ctrlKey":true,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ctrl+`"],"ok":{"key":"`","metaKey":false,"ctrlKey":true,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["abc"],"ok":{"key":"abc","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ctrl+abc"],"ok":{"key":"abc","metaKey":false,"ctrlKey":true,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["a"],"ok":{"key":"a","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["A"],"ok":{"key":"a","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["0"],"ok":{"key":"0","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["§"],"ok":{"key":"§","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ctrl+§"],"ok":{"key":"§","metaKey":false,"ctrlKey":true,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["é"],"ok":{"key":"é","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ctrl+é"],"ok":{"key":"é","metaKey":false,"ctrlKey":true,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["shift+a"],"ok":{"key":"a","metaKey":false,"ctrlKey":false,"shiftKey":true,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["mod+shift+alt+ctrl+meta+q"],"ok":{"key":"q","metaKey":true,"ctrlKey":true,"shiftKey":true,"altKey":true,"modKey":true}}
+{"fn":"parseKeybindingShortcut","args":["ctrl+a ctrl+"],"ok":null}
+{"fn":"parseKeybindingShortcut","args":[" ctrl+a ctrl+b"],"ok":null}
+{"fn":"parseKeybindingShortcut","args":[null],"error":"Cannot read properties of null (reading 'toLowerCase')"}
+{"fn":"parseKeybindingShortcut","args":[5],"error":"value.toLowerCase is not a function"}
+{"fn":"parseKeybindingShortcut","args":[{"x":1}],"error":"value.toLowerCase is not a function"}
+{"fn":"parseKeybindingWhenExpression","args":["editorFocus"],"ok":{"type":"identifier","name":"editorFocus"}}
+{"fn":"parseKeybindingWhenExpression","args":["!editorFocus"],"ok":{"type":"not","node":{"type":"identifier","name":"editorFocus"}}}
+{"fn":"parseKeybindingWhenExpression","args":["editorFocus && !findWidgetVisible"],"ok":{"type":"and","left":{"type":"identifier","name":"editorFocus"},"right":{"type":"not","node":{"type":"identifier","name":"findWidgetVisible"}}}}
+{"fn":"parseKeybindingWhenExpression","args":["a || b"],"ok":{"type":"or","left":{"type":"identifier","name":"a"},"right":{"type":"identifier","name":"b"}}}
+{"fn":"parseKeybindingWhenExpression","args":["a && b || c"],"ok":{"type":"or","left":{"type":"and","left":{"type":"identifier","name":"a"},"right":{"type":"identifier","name":"b"}},"right":{"type":"identifier","name":"c"}}}
+{"fn":"parseKeybindingWhenExpression","args":["a || b && c"],"ok":{"type":"or","left":{"type":"identifier","name":"a"},"right":{"type":"and","left":{"type":"identifier","name":"b"},"right":{"type":"identifier","name":"c"}}}}
+{"fn":"parseKeybindingWhenExpression","args":["(a || b) && c"],"ok":{"type":"and","left":{"type":"or","left":{"type":"identifier","name":"a"},"right":{"type":"identifier","name":"b"}},"right":{"type":"identifier","name":"c"}}}
+{"fn":"parseKeybindingWhenExpression","args":["a && (b || c)"],"ok":{"type":"and","left":{"type":"identifier","name":"a"},"right":{"type":"or","left":{"type":"identifier","name":"b"},"right":{"type":"identifier","name":"c"}}}}
+{"fn":"parseKeybindingWhenExpression","args":["!!a"],"ok":{"type":"not","node":{"type":"not","node":{"type":"identifier","name":"a"}}}}
+{"fn":"parseKeybindingWhenExpression","args":["!a && !b"],"ok":{"type":"and","left":{"type":"not","node":{"type":"identifier","name":"a"}},"right":{"type":"not","node":{"type":"identifier","name":"b"}}}}
+{"fn":"parseKeybindingWhenExpression","args":["!(a && b)"],"ok":{"type":"not","node":{"type":"and","left":{"type":"identifier","name":"a"},"right":{"type":"identifier","name":"b"}}}}
+{"fn":"parseKeybindingWhenExpression","args":["a && b && c"],"ok":{"type":"and","left":{"type":"and","left":{"type":"identifier","name":"a"},"right":{"type":"identifier","name":"b"}},"right":{"type":"identifier","name":"c"}}}
+{"fn":"parseKeybindingWhenExpression","args":["a && b || c && d"],"ok":{"type":"or","left":{"type":"and","left":{"type":"identifier","name":"a"},"right":{"type":"identifier","name":"b"}},"right":{"type":"and","left":{"type":"identifier","name":"c"},"right":{"type":"identifier","name":"d"}}}}
+{"fn":"parseKeybindingWhenExpression","args":[""],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["   "],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["a &&"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["&& a"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["a b"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["("],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":[")"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["a == b"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["a == 'x'"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["a != b"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["a === b"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["a =~ b"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["a =~ /x/"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["a < 5"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["a.b.c"],"ok":{"type":"identifier","name":"a.b.c"}}
+{"fn":"parseKeybindingWhenExpression","args":["foo-bar"],"ok":{"type":"identifier","name":"foo-bar"}}
+{"fn":"parseKeybindingWhenExpression","args":["foo_bar"],"ok":{"type":"identifier","name":"foo_bar"}}
+{"fn":"parseKeybindingWhenExpression","args":["foo123"],"ok":{"type":"identifier","name":"foo123"}}
+{"fn":"parseKeybindingWhenExpression","args":["123foo"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["a\t&&\tb"],"ok":{"type":"and","left":{"type":"identifier","name":"a"},"right":{"type":"identifier","name":"b"}}}
+{"fn":"parseKeybindingWhenExpression","args":[" a "],"ok":{"type":"identifier","name":"a"}}
+{"fn":"parseKeybindingWhenExpression","args":["a&&b"],"ok":{"type":"and","left":{"type":"identifier","name":"a"},"right":{"type":"identifier","name":"b"}}}
+{"fn":"parseKeybindingWhenExpression","args":["a||b"],"ok":{"type":"or","left":{"type":"identifier","name":"a"},"right":{"type":"identifier","name":"b"}}}
+{"fn":"parseKeybindingWhenExpression","args":["!a||!b"],"ok":{"type":"or","left":{"type":"not","node":{"type":"identifier","name":"a"}},"right":{"type":"not","node":{"type":"identifier","name":"b"}}}}
+{"fn":"parseKeybindingWhenExpression","args":["a == 'x y'"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":[null],"error":"Cannot read properties of null (reading 'length')"}
+{"fn":"compileKeybindingRule","args":[{"key":"ctrl+k","command":"workbench.action.x"}],"ok":{"command":"workbench.action.x","shortcut":{"key":"k","metaKey":false,"ctrlKey":true,"shiftKey":false,"altKey":false,"modKey":false}}}
+{"fn":"compileKeybindingRule","args":[{"key":"ctrl+k","command":"workbench.action.x","when":"editorFocus"}],"ok":{"command":"workbench.action.x","shortcut":{"key":"k","metaKey":false,"ctrlKey":true,"shiftKey":false,"altKey":false,"modKey":false},"whenAst":{"type":"identifier","name":"editorFocus"}}}
+{"fn":"compileKeybindingRule","args":[{"key":"","command":"x"}],"ok":{"command":"x","shortcut":{"key":"+","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}}
+{"fn":"compileKeybindingRule","args":[{"key":"ctrl+k","command":"x","when":""}],"ok":null}
+{"fn":"compileKeybindingRule","args":[{"key":"ctrl+k","command":"x","when":"a &&"}],"ok":null}
+{"fn":"compileKeybindingRule","args":[{"key":"ctrl+","command":"x"}],"ok":{"command":"x","shortcut":{"key":"+","metaKey":false,"ctrlKey":true,"shiftKey":false,"altKey":false,"modKey":false}}}
+{"fn":"compileKeybindingRule","args":[{"key":"ctrl+k","command":"x","when":"a && b"}],"ok":{"command":"x","shortcut":{"key":"k","metaKey":false,"ctrlKey":true,"shiftKey":false,"altKey":false,"modKey":false},"whenAst":{"type":"and","left":{"type":"identifier","name":"a"},"right":{"type":"identifier","name":"b"}}}}
+{"fn":"compileKeybindingRule","args":[{"key":"ctrl+k","command":"x","extra":"y"}],"ok":{"command":"x","shortcut":{"key":"k","metaKey":false,"ctrlKey":true,"shiftKey":false,"altKey":false,"modKey":false}}}
+{"fn":"compileKeybindingRule","args":[null],"error":"Cannot read properties of null (reading 'key')"}
+{"fn":"compileKeybindingRule","args":[{}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"compileKeybindingRule","args":[{"command":"x"}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"compileKeybindingRule","args":[{"key":null,"command":"x"}],"error":"Cannot read properties of null (reading 'toLowerCase')"}
+{"fn":"encodeKeybindingShortcut","args":[{"key":"k","metaKey":false,"ctrlKey":true,"shiftKey":false,"altKey":false,"modKey":false}],"ok":"ctrl+k"}
+{"fn":"encodeKeybindingShortcut","args":[{"key":"a","metaKey":true,"ctrlKey":true,"shiftKey":true,"altKey":true,"modKey":true}],"ok":"mod+meta+ctrl+alt+shift+a"}
+{"fn":"encodeKeybindingShortcut","args":[{"key":"","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}],"ok":null}
+{"fn":"encodeKeybindingShortcut","args":[{"key":"k","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}],"ok":"k"}
+{"fn":"encodeKeybindingShortcut","args":[null],"error":"Cannot read properties of null (reading 'modKey')"}
+{"fn":"encodeKeybindingShortcut","args":[{}],"ok":null}
+{"fn":"encodeKeybindingShortcut","args":[{"key":"k"}],"ok":"k"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"identifier","name":"a"}],"ok":"a"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"not","node":{"type":"identifier","name":"a"}}],"ok":"!a"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"identifier","name":"a"},"right":{"type":"identifier","name":"b"}}],"ok":"a && b"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"or","left":{"type":"identifier","name":"a"},"right":{"type":"and","left":{"type":"identifier","name":"b"},"right":{"type":"identifier","name":"c"}}}],"ok":"a || b && c"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"or","left":{"type":"identifier","name":"a"},"right":{"type":"identifier","name":"b"}},"right":{"type":"identifier","name":"c"}}],"ok":"(a || b) && c"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"not","node":{"type":"and","left":{"type":"identifier","name":"a"},"right":{"type":"identifier","name":"b"}}}],"ok":"!(a && b)"}
+{"fn":"encodeKeybindingWhen","args":[null],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"weird"}],"ok":{"$undefined":true}}
+{"fn":"encodeKeybindingRule","args":[{"command":"x","shortcut":{"key":"k","metaKey":false,"ctrlKey":true,"shiftKey":false,"altKey":false,"modKey":false}}],"ok":{"command":"x","key":"ctrl+k"}}
+{"fn":"encodeKeybindingRule","args":[{"command":"x","shortcut":{"key":"k","metaKey":false,"ctrlKey":true,"shiftKey":false,"altKey":false,"modKey":false},"whenAst":{"type":"identifier","name":"a"}}],"ok":{"command":"x","key":"ctrl+k","when":"a"}}
+{"fn":"encodeKeybindingRule","args":[null],"error":"Cannot read properties of null (reading 'shortcut')"}
+{"fn":"encodeKeybindingRule","args":[{"command":"x"}],"error":"Cannot read properties of undefined (reading 'key')"}
+{"fn":"resolvedKeybindingRuleIdentity","args":[{"command":"x","shortcut":{"key":"k","metaKey":false,"ctrlKey":true,"shiftKey":false,"altKey":false,"modKey":false}}],"ok":"x\u0000ctrl+k\u0000"}
+{"fn":"resolvedKeybindingRuleIdentity","args":[{"command":"x","shortcut":{"key":"k","metaKey":false,"ctrlKey":true,"shiftKey":false,"altKey":false,"modKey":false},"whenAst":{"type":"identifier","name":"a"}}],"ok":"x\u0000ctrl+k\u0000a"}
+{"fn":"resolvedKeybindingRuleIdentity","args":[null],"error":"Cannot read properties of null (reading 'shortcut')"}
+{"fn":"resolvedKeybindingRuleIdentity","args":[{}],"error":"Cannot read properties of undefined (reading 'key')"}
+{"fn":"keybindingRuleIdentity","args":[{"key":"ctrl+k","command":"x"}],"ok":"x\u0000ctrl+k\u0000"}
+{"fn":"keybindingRuleIdentity","args":[{"key":"ctrl+k","command":"x","when":"a"}],"ok":"x\u0000ctrl+k\u0000a"}
+{"fn":"keybindingRuleIdentity","args":[{"key":"","command":"x"}],"ok":"x\u0000+\u0000"}
+{"fn":"keybindingRuleIdentity","args":[{"key":"ctrl+","command":"x"}],"ok":"x\u0000ctrl++\u0000"}
+{"fn":"keybindingRuleIdentity","args":[null],"error":"Cannot read properties of null (reading 'key')"}
+{"fn":"keybindingRuleIdentity","args":[{}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"isUnassignedKeybindingShortcut","args":[{"key":""}],"ok":false}
+{"fn":"isUnassignedKeybindingShortcut","args":[{"key":"k"}],"ok":false}
+{"fn":"isUnassignedKeybindingShortcut","args":[null],"error":"Cannot read properties of null (reading 'key')"}
+{"fn":"isUnassignedKeybindingShortcut","args":[{}],"ok":false}
+{"fn":"isUnassignedKeybindingShortcut","args":[{"key":"unassigned"}],"ok":true}
+{"fn":"isUnassignedKeybindingRule","args":[{"key":""}],"ok":false}
+{"fn":"isUnassignedKeybindingRule","args":[{"key":"k"}],"ok":false}
+{"fn":"isUnassignedKeybindingRule","args":[{"key":"unassigned"}],"ok":true}
+{"fn":"isUnassignedKeybindingRule","args":[null],"error":"Cannot read properties of null (reading 'key')"}
+{"fn":"isUnassignedKeybindingRule","args":[{}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"parseKeybindingShortcut","args":["Ctrl+K"],"ok":{"key":"k","metaKey":false,"ctrlKey":true,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["Control+K"],"ok":{"key":"k","metaKey":false,"ctrlKey":true,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["control+k"],"ok":{"key":"k","metaKey":false,"ctrlKey":true,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["^K"],"ok":{"key":"^k","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["C-k"],"ok":{"key":"c-k","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["<ctrl+k>"],"ok":null}
+{"fn":"parseKeybindingShortcut","args":["ctrl k"],"ok":{"key":"ctrl k","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ctrl-k"],"ok":{"key":"ctrl-k","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ctrl_k"],"ok":{"key":"ctrl_k","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["[ctrl+k]"],"ok":null}
+{"fn":"parseKeybindingShortcut","args":["{key\":\"k\"}"],"ok":{"key":"{key\":\"k\"}","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ctrl+k,ctrl+c"],"ok":null}
+{"fn":"parseKeybindingShortcut","args":["k"],"ok":{"key":"k","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["K"],"ok":{"key":"k","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["cmd+p"],"ok":{"key":"p","metaKey":true,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["⌘P"],"ok":{"key":"⌘p","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["⌃K"],"ok":{"key":"⌃k","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["⌥X"],"ok":{"key":"⌥x","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["⇧A"],"ok":{"key":"⇧a","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["Shift+A"],"ok":{"key":"a","metaKey":false,"ctrlKey":false,"shiftKey":true,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["Ctrl+Shift+P"],"ok":{"key":"p","metaKey":false,"ctrlKey":true,"shiftKey":true,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["Cmd+Shift+P"],"ok":{"key":"p","metaKey":true,"ctrlKey":false,"shiftKey":true,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["super+k"],"ok":null}
+{"fn":"parseKeybindingShortcut","args":["Super+K"],"ok":null}
+{"fn":"parseKeybindingShortcut","args":["win+k"],"ok":null}
+{"fn":"parseKeybindingShortcut","args":["command+k"],"ok":null}
+{"fn":"parseKeybindingShortcut","args":["Command+K"],"ok":null}
+{"fn":"parseKeybindingShortcut","args":["shift+ctrl+a"],"ok":{"key":"a","metaKey":false,"ctrlKey":true,"shiftKey":true,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ctrl+a  ctrl+b"],"ok":null}
+{"fn":"parseKeybindingShortcut","args":["ctrl+a\tctrl+b"],"ok":null}
+{"fn":"parseKeybindingShortcut","args":["ctrl+a\nctrl+b"],"ok":null}
+{"fn":"parseKeybindingShortcut","args":["Mod+A"],"ok":{"key":"a","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":true}}
+{"fn":"parseKeybindingShortcut","args":["MOD+A"],"ok":{"key":"a","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":true}}
+{"fn":"parseKeybindingShortcut","args":["mod + a"],"ok":{"key":"a","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":true}}
+{"fn":"parseKeybindingShortcut","args":["F1"],"ok":{"key":"f1","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["f1"],"ok":{"key":"f1","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["F13"],"ok":{"key":"f13","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["PageUp"],"ok":{"key":"pageup","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["pageUp"],"ok":{"key":"pageup","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["PAGEUP"],"ok":{"key":"pageup","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["numpad0"],"ok":{"key":"numpad0","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["numpad_add"],"ok":{"key":"numpad_add","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["keyA"],"ok":{"key":"keya","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["KeyA"],"ok":{"key":"keya","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["digit0"],"ok":{"key":"digit0","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["Digit0"],"ok":{"key":"digit0","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["Backspace"],"ok":{"key":"backspace","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["BackSlash"],"ok":{"key":"backslash","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["backslash"],"ok":{"key":"backslash","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["Ctrl+]"],"ok":{"key":"]","metaKey":false,"ctrlKey":true,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ctrl+k"],"ok":{"key":"k","metaKey":false,"ctrlKey":true,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ctrl+a"],"ok":{"key":"a","metaKey":false,"ctrlKey":true,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["cmd+x"],"ok":{"key":"x","metaKey":true,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["alt+x"],"ok":{"key":"x","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":true,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["shift+x"],"ok":{"key":"x","metaKey":false,"ctrlKey":false,"shiftKey":true,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ctrl+x"],"ok":{"key":"x","metaKey":false,"ctrlKey":true,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["mod+x"],"ok":{"key":"x","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":true}}
+{"fn":"parseKeybindingShortcut","args":["control+x"],"ok":{"key":"x","metaKey":false,"ctrlKey":true,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ctrl+ctrl+x"],"ok":{"key":"x","metaKey":false,"ctrlKey":true,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["shift+shift+x"],"ok":{"key":"x","metaKey":false,"ctrlKey":false,"shiftKey":true,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ctrl+shift+shift+x"],"ok":{"key":"x","metaKey":false,"ctrlKey":true,"shiftKey":true,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["+"],"ok":{"key":"+","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["++"],"ok":{"key":"+","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ctrl+++x"],"ok":null}
+{"fn":"parseKeybindingShortcut","args":["pgup"],"ok":{"key":"pgup","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["pgdn"],"ok":{"key":"pgdn","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["page_up"],"ok":{"key":"page_up","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["arrowdown"],"ok":{"key":"arrowdown","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["arrowleft"],"ok":{"key":"arrowleft","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["arrowright"],"ok":{"key":"arrowright","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["down"],"ok":{"key":"down","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["left"],"ok":{"key":"left","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["right"],"ok":{"key":"right","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["spacebar"],"ok":{"key":"spacebar","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ins"],"ok":{"key":"ins","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["comma"],"ok":{"key":"comma","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["period"],"ok":{"key":"period","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["slash"],"ok":{"key":"slash","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["quote"],"ok":{"key":"quote","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["semicolon"],"ok":{"key":"semicolon","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["equal"],"ok":{"key":"equal","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["plus"],"ok":{"key":"plus","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["grave"],"ok":{"key":"grave","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["bracketleft"],"ok":{"key":"bracketleft","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["bracketright"],"ok":{"key":"bracketright","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":[" cmd + k "],"ok":{"key":"k","metaKey":true,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ctrl +k"],"ok":{"key":"k","metaKey":false,"ctrlKey":true,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ctrl+ k"],"ok":{"key":"k","metaKey":false,"ctrlKey":true,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ctrl + k"],"ok":{"key":"k","metaKey":false,"ctrlKey":true,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["\tctrl+k\t"],"ok":{"key":"k","metaKey":false,"ctrlKey":true,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ctrl+\tk"],"ok":{"key":"k","metaKey":false,"ctrlKey":true,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ctrl+k "],"ok":{"key":"k","metaKey":false,"ctrlKey":true,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"isUnassignedKeybindingShortcut","args":[{"key":"Unassigned"}],"ok":false}
+{"fn":"isUnassignedKeybindingShortcut","args":[{"key":"UNASSIGNED"}],"ok":false}
+{"fn":"isUnassignedKeybindingShortcut","args":[{"key":" unassigned"}],"ok":false}
+{"fn":"isUnassignedKeybindingShortcut","args":[{"key":"unassigned "}],"ok":false}
+{"fn":"isUnassignedKeybindingShortcut","args":[{"key":"xunassigned"}],"ok":false}
+{"fn":"compileKeybindingRule","args":[{"key":"ctrl+k","command":"chat.new"}],"ok":{"command":"chat.new","shortcut":{"key":"k","metaKey":false,"ctrlKey":true,"shiftKey":false,"altKey":false,"modKey":false}}}
+{"fn":"compileKeybindingRule","args":[{"key":"ctrl+k","command":"chat.new","when":"editorFocus"}],"ok":{"command":"chat.new","shortcut":{"key":"k","metaKey":false,"ctrlKey":true,"shiftKey":false,"altKey":false,"modKey":false},"whenAst":{"type":"identifier","name":"editorFocus"}}}
+{"fn":"compileKeybindingRule","args":[{"key":"ctrl+k","command":"chat.new","when":"a && b"}],"ok":{"command":"chat.new","shortcut":{"key":"k","metaKey":false,"ctrlKey":true,"shiftKey":false,"altKey":false,"modKey":false},"whenAst":{"type":"and","left":{"type":"identifier","name":"a"},"right":{"type":"identifier","name":"b"}}}}
+{"fn":"compileKeybindingRule","args":[{"key":"ctrl+k","command":"chat.new","when":""}],"ok":null}
+{"fn":"compileKeybindingRule","args":[{"key":"ctrl+k","command":"chat.new","when":"  "}],"ok":null}
+{"fn":"compileKeybindingRule","args":[{"key":"ctrl+k","command":"chat.new","when":"a &&"}],"ok":null}
+{"fn":"compileKeybindingRule","args":[{"key":"ctrl+","command":"chat.new"}],"ok":{"command":"chat.new","shortcut":{"key":"+","metaKey":false,"ctrlKey":true,"shiftKey":false,"altKey":false,"modKey":false}}}
+{"fn":"compileKeybindingRule","args":[{"key":"","command":"chat.new"}],"ok":{"command":"chat.new","shortcut":{"key":"+","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}}
+{"fn":"compileKeybindingRule","args":[{"key":"ctrl+k","command":"script.abc.run"}],"ok":{"command":"script.abc.run","shortcut":{"key":"k","metaKey":false,"ctrlKey":true,"shiftKey":false,"altKey":false,"modKey":false}}}
+{"fn":"compileKeybindingRule","args":[{"key":"ctrl+k","command":"script.a-b.run"}],"ok":{"command":"script.a-b.run","shortcut":{"key":"k","metaKey":false,"ctrlKey":true,"shiftKey":false,"altKey":false,"modKey":false}}}
+{"fn":"compileKeybindingRule","args":[{"key":"ctrl+k","command":"script.a_b.run"}],"ok":{"command":"script.a_b.run","shortcut":{"key":"k","metaKey":false,"ctrlKey":true,"shiftKey":false,"altKey":false,"modKey":false}}}
+{"fn":"compileKeybindingRule","args":[{"key":"ctrl+k","command":"script..run"}],"ok":{"command":"script..run","shortcut":{"key":"k","metaKey":false,"ctrlKey":true,"shiftKey":false,"altKey":false,"modKey":false}}}
+{"fn":"compileKeybindingRule","args":[{"key":"ctrl+k","command":"script.A.run"}],"ok":{"command":"script.A.run","shortcut":{"key":"k","metaKey":false,"ctrlKey":true,"shiftKey":false,"altKey":false,"modKey":false}}}
+{"fn":"compileKeybindingRule","args":[{"key":"ctrl+k","command":"script.1a.run"}],"ok":{"command":"script.1a.run","shortcut":{"key":"k","metaKey":false,"ctrlKey":true,"shiftKey":false,"altKey":false,"modKey":false}}}
+{"fn":"compileKeybindingRule","args":[{"key":"ctrl+k","command":"script.a.runx"}],"ok":{"command":"script.a.runx","shortcut":{"key":"k","metaKey":false,"ctrlKey":true,"shiftKey":false,"altKey":false,"modKey":false}}}
+{"fn":"compileKeybindingRule","args":[{"key":"ctrl+k","command":"script.ax.run.y"}],"ok":{"command":"script.ax.run.y","shortcut":{"key":"k","metaKey":false,"ctrlKey":true,"shiftKey":false,"altKey":false,"modKey":false}}}
+{"fn":"compileKeybindingRule","args":[{"key":"ctrl+k","command":"foo.bar"}],"ok":{"command":"foo.bar","shortcut":{"key":"k","metaKey":false,"ctrlKey":true,"shiftKey":false,"altKey":false,"modKey":false}}}
+{"fn":"compileKeybindingRule","args":[{"key":"ctrl+k","command":"chat.new","extra":1}],"ok":{"command":"chat.new","shortcut":{"key":"k","metaKey":false,"ctrlKey":true,"shiftKey":false,"altKey":false,"modKey":false}}}
+{"fn":"compileKeybindingRule","args":[{"key":"unassigned","command":"chat.new"}],"ok":{"command":"chat.new","shortcut":{"key":"unassigned","metaKey":false,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}}
+{"fn":"compileKeybindingRule","args":[{"key":"ctrl+k","command":null}],"ok":{"command":null,"shortcut":{"key":"k","metaKey":false,"ctrlKey":true,"shiftKey":false,"altKey":false,"modKey":false}}}
+{"fn":"compileKeybindingRule","args":[{"key":"ctrl+k","command":123}],"ok":{"command":123,"shortcut":{"key":"k","metaKey":false,"ctrlKey":true,"shiftKey":false,"altKey":false,"modKey":false}}}
+{"fn":"compileKeybindingRule","args":[{"key":"ctrl+k","command":"chat.new","when":123}],"ok":null}
+{"fn":"compileKeybindingRule","args":[{"key":"ctrl+k","command":"chat.new","when":null}],"error":"Cannot read properties of null (reading 'length')"}
+{"fn":"encodeKeybindingRule","args":[{"command":"x","shortcut":null}],"error":"Cannot read properties of null (reading 'key')"}
+{"fn":"encodeKeybindingRule","args":[{"command":"x","shortcut":{"key":"k","modKey":true,"metaKey":true,"ctrlKey":true,"altKey":true,"shiftKey":true},"whenAst":null}],"ok":{"command":"x","key":"mod+meta+ctrl+alt+shift+k"}}
+{"fn":"encodeKeybindingRule","args":[{"command":"x","shortcut":{"key":"k"},"whenAst":{"type":"weird"}}],"ok":{"command":"x","key":"k","when":{"$undefined":true}}}
+{"fn":"encodeKeybindingRule","args":[{"shortcut":{"key":"k"}}],"ok":{"command":{"$undefined":true},"key":"k"}}
+{"fn":"encodeKeybindingRule","args":[{"command":"x","shortcut":{"key":"k","modKey":true,"metaKey":true,"ctrlKey":true,"altKey":true,"shiftKey":true}}],"ok":{"command":"x","key":"mod+meta+ctrl+alt+shift+k"}}
+{"fn":"encodeKeybindingShortcut","args":[{"key":"k","modKey":true}],"ok":"mod+k"}
+{"fn":"encodeKeybindingShortcut","args":[{"key":""}],"ok":null}
+{"fn":"encodeKeybindingShortcut","args":[{"key":123}],"error":"shortcut.key.includes is not a function"}
+{"fn":"encodeKeybindingShortcut","args":[{"key":"k","modKey":1,"metaKey":0,"ctrlKey":"yes","altKey":{},"shiftKey":null}],"ok":"mod+ctrl+alt+k"}
+{"fn":"parseKeybindingWhenExpression","args":["!"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["!!"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["! "],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["! a"],"ok":{"type":"not","node":{"type":"identifier","name":"a"}}}
+{"fn":"parseKeybindingWhenExpression","args":["a!"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["(a)"],"ok":{"type":"identifier","name":"a"}}
+{"fn":"parseKeybindingWhenExpression","args":["((a))"],"ok":{"type":"identifier","name":"a"}}
+{"fn":"parseKeybindingWhenExpression","args":["a && "],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["a&&"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["a  b"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["a&&&b"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["|"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["a|b"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["a ||| b"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":[" ! a"],"ok":{"type":"not","node":{"type":"identifier","name":"a"}}}
+{"fn":"parseKeybindingWhenExpression","args":["_a"],"ok":{"type":"identifier","name":"_a"}}
+{"fn":"parseKeybindingWhenExpression","args":["9a"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["a-b"],"ok":{"type":"identifier","name":"a-b"}}
+{"fn":"parseKeybindingWhenExpression","args":["-a"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["a-"],"ok":{"type":"identifier","name":"a-"}}
+{"fn":"parseKeybindingWhenExpression","args":["a."],"ok":{"type":"identifier","name":"a."}}
+{"fn":"parseKeybindingWhenExpression","args":["a9"],"ok":{"type":"identifier","name":"a9"}}
+{"fn":"parseKeybindingWhenExpression","args":["A9_z"],"ok":{"type":"identifier","name":"A9_z"}}
+{"fn":"parseKeybindingWhenExpression","args":["(a"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["a)"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["a (b)"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["a (b) c"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["(a) b"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["a () b"],"ok":null}
+{"fn":"encodeKeybindingWhen","args":[{"type":"identifier"}],"ok":{"$undefined":true}}
+{"fn":"encodeKeybindingWhen","args":[{"type":"not"}],"error":"Cannot read properties of undefined (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"identifier","name":"a"}}],"error":"Cannot read properties of undefined (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"identifier","name":"a"},"right":{"type":"weird"}}],"ok":"a && "}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"weird"},"right":{"type":"identifier","name":"a"}}],"ok":" && a"}
+{"fn":"resolvedKeybindingRuleIdentity","args":[{"command":"x","shortcut":{"key":"k"},"whenAst":null}],"ok":"x\u0000k\u0000"}
+{"fn":"resolvedKeybindingRuleIdentity","args":[{"command":"x","shortcut":{"key":"k"},"whenAst":{"type":"weird"}}],"ok":"x\u0000k\u0000undefined"}
+{"fn":"resolvedKeybindingRuleIdentity","args":[{"shortcut":{"key":"k"}}],"ok":"undefined\u0000k\u0000"}
+{"fn":"keybindingRuleIdentity","args":[{"key":"ctrl+k","command":"chat.new","when":"a && b"}],"ok":"chat.new\u0000ctrl+k\u0000a && b"}
+{"fn":"keybindingRuleIdentity","args":[{"key":"ctrl+k","command":"chat.new","when":""}],"ok":null}
+{"fn":"keybindingRuleIdentity","args":[{"key":"unassigned","command":"chat.new"}],"ok":"chat.new\u0000unassigned\u0000"}
+{"fn":"keybindingRuleIdentity","args":[{"key":"ctrl+k","command":"foo.bar"}],"ok":"foo.bar\u0000ctrl+k\u0000"}
+{"fn":"keybindingRuleIdentity","args":[{"key":"ctrl+k","command":"x","when":null}],"error":"Cannot read properties of null (reading 'length')"}
+{"fn":"keybindingRuleIdentity","args":[{"key":"ctrl+k","command":"x","when":123}],"ok":null}
+{"fn":"encodeKeybindingShortcut","args":[{"key":" "}],"ok":"space"}
+{"fn":"encodeKeybindingShortcut","args":[{"key":"a b"}],"ok":"a b"}
+{"fn":"encodeKeybindingShortcut","args":[{"key":"+"}],"ok":"+"}
+{"fn":"encodeKeybindingShortcut","args":[{"key":"unassigned"}],"ok":"unassigned"}
+{"fn":"encodeKeybindingShortcut","args":[{"key":"UNASSIGNED"}],"ok":"UNASSIGNED"}
+{"fn":"encodeKeybindingShortcut","args":[{"key":"k","modKey":false,"metaKey":false,"ctrlKey":false,"altKey":false,"shiftKey":false,"extra":1}],"ok":"k"}
+{"fn":"encodeKeybindingShortcut","args":[{"key":"k","ctrlKey":true,"shiftKey":true}],"ok":"ctrl+shift+k"}
+{"fn":"encodeKeybindingShortcut","args":["x"],"ok":null}
+{"fn":"resolvedKeybindingRuleIdentity","args":[{"command":"x"}],"error":"Cannot read properties of undefined (reading 'key')"}
+{"fn":"resolvedKeybindingRuleIdentity","args":[{"command":"x","shortcut":{"key":""}}],"ok":"x\u0000\u0000"}
+{"fn":"resolvedKeybindingRuleIdentity","args":[{"command":"x","shortcut":{"key":123}}],"error":"shortcut.key.includes is not a function"}
+{"fn":"resolvedKeybindingRuleIdentity","args":[{"command":"x","shortcut":{"key":"k"},"whenAst":{"type":"not","node":null}}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"resolvedKeybindingRuleIdentity","args":[{"command":123,"shortcut":{"key":"k"}}],"ok":"123\u0000k\u0000"}
+{"fn":"resolvedKeybindingRuleIdentity","args":[{"command":null,"shortcut":{"key":"k"}}],"ok":"null\u0000k\u0000"}
+{"fn":"compileKeybindingRule","args":[{"key":"ctrl+k"}],"ok":{"command":{"$undefined":true},"shortcut":{"key":"k","metaKey":false,"ctrlKey":true,"shiftKey":false,"altKey":false,"modKey":false}}}
+{"fn":"compileKeybindingRule","args":[{"key":"ctrl+k","command":"chat.new","when":true}],"ok":null}
+{"fn":"compileKeybindingRule","args":[{"key":"ctrl+k","command":"chat.new","when":{}}],"ok":null}
+{"fn":"keybindingRuleIdentity","args":[{"key":"a b","command":"x"}],"ok":"x\u0000a b\u0000"}
+{"fn":"keybindingRuleIdentity","args":[{"key":"ctrl+a ctrl+b","command":"x"}],"ok":null}
+{"fn":"keybindingRuleIdentity","args":[{"command":"x","when":"a"}],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"keybindingRuleIdentity","args":[{"key":"ctrl+k"}],"ok":"undefined\u0000ctrl+k\u0000"}
+{"fn":"parseKeybindingShortcut","args":["esc+esc"],"ok":null}
+{"fn":"parseKeybindingShortcut","args":["ctrl+esc"],"ok":{"key":"escape","metaKey":false,"ctrlKey":true,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["space+space"],"ok":null}
+{"fn":"parseKeybindingShortcut","args":["ctrl+space+space"],"ok":null}
+{"fn":"parseKeybindingShortcut","args":["ctrl+control+x"],"ok":{"key":"x","metaKey":false,"ctrlKey":true,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["cmd+meta+x"],"ok":{"key":"x","metaKey":true,"ctrlKey":false,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["control+ctrl+x"],"ok":{"key":"x","metaKey":false,"ctrlKey":true,"shiftKey":false,"altKey":false,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":[" alt + ctrl + k "],"ok":{"key":"k","metaKey":false,"ctrlKey":true,"shiftKey":false,"altKey":true,"modKey":false}}
+{"fn":"parseKeybindingShortcut","args":["ctrl+alt+del"],"ok":{"key":"del","metaKey":false,"ctrlKey":true,"shiftKey":false,"altKey":true,"modKey":false}}
+{"fn":"parseKeybindingWhenExpression","args":[123],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":[true],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":[{}],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["a$b"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["a:b"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["a-b.c_d9"],"ok":{"type":"identifier","name":"a-b.c_d9"}}
+{"fn":"parseKeybindingWhenExpression","args":["-"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["."],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["_"],"ok":{"type":"identifier","name":"_"}}
+{"fn":"parseKeybindingWhenExpression","args":[".a"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["a- b"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["a -b"],"ok":null}
+{"fn":"parseKeybindingWhenExpression","args":["!(!a)"],"ok":{"type":"not","node":{"type":"not","node":{"type":"identifier","name":"a"}}}}
+{"fn":"parseKeybindingWhenExpression","args":["!(a)"],"ok":{"type":"not","node":{"type":"identifier","name":"a"}}}
+{"fn":"parseKeybindingWhenExpression","args":["(a && b) || (c && d)"],"ok":{"type":"or","left":{"type":"and","left":{"type":"identifier","name":"a"},"right":{"type":"identifier","name":"b"}},"right":{"type":"and","left":{"type":"identifier","name":"c"},"right":{"type":"identifier","name":"d"}}}}
+{"fn":"parseKeybindingWhenExpression","args":["a&&b||c&&d||e"],"ok":{"type":"or","left":{"type":"or","left":{"type":"and","left":{"type":"identifier","name":"a"},"right":{"type":"identifier","name":"b"}},"right":{"type":"and","left":{"type":"identifier","name":"c"},"right":{"type":"identifier","name":"d"}}},"right":{"type":"identifier","name":"e"}}}
+{"fn":"parseKeybindingWhenExpression","args":["a||b||c"],"ok":{"type":"or","left":{"type":"or","left":{"type":"identifier","name":"a"},"right":{"type":"identifier","name":"b"}},"right":{"type":"identifier","name":"c"}}}
+{"fn":"isUnassignedKeybindingRule","args":[{"key":"unassigned","command":"x"}],"ok":true}
+{"fn":"isUnassignedKeybindingShortcut","args":[{"key":"unassigned","metaKey":true}],"ok":true}
+{"fn":"isUnassignedKeybindingShortcut","args":[{"key":null}],"ok":false}
+{"fn":"isUnassignedKeybindingShortcut","args":[{"key":123}],"ok":false}
+{"fn":"isUnassignedKeybindingRule","args":[{"key":123}],"error":"value.toLowerCase is not a function"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"identifier","name":"a"},"right":{"type":"or","left":{"type":"identifier","name":"b"},"right":{"type":"identifier","name":"c"}}}],"ok":"a && (b || c)"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"or","left":{"type":"and","left":{"type":"identifier","name":"a"},"right":{"type":"identifier","name":"b"}},"right":{"type":"identifier","name":"c"}}],"ok":"a && b || c"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"or","left":{"type":"or","left":{"type":"identifier","name":"a"},"right":{"type":"identifier","name":"b"}},"right":{"type":"identifier","name":"c"}}],"ok":"a || b || c"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"and","left":{"type":"identifier","name":"a"},"right":{"type":"identifier","name":"b"}},"right":{"type":"identifier","name":"c"}}],"ok":"a && b && c"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"not","node":{"type":"or","left":{"type":"identifier","name":"a"},"right":{"type":"identifier","name":"b"}}}],"ok":"!(a || b)"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"not","node":{"type":"identifier","name":123}}],"ok":"!123"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"identifier","name":null}],"ok":null}
+{"fn":"encodeKeybindingWhen","args":[{"type":"identifier","name":true}],"ok":true}
+{"fn":"encodeKeybindingWhen","args":[],"error":"Cannot read properties of undefined (reading 'type')"}
+{"fn":"encodeKeybindingWhen","args":[[]],"ok":{"$undefined":true}}
+{"fn":"encodeKeybindingWhen","args":[{"type":null}],"ok":{"$undefined":true}}
+{"fn":"encodeKeybindingWhen","args":[{"type":123}],"ok":{"$undefined":true}}
+{"fn":"encodeKeybindingWhen","args":[{"type":"not","node":{"type":"weird"}}],"ok":"!undefined"}
+{"fn":"encodeKeybindingWhen","args":[{"type":"and","left":{"type":"weird"},"right":{"type":"weird"}}],"ok":" && "}

@@ -1,0 +1,37 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/threadDetailSyncRetry.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "threaddetailsyncretry-rs",
+  "exports": [
+    {
+      "name": "retryThreadDetailSync",
+      "file": "apps/web/src/threadDetailSyncRetry.ts",
+      "line": 18,
+      "params": [
+        {
+          "name": "threadId",
+          "ts_type": "typeof typeof typeof typeof ThreadId.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<void>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "registerThreadDetailSyncRetry",
+      "file": "apps/web/src/threadDetailSyncRetry.ts",
+      "line": 11,
+      "reason": "takes or returns a function"
+    }
+  ]
+}

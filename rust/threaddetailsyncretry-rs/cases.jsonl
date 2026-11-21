@@ -1,0 +1,9 @@
+{"fn":"retryThreadDetailSync","args":[{}],"ok":{"$undefined":true}}
+{"fn":"retryThreadDetailSync","args":[true],"ok":{"$undefined":true}}
+{"fn":"retryThreadDetailSync","args":[["a",1]],"ok":{"$undefined":true}}
+{"fn":"retryThreadDetailSync","args":[0],"ok":{"$undefined":true}}
+{"fn":"retryThreadDetailSync","args":[null],"ok":{"$undefined":true}}
+{"fn":"retryThreadDetailSync","args":[{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"retryThreadDetailSync","args":["x"],"ok":{"$undefined":true}}
+{"fn":"retryThreadDetailSync","args":[{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"retryThreadDetailSync","args":[[]],"ok":{"$undefined":true}}

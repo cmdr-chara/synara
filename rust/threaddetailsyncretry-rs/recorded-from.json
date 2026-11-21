@@ -1,0 +1,17 @@
+{
+  "unit": "apps/web/src/threadDetailSyncRetry.ts",
+  "files": 1,
+  "fingerprint": "001283307d851638",
+  "coverage": {
+    "lines": 16,
+    "reached": 11,
+    "files": [
+      {
+        "file": "apps/web/src/threadDetailSyncRetry.ts",
+        "lines": 16,
+        "reached": 11,
+        "missed": "12-16"
+      }
+    ]
+  }
+}

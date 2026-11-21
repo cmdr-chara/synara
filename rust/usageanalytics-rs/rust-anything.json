@@ -1,0 +1,48 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/usageAnalytics.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "usageanalytics-rs",
+  "exports": [
+    {
+      "name": "usageProviderCategory",
+      "file": "packages/shared/src/usageAnalytics.ts",
+      "line": 47,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "usageTurnCategories",
+      "file": "packages/shared/src/usageAnalytics.ts",
+      "line": 59,
+      "params": [
+        {
+          "name": "row",
+          "ts_type": "{\n  provider?: unknown;\n  model?: unknown;\n  effort?: unknown;\n  interactionMode?: unknown;\n  runtimeMode?: unknown;\n  origin?: unknown;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

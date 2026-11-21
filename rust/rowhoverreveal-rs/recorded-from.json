@@ -1,0 +1,17 @@
+{
+  "unit": "apps/web/src/rowHoverReveal.ts",
+  "files": 1,
+  "fingerprint": "861f634d2d7cf57f",
+  "coverage": {
+    "lines": 48,
+    "reached": 48,
+    "files": [
+      {
+        "file": "apps/web/src/rowHoverReveal.ts",
+        "lines": 48,
+        "reached": 48,
+        "missed": ""
+      }
+    ]
+  }
+}

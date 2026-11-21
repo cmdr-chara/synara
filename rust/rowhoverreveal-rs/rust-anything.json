@@ -1,0 +1,48 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/rowHoverReveal.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "rowhoverreveal-rs",
+  "exports": [
+    {
+      "name": "hoverRevealShowClassName",
+      "file": "apps/web/src/rowHoverReveal.ts",
+      "line": 48,
+      "params": [
+        {
+          "name": "group",
+          "ts_type": "(Extract<(\"activity-row\" | \"project-header\" | \"thread-row\" | \"picker-row\"), \"thread-row\" | \"picker-row\">)",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "hoverRevealHideClassName",
+      "file": "apps/web/src/rowHoverReveal.ts",
+      "line": 52,
+      "params": [
+        {
+          "name": "group",
+          "ts_type": "(\"activity-row\" | \"project-header\" | \"thread-row\" | \"picker-row\")",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

@@ -1,0 +1,23 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/spacesUiStore.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "spacesuistore-rs",
+  "exports": [
+    {
+      "name": "readActiveSpaceId",
+      "file": "apps/web/src/spacesUiStore.ts",
+      "line": 172,
+      "params": [],
+      "returns": "typeof typeof typeof typeof SpaceId.Type.Type.Type.Type | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

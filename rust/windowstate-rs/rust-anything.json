@@ -1,0 +1,90 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/desktop/src/windowState.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "windowstate-rs",
+  "exports": [
+    {
+      "name": "parseDesktopWindowState",
+      "file": "apps/desktop/src/windowState.ts",
+      "line": 40,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "PersistedDesktopWindowState | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "readDesktopWindowState",
+      "file": "apps/desktop/src/windowState.ts",
+      "line": 59,
+      "params": [
+        {
+          "name": "filePath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "PersistedDesktopWindowState | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "writeDesktopWindowState",
+      "file": "apps/desktop/src/windowState.ts",
+      "line": 67,
+      "params": [
+        {
+          "name": "filePath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "state",
+          "ts_type": "PersistedDesktopWindowState",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveVisibleWindowBounds",
+      "file": "apps/desktop/src/windowState.ts",
+      "line": 91,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly savedBounds: DesktopWindowBounds;\n  readonly displayWorkAreas: ReadonlyArray<DesktopWindowBounds>;\n  readonly minimumWidth: number;\n  readonly minimumHeight: number;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "DesktopWindowBounds",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

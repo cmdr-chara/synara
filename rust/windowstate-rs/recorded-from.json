@@ -1,0 +1,17 @@
+{
+  "unit": "apps/desktop/src/windowState.ts",
+  "files": 1,
+  "fingerprint": "99e8f68b050b9c0b",
+  "coverage": {
+    "lines": 116,
+    "reached": 92,
+    "files": [
+      {
+        "file": "apps/desktop/src/windowState.ts",
+        "lines": 116,
+        "reached": 92,
+        "missed": "21-23, 25-38, 47-48, 52-56"
+      }
+    ]
+  }
+}

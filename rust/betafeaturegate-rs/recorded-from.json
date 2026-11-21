@@ -1,0 +1,17 @@
+{
+  "unit": "apps/server/src/betaFeatureGate.ts",
+  "files": 1,
+  "fingerprint": "24e0ea683d9a2150",
+  "coverage": {
+    "lines": 12,
+    "reached": 12,
+    "files": [
+      {
+        "file": "apps/server/src/betaFeatureGate.ts",
+        "lines": 12,
+        "reached": 12,
+        "missed": ""
+      }
+    ]
+  }
+}

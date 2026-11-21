@@ -1,0 +1,199 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/desktop/src/menuShortcuts.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "menushortcuts-rs",
+  "exports": [
+    {
+      "name": "resolveDesktopPhysicalZoomAction",
+      "file": "apps/desktop/src/menuShortcuts.ts",
+      "line": 34,
+      "params": [
+        {
+          "name": "platform",
+          "ts_type": "NodeJS.Platform",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "input",
+          "ts_type": "DesktopKeyboardInput",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(\"zoomOut\" | null)",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveDesktopZoomShortcutAction",
+      "file": "apps/desktop/src/menuShortcuts.ts",
+      "line": 64,
+      "params": [
+        {
+          "name": "platform",
+          "ts_type": "NodeJS.Platform",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "input",
+          "ts_type": "DesktopKeyboardInput",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(\"zoomIn\" | \"zoomOut\" | \"resetZoom\") | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveDesktopMenuAccelerator",
+      "file": "apps/desktop/src/menuShortcuts.ts",
+      "line": 97,
+      "params": [
+        {
+          "name": "platform",
+          "ts_type": "NodeJS.Platform",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "accelerator",
+          "ts_type": "MenuItemConstructorOptions[\"accelerator\"]",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "MenuItemConstructorOptions[\"accelerator\"] | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "keybindingShortcutToAccelerator",
+      "file": "apps/desktop/src/menuShortcuts.ts",
+      "line": 150,
+      "params": [
+        {
+          "name": "shortcut",
+          "ts_type": "typeof typeof typeof typeof KeybindingShortcut.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "platform",
+          "ts_type": "NodeJS.Platform",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveReportedMenuAccelerators",
+      "file": "apps/desktop/src/menuShortcuts.ts",
+      "line": 175,
+      "params": [
+        {
+          "name": "payload",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "platform",
+          "ts_type": "NodeJS.Platform",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(Readonly<Record<(typeof DESKTOP_MENU_SHORTCUT_COMMANDS)[number], string | null>>) | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "sameDesktopMenuAccelerators",
+      "file": "apps/desktop/src/menuShortcuts.ts",
+      "line": 190,
+      "params": [
+        {
+          "name": "left",
+          "ts_type": "(Readonly<Record<(typeof DESKTOP_MENU_SHORTCUT_COMMANDS)[number], string | null>>)",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "right",
+          "ts_type": "(Readonly<Record<(typeof DESKTOP_MENU_SHORTCUT_COMMANDS)[number], string | null>>)",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "shouldUseNativeZoomMenuRoles",
+      "file": "apps/desktop/src/menuShortcuts.ts",
+      "line": 197,
+      "params": [
+        {
+          "name": "platform",
+          "ts_type": "NodeJS.Platform",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveKeyboardShortcutsMenuAccelerator",
+      "file": "apps/desktop/src/menuShortcuts.ts",
+      "line": 205,
+      "params": [
+        {
+          "name": "platform",
+          "ts_type": "NodeJS.Platform",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "MenuItemConstructorOptions[\"accelerator\"] | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "applyDesktopPhysicalZoomAction",
+      "file": "apps/desktop/src/menuShortcuts.ts",
+      "line": 53,
+      "reason": "uses `DesktopNativeZoomTarget`, which has function members"
+    }
+  ]
+}

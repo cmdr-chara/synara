@@ -1,0 +1,55 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/feedback.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "feedback-rs",
+  "exports": [
+    {
+      "name": "formatFeedbackSummary",
+      "file": "apps/web/src/feedback.ts",
+      "line": 73,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  category: (typeof FEEDBACK_CATEGORIES)[number][\"value\"] | null;\n  diagnostics: FeedbackThreadContext & {\n  appVersion: string;\n  submittedAt: string;\n  userAgent: string;\n  platform: string;\n  language: string;\n  viewport: string;\n};\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "buildFeedbackSubmission",
+      "file": "apps/web/src/feedback.ts",
+      "line": 117,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  category: (typeof FEEDBACK_CATEGORIES)[number][\"value\"] | null;\n  details: string;\n  context: FeedbackThreadContext;\n  now?: Date;\n  userAgent?: string;\n  platform?: string;\n  language?: string;\n  viewport?: { width: number; height: number };\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "FeedbackSubmission",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "submitFeedback",
+      "file": "apps/web/src/feedback.ts",
+      "line": 153,
+      "reason": "checks `instanceof`: class identity does not survive the bridge"
+    }
+  ]
+}

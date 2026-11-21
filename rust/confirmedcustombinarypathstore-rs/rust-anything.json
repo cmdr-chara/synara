@@ -1,0 +1,41 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/confirmedCustomBinaryPathStore.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "confirmedcustombinarypathstore-rs",
+  "exports": [
+    {
+      "name": "loadConfirmedCustomBinaryPaths",
+      "file": "apps/web/src/confirmedCustomBinaryPathStore.ts",
+      "line": 17,
+      "params": [],
+      "returns": "Partial<Record<typeof typeof typeof typeof ProviderInstanceId.Type.Type.Type.Type, string>>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "saveConfirmedCustomBinaryPaths",
+      "file": "apps/web/src/confirmedCustomBinaryPathStore.ts",
+      "line": 54,
+      "params": [
+        {
+          "name": "paths",
+          "ts_type": "Partial<Record<typeof typeof typeof typeof ProviderInstanceId.Type.Type.Type.Type, string>>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

@@ -1,0 +1,131 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/desktop/src/windowsShellAppUserModel.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "windowsshellappusermodel-rs",
+  "exports": [
+    {
+      "name": "windowsShellIconResource",
+      "file": "apps/desktop/src/windowsShellAppUserModel.ts",
+      "line": 245,
+      "params": [
+        {
+          "name": "iconPath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "iconIndex",
+          "ts_type": "number",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "nativeWindowHandleToHwnd",
+      "file": "apps/desktop/src/windowsShellAppUserModel.ts",
+      "line": 249,
+      "params": [
+        {
+          "name": "handle",
+          "ts_type": "Buffer",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "bigint",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "windowsShellAppUserModelHelperName",
+      "file": "apps/desktop/src/windowsShellAppUserModel.ts",
+      "line": 254,
+      "params": [],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "cscCompilerCandidates",
+      "file": "apps/desktop/src/windowsShellAppUserModel.ts",
+      "line": 262,
+      "params": [],
+      "returns": "string[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "ensureWindowsShellAppUserModelHelper",
+      "file": "apps/desktop/src/windowsShellAppUserModel.ts",
+      "line": 279,
+      "params": [
+        {
+          "name": "cacheDirectory",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "applyWindowsShellAppUserModel",
+      "file": "apps/desktop/src/windowsShellAppUserModel.ts",
+      "line": 305,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "WindowsShellAppUserModelInput",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "cacheDirectory",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "_options",
+          "ts_type": "ApplyWindowsShellAppUserModelOptions",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "resolveCscCompiler",
+      "file": "apps/desktop/src/windowsShellAppUserModel.ts",
+      "line": 270,
+      "reason": "takes or returns a function"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "unit": "apps/desktop/src/windowsShellAppUserModel.ts",
+  "files": 1,
+  "fingerprint": "acdf69306a90e89e",
+  "coverage": {
+    "lines": 304,
+    "reached": 271,
+    "files": [
+      {
+        "file": "apps/desktop/src/windowsShellAppUserModel.ts",
+        "lines": 304,
+        "reached": 271,
+        "missed": "285-298, 300-302, 324-339"
+      }
+    ]
+  }
+}

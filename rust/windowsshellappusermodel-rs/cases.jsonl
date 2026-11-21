@@ -1,0 +1,664 @@
+{"fn":"windowsShellIconResource","args":["emoji 👍🏽 mix",0],"ok":"emoji 👍🏽 mix,0"}
+{"fn":"windowsShellIconResource","args":["😀日本語のテキスト",{"$undefined":true}],"ok":"😀日本語のテキスト,0"}
+{"fn":"windowsShellIconResource","args":[".leading",2],"ok":".leading,2"}
+{"fn":"windowsShellIconResource","args":["﻿bom",{"$num":"NaN"}],"ok":"﻿bom,NaN"}
+{"fn":"windowsShellIconResource","args":["é",0.5],"ok":"é,0.5"}
+{"fn":"windowsShellIconResource","args":["a..b",{"$num":"Infinity"}],"ok":"a..b,Infinity"}
+{"fn":"windowsShellIconResource","args":["hello",{"$num":"-0"}],"ok":"hello,0"}
+{"fn":"windowsShellIconResource","args":[":",10],"ok":":,10"}
+{"fn":"windowsShellIconResource","args":["a..b",-1],"ok":"a..b,-1"}
+{"fn":"windowsShellIconResource","args":[""],"ok":",0"}
+{"fn":"windowsShellIconResource","args":["a..b"],"ok":"a..b,0"}
+{"fn":"windowsShellIconResource","args":["İstanbul",{"$num":"NaN"}],"ok":"İstanbul,NaN"}
+{"fn":"windowsShellIconResource","args":["a:b:c",2],"ok":"a:b:c,2"}
+{"fn":"windowsShellIconResource","args":["straße",-2.5],"ok":"straße,-2.5"}
+{"fn":"windowsShellIconResource","args":["src/a/b.ts日本語のテキスト",1000000],"ok":"src/a/b.ts日本語のテキスト,1000000"}
+{"fn":"windowsShellIconResource","args":["a..ba😀b😀c",2147483648],"ok":"a..ba😀b😀c,2147483648"}
+{"fn":"windowsShellIconResource","args":["src/a/b.ts{name} has {count} items",2147483648],"ok":"src/a/b.ts{name} has {count} items,2147483648"}
+{"fn":"windowsShellIconResource","args":["tab\tseparated",0],"ok":"tab\tseparated,0"}
+{"fn":"windowsShellIconResource","args":["{name} has {count} items",0.5],"ok":"{name} has {count} items,0.5"}
+{"fn":"windowsShellIconResource","args":["straße",{"$num":"-Infinity"}],"ok":"straße,-Infinity"}
+{"fn":"windowsShellIconResource","args":["abc"],"ok":"abc,0"}
+{"fn":"windowsShellIconResource","args":["straße"],"ok":"straße,0"}
+{"fn":"windowsShellIconResource","args":["./x/**/*.jsonemoji 👍🏽 mix",0.5],"ok":"./x/**/*.jsonemoji 👍🏽 mix,0.5"}
+{"fn":"windowsShellIconResource","args":[".leading",1000],"ok":".leading,1000"}
+{"fn":"windowsShellIconResource","args":["abc",{"$undefined":true}],"ok":"abc,0"}
+{"fn":"windowsShellIconResource","args":["",2147483648],"ok":",2147483648"}
+{"fn":"windowsShellIconResource","args":["line1\nline2",10],"ok":"line1\nline2,10"}
+{"fn":"windowsShellIconResource","args":["emoji 👍🏽 mix",{"$num":"-0"}],"ok":"emoji 👍🏽 mix,0"}
+{"fn":"windowsShellIconResource","args":["İstanbul",1000],"ok":"İstanbul,1000"}
+{"fn":"windowsShellIconResource","args":["emoji 👍🏽 mix",{"$num":"Infinity"}],"ok":"emoji 👍🏽 mix,Infinity"}
+{"fn":"windowsShellIconResource","args":["key_name-1",{"$undefined":true}],"ok":"key_name-1,0"}
+{"fn":"windowsShellIconResource","args":["a:b:c",{"$num":"NaN"}],"ok":"a:b:c,NaN"}
+{"fn":"windowsShellIconResource","args":["日本語のテキスト"],"ok":"日本語のテキスト,0"}
+{"fn":"windowsShellIconResource","args":["  padded  ",3],"ok":"  padded  ,3"}
+{"fn":"windowsShellIconResource","args":["straße",-1],"ok":"straße,-1"}
+{"fn":"windowsShellIconResource","args":["a..b",42],"ok":"a..b,42"}
+{"fn":"windowsShellIconResource","args":["Hello World",{"$num":"-0"}],"ok":"Hello World,0"}
+{"fn":"windowsShellIconResource","args":["İstanbulemoji 👍🏽 mix",{"$num":"-0"}],"ok":"İstanbulemoji 👍🏽 mix,0"}
+{"fn":"windowsShellIconResource","args":["hello world",42],"ok":"hello world,42"}
+{"fn":"windowsShellIconResource","args":["./x/**/*.jsona:b:c",{"$num":"Infinity"}],"ok":"./x/**/*.jsona:b:c,Infinity"}
+{"fn":"windowsShellIconResource","args":["﻿bom",1],"ok":"﻿bom,1"}
+{"fn":"windowsShellIconResource","args":["HELLO"],"ok":"HELLO,0"}
+{"fn":"windowsShellIconResource","args":["é",9007199254740992],"ok":"é,9007199254740992"}
+{"fn":"windowsShellIconResource","args":["emoji 👍🏽 mix",3],"ok":"emoji 👍🏽 mix,3"}
+{"fn":"windowsShellIconResource","args":[".leading",1000000],"ok":".leading,1000000"}
+{"fn":"windowsShellIconResource","args":["key_name-1",-1],"ok":"key_name-1,-1"}
+{"fn":"windowsShellIconResource","args":["./x/**/*.json",{"$num":"NaN"}],"ok":"./x/**/*.json,NaN"}
+{"fn":"windowsShellIconResource","args":["trailing.",{"$undefined":true}],"ok":"trailing.,0"}
+{"fn":"windowsShellIconResource","args":["😀",100],"ok":"😀,100"}
+{"fn":"windowsShellIconResource","args":["ns:key.path日本語のテキスト",3],"ok":"ns:key.path日本語のテキスト,3"}
+{"fn":"windowsShellIconResource","args":["tab\tseparateda",{"$undefined":true}],"ok":"tab\tseparateda,0"}
+{"fn":"windowsShellIconResource","args":["İstanbulHello World",9007199254740992],"ok":"İstanbulHello World,9007199254740992"}
+{"fn":"windowsShellIconResource","args":["ab",1000],"ok":"ab,1000"}
+{"fn":"windowsShellIconResource","args":["trailing."],"ok":"trailing.,0"}
+{"fn":"windowsShellIconResource","args":["key_name-1",0],"ok":"key_name-1,0"}
+{"fn":"windowsShellIconResource","args":["trailing.",0.5],"ok":"trailing.,0.5"}
+{"fn":"windowsShellIconResource","args":["tab\tseparated",2147483648],"ok":"tab\tseparated,2147483648"}
+{"fn":"windowsShellIconResource","args":["HELLO",{"$undefined":true}],"ok":"HELLO,0"}
+{"fn":"windowsShellIconResource","args":["abtab\tseparated",100],"ok":"abtab\tseparated,100"}
+{"fn":"windowsShellIconResource","args":["😀",{"$undefined":true}],"ok":"😀,0"}
+{"fn":"windowsShellIconResource","args":["Hello World",1000],"ok":"Hello World,1000"}
+{"fn":"windowsShellIconResource","args":["﻿bom",{"$num":"-0"}],"ok":"﻿bom,0"}
+{"fn":"windowsShellIconResource","args":["日本語のテキスト",-1],"ok":"日本語のテキスト,-1"}
+{"fn":"windowsShellIconResource","args":["a😀b😀c",{"$num":"-Infinity"}],"ok":"a😀b😀c,-Infinity"}
+{"fn":"windowsShellIconResource","args":[":",{"$num":"-Infinity"}],"ok":":,-Infinity"}
+{"fn":"windowsShellIconResource","args":["ab",{"$undefined":true}],"ok":"ab,0"}
+{"fn":"windowsShellIconResource","args":["a.b.c",3],"ok":"a.b.c,3"}
+{"fn":"windowsShellIconResource","args":["./x/**/*.json:",{"$num":"NaN"}],"ok":"./x/**/*.json:,NaN"}
+{"fn":"windowsShellIconResource","args":["a:b:c  padded  ",{"$num":"Infinity"}],"ok":"a:b:c  padded  ,Infinity"}
+{"fn":"windowsShellIconResource","args":["straße",0],"ok":"straße,0"}
+{"fn":"windowsShellIconResource","args":["a",{"$undefined":true}],"ok":"a,0"}
+{"fn":"windowsShellIconResource","args":["日本語のテキストline1\nline2",3],"ok":"日本語のテキストline1\nline2,3"}
+{"fn":"windowsShellIconResource","args":["src/a/b.tsünïcödé",-1],"ok":"src/a/b.tsünïcödé,-1"}
+{"fn":"windowsShellIconResource","args":["  padded  HELLO",3],"ok":"  padded  HELLO,3"}
+{"fn":"windowsShellIconResource","args":["",{"$num":"NaN"}],"ok":",NaN"}
+{"fn":"windowsShellIconResource","args":["日本語のテキストΣΊΣΥΦΟΣ",{"$num":"NaN"}],"ok":"日本語のテキストΣΊΣΥΦΟΣ,NaN"}
+{"fn":"windowsShellIconResource","args":["a😀b😀c",100],"ok":"a😀b😀c,100"}
+{"fn":"windowsShellIconResource","args":["é",1000000],"ok":"é,1000000"}
+{"fn":"windowsShellIconResource","args":["a",{"$num":"-Infinity"}],"ok":"a,-Infinity"}
+{"fn":"windowsShellIconResource","args":["a😀b😀cns:key.path",0.5],"ok":"a😀b😀cns:key.path,0.5"}
+{"fn":"windowsShellIconResource","args":["a:b:c",1000000],"ok":"a:b:c,1000000"}
+{"fn":"windowsShellIconResource","args":[".leading",2147483648],"ok":".leading,2147483648"}
+{"fn":"windowsShellIconResource","args":["{name} has {count} items",10],"ok":"{name} has {count} items,10"}
+{"fn":"windowsShellIconResource","args":["src/a/b.ts",1000],"ok":"src/a/b.ts,1000"}
+{"fn":"windowsShellIconResource","args":["ünïcödé",9007199254740992],"ok":"ünïcödé,9007199254740992"}
+{"fn":"windowsShellIconResource","args":["hello",2147483648],"ok":"hello,2147483648"}
+{"fn":"windowsShellIconResource","args":["line1\nline2",1000],"ok":"line1\nline2,1000"}
+{"fn":"windowsShellIconResource","args":["é"],"ok":"é,0"}
+{"fn":"windowsShellIconResource","args":["tab\tseparatedstraße",0],"ok":"tab\tseparatedstraße,0"}
+{"fn":"windowsShellIconResource","args":["line1\nline2",0.5],"ok":"line1\nline2,0.5"}
+{"fn":"windowsShellIconResource","args":["a:b:c",-2.5],"ok":"a:b:c,-2.5"}
+{"fn":"windowsShellIconResource","args":["Hello World",{"$undefined":true}],"ok":"Hello World,0"}
+{"fn":"windowsShellIconResource","args":["line1\nline2line1\nline2",3],"ok":"line1\nline2line1\nline2,3"}
+{"fn":"windowsShellIconResource","args":["ΣΊΣΥΦΟΣa😀b😀c",42],"ok":"ΣΊΣΥΦΟΣa😀b😀c,42"}
+{"fn":"windowsShellIconResource","args":["ünïcödéa.b.c",{"$num":"-0"}],"ok":"ünïcödéa.b.c,0"}
+{"fn":"windowsShellIconResource","args":["src/a/b.ts",1],"ok":"src/a/b.ts,1"}
+{"fn":"windowsShellIconResource","args":["﻿bom",{"$undefined":true}],"ok":"﻿bom,0"}
+{"fn":"windowsShellIconResource","args":["ns:key.path:",1000000],"ok":"ns:key.path:,1000000"}
+{"fn":"windowsShellIconResource","args":["ab"],"ok":"ab,0"}
+{"fn":"windowsShellIconResource","args":["a😀b😀c",10],"ok":"a😀b😀c,10"}
+{"fn":"windowsShellIconResource","args":["日本語のテキスト",1],"ok":"日本語のテキスト,1"}
+{"fn":"windowsShellIconResource","args":["  padded  ",10],"ok":"  padded  ,10"}
+{"fn":"windowsShellIconResource","args":["İstanbul",2],"ok":"İstanbul,2"}
+{"fn":"windowsShellIconResource","args":["abc",10],"ok":"abc,10"}
+{"fn":"windowsShellIconResource","args":["tab\tseparated",{"$num":"Infinity"}],"ok":"tab\tseparated,Infinity"}
+{"fn":"windowsShellIconResource","args":["😀src/a/b.ts",-2.5],"ok":"😀src/a/b.ts,-2.5"}
+{"fn":"windowsShellIconResource","args":["hello world",1000000],"ok":"hello world,1000000"}
+{"fn":"windowsShellIconResource","args":["HELLO",10],"ok":"HELLO,10"}
+{"fn":"windowsShellIconResource","args":["hello  padded  ",9007199254740992],"ok":"hello  padded  ,9007199254740992"}
+{"fn":"windowsShellIconResource","args":["日本語のテキスト",{"$num":"NaN"}],"ok":"日本語のテキスト,NaN"}
+{"fn":"windowsShellIconResource","args":[":é",{"$undefined":true}],"ok":":é,0"}
+{"fn":"windowsShellIconResource","args":["tab\tseparated",{"$undefined":true}],"ok":"tab\tseparated,0"}
+{"fn":"windowsShellIconResource","args":["hello world",{"$undefined":true}],"ok":"hello world,0"}
+{"fn":"windowsShellIconResource","args":["line1\nline2",1],"ok":"line1\nline2,1"}
+{"fn":"windowsShellIconResource","args":["HELLO",{"$num":"-0"}],"ok":"HELLO,0"}
+{"fn":"windowsShellIconResource","args":["😀",2],"ok":"😀,2"}
+{"fn":"windowsShellIconResource","args":["line1\nline2",{"$num":"-0"}],"ok":"line1\nline2,0"}
+{"fn":"windowsShellIconResource","args":["HELLO",9007199254740992],"ok":"HELLO,9007199254740992"}
+{"fn":"windowsShellIconResource","args":["ΣΊΣΥΦΟΣ",1000000],"ok":"ΣΊΣΥΦΟΣ,1000000"}
+{"fn":"windowsShellIconResource","args":["::"],"ok":"::,0"}
+{"fn":"windowsShellIconResource","args":["a😀b😀c",{"$undefined":true}],"ok":"a😀b😀c,0"}
+{"fn":"windowsShellIconResource","args":["hello",3],"ok":"hello,3"}
+{"fn":"windowsShellIconResource","args":["İstanbulkey_name-1",0],"ok":"İstanbulkey_name-1,0"}
+{"fn":"windowsShellIconResource","args":["é",{"$undefined":true}],"ok":"é,0"}
+{"fn":"windowsShellIconResource","args":["emoji 👍🏽 mixns:key.path",2147483648],"ok":"emoji 👍🏽 mixns:key.path,2147483648"}
+{"fn":"windowsShellIconResource","args":["日本語のテキスト",3],"ok":"日本語のテキスト,3"}
+{"fn":"windowsShellIconResource","args":["hello",{"$undefined":true}],"ok":"hello,0"}
+{"fn":"windowsShellIconResource","args":[":﻿bom"],"ok":":﻿bom,0"}
+{"fn":"windowsShellIconResource","args":["ans:key.path",3],"ok":"ans:key.path,3"}
+{"fn":"windowsShellIconResource","args":["line1\nline2😀",2147483648],"ok":"line1\nline2😀,2147483648"}
+{"fn":"windowsShellIconResource","args":["a",2147483648],"ok":"a,2147483648"}
+{"fn":"windowsShellIconResource","args":["",{"$num":"Infinity"}],"ok":",Infinity"}
+{"fn":"windowsShellIconResource","args":["İstanbul"],"ok":"İstanbul,0"}
+{"fn":"windowsShellIconResource","args":["{name} has {count} items",{"$num":"-Infinity"}],"ok":"{name} has {count} items,-Infinity"}
+{"fn":"windowsShellIconResource","args":["﻿bom",{"$num":"Infinity"}],"ok":"﻿bom,Infinity"}
+{"fn":"windowsShellIconResource","args":["ab",9007199254740992],"ok":"ab,9007199254740992"}
+{"fn":"windowsShellIconResource","args":[".leadinghello world",9007199254740992],"ok":".leadinghello world,9007199254740992"}
+{"fn":"windowsShellIconResource","args":["straße",{"$undefined":true}],"ok":"straße,0"}
+{"fn":"windowsShellIconResource","args":["a..b﻿bom"],"ok":"a..b﻿bom,0"}
+{"fn":"windowsShellIconResource","args":["ns:key.path",0.5],"ok":"ns:key.path,0.5"}
+{"fn":"windowsShellIconResource","args":["a:b:c"],"ok":"a:b:c,0"}
+{"fn":"windowsShellIconResource","args":["key_name-1",{"$num":"-0"}],"ok":"key_name-1,0"}
+{"fn":"windowsShellIconResource","args":["./x/**/*.json",2],"ok":"./x/**/*.json,2"}
+{"fn":"windowsShellIconResource","args":["İstanbulHELLO",2147483648],"ok":"İstanbulHELLO,2147483648"}
+{"fn":"windowsShellIconResource","args":[".leading",0.5],"ok":".leading,0.5"}
+{"fn":"windowsShellIconResource","args":["a:b:c",1000],"ok":"a:b:c,1000"}
+{"fn":"windowsShellIconResource","args":["straßehello world",2147483648],"ok":"straßehello world,2147483648"}
+{"fn":"windowsShellIconResource","args":["a😀b😀c",9007199254740992],"ok":"a😀b😀c,9007199254740992"}
+{"fn":"windowsShellIconResource","args":["emoji 👍🏽 mix",42],"ok":"emoji 👍🏽 mix,42"}
+{"fn":"windowsShellIconResource","args":["a😀b😀ca..b",{"$undefined":true}],"ok":"a😀b😀ca..b,0"}
+{"fn":"windowsShellIconResource","args":["HELLO",3],"ok":"HELLO,3"}
+{"fn":"windowsShellIconResource","args":["line1\nline2",1000000],"ok":"line1\nline2,1000000"}
+{"fn":"windowsShellIconResource","args":["Hello World:",3],"ok":"Hello World:,3"}
+{"fn":"windowsShellIconResource","args":["src/a/b.ts",{"$undefined":true}],"ok":"src/a/b.ts,0"}
+{"fn":"windowsShellIconResource","args":["Hello World"],"ok":"Hello World,0"}
+{"fn":"windowsShellIconResource","args":["a😀b😀c",{"$num":"Infinity"}],"ok":"a😀b😀c,Infinity"}
+{"fn":"windowsShellIconResource","args":["straße",{"$num":"-0"}],"ok":"straße,0"}
+{"fn":"windowsShellIconResource","args":["ünïcödé",1000000],"ok":"ünïcödé,1000000"}
+{"fn":"windowsShellIconResource","args":["ns:key.path",100],"ok":"ns:key.path,100"}
+{"fn":"windowsShellIconResource","args":["a.b.c",1],"ok":"a.b.c,1"}
+{"fn":"windowsShellIconResource","args":["Hello World",-2.5],"ok":"Hello World,-2.5"}
+{"fn":"windowsShellIconResource","args":["ns:key.patha😀b😀c",-1],"ok":"ns:key.patha😀b😀c,-1"}
+{"fn":"windowsShellIconResource","args":["straße",{"$num":"Infinity"}],"ok":"straße,Infinity"}
+{"fn":"windowsShellIconResource","args":["ns:key.path",{"$undefined":true}],"ok":"ns:key.path,0"}
+{"fn":"windowsShellIconResource","args":["trailing.é",1000000],"ok":"trailing.é,1000000"}
+{"fn":"windowsShellIconResource","args":["😀",1000000],"ok":"😀,1000000"}
+{"fn":"windowsShellIconResource","args":["ünïcödé",{"$undefined":true}],"ok":"ünïcödé,0"}
+{"fn":"windowsShellIconResource","args":["Hello World",9007199254740992],"ok":"Hello World,9007199254740992"}
+{"fn":"windowsShellIconResource","args":["  padded  ",0],"ok":"  padded  ,0"}
+{"fn":"windowsShellIconResource","args":["ΣΊΣΥΦΟΣ",100],"ok":"ΣΊΣΥΦΟΣ,100"}
+{"fn":"windowsShellIconResource","args":["  padded  a😀b😀c",{"$undefined":true}],"ok":"  padded  a😀b😀c,0"}
+{"fn":"windowsShellIconResource","args":["./x/**/*.json",{"$num":"Infinity"}],"ok":"./x/**/*.json,Infinity"}
+{"fn":"windowsShellIconResource","args":["abc",1],"ok":"abc,1"}
+{"fn":"windowsShellIconResource","args":["emoji 👍🏽 mix:",0],"ok":"emoji 👍🏽 mix:,0"}
+{"fn":"windowsShellIconResource","args":["{name} has {count} items{name} has {count} items",100],"ok":"{name} has {count} items{name} has {count} items,100"}
+{"fn":"windowsShellIconResource","args":["a:b:c",{"$undefined":true}],"ok":"a:b:c,0"}
+{"fn":"windowsShellIconResource","args":["日本語のテキスト",{"$undefined":true}],"ok":"日本語のテキスト,0"}
+{"fn":"windowsShellIconResource","args":["a",1000000],"ok":"a,1000000"}
+{"fn":"windowsShellIconResource","args":["  padded  HELLO",1],"ok":"  padded  HELLO,1"}
+{"fn":"windowsShellIconResource","args":["ns:key.path",1000],"ok":"ns:key.path,1000"}
+{"fn":"windowsShellIconResource","args":["abc",100],"ok":"abc,100"}
+{"fn":"windowsShellIconResource","args":["﻿bom",10],"ok":"﻿bom,10"}
+{"fn":"windowsShellIconResource","args":["hello",1000],"ok":"hello,1000"}
+{"fn":"windowsShellIconResource","args":["./x/**/*.json",2147483648],"ok":"./x/**/*.json,2147483648"}
+{"fn":"windowsShellIconResource","args":["﻿bom",2147483648],"ok":"﻿bom,2147483648"}
+{"fn":"windowsShellIconResource","args":["trailing.a",42],"ok":"trailing.a,42"}
+{"fn":"windowsShellIconResource","args":["trailing.",2147483648],"ok":"trailing.,2147483648"}
+{"fn":"windowsShellIconResource","args":["a😀b😀c",2],"ok":"a😀b😀c,2"}
+{"fn":"windowsShellIconResource","args":["line1\nline2a.b.c",{"$undefined":true}],"ok":"line1\nline2a.b.c,0"}
+{"fn":"windowsShellIconResource","args":["ΣΊΣΥΦΟΣ",{"$num":"-Infinity"}],"ok":"ΣΊΣΥΦΟΣ,-Infinity"}
+{"fn":"windowsShellIconResource","args":["a.b.c",9007199254740992],"ok":"a.b.c,9007199254740992"}
+{"fn":"windowsShellIconResource","args":["line1\nline2",42],"ok":"line1\nline2,42"}
+{"fn":"windowsShellIconResource","args":["İstanbul",1000000],"ok":"İstanbul,1000000"}
+{"fn":"windowsShellIconResource","args":["é./x/**/*.json",3],"ok":"é./x/**/*.json,3"}
+{"fn":"windowsShellIconResource","args":[".leading",-2.5],"ok":".leading,-2.5"}
+{"fn":"windowsShellIconResource","args":["😀",{"$num":"-Infinity"}],"ok":"😀,-Infinity"}
+{"fn":"windowsShellIconResource","args":["Hello World",0],"ok":"Hello World,0"}
+{"fn":"windowsShellIconResource","args":["ns:key.path:",2147483648],"ok":"ns:key.path:,2147483648"}
+{"fn":"windowsShellIconResource","args":["a.b.c",2],"ok":"a.b.c,2"}
+{"fn":"windowsShellIconResource","args":[".leading",1],"ok":".leading,1"}
+{"fn":"windowsShellIconResource","args":["héllo wörld",0],"ok":"héllo wörld,0"}
+{"fn":"windowsShellIconResource","args":["👍🏽 thumbs",0],"ok":"👍🏽 thumbs,0"}
+{"fn":"windowsShellIconResource","args":["日本語",0],"ok":"日本語,0"}
+{"fn":"windowsShellIconResource","args":["",0],"ok":",0"}
+{"fn":"windowsShellIconResource","args":["é",0],"ok":"é,0"}
+{"fn":"windowsShellIconResource","args":["İstanbul",0],"ok":"İstanbul,0"}
+{"fn":"windowsShellIconResource","args":["ılık ırmak",0],"ok":"ılık ırmak,0"}
+{"fn":"windowsShellIconResource","args":["👨‍👩‍👧 family",0],"ok":"👨‍👩‍👧 family,0"}
+{"fn":"windowsShellIconResource","args":["a b",0],"ok":"a b,0"}
+{"fn":"windowsShellIconResource","args":["ΣΊΣΥΦΟΣ",0],"ok":"ΣΊΣΥΦΟΣ,0"}
+{"fn":"windowsShellIconResource","args":["a😀b",0],"ok":"a😀b,0"}
+{"fn":"windowsShellIconResource","args":["﻿bom",0],"ok":"﻿bom,0"}
+{"fn":"windowsShellIconResource","args":["a²b x½ y①",0],"ok":"a²b x½ y①,0"}
+{"fn":"windowsShellIconResource","args":["aⅠb Ⅻ",0],"ok":"aⅠb Ⅻ,0"}
+{"fn":"windowsShellIconResource","args":["a𐐀b 𝐀bc",0],"ok":"a𐐀b 𝐀bc,0"}
+{"fn":"windowsShellIconResource","args":["कि ٣٤",0],"ok":"कि ٣٤,0"}
+{"fn":"windowsShellIconResource","args":["emoji 👍🏽 mix",{"$undefined":true}],"ok":"emoji 👍🏽 mix,0"}
+{"fn":"windowsShellIconResource","args":["emoji 👍🏽 mix",-7.5],"ok":"emoji 👍🏽 mix,-7.5"}
+{"fn":"windowsShellIconResource","args":["emoji 👍🏽 mix",0.1],"ok":"emoji 👍🏽 mix,0.1"}
+{"fn":"windowsShellIconResource","args":["emoji 👍🏽 mix",0.30000000000000004],"ok":"emoji 👍🏽 mix,0.30000000000000004"}
+{"fn":"windowsShellIconResource","args":["emoji 👍🏽 mix",1e+21],"ok":"emoji 👍🏽 mix,1e+21"}
+{"fn":"windowsShellIconResource","args":["emoji 👍🏽 mix",1e-7],"ok":"emoji 👍🏽 mix,1e-7"}
+{"fn":"windowsShellIconResource","args":["emoji 👍🏽 mix",5e-324],"ok":"emoji 👍🏽 mix,5e-324"}
+{"fn":"windowsShellIconResource","args":["emoji 👍🏽 mix",1.7976931348623157e+308],"ok":"emoji 👍🏽 mix,1.7976931348623157e+308"}
+{"fn":"windowsShellIconResource","args":["emoji 👍🏽 mix",9007199254740992],"ok":"emoji 👍🏽 mix,9007199254740992"}
+{"fn":"nativeWindowHandleToHwnd","args":[["a",1]],"error":"handle.readUInt32LE is not a function"}
+{"fn":"nativeWindowHandleToHwnd","args":[{}],"error":"handle.readUInt32LE is not a function"}
+{"fn":"nativeWindowHandleToHwnd","args":[null],"error":"Cannot read properties of null (reading 'length')"}
+{"fn":"nativeWindowHandleToHwnd","args":[{"a":{"b":"c"}}],"error":"handle.readUInt32LE is not a function"}
+{"fn":"nativeWindowHandleToHwnd","args":["x"],"error":"handle.readUInt32LE is not a function"}
+{"fn":"nativeWindowHandleToHwnd","args":[{"a":"b"}],"error":"handle.readUInt32LE is not a function"}
+{"fn":"nativeWindowHandleToHwnd","args":[[]],"error":"handle.readUInt32LE is not a function"}
+{"fn":"nativeWindowHandleToHwnd","args":[true],"error":"handle.readUInt32LE is not a function"}
+{"fn":"nativeWindowHandleToHwnd","args":[0],"error":"handle.readUInt32LE is not a function"}
+{"fn":"windowsShellAppUserModelHelperName","args":[],"ok":"windows-shell-appusermodel-8e34a025faf4.exe"}
+{"fn":"cscCompilerCandidates","args":[],"ok":["C:\\Windows/Microsoft.NET/Framework64/v4.0.30319/csc.exe","C:\\Windows/Microsoft.NET/Framework/v4.0.30319/csc.exe"]}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["./x/**/*.json"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["straße"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["é"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["😀a:b:c"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":[".leading"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["./x/**/*.json./x/**/*.json"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":[":"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":[":é"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["key_name-1"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["İstanbul"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["HELLOns:key.path"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["a:b:c"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["src/a/b.ts.leading"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["a..b"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["HELLO"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["Hello World:"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["{name} has {count} items"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["Hello World"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["😀"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["a😀b😀cünïcödé"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["﻿bom"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["emoji 👍🏽 mixkey_name-1"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["a"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["  padded  "],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["emoji 👍🏽 mix"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["tab\tseparated"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["HELLOa..b"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["ΣΊΣΥΦΟΣ./x/**/*.json"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["HELLOkey_name-1"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["line1\nline2"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["trailing.日本語のテキスト"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["a😀b😀c"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["line1\nline2ΣΊΣΥΦΟΣ"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["hello"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["hello world"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["ns:key.path"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":[""],"error":"ENOENT: no such file or directory, mkdir ''"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["ab"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["src/a/b.ts"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["trailing.😀"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["  padded  key_name-1"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["ΣΊΣΥΦΟΣ"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["日本語のテキストa😀b😀c"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["a:b:cline1\nline2"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["日本語のテキスト"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["trailing."],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["abc"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["trailing.:"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["trailing.﻿bom"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["a😀b😀ca:b:c"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["{name} has {count} itemssrc/a/b.ts"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["Hello WorldHello World"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["a.b.c"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["trailing.é"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["trailing.tab\tseparated"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["a:b:cemoji 👍🏽 mix"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["ünïcödéa😀b😀c"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["hello./x/**/*.json"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["emoji 👍🏽 mixns:key.path"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["ünïcödé"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["key_name-1key_name-1"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["abns:key.path"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["a:b:c./x/**/*.json"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["helloΣΊΣΥΦΟΣ"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["HELLO  padded  "],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["key_name-1日本語のテキスト"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["Hello Worlda..b"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["a.b.ca..b"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":[":ab"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["{name} has {count} itemskey_name-1"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["a..bsrc/a/b.ts"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["trailing.hello"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["HELLOünïcödé"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["ns:key.pathtab\tseparated"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["İstanbulİstanbul"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["src/a/b.tshello world"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["İstanbulHello World"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["a😀b😀chello"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["a{name} has {count} items"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["straße😀"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["abΣΊΣΥΦΟΣ"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["helloline1\nline2"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["emoji 👍🏽 mix:"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["HELLOabc"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["key_name-1abc"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["a:b:c{name} has {count} items"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["aba..b"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["ΣΊΣΥΦΟΣabc"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["src/a/b.ts{name} has {count} items"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["Hello Worlda:b:c"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["İstanbula😀b😀c"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["tab\tseparatedhello"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["src/a/b.tsa"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["a﻿bom"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["😀emoji 👍🏽 mix"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["tab\tseparateda..b"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["hello worldHello World"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":[":İstanbul"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["😀HELLO"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["日本語のテキスト.leading"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["a:b:cé"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["straßeHello World"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["a..bé"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["hellohello world"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["straßehello"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["﻿bomkey_name-1"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":[":src/a/b.ts"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":[".leadinghello world"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["src/a/b.tsabc"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["straßekey_name-1"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["a:b:ckey_name-1"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["ünïcödéa.b.c"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["emoji 👍🏽 mix日本語のテキスト"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":[":😀"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["straßea..b"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["éabc"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["tab\tseparatedünïcödé"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["trailing.ünïcödé"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":[":ns:key.path"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["line1\nline2é"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["﻿bomhello"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["src/a/b.tskey_name-1"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["{name} has {count} itemsabc"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["aline1\nline2"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["a.b.cabc"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["a.b.c﻿bom"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["key_name-1./x/**/*.json"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["ΣΊΣΥΦΟΣtrailing."],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["src/a/b.tsab"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["tab\tseparated:"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["Hello Worlda"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["HELLOa"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["ΣΊΣΥΦΟΣa:b:c"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["a😀b😀ca..b"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["src/a/b.tsHELLO"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["hello worldline1\nline2"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["étab\tseparated"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":[".leading😀"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["./x/**/*.json.leading"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["tab\tseparated😀"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["İstanbul  padded  "],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["ΣΊΣΥΦΟΣ  padded  "],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["ns:key.path😀"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["a.b.cstraße"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["ΣΊΣΥΦΟΣİstanbul"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["HELLOHello World"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["a..bstraße"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["emoji 👍🏽 mixemoji 👍🏽 mix"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["a😀b😀cé"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["trailing.abc"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["a😀b😀cstraße"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["﻿bomsrc/a/b.ts"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["éhello"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["hello.leading"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["{name} has {count} items﻿bom"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["key_name-1.leading"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["ünïcödésrc/a/b.ts"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["ns:key.path﻿bom"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["😀a..b"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["HELLOline1\nline2"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["key_name-1a.b.c"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["﻿bom{name} has {count} items"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["日本語のテキストline1\nline2"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["src/a/b.tsé"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["HELLOΣΊΣΥΦΟΣ"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["Hello Worldkey_name-1"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["line1\nline2abc"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["./x/**/*.jsonhello"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["日本語のテキストkey_name-1"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["./x/**/*.jsona😀b😀c"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["abc.leading"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["{name} has {count} itemsline1\nline2"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["HELLO{name} has {count} items"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["line1\nline2{name} has {count} items"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["a😀b😀cΣΊΣΥΦΟΣ"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":[".leadingHello World"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["İstanbulhello"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["﻿bomHello World"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["ahello world"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["日本語のテキストhello world"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["hello world.leading"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["a😀b😀c.leading"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["éünïcödé"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["  padded  a:b:c"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["trailing.hello world"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["./x/**/*.jsonsrc/a/b.ts"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["﻿boma..b"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["İstanbultrailing."],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["src/a/b.tsΣΊΣΥΦΟΣ"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["é./x/**/*.json"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["{name} has {count} itemsns:key.path"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["İstanbulünïcödé"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["{name} has {count} itemsa.b.c"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["ns:key.path:"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["straße./x/**/*.json"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["src/a/b.tsa..b"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["﻿bomline1\nline2"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["aabc"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["HELLOHELLO"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["😀ünïcödé"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["héllo wörld"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["👍🏽 thumbs"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["日本語"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["ılık ırmak"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["👨‍👩‍👧 family"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["a b"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["a😀b"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["a²b x½ y①"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["aⅠb Ⅻ"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["a𐐀b 𝐀bc"],"error":"csc.exe not found"}
+{"fn":"ensureWindowsShellAppUserModelHelper","args":["कि ٣٤"],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"hello","iconPath":"src/a/b.ts","relaunchCommand":"a..b","displayName":"日本語のテキスト","shortcutPaths":["hello world","{name} has {count} items"],"hwnd":3},"étrailing.","x"],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"trailing.","iconPath":"ΣΊΣΥΦΟΣ","relaunchCommand":"a","displayName":"Hello World","shortcutPaths":["straßetrailing.","ns:key.pathİstanbul","﻿boma..b"],"hwnd":2},"{name} has {count} items",null],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"ns:key.path","iconPath":"ns:key.path","relaunchCommand":"ns:key.pathhello","displayName":"hello world","shortcutPaths":["aHELLO","ΣΊΣΥΦΟΣ"],"hwnd":null},"a..b",["a",1]],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"straßeΣΊΣΥΦΟΣ","iconPath":"İstanbul","relaunchCommand":"a","displayName":"a..bab","shortcutPaths":["abünïcödé"]},"😀",{"flush":false}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"  padded  ","iconPath":"a","relaunchCommand":"helloİstanbul","displayName":"﻿bom","shortcutPaths":[],"hwnd":null},":",["a",1]],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"a":{"b":"c"}},"😀",{"flush":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"line1\nline2","iconPath":"a","relaunchCommand":"abc","displayName":"a😀b😀cΣΊΣΥΦΟΣ","shortcutPaths":["  padded  src/a/b.ts","trailing.","﻿bom"]},"hello world",{}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"a":"b"},"ab",{"flush":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":".leading","iconPath":"abstraße","relaunchCommand":"İstanbul","displayName":"a😀b😀ca..b","shortcutPaths":["é","src/a/b.ts"],"hwnd":{"a":"b"}},":a",{"flush":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"HELLO","iconPath":"emoji 👍🏽 mix","relaunchCommand":"straße","displayName":"a","shortcutPaths":["ΣΊΣΥΦΟΣ","Hello World"],"hwnd":null},"a..b",{"flush":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"hello","iconPath":"ns:key.path","relaunchCommand":"HELLO","displayName":"ns:key.path","shortcutPaths":["a"],"hwnd":null},"İstanbul"],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"ΣΊΣΥΦΟΣ","iconPath":"straße","relaunchCommand":"😀","displayName":"trailing.","shortcutPaths":["ΣΊΣΥΦΟΣ","src/a/b.ts"],"hwnd":100},"é",{"flush":false}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"hello worldΣΊΣΥΦΟΣ","iconPath":"a😀b😀cns:key.path","relaunchCommand":"日本語のテキストa:b:c","displayName":"hello﻿bom","shortcutPaths":["😀a..b","a😀b😀c","ns:key.path"],"hwnd":1000000},"ΣΊΣΥΦΟΣ",{"flush":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"src/a/b.ts","iconPath":"ΣΊΣΥΦΟΣ","relaunchCommand":"ab","displayName":"tab\tseparatedns:key.path","shortcutPaths":["a.b.c","src/a/b.ts"],"hwnd":{"a":"b"}},"a",{"flush":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"ab","iconPath":"a.b.c","relaunchCommand":"ΣΊΣΥΦΟΣ","displayName":"  padded  ","shortcutPaths":["﻿bom","﻿bom"],"hwnd":{"$num":"-0"}},"a:b:ctrailing.",{}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"a":{"b":"c"}},".leading",{"flush":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"emoji 👍🏽 mixa..b","iconPath":"tab\tseparateda.b.c","relaunchCommand":".leading.leading","displayName":"  padded  ","shortcutPaths":["ns:key.path"]},"a😀b😀c",{"flush":false}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"HELLOhello","iconPath":"😀","relaunchCommand":"Hello World","displayName":"hello","shortcutPaths":["日本語のテキスト","line1\nline2","a😀b😀cline1\nline2"],"hwnd":42},"tab\tseparated",{"flush":false}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"ab","iconPath":"  padded  ","relaunchCommand":"hello world","displayName":"a..bhello world","shortcutPaths":["a:b:c"],"hwnd":["a",1]},"ΣΊΣΥΦΟΣ",{}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"a","iconPath":"abcΣΊΣΥΦΟΣ","relaunchCommand":"😀","displayName":"a.b.c","shortcutPaths":["日本語のテキストhello world","{name} has {count} items","ΣΊΣΥΦΟΣ"],"hwnd":1000},"a..bsrc/a/b.ts",{"flush":false}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"a..b","iconPath":".leading","relaunchCommand":"a😀b😀c","displayName":"hello","shortcutPaths":["ΣΊΣΥΦΟΣ"],"hwnd":null},"﻿bom",{"flush":false}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"ab","iconPath":"a.b.c","relaunchCommand":"é./x/**/*.json","displayName":"a:b:c","shortcutPaths":[]},":",{"flush":false}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"a","iconPath":"a:b:c","relaunchCommand":"key_name-1","displayName":"日本語のテキスト","shortcutPaths":["hello","é","a"],"hwnd":null},"a",{"a":"b"}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"😀","iconPath":"a.b.c","relaunchCommand":"日本語のテキスト","displayName":"./x/**/*.json","shortcutPaths":["﻿bom","é","😀"]},"helloé",{"$undefined":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"key_name-1","iconPath":"😀","relaunchCommand":"ns:key.pathünïcödé","displayName":"","shortcutPaths":["hello"]},"emoji 👍🏽 mix",{"flush":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"./x/**/*.json","iconPath":"hello world","relaunchCommand":"a😀b😀c","displayName":"a.b.c","shortcutPaths":["ünïcödé","emoji 👍🏽 mix",".leading"],"hwnd":["a",1]},"src/a/b.ts",{"flush":false}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"trailing.","iconPath":"a😀b😀c","relaunchCommand":"src/a/b.ts","displayName":"ΣΊΣΥΦΟΣ","shortcutPaths":[],"hwnd":null},"{name} has {count} itemsab",{"flush":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"ns:key.path","iconPath":"ünïcödé","relaunchCommand":"ns:key.path","displayName":".leadingé","shortcutPaths":["a😀b😀c","abc./x/**/*.json","é"],"hwnd":{"$num":"-0"}},":",{"flush":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"{name} has {count} items","iconPath":"ΣΊΣΥΦΟΣ","relaunchCommand":"src/a/b.tsa..b","displayName":"日本語のテキスト","shortcutPaths":["key_name-1"],"hwnd":{"$num":"NaN"}},"ns:key.pathHELLO",{}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"ünïcödé","iconPath":"hellohello","relaunchCommand":"a😀b😀c./x/**/*.json","displayName":"é","shortcutPaths":[".leading"],"hwnd":null},"HELLO",{"flush":false}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"tab\tseparatedhello","iconPath":"﻿boma","relaunchCommand":"ns:key.path","displayName":"a{name} has {count} items","shortcutPaths":["line1\nline2","hello"],"hwnd":-1},"",{"$undefined":true}],"error":"ENOENT: no such file or directory, mkdir ''"}
+{"fn":"applyWindowsShellAppUserModel","args":["x","hello",{"flush":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"﻿bom","iconPath":"İstanbul","relaunchCommand":"trailing.","displayName":"ünïcödéa.b.c","shortcutPaths":[],"hwnd":["a",1]},".leading"],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"hello world","iconPath":"ünïcödéa.b.c","relaunchCommand":"ΣΊΣΥΦΟΣ","displayName":"straße","shortcutPaths":["a","HELLO","straße"],"hwnd":{"$num":"NaN"}},"Hello World",{}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"a":"b"},"😀  padded  ",{"flush":false}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"src/a/b.ts","iconPath":"abc﻿bom","relaunchCommand":".leading","displayName":"İstanbul","shortcutPaths":[],"hwnd":0},"a:b:c",{"$undefined":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"trailing.","iconPath":":","relaunchCommand":"İstanbul","displayName":"","shortcutPaths":["abc","abc","ünïcödé"],"hwnd":[]},".leading",{"flush":false}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"src/a/b.ts","iconPath":"key_name-1","relaunchCommand":"a😀b😀c","displayName":"é﻿bom","shortcutPaths":["key_name-1日本語のテキスト","tab\tseparated","src/a/b.ts"]},"ünïcödé",{"flush":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{},"ns:key.path",{"flush":false}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"tab\tseparated","iconPath":"hello","relaunchCommand":"a:b:c","displayName":"./x/**/*.json","shortcutPaths":["./x/**/*.json","aabc"],"hwnd":null},"ns:key.path",{"flush":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"é","iconPath":"./x/**/*.jsonHello World","relaunchCommand":"emoji 👍🏽 mix{name} has {count} items","displayName":"  padded  ","shortcutPaths":["emoji 👍🏽 mix","key_name-1"],"hwnd":{"$num":"NaN"}},"a..b",{}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":".leading","iconPath":"﻿bom","relaunchCommand":"ésrc/a/b.ts","displayName":"./x/**/*.json","shortcutPaths":["abc"],"hwnd":{"$num":"Infinity"}},"a:b:ca:b:c",{"flush":false}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"trailing.","iconPath":"straße","relaunchCommand":"./x/**/*.json","displayName":":","shortcutPaths":["./x/**/*.json"],"hwnd":null},"é",{"$undefined":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":".leading  padded  ","iconPath":"ns:key.pathtab\tseparated","relaunchCommand":"ünïcödéhello","displayName":"a😀b😀c","shortcutPaths":["a:b:ca😀b😀c","Hello World",""]},"{name} has {count} items",{"flush":false}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{},"a😀b😀c",{"flush":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[true,"  padded  ",0],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"İstanbul","iconPath":"./x/**/*.json","relaunchCommand":"./x/**/*.json","displayName":"  padded  ","shortcutPaths":["{name} has {count} items"]},"straßeab",{"$undefined":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"a😀b😀c","iconPath":"tab\tseparated","relaunchCommand":"{name} has {count} items","displayName":"a","shortcutPaths":[],"hwnd":null},"HELLO",{"flush":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"日本語のテキスト日本語のテキスト","iconPath":"😀","relaunchCommand":"hello world","displayName":"a😀b😀c","shortcutPaths":["HELLO"],"hwnd":{}},"Hello World",{"flush":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"abc","iconPath":"src/a/b.ts","relaunchCommand":"emoji 👍🏽 mixa","displayName":"hello","shortcutPaths":["a:b:cHello World","İstanbul"],"hwnd":-2.5},":",{"flush":false}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"ns:key.path","iconPath":"line1\nline2","relaunchCommand":"a.b.c","displayName":"a","shortcutPaths":["abc"],"hwnd":null},"a:b:c",{}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":".leading","iconPath":"Hello World","relaunchCommand":".leading","displayName":"Hello World","shortcutPaths":[":","./x/**/*.json","trailing."],"hwnd":null},":",{"flush":false}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"İstanbul","iconPath":"hello  padded  ","relaunchCommand":"","displayName":"abc","shortcutPaths":["a"],"hwnd":null},"straßens:key.path",{"flush":false}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"ab","iconPath":"İstanbul","relaunchCommand":"a:b:cHELLO","displayName":"İstanbul","shortcutPaths":[":😀","ab"]},"Hello World",{"$undefined":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[true,"ΣΊΣΥΦΟΣ",{"flush":false}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":["x","日本語のテキスト",{"flush":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"hello","iconPath":"abc","relaunchCommand":"abc","displayName":"hello","shortcutPaths":[],"hwnd":null},"a..bHello World",{"$undefined":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"a:b:c","iconPath":"hello world  padded  ","relaunchCommand":"日本語のテキストa","displayName":"tab\tseparated","shortcutPaths":["a😀b😀c😀","日本語のテキスト","tab\tseparated"],"hwnd":["a",1]},"😀ΣΊΣΥΦΟΣ",{"flush":false}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"日本語のテキスト","iconPath":"﻿bom","relaunchCommand":"{name} has {count} items","displayName":"ab","shortcutPaths":["tab\tseparated","a:b:c"],"hwnd":null},"./x/**/*.json",{"flush":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"","iconPath":"😀","relaunchCommand":"","displayName":"key_name-1","shortcutPaths":[],"hwnd":null},"ΣΊΣΥΦΟΣ",{"$undefined":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"tab\tseparated","iconPath":":","relaunchCommand":"HELLO","displayName":"{name} has {count} items","shortcutPaths":["ünïcödé"],"hwnd":"x"},"İstanbulhello",{"flush":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"emoji 👍🏽 mix","iconPath":"a","relaunchCommand":"line1\nline2","displayName":"a:b:cemoji 👍🏽 mix","shortcutPaths":["hello","éΣΊΣΥΦΟΣ","İstanbul"]},"trailing.",{"$undefined":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"ésrc/a/b.ts","iconPath":".leading","relaunchCommand":"abc","displayName":"﻿bom","shortcutPaths":["a:b:c","key_name-1","  padded  "],"hwnd":null},"HELLOsrc/a/b.ts",{"$undefined":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"{name} has {count} itemshello","iconPath":"a😀b😀c","relaunchCommand":".leadingab","displayName":"src/a/b.tsa.b.c","shortcutPaths":["﻿bomemoji 👍🏽 mix","a:b:c"],"hwnd":100},"./x/**/*.json",{"flush":false}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"hello world","iconPath":"./x/**/*.json","relaunchCommand":"{name} has {count} items","displayName":"hello world","shortcutPaths":["hello","Hello World"],"hwnd":null},"😀line1\nline2",{"flush":false}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[0,"",{"$undefined":true}],"error":"ENOENT: no such file or directory, mkdir ''"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"İstanbul","iconPath":"ΣΊΣΥΦΟΣ","relaunchCommand":"abc","displayName":"ünïcödé","shortcutPaths":["a..b","trailing."],"hwnd":null},":",{}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[true,"  padded  ",{"$undefined":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"tab\tseparated","iconPath":"line1\nline2","relaunchCommand":"  padded  ","displayName":"hello world","shortcutPaths":["ab","a:b:c"]},"Hello World",{"flush":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[null,"{name} has {count} itemsİstanbul",{"flush":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"{name} has {count} items","iconPath":"Hello World","relaunchCommand":"  padded  ","displayName":"key_name-1","shortcutPaths":["﻿bomemoji 👍🏽 mix","aemoji 👍🏽 mix"]},"trailing.",{"flush":false}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"a..b😀","iconPath":"ns:key.path","relaunchCommand":"tab\tseparatedab","displayName":"tab\tseparated{name} has {count} items","shortcutPaths":[],"hwnd":null},"ab",{}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[true,"hello world",{}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"a":{"b":"c"}},"a😀b😀c",{}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"a:b:c","iconPath":"key_name-1","relaunchCommand":"a:b:c./x/**/*.json","displayName":"trailing.İstanbul","shortcutPaths":["abc","hello"]},"a:b:c",{"flush":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"trailing.","iconPath":"ΣΊΣΥΦΟΣ","relaunchCommand":"line1\nline2","displayName":"HELLO","shortcutPaths":["./x/**/*.json","a","key_name-1"],"hwnd":["a",1]},"a",{"flush":false}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":["x","ab",{"flush":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":["x","😀",{"flush":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"","iconPath":"a","relaunchCommand":"key_name-1","displayName":"key_name-1","shortcutPaths":["  padded  ","hello world"],"hwnd":null},"ΣΊΣΥΦΟΣ"],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"tab\tseparatedkey_name-1","iconPath":".leading","relaunchCommand":"ns:key.path","displayName":"key_name-1","shortcutPaths":[],"hwnd":null},"a:b:chello",{}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"emoji 👍🏽 mix","iconPath":"hellohello world","relaunchCommand":"hello","displayName":"straße","shortcutPaths":["src/a/b.ts"],"hwnd":"x"},"emoji 👍🏽 mix日本語のテキスト",{"flush":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"hello","iconPath":".leading","relaunchCommand":"{name} has {count} items","displayName":"  padded  ","shortcutPaths":[],"hwnd":2147483648},"日本語のテキスト"],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"emoji 👍🏽 mix","iconPath":"  padded  ","relaunchCommand":"a:b:cns:key.path","displayName":"a","shortcutPaths":[],"hwnd":true},"./x/**/*.json",{"flush":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{},".leading","x"],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"emoji 👍🏽 mix日本語のテキスト","iconPath":"key_name-1","relaunchCommand":"a","displayName":"a..b","shortcutPaths":["HELLO","é","é"],"hwnd":1},"İstanbul",{"flush":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"HELLO","iconPath":"ΣΊΣΥΦΟΣ","relaunchCommand":"straße","displayName":"line1\nline2","shortcutPaths":[]},"ns:key.path😀",{"flush":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"ab","iconPath":"abcab","relaunchCommand":"src/a/b.ts","displayName":"a😀b😀c","shortcutPaths":[]},"key_name-1"],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"tab\tseparated","iconPath":"ab","relaunchCommand":"日本語のテキスト","displayName":"ünïcödé","shortcutPaths":[],"hwnd":"x"},"straße",{"flush":false}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[[],"trailing.",{}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"straße","iconPath":"ünïcödé","relaunchCommand":"ΣΊΣΥΦΟΣ","displayName":"line1\nline2a😀b😀c","shortcutPaths":["abc"],"hwnd":10},".leading",{"flush":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"a.b.c","iconPath":"ns:key.path","relaunchCommand":"key_name-1","displayName":"İstanbul","shortcutPaths":[],"hwnd":100},"emoji 👍🏽 mixa.b.c",{"$undefined":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"a:b:c","iconPath":"trailing.","relaunchCommand":":key_name-1","displayName":"line1\nline2","shortcutPaths":[],"hwnd":{}},"tab\tseparated",{"flush":false}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"key_name-1","iconPath":"a.b.c","relaunchCommand":"İstanbul","displayName":"a..b","shortcutPaths":["line1\nline2Hello World","ns:key.patha.b.c"],"hwnd":null},"a..b",{"$undefined":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"ünïcödé","iconPath":"hello world﻿bom","relaunchCommand":"emoji 👍🏽 mix日本語のテキスト","displayName":"Hello World","shortcutPaths":["İstanbul","src/a/b.ts","abc"]},"",{"flush":true}],"error":"ENOENT: no such file or directory, mkdir ''"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"  padded  ","iconPath":"","relaunchCommand":"ns:key.path","displayName":"","shortcutPaths":["a😀b😀c","straße","a"],"hwnd":{"$num":"NaN"}},"a..b",{"$undefined":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"İstanbula","iconPath":"trailing.","relaunchCommand":"trailing.","displayName":":","shortcutPaths":["İstanbul","é","aemoji 👍🏽 mix"],"hwnd":[]},"src/a/b.ts",{"$undefined":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"a..b","iconPath":"a..b","relaunchCommand":"﻿bom","displayName":"{name} has {count} items日本語のテキスト","shortcutPaths":["  padded  .leading"],"hwnd":{}},"src/a/b.ts",{}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"﻿boma..b","iconPath":"straße","relaunchCommand":"ns:key.pathsrc/a/b.ts","displayName":"😀","shortcutPaths":["  padded  ünïcödé","./x/**/*.json"]},"ΣΊΣΥΦΟΣ",{"flush":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[null,"src/a/b.tsa.b.c",{"a":{"b":"c"}}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"日本語のテキスト","iconPath":"src/a/b.ts","relaunchCommand":":","displayName":"emoji 👍🏽 mix","shortcutPaths":["日本語のテキスト","HELLO"]},"tab\tseparatedline1\nline2",true],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"ünïcödé","iconPath":"ünïcödé","relaunchCommand":"ns:key.path","displayName":"İstanbul","shortcutPaths":["İstanbul"]},"{name} has {count} items",{}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"﻿bom","iconPath":"﻿bom","relaunchCommand":"hello world","displayName":"emoji 👍🏽 mix","shortcutPaths":["﻿bom","日本語のテキスト","straße"]},"hello",{}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"İstanbul","iconPath":"a😀b😀c","relaunchCommand":"HELLO","displayName":"key_name-1","shortcutPaths":["trailing.","Hello World"],"hwnd":null},"hello",0],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"emoji 👍🏽 mix{name} has {count} items","iconPath":"é","relaunchCommand":"  padded  ","displayName":"key_name-1","shortcutPaths":[]},"straße",{"flush":false}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"key_name-1","iconPath":"hello日本語のテキスト","relaunchCommand":"😀","displayName":"trailing.","shortcutPaths":["hello"],"hwnd":9007199254740992},"ΣΊΣΥΦΟΣ",{"flush":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[0,"ns:key.path",{"flush":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":":","iconPath":"  padded  ","relaunchCommand":"{name} has {count} itemsemoji 👍🏽 mix","displayName":"src/a/b.ts","shortcutPaths":[],"hwnd":"x"},"ΣΊΣΥΦΟΣ",{"flush":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"ünïcödé","iconPath":"{name} has {count} itemsa.b.c","relaunchCommand":"Hello World","displayName":"a","shortcutPaths":["ΣΊΣΥΦΟΣemoji 👍🏽 mix","key_name-1","  padded  "]},"hello",{"flush":false}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"İstanbul","iconPath":":straße","relaunchCommand":"hello","displayName":"﻿bom","shortcutPaths":["abcline1\nline2","line1\nline2"],"hwnd":100},"日本語のテキスト",{"flush":false}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"HELLO","iconPath":"hello","relaunchCommand":"ünïcödé","displayName":"src/a/b.ts","shortcutPaths":["Hello World"],"hwnd":1000000},"line1\nline2",{"$undefined":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"abcab","iconPath":"src/a/b.ts","relaunchCommand":"a..bab","displayName":"  padded  ","shortcutPaths":[],"hwnd":null},"./x/**/*.jsonHELLO",{"flush":false}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"a","iconPath":"{name} has {count} items","relaunchCommand":"日本語のテキスト","displayName":"é","shortcutPaths":[],"hwnd":{"a":{"b":"c"}}},"abc"],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"ΣΊΣΥΦΟΣ","iconPath":"a:b:c","relaunchCommand":"ünïcödé","displayName":"hello","shortcutPaths":[]},"a..bsrc/a/b.ts",{"flush":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"src/a/b.tstrailing.","iconPath":"a..b","relaunchCommand":"tab\tseparated","displayName":"ΣΊΣΥΦΟΣ","shortcutPaths":["ns:key.path😀","😀tab\tseparated"]},"emoji 👍🏽 mix",[]],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"ΣΊΣΥΦΟΣ","iconPath":"a😀","relaunchCommand":"hello world","displayName":"😀","shortcutPaths":[".leading","abc","ns:key.path"],"hwnd":null},"😀",{"flush":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[true,"key_name-1a..b",[]],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"ΣΊΣΥΦΟΣ","iconPath":"  padded  ","relaunchCommand":"ns:key.path","displayName":"ns:key.path","shortcutPaths":["./x/**/*.jsonkey_name-1"],"hwnd":[]},"HELLOa",{"flush":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":".leading","iconPath":"line1\nline2","relaunchCommand":"a😀b😀c","displayName":"İstanbul","shortcutPaths":["ns:key.path"],"hwnd":null},"﻿bom",null],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[null,"abc:",{"flush":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[0,"trailing.",{"flush":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"key_name-1","iconPath":"a","relaunchCommand":"emoji 👍🏽 mix","displayName":"a😀b😀c","shortcutPaths":["a😀b😀chello","hello world","trailing."]},"😀",{}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"emoji 👍🏽 mix","iconPath":"straße","relaunchCommand":"日本語のテキスト","displayName":"a:b:c","shortcutPaths":["trailing."],"hwnd":{"a":{"b":"c"}}},"abc",{"flush":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"{name} has {count} items","iconPath":"straße","relaunchCommand":"key_name-1","displayName":"ΣΊΣΥΦΟΣ","shortcutPaths":[],"hwnd":{"$num":"NaN"}},"ns:key.pathab"],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"hello","iconPath":"{name} has {count} itemstab\tseparated","relaunchCommand":"ünïcödé","displayName":"ab","shortcutPaths":[],"hwnd":null},"tab\tseparated",{"flush":false}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"ünïcödéab","iconPath":"  padded  ","relaunchCommand":"abca:b:c","displayName":"a..b","shortcutPaths":["a..b","trailing.ab"],"hwnd":[]},"./x/**/*.json",{"flush":false}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"a":"b"},"é",{}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"a😀b😀c","iconPath":"a:b:c","relaunchCommand":"a.b.c","displayName":"abc","shortcutPaths":["a😀b😀c","a.b.c","HELLO"],"hwnd":[]},"ns:key.path",{"flush":false}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"ΣΊΣΥΦΟΣ","iconPath":".leading:","relaunchCommand":"ns:key.path","displayName":"trailing.","shortcutPaths":["a"],"hwnd":[]},""],"error":"ENOENT: no such file or directory, mkdir ''"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":":","iconPath":"  padded  ","relaunchCommand":"HELLOkey_name-1","displayName":"HELLO","shortcutPaths":[],"hwnd":0.5},"日本語のテキスト",{"flush":false}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"  padded  ","iconPath":"ab","relaunchCommand":"line1\nline2","displayName":"key_name-1","shortcutPaths":["aab"],"hwnd":9007199254740992},"a:b:c",{"flush":false}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"src/a/b.tsHello World","iconPath":"ns:key.path","relaunchCommand":"key_name-1﻿bom","displayName":"line1\nline2","shortcutPaths":["日本語のテキストa:b:c"],"hwnd":["a",1]},"src/a/b.ts"],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"straßeHELLO","iconPath":"a😀b😀c","relaunchCommand":"İstanbul","displayName":"ünïcödé","shortcutPaths":["key_name-1","emoji 👍🏽 mix"],"hwnd":42},"hello worldhello",{"$undefined":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"a","iconPath":"hello","relaunchCommand":"hellotab\tseparated","displayName":"a","shortcutPaths":["key_name-1"]},"src/a/b.ts",{}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"key_name-1","iconPath":"a:b:c","relaunchCommand":"﻿bom","displayName":"ΣΊΣΥΦΟΣ日本語のテキスト","shortcutPaths":[":",":","a"],"hwnd":{"$num":"-0"}},"ns:key.path",{"flush":false}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"a.b.c","iconPath":"😀","relaunchCommand":"  padded  ","displayName":"ab","shortcutPaths":["  padded  ","hello world😀",".leading"],"hwnd":[]},"a.b.ckey_name-1",{"flush":false}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":":","iconPath":"😀","relaunchCommand":"straße","displayName":"./x/**/*.jsonemoji 👍🏽 mix","shortcutPaths":["a..b","src/a/b.ts","abtab\tseparated"]},"hello world",{"flush":false}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"éa.b.c","iconPath":"src/a/b.ts","relaunchCommand":"","displayName":"hello world","shortcutPaths":["a😀b😀c"],"hwnd":null},":abc",{"$undefined":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"a:b:c","iconPath":"a..b","relaunchCommand":"a😀b😀c","displayName":".leadinga..b","shortcutPaths":["ünïcödé.leading","ab","ns:key.path"]},"İstanbul",{}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"a":{"b":"c"}},"trailing.",[]],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"İstanbula..b","iconPath":"abcstraße","relaunchCommand":"ΣΊΣΥΦΟΣ","displayName":"line1\nline2","shortcutPaths":[":","tab\tseparated","日本語のテキストab"],"hwnd":null},"atab\tseparated",{"flush":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"./x/**/*.json","iconPath":"a.b.ca..b","relaunchCommand":"ab","displayName":"./x/**/*.json","shortcutPaths":[],"hwnd":null},"Hello Worlda😀b😀c",{"flush":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":":a","iconPath":"src/a/b.ts","relaunchCommand":"key_name-1","displayName":"./x/**/*.json","shortcutPaths":["ΣΊΣΥΦΟΣ"],"hwnd":{"a":{"b":"c"}}},"hello world"],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"straße","iconPath":"a..b","relaunchCommand":"a😀b😀c","displayName":"","shortcutPaths":["hello world","日本語のテキスト"],"hwnd":null},"a😀b😀chello world",{}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"{name} has {count} items","iconPath":"","relaunchCommand":"😀","displayName":"😀","shortcutPaths":[],"hwnd":0.5},"  padded  ",{}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"","iconPath":"line1\nline2","relaunchCommand":"a:b:c","displayName":":","shortcutPaths":["src/a/b.ts","hello world","straße"]},"İstanbul",{"flush":false}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"abİstanbul","iconPath":"a..b","relaunchCommand":"ünïcödé","displayName":"HELLOemoji 👍🏽 mix","shortcutPaths":["a😀b😀c",""],"hwnd":{}},"::",{"flush":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"a","iconPath":"abHELLO","relaunchCommand":"a","displayName":"é","shortcutPaths":[],"hwnd":0},"HELLO",{"flush":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"a😀b😀c","iconPath":"HELLO","relaunchCommand":"emoji 👍🏽 mix","displayName":"﻿bomhello","shortcutPaths":["","tab\tseparated","日本語のテキスト"],"hwnd":null},"日本語のテキスト",{"flush":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"İstanbul","iconPath":"日本語のテキスト","relaunchCommand":"﻿bomünïcödé","displayName":"src/a/b.ts","shortcutPaths":["emoji 👍🏽 mix","  padded  "],"hwnd":null},"src/a/b.ts","x"],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":".leading","iconPath":"emoji 👍🏽 mix","relaunchCommand":"Hello World","displayName":"é","shortcutPaths":["a:b:c"],"hwnd":null},"a:b:c",{"flush":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"","iconPath":"ab","relaunchCommand":"é","displayName":"  padded  ","shortcutPaths":["a..b","  padded  "],"hwnd":1},":",{}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"ünïcödéHello World","iconPath":"ünïcödé","relaunchCommand":"hello","displayName":"emoji 👍🏽 mixns:key.path","shortcutPaths":["ab",":"],"hwnd":null},"a.b.c",{"flush":false}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":":a.b.c","iconPath":":","relaunchCommand":"trailing.","displayName":"a..b","shortcutPaths":["İstanbul","ünïcödé"],"hwnd":100},"ab",{"flush":false}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"日本語のテキスト","iconPath":"ns:key.path","relaunchCommand":"{name} has {count} items","displayName":"a..b","shortcutPaths":["İstanbul","./x/**/*.json"],"hwnd":"x"},"﻿bom",{"flush":false}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"ns:key.pathab","iconPath":".leading","relaunchCommand":"trailing.","displayName":"abc","shortcutPaths":["hello"],"hwnd":1},"emoji 👍🏽 mix",{}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"straße","iconPath":".leading:","relaunchCommand":"日本語のテキスト","displayName":"{name} has {count} items","shortcutPaths":["a","ΣΊΣΥΦΟΣ","a😀b😀c"],"hwnd":null},"a:b:c"],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"straße","iconPath":"é","relaunchCommand":"a..b","displayName":"HELLO","shortcutPaths":[],"hwnd":null},"hello",{"flush":false}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"hello world","iconPath":"a.b.c","relaunchCommand":"Hello World","displayName":"😀","shortcutPaths":[],"hwnd":null},"ab",{"$undefined":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"😀","iconPath":"Hello World﻿bom","relaunchCommand":"﻿bom","displayName":"Hello World","shortcutPaths":["./x/**/*.json","hello world","İstanbul"]},"ünïcödé",{"flush":false}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"a:b:c","iconPath":"a😀b😀c","relaunchCommand":"key_name-1","displayName":"trailing.a","shortcutPaths":["hello world","a😀b😀c"]},"é",{"flush":false}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"a":{"b":"c"}},"HELLO",{"flush":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"","iconPath":"é","relaunchCommand":"ünïcödé","displayName":"a..b","shortcutPaths":["{name} has {count} items"]},"straßehello world",{"$undefined":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":":","iconPath":".leading./x/**/*.json","relaunchCommand":".leadingtab\tseparated","displayName":"key_name-1","shortcutPaths":["emoji 👍🏽 mix"],"hwnd":0},"é",{}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"tab\tseparated","iconPath":"./x/**/*.json","relaunchCommand":"a..b","displayName":"ékey_name-1","shortcutPaths":["./x/**/*.jsonsrc/a/b.ts"]},"abc",{"flush":false}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"src/a/b.ts","iconPath":"key_name-1","relaunchCommand":"abstraße","displayName":"key_name-1","shortcutPaths":["./x/**/*.json","./x/**/*.json","a..b"]},"ΣΊΣΥΦΟΣ",{"flush":false}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"line1\nline2line1\nline2","iconPath":"emoji 👍🏽 mix","relaunchCommand":"hello world","displayName":"tab\tseparated","shortcutPaths":["Hello World",":","İstanbul"],"hwnd":null},"İstanbul",{}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"src/a/b.tsé","iconPath":"日本語のテキスト","relaunchCommand":"日本語のテキストtab\tseparated","displayName":"./x/**/*.json","shortcutPaths":[],"hwnd":[]},"line1\nline2ΣΊΣΥΦΟΣ",{}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"a":{"b":"c"}},"",{"$undefined":true}],"error":"ENOENT: no such file or directory, mkdir ''"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"ab","iconPath":"key_name-1","relaunchCommand":"😀emoji 👍🏽 mix","displayName":"  padded  ","shortcutPaths":[],"hwnd":3},"﻿bom",{"a":"b"}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"hello.leading","iconPath":"İstanbul","relaunchCommand":"Hello Worldkey_name-1","displayName":"hello","shortcutPaths":["ab","hello worldabc"],"hwnd":2},"./x/**/*.json",{"flush":false}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[[],"  padded  a😀b😀c"],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":["x","key_name-1",{"flush":false}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"abc","iconPath":"😀","relaunchCommand":":.leading","displayName":"ünïcödéa😀b😀c","shortcutPaths":["é","key_name-1"],"hwnd":null},"key_name-1",{"flush":false}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"src/a/b.ts","iconPath":"trailing.","relaunchCommand":"ab","displayName":"ΣΊΣΥΦΟΣ","shortcutPaths":["ab","a.b.cünïcödé","line1\nline2"],"hwnd":null},"{name} has {count} items",{"flush":false}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"hello world","iconPath":"trailing.","relaunchCommand":"ünïcödé","displayName":"straße","shortcutPaths":[],"hwnd":[]},"abc",{"flush":false}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"a":{"b":"c"}},"emoji 👍🏽 mix",{"$undefined":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":".leading","iconPath":"","relaunchCommand":"ünïcödé","displayName":"ab","shortcutPaths":[".leading","ab"],"hwnd":{}},"Hello World",{"$undefined":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"HELLO","iconPath":"straßea..b","relaunchCommand":"abc","displayName":"trailing.","shortcutPaths":["{name} has {count} items"],"hwnd":null},"emoji 👍🏽 mix",{}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"src/a/b.ts.leading","iconPath":"abc","relaunchCommand":":","displayName":"a😀b😀c","shortcutPaths":[],"hwnd":0},".leading",{}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"HELLO","iconPath":"ünïcödésrc/a/b.ts","relaunchCommand":"a..b  padded  ","displayName":"İstanbul","shortcutPaths":["a..b"],"hwnd":{"a":{"b":"c"}}},"日本語のテキスト",{"flush":false}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"a:b:c","iconPath":":","relaunchCommand":"straßeΣΊΣΥΦΟΣ","displayName":"ns:key.path","shortcutPaths":["İstanbul","straße","ΣΊΣΥΦΟΣ"],"hwnd":null},".leading",[]],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"a":{"b":"c"}},"abhello world",{"flush":false}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[[],"ns:key.path",{"flush":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"ünïcödéa😀b😀c","iconPath":"","relaunchCommand":"a.b.c","displayName":"é","shortcutPaths":[]},"src/a/b.ts",{"flush":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"line1\nline2","iconPath":"emoji 👍🏽 mix","relaunchCommand":"abc","displayName":"line1\nline2","shortcutPaths":["﻿bom","hello"]},"  padded  ",{"flush":false}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[0,"hello world",{"flush":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"abHELLO","iconPath":"hello world","relaunchCommand":"a😀b😀c","displayName":"﻿bomHello World","shortcutPaths":["abc","line1\nline2","abc"],"hwnd":1000},"﻿bom",{"flush":false}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"emoji 👍🏽 mix","iconPath":".leading","relaunchCommand":"emoji 👍🏽 mix","displayName":".leading","shortcutPaths":["trailing..leading","﻿bom","ΣΊΣΥΦΟΣsrc/a/b.ts"],"hwnd":"x"},"emoji 👍🏽 mix",{"flush":false}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[[],"a.b.cemoji 👍🏽 mix",{"flush":false}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[null,"{name} has {count} items",{}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"ünïcödé","iconPath":"a:b:c","relaunchCommand":"trailing.","displayName":"a.b.c","shortcutPaths":["ΣΊΣΥΦΟΣ","a:b:c","日本語のテキスト"],"hwnd":-2.5},"﻿bom",{"flush":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":":","iconPath":"😀","relaunchCommand":"﻿bom","displayName":"./x/**/*.json","shortcutPaths":["a"]},"",{}],"error":"ENOENT: no such file or directory, mkdir ''"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"日本語のテキスト","iconPath":"","relaunchCommand":"日本語のテキスト","displayName":"hello worldline1\nline2","shortcutPaths":["key_name-1straße"],"hwnd":["a",1]},"straße",{"flush":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"hello","iconPath":"日本語のテキスト","relaunchCommand":"src/a/b.ts","displayName":"日本語のテキスト","shortcutPaths":["ns:key.path"],"hwnd":null},"trailing."],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"a:b:c","iconPath":"key_name-1emoji 👍🏽 mix","relaunchCommand":"é","displayName":"straße","shortcutPaths":["İstanbul"],"hwnd":null},"line1\nline2",{}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"line1\nline2a.b.c","iconPath":"./x/**/*.json","relaunchCommand":"./x/**/*.json","displayName":"line1\nline2","shortcutPaths":[],"hwnd":{"$num":"Infinity"}},"{name} has {count} itemsemoji 👍🏽 mix",{"flush":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[true,"./x/**/*.json",{"flush":false}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{},"src/a/b.ts",{"flush":false}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"{name} has {count} items","iconPath":"a.b.c","relaunchCommand":".leading","displayName":"Hello World","shortcutPaths":[],"hwnd":2},"ΣΊΣΥΦΟΣ",{"flush":true}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"﻿bom","iconPath":"İstanbul","relaunchCommand":"😀","displayName":"日本語のテキスト","shortcutPaths":[]},"key_name-1",{}],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"hello","iconPath":"src/a/b.ts","relaunchCommand":"a..b","displayName":"日本語のテキスト","shortcutPaths":["hello world","{name} has {count} items"],"hwnd":3},"héllo wörld","x"],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"hello","iconPath":"src/a/b.ts","relaunchCommand":"a..b","displayName":"日本語のテキスト","shortcutPaths":["hello world","{name} has {count} items"],"hwnd":3},"👍🏽 thumbs","x"],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"hello","iconPath":"src/a/b.ts","relaunchCommand":"a..b","displayName":"日本語のテキスト","shortcutPaths":["hello world","{name} has {count} items"],"hwnd":3},"日本語","x"],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"hello","iconPath":"src/a/b.ts","relaunchCommand":"a..b","displayName":"日本語のテキスト","shortcutPaths":["hello world","{name} has {count} items"],"hwnd":3},"","x"],"error":"ENOENT: no such file or directory, mkdir ''"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"hello","iconPath":"src/a/b.ts","relaunchCommand":"a..b","displayName":"日本語のテキスト","shortcutPaths":["hello world","{name} has {count} items"],"hwnd":3},"é","x"],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"hello","iconPath":"src/a/b.ts","relaunchCommand":"a..b","displayName":"日本語のテキスト","shortcutPaths":["hello world","{name} has {count} items"],"hwnd":3},"İstanbul","x"],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"hello","iconPath":"src/a/b.ts","relaunchCommand":"a..b","displayName":"日本語のテキスト","shortcutPaths":["hello world","{name} has {count} items"],"hwnd":3},"straße","x"],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"hello","iconPath":"src/a/b.ts","relaunchCommand":"a..b","displayName":"日本語のテキスト","shortcutPaths":["hello world","{name} has {count} items"],"hwnd":3},"ılık ırmak","x"],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"hello","iconPath":"src/a/b.ts","relaunchCommand":"a..b","displayName":"日本語のテキスト","shortcutPaths":["hello world","{name} has {count} items"],"hwnd":3},"👨‍👩‍👧 family","x"],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"hello","iconPath":"src/a/b.ts","relaunchCommand":"a..b","displayName":"日本語のテキスト","shortcutPaths":["hello world","{name} has {count} items"],"hwnd":3},"a b","x"],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"hello","iconPath":"src/a/b.ts","relaunchCommand":"a..b","displayName":"日本語のテキスト","shortcutPaths":["hello world","{name} has {count} items"],"hwnd":3},"ΣΊΣΥΦΟΣ","x"],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"hello","iconPath":"src/a/b.ts","relaunchCommand":"a..b","displayName":"日本語のテキスト","shortcutPaths":["hello world","{name} has {count} items"],"hwnd":3},"a😀b","x"],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"hello","iconPath":"src/a/b.ts","relaunchCommand":"a..b","displayName":"日本語のテキスト","shortcutPaths":["hello world","{name} has {count} items"],"hwnd":3},"﻿bom","x"],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"hello","iconPath":"src/a/b.ts","relaunchCommand":"a..b","displayName":"日本語のテキスト","shortcutPaths":["hello world","{name} has {count} items"],"hwnd":3},"a²b x½ y①","x"],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"hello","iconPath":"src/a/b.ts","relaunchCommand":"a..b","displayName":"日本語のテキスト","shortcutPaths":["hello world","{name} has {count} items"],"hwnd":3},"aⅠb Ⅻ","x"],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"hello","iconPath":"src/a/b.ts","relaunchCommand":"a..b","displayName":"日本語のテキスト","shortcutPaths":["hello world","{name} has {count} items"],"hwnd":3},"a𐐀b 𝐀bc","x"],"error":"csc.exe not found"}
+{"fn":"applyWindowsShellAppUserModel","args":[{"appId":"hello","iconPath":"src/a/b.ts","relaunchCommand":"a..b","displayName":"日本語のテキスト","shortcutPaths":["hello world","{name} has {count} items"],"hwnd":3},"कि ٣٤","x"],"error":"csc.exe not found"}

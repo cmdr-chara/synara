@@ -1,0 +1,78 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/desktop/src/backendCompileCache.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "backendcompilecache-rs",
+  "exports": [
+    {
+      "name": "resolveBackendCompileCacheDir",
+      "file": "apps/desktop/src/backendCompileCache.ts",
+      "line": 25,
+      "params": [
+        {
+          "name": "stateDir",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "appVersion",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "backendCompileCacheEnv",
+      "file": "apps/desktop/src/backendCompileCache.ts",
+      "line": 31,
+      "params": [
+        {
+          "name": "inherited",
+          "ts_type": "NodeJS.ProcessEnv",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "cacheDir",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "NodeJS.ProcessEnv",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "pruneBackendCompileCaches",
+      "file": "apps/desktop/src/backendCompileCache.ts",
+      "line": 42,
+      "params": [
+        {
+          "name": "cacheDir",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<void>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

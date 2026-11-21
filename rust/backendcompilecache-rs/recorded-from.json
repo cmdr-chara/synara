@@ -1,0 +1,17 @@
+{
+  "unit": "apps/desktop/src/backendCompileCache.ts",
+  "files": 1,
+  "fingerprint": "0798ed0ef073ed82",
+  "coverage": {
+    "lines": 54,
+    "reached": 50,
+    "files": [
+      {
+        "file": "apps/desktop/src/backendCompileCache.ts",
+        "lines": 54,
+        "reached": 50,
+        "missed": "36-37, 55-56"
+      }
+    ]
+  }
+}

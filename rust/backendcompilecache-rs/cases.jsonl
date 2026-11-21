@@ -1,0 +1,706 @@
+{"fn":"resolveBackendCompileCacheDir","args":["İstanbul","ünïcödé"],"ok":"İstanbul/cache/backend-compile/-n-c-d-"}
+{"fn":"resolveBackendCompileCacheDir","args":["a😀b😀c","  padded  ﻿bom"],"ok":"a😀b😀c/cache/backend-compile/padded-bom"}
+{"fn":"resolveBackendCompileCacheDir","args":["a.b.c","a"],"ok":"a.b.c/cache/backend-compile/a"}
+{"fn":"resolveBackendCompileCacheDir","args":["","ab"],"ok":"cache/backend-compile/ab"}
+{"fn":"resolveBackendCompileCacheDir","args":["key_name-1","ns:key.path.leading"],"ok":"key_name-1/cache/backend-compile/ns-key.path.leading"}
+{"fn":"resolveBackendCompileCacheDir","args":["﻿boma","A"],"ok":"﻿boma/cache/backend-compile/A"}
+{"fn":"resolveBackendCompileCacheDir","args":["日本語のテキスト{name} has {count} items","Hello World"],"ok":"日本語のテキスト{name} has {count} items/cache/backend-compile/Hello-World"}
+{"fn":"resolveBackendCompileCacheDir","args":["g.","trailing."],"ok":"g./cache/backend-compile/trailing."}
+{"fn":"resolveBackendCompileCacheDir","args":["ΣΊΣΥΦΟΣ","a.b.c😀"],"ok":"ΣΊΣΥΦΟΣ/cache/backend-compile/a.b.c-"}
+{"fn":"resolveBackendCompileCacheDir","args":["line1\nline2","key_name-1"],"ok":"line1\nline2/cache/backend-compile/key_name-1"}
+{"fn":"resolveBackendCompileCacheDir","args":["abc","日本語のテキスト"],"ok":"abc/cache/backend-compile/-"}
+{"fn":"resolveBackendCompileCacheDir","args":["ΣΊΣΥΦΟΣ","a.b.c"],"ok":"ΣΊΣΥΦΟΣ/cache/backend-compile/a.b.c"}
+{"fn":"resolveBackendCompileCacheDir","args":[".leadingHello World","./x/**/*.json"],"ok":".leadingHello World/cache/backend-compile/.-x-.json"}
+{"fn":"resolveBackendCompileCacheDir","args":["{name} has {count} items","trailing."],"ok":"{name} has {count} items/cache/backend-compile/trailing."}
+{"fn":"resolveBackendCompileCacheDir","args":["a","a"],"ok":"a/cache/backend-compile/a"}
+{"fn":"resolveBackendCompileCacheDir","args":["  padded  ","  padded  ns:key.path"],"ok":"  padded  /cache/backend-compile/padded-ns-key.path"}
+{"fn":"resolveBackendCompileCacheDir","args":["emoji 👍🏽 mix","日本語のテキスト"],"ok":"emoji 👍🏽 mix/cache/backend-compile/-"}
+{"fn":"resolveBackendCompileCacheDir","args":[":",":"],"ok":":/cache/backend-compile/-"}
+{"fn":"resolveBackendCompileCacheDir","args":["Hello World","a..bstraße"],"ok":"Hello World/cache/backend-compile/a..bstra-e"}
+{"fn":"resolveBackendCompileCacheDir","args":["a:b:c",":trailing."],"ok":"a:b:c/cache/backend-compile/-trailing."}
+{"fn":"resolveBackendCompileCacheDir","args":["abc",""],"ok":"abc/cache/backend-compile/unknown"}
+{"fn":"resolveBackendCompileCacheDir","args":["日本語のテキスト","hello world"],"ok":"日本語のテキスト/cache/backend-compile/hello-world"}
+{"fn":"resolveBackendCompileCacheDir","args":["hello world","Hello World"],"ok":"hello world/cache/backend-compile/Hello-World"}
+{"fn":"resolveBackendCompileCacheDir","args":["a:b:c","hello"],"ok":"a:b:c/cache/backend-compile/hello"}
+{"fn":"resolveBackendCompileCacheDir","args":["key_name-1","İstanbul"],"ok":"key_name-1/cache/backend-compile/-stanbul"}
+{"fn":"resolveBackendCompileCacheDir","args":["ad","ab  padded  "],"ok":"ad/cache/backend-compile/ab-padded"}
+{"fn":"resolveBackendCompileCacheDir","args":["a😀b😀c","a:b:c"],"ok":"a😀b😀c/cache/backend-compile/a-b-c"}
+{"fn":"resolveBackendCompileCacheDir","args":["İstanbul",".leading"],"ok":"İstanbul/cache/backend-compile/.leading"}
+{"fn":"resolveBackendCompileCacheDir","args":["trailing.line1\nline2","HELLO"],"ok":"trailing.line1\nline2/cache/backend-compile/HELLO"}
+{"fn":"resolveBackendCompileCacheDir","args":["a:b:c","emoji 👍🏽 mix"],"ok":"a:b:c/cache/backend-compile/emoji-mix"}
+{"fn":"resolveBackendCompileCacheDir","args":["./x/**/*.json","😀"],"ok":"x/**/*.json/cache/backend-compile/-"}
+{"fn":"resolveBackendCompileCacheDir","args":["  padded  "," "],"ok":"  padded  /cache/backend-compile/unknown"}
+{"fn":"resolveBackendCompileCacheDir","args":["ΣΊΣΥΦΟΣ","日本語のテキストtab\tseparated"],"ok":"ΣΊΣΥΦΟΣ/cache/backend-compile/-tab-separated"}
+{"fn":"resolveBackendCompileCacheDir","args":["hello world",":"],"ok":"hello world/cache/backend-compile/-"}
+{"fn":"resolveBackendCompileCacheDir","args":["日本語のテキスト","emoji 👍🏽 mix"],"ok":"日本語のテキスト/cache/backend-compile/emoji-mix"}
+{"fn":"resolveBackendCompileCacheDir","args":["a..b","a..b"],"ok":"a..b/cache/backend-compile/a..b"}
+{"fn":"resolveBackendCompileCacheDir","args":["key_name-1","ame-1"],"ok":"key_name-1/cache/backend-compile/ame-1"}
+{"fn":"resolveBackendCompileCacheDir","args":["  padded  ","日本語のテキスト"],"ok":"  padded  /cache/backend-compile/-"}
+{"fn":"resolveBackendCompileCacheDir","args":["ns:key.path","﻿bom"],"ok":"ns:key.path/cache/backend-compile/bom"}
+{"fn":"resolveBackendCompileCacheDir","args":["😀src/a/b.ts","line1\nline2"],"ok":"😀src/a/b.ts/cache/backend-compile/line1-line2"}
+{"fn":"resolveBackendCompileCacheDir","args":["{name} has {count} items","ab"],"ok":"{name} has {count} items/cache/backend-compile/ab"}
+{"fn":"resolveBackendCompileCacheDir","args":["﻿bom日本語のテキスト","hello world"],"ok":"﻿bom日本語のテキスト/cache/backend-compile/hello-world"}
+{"fn":"resolveBackendCompileCacheDir","args":["ab","ns:key.path"],"ok":"ab/cache/backend-compile/ns-key.path"}
+{"fn":"resolveBackendCompileCacheDir","args":["﻿bomtrailing.","İstanbul"],"ok":"﻿bomtrailing./cache/backend-compile/-stanbul"}
+{"fn":"resolveBackendCompileCacheDir","args":["key_name-1","hello"],"ok":"key_name-1/cache/backend-compile/hello"}
+{"fn":"resolveBackendCompileCacheDir","args":["😀key_name-1","key_name-1"],"ok":"😀key_name-1/cache/backend-compile/key_name-1"}
+{"fn":"resolveBackendCompileCacheDir","args":["ns:key.path","ns:key.path"],"ok":"ns:key.path/cache/backend-compile/ns-key.path"}
+{"fn":"resolveBackendCompileCacheDir","args":["abc","key_name-1abc"],"ok":"abc/cache/backend-compile/key_name-1abc"}
+{"fn":"resolveBackendCompileCacheDir","args":["﻿boma😀b😀c","emoji 👍🏽 mix"],"ok":"﻿boma😀b😀c/cache/backend-compile/emoji-mix"}
+{"fn":"resolveBackendCompileCacheDir","args":["trailing.","./x/**/*.json"],"ok":"trailing./cache/backend-compile/.-x-.json"}
+{"fn":"resolveBackendCompileCacheDir","args":["trailing.","hello world"],"ok":"trailing./cache/backend-compile/hello-world"}
+{"fn":"resolveBackendCompileCacheDir","args":["abc","﻿bom:"],"ok":"abc/cache/backend-compile/bom-"}
+{"fn":"resolveBackendCompileCacheDir","args":["atab\tseparated","Hello World"],"ok":"atab\tseparated/cache/backend-compile/Hello-World"}
+{"fn":"resolveBackendCompileCacheDir","args":[":key","ns:key.path"],"ok":":key/cache/backend-compile/ns-key.path"}
+{"fn":"resolveBackendCompileCacheDir","args":["key_name-1","﻿bom"],"ok":"key_name-1/cache/backend-compile/bom"}
+{"fn":"resolveBackendCompileCacheDir","args":["😀","ünïcödé"],"ok":"😀/cache/backend-compile/-n-c-d-"}
+{"fn":"resolveBackendCompileCacheDir","args":["ns:key.path","s:key.pat"],"ok":"ns:key.path/cache/backend-compile/s-key.pat"}
+{"fn":"resolveBackendCompileCacheDir","args":["HELLO","straße"],"ok":"HELLO/cache/backend-compile/stra-e"}
+{"fn":"resolveBackendCompileCacheDir","args":["Hello World","emoji 👍🏽 mix"],"ok":"Hello World/cache/backend-compile/emoji-mix"}
+{"fn":"resolveBackendCompileCacheDir","args":["ΣΊΣΥΦΟΣ","tab\tseparated"],"ok":"ΣΊΣΥΦΟΣ/cache/backend-compile/tab-separated"}
+{"fn":"resolveBackendCompileCacheDir","args":[":","ab"],"ok":":/cache/backend-compile/ab"}
+{"fn":"resolveBackendCompileCacheDir","args":["İstanbultab\tseparated",".leadingkey_name-1"],"ok":"İstanbultab\tseparated/cache/backend-compile/.leadingkey_name-1"}
+{"fn":"resolveBackendCompileCacheDir","args":["ans:key.path","."],"ok":"ans:key.path/cache/backend-compile"}
+{"fn":"resolveBackendCompileCacheDir","args":["ünïcödéabc","abns:key.path"],"ok":"ünïcödéabc/cache/backend-compile/abns-key.path"}
+{"fn":"resolveBackendCompileCacheDir","args":["a😀b😀c","C"],"ok":"a😀b😀c/cache/backend-compile/C"}
+{"fn":"resolveBackendCompileCacheDir","args":["straße","日本語のテキスト"],"ok":"straße/cache/backend-compile/-"}
+{"fn":"resolveBackendCompileCacheDir","args":["B","ab"],"ok":"B/cache/backend-compile/ab"}
+{"fn":"resolveBackendCompileCacheDir","args":["HELLO./x/**/*.json","aünïcödé"],"ok":"HELLO./x/**/*.json/cache/backend-compile/a-n-c-d-"}
+{"fn":"resolveBackendCompileCacheDir","args":["src/a/b.ts","﻿bom"],"ok":"src/a/b.ts/cache/backend-compile/bom"}
+{"fn":"resolveBackendCompileCacheDir","args":["İstanbul{name} has {count} items","src/a/b.ts"],"ok":"İstanbul{name} has {count} items/cache/backend-compile/src-a-b.ts"}
+{"fn":"resolveBackendCompileCacheDir","args":["abc","key_name-1"],"ok":"abc/cache/backend-compile/key_name-1"}
+{"fn":"resolveBackendCompileCacheDir","args":["trailing.","ab  padded  "],"ok":"trailing./cache/backend-compile/ab-padded"}
+{"fn":"resolveBackendCompileCacheDir","args":["é","  padded  "],"ok":"é/cache/backend-compile/padded"}
+{"fn":"resolveBackendCompileCacheDir","args":["key_name-1a.b.c","é"],"ok":"key_name-1a.b.c/cache/backend-compile/e-"}
+{"fn":"resolveBackendCompileCacheDir","args":["hello","İstanbul"],"ok":"hello/cache/backend-compile/-stanbul"}
+{"fn":"resolveBackendCompileCacheDir","args":["emoji 👍🏽 mix","hello world"],"ok":"emoji 👍🏽 mix/cache/backend-compile/hello-world"}
+{"fn":"resolveBackendCompileCacheDir","args":["é.leading",":trailing."],"ok":"é.leading/cache/backend-compile/-trailing."}
+{"fn":"resolveBackendCompileCacheDir","args":["hello world","  padded  "],"ok":"hello world/cache/backend-compile/padded"}
+{"fn":"resolveBackendCompileCacheDir","args":[":","abc"],"ok":":/cache/backend-compile/abc"}
+{"fn":"resolveBackendCompileCacheDir","args":["T","src/a/b.ts"],"ok":"T/cache/backend-compile/src-a-b.ts"}
+{"fn":"resolveBackendCompileCacheDir","args":["a😀b😀c","a"],"ok":"a😀b😀c/cache/backend-compile/a"}
+{"fn":"resolveBackendCompileCacheDir","args":["ΣΊΣΥΦΟΣ","ΊΣΥΦΟ"],"ok":"ΣΊΣΥΦΟΣ/cache/backend-compile/-"}
+{"fn":"resolveBackendCompileCacheDir","args":["{name} has {count} items","hello"],"ok":"{name} has {count} items/cache/backend-compile/hello"}
+{"fn":"resolveBackendCompileCacheDir","args":["a😀b😀c","﻿bom"],"ok":"a😀b😀c/cache/backend-compile/bom"}
+{"fn":"resolveBackendCompileCacheDir","args":["ns:key.path","a.b.c"],"ok":"ns:key.path/cache/backend-compile/a.b.c"}
+{"fn":"resolveBackendCompileCacheDir","args":["hello","HELLOa"],"ok":"hello/cache/backend-compile/HELLOa"}
+{"fn":"resolveBackendCompileCacheDir","args":["emoji 👍🏽 mix./x/**/*.json","straße.leading"],"ok":"emoji 👍🏽 mix./x/**/*.json/cache/backend-compile/stra-e.leading"}
+{"fn":"resolveBackendCompileCacheDir","args":["ünïcödé","c"],"ok":"ünïcödé/cache/backend-compile/c"}
+{"fn":"resolveBackendCompileCacheDir","args":["a😀b😀c",".leading:"],"ok":"a😀b😀c/cache/backend-compile/.leading-"}
+{"fn":"resolveBackendCompileCacheDir","args":["./x/**/*.json","*.js"],"ok":"x/**/*.json/cache/backend-compile/-.js"}
+{"fn":"resolveBackendCompileCacheDir","args":["b","a..b"],"ok":"b/cache/backend-compile/a..b"}
+{"fn":"resolveBackendCompileCacheDir","args":["trailing.","abc"],"ok":"trailing./cache/backend-compile/abc"}
+{"fn":"resolveBackendCompileCacheDir","args":["key_name-1","a..bΣΊΣΥΦΟΣ"],"ok":"key_name-1/cache/backend-compile/a..b-"}
+{"fn":"resolveBackendCompileCacheDir","args":["{name} has {count} items",""],"ok":"{name} has {count} items/cache/backend-compile/unknown"}
+{"fn":"resolveBackendCompileCacheDir","args":["😀","./x/**/*.json"],"ok":"😀/cache/backend-compile/.-x-.json"}
+{"fn":"resolveBackendCompileCacheDir","args":["Hello World","rld"],"ok":"Hello World/cache/backend-compile/rld"}
+{"fn":"resolveBackendCompileCacheDir","args":["é","src/a/b.ts"],"ok":"é/cache/backend-compile/src-a-b.ts"}
+{"fn":"resolveBackendCompileCacheDir","args":["trailing.","i"],"ok":"trailing./cache/backend-compile/i"}
+{"fn":"resolveBackendCompileCacheDir","args":["😀","  padded  😀"],"ok":"😀/cache/backend-compile/padded-"}
+{"fn":"resolveBackendCompileCacheDir","args":["llo","hello"],"ok":"llo/cache/backend-compile/hello"}
+{"fn":"resolveBackendCompileCacheDir","args":["./x/**/*.json","a"],"ok":"x/**/*.json/cache/backend-compile/a"}
+{"fn":"resolveBackendCompileCacheDir","args":["😀","日本語のテキスト"],"ok":"😀/cache/backend-compile/-"}
+{"fn":"resolveBackendCompileCacheDir","args":["line1\nline2","a"],"ok":"line1\nline2/cache/backend-compile/a"}
+{"fn":"resolveBackendCompileCacheDir","args":["key_name-1","emoji 👍🏽 mix"],"ok":"key_name-1/cache/backend-compile/emoji-mix"}
+{"fn":"resolveBackendCompileCacheDir","args":["ΣΊΣΥΦΟΣ","HELLO"],"ok":"ΣΊΣΥΦΟΣ/cache/backend-compile/HELLO"}
+{"fn":"resolveBackendCompileCacheDir","args":["é","e"],"ok":"é/cache/backend-compile/e"}
+{"fn":"resolveBackendCompileCacheDir","args":["straße","ß"],"ok":"straße/cache/backend-compile/-"}
+{"fn":"resolveBackendCompileCacheDir","args":["hello","key_name-1"],"ok":"hello/cache/backend-compile/key_name-1"}
+{"fn":"resolveBackendCompileCacheDir","args":["é","a:b:c"],"ok":"é/cache/backend-compile/a-b-c"}
+{"fn":"resolveBackendCompileCacheDir","args":["","a..b"],"ok":"cache/backend-compile/a..b"}
+{"fn":"resolveBackendCompileCacheDir","args":["テキスト","日本語のテキスト"],"ok":"テキスト/cache/backend-compile/-"}
+{"fn":"resolveBackendCompileCacheDir","args":["n","İstanbul"],"ok":"n/cache/backend-compile/-stanbul"}
+{"fn":"resolveBackendCompileCacheDir","args":["line1\nline2","E1\nLINE2"],"ok":"line1\nline2/cache/backend-compile/E1-LINE2"}
+{"fn":"resolveBackendCompileCacheDir","args":[".JSO","./x/**/*.json"],"ok":".JSO/cache/backend-compile/.-x-.json"}
+{"fn":"resolveBackendCompileCacheDir","args":["é","tab\tseparated"],"ok":"é/cache/backend-compile/tab-separated"}
+{"fn":"resolveBackendCompileCacheDir","args":["abc","{name} has {count} items"],"ok":"abc/cache/backend-compile/-name-has-count-items"}
+{"fn":"resolveBackendCompileCacheDir","args":["﻿bom","  padded  "],"ok":"﻿bom/cache/backend-compile/padded"}
+{"fn":"resolveBackendCompileCacheDir","args":[":",".leading"],"ok":":/cache/backend-compile/.leading"}
+{"fn":"resolveBackendCompileCacheDir","args":["line1\nline2","é"],"ok":"line1\nline2/cache/backend-compile/e-"}
+{"fn":"resolveBackendCompileCacheDir","args":["a..b","ΣΊΣΥΦΟΣ"],"ok":"a..b/cache/backend-compile/-"}
+{"fn":"resolveBackendCompileCacheDir","args":["./x/**/*.json","ünïcödé"],"ok":"x/**/*.json/cache/backend-compile/-n-c-d-"}
+{"fn":"resolveBackendCompileCacheDir","args":["hello world","﻿bom"],"ok":"hello world/cache/backend-compile/bom"}
+{"fn":"resolveBackendCompileCacheDir","args":["tab\tseparated","arated"],"ok":"tab\tseparated/cache/backend-compile/arated"}
+{"fn":"resolveBackendCompileCacheDir","args":["﻿bomab","a..b"],"ok":"﻿bomab/cache/backend-compile/a..b"}
+{"fn":"resolveBackendCompileCacheDir","args":["İstanbulkey_name-1","😀"],"ok":"İstanbulkey_name-1/cache/backend-compile/-"}
+{"fn":"resolveBackendCompileCacheDir","args":["{name} has {count} items","emoji 👍🏽 mix"],"ok":"{name} has {count} items/cache/backend-compile/emoji-mix"}
+{"fn":"resolveBackendCompileCacheDir","args":["a..b","key_name-1"],"ok":"a..b/cache/backend-compile/key_name-1"}
+{"fn":"resolveBackendCompileCacheDir","args":["key_name-1src/a/b.ts","SR"],"ok":"key_name-1src/a/b.ts/cache/backend-compile/SR"}
+{"fn":"resolveBackendCompileCacheDir","args":["abc","a.b.c"],"ok":"abc/cache/backend-compile/a.b.c"}
+{"fn":"resolveBackendCompileCacheDir","args":["trailing.","a"],"ok":"trailing./cache/backend-compile/a"}
+{"fn":"resolveBackendCompileCacheDir","args":["straßeabc","{name} has {count} items"],"ok":"straßeabc/cache/backend-compile/-name-has-count-items"}
+{"fn":"resolveBackendCompileCacheDir","args":[".leading",".leading./x/**/*.json"],"ok":".leading/cache/backend-compile/.leading.-x-.json"}
+{"fn":"resolveBackendCompileCacheDir","args":["","İstanbul"],"ok":"cache/backend-compile/-stanbul"}
+{"fn":"resolveBackendCompileCacheDir","args":["ΣΊΣΥΦΟΣ","straße"],"ok":"ΣΊΣΥΦΟΣ/cache/backend-compile/stra-e"}
+{"fn":"resolveBackendCompileCacheDir","args":["﻿bom","./x/**/*.json"],"ok":"﻿bom/cache/backend-compile/.-x-.json"}
+{"fn":"resolveBackendCompileCacheDir","args":["  padded  ","emoji 👍🏽 mix"],"ok":"  padded  /cache/backend-compile/emoji-mix"}
+{"fn":"resolveBackendCompileCacheDir","args":["hello","é"],"ok":"hello/cache/backend-compile/e-"}
+{"fn":"resolveBackendCompileCacheDir","args":["a.b.c","emoji 👍🏽 mix.leading"],"ok":"a.b.c/cache/backend-compile/emoji-mix.leading"}
+{"fn":"resolveBackendCompileCacheDir","args":["﻿bom","a😀b😀c"],"ok":"﻿bom/cache/backend-compile/a-b-c"}
+{"fn":"resolveBackendCompileCacheDir","args":["ab","abc"],"ok":"ab/cache/backend-compile/abc"}
+{"fn":"resolveBackendCompileCacheDir","args":["Hello World","hello world"],"ok":"Hello World/cache/backend-compile/hello-world"}
+{"fn":"resolveBackendCompileCacheDir","args":["emoji 👍🏽 mix","line1\nline2"],"ok":"emoji 👍🏽 mix/cache/backend-compile/line1-line2"}
+{"fn":"resolveBackendCompileCacheDir","args":["./x/**/*.json","/*."],"ok":"x/**/*.json/cache/backend-compile/-."}
+{"fn":"resolveBackendCompileCacheDir","args":[".leading","hello world"],"ok":".leading/cache/backend-compile/hello-world"}
+{"fn":"resolveBackendCompileCacheDir","args":["ΣΊΣΥΦΟΣ","  padded  "],"ok":"ΣΊΣΥΦΟΣ/cache/backend-compile/padded"}
+{"fn":"resolveBackendCompileCacheDir","args":["ΣΊΣΥΦΟΣ﻿bom","😀"],"ok":"ΣΊΣΥΦΟΣ﻿bom/cache/backend-compile/-"}
+{"fn":"resolveBackendCompileCacheDir","args":["tab\tseparated","{name} has {count} items"],"ok":"tab\tseparated/cache/backend-compile/-name-has-count-items"}
+{"fn":"resolveBackendCompileCacheDir","args":["Hello World","straße"],"ok":"Hello World/cache/backend-compile/stra-e"}
+{"fn":"resolveBackendCompileCacheDir","args":["😀","😀"],"ok":"😀/cache/backend-compile/-"}
+{"fn":"resolveBackendCompileCacheDir","args":["ΣΊΣΥΦΟΣ","a..b﻿bom"],"ok":"ΣΊΣΥΦΟΣ/cache/backend-compile/a..b-bom"}
+{"fn":"resolveBackendCompileCacheDir","args":["ns:key.path","a"],"ok":"ns:key.path/cache/backend-compile/a"}
+{"fn":"resolveBackendCompileCacheDir","args":["Hello World","Hello World"],"ok":"Hello World/cache/backend-compile/Hello-World"}
+{"fn":"resolveBackendCompileCacheDir","args":["emoji 👍🏽 mix","ix"],"ok":"emoji 👍🏽 mix/cache/backend-compile/ix"}
+{"fn":"resolveBackendCompileCacheDir","args":["a..b","😀"],"ok":"a..b/cache/backend-compile/-"}
+{"fn":"resolveBackendCompileCacheDir","args":["﻿bom","line1\nline2"],"ok":"﻿bom/cache/backend-compile/line1-line2"}
+{"fn":"resolveBackendCompileCacheDir","args":["","emoji 👍🏽 mix"],"ok":"cache/backend-compile/emoji-mix"}
+{"fn":"resolveBackendCompileCacheDir","args":["  padded  ","abc"],"ok":"  padded  /cache/backend-compile/abc"}
+{"fn":"resolveBackendCompileCacheDir","args":["tab\tseparated","ns:key.path.leading"],"ok":"tab\tseparated/cache/backend-compile/ns-key.path.leading"}
+{"fn":"resolveBackendCompileCacheDir","args":["a.b.c","Hello World"],"ok":"a.b.c/cache/backend-compile/Hello-World"}
+{"fn":"resolveBackendCompileCacheDir","args":["X","emoji 👍🏽 mix"],"ok":"X/cache/backend-compile/emoji-mix"}
+{"fn":"resolveBackendCompileCacheDir","args":["ed","tab\tseparated"],"ok":"ed/cache/backend-compile/tab-separated"}
+{"fn":"resolveBackendCompileCacheDir","args":["é","hello"],"ok":"é/cache/backend-compile/hello"}
+{"fn":"resolveBackendCompileCacheDir","args":["a.b.c","key_name-1"],"ok":"a.b.c/cache/backend-compile/key_name-1"}
+{"fn":"resolveBackendCompileCacheDir","args":[":","key_name-1ünïcödé"],"ok":":/cache/backend-compile/key_name-1-n-c-d-"}
+{"fn":"resolveBackendCompileCacheDir","args":["emoji 👍🏽 mix","﻿bomHELLO"],"ok":"emoji 👍🏽 mix/cache/backend-compile/bomHELLO"}
+{"fn":"resolveBackendCompileCacheDir","args":["ünïcödé","abc"],"ok":"ünïcödé/cache/backend-compile/abc"}
+{"fn":"resolveBackendCompileCacheDir","args":["ab","tab\tseparatedab"],"ok":"ab/cache/backend-compile/tab-separatedab"}
+{"fn":"resolveBackendCompileCacheDir","args":["é","é"],"ok":"é/cache/backend-compile/e-"}
+{"fn":"resolveBackendCompileCacheDir","args":["a:b:c","abc"],"ok":"a:b:c/cache/backend-compile/abc"}
+{"fn":"resolveBackendCompileCacheDir","args":[".leading","line1\nline2"],"ok":".leading/cache/backend-compile/line1-line2"}
+{"fn":"resolveBackendCompileCacheDir","args":["a..b",":"],"ok":"a..b/cache/backend-compile/-"}
+{"fn":"resolveBackendCompileCacheDir","args":["HELLO","emoji 👍🏽 mix"],"ok":"HELLO/cache/backend-compile/emoji-mix"}
+{"fn":"resolveBackendCompileCacheDir","args":["H","ns:key.path"],"ok":"H/cache/backend-compile/ns-key.path"}
+{"fn":"resolveBackendCompileCacheDir","args":["{name} has {count} items","HELLO"],"ok":"{name} has {count} items/cache/backend-compile/HELLO"}
+{"fn":"resolveBackendCompileCacheDir","args":["﻿bom","﻿bom"],"ok":"﻿bom/cache/backend-compile/bom"}
+{"fn":"resolveBackendCompileCacheDir","args":["abc",":"],"ok":"abc/cache/backend-compile/-"}
+{"fn":"resolveBackendCompileCacheDir","args":["﻿bom","b"],"ok":"﻿bom/cache/backend-compile/b"}
+{"fn":"resolveBackendCompileCacheDir","args":["😀","./x/**/*.jsonHello World"],"ok":"😀/cache/backend-compile/.-x-.jsonHello-World"}
+{"fn":"resolveBackendCompileCacheDir","args":["ns:key.path","日本語のテキスト"],"ok":"ns:key.path/cache/backend-compile/-"}
+{"fn":"resolveBackendCompileCacheDir","args":["hello world",""],"ok":"hello world/cache/backend-compile/unknown"}
+{"fn":"resolveBackendCompileCacheDir","args":["﻿bom","😀"],"ok":"﻿bom/cache/backend-compile/-"}
+{"fn":"resolveBackendCompileCacheDir","args":["İstanbulns:key.path",".leading"],"ok":"İstanbulns:key.path/cache/backend-compile/.leading"}
+{"fn":"resolveBackendCompileCacheDir","args":["﻿bom","a.b.c"],"ok":"﻿bom/cache/backend-compile/a.b.c"}
+{"fn":"resolveBackendCompileCacheDir","args":["😀","HELLO"],"ok":"😀/cache/backend-compile/HELLO"}
+{"fn":"resolveBackendCompileCacheDir","args":["HELLOa..b","tab\tseparated"],"ok":"HELLOa..b/cache/backend-compile/tab-separated"}
+{"fn":"resolveBackendCompileCacheDir","args":["日本語のテキスト😀","emoji 👍🏽 mix"],"ok":"日本語のテキスト😀/cache/backend-compile/emoji-mix"}
+{"fn":"resolveBackendCompileCacheDir","args":["﻿bom","﻿b"],"ok":"﻿bom/cache/backend-compile/b"}
+{"fn":"resolveBackendCompileCacheDir","args":["İstanbula..b","日本語のテキスト"],"ok":"İstanbula..b/cache/backend-compile/-"}
+{"fn":"resolveBackendCompileCacheDir","args":["trailing.","trailing.😀"],"ok":"trailing./cache/backend-compile/trailing.-"}
+{"fn":"resolveBackendCompileCacheDir","args":["abc","line1\nline2"],"ok":"abc/cache/backend-compile/line1-line2"}
+{"fn":"resolveBackendCompileCacheDir","args":["a😀b😀c","a😀b😀c"],"ok":"a😀b😀c/cache/backend-compile/a-b-c"}
+{"fn":"resolveBackendCompileCacheDir","args":["{name} has {count} items","straße"],"ok":"{name} has {count} items/cache/backend-compile/stra-e"}
+{"fn":"resolveBackendCompileCacheDir","args":["EM","emoji 👍🏽 mix{name} has {count} items"],"ok":"EM/cache/backend-compile/emoji-mix-name-has-count-items"}
+{"fn":"resolveBackendCompileCacheDir","args":["key_name-1","straße"],"ok":"key_name-1/cache/backend-compile/stra-e"}
+{"fn":"resolveBackendCompileCacheDir","args":[".leading","i"],"ok":".leading/cache/backend-compile/i"}
+{"fn":"resolveBackendCompileCacheDir","args":["straße","﻿bom"],"ok":"straße/cache/backend-compile/bom"}
+{"fn":"resolveBackendCompileCacheDir","args":["src","src/a/b.ts"],"ok":"src/cache/backend-compile/src-a-b.ts"}
+{"fn":"resolveBackendCompileCacheDir","args":["é","́"],"ok":"é/cache/backend-compile/-"}
+{"fn":"resolveBackendCompileCacheDir","args":["é:","HELLO"],"ok":"é:/cache/backend-compile/HELLO"}
+{"fn":"resolveBackendCompileCacheDir","args":["a😀b😀cé","a"],"ok":"a😀b😀cé/cache/backend-compile/a"}
+{"fn":"resolveBackendCompileCacheDir","args":["héllo wörld","ünïcödé"],"ok":"héllo wörld/cache/backend-compile/-n-c-d-"}
+{"fn":"resolveBackendCompileCacheDir","args":["👍🏽 thumbs","ünïcödé"],"ok":"👍🏽 thumbs/cache/backend-compile/-n-c-d-"}
+{"fn":"resolveBackendCompileCacheDir","args":["日本語","ünïcödé"],"ok":"日本語/cache/backend-compile/-n-c-d-"}
+{"fn":"resolveBackendCompileCacheDir","args":["","ünïcödé"],"ok":"cache/backend-compile/-n-c-d-"}
+{"fn":"resolveBackendCompileCacheDir","args":["é","ünïcödé"],"ok":"é/cache/backend-compile/-n-c-d-"}
+{"fn":"resolveBackendCompileCacheDir","args":["straße","ünïcödé"],"ok":"straße/cache/backend-compile/-n-c-d-"}
+{"fn":"resolveBackendCompileCacheDir","args":["ılık ırmak","ünïcödé"],"ok":"ılık ırmak/cache/backend-compile/-n-c-d-"}
+{"fn":"resolveBackendCompileCacheDir","args":["👨‍👩‍👧 family","ünïcödé"],"ok":"👨‍👩‍👧 family/cache/backend-compile/-n-c-d-"}
+{"fn":"resolveBackendCompileCacheDir","args":["a b","ünïcödé"],"ok":"a b/cache/backend-compile/-n-c-d-"}
+{"fn":"resolveBackendCompileCacheDir","args":["ΣΊΣΥΦΟΣ","ünïcödé"],"ok":"ΣΊΣΥΦΟΣ/cache/backend-compile/-n-c-d-"}
+{"fn":"resolveBackendCompileCacheDir","args":["a😀b","ünïcödé"],"ok":"a😀b/cache/backend-compile/-n-c-d-"}
+{"fn":"resolveBackendCompileCacheDir","args":["﻿bom","ünïcödé"],"ok":"﻿bom/cache/backend-compile/-n-c-d-"}
+{"fn":"resolveBackendCompileCacheDir","args":["a²b x½ y①","ünïcödé"],"ok":"a²b x½ y①/cache/backend-compile/-n-c-d-"}
+{"fn":"resolveBackendCompileCacheDir","args":["aⅠb Ⅻ","ünïcödé"],"ok":"aⅠb Ⅻ/cache/backend-compile/-n-c-d-"}
+{"fn":"resolveBackendCompileCacheDir","args":["a𐐀b 𝐀bc","ünïcödé"],"ok":"a𐐀b 𝐀bc/cache/backend-compile/-n-c-d-"}
+{"fn":"resolveBackendCompileCacheDir","args":["कि ٣٤","ünïcödé"],"ok":"कि ٣٤/cache/backend-compile/-n-c-d-"}
+{"fn":"resolveBackendCompileCacheDir","args":["Iı İi","ünïcödé"],"ok":"Iı İi/cache/backend-compile/-n-c-d-"}
+{"fn":"resolveBackendCompileCacheDir","args":["K K k","ünïcödé"],"ok":"K K k/cache/backend-compile/-n-c-d-"}
+{"fn":"resolveBackendCompileCacheDir","args":["ſ s S","ünïcödé"],"ok":"ſ s S/cache/backend-compile/-n-c-d-"}
+{"fn":"resolveBackendCompileCacheDir","args":["x‍y 👨‍👩‍👧","ünïcödé"],"ok":"x‍y 👨‍👩‍👧/cache/backend-compile/-n-c-d-"}
+{"fn":"resolveBackendCompileCacheDir","args":["a b c　d","ünïcödé"],"ok":"a b c　d/cache/backend-compile/-n-c-d-"}
+{"fn":"resolveBackendCompileCacheDir","args":["١٢٣ ٤٥","ünïcödé"],"ok":"١٢٣ ٤٥/cache/backend-compile/-n-c-d-"}
+{"fn":"resolveBackendCompileCacheDir","args":["𝟘𝟙 ²³","ünïcödé"],"ok":"𝟘𝟙 ²³/cache/backend-compile/-n-c-d-"}
+{"fn":"resolveBackendCompileCacheDir","args":["snake_case foo-bar o'neil","ünïcödé"],"ok":"snake_case foo-bar o'neil/cache/backend-compile/-n-c-d-"}
+{"fn":"resolveBackendCompileCacheDir","args":["ǅungla Ǆ","ünïcödé"],"ok":"ǅungla Ǆ/cache/backend-compile/-n-c-d-"}
+{"fn":"resolveBackendCompileCacheDir","args":["one\r\ntwo threefour","ünïcödé"],"ok":"one\r\ntwo threefour/cache/backend-compile/-n-c-d-"}
+{"fn":"resolveBackendCompileCacheDir","args":["café café","ünïcödé"],"ok":"café café/cache/backend-compile/-n-c-d-"}
+{"fn":"resolveBackendCompileCacheDir","args":["ΣΑΣ σας ς","ünïcödé"],"ok":"ΣΑΣ σας ς/cache/backend-compile/-n-c-d-"}
+{"fn":"resolveBackendCompileCacheDir","args":["İstanbul","héllo wörld"],"ok":"İstanbul/cache/backend-compile/h-llo-w-rld"}
+{"fn":"resolveBackendCompileCacheDir","args":["İstanbul","👍🏽 thumbs"],"ok":"İstanbul/cache/backend-compile/-thumbs"}
+{"fn":"resolveBackendCompileCacheDir","args":["İstanbul","日本語"],"ok":"İstanbul/cache/backend-compile/-"}
+{"fn":"resolveBackendCompileCacheDir","args":["İstanbul",""],"ok":"İstanbul/cache/backend-compile/unknown"}
+{"fn":"resolveBackendCompileCacheDir","args":["İstanbul","é"],"ok":"İstanbul/cache/backend-compile/e-"}
+{"fn":"resolveBackendCompileCacheDir","args":["İstanbul","İstanbul"],"ok":"İstanbul/cache/backend-compile/-stanbul"}
+{"fn":"resolveBackendCompileCacheDir","args":["İstanbul","straße"],"ok":"İstanbul/cache/backend-compile/stra-e"}
+{"fn":"resolveBackendCompileCacheDir","args":["İstanbul","ılık ırmak"],"ok":"İstanbul/cache/backend-compile/-l-k-rmak"}
+{"fn":"resolveBackendCompileCacheDir","args":["İstanbul","👨‍👩‍👧 family"],"ok":"İstanbul/cache/backend-compile/-family"}
+{"fn":"resolveBackendCompileCacheDir","args":["İstanbul","a b"],"ok":"İstanbul/cache/backend-compile/a-b"}
+{"fn":"resolveBackendCompileCacheDir","args":["İstanbul","ΣΊΣΥΦΟΣ"],"ok":"İstanbul/cache/backend-compile/-"}
+{"fn":"resolveBackendCompileCacheDir","args":["İstanbul","a😀b"],"ok":"İstanbul/cache/backend-compile/a-b"}
+{"fn":"resolveBackendCompileCacheDir","args":["İstanbul","﻿bom"],"ok":"İstanbul/cache/backend-compile/bom"}
+{"fn":"resolveBackendCompileCacheDir","args":["İstanbul","a²b x½ y①"],"ok":"İstanbul/cache/backend-compile/a-b-x-y-"}
+{"fn":"resolveBackendCompileCacheDir","args":["İstanbul","aⅠb Ⅻ"],"ok":"İstanbul/cache/backend-compile/a-b-"}
+{"fn":"resolveBackendCompileCacheDir","args":["İstanbul","a𐐀b 𝐀bc"],"ok":"İstanbul/cache/backend-compile/a-b-bc"}
+{"fn":"resolveBackendCompileCacheDir","args":["İstanbul","कि ٣٤"],"ok":"İstanbul/cache/backend-compile/-"}
+{"fn":"resolveBackendCompileCacheDir","args":["İstanbul","Iı İi"],"ok":"İstanbul/cache/backend-compile/I-i"}
+{"fn":"resolveBackendCompileCacheDir","args":["İstanbul","K K k"],"ok":"İstanbul/cache/backend-compile/K-k"}
+{"fn":"resolveBackendCompileCacheDir","args":["İstanbul","ſ s S"],"ok":"İstanbul/cache/backend-compile/-s-S"}
+{"fn":"resolveBackendCompileCacheDir","args":["İstanbul","x‍y 👨‍👩‍👧"],"ok":"İstanbul/cache/backend-compile/x-y-"}
+{"fn":"resolveBackendCompileCacheDir","args":["İstanbul","a b c　d"],"ok":"İstanbul/cache/backend-compile/a-b-c-d"}
+{"fn":"resolveBackendCompileCacheDir","args":["İstanbul","١٢٣ ٤٥"],"ok":"İstanbul/cache/backend-compile/-"}
+{"fn":"resolveBackendCompileCacheDir","args":["İstanbul","𝟘𝟙 ²³"],"ok":"İstanbul/cache/backend-compile/-"}
+{"fn":"resolveBackendCompileCacheDir","args":["İstanbul","snake_case foo-bar o'neil"],"ok":"İstanbul/cache/backend-compile/snake_case-foo-bar-o-neil"}
+{"fn":"resolveBackendCompileCacheDir","args":["İstanbul","ǅungla Ǆ"],"ok":"İstanbul/cache/backend-compile/-ungla-"}
+{"fn":"resolveBackendCompileCacheDir","args":["İstanbul","one\r\ntwo threefour"],"ok":"İstanbul/cache/backend-compile/one-two-three-four"}
+{"fn":"resolveBackendCompileCacheDir","args":["İstanbul","café café"],"ok":"İstanbul/cache/backend-compile/cafe-caf-"}
+{"fn":"resolveBackendCompileCacheDir","args":["İstanbul","ΣΑΣ σας ς"],"ok":"İstanbul/cache/backend-compile/-"}
+{"fn":"backendCompileCacheEnv","args":[0,"tab\tseparated"],"ok":{"NODE_COMPILE_CACHE":"tab\tseparated","SYNARA_BACKEND_COMPILE_CACHE":"tab\tseparated"}}
+{"fn":"backendCompileCacheEnv","args":[0,"straßea.b.c"],"ok":{"NODE_COMPILE_CACHE":"straßea.b.c","SYNARA_BACKEND_COMPILE_CACHE":"straßea.b.c"}}
+{"fn":"backendCompileCacheEnv","args":[{"a":"b"},"Hello World"],"ok":{"NODE_COMPILE_CACHE":"Hello World","SYNARA_BACKEND_COMPILE_CACHE":"Hello World"}}
+{"fn":"backendCompileCacheEnv","args":[{},"key_name-1ab"],"ok":{"NODE_COMPILE_CACHE":"key_name-1ab","SYNARA_BACKEND_COMPILE_CACHE":"key_name-1ab"}}
+{"fn":"backendCompileCacheEnv","args":[{},"a..b"],"ok":{"NODE_COMPILE_CACHE":"a..b","SYNARA_BACKEND_COMPILE_CACHE":"a..b"}}
+{"fn":"backendCompileCacheEnv","args":["x","﻿bom"],"ok":{"NODE_COMPILE_CACHE":"﻿bom","SYNARA_BACKEND_COMPILE_CACHE":"﻿bom"}}
+{"fn":"backendCompileCacheEnv","args":[["a",1],"hello world"],"ok":{"NODE_COMPILE_CACHE":"hello world","SYNARA_BACKEND_COMPILE_CACHE":"hello world"}}
+{"fn":"backendCompileCacheEnv","args":[true,""],"ok":{"NODE_COMPILE_CACHE":"","SYNARA_BACKEND_COMPILE_CACHE":""}}
+{"fn":"backendCompileCacheEnv","args":[["a",1],".leading"],"ok":{"NODE_COMPILE_CACHE":".leading","SYNARA_BACKEND_COMPILE_CACHE":".leading"}}
+{"fn":"backendCompileCacheEnv","args":[{"a":{"b":"c"}},"a😀b😀ca😀b😀c"],"ok":{"NODE_COMPILE_CACHE":"a😀b😀ca😀b😀c","SYNARA_BACKEND_COMPILE_CACHE":"a😀b😀ca😀b😀c"}}
+{"fn":"backendCompileCacheEnv","args":[{"a":"b"},"src/a/b.tssrc/a/b.ts"],"ok":{"NODE_COMPILE_CACHE":"src/a/b.tssrc/a/b.ts","SYNARA_BACKEND_COMPILE_CACHE":"src/a/b.tssrc/a/b.ts"}}
+{"fn":"backendCompileCacheEnv","args":[{"a":"b"},".leading"],"ok":{"NODE_COMPILE_CACHE":".leading","SYNARA_BACKEND_COMPILE_CACHE":".leading"}}
+{"fn":"backendCompileCacheEnv","args":[{"a":"b"},"emoji 👍🏽 mix"],"ok":{"NODE_COMPILE_CACHE":"emoji 👍🏽 mix","SYNARA_BACKEND_COMPILE_CACHE":"emoji 👍🏽 mix"}}
+{"fn":"backendCompileCacheEnv","args":["x","ΣΊΣΥΦΟΣ"],"ok":{"NODE_COMPILE_CACHE":"ΣΊΣΥΦΟΣ","SYNARA_BACKEND_COMPILE_CACHE":"ΣΊΣΥΦΟΣ"}}
+{"fn":"backendCompileCacheEnv","args":[0,"a:b:c"],"ok":{"NODE_COMPILE_CACHE":"a:b:c","SYNARA_BACKEND_COMPILE_CACHE":"a:b:c"}}
+{"fn":"backendCompileCacheEnv","args":["g","trailing."],"ok":{"NODE_COMPILE_CACHE":"trailing.","SYNARA_BACKEND_COMPILE_CACHE":"trailing."}}
+{"fn":"backendCompileCacheEnv","args":[{"a":"b"},"tab\tseparated"],"ok":{"NODE_COMPILE_CACHE":"tab\tseparated","SYNARA_BACKEND_COMPILE_CACHE":"tab\tseparated"}}
+{"fn":"backendCompileCacheEnv","args":[0,"line1\nline2"],"ok":{"NODE_COMPILE_CACHE":"line1\nline2","SYNARA_BACKEND_COMPILE_CACHE":"line1\nline2"}}
+{"fn":"backendCompileCacheEnv","args":[true,"a..bemoji 👍🏽 mix"],"ok":{"NODE_COMPILE_CACHE":"a..bemoji 👍🏽 mix","SYNARA_BACKEND_COMPILE_CACHE":"a..bemoji 👍🏽 mix"}}
+{"fn":"backendCompileCacheEnv","args":[0,"ab  padded  "],"ok":{"NODE_COMPILE_CACHE":"ab  padded  ","SYNARA_BACKEND_COMPILE_CACHE":"ab  padded  "}}
+{"fn":"backendCompileCacheEnv","args":[true,"ΣΊΣΥΦΟΣa..b"],"ok":{"NODE_COMPILE_CACHE":"ΣΊΣΥΦΟΣa..b","SYNARA_BACKEND_COMPILE_CACHE":"ΣΊΣΥΦΟΣa..b"}}
+{"fn":"backendCompileCacheEnv","args":[{"a":"b"},"a:b:c"],"ok":{"NODE_COMPILE_CACHE":"a:b:c","SYNARA_BACKEND_COMPILE_CACHE":"a:b:c"}}
+{"fn":"backendCompileCacheEnv","args":["x","straße"],"ok":{"NODE_COMPILE_CACHE":"straße","SYNARA_BACKEND_COMPILE_CACHE":"straße"}}
+{"fn":"backendCompileCacheEnv","args":[null,"tab\tseparated"],"error":"Cannot read properties of null (reading 'NODE_COMPILE_CACHE')"}
+{"fn":"backendCompileCacheEnv","args":[{"a":"b"},"İstanbul"],"ok":{"NODE_COMPILE_CACHE":"İstanbul","SYNARA_BACKEND_COMPILE_CACHE":"İstanbul"}}
+{"fn":"backendCompileCacheEnv","args":[0,"日本語のテキスト"],"ok":{"NODE_COMPILE_CACHE":"日本語のテキスト","SYNARA_BACKEND_COMPILE_CACHE":"日本語のテキスト"}}
+{"fn":"backendCompileCacheEnv","args":[".","a..b"],"ok":{"NODE_COMPILE_CACHE":"a..b","SYNARA_BACKEND_COMPILE_CACHE":"a..b"}}
+{"fn":"backendCompileCacheEnv","args":[null,"é"],"error":"Cannot read properties of null (reading 'NODE_COMPILE_CACHE')"}
+{"fn":"backendCompileCacheEnv","args":["x","a:b:c"],"ok":{"NODE_COMPILE_CACHE":"a:b:c","SYNARA_BACKEND_COMPILE_CACHE":"a:b:c"}}
+{"fn":"backendCompileCacheEnv","args":[null,"  padded  "],"error":"Cannot read properties of null (reading 'NODE_COMPILE_CACHE')"}
+{"fn":"backendCompileCacheEnv","args":[true,".leadingns:key.path"],"ok":{"NODE_COMPILE_CACHE":".leadingns:key.path","SYNARA_BACKEND_COMPILE_CACHE":".leadingns:key.path"}}
+{"fn":"backendCompileCacheEnv","args":[0,"{name} has {count} items"],"ok":{"NODE_COMPILE_CACHE":"{name} has {count} items","SYNARA_BACKEND_COMPILE_CACHE":"{name} has {count} items"}}
+{"fn":"backendCompileCacheEnv","args":[null,".leading"],"error":"Cannot read properties of null (reading 'NODE_COMPILE_CACHE')"}
+{"fn":"backendCompileCacheEnv","args":[["a",1],"{name} has {count} items😀"],"ok":{"NODE_COMPILE_CACHE":"{name} has {count} items😀","SYNARA_BACKEND_COMPILE_CACHE":"{name} has {count} items😀"}}
+{"fn":"backendCompileCacheEnv","args":[{},"{name} has {count} itemsns:key.path"],"ok":{"NODE_COMPILE_CACHE":"{name} has {count} itemsns:key.path","SYNARA_BACKEND_COMPILE_CACHE":"{name} has {count} itemsns:key.path"}}
+{"fn":"backendCompileCacheEnv","args":[["a",1],"key_name-1"],"ok":{"NODE_COMPILE_CACHE":"key_name-1","SYNARA_BACKEND_COMPILE_CACHE":"key_name-1"}}
+{"fn":"backendCompileCacheEnv","args":["x","x"],"ok":{"NODE_COMPILE_CACHE":"x","SYNARA_BACKEND_COMPILE_CACHE":"x"}}
+{"fn":"backendCompileCacheEnv","args":[null,"😀"],"error":"Cannot read properties of null (reading 'NODE_COMPILE_CACHE')"}
+{"fn":"backendCompileCacheEnv","args":[{"a":{"b":"c"}},""],"ok":{"NODE_COMPILE_CACHE":"","SYNARA_BACKEND_COMPILE_CACHE":""}}
+{"fn":"backendCompileCacheEnv","args":[0,"😀a😀b😀c"],"ok":{"NODE_COMPILE_CACHE":"😀a😀b😀c","SYNARA_BACKEND_COMPILE_CACHE":"😀a😀b😀c"}}
+{"fn":"backendCompileCacheEnv","args":[null,"a..b"],"error":"Cannot read properties of null (reading 'NODE_COMPILE_CACHE')"}
+{"fn":"backendCompileCacheEnv","args":[[],"trailing."],"ok":{"NODE_COMPILE_CACHE":"trailing.","SYNARA_BACKEND_COMPILE_CACHE":"trailing."}}
+{"fn":"backendCompileCacheEnv","args":[true,"﻿bom"],"ok":{"NODE_COMPILE_CACHE":"﻿bom","SYNARA_BACKEND_COMPILE_CACHE":"﻿bom"}}
+{"fn":"backendCompileCacheEnv","args":[["a",1],"src/a/b.ts"],"ok":{"NODE_COMPILE_CACHE":"src/a/b.ts","SYNARA_BACKEND_COMPILE_CACHE":"src/a/b.ts"}}
+{"fn":"backendCompileCacheEnv","args":[["a",1],"line1\nline2"],"ok":{"NODE_COMPILE_CACHE":"line1\nline2","SYNARA_BACKEND_COMPILE_CACHE":"line1\nline2"}}
+{"fn":"backendCompileCacheEnv","args":[["a",1],"日本語のテキスト"],"ok":{"NODE_COMPILE_CACHE":"日本語のテキスト","SYNARA_BACKEND_COMPILE_CACHE":"日本語のテキスト"}}
+{"fn":"backendCompileCacheEnv","args":[{},"emoji 👍🏽 mix"],"ok":{"NODE_COMPILE_CACHE":"emoji 👍🏽 mix","SYNARA_BACKEND_COMPILE_CACHE":"emoji 👍🏽 mix"}}
+{"fn":"backendCompileCacheEnv","args":[{},"line1\nline2"],"ok":{"NODE_COMPILE_CACHE":"line1\nline2","SYNARA_BACKEND_COMPILE_CACHE":"line1\nline2"}}
+{"fn":"backendCompileCacheEnv","args":[{"a":{"b":"c"}},"ab"],"ok":{"NODE_COMPILE_CACHE":"ab","SYNARA_BACKEND_COMPILE_CACHE":"ab"}}
+{"fn":"backendCompileCacheEnv","args":[null,"Hello World"],"error":"Cannot read properties of null (reading 'NODE_COMPILE_CACHE')"}
+{"fn":"backendCompileCacheEnv","args":["x","X"],"ok":{"NODE_COMPILE_CACHE":"X","SYNARA_BACKEND_COMPILE_CACHE":"X"}}
+{"fn":"backendCompileCacheEnv","args":[[],"İstanbul"],"ok":{"NODE_COMPILE_CACHE":"İstanbul","SYNARA_BACKEND_COMPILE_CACHE":"İstanbul"}}
+{"fn":"backendCompileCacheEnv","args":[{},"ünïcödé"],"ok":{"NODE_COMPILE_CACHE":"ünïcödé","SYNARA_BACKEND_COMPILE_CACHE":"ünïcödé"}}
+{"fn":"backendCompileCacheEnv","args":[{"a":{"b":"c"}},"tab\tseparatedé"],"ok":{"NODE_COMPILE_CACHE":"tab\tseparatedé","SYNARA_BACKEND_COMPILE_CACHE":"tab\tseparatedé"}}
+{"fn":"backendCompileCacheEnv","args":[{"a":"b"},"trailing."],"ok":{"NODE_COMPILE_CACHE":"trailing.","SYNARA_BACKEND_COMPILE_CACHE":"trailing."}}
+{"fn":"backendCompileCacheEnv","args":[{},"İstanbul"],"ok":{"NODE_COMPILE_CACHE":"İstanbul","SYNARA_BACKEND_COMPILE_CACHE":"İstanbul"}}
+{"fn":"backendCompileCacheEnv","args":[{"a":{"b":"c"}},"hello"],"ok":{"NODE_COMPILE_CACHE":"hello","SYNARA_BACKEND_COMPILE_CACHE":"hello"}}
+{"fn":"backendCompileCacheEnv","args":["x","😀"],"ok":{"NODE_COMPILE_CACHE":"😀","SYNARA_BACKEND_COMPILE_CACHE":"😀"}}
+{"fn":"backendCompileCacheEnv","args":[true,"emoji 👍🏽 mix"],"ok":{"NODE_COMPILE_CACHE":"emoji 👍🏽 mix","SYNARA_BACKEND_COMPILE_CACHE":"emoji 👍🏽 mix"}}
+{"fn":"backendCompileCacheEnv","args":[["a",1],"abc"],"ok":{"NODE_COMPILE_CACHE":"abc","SYNARA_BACKEND_COMPILE_CACHE":"abc"}}
+{"fn":"backendCompileCacheEnv","args":[true,"HELLO"],"ok":{"NODE_COMPILE_CACHE":"HELLO","SYNARA_BACKEND_COMPILE_CACHE":"HELLO"}}
+{"fn":"backendCompileCacheEnv","args":[["a",1],"ns:key.path"],"ok":{"NODE_COMPILE_CACHE":"ns:key.path","SYNARA_BACKEND_COMPILE_CACHE":"ns:key.path"}}
+{"fn":"backendCompileCacheEnv","args":[{},"é日本語のテキスト"],"ok":{"NODE_COMPILE_CACHE":"é日本語のテキスト","SYNARA_BACKEND_COMPILE_CACHE":"é日本語のテキスト"}}
+{"fn":"backendCompileCacheEnv","args":[true,"İstanbul"],"ok":{"NODE_COMPILE_CACHE":"İstanbul","SYNARA_BACKEND_COMPILE_CACHE":"İstanbul"}}
+{"fn":"backendCompileCacheEnv","args":[null,"emoji 👍🏽 mix"],"error":"Cannot read properties of null (reading 'NODE_COMPILE_CACHE')"}
+{"fn":"backendCompileCacheEnv","args":[null,"a..bkey_name-1"],"error":"Cannot read properties of null (reading 'NODE_COMPILE_CACHE')"}
+{"fn":"backendCompileCacheEnv","args":[0,"ΣΊΣΥΦΟΣ"],"ok":{"NODE_COMPILE_CACHE":"ΣΊΣΥΦΟΣ","SYNARA_BACKEND_COMPILE_CACHE":"ΣΊΣΥΦΟΣ"}}
+{"fn":"backendCompileCacheEnv","args":[null,"straße﻿bom"],"error":"Cannot read properties of null (reading 'NODE_COMPILE_CACHE')"}
+{"fn":"backendCompileCacheEnv","args":[true,"a..b"],"ok":{"NODE_COMPILE_CACHE":"a..b","SYNARA_BACKEND_COMPILE_CACHE":"a..b"}}
+{"fn":"backendCompileCacheEnv","args":[["a",1],"ΣΊΣΥΦΟΣ"],"ok":{"NODE_COMPILE_CACHE":"ΣΊΣΥΦΟΣ","SYNARA_BACKEND_COMPILE_CACHE":"ΣΊΣΥΦΟΣ"}}
+{"fn":"backendCompileCacheEnv","args":[{"a":{"b":"c"}},"hellosrc/a/b.ts"],"ok":{"NODE_COMPILE_CACHE":"hellosrc/a/b.ts","SYNARA_BACKEND_COMPILE_CACHE":"hellosrc/a/b.ts"}}
+{"fn":"backendCompileCacheEnv","args":[{},"﻿bomkey_name-1"],"ok":{"NODE_COMPILE_CACHE":"﻿bomkey_name-1","SYNARA_BACKEND_COMPILE_CACHE":"﻿bomkey_name-1"}}
+{"fn":"backendCompileCacheEnv","args":[null,"a"],"error":"Cannot read properties of null (reading 'NODE_COMPILE_CACHE')"}
+{"fn":"backendCompileCacheEnv","args":[[],"straße"],"ok":{"NODE_COMPILE_CACHE":"straße","SYNARA_BACKEND_COMPILE_CACHE":"straße"}}
+{"fn":"backendCompileCacheEnv","args":[["a",1],"a😀b😀c"],"ok":{"NODE_COMPILE_CACHE":"a😀b😀c","SYNARA_BACKEND_COMPILE_CACHE":"a😀b😀c"}}
+{"fn":"backendCompileCacheEnv","args":[null,"日本語のテキストa.b.c"],"error":"Cannot read properties of null (reading 'NODE_COMPILE_CACHE')"}
+{"fn":"backendCompileCacheEnv","args":[["a",1],"HELLO"],"ok":{"NODE_COMPILE_CACHE":"HELLO","SYNARA_BACKEND_COMPILE_CACHE":"HELLO"}}
+{"fn":"backendCompileCacheEnv","args":["x","line1\nline2"],"ok":{"NODE_COMPILE_CACHE":"line1\nline2","SYNARA_BACKEND_COMPILE_CACHE":"line1\nline2"}}
+{"fn":"backendCompileCacheEnv","args":["x","{name} has {count} items"],"ok":{"NODE_COMPILE_CACHE":"{name} has {count} items","SYNARA_BACKEND_COMPILE_CACHE":"{name} has {count} items"}}
+{"fn":"backendCompileCacheEnv","args":[true,"trailing."],"ok":{"NODE_COMPILE_CACHE":"trailing.","SYNARA_BACKEND_COMPILE_CACHE":"trailing."}}
+{"fn":"backendCompileCacheEnv","args":["orl","hello world"],"ok":{"NODE_COMPILE_CACHE":"hello world","SYNARA_BACKEND_COMPILE_CACHE":"hello world"}}
+{"fn":"backendCompileCacheEnv","args":[{"a":{"b":"c"}},"a.b.c"],"ok":{"NODE_COMPILE_CACHE":"a.b.c","SYNARA_BACKEND_COMPILE_CACHE":"a.b.c"}}
+{"fn":"backendCompileCacheEnv","args":[0,"a..b"],"ok":{"NODE_COMPILE_CACHE":"a..b","SYNARA_BACKEND_COMPILE_CACHE":"a..b"}}
+{"fn":"backendCompileCacheEnv","args":[true,"hello world"],"ok":{"NODE_COMPILE_CACHE":"hello world","SYNARA_BACKEND_COMPILE_CACHE":"hello world"}}
+{"fn":"backendCompileCacheEnv","args":[true,"ns:key.patha..b"],"ok":{"NODE_COMPILE_CACHE":"ns:key.patha..b","SYNARA_BACKEND_COMPILE_CACHE":"ns:key.patha..b"}}
+{"fn":"backendCompileCacheEnv","args":[[],"a.b.c"],"ok":{"NODE_COMPILE_CACHE":"a.b.c","SYNARA_BACKEND_COMPILE_CACHE":"a.b.c"}}
+{"fn":"backendCompileCacheEnv","args":[["a",1],"a"],"ok":{"NODE_COMPILE_CACHE":"a","SYNARA_BACKEND_COMPILE_CACHE":"a"}}
+{"fn":"backendCompileCacheEnv","args":[{"a":"b"},"ns:key.path"],"ok":{"NODE_COMPILE_CACHE":"ns:key.path","SYNARA_BACKEND_COMPILE_CACHE":"ns:key.path"}}
+{"fn":"backendCompileCacheEnv","args":[null,"ünïcödé"],"error":"Cannot read properties of null (reading 'NODE_COMPILE_CACHE')"}
+{"fn":"backendCompileCacheEnv","args":[null,"﻿bom"],"error":"Cannot read properties of null (reading 'NODE_COMPILE_CACHE')"}
+{"fn":"backendCompileCacheEnv","args":[null,"ns:key.path"],"error":"Cannot read properties of null (reading 'NODE_COMPILE_CACHE')"}
+{"fn":"backendCompileCacheEnv","args":[{"a":"b"},"a"],"ok":{"NODE_COMPILE_CACHE":"a","SYNARA_BACKEND_COMPILE_CACHE":"a"}}
+{"fn":"backendCompileCacheEnv","args":[{"a":{"b":"c"}},"日本語のテキスト"],"ok":{"NODE_COMPILE_CACHE":"日本語のテキスト","SYNARA_BACKEND_COMPILE_CACHE":"日本語のテキスト"}}
+{"fn":"backendCompileCacheEnv","args":["x","ünïcödé"],"ok":{"NODE_COMPILE_CACHE":"ünïcödé","SYNARA_BACKEND_COMPILE_CACHE":"ünïcödé"}}
+{"fn":"backendCompileCacheEnv","args":[["a",1],"a.b.c"],"ok":{"NODE_COMPILE_CACHE":"a.b.c","SYNARA_BACKEND_COMPILE_CACHE":"a.b.c"}}
+{"fn":"backendCompileCacheEnv","args":[{},":"],"ok":{"NODE_COMPILE_CACHE":":","SYNARA_BACKEND_COMPILE_CACHE":":"}}
+{"fn":"backendCompileCacheEnv","args":[{"a":"b"},"hello"],"ok":{"NODE_COMPILE_CACHE":"hello","SYNARA_BACKEND_COMPILE_CACHE":"hello"}}
+{"fn":"backendCompileCacheEnv","args":[[],"ΣΊΣΥΦΟΣ"],"ok":{"NODE_COMPILE_CACHE":"ΣΊΣΥΦΟΣ","SYNARA_BACKEND_COMPILE_CACHE":"ΣΊΣΥΦΟΣ"}}
+{"fn":"backendCompileCacheEnv","args":[[],"Hello World"],"ok":{"NODE_COMPILE_CACHE":"Hello World","SYNARA_BACKEND_COMPILE_CACHE":"Hello World"}}
+{"fn":"backendCompileCacheEnv","args":[[],"a﻿bom"],"ok":{"NODE_COMPILE_CACHE":"a﻿bom","SYNARA_BACKEND_COMPILE_CACHE":"a﻿bom"}}
+{"fn":"backendCompileCacheEnv","args":[[],"key_name-1"],"ok":{"NODE_COMPILE_CACHE":"key_name-1","SYNARA_BACKEND_COMPILE_CACHE":"key_name-1"}}
+{"fn":"backendCompileCacheEnv","args":[null,"aé"],"error":"Cannot read properties of null (reading 'NODE_COMPILE_CACHE')"}
+{"fn":"backendCompileCacheEnv","args":[{"a":{"b":"c"}},"  padded  "],"ok":{"NODE_COMPILE_CACHE":"  padded  ","SYNARA_BACKEND_COMPILE_CACHE":"  padded  "}}
+{"fn":"backendCompileCacheEnv","args":[true,"éemoji 👍🏽 mix"],"ok":{"NODE_COMPILE_CACHE":"éemoji 👍🏽 mix","SYNARA_BACKEND_COMPILE_CACHE":"éemoji 👍🏽 mix"}}
+{"fn":"backendCompileCacheEnv","args":[0,"aline1\nline2"],"ok":{"NODE_COMPILE_CACHE":"aline1\nline2","SYNARA_BACKEND_COMPILE_CACHE":"aline1\nline2"}}
+{"fn":"backendCompileCacheEnv","args":["ΣΊΣΥ","ΣΊΣΥΦΟΣ"],"ok":{"NODE_COMPILE_CACHE":"ΣΊΣΥΦΟΣ","SYNARA_BACKEND_COMPILE_CACHE":"ΣΊΣΥΦΟΣ"}}
+{"fn":"backendCompileCacheEnv","args":[[],"emoji 👍🏽 mixsrc/a/b.ts"],"ok":{"NODE_COMPILE_CACHE":"emoji 👍🏽 mixsrc/a/b.ts","SYNARA_BACKEND_COMPILE_CACHE":"emoji 👍🏽 mixsrc/a/b.ts"}}
+{"fn":"backendCompileCacheEnv","args":[{"a":{"b":"c"}},"src/a/b.tsa..b"],"ok":{"NODE_COMPILE_CACHE":"src/a/b.tsa..b","SYNARA_BACKEND_COMPILE_CACHE":"src/a/b.tsa..b"}}
+{"fn":"backendCompileCacheEnv","args":[["a",1],"absrc/a/b.ts"],"ok":{"NODE_COMPILE_CACHE":"absrc/a/b.ts","SYNARA_BACKEND_COMPILE_CACHE":"absrc/a/b.ts"}}
+{"fn":"backendCompileCacheEnv","args":[{"a":{"b":"c"}},"éab"],"ok":{"NODE_COMPILE_CACHE":"éab","SYNARA_BACKEND_COMPILE_CACHE":"éab"}}
+{"fn":"backendCompileCacheEnv","args":[{"a":{"b":"c"}},"a..b"],"ok":{"NODE_COMPILE_CACHE":"a..b","SYNARA_BACKEND_COMPILE_CACHE":"a..b"}}
+{"fn":"backendCompileCacheEnv","args":[{"a":{"b":"c"}},"emoji 👍🏽 mix"],"ok":{"NODE_COMPILE_CACHE":"emoji 👍🏽 mix","SYNARA_BACKEND_COMPILE_CACHE":"emoji 👍🏽 mix"}}
+{"fn":"backendCompileCacheEnv","args":[null,"line1\nline2"],"error":"Cannot read properties of null (reading 'NODE_COMPILE_CACHE')"}
+{"fn":"backendCompileCacheEnv","args":[null,"src/a/b.ts"],"error":"Cannot read properties of null (reading 'NODE_COMPILE_CACHE')"}
+{"fn":"backendCompileCacheEnv","args":[[],"./x/**/*.json"],"ok":{"NODE_COMPILE_CACHE":"./x/**/*.json","SYNARA_BACKEND_COMPILE_CACHE":"./x/**/*.json"}}
+{"fn":"backendCompileCacheEnv","args":[{"a":"b"},"key_name-1"],"ok":{"NODE_COMPILE_CACHE":"key_name-1","SYNARA_BACKEND_COMPILE_CACHE":"key_name-1"}}
+{"fn":"backendCompileCacheEnv","args":[0,"src/a/b.ts"],"ok":{"NODE_COMPILE_CACHE":"src/a/b.ts","SYNARA_BACKEND_COMPILE_CACHE":"src/a/b.ts"}}
+{"fn":"backendCompileCacheEnv","args":[[],"{name} has {count} items"],"ok":{"NODE_COMPILE_CACHE":"{name} has {count} items","SYNARA_BACKEND_COMPILE_CACHE":"{name} has {count} items"}}
+{"fn":"backendCompileCacheEnv","args":[null,"日本語のテキスト"],"error":"Cannot read properties of null (reading 'NODE_COMPILE_CACHE')"}
+{"fn":"backendCompileCacheEnv","args":[{"a":{"b":"c"}},"helloab"],"ok":{"NODE_COMPILE_CACHE":"helloab","SYNARA_BACKEND_COMPILE_CACHE":"helloab"}}
+{"fn":"backendCompileCacheEnv","args":[["a",1],"ab"],"ok":{"NODE_COMPILE_CACHE":"ab","SYNARA_BACKEND_COMPILE_CACHE":"ab"}}
+{"fn":"backendCompileCacheEnv","args":[{"a":{"b":"c"}},"ünïcödéé"],"ok":{"NODE_COMPILE_CACHE":"ünïcödéé","SYNARA_BACKEND_COMPILE_CACHE":"ünïcödéé"}}
+{"fn":"backendCompileCacheEnv","args":[[],"ab"],"ok":{"NODE_COMPILE_CACHE":"ab","SYNARA_BACKEND_COMPILE_CACHE":"ab"}}
+{"fn":"backendCompileCacheEnv","args":[{"a":"b"},"﻿bom"],"ok":{"NODE_COMPILE_CACHE":"﻿bom","SYNARA_BACKEND_COMPILE_CACHE":"﻿bom"}}
+{"fn":"backendCompileCacheEnv","args":[[],".leading"],"ok":{"NODE_COMPILE_CACHE":".leading","SYNARA_BACKEND_COMPILE_CACHE":".leading"}}
+{"fn":"backendCompileCacheEnv","args":["x","a..b"],"ok":{"NODE_COMPILE_CACHE":"a..b","SYNARA_BACKEND_COMPILE_CACHE":"a..b"}}
+{"fn":"backendCompileCacheEnv","args":[{"a":{"b":"c"}},"src/a/b.ts"],"ok":{"NODE_COMPILE_CACHE":"src/a/b.ts","SYNARA_BACKEND_COMPILE_CACHE":"src/a/b.ts"}}
+{"fn":"backendCompileCacheEnv","args":[true,"ab"],"ok":{"NODE_COMPILE_CACHE":"ab","SYNARA_BACKEND_COMPILE_CACHE":"ab"}}
+{"fn":"backendCompileCacheEnv","args":[true,"hello"],"ok":{"NODE_COMPILE_CACHE":"hello","SYNARA_BACKEND_COMPILE_CACHE":"hello"}}
+{"fn":"backendCompileCacheEnv","args":[{},"a:b:c"],"ok":{"NODE_COMPILE_CACHE":"a:b:c","SYNARA_BACKEND_COMPILE_CACHE":"a:b:c"}}
+{"fn":"backendCompileCacheEnv","args":[true,"a"],"ok":{"NODE_COMPILE_CACHE":"a","SYNARA_BACKEND_COMPILE_CACHE":"a"}}
+{"fn":"backendCompileCacheEnv","args":[{},"straße"],"ok":{"NODE_COMPILE_CACHE":"straße","SYNARA_BACKEND_COMPILE_CACHE":"straße"}}
+{"fn":"backendCompileCacheEnv","args":[{"a":"b"},"abc"],"ok":{"NODE_COMPILE_CACHE":"abc","SYNARA_BACKEND_COMPILE_CACHE":"abc"}}
+{"fn":"backendCompileCacheEnv","args":[0,"ab"],"ok":{"NODE_COMPILE_CACHE":"ab","SYNARA_BACKEND_COMPILE_CACHE":"ab"}}
+{"fn":"backendCompileCacheEnv","args":[[],"  padded  "],"ok":{"NODE_COMPILE_CACHE":"  padded  ","SYNARA_BACKEND_COMPILE_CACHE":"  padded  "}}
+{"fn":"backendCompileCacheEnv","args":[0,"hello"],"ok":{"NODE_COMPILE_CACHE":"hello","SYNARA_BACKEND_COMPILE_CACHE":"hello"}}
+{"fn":"backendCompileCacheEnv","args":[{},"  padded  a.b.c"],"ok":{"NODE_COMPILE_CACHE":"  padded  a.b.c","SYNARA_BACKEND_COMPILE_CACHE":"  padded  a.b.c"}}
+{"fn":"backendCompileCacheEnv","args":[null,"a😀b😀c"],"error":"Cannot read properties of null (reading 'NODE_COMPILE_CACHE')"}
+{"fn":"backendCompileCacheEnv","args":[{"a":{"b":"c"}},"abc"],"ok":{"NODE_COMPILE_CACHE":"abc","SYNARA_BACKEND_COMPILE_CACHE":"abc"}}
+{"fn":"backendCompileCacheEnv","args":[{"a":{"b":"c"}},"Hello World"],"ok":{"NODE_COMPILE_CACHE":"Hello World","SYNARA_BACKEND_COMPILE_CACHE":"Hello World"}}
+{"fn":"backendCompileCacheEnv","args":[{"a":"b"},"{name} has {count} items"],"ok":{"NODE_COMPILE_CACHE":"{name} has {count} items","SYNARA_BACKEND_COMPILE_CACHE":"{name} has {count} items"}}
+{"fn":"backendCompileCacheEnv","args":[true,"key_name-1hello"],"ok":{"NODE_COMPILE_CACHE":"key_name-1hello","SYNARA_BACKEND_COMPILE_CACHE":"key_name-1hello"}}
+{"fn":"backendCompileCacheEnv","args":[{},"line1\nline2src/a/b.ts"],"ok":{"NODE_COMPILE_CACHE":"line1\nline2src/a/b.ts","SYNARA_BACKEND_COMPILE_CACHE":"line1\nline2src/a/b.ts"}}
+{"fn":"backendCompileCacheEnv","args":["x","HELLO"],"ok":{"NODE_COMPILE_CACHE":"HELLO","SYNARA_BACKEND_COMPILE_CACHE":"HELLO"}}
+{"fn":"backendCompileCacheEnv","args":["x","straße😀"],"ok":{"NODE_COMPILE_CACHE":"straße😀","SYNARA_BACKEND_COMPILE_CACHE":"straße😀"}}
+{"fn":"backendCompileCacheEnv","args":["x","tab\tseparated"],"ok":{"NODE_COMPILE_CACHE":"tab\tseparated","SYNARA_BACKEND_COMPILE_CACHE":"tab\tseparated"}}
+{"fn":"backendCompileCacheEnv","args":[null,"HELLO./x/**/*.json"],"error":"Cannot read properties of null (reading 'NODE_COMPILE_CACHE')"}
+{"fn":"backendCompileCacheEnv","args":[[],"line1\nline2"],"ok":{"NODE_COMPILE_CACHE":"line1\nline2","SYNARA_BACKEND_COMPILE_CACHE":"line1\nline2"}}
+{"fn":"backendCompileCacheEnv","args":["x","é"],"ok":{"NODE_COMPILE_CACHE":"é","SYNARA_BACKEND_COMPILE_CACHE":"é"}}
+{"fn":"backendCompileCacheEnv","args":[{"a":{"b":"c"}},"ünïcödé"],"ok":{"NODE_COMPILE_CACHE":"ünïcödé","SYNARA_BACKEND_COMPILE_CACHE":"ünïcödé"}}
+{"fn":"backendCompileCacheEnv","args":[true,"ns:key.path"],"ok":{"NODE_COMPILE_CACHE":"ns:key.path","SYNARA_BACKEND_COMPILE_CACHE":"ns:key.path"}}
+{"fn":"backendCompileCacheEnv","args":[{"a":{"b":"c"}},"emoji 👍🏽 mixİstanbul"],"ok":{"NODE_COMPILE_CACHE":"emoji 👍🏽 mixİstanbul","SYNARA_BACKEND_COMPILE_CACHE":"emoji 👍🏽 mixİstanbul"}}
+{"fn":"backendCompileCacheEnv","args":[{"a":{"b":"c"}},"key_name-1"],"ok":{"NODE_COMPILE_CACHE":"key_name-1","SYNARA_BACKEND_COMPILE_CACHE":"key_name-1"}}
+{"fn":"backendCompileCacheEnv","args":[{},"hello"],"ok":{"NODE_COMPILE_CACHE":"hello","SYNARA_BACKEND_COMPILE_CACHE":"hello"}}
+{"fn":"backendCompileCacheEnv","args":[{"a":"b"},"a..b"],"ok":{"NODE_COMPILE_CACHE":"a..b","SYNARA_BACKEND_COMPILE_CACHE":"a..b"}}
+{"fn":"backendCompileCacheEnv","args":[null,"ΣΊΣΥΦΟΣ"],"error":"Cannot read properties of null (reading 'NODE_COMPILE_CACHE')"}
+{"fn":"backendCompileCacheEnv","args":[0,".leading"],"ok":{"NODE_COMPILE_CACHE":".leading","SYNARA_BACKEND_COMPILE_CACHE":".leading"}}
+{"fn":"backendCompileCacheEnv","args":[{"a":"b"},"😀"],"ok":{"NODE_COMPILE_CACHE":"😀","SYNARA_BACKEND_COMPILE_CACHE":"😀"}}
+{"fn":"backendCompileCacheEnv","args":[[],"hello world"],"ok":{"NODE_COMPILE_CACHE":"hello world","SYNARA_BACKEND_COMPILE_CACHE":"hello world"}}
+{"fn":"backendCompileCacheEnv","args":[{"a":{"b":"c"}},"line1\nline2  padded  "],"ok":{"NODE_COMPILE_CACHE":"line1\nline2  padded  ","SYNARA_BACKEND_COMPILE_CACHE":"line1\nline2  padded  "}}
+{"fn":"backendCompileCacheEnv","args":[{"a":{"b":"c"}},"{name} has {count} items"],"ok":{"NODE_COMPILE_CACHE":"{name} has {count} items","SYNARA_BACKEND_COMPILE_CACHE":"{name} has {count} items"}}
+{"fn":"backendCompileCacheEnv","args":[["a",1],"😀"],"ok":{"NODE_COMPILE_CACHE":"😀","SYNARA_BACKEND_COMPILE_CACHE":"😀"}}
+{"fn":"backendCompileCacheEnv","args":["x","hello"],"ok":{"NODE_COMPILE_CACHE":"hello","SYNARA_BACKEND_COMPILE_CACHE":"hello"}}
+{"fn":"backendCompileCacheEnv","args":[[],"key_name-1ünïcödé"],"ok":{"NODE_COMPILE_CACHE":"key_name-1ünïcödé","SYNARA_BACKEND_COMPILE_CACHE":"key_name-1ünïcödé"}}
+{"fn":"backendCompileCacheEnv","args":[0,"İstanbul"],"ok":{"NODE_COMPILE_CACHE":"İstanbul","SYNARA_BACKEND_COMPILE_CACHE":"İstanbul"}}
+{"fn":"backendCompileCacheEnv","args":[0,"  padded  "],"ok":{"NODE_COMPILE_CACHE":"  padded  ","SYNARA_BACKEND_COMPILE_CACHE":"  padded  "}}
+{"fn":"backendCompileCacheEnv","args":[{"a":"b"},"ΣΊΣΥΦΟΣ"],"ok":{"NODE_COMPILE_CACHE":"ΣΊΣΥΦΟΣ","SYNARA_BACKEND_COMPILE_CACHE":"ΣΊΣΥΦΟΣ"}}
+{"fn":"backendCompileCacheEnv","args":[null,"hellohello world"],"error":"Cannot read properties of null (reading 'NODE_COMPILE_CACHE')"}
+{"fn":"backendCompileCacheEnv","args":[{},"{name} has {count} items"],"ok":{"NODE_COMPILE_CACHE":"{name} has {count} items","SYNARA_BACKEND_COMPILE_CACHE":"{name} has {count} items"}}
+{"fn":"backendCompileCacheEnv","args":[null,"a.b.c"],"error":"Cannot read properties of null (reading 'NODE_COMPILE_CACHE')"}
+{"fn":"backendCompileCacheEnv","args":[["a",1],".leading😀"],"ok":{"NODE_COMPILE_CACHE":".leading😀","SYNARA_BACKEND_COMPILE_CACHE":".leading😀"}}
+{"fn":"backendCompileCacheEnv","args":[[],""],"ok":{"NODE_COMPILE_CACHE":"","SYNARA_BACKEND_COMPILE_CACHE":""}}
+{"fn":"backendCompileCacheEnv","args":[["a",1],"Hello World"],"ok":{"NODE_COMPILE_CACHE":"Hello World","SYNARA_BACKEND_COMPILE_CACHE":"Hello World"}}
+{"fn":"backendCompileCacheEnv","args":["x","atab\tseparated"],"ok":{"NODE_COMPILE_CACHE":"atab\tseparated","SYNARA_BACKEND_COMPILE_CACHE":"atab\tseparated"}}
+{"fn":"backendCompileCacheEnv","args":[{},"é"],"ok":{"NODE_COMPILE_CACHE":"é","SYNARA_BACKEND_COMPILE_CACHE":"é"}}
+{"fn":"backendCompileCacheEnv","args":[[],"😀"],"ok":{"NODE_COMPILE_CACHE":"😀","SYNARA_BACKEND_COMPILE_CACHE":"😀"}}
+{"fn":"backendCompileCacheEnv","args":[[],".leadinghello world"],"ok":{"NODE_COMPILE_CACHE":".leadinghello world","SYNARA_BACKEND_COMPILE_CACHE":".leadinghello world"}}
+{"fn":"backendCompileCacheEnv","args":[true,".leading"],"ok":{"NODE_COMPILE_CACHE":".leading","SYNARA_BACKEND_COMPILE_CACHE":".leading"}}
+{"fn":"backendCompileCacheEnv","args":[{},"﻿bom"],"ok":{"NODE_COMPILE_CACHE":"﻿bom","SYNARA_BACKEND_COMPILE_CACHE":"﻿bom"}}
+{"fn":"backendCompileCacheEnv","args":[true,"ΣΊΣΥΦΟΣ"],"ok":{"NODE_COMPILE_CACHE":"ΣΊΣΥΦΟΣ","SYNARA_BACKEND_COMPILE_CACHE":"ΣΊΣΥΦΟΣ"}}
+{"fn":"backendCompileCacheEnv","args":[["a",1],""],"ok":{"NODE_COMPILE_CACHE":"","SYNARA_BACKEND_COMPILE_CACHE":""}}
+{"fn":"backendCompileCacheEnv","args":[{"a":"b"},"  padded  "],"ok":{"NODE_COMPILE_CACHE":"  padded  ","SYNARA_BACKEND_COMPILE_CACHE":"  padded  "}}
+{"fn":"backendCompileCacheEnv","args":[0,"key_name-1"],"ok":{"NODE_COMPILE_CACHE":"key_name-1","SYNARA_BACKEND_COMPILE_CACHE":"key_name-1"}}
+{"fn":"backendCompileCacheEnv","args":[0,"Hello World"],"ok":{"NODE_COMPILE_CACHE":"Hello World","SYNARA_BACKEND_COMPILE_CACHE":"Hello World"}}
+{"fn":"backendCompileCacheEnv","args":[["a",1],"emoji 👍🏽 mix{name} has {count} items"],"ok":{"NODE_COMPILE_CACHE":"emoji 👍🏽 mix{name} has {count} items","SYNARA_BACKEND_COMPILE_CACHE":"emoji 👍🏽 mix{name} has {count} items"}}
+{"fn":"backendCompileCacheEnv","args":["x","hello world"],"ok":{"NODE_COMPILE_CACHE":"hello world","SYNARA_BACKEND_COMPILE_CACHE":"hello world"}}
+{"fn":"backendCompileCacheEnv","args":[null,"😀trailing."],"error":"Cannot read properties of null (reading 'NODE_COMPILE_CACHE')"}
+{"fn":"backendCompileCacheEnv","args":[true,"ünïcödé"],"ok":{"NODE_COMPILE_CACHE":"ünïcödé","SYNARA_BACKEND_COMPILE_CACHE":"ünïcödé"}}
+{"fn":"backendCompileCacheEnv","args":[0,"./x/**/*.jsona.b.c"],"ok":{"NODE_COMPILE_CACHE":"./x/**/*.jsona.b.c","SYNARA_BACKEND_COMPILE_CACHE":"./x/**/*.jsona.b.c"}}
+{"fn":"backendCompileCacheEnv","args":[true,"tab\tseparated"],"ok":{"NODE_COMPILE_CACHE":"tab\tseparated","SYNARA_BACKEND_COMPILE_CACHE":"tab\tseparated"}}
+{"fn":"backendCompileCacheEnv","args":[0,"straße"],"ok":{"NODE_COMPILE_CACHE":"straße","SYNARA_BACKEND_COMPILE_CACHE":"straße"}}
+{"fn":"backendCompileCacheEnv","args":[null,"line1\nline2HELLO"],"error":"Cannot read properties of null (reading 'NODE_COMPILE_CACHE')"}
+{"fn":"backendCompileCacheEnv","args":[["a",1],"{name} has {count} itemsab"],"ok":{"NODE_COMPILE_CACHE":"{name} has {count} itemsab","SYNARA_BACKEND_COMPILE_CACHE":"{name} has {count} itemsab"}}
+{"fn":"backendCompileCacheEnv","args":[{"a":{"b":"c"}},"a:b:c"],"ok":{"NODE_COMPILE_CACHE":"a:b:c","SYNARA_BACKEND_COMPILE_CACHE":"a:b:c"}}
+{"fn":"backendCompileCacheEnv","args":[["a",1],"tab\tseparated"],"ok":{"NODE_COMPILE_CACHE":"tab\tseparated","SYNARA_BACKEND_COMPILE_CACHE":"tab\tseparated"}}
+{"fn":"backendCompileCacheEnv","args":[["a",1],"emoji 👍🏽 mix"],"ok":{"NODE_COMPILE_CACHE":"emoji 👍🏽 mix","SYNARA_BACKEND_COMPILE_CACHE":"emoji 👍🏽 mix"}}
+{"fn":"backendCompileCacheEnv","args":["x","ab"],"ok":{"NODE_COMPILE_CACHE":"ab","SYNARA_BACKEND_COMPILE_CACHE":"ab"}}
+{"fn":"backendCompileCacheEnv","args":[[],"HELLO"],"ok":{"NODE_COMPILE_CACHE":"HELLO","SYNARA_BACKEND_COMPILE_CACHE":"HELLO"}}
+{"fn":"backendCompileCacheEnv","args":[{"a":"b"},"a.b.c"],"ok":{"NODE_COMPILE_CACHE":"a.b.c","SYNARA_BACKEND_COMPILE_CACHE":"a.b.c"}}
+{"fn":"backendCompileCacheEnv","args":[{},"hello world"],"ok":{"NODE_COMPILE_CACHE":"hello world","SYNARA_BACKEND_COMPILE_CACHE":"hello world"}}
+{"fn":"backendCompileCacheEnv","args":[0,"héllo wörld"],"ok":{"NODE_COMPILE_CACHE":"héllo wörld","SYNARA_BACKEND_COMPILE_CACHE":"héllo wörld"}}
+{"fn":"backendCompileCacheEnv","args":[0,"👍🏽 thumbs"],"ok":{"NODE_COMPILE_CACHE":"👍🏽 thumbs","SYNARA_BACKEND_COMPILE_CACHE":"👍🏽 thumbs"}}
+{"fn":"backendCompileCacheEnv","args":[0,"日本語"],"ok":{"NODE_COMPILE_CACHE":"日本語","SYNARA_BACKEND_COMPILE_CACHE":"日本語"}}
+{"fn":"backendCompileCacheEnv","args":[0,""],"ok":{"NODE_COMPILE_CACHE":"","SYNARA_BACKEND_COMPILE_CACHE":""}}
+{"fn":"backendCompileCacheEnv","args":[0,"é"],"ok":{"NODE_COMPILE_CACHE":"é","SYNARA_BACKEND_COMPILE_CACHE":"é"}}
+{"fn":"backendCompileCacheEnv","args":[0,"ılık ırmak"],"ok":{"NODE_COMPILE_CACHE":"ılık ırmak","SYNARA_BACKEND_COMPILE_CACHE":"ılık ırmak"}}
+{"fn":"backendCompileCacheEnv","args":[0,"👨‍👩‍👧 family"],"ok":{"NODE_COMPILE_CACHE":"👨‍👩‍👧 family","SYNARA_BACKEND_COMPILE_CACHE":"👨‍👩‍👧 family"}}
+{"fn":"backendCompileCacheEnv","args":[0,"a b"],"ok":{"NODE_COMPILE_CACHE":"a b","SYNARA_BACKEND_COMPILE_CACHE":"a b"}}
+{"fn":"backendCompileCacheEnv","args":[0,"a😀b"],"ok":{"NODE_COMPILE_CACHE":"a😀b","SYNARA_BACKEND_COMPILE_CACHE":"a😀b"}}
+{"fn":"backendCompileCacheEnv","args":[0,"﻿bom"],"ok":{"NODE_COMPILE_CACHE":"﻿bom","SYNARA_BACKEND_COMPILE_CACHE":"﻿bom"}}
+{"fn":"backendCompileCacheEnv","args":[0,"a²b x½ y①"],"ok":{"NODE_COMPILE_CACHE":"a²b x½ y①","SYNARA_BACKEND_COMPILE_CACHE":"a²b x½ y①"}}
+{"fn":"backendCompileCacheEnv","args":[0,"aⅠb Ⅻ"],"ok":{"NODE_COMPILE_CACHE":"aⅠb Ⅻ","SYNARA_BACKEND_COMPILE_CACHE":"aⅠb Ⅻ"}}
+{"fn":"backendCompileCacheEnv","args":[0,"a𐐀b 𝐀bc"],"ok":{"NODE_COMPILE_CACHE":"a𐐀b 𝐀bc","SYNARA_BACKEND_COMPILE_CACHE":"a𐐀b 𝐀bc"}}
+{"fn":"backendCompileCacheEnv","args":[0,"कि ٣٤"],"ok":{"NODE_COMPILE_CACHE":"कि ٣٤","SYNARA_BACKEND_COMPILE_CACHE":"कि ٣٤"}}
+{"fn":"backendCompileCacheEnv","args":[0,"Iı İi"],"ok":{"NODE_COMPILE_CACHE":"Iı İi","SYNARA_BACKEND_COMPILE_CACHE":"Iı İi"}}
+{"fn":"backendCompileCacheEnv","args":[0,"K K k"],"ok":{"NODE_COMPILE_CACHE":"K K k","SYNARA_BACKEND_COMPILE_CACHE":"K K k"}}
+{"fn":"backendCompileCacheEnv","args":[0,"ſ s S"],"ok":{"NODE_COMPILE_CACHE":"ſ s S","SYNARA_BACKEND_COMPILE_CACHE":"ſ s S"}}
+{"fn":"backendCompileCacheEnv","args":[0,"x‍y 👨‍👩‍👧"],"ok":{"NODE_COMPILE_CACHE":"x‍y 👨‍👩‍👧","SYNARA_BACKEND_COMPILE_CACHE":"x‍y 👨‍👩‍👧"}}
+{"fn":"backendCompileCacheEnv","args":[0,"a b c　d"],"ok":{"NODE_COMPILE_CACHE":"a b c　d","SYNARA_BACKEND_COMPILE_CACHE":"a b c　d"}}
+{"fn":"backendCompileCacheEnv","args":[0,"١٢٣ ٤٥"],"ok":{"NODE_COMPILE_CACHE":"١٢٣ ٤٥","SYNARA_BACKEND_COMPILE_CACHE":"١٢٣ ٤٥"}}
+{"fn":"backendCompileCacheEnv","args":[0,"𝟘𝟙 ²³"],"ok":{"NODE_COMPILE_CACHE":"𝟘𝟙 ²³","SYNARA_BACKEND_COMPILE_CACHE":"𝟘𝟙 ²³"}}
+{"fn":"backendCompileCacheEnv","args":[0,"snake_case foo-bar o'neil"],"ok":{"NODE_COMPILE_CACHE":"snake_case foo-bar o'neil","SYNARA_BACKEND_COMPILE_CACHE":"snake_case foo-bar o'neil"}}
+{"fn":"backendCompileCacheEnv","args":[0,"ǅungla Ǆ"],"ok":{"NODE_COMPILE_CACHE":"ǅungla Ǆ","SYNARA_BACKEND_COMPILE_CACHE":"ǅungla Ǆ"}}
+{"fn":"backendCompileCacheEnv","args":[0,"one\r\ntwo threefour"],"ok":{"NODE_COMPILE_CACHE":"one\r\ntwo threefour","SYNARA_BACKEND_COMPILE_CACHE":"one\r\ntwo threefour"}}
+{"fn":"backendCompileCacheEnv","args":[0,"café café"],"ok":{"NODE_COMPILE_CACHE":"café café","SYNARA_BACKEND_COMPILE_CACHE":"café café"}}
+{"fn":"backendCompileCacheEnv","args":[0,"ΣΑΣ σας ς"],"ok":{"NODE_COMPILE_CACHE":"ΣΑΣ σας ς","SYNARA_BACKEND_COMPILE_CACHE":"ΣΑΣ σας ς"}}
+{"fn":"pruneBackendCompileCaches","args":["tab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["straße"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["line1\nline2a:b:c"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["line1\nline2"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["abcΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["hello"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["emoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["﻿bom"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["a😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["key_name-1"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["a..b"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["a"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["hello world"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["  padded  "],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["ΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["İstanbul"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":[".leading"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["é"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["abc"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["HELLO"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["src/a/b.tskey_name-1"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["a:b:c"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["trailing."],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["ns:key.path"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["{name} has {count} itemsa.b.c"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["Hello World"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["line1\nline2abc"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["src/a/b.ts"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["HELLOa..b"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["a..ba:b:c"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["key_name-1a😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["😀"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["trailing.  padded  "],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["a.b.c"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["ab"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["﻿boma"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["ünïcödé"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["a.b.ctrailing."],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["﻿bomé"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["emoji 👍🏽 mixns:key.path"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["a..bns:key.path"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["straßeHello World"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":[":"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["tab\tseparatedns:key.path"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["straßea.b.c"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["a..bemoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["abcİstanbul"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["ΣΊΣΥΦΟΣ{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["日本語のテキストa..b"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["İstanbulab"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["line1\nline2ΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["😀{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["line1\nline2tab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["  padded    padded  "],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":[""],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["hello worldab"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["İstanbulns:key.path"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["aa😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["a😀b😀c﻿bom"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["{name} has {count} itemsHELLO"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["ΣΊΣΥΦΟΣemoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["HELLOstraße"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["a:b:csrc/a/b.ts"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["HELLOİstanbul"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["{name} has {count} itemskey_name-1"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["ΣΊΣΥΦΟΣa.b.c"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["emoji 👍🏽 mixHello World"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["a😀b😀c.leading"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["﻿bomhello world"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["trailing.ns:key.path"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["trailing.日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["a..b{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["a:b:cns:key.path"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["İstanbul:"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["tab\tseparated日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["helloİstanbul"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["key_name-1ΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":[".leadingsrc/a/b.ts"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["😀ΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["line1\nline2é"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["abcHELLO"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["a:b:c{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["emoji 👍🏽 mixHELLO"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["a.b.ca😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["étrailing."],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["a..bİstanbul"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["a.b.chello world"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["abé"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["trailing.abc"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["  padded  日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["İstanbulünïcödé"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["abcab"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["tab\tseparatedemoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["ΣΊΣΥΦΟΣ😀"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["tab\tseparateda😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["key_name-1{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["hellohello"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["😀😀"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["{name} has {count} itemsa😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":[":😀"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["a..babc"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["日本語のテキストhello"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["a:b:ca😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["hello world:"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["Hello World日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["key_name-1straße"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["straßeİstanbul"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["line1\nline2{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["trailing.trailing."],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["HELLOHello World"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["ΣΊΣΥΦΟΣ:"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["﻿bom{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["emoji 👍🏽 mixsrc/a/b.ts"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["😀é"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["  padded  key_name-1"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["tab\tseparateda..b"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["trailing.hello world"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["straßeHELLO"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["tab\tseparatedtab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["ΣΊΣΥΦΟΣhello world"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["hello worldé"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["key_name-1a"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["a./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":[":hello world"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["Hello Worldé"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["日本語のテキストHello World"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["hello😀"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["ab./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["emoji 👍🏽 mixé"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["Hello World😀"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["ns:key.pathhello"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["é😀"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["abcHello World"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["src/a/b.tstab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["éabc"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["é{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["straßeemoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["hello worldline1\nline2"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["trailing.a.b.c"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["./x/**/*.jsontrailing."],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["a😀b😀cline1\nline2"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["key_name-1hello world"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["a..b:"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["emoji 👍🏽 mixtrailing."],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":[":a..b"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["a.b.cHELLO"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["aa"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["a😀b😀cab"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["tab\tseparatedHello World"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["hello./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["a😀b😀cstraße"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["key_name-1ünïcödé"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":[".leadinga"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["straße./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":[".leadingemoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["a😀b😀ca..b"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["src/a/b.tsstraße"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["key_name-1./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["İstanbulsrc/a/b.ts"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["atrailing."],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["./x/**/*.json﻿bom"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["a😀b😀ctrailing."],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["hello worlda.b.c"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["ΣΊΣΥΦΟΣns:key.path"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["İstanbula😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["a😀b😀chello world"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":[":straße"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["HELLOa"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["{name} has {count} itemsline1\nline2"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["./x/**/*.jsonHELLO"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["﻿boma:b:c"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["ahello"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["helloa😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["  padded  src/a/b.ts"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["ns:key.pathkey_name-1"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["emoji 👍🏽 mixa😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["abc﻿bom"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["İstanbul日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["straßea..b"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["helloa"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["İstanbulİstanbul"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["ünïcödékey_name-1"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["  padded  hello"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["ünïcödéa..b"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["hello worldtab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["ns:key.pathtab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["abca.b.c"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["{name} has {count} items:"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["straßea😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["straßens:key.path"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["aba😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["abtrailing."],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["﻿bomline1\nline2"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["trailing.straße"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["ünïcödé😀"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["line1\nline2key_name-1"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["  padded  ab"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["héllo wörld"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["👍🏽 thumbs"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["日本語"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["ılık ırmak"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["👨‍👩‍👧 family"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["a b"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["a😀b"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["a²b x½ y①"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["aⅠb Ⅻ"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["a𐐀b 𝐀bc"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["कि ٣٤"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["Iı İi"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["K K k"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["ſ s S"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["x‍y 👨‍👩‍👧"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["a b c　d"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["١٢٣ ٤٥"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["𝟘𝟙 ²³"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["snake_case foo-bar o'neil"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["ǅungla Ǆ"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["one\r\ntwo threefour"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["café café"],"ok":{"$undefined":true}}
+{"fn":"pruneBackendCompileCaches","args":["ΣΑΣ σας ς"],"ok":{"$undefined":true}}

@@ -1,0 +1,54 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/editorViewState.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "editorviewstate-rs",
+  "exports": [
+    {
+      "name": "readEditorViewState",
+      "file": "apps/web/src/editorViewState.ts",
+      "line": 37,
+      "params": [
+        {
+          "name": "threadId",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "EditorViewStateSnapshot | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "storeEditorViewState",
+      "file": "apps/web/src/editorViewState.ts",
+      "line": 50,
+      "params": [
+        {
+          "name": "threadId",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "snapshot",
+          "ts_type": "EditorViewStateSnapshot",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

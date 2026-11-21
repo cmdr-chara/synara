@@ -1,0 +1,17 @@
+{
+  "unit": "packages/shared/src/uiLocale.ts",
+  "files": 1,
+  "fingerprint": "18f5ab06a1bbd51a",
+  "coverage": {
+    "lines": 11,
+    "reached": 11,
+    "files": [
+      {
+        "file": "packages/shared/src/uiLocale.ts",
+        "lines": 11,
+        "reached": 11,
+        "missed": ""
+      }
+    ]
+  }
+}

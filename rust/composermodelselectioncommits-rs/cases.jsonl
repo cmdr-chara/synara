@@ -1,0 +1,9 @@
+{"fn":"notifyComposerModelSelectionCommitted","args":[{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"notifyComposerModelSelectionCommitted","args":["x"],"ok":{"$undefined":true}}
+{"fn":"notifyComposerModelSelectionCommitted","args":[["a",1]],"ok":{"$undefined":true}}
+{"fn":"notifyComposerModelSelectionCommitted","args":[{}],"ok":{"$undefined":true}}
+{"fn":"notifyComposerModelSelectionCommitted","args":[{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"notifyComposerModelSelectionCommitted","args":[true],"ok":{"$undefined":true}}
+{"fn":"notifyComposerModelSelectionCommitted","args":[0],"ok":{"$undefined":true}}
+{"fn":"notifyComposerModelSelectionCommitted","args":[[]],"ok":{"$undefined":true}}
+{"fn":"notifyComposerModelSelectionCommitted","args":[null],"ok":{"$undefined":true}}

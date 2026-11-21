@@ -1,0 +1,17 @@
+{
+  "unit": "apps/web/src/composerModelSelectionCommits.ts",
+  "files": 1,
+  "fingerprint": "76dcdcad77eabc0a",
+  "coverage": {
+    "lines": 20,
+    "reached": 11,
+    "files": [
+      {
+        "file": "apps/web/src/composerModelSelectionCommits.ts",
+        "lines": 20,
+        "reached": 11,
+        "missed": "13-19, 23-24"
+      }
+    ]
+  }
+}

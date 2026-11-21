@@ -1,0 +1,37 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/composerModelSelectionCommits.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "composermodelselectioncommits-rs",
+  "exports": [
+    {
+      "name": "notifyComposerModelSelectionCommitted",
+      "file": "apps/web/src/composerModelSelectionCommits.ts",
+      "line": 21,
+      "params": [
+        {
+          "name": "threadId",
+          "ts_type": "typeof typeof typeof typeof ThreadId.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "onComposerModelSelectionCommitted",
+      "file": "apps/web/src/composerModelSelectionCommits.ts",
+      "line": 12,
+      "reason": "takes or returns a function"
+    }
+  ]
+}

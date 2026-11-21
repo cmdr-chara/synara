@@ -1,0 +1,114 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/runtimeMode.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "runtimemode-rs",
+  "exports": [
+    {
+      "name": "providerSupportsAutoRuntimeMode",
+      "file": "packages/shared/src/runtimeMode.ts",
+      "line": 10,
+      "params": [
+        {
+          "name": "provider",
+          "ts_type": "typeof typeof typeof typeof ProviderKind.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "unsupportedAutoRuntimeModeMessage",
+      "file": "packages/shared/src/runtimeMode.ts",
+      "line": 14,
+      "params": [
+        {
+          "name": "provider",
+          "ts_type": "typeof typeof typeof typeof ProviderKind.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "autoRuntimeModeSelectionIssue",
+      "file": "packages/shared/src/runtimeMode.ts",
+      "line": 23,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly runtimeMode: typeof typeof typeof typeof RuntimeMode.Type.Type.Type.Type;\n  readonly modelSelection: {\n    readonly provider: typeof typeof typeof typeof ProviderKind.Type.Type.Type.Type;\n    readonly model: string;\n    readonly supportsAutoMode?: boolean | undefined;\n  };\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "runtimeModeEscalatesPrivilege",
+      "file": "packages/shared/src/runtimeMode.ts",
+      "line": 51,
+      "params": [
+        {
+          "name": "callerRuntimeMode",
+          "ts_type": "typeof typeof typeof typeof RuntimeMode.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "targetRuntimeMode",
+          "ts_type": "typeof typeof typeof typeof RuntimeMode.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "normalizeRuntimeModeForProvider",
+      "file": "packages/shared/src/runtimeMode.ts",
+      "line": 58,
+      "params": [
+        {
+          "name": "runtimeMode",
+          "ts_type": "typeof typeof typeof typeof RuntimeMode.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "provider",
+          "ts_type": "typeof typeof typeof typeof ProviderKind.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof RuntimeMode.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

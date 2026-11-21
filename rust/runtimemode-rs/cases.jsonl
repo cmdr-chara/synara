@@ -1,0 +1,280 @@
+{"fn":"providerSupportsAutoRuntimeMode","args":[null],"ok":false}
+{"fn":"providerSupportsAutoRuntimeMode","args":[[]],"ok":false}
+{"fn":"providerSupportsAutoRuntimeMode","args":["x"],"ok":false}
+{"fn":"providerSupportsAutoRuntimeMode","args":[{"a":{"b":"c"}}],"ok":false}
+{"fn":"providerSupportsAutoRuntimeMode","args":[true],"ok":false}
+{"fn":"providerSupportsAutoRuntimeMode","args":[{"a":"b"}],"ok":false}
+{"fn":"providerSupportsAutoRuntimeMode","args":[["a",1]],"ok":false}
+{"fn":"providerSupportsAutoRuntimeMode","args":[{}],"ok":false}
+{"fn":"providerSupportsAutoRuntimeMode","args":[0],"ok":false}
+{"fn":"unsupportedAutoRuntimeModeMessage","args":[[]],"ok":"Provider \"\" does not support Auto runtime mode. Auto is available only for Codex and Claude Code."}
+{"fn":"unsupportedAutoRuntimeModeMessage","args":[null],"ok":"Provider \"null\" does not support Auto runtime mode. Auto is available only for Codex and Claude Code."}
+{"fn":"unsupportedAutoRuntimeModeMessage","args":[{}],"ok":"Provider \"[object Object]\" does not support Auto runtime mode. Auto is available only for Codex and Claude Code."}
+{"fn":"unsupportedAutoRuntimeModeMessage","args":[["a",1]],"ok":"Provider \"a,1\" does not support Auto runtime mode. Auto is available only for Codex and Claude Code."}
+{"fn":"unsupportedAutoRuntimeModeMessage","args":[true],"ok":"Provider \"true\" does not support Auto runtime mode. Auto is available only for Codex and Claude Code."}
+{"fn":"unsupportedAutoRuntimeModeMessage","args":[{"a":"b"}],"ok":"Provider \"[object Object]\" does not support Auto runtime mode. Auto is available only for Codex and Claude Code."}
+{"fn":"unsupportedAutoRuntimeModeMessage","args":["x"],"ok":"Provider \"x\" does not support Auto runtime mode. Auto is available only for Codex and Claude Code."}
+{"fn":"unsupportedAutoRuntimeModeMessage","args":[{"a":{"b":"c"}}],"ok":"Provider \"[object Object]\" does not support Auto runtime mode. Auto is available only for Codex and Claude Code."}
+{"fn":"unsupportedAutoRuntimeModeMessage","args":[0],"ok":"Provider \"0\" does not support Auto runtime mode. Auto is available only for Codex and Claude Code."}
+{"fn":"autoRuntimeModeSelectionIssue","args":[null],"error":"Cannot read properties of null (reading 'runtimeMode')"}
+{"fn":"autoRuntimeModeSelectionIssue","args":[["a",1]],"ok":null}
+{"fn":"autoRuntimeModeSelectionIssue","args":["x"],"ok":null}
+{"fn":"autoRuntimeModeSelectionIssue","args":[{"a":{"b":"c"}}],"ok":null}
+{"fn":"autoRuntimeModeSelectionIssue","args":[{"a":"b"}],"ok":null}
+{"fn":"autoRuntimeModeSelectionIssue","args":[0],"ok":null}
+{"fn":"autoRuntimeModeSelectionIssue","args":[{}],"ok":null}
+{"fn":"autoRuntimeModeSelectionIssue","args":[true],"ok":null}
+{"fn":"autoRuntimeModeSelectionIssue","args":[[]],"ok":null}
+{"fn":"runtimeModeEscalatesPrivilege","args":[[],"x"],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":[["a",1],["a",1]],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":[0,0],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":[[],["a",1]],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":[true,[]],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":[{},{"a":"b"}],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":["x",0],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":[0,["a",1]],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":[{"a":"b"},null],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":[0,"x"],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":["x",{}],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":[{},null],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":[["a",1],[]],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":[true,{}],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":[true,0],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":[{},{"a":{"b":"c"}}],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":[[],null],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":[null,[]],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":[[],{"a":"b"}],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":[[],true],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":[0,{}],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":[{},0],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":[{"a":"b"},{"a":"b"}],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":[{"a":{"b":"c"}},null],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":[true,"x"],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":[{"a":"b"},["a",1]],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":[0,[]],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":[null,{}],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":["x","x"],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":[null,true],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":[{"a":"b"},{"a":{"b":"c"}}],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":[[],0],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":["x",{"a":{"b":"c"}}],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":[{},"x"],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":["x",null],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":["x",[]],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":["x",true],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":[null,{"a":"b"}],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":[{"a":{"b":"c"}},"x"],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":[["a",1],{}],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":[["a",1],{"a":{"b":"c"}}],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":[[],{}],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":[["a",1],{"a":"b"}],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":[0,{"a":"b"}],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":[null,["a",1]],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":[["a",1],true],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":["x",{"a":"b"}],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":[null,"x"],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":[true,{"a":"b"}],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":[true,{"a":{"b":"c"}}],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":[{"a":"b"},0],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":[{},["a",1]],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":[{"a":{"b":"c"}},true],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":[{"a":"b"},"x"],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":[{},true],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":[true,["a",1]],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":[{"a":"b"},{}],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":[{"a":{"b":"c"}},["a",1]],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":[true,null],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":["x",["a",1]],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":[null,{"a":{"b":"c"}}],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":[{},[]],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":[["a",1],"x"],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":[0,{"a":{"b":"c"}}],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":[null,0],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":[{},{}],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":[{"a":{"b":"c"}},{"a":{"b":"c"}}],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":[{"a":"b"},true],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":[["a",1],0],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":[[],[]],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":[{"a":{"b":"c"}},{"a":"b"}],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":[["a",1],null],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":[0,true],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":[[],{"a":{"b":"c"}}],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":[{"a":{"b":"c"}},[]],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":[{"a":"b"},[]],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":[{"a":{"b":"c"}},{}],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":[{"a":{"b":"c"}},0],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":[true,true],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":[null,null],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":[0,null],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":["X","x"],"ok":false}
+{"fn":"normalizeRuntimeModeForProvider","args":[["a",1],["a",1]],"ok":["a",1]}
+{"fn":"normalizeRuntimeModeForProvider","args":[{"a":{"b":"c"}},true],"ok":{"a":{"b":"c"}}}
+{"fn":"normalizeRuntimeModeForProvider","args":[true,["a",1]],"ok":true}
+{"fn":"normalizeRuntimeModeForProvider","args":[["a",1],{"a":"b"}],"ok":["a",1]}
+{"fn":"normalizeRuntimeModeForProvider","args":[{"a":"b"},true],"ok":{"a":"b"}}
+{"fn":"normalizeRuntimeModeForProvider","args":["x",[]],"ok":"x"}
+{"fn":"normalizeRuntimeModeForProvider","args":[{"a":{"b":"c"}},{}],"ok":{"a":{"b":"c"}}}
+{"fn":"normalizeRuntimeModeForProvider","args":[{},["a",1]],"ok":{}}
+{"fn":"normalizeRuntimeModeForProvider","args":["x","x"],"ok":"x"}
+{"fn":"normalizeRuntimeModeForProvider","args":[[],true],"ok":[]}
+{"fn":"normalizeRuntimeModeForProvider","args":[{},0],"ok":{}}
+{"fn":"normalizeRuntimeModeForProvider","args":[null,{"a":"b"}],"ok":null}
+{"fn":"normalizeRuntimeModeForProvider","args":[true,true],"ok":true}
+{"fn":"normalizeRuntimeModeForProvider","args":["x",{"a":"b"}],"ok":"x"}
+{"fn":"normalizeRuntimeModeForProvider","args":[{"a":"b"},{"a":{"b":"c"}}],"ok":{"a":"b"}}
+{"fn":"normalizeRuntimeModeForProvider","args":[{"a":"b"},[]],"ok":{"a":"b"}}
+{"fn":"normalizeRuntimeModeForProvider","args":[null,null],"ok":null}
+{"fn":"normalizeRuntimeModeForProvider","args":[["a",1],{}],"ok":["a",1]}
+{"fn":"normalizeRuntimeModeForProvider","args":[[],0],"ok":[]}
+{"fn":"normalizeRuntimeModeForProvider","args":[0,{"a":"b"}],"ok":0}
+{"fn":"normalizeRuntimeModeForProvider","args":[[],{"a":"b"}],"ok":[]}
+{"fn":"normalizeRuntimeModeForProvider","args":[null,{"a":{"b":"c"}}],"ok":null}
+{"fn":"normalizeRuntimeModeForProvider","args":[{"a":"b"},0],"ok":{"a":"b"}}
+{"fn":"normalizeRuntimeModeForProvider","args":[[],[]],"ok":[]}
+{"fn":"normalizeRuntimeModeForProvider","args":[["a",1],true],"ok":["a",1]}
+{"fn":"normalizeRuntimeModeForProvider","args":["x",{"a":{"b":"c"}}],"ok":"x"}
+{"fn":"normalizeRuntimeModeForProvider","args":[["a",1],null],"ok":["a",1]}
+{"fn":"normalizeRuntimeModeForProvider","args":[null,"x"],"ok":null}
+{"fn":"normalizeRuntimeModeForProvider","args":[{},{}],"ok":{}}
+{"fn":"normalizeRuntimeModeForProvider","args":["x",0],"ok":"x"}
+{"fn":"normalizeRuntimeModeForProvider","args":[[],["a",1]],"ok":[]}
+{"fn":"normalizeRuntimeModeForProvider","args":["x",{}],"ok":"x"}
+{"fn":"normalizeRuntimeModeForProvider","args":[{"a":{"b":"c"}},"x"],"ok":{"a":{"b":"c"}}}
+{"fn":"normalizeRuntimeModeForProvider","args":[0,[]],"ok":0}
+{"fn":"normalizeRuntimeModeForProvider","args":[{},{"a":{"b":"c"}}],"ok":{}}
+{"fn":"normalizeRuntimeModeForProvider","args":[null,[]],"ok":null}
+{"fn":"normalizeRuntimeModeForProvider","args":[{"a":{"b":"c"}},[]],"ok":{"a":{"b":"c"}}}
+{"fn":"normalizeRuntimeModeForProvider","args":[0,["a",1]],"ok":0}
+{"fn":"normalizeRuntimeModeForProvider","args":[{"a":"b"},["a",1]],"ok":{"a":"b"}}
+{"fn":"normalizeRuntimeModeForProvider","args":[{},{"a":"b"}],"ok":{}}
+{"fn":"normalizeRuntimeModeForProvider","args":[true,{"a":"b"}],"ok":true}
+{"fn":"normalizeRuntimeModeForProvider","args":["x",null],"ok":"x"}
+{"fn":"normalizeRuntimeModeForProvider","args":[null,{}],"ok":null}
+{"fn":"normalizeRuntimeModeForProvider","args":[true,"x"],"ok":true}
+{"fn":"normalizeRuntimeModeForProvider","args":[{"a":"b"},null],"ok":{"a":"b"}}
+{"fn":"normalizeRuntimeModeForProvider","args":[[],null],"ok":[]}
+{"fn":"normalizeRuntimeModeForProvider","args":[{"a":{"b":"c"}},{"a":{"b":"c"}}],"ok":{"a":{"b":"c"}}}
+{"fn":"normalizeRuntimeModeForProvider","args":[{},null],"ok":{}}
+{"fn":"normalizeRuntimeModeForProvider","args":[true,[]],"ok":true}
+{"fn":"normalizeRuntimeModeForProvider","args":[["a",1],0],"ok":["a",1]}
+{"fn":"normalizeRuntimeModeForProvider","args":[["a",1],{"a":{"b":"c"}}],"ok":["a",1]}
+{"fn":"normalizeRuntimeModeForProvider","args":["x",true],"ok":"x"}
+{"fn":"normalizeRuntimeModeForProvider","args":[["a",1],"x"],"ok":["a",1]}
+{"fn":"normalizeRuntimeModeForProvider","args":[["a",1],[]],"ok":["a",1]}
+{"fn":"normalizeRuntimeModeForProvider","args":[{"a":{"b":"c"}},["a",1]],"ok":{"a":{"b":"c"}}}
+{"fn":"normalizeRuntimeModeForProvider","args":[0,true],"ok":0}
+{"fn":"normalizeRuntimeModeForProvider","args":[[],{"a":{"b":"c"}}],"ok":[]}
+{"fn":"normalizeRuntimeModeForProvider","args":[0,{"a":{"b":"c"}}],"ok":0}
+{"fn":"normalizeRuntimeModeForProvider","args":[{},[]],"ok":{}}
+{"fn":"normalizeRuntimeModeForProvider","args":[{"a":"b"},{"a":"b"}],"ok":{"a":"b"}}
+{"fn":"normalizeRuntimeModeForProvider","args":[[],"x"],"ok":[]}
+{"fn":"normalizeRuntimeModeForProvider","args":[{"a":"b"},"x"],"ok":{"a":"b"}}
+{"fn":"normalizeRuntimeModeForProvider","args":[0,{}],"ok":0}
+{"fn":"normalizeRuntimeModeForProvider","args":[{"a":{"b":"c"}},{"a":"b"}],"ok":{"a":{"b":"c"}}}
+{"fn":"normalizeRuntimeModeForProvider","args":[[],{}],"ok":[]}
+{"fn":"normalizeRuntimeModeForProvider","args":[{"a":{"b":"c"}},0],"ok":{"a":{"b":"c"}}}
+{"fn":"normalizeRuntimeModeForProvider","args":[null,true],"ok":null}
+{"fn":"normalizeRuntimeModeForProvider","args":[{"a":"b"},{}],"ok":{"a":"b"}}
+{"fn":"normalizeRuntimeModeForProvider","args":[true,null],"ok":true}
+{"fn":"normalizeRuntimeModeForProvider","args":[{"a":{"b":"c"}},null],"ok":{"a":{"b":"c"}}}
+{"fn":"normalizeRuntimeModeForProvider","args":[0,null],"ok":0}
+{"fn":"normalizeRuntimeModeForProvider","args":[{},"x"],"ok":{}}
+{"fn":"normalizeRuntimeModeForProvider","args":[null,["a",1]],"ok":null}
+{"fn":"normalizeRuntimeModeForProvider","args":["x",["a",1]],"ok":"x"}
+{"fn":"normalizeRuntimeModeForProvider","args":[true,{}],"ok":true}
+{"fn":"normalizeRuntimeModeForProvider","args":[0,0],"ok":0}
+{"fn":"normalizeRuntimeModeForProvider","args":[true,{"a":{"b":"c"}}],"ok":true}
+{"fn":"normalizeRuntimeModeForProvider","args":[0,"x"],"ok":0}
+{"fn":"normalizeRuntimeModeForProvider","args":[null,0],"ok":null}
+{"fn":"normalizeRuntimeModeForProvider","args":[true,0],"ok":true}
+{"fn":"normalizeRuntimeModeForProvider","args":[{},true],"ok":{}}
+{"fn":"normalizeRuntimeModeForProvider","args":["x","X"],"ok":"x"}
+{"fn":"providerSupportsAutoRuntimeMode","args":["codex"],"ok":true}
+{"fn":"unsupportedAutoRuntimeModeMessage","args":["codex"],"ok":"Provider \"codex\" does not support Auto runtime mode. Auto is available only for Codex and Claude Code."}
+{"fn":"providerSupportsAutoRuntimeMode","args":["claudeAgent"],"ok":true}
+{"fn":"unsupportedAutoRuntimeModeMessage","args":["claudeAgent"],"ok":"Provider \"claudeAgent\" does not support Auto runtime mode. Auto is available only for Codex and Claude Code."}
+{"fn":"providerSupportsAutoRuntimeMode","args":["cursor"],"ok":false}
+{"fn":"unsupportedAutoRuntimeModeMessage","args":["cursor"],"ok":"Provider \"cursor\" does not support Auto runtime mode. Auto is available only for Codex and Claude Code."}
+{"fn":"providerSupportsAutoRuntimeMode","args":["antigravity"],"ok":false}
+{"fn":"unsupportedAutoRuntimeModeMessage","args":["antigravity"],"ok":"Provider \"antigravity\" does not support Auto runtime mode. Auto is available only for Codex and Claude Code."}
+{"fn":"providerSupportsAutoRuntimeMode","args":["grok"],"ok":false}
+{"fn":"unsupportedAutoRuntimeModeMessage","args":["grok"],"ok":"Provider \"grok\" does not support Auto runtime mode. Auto is available only for Codex and Claude Code."}
+{"fn":"providerSupportsAutoRuntimeMode","args":["droid"],"ok":false}
+{"fn":"unsupportedAutoRuntimeModeMessage","args":["droid"],"ok":"Provider \"droid\" does not support Auto runtime mode. Auto is available only for Codex and Claude Code."}
+{"fn":"providerSupportsAutoRuntimeMode","args":["opencode"],"ok":false}
+{"fn":"unsupportedAutoRuntimeModeMessage","args":["opencode"],"ok":"Provider \"opencode\" does not support Auto runtime mode. Auto is available only for Codex and Claude Code."}
+{"fn":"providerSupportsAutoRuntimeMode","args":["pi"],"ok":false}
+{"fn":"unsupportedAutoRuntimeModeMessage","args":["pi"],"ok":"Provider \"pi\" does not support Auto runtime mode. Auto is available only for Codex and Claude Code."}
+{"fn":"providerSupportsAutoRuntimeMode","args":["devin"],"ok":false}
+{"fn":"unsupportedAutoRuntimeModeMessage","args":["devin"],"ok":"Provider \"devin\" does not support Auto runtime mode. Auto is available only for Codex and Claude Code."}
+{"fn":"providerSupportsAutoRuntimeMode","args":["omp"],"ok":false}
+{"fn":"unsupportedAutoRuntimeModeMessage","args":["omp"],"ok":"Provider \"omp\" does not support Auto runtime mode. Auto is available only for Codex and Claude Code."}
+{"fn":"runtimeModeEscalatesPrivilege","args":["approval-required","approval-required"],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":["approval-required","auto"],"ok":true}
+{"fn":"runtimeModeEscalatesPrivilege","args":["approval-required","full-access"],"ok":true}
+{"fn":"runtimeModeEscalatesPrivilege","args":["auto","approval-required"],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":["auto","auto"],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":["auto","full-access"],"ok":true}
+{"fn":"runtimeModeEscalatesPrivilege","args":["full-access","approval-required"],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":["full-access","auto"],"ok":false}
+{"fn":"runtimeModeEscalatesPrivilege","args":["full-access","full-access"],"ok":false}
+{"fn":"normalizeRuntimeModeForProvider","args":["approval-required","codex"],"ok":"approval-required"}
+{"fn":"normalizeRuntimeModeForProvider","args":["approval-required","claudeAgent"],"ok":"approval-required"}
+{"fn":"normalizeRuntimeModeForProvider","args":["approval-required","cursor"],"ok":"approval-required"}
+{"fn":"normalizeRuntimeModeForProvider","args":["approval-required","antigravity"],"ok":"approval-required"}
+{"fn":"normalizeRuntimeModeForProvider","args":["approval-required","grok"],"ok":"approval-required"}
+{"fn":"normalizeRuntimeModeForProvider","args":["approval-required","droid"],"ok":"approval-required"}
+{"fn":"normalizeRuntimeModeForProvider","args":["approval-required","opencode"],"ok":"approval-required"}
+{"fn":"normalizeRuntimeModeForProvider","args":["approval-required","pi"],"ok":"approval-required"}
+{"fn":"normalizeRuntimeModeForProvider","args":["approval-required","devin"],"ok":"approval-required"}
+{"fn":"normalizeRuntimeModeForProvider","args":["approval-required","omp"],"ok":"approval-required"}
+{"fn":"normalizeRuntimeModeForProvider","args":["auto","codex"],"ok":"auto"}
+{"fn":"normalizeRuntimeModeForProvider","args":["auto","claudeAgent"],"ok":"auto"}
+{"fn":"normalizeRuntimeModeForProvider","args":["auto","cursor"],"ok":"approval-required"}
+{"fn":"normalizeRuntimeModeForProvider","args":["auto","antigravity"],"ok":"approval-required"}
+{"fn":"normalizeRuntimeModeForProvider","args":["auto","grok"],"ok":"approval-required"}
+{"fn":"normalizeRuntimeModeForProvider","args":["auto","droid"],"ok":"approval-required"}
+{"fn":"normalizeRuntimeModeForProvider","args":["auto","opencode"],"ok":"approval-required"}
+{"fn":"normalizeRuntimeModeForProvider","args":["auto","pi"],"ok":"approval-required"}
+{"fn":"normalizeRuntimeModeForProvider","args":["auto","devin"],"ok":"approval-required"}
+{"fn":"normalizeRuntimeModeForProvider","args":["auto","omp"],"ok":"approval-required"}
+{"fn":"normalizeRuntimeModeForProvider","args":["full-access","codex"],"ok":"full-access"}
+{"fn":"normalizeRuntimeModeForProvider","args":["full-access","claudeAgent"],"ok":"full-access"}
+{"fn":"normalizeRuntimeModeForProvider","args":["full-access","cursor"],"ok":"full-access"}
+{"fn":"normalizeRuntimeModeForProvider","args":["full-access","antigravity"],"ok":"full-access"}
+{"fn":"normalizeRuntimeModeForProvider","args":["full-access","grok"],"ok":"full-access"}
+{"fn":"normalizeRuntimeModeForProvider","args":["full-access","droid"],"ok":"full-access"}
+{"fn":"normalizeRuntimeModeForProvider","args":["full-access","opencode"],"ok":"full-access"}
+{"fn":"normalizeRuntimeModeForProvider","args":["full-access","pi"],"ok":"full-access"}
+{"fn":"normalizeRuntimeModeForProvider","args":["full-access","devin"],"ok":"full-access"}
+{"fn":"normalizeRuntimeModeForProvider","args":["full-access","omp"],"ok":"full-access"}
+{"fn":"autoRuntimeModeSelectionIssue","args":[{"runtimeMode":"approval-required","modelSelection":{"provider":"codex","model":"m1","supportsAutoMode":true}}],"ok":null}
+{"fn":"autoRuntimeModeSelectionIssue","args":[{"runtimeMode":"approval-required","modelSelection":{"provider":"codex","model":"m1","supportsAutoMode":false}}],"ok":null}
+{"fn":"autoRuntimeModeSelectionIssue","args":[{"runtimeMode":"approval-required","modelSelection":{"provider":"codex","model":"m1"}}],"ok":null}
+{"fn":"autoRuntimeModeSelectionIssue","args":[{"runtimeMode":"approval-required","modelSelection":{"provider":"opencode","model":"m1","supportsAutoMode":true}}],"ok":null}
+{"fn":"autoRuntimeModeSelectionIssue","args":[{"runtimeMode":"approval-required","modelSelection":{"provider":"opencode","model":"m1","supportsAutoMode":false}}],"ok":null}
+{"fn":"autoRuntimeModeSelectionIssue","args":[{"runtimeMode":"approval-required","modelSelection":{"provider":"opencode","model":"m1"}}],"ok":null}
+{"fn":"autoRuntimeModeSelectionIssue","args":[{"runtimeMode":"auto","modelSelection":{"provider":"codex","model":"m1","supportsAutoMode":true}}],"ok":null}
+{"fn":"autoRuntimeModeSelectionIssue","args":[{"runtimeMode":"auto","modelSelection":{"provider":"codex","model":"m1","supportsAutoMode":false}}],"ok":null}
+{"fn":"autoRuntimeModeSelectionIssue","args":[{"runtimeMode":"auto","modelSelection":{"provider":"codex","model":"m1"}}],"ok":null}
+{"fn":"autoRuntimeModeSelectionIssue","args":[{"runtimeMode":"auto","modelSelection":{"provider":"opencode","model":"m1","supportsAutoMode":true}}],"ok":"Provider \"opencode\" does not support Auto runtime mode. Auto is available only for Codex and Claude Code."}
+{"fn":"autoRuntimeModeSelectionIssue","args":[{"runtimeMode":"auto","modelSelection":{"provider":"opencode","model":"m1","supportsAutoMode":false}}],"ok":"Provider \"opencode\" does not support Auto runtime mode. Auto is available only for Codex and Claude Code."}
+{"fn":"autoRuntimeModeSelectionIssue","args":[{"runtimeMode":"auto","modelSelection":{"provider":"opencode","model":"m1"}}],"ok":"Provider \"opencode\" does not support Auto runtime mode. Auto is available only for Codex and Claude Code."}
+{"fn":"autoRuntimeModeSelectionIssue","args":[{"runtimeMode":"full-access","modelSelection":{"provider":"codex","model":"m1","supportsAutoMode":true}}],"ok":null}
+{"fn":"autoRuntimeModeSelectionIssue","args":[{"runtimeMode":"full-access","modelSelection":{"provider":"codex","model":"m1","supportsAutoMode":false}}],"ok":null}
+{"fn":"autoRuntimeModeSelectionIssue","args":[{"runtimeMode":"full-access","modelSelection":{"provider":"codex","model":"m1"}}],"ok":null}
+{"fn":"autoRuntimeModeSelectionIssue","args":[{"runtimeMode":"full-access","modelSelection":{"provider":"opencode","model":"m1","supportsAutoMode":true}}],"ok":null}
+{"fn":"autoRuntimeModeSelectionIssue","args":[{"runtimeMode":"full-access","modelSelection":{"provider":"opencode","model":"m1","supportsAutoMode":false}}],"ok":null}
+{"fn":"autoRuntimeModeSelectionIssue","args":[{"runtimeMode":"full-access","modelSelection":{"provider":"opencode","model":"m1"}}],"ok":null}
+{"fn":"autoRuntimeModeSelectionIssue","args":[{"runtimeMode":"auto","modelSelection":{"provider":"claudeAgent","model":"m","supportsAutoMode":false}}],"ok":"Claude model \"m\" does not support Auto mode."}
+{"fn":"autoRuntimeModeSelectionIssue","args":[{"runtimeMode":"auto","modelSelection":{"provider":"codex","model":"m","supportsAutoMode":false}}],"ok":null}
+{"fn":"autoRuntimeModeSelectionIssue","args":[{"runtimeMode":"auto","modelSelection":{"provider":"opencode","model":"m","supportsAutoMode":true}}],"ok":"Provider \"opencode\" does not support Auto runtime mode. Auto is available only for Codex and Claude Code."}
+{"fn":"autoRuntimeModeSelectionIssue","args":[{"runtimeMode":"auto","modelSelection":{"provider":"codex","model":"m","supportsAutoMode":"yes"}}],"ok":null}
+{"fn":"autoRuntimeModeSelectionIssue","args":[{"runtimeMode":"auto"}],"error":"Cannot read properties of undefined (reading 'provider')"}
+{"fn":"autoRuntimeModeSelectionIssue","args":[{"modelSelection":{"provider":"opencode","model":"m"}}],"ok":null}
+{"fn":"autoRuntimeModeSelectionIssue","args":[{"runtimeMode":"auto","modelSelection":{"provider":5,"model":"m"}}],"ok":"Provider \"5\" does not support Auto runtime mode. Auto is available only for Codex and Claude Code."}
+{"fn":"autoRuntimeModeSelectionIssue","args":[{"runtimeMode":"auto","modelSelection":{"provider":"opencode"}}],"ok":"Provider \"opencode\" does not support Auto runtime mode. Auto is available only for Codex and Claude Code."}
+{"fn":"autoRuntimeModeSelectionIssue","args":[{"runtimeMode":7,"modelSelection":{"provider":"opencode","model":"m"}}],"ok":null}
+{"fn":"autoRuntimeModeSelectionIssue","args":[{"runtimeMode":" auto ","modelSelection":{"provider":"opencode","model":"m"}}],"ok":null}
+{"fn":"autoRuntimeModeSelectionIssue","args":[{"runtimeMode":"AUTO","modelSelection":{"provider":"opencode","model":"m"}}],"ok":null}
+{"fn":"autoRuntimeModeSelectionIssue","args":[{"runtimeMode":"auto","modelSelection":{"provider":"codex","model":"m"},"extra":1}],"ok":null}

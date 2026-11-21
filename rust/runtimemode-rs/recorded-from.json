@@ -1,0 +1,17 @@
+{
+  "unit": "packages/shared/src/runtimeMode.ts",
+  "files": 1,
+  "fingerprint": "507dfcdb3aa692f5",
+  "coverage": {
+    "lines": 59,
+    "reached": 59,
+    "files": [
+      {
+        "file": "packages/shared/src/runtimeMode.ts",
+        "lines": 59,
+        "reached": 59,
+        "missed": ""
+      }
+    ]
+  }
+}

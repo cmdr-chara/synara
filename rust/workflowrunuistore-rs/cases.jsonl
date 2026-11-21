@@ -1,0 +1,31 @@
+{"fn":"createDefaultWorkflowRunUiThreadState","args":[],"ok":{"pausedByUser":[],"dismissed":[]}}
+{"fn":"sanitizeWorkflowRunUiStateByThreadId","args":[0],"ok":{}}
+{"fn":"sanitizeWorkflowRunUiStateByThreadId","args":[{"a":{"b":"c"}}],"ok":{}}
+{"fn":"sanitizeWorkflowRunUiStateByThreadId","args":[["a",1]],"ok":{}}
+{"fn":"sanitizeWorkflowRunUiStateByThreadId","args":[{}],"ok":{}}
+{"fn":"sanitizeWorkflowRunUiStateByThreadId","args":["x"],"ok":{}}
+{"fn":"sanitizeWorkflowRunUiStateByThreadId","args":[null],"ok":{}}
+{"fn":"sanitizeWorkflowRunUiStateByThreadId","args":[[]],"ok":{}}
+{"fn":"sanitizeWorkflowRunUiStateByThreadId","args":[{"a":"b"}],"ok":{}}
+{"fn":"sanitizeWorkflowRunUiStateByThreadId","args":[true],"ok":{}}
+{"fn":"sanitizeWorkflowRunUiStateByThreadId","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6}],"ok":{}}
+{"fn":"sanitizeWorkflowRunUiStateByThreadId","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7}],"ok":{}}
+{"fn":"sanitizeWorkflowRunUiStateByThreadId","args":[[3,1,2]],"ok":{}}
+{"fn":"selectWorkflowRunUiThreadState","args":[[]],"ok":{"$function":""}}
+{"fn":"selectWorkflowRunUiThreadState","args":[true],"ok":{"$function":""}}
+{"fn":"selectWorkflowRunUiThreadState","args":[{"a":{"b":"c"}}],"ok":{"$function":""}}
+{"fn":"selectWorkflowRunUiThreadState","args":["x"],"ok":{"$function":""}}
+{"fn":"selectWorkflowRunUiThreadState","args":[["a",1]],"ok":{"$function":""}}
+{"fn":"selectWorkflowRunUiThreadState","args":[{"a":"b"}],"ok":{"$function":""}}
+{"fn":"selectWorkflowRunUiThreadState","args":[{}],"ok":{"$function":""}}
+{"fn":"selectWorkflowRunUiThreadState","args":[null],"ok":{"$function":""}}
+{"fn":"selectWorkflowRunUiThreadState","args":[0],"ok":{"$function":""}}
+{"fn":"useWorkflowRunUiThreadState","args":[[]],"error":"Cannot read properties of null (reading 'useCallback')"}
+{"fn":"useWorkflowRunUiThreadState","args":[null],"error":"Cannot read properties of null (reading 'useCallback')"}
+{"fn":"useWorkflowRunUiThreadState","args":[0],"error":"Cannot read properties of null (reading 'useCallback')"}
+{"fn":"useWorkflowRunUiThreadState","args":[{"a":{"b":"c"}}],"error":"Cannot read properties of null (reading 'useCallback')"}
+{"fn":"useWorkflowRunUiThreadState","args":[true],"error":"Cannot read properties of null (reading 'useCallback')"}
+{"fn":"useWorkflowRunUiThreadState","args":[["a",1]],"error":"Cannot read properties of null (reading 'useCallback')"}
+{"fn":"useWorkflowRunUiThreadState","args":[{"a":"b"}],"error":"Cannot read properties of null (reading 'useCallback')"}
+{"fn":"useWorkflowRunUiThreadState","args":[{}],"error":"Cannot read properties of null (reading 'useCallback')"}
+{"fn":"useWorkflowRunUiThreadState","args":["x"],"error":"Cannot read properties of null (reading 'useCallback')"}

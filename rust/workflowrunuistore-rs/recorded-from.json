@@ -1,0 +1,35 @@
+{
+  "unit": "apps/web/src/workflowRunUiStore.ts",
+  "files": 1,
+  "fingerprint": "6113e35dbd607593",
+  "coverage": {
+    "lines": 326,
+    "reached": 160,
+    "files": [
+      {
+        "file": "apps/web/src/lib/hosts/executionContext.ts",
+        "lines": 34,
+        "reached": 12,
+        "missed": "11-13, 15-16, 18-31, 33-35"
+      },
+      {
+        "file": "apps/web/src/lib/hosts/executionStorage.ts",
+        "lines": 91,
+        "reached": 31,
+        "missed": "5-10, 14-52, 56-57, 66-67, 77-82, 87-89, 93-94"
+      },
+      {
+        "file": "apps/web/src/persistedRecord.ts",
+        "lines": 34,
+        "reached": 30,
+        "missed": "30-31, 34-35"
+      },
+      {
+        "file": "apps/web/src/workflowRunUiStore.ts",
+        "lines": 167,
+        "reached": 87,
+        "missed": "43-45, 50-56, 58-60, 66-78, 90, 106-117, 120-134, 137-148, 151-157, 164-167, 175-177"
+      }
+    ]
+  }
+}

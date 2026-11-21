@@ -1,0 +1,77 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/workflowRunUiStore.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "workflowrunuistore-rs",
+  "exports": [
+    {
+      "name": "createDefaultWorkflowRunUiThreadState",
+      "file": "apps/web/src/workflowRunUiStore.ts",
+      "line": 37,
+      "params": [],
+      "returns": "WorkflowRunUiThreadState",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "sanitizeWorkflowRunUiStateByThreadId",
+      "file": "apps/web/src/workflowRunUiStore.ts",
+      "line": 95,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Record<string, WorkflowRunUiThreadState>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "selectWorkflowRunUiThreadState",
+      "file": "apps/web/src/workflowRunUiStore.ts",
+      "line": 173,
+      "params": [
+        {
+          "name": "threadId",
+          "ts_type": "typeof typeof typeof typeof ThreadId.Type.Type.Type.Type | null",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "useWorkflowRunUiThreadState",
+      "file": "apps/web/src/workflowRunUiStore.ts",
+      "line": 181,
+      "params": [
+        {
+          "name": "threadId",
+          "ts_type": "typeof typeof typeof typeof ThreadId.Type.Type.Type.Type | null",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "WorkflowRunUiThreadState",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

@@ -1,0 +1,17 @@
+{
+  "unit": "apps/web/src/threadDetailResumeCursors.ts",
+  "files": 1,
+  "fingerprint": "1334ac8d6a2aced7",
+  "coverage": {
+    "lines": 79,
+    "reached": 77,
+    "files": [
+      {
+        "file": "apps/web/src/threadDetailResumeCursors.ts",
+        "lines": 79,
+        "reached": 77,
+        "missed": "59-60"
+      }
+    ]
+  }
+}

@@ -1,0 +1,172 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/threadDetailResumeCursors.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "threaddetailresumecursors-rs",
+  "exports": [
+    {
+      "name": "advanceThreadDetailResumeCursor",
+      "file": "apps/web/src/threadDetailResumeCursors.ts",
+      "line": 22,
+      "params": [
+        {
+          "name": "threadId",
+          "ts_type": "typeof typeof typeof typeof ThreadId.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "sequence",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "setThreadDetailResumeCursor",
+      "file": "apps/web/src/threadDetailResumeCursors.ts",
+      "line": 34,
+      "params": [
+        {
+          "name": "threadId",
+          "ts_type": "typeof typeof typeof typeof ThreadId.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "sequence",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "getThreadDetailResumeCursor",
+      "file": "apps/web/src/threadDetailResumeCursors.ts",
+      "line": 38,
+      "params": [
+        {
+          "name": "threadId",
+          "ts_type": "typeof typeof typeof typeof ThreadId.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "number | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "hasThreadDetailResumeCursor",
+      "file": "apps/web/src/threadDetailResumeCursors.ts",
+      "line": 42,
+      "params": [
+        {
+          "name": "threadId",
+          "ts_type": "typeof typeof typeof typeof ThreadId.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "clearThreadDetailResumeCursor",
+      "file": "apps/web/src/threadDetailResumeCursors.ts",
+      "line": 46,
+      "params": [
+        {
+          "name": "threadId",
+          "ts_type": "typeof typeof typeof typeof ThreadId.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "retainThreadDetailResumeCursors",
+      "file": "apps/web/src/threadDetailResumeCursors.ts",
+      "line": 56,
+      "params": [
+        {
+          "name": "threadIds",
+          "ts_type": "ReadonlySet<typeof typeof typeof typeof ThreadId.Type.Type.Type.Type>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resetThreadDetailResumeCursors",
+      "file": "apps/web/src/threadDetailResumeCursors.ts",
+      "line": 71,
+      "params": [],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "buildThreadSubscribeInput",
+      "file": "apps/web/src/threadDetailResumeCursors.ts",
+      "line": 81,
+      "params": [
+        {
+          "name": "threadId",
+          "ts_type": "typeof typeof typeof typeof ThreadId.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof OrchestrationSubscribeThreadInput.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resetThreadDetailResumeCursorsForTests",
+      "file": "apps/web/src/threadDetailResumeCursors.ts",
+      "line": 88,
+      "params": [],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

@@ -1,0 +1,564 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/composerDraftDomain.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "composerdraftdomain-rs",
+  "exports": [
+    {
+      "name": "projectDraftThreadMappingKey",
+      "file": "apps/web/src/composerDraftDomain.ts",
+      "line": 467,
+      "params": [
+        {
+          "name": "projectId",
+          "ts_type": "typeof typeof typeof typeof ProjectId.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "entryPoint",
+          "ts_type": "(\"chat\" | \"terminal\")",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "projectDraftThreadEntryPointFromKey",
+      "file": "apps/web/src/composerDraftDomain.ts",
+      "line": 476,
+      "params": [
+        {
+          "name": "key",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(\"chat\" | \"terminal\")",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "projectIdFromDraftThreadMappingKey",
+      "file": "apps/web/src/composerDraftDomain.ts",
+      "line": 480,
+      "params": [
+        {
+          "name": "key",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ProjectId.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "buildDraftThreadState",
+      "file": "apps/web/src/composerDraftDomain.ts",
+      "line": 502,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  projectId: typeof typeof typeof typeof ProjectId.Type.Type.Type.Type;\n  existingThread?: DraftThreadState | undefined;\n  options?: DraftThreadMutationOptions | undefined;\n  createdAtMode: (\"accept-empty\" | \"preserve-existing-on-empty\");\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "DraftThreadState",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "draftThreadStatesEqual",
+      "file": "apps/web/src/composerDraftDomain.ts",
+      "line": 557,
+      "params": [
+        {
+          "name": "left",
+          "ts_type": "DraftThreadState | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "right",
+          "ts_type": "DraftThreadState",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "removeProjectDraftMappingsForThread",
+      "file": "apps/web/src/composerDraftDomain.ts",
+      "line": 582,
+      "params": [
+        {
+          "name": "projectDraftThreadIdByProjectId",
+          "ts_type": "Record<string, typeof typeof typeof typeof ThreadId.Type.Type.Type.Type>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "threadId",
+          "ts_type": "typeof typeof typeof typeof ThreadId.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Record<string, typeof typeof typeof typeof ThreadId.Type.Type.Type.Type>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "createEmptyThreadDraft",
+      "file": "apps/web/src/composerDraftDomain.ts",
+      "line": 599,
+      "params": [],
+      "returns": "ComposerThreadDraftState",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "terminalContextDedupKey",
+      "file": "apps/web/src/composerDraftDomain.ts",
+      "line": 630,
+      "params": [
+        {
+          "name": "context",
+          "ts_type": "TerminalContextDraft",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "assistantSelectionDedupKey",
+      "file": "apps/web/src/composerDraftDomain.ts",
+      "line": 634,
+      "params": [
+        {
+          "name": "selection",
+          "ts_type": "Pick<typeof typeof typeof ChatAssistantSelectionAttachment.Type.Type.Type, \"assistantMessageId\" | \"text\">",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "normalizeAssistantSelection",
+      "file": "apps/web/src/composerDraftDomain.ts",
+      "line": 640,
+      "params": [
+        {
+          "name": "selection",
+          "ts_type": "Pick<typeof typeof typeof ChatAssistantSelectionAttachment.Type.Type.Type, \"id\" | \"assistantMessageId\" | \"text\">",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof ChatAssistantSelectionAttachment.Type.Type.Type | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "normalizeAssistantSelections",
+      "file": "apps/web/src/composerDraftDomain.ts",
+      "line": 655,
+      "params": [
+        {
+          "name": "selections",
+          "ts_type": "ReadonlyArray<\n    Pick<typeof typeof typeof ChatAssistantSelectionAttachment.Type.Type.Type, \"id\" | \"assistantMessageId\" | \"text\">\n  >",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof ChatAssistantSelectionAttachment.Type.Type.Type[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "fileCommentDedupKey",
+      "file": "apps/web/src/composerDraftDomain.ts",
+      "line": 681,
+      "params": [
+        {
+          "name": "comment",
+          "ts_type": "FileCommentSelection",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "normalizeFileComment",
+      "file": "apps/web/src/composerDraftDomain.ts",
+      "line": 685,
+      "params": [
+        {
+          "name": "comment",
+          "ts_type": "FileCommentDraft",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "FileCommentDraft | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "normalizeFileComments",
+      "file": "apps/web/src/composerDraftDomain.ts",
+      "line": 696,
+      "params": [
+        {
+          "name": "comments",
+          "ts_type": "ReadonlyArray<FileCommentDraft>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "FileCommentDraft[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "normalizePastedTexts",
+      "file": "apps/web/src/composerDraftDomain.ts",
+      "line": 734,
+      "params": [
+        {
+          "name": "pastedTexts",
+          "ts_type": "ReadonlyArray<PastedTextDraft>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "PastedTextDraft[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "hydratePastedTextsFromPersisted",
+      "file": "apps/web/src/composerDraftDomain.ts",
+      "line": 752,
+      "params": [
+        {
+          "name": "persisted",
+          "ts_type": "ReadonlyArray<(Pick<PastedTextDraft, \"id\" | \"createdAt\" | \"text\">)> | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "PastedTextDraft[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "normalizeTerminalContextForThread",
+      "file": "apps/web/src/composerDraftDomain.ts",
+      "line": 761,
+      "params": [
+        {
+          "name": "threadId",
+          "ts_type": "typeof typeof typeof typeof ThreadId.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "context",
+          "ts_type": "TerminalContextDraft",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "TerminalContextDraft | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "normalizeTerminalContextsForThread",
+      "file": "apps/web/src/composerDraftDomain.ts",
+      "line": 783,
+      "params": [
+        {
+          "name": "threadId",
+          "ts_type": "typeof typeof typeof typeof ThreadId.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "contexts",
+          "ts_type": "ReadonlyArray<TerminalContextDraft>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "TerminalContextDraft[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "captureComposerPromptHistorySavedDraft",
+      "file": "apps/web/src/composerDraftDomain.ts",
+      "line": 808,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  threadId: typeof typeof typeof typeof ThreadId.Type.Type.Type.Type;\n  draft: ComposerThreadDraftState;\n  prompt: string;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ComposerPromptHistorySavedDraft",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "buildTransferredComposerDraft",
+      "file": "apps/web/src/composerDraftDomain.ts",
+      "line": 832,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  sourceDraft: ComposerThreadDraftState;\n  targetDraft: ComposerThreadDraftState | undefined;\n  targetThreadId: typeof typeof typeof typeof ThreadId.Type.Type.Type.Type;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ComposerThreadDraftState",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "cloneComposerImageAttachment",
+      "file": "apps/web/src/composerDraftDomain.ts",
+      "line": 869,
+      "params": [
+        {
+          "name": "image",
+          "ts_type": "ComposerImageAttachment",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ComposerImageAttachment",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "shouldRemoveDraft",
+      "file": "apps/web/src/composerDraftDomain.ts",
+      "line": 912,
+      "params": [
+        {
+          "name": "draft",
+          "ts_type": "ComposerThreadDraftState",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "composerDraftsMatchForCleanup",
+      "file": "apps/web/src/composerDraftDomain.ts",
+      "line": 943,
+      "params": [
+        {
+          "name": "current",
+          "ts_type": "ComposerThreadDraftState | null | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "captured",
+          "ts_type": "ComposerThreadDraftState | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "composerDraftHasAttachments",
+      "file": "apps/web/src/composerDraftDomain.ts",
+      "line": 972,
+      "params": [
+        {
+          "name": "draft",
+          "ts_type": "Pick<\n    ComposerThreadDraftState,\n    | \"files\"\n    | \"images\"\n    | \"persistedAttachments\"\n    | \"terminalContexts\"\n    | \"assistantSelections\"\n    | \"fileComments\"\n  > &\n    Partial<Pick<ComposerThreadDraftState, \"browserAnnotations\">>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "composerDraftHasUnsentContent",
+      "file": "apps/web/src/composerDraftDomain.ts",
+      "line": 1000,
+      "params": [
+        {
+          "name": "draft",
+          "ts_type": "Parameters<typeof composerDraftHasAttachments>[0] &\n    Pick<ComposerThreadDraftState, \"prompt\" | \"pastedTexts\" | \"pullRequestContexts\">",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "composerThreadDraftIsPending",
+      "file": "apps/web/src/composerDraftDomain.ts",
+      "line": 1017,
+      "params": [
+        {
+          "name": "draft",
+          "ts_type": "ComposerThreadDraftState",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "composerThreadDraftPreviewText",
+      "file": "apps/web/src/composerDraftDomain.ts",
+      "line": 1028,
+      "params": [
+        {
+          "name": "draft",
+          "ts_type": "ComposerThreadDraftState | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "normalizeDraftThreadEntryPoint",
+      "file": "apps/web/src/composerDraftDomain.ts",
+      "line": 1053,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "fallback",
+          "ts_type": "(\"chat\" | \"terminal\")",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "selectThreadIdsWithPendingDraft",
+      "file": "apps/web/src/composerDraftDomain.ts",
+      "line": 1043,
+      "reason": "uses `ComposerDraftStoreState`, which has function members"
+    },
+    {
+      "name": "selectComposerThreadDraft",
+      "file": "apps/web/src/composerDraftDomain.ts",
+      "line": 1108,
+      "reason": "uses `ComposerDraftStoreState`, which has function members"
+    }
+  ]
+}

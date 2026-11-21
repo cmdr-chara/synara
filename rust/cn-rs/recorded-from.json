@@ -1,0 +1,17 @@
+{
+  "unit": "packages/profile-ui/src/cn.ts",
+  "files": 1,
+  "fingerprint": "9084113fce93b6c2",
+  "coverage": {
+    "lines": 9,
+    "reached": 9,
+    "files": [
+      {
+        "file": "packages/profile-ui/src/cn.ts",
+        "lines": 9,
+        "reached": 9,
+        "missed": ""
+      }
+    ]
+  }
+}

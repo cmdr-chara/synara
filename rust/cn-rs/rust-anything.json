@@ -1,0 +1,30 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/profile-ui/src/cn.ts",
+  "language": "ts",
+  "kind": "wasm",
+  "crate_name": "cn-rs",
+  "exports": [
+    {
+      "name": "cn",
+      "file": "packages/profile-ui/src/cn.ts",
+      "line": 9,
+      "params": [
+        {
+          "name": "inputs",
+          "ts_type": "CxOptions",
+          "optional": true,
+          "rest": true
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

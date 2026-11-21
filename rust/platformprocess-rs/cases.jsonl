@@ -1,0 +1,638 @@
+{"fn":"lowerProcessPriority","args":[3,{"platform":null}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[{"$undefined":true},{"platform":{}}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[1000],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[10,{}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[42],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[{"$num":"NaN"},{"platform":true}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[10,[]],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[0.5,{"platform":["a",1]}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[{"$num":"-0"},{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[{"$num":"NaN"},{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[0,{"platform":{"a":{"b":"c"}}}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[1000000,{"platform":{}}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[{"$undefined":true},{"platform":[]}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[{"$undefined":true},{"platform":null}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[0,{"platform":[]}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[{"$num":"NaN"},"x"],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[3,{"platform":0}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[0,{}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[-2.5,{}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[1,{"platform":null}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[{"$undefined":true},0],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[{"$undefined":true},{}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[42,[]],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[0.5,{"platform":0}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[{"$num":"-0"},{"platform":null}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[3],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[{"$undefined":true},{"platform":{"a":"b"}}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[-1],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[{"$undefined":true},{"platform":["a",1]}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[3,{}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[{"$undefined":true},{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[{"$num":"Infinity"},{"platform":{}}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[2,{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[42,{"platform":{}}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[0.5,{"platform":{"a":{"b":"c"}}}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[-2.5,{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[1000,{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[{"$undefined":true},{"platform":"x"}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[{"$undefined":true},[]],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[0,{"platform":{"a":"b"}}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[{"$undefined":true},{"platform":true}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[1000,{"platform":"x"}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[3,{"platform":"x"}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[1000,{}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[{"$num":"Infinity"},{}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[3,{"platform":{"a":{"b":"c"}}}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[2],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[1000,{"platform":[]}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[{"$undefined":true},{"platform":0}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[{"$undefined":true},{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[1,{}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[42,{"platform":true}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[1],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[100,{"platform":"x"}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[100,{"platform":["a",1]}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[10,{"platform":["a",1]}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[0,0],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[{"$num":"-0"},{"platform":{"a":{"b":"c"}}}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[2147483648,{}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[-1,{}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[1,["a",1]],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[100,{"platform":{"a":{"b":"c"}}}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[{"$undefined":true},true],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[42,{"platform":0}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[2147483648,["a",1]],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[10,{"platform":{}}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[{"$undefined":true},{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[{"$num":"Infinity"},0],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[{"$num":"-Infinity"},{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[3,{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[{"$num":"NaN"},{}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[42,{"platform":"x"}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[1000000,null],"error":"Cannot read properties of null (reading 'platform')"}
+{"fn":"lowerProcessPriority","args":[{"$num":"Infinity"}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[-2.5,{"platform":0}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[2,{}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[9007199254740992,{"platform":null}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[{"$num":"-0"},{"platform":{"a":"b"}}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[1000000,{}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[1,{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[{"$num":"-Infinity"},{"platform":[]}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[100,{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[0.5,{"platform":true}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[-2.5,{"platform":[]}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[0.5,true],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[1,{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[-1,{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[{"$undefined":true},{"platform":{"a":{"b":"c"}}}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[0,{"platform":true}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[1000000,{"platform":{"a":{"b":"c"}}}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[9007199254740992,{}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[-2.5,{"platform":null}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[1,{"platform":"x"}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[1000,"x"],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[2147483648,{"platform":null}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[0,{"platform":"x"}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[2,{"platform":{"a":{"b":"c"}}}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[42,null],"error":"Cannot read properties of null (reading 'platform')"}
+{"fn":"lowerProcessPriority","args":[1000000],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[0,{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[{"$undefined":true},"x"],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[100,{"platform":{}}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[9007199254740992,{"platform":{"a":{"b":"c"}}}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[1,{"platform":{"a":"b"}}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[{"$num":"-0"},{"platform":"x"}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[9007199254740992,{"platform":0}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[0.5,"x"],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[0],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[-1,{"platform":null}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[42,{}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[-1,{"platform":{"a":{"b":"c"}}}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[{"$num":"Infinity"},{"platform":["a",1]}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[9007199254740992,{"platform":"x"}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[-2.5,{"platform":true}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[42,{"platform":[]}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[1000000,{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[2,{"platform":"x"}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[9007199254740992,{"platform":{"a":"b"}}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[10,{"platform":true}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[0.5],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[2,{"platform":{"a":"b"}}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[3,{"platform":true}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[0.5,{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[100,null],"error":"Cannot read properties of null (reading 'platform')"}
+{"fn":"lowerProcessPriority","args":[2147483648],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[2147483648,{"platform":{"a":{"b":"c"}}}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[1000000,{"platform":0}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[0.5,{}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[2147483648,{"platform":{}}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[0,{"platform":null}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[{"$num":"-0"},{"platform":0}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[{"$num":"-0"}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[{"$num":"-Infinity"}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[100,{}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[1000,{"platform":0}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[-2.5],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[{"$num":"NaN"},{"platform":{}}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[9007199254740992,{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[{"$num":"NaN"},{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[{"$num":"Infinity"},{"platform":0}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[-1,{"platform":true}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[1000,{"platform":{}}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[1000000,{"platform":{"a":"b"}}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[42,{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[-2.5,{"platform":{}}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[10,{"platform":0}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[0.5,{"platform":"x"}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[2147483648,{"platform":"x"}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[{"$num":"-0"},{}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[2,{"platform":true}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[10,{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[10,{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[2,{"platform":null}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[{"$num":"NaN"},["a",1]],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[9007199254740992],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[2,{"platform":{}}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[-1,{"platform":{}}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[-1,{"platform":0}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[0.5,{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[100],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[{"$num":"-0"},{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[1000,null],"error":"Cannot read properties of null (reading 'platform')"}
+{"fn":"lowerProcessPriority","args":[100,{"platform":[]}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[9007199254740992,[]],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[9007199254740992,null],"error":"Cannot read properties of null (reading 'platform')"}
+{"fn":"lowerProcessPriority","args":[0.5,{"platform":{}}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[{"$num":"-0"},{"platform":{}}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[-1,{"platform":"x"}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[-1,0],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[10,{"platform":{"a":{"b":"c"}}}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[1,{"platform":{"a":{"b":"c"}}}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[-1,{"platform":{"a":"b"}}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[0.5,["a",1]],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[10,{"platform":"x"}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[2147483648,{"platform":0}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[{"$undefined":true},["a",1]],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[1000000,{"platform":[]}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[9007199254740992,{"platform":{}}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[1,{"platform":[]}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[100,{"platform":true}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[{"$num":"NaN"},{"platform":[]}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[9007199254740992,{"platform":true}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[42,{"platform":null}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[{"$num":"-Infinity"},{"platform":{}}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[2147483648,{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[{"$num":"NaN"},true],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[{"$num":"NaN"},{"platform":{"a":{"b":"c"}}}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[3,{"platform":{}}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[0.5,{"platform":null}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[1000,{"platform":{"a":"b"}}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[1000,{"platform":true}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[10,0],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[42,{"platform":{"a":"b"}}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[{"$num":"-0"},{"platform":[]}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[3,{"platform":[]}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[2147483648,{"platform":["a",1]}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[-1,{"platform":[]}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[1000,{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[-7.5,{"platform":null}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[0.1,{"platform":null}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[0.30000000000000004,{"platform":null}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[1e+21,{"platform":null}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[1e-7,{"platform":null}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[5e-324,{"platform":null}],"ok":{"$undefined":true}}
+{"fn":"lowerProcessPriority","args":[1.7976931348623157e+308,{"platform":null}],"ok":{"$undefined":true}}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"key_name-1"}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"a":{"b":"c"}}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":0.5,"stderr":"ab"}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"ünïcödé﻿bom","platform":"x"}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":{"$num":"-Infinity"},"stderr":"😀","platform":{"a":"b"}}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":0,"stderr":"日本語のテキスト"}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"a.b.c"}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"ΣΊΣΥΦΟΣ","platform":{"a":"b"}}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"line1\nline2"}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":{"$num":"-0"},"stderr":"a😀b😀c","platform":{"a":"b"}}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"İstanbul"}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":0.5,"stderr":"straßea:b:c","platform":0}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[0],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"straßeline1\nline2"}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":".leadingtrailing.","platform":{}}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[true],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"abcΣΊΣΥΦΟΣ"}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"é"}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":{"$num":"-Infinity"},"stderr":"é","platform":"x"}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":{"$num":"-0"},"stderr":"hello world","platform":["a",1]}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[null],"error":"Cannot read properties of null (reading 'platform')"}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"{name} has {count} items"}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":100,"stderr":"﻿bom","platform":{"a":{"b":"c"}}}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":-2.5,"stderr":"﻿bom"}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":":","platform":{}}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":1000,"stderr":"a😀b😀c","platform":{"a":{"b":"c"}}}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":1000000,"stderr":"hello","platform":null}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"ns:key.patha.b.c","platform":null}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":1000000,"stderr":"abcns:key.path","platform":null}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"hello worldabc","platform":true}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"İstanbul","platform":true}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":9007199254740992,"stderr":"aa:b:c"}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"﻿bom","platform":[]}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":1000,"stderr":".leading./x/**/*.json"}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":{"$num":"-Infinity"},"stderr":"straße﻿bom","platform":{"a":{"b":"c"}}}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":1,"stderr":"a  padded  ","platform":0}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"hello world","platform":["a",1]}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"tab\tseparated﻿bom","platform":true}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"Hello World"}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":-2.5,"stderr":"{name} has {count} itemsns:key.path","platform":null}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":1,"stderr":"hello world"}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":0,"stderr":"a..b","platform":"x"}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"key_name-1","platform":{}}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":{"$num":"NaN"},"stderr":"emoji 👍🏽 mixa.b.c"}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":{"$num":"-Infinity"},"stderr":"﻿bom.leading","platform":{"a":{"b":"c"}}}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":42,"stderr":"aünïcödé"}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"ΣΊΣΥΦΟΣ","platform":{"a":{"b":"c"}}}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":{"$num":"-0"},"stderr":"emoji 👍🏽 mix"}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":100,"stderr":".leading","platform":{"a":{"b":"c"}}}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":9007199254740992,"stderr":"abc","platform":["a",1]}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":{"$num":"-Infinity"},"stderr":"emoji 👍🏽 mix","platform":["a",1]}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"😀","platform":["a",1]}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"ab{name} has {count} items"}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":-1,"stderr":"ünïcödé","platform":{"a":"b"}}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"tab\tseparated"}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"日本語のテキスト","platform":{"a":"b"}}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":{"$num":"-0"},"stderr":"abc","platform":"x"}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":0.5,"stderr":"a:b:c","platform":["a",1]}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"trailing.","platform":"x"}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"a","platform":["a",1]}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"a:b:c","platform":{"a":"b"}}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"a.b.c","platform":true}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":42,"stderr":"  padded  ","platform":{"a":"b"}}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"abc"}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"﻿bomİstanbul"}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":100,"stderr":"abc:","platform":[]}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":0.5,"stderr":"a.b.c"}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"trailing."}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":10,"stderr":"./x/**/*.json","platform":{"a":"b"}}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"ΣΊΣΥΦΟΣ","platform":{}}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"tab\tseparated","platform":{"a":{"b":"c"}}}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":2147483648,"stderr":"é","platform":["a",1]}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":["x"],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":9007199254740992,"stderr":"a😀b😀cns:key.path"}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":2,"stderr":"./x/**/*.json"}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"a":"b"}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"","platform":[]}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":10,"stderr":"hello","platform":{"a":"b"}}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"a","platform":{"a":"b"}}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":1,"stderr":"hello"}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[[]],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"abc","platform":{"a":"b"}}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":".leadingΣΊΣΥΦΟΣ","platform":0}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"  padded  ","platform":true}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"İstanbul","platform":{"a":"b"}}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":42,"stderr":"{name} has {count} items","platform":{"a":"b"}}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"HELLO","platform":0}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":2,"stderr":"ns:key.path","platform":0}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"😀","platform":{"a":"b"}}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":2147483648,"stderr":"trailing.","platform":"x"}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":1000,"stderr":"ünïcödé"}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"hello","platform":true}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":0,"stderr":"hello","platform":"x"}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":0,"stderr":"HELLO","platform":{"a":"b"}}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"hello world","platform":{}}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"a:b:c","platform":"x"}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"src/a/b.ts","platform":0}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"src/a/b.ts"}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"line1\nline2","platform":"x"}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"﻿bomemoji 👍🏽 mix","platform":0}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"line1\nline2:","platform":{"a":"b"}}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":":"}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"日本語のテキスト","platform":true}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":{"$num":"NaN"},"stderr":"a","platform":["a",1]}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":{"$num":"NaN"},"stderr":"hello world"}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":".leading","platform":0}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"./x/**/*.json","platform":{"a":"b"}}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":0,"stderr":"emoji 👍🏽 mix{name} has {count} items","platform":"x"}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"Hello World","platform":0}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":3,"stderr":"a.b.chello world","platform":true}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":1,"stderr":"HELLO","platform":{"a":"b"}}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"İstanbul","platform":[]}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":9007199254740992,"stderr":":","platform":{}}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"ΣΊΣΥΦΟΣ{name} has {count} items","platform":[]}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"straße","platform":null}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":1000000,"stderr":"a.b.c","platform":{"a":{"b":"c"}}}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":-1,"stderr":"key_name-1","platform":null}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"ns:key.path","platform":{}}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"key_name-1","platform":{"a":{"b":"c"}}}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"abc","platform":{"a":{"b":"c"}}}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"emoji 👍🏽 mix{name} has {count} items","platform":[]}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":0,"stderr":"{name} has {count} itemsab"}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"a","platform":{}}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":{"$num":"-0"},"stderr":"src/a/b.ts","platform":"x"}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":{"$num":"NaN"},"stderr":"é","platform":[]}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"😀"}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":2147483648,"stderr":".leading","platform":0}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":3,"stderr":"ns:key.path﻿bom"}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"emoji 👍🏽 mix"}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":3,"stderr":":"}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":3,"stderr":"a..b","platform":"x"}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":{"$num":"NaN"},"stderr":"a:b:c.leading","platform":0}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":10,"stderr":"trailing..leading","platform":null}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"ΣΊΣΥΦΟΣ","platform":null}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":2147483648,"stderr":"tab\tseparated","platform":"x"}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"emoji 👍🏽 mix","platform":true}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":9007199254740992,"stderr":"straße"}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"emoji 👍🏽 mix","platform":{}}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":{"$num":"-0"},"stderr":"hello world","platform":{"a":{"b":"c"}}}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"Hello Worldemoji 👍🏽 mix","platform":{"a":"b"}}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":{"$num":"-Infinity"},"stderr":"a","platform":["a",1]}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"日本語のテキスト"}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":1000000,"stderr":"a..bemoji 👍🏽 mix","platform":{"a":"b"}}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":1000000,"stderr":"abc","platform":null}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":0.5,"stderr":"﻿bom","platform":{"a":{"b":"c"}}}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":3,"stderr":"a..b","platform":0}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":9007199254740992,"stderr":"a😀b😀c","platform":{}}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"emoji 👍🏽 mix","platform":{"a":"b"}}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"tab\tseparated","platform":{"a":"b"}}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":""}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"a😀b😀c"}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":100,"stderr":"ΣΊΣΥΦΟΣ"}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"a"}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":".leadingΣΊΣΥΦΟΣ","platform":true}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":0.5,"stderr":"tab\tseparated","platform":["a",1]}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"ünïcödé","platform":0}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":1000,"stderr":"hello","platform":0}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":0.5,"stderr":"ünïcödé"}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":0,"stderr":"ab","platform":true}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"ns:key.path"}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"straße","platform":true}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":9007199254740992,"stderr":"  padded  ","platform":null}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":1000000,"stderr":"  padded  ","platform":null}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":100,"stderr":"{name} has {count} items","platform":["a",1]}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"trailing.","platform":true}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"{name} has {count} items😀","platform":"x"}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"﻿bom","platform":{"a":{"b":"c"}}}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":{"$num":"Infinity"},"stderr":"ns:key.path","platform":[]}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[["a",1]],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":1,"stderr":"ab","platform":{"a":"b"}}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"a.b.c","platform":0}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":3,"stderr":"ΣΊΣΥΦΟΣ日本語のテキスト","platform":{}}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":0,"stderr":"line1\nline2","platform":{"a":{"b":"c"}}}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"key_name-1","platform":["a",1]}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"a.b.c","platform":{}}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":0.5,"stderr":"İstanbul","platform":null}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":{"$num":"NaN"},"stderr":"HELLO","platform":0}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":{"$num":"Infinity"},"stderr":"emoji 👍🏽 mixa:b:c","platform":true}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"﻿bom","platform":"x"}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"line1\nline2a😀b😀c","platform":true}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"tab\tseparated","platform":{}}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"{name} has {count} items","platform":{"a":{"b":"c"}}}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":100,"stderr":"é","platform":{"a":"b"}}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"HELLO","platform":"x"}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"ns:key.path","platform":null}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":1000,"stderr":"straße","platform":true}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"HELLO  padded  ","platform":true}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"hello","platform":"x"}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"a😀b😀c","platform":true}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":100,"stderr":"a..b","platform":null}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":{"$num":"Infinity"},"stderr":"日本語のテキスト"}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":0,"stderr":"  padded  a😀b😀c"}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"HELLO","platform":{"a":"b"}}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"./x/**/*.json"}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":null,"stderr":"İstanbul.leading"}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":1,"stderr":""}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":42,"stderr":"helloΣΊΣΥΦΟΣ","platform":["a",1]}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":10,"stderr":"line1\nline2","platform":null}],"ok":false}
+{"fn":"isCommandNotFoundExit","args":[{"code":10,"stderr":"😀","platform":true}],"ok":false}
+{"fn":"prepareProcess","args":["abc",["ΣΊΣΥΦΟΣns:key.path"],{"env":[],"requireExecutable":false,"lowerPriority":true}],"ok":{"command":"abc","args":["ΣΊΣΥΦΟΣns:key.path"],"shell":false,"requestedCommand":"abc","resolvedCommand":"abc","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["./x/**/*.json",["a😀b😀c","emoji 👍🏽 mixünïcödé"],{"platform":{},"cwd":"日本語のテキスト","env":null,"requireExecutable":false}],"ok":{"command":"./x/**/*.json","args":["a😀b😀c","emoji 👍🏽 mixünïcödé"],"shell":false,"requestedCommand":"./x/**/*.json","resolvedCommand":"./x/**/*.json","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["",["😀","İstanbul","line1\nline2"],{"a":{"b":"c"}}],"ok":{"command":"","args":["😀","İstanbul","line1\nline2"],"shell":false,"requestedCommand":"","resolvedCommand":"","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["HELLOHello World",["a.b.cline1\nline2","ΣΊΣΥΦΟΣ","İstanbul  padded  "],null],"error":"Cannot read properties of null (reading 'platform')"}
+{"fn":"prepareProcess","args":["﻿bom",["src/a/b.ts  padded  "],{"env":null,"requireExecutable":true}],"error":"Command not found: ﻿bom"}
+{"fn":"prepareProcess","args":["é",["ünïcödé","straße"],{"platform":true,"cwd":"ab","env":{},"requireExecutable":false,"lowerPriority":false}],"ok":{"command":"é","args":["ünïcödé","straße"],"shell":false,"requestedCommand":"é","resolvedCommand":"é","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["straße",[],{"platform":true,"cwd":"日本語のテキスト","env":{"a":"b"},"requireExecutable":true,"lowerPriority":true}],"error":"Working directory not found: 日本語のテキスト"}
+{"fn":"prepareProcess","args":["straße",["  padded  "],{"platform":{"a":{"b":"c"}},"cwd":"Hello World","lowerPriority":true}],"ok":{"command":"straße","args":["  padded  "],"shell":false,"requestedCommand":"straße","resolvedCommand":"straße","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["abHello World",["hello world",".leading"],{"platform":[],"cwd":".leading","env":[],"requireExecutable":false,"lowerPriority":false}],"ok":{"command":"abHello World","args":["hello world",".leading"],"shell":false,"requestedCommand":"abHello World","resolvedCommand":"abHello World","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["emoji 👍🏽 mix",["hello world","./x/**/*.json"]],"ok":{"command":"emoji 👍🏽 mix","args":["hello world","./x/**/*.json"],"shell":false,"requestedCommand":"emoji 👍🏽 mix","resolvedCommand":"emoji 👍🏽 mix","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["line1\nline2",["straße"],{"$undefined":true}],"ok":{"command":"line1\nline2","args":["straße"],"shell":false,"requestedCommand":"line1\nline2","resolvedCommand":"line1\nline2","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["😀",["a","{name} has {count} items"],{"platform":"x","cwd":"trailing.line1\nline2","requireExecutable":false}],"ok":{"command":"😀","args":["a","{name} has {count} items"],"shell":false,"requestedCommand":"😀","resolvedCommand":"😀","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["hello world",[]],"ok":{"command":"hello world","args":[],"shell":false,"requestedCommand":"hello world","resolvedCommand":"hello world","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["abctab\tseparated",["abc","é","trailing.src/a/b.ts"],{"a":{"b":"c"}}],"ok":{"command":"abctab\tseparated","args":["abc","é","trailing.src/a/b.ts"],"shell":false,"requestedCommand":"abctab\tseparated","resolvedCommand":"abctab\tseparated","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["{name} has {count} items",["{name} has {count} items","hello"],{"platform":0,"cwd":"é","env":"x","requireExecutable":true}],"error":"Working directory not found: é"}
+{"fn":"prepareProcess","args":["abc",["😀"],{"cwd":"src/a/b.ts","requireExecutable":false,"lowerPriority":true}],"ok":{"command":"abc","args":["😀"],"shell":false,"requestedCommand":"abc","resolvedCommand":"abc","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["./x/**/*.json",[],{"platform":{"a":"b"},"cwd":"key_name-1","env":{"a":{"b":"c"}},"requireExecutable":true,"lowerPriority":true}],"error":"Working directory not found: key_name-1"}
+{"fn":"prepareProcess","args":["helloünïcödé",[],{"cwd":"a","requireExecutable":true,"lowerPriority":false}],"error":"Working directory not found: a"}
+{"fn":"prepareProcess","args":["﻿bom",["tab\tseparated","line1\nline2","ΣΊΣΥΦΟΣΣΊΣΥΦΟΣ"],{"platform":{},"cwd":"tab\tseparated","env":[],"requireExecutable":true,"lowerPriority":false}],"error":"Working directory not found: tab\tseparated"}
+{"fn":"prepareProcess","args":["a😀b😀c",["hello world","ΣΊΣΥΦΟΣ"],["a",1]],"ok":{"command":"a😀b😀c","args":["hello world","ΣΊΣΥΦΟΣ"],"shell":false,"requestedCommand":"a😀b😀c","resolvedCommand":"a😀b😀c","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["trailing.",[],{"platform":"x","cwd":"a..b","requireExecutable":false,"lowerPriority":true}],"ok":{"command":"trailing.","args":[],"shell":false,"requestedCommand":"trailing.","resolvedCommand":"trailing.","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["a😀b😀c",["Hello World",".leading","ns:key.path"],{"platform":true,"env":null,"requireExecutable":false,"lowerPriority":true}],"ok":{"command":"a😀b😀c","args":["Hello World",".leading","ns:key.path"],"shell":false,"requestedCommand":"a😀b😀c","resolvedCommand":"a😀b😀c","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["﻿bom",[],{"cwd":"Hello World","env":true,"lowerPriority":true}],"ok":{"command":"﻿bom","args":[],"shell":false,"requestedCommand":"﻿bom","resolvedCommand":"﻿bom","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["😀",[],{"cwd":"straße","env":null,"requireExecutable":false,"lowerPriority":true}],"ok":{"command":"😀","args":[],"shell":false,"requestedCommand":"😀","resolvedCommand":"😀","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["﻿bom",["日本語のテキスト"],{"platform":{},"cwd":"abc","env":{},"requireExecutable":false,"lowerPriority":false}],"ok":{"command":"﻿bom","args":["日本語のテキスト"],"shell":false,"requestedCommand":"﻿bom","resolvedCommand":"﻿bom","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["src/a/b.ts",["abc","a😀","a..bkey_name-1"],{"cwd":"ab","requireExecutable":true}],"error":"Working directory not found: ab"}
+{"fn":"prepareProcess","args":["ΣΊΣΥΦΟΣ",["{name} has {count} items.leading",""],{"a":"b"}],"ok":{"command":"ΣΊΣΥΦΟΣ","args":["{name} has {count} items.leading",""],"shell":false,"requestedCommand":"ΣΊΣΥΦΟΣ","resolvedCommand":"ΣΊΣΥΦΟΣ","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["emoji 👍🏽 mix",["a.b.c","abc","HELLO"],{"platform":"x","env":{"a":{"b":"c"}},"requireExecutable":false,"lowerPriority":false}],"ok":{"command":"emoji 👍🏽 mix","args":["a.b.c","abc","HELLO"],"shell":false,"requestedCommand":"emoji 👍🏽 mix","resolvedCommand":"emoji 👍🏽 mix","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["  padded  ",["日本語のテキスト","a:b:c"],{"env":null,"requireExecutable":true,"lowerPriority":false}],"error":"Command not found:   padded  "}
+{"fn":"prepareProcess","args":["hello",["src/a/b.ts"],{"cwd":"a😀b😀c","lowerPriority":false}],"ok":{"command":"hello","args":["src/a/b.ts"],"shell":false,"requestedCommand":"hello","resolvedCommand":"hello","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["﻿bom",["HELLO"]],"ok":{"command":"﻿bom","args":["HELLO"],"shell":false,"requestedCommand":"﻿bom","resolvedCommand":"﻿bom","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["a..b",[":"],{"cwd":"straße","lowerPriority":false}],"ok":{"command":"a..b","args":[":"],"shell":false,"requestedCommand":"a..b","resolvedCommand":"a..b","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["﻿bom",["trailing.","ΣΊΣΥΦΟΣ","éhello world"],["a",1]],"ok":{"command":"﻿bom","args":["trailing.","ΣΊΣΥΦΟΣ","éhello world"],"shell":false,"requestedCommand":"﻿bom","resolvedCommand":"﻿bom","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["hello world",[],{"platform":{},"cwd":"﻿bom","env":[],"requireExecutable":true}],"error":"Working directory not found: ﻿bom"}
+{"fn":"prepareProcess","args":["a😀b😀c",["﻿bomΣΊΣΥΦΟΣ","./x/**/*.jsona","key_name-1"],{"platform":true,"env":null,"requireExecutable":false,"lowerPriority":false}],"ok":{"command":"a😀b😀c","args":["﻿bomΣΊΣΥΦΟΣ","./x/**/*.jsona","key_name-1"],"shell":false,"requestedCommand":"a😀b😀c","resolvedCommand":"a😀b😀c","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["trailing.",["hello world","a.b.c","straße"],{"platform":null,"cwd":"ΣΊΣΥΦΟΣ","env":null,"requireExecutable":false,"lowerPriority":true}],"ok":{"command":"trailing.","args":["hello world","a.b.c","straße"],"shell":false,"requestedCommand":"trailing.","resolvedCommand":"trailing.","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["Hello World",[],{"platform":{"a":"b"},"cwd":"ünïcödé","env":[],"requireExecutable":false}],"ok":{"command":"Hello World","args":[],"shell":false,"requestedCommand":"Hello World","resolvedCommand":"Hello World","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["abca:b:c",["abcünïcödé","a😀b😀c"],{}],"ok":{"command":"abca:b:c","args":["abcünïcödé","a😀b😀c"],"shell":false,"requestedCommand":"abca:b:c","resolvedCommand":"abca:b:c","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["é",["a.b.c","  padded  ","a:b:c"],{"env":null,"lowerPriority":true}],"ok":{"command":"é","args":["a.b.c","  padded  ","a:b:c"],"shell":false,"requestedCommand":"é","resolvedCommand":"é","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["a.b.c",[],{"platform":{"a":{"b":"c"}},"cwd":"ab","requireExecutable":true,"lowerPriority":false}],"error":"Working directory not found: ab"}
+{"fn":"prepareProcess","args":["é",["  padded  é","line1\nline2"],{"platform":"x","cwd":"HELLO","env":"x","requireExecutable":true,"lowerPriority":true}],"error":"Working directory not found: HELLO"}
+{"fn":"prepareProcess","args":["hello world",["  padded  abc"]],"ok":{"command":"hello world","args":["  padded  abc"],"shell":false,"requestedCommand":"hello world","resolvedCommand":"hello world","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["hello world",["  padded  ","tab\tseparated"],{"cwd":"emoji 👍🏽 mixtab\tseparated","env":{"a":{"b":"c"}},"requireExecutable":false,"lowerPriority":true}],"ok":{"command":"hello world","args":["  padded  ","tab\tseparated"],"shell":false,"requestedCommand":"hello world","resolvedCommand":"hello world","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["日本語のテキスト",["a.b.c"],{"platform":["a",1],"cwd":"abc","env":null,"lowerPriority":false}],"ok":{"command":"日本語のテキスト","args":["a.b.c"],"shell":false,"requestedCommand":"日本語のテキスト","resolvedCommand":"日本語のテキスト","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["a.b.c",[],{"$undefined":true}],"ok":{"command":"a.b.c","args":[],"shell":false,"requestedCommand":"a.b.c","resolvedCommand":"a.b.c","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["ünïcödé",["ns:key.path"],{"platform":["a",1],"cwd":"a..b","env":{"a":"b"},"requireExecutable":true,"lowerPriority":false}],"error":"Working directory not found: a..b"}
+{"fn":"prepareProcess","args":["a..b",["HELLO","Hello World","  padded  "],{"platform":0,"cwd":"","env":{},"requireExecutable":false}],"ok":{"command":"a..b","args":["HELLO","Hello World","  padded  "],"shell":false,"requestedCommand":"a..b","resolvedCommand":"a..b","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["",[],{"platform":[],"env":null,"requireExecutable":true,"lowerPriority":false}],"error":"Command not found: "}
+{"fn":"prepareProcess","args":["İstanbul",[],{"cwd":"ΣΊΣΥΦΟΣ","requireExecutable":true,"lowerPriority":true}],"error":"Working directory not found: ΣΊΣΥΦΟΣ"}
+{"fn":"prepareProcess","args":["trailing.",[":ΣΊΣΥΦΟΣ","a..b"],null],"error":"Cannot read properties of null (reading 'platform')"}
+{"fn":"prepareProcess","args":["é",["a.b.c","straße","ab"],{"cwd":"İstanbul","env":["a",1]}],"ok":{"command":"é","args":["a.b.c","straße","ab"],"shell":false,"requestedCommand":"é","resolvedCommand":"é","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["İstanbul",["ns:key.path"],{"platform":{},"cwd":"  padded  ","env":true,"lowerPriority":true}],"ok":{"command":"İstanbul","args":["ns:key.path"],"shell":false,"requestedCommand":"İstanbul","resolvedCommand":"İstanbul","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["straße",[],{"platform":{"a":"b"},"env":0,"requireExecutable":true,"lowerPriority":false}],"error":"Command not found: straße"}
+{"fn":"prepareProcess","args":["{name} has {count} items",["  padded  ","  padded  straße"],{"platform":{},"requireExecutable":false}],"ok":{"command":"{name} has {count} items","args":["  padded  ","  padded  straße"],"shell":false,"requestedCommand":"{name} has {count} items","resolvedCommand":"{name} has {count} items","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["Hello World:",[],{"$undefined":true}],"ok":{"command":"Hello World:","args":[],"shell":false,"requestedCommand":"Hello World:","resolvedCommand":"Hello World:","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["src/a/b.ts",["😀","  padded  "],"x"],"ok":{"command":"src/a/b.ts","args":["😀","  padded  "],"shell":false,"requestedCommand":"src/a/b.ts","resolvedCommand":"src/a/b.ts","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["  padded  ",[],{"platform":true,"cwd":"ab","env":[],"requireExecutable":false}],"ok":{"command":"  padded  ","args":[],"shell":false,"requestedCommand":"  padded  ","resolvedCommand":"  padded  ","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["trailing.",[":","😀","a😀b😀c"],{"cwd":":","env":{},"lowerPriority":false}],"ok":{"command":"trailing.","args":[":","😀","a😀b😀c"],"shell":false,"requestedCommand":"trailing.","resolvedCommand":"trailing.","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":[":",["hello world","abc"],true],"ok":{"command":":","args":["hello world","abc"],"shell":false,"requestedCommand":":","resolvedCommand":":","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["tab\tseparated",[]],"ok":{"command":"tab\tseparated","args":[],"shell":false,"requestedCommand":"tab\tseparated","resolvedCommand":"tab\tseparated","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["é",["key_name-1","tab\tseparated","é"],{"cwd":"line1\nline2﻿bom","env":0,"requireExecutable":false,"lowerPriority":false}],"ok":{"command":"é","args":["key_name-1","tab\tseparated","é"],"shell":false,"requestedCommand":"é","resolvedCommand":"é","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["İstanbula..b",["hellokey_name-1","Hello World"]],"ok":{"command":"İstanbula..b","args":["hellokey_name-1","Hello World"],"shell":false,"requestedCommand":"İstanbula..b","resolvedCommand":"İstanbula..b","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["hello",[],{"$undefined":true}],"ok":{"command":"hello","args":[],"shell":false,"requestedCommand":"hello","resolvedCommand":"hello","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["key_name-1",["straße","a:b:c","src/a/b.tsa..b"],{"platform":[],"env":[],"requireExecutable":false,"lowerPriority":false}],"ok":{"command":"key_name-1","args":["straße","a:b:c","src/a/b.tsa..b"],"shell":false,"requestedCommand":"key_name-1","resolvedCommand":"key_name-1","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["ΣΊΣΥΦΟΣtab\tseparated",["tab\tseparated","a.b.c"],{"platform":"x","cwd":"a..b","env":{"a":"b"},"lowerPriority":true}],"ok":{"command":"ΣΊΣΥΦΟΣtab\tseparated","args":["tab\tseparated","a.b.c"],"shell":false,"requestedCommand":"ΣΊΣΥΦΟΣtab\tseparated","resolvedCommand":"ΣΊΣΥΦΟΣtab\tseparated","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["ab",["ünïcödéhello"],{"$undefined":true}],"ok":{"command":"/usr/sbin/ab","args":["ünïcödéhello"],"shell":false,"requestedCommand":"ab","resolvedCommand":"/usr/sbin/ab","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":[":",["straßeline1\nline2"],true],"ok":{"command":":","args":["straßeline1\nline2"],"shell":false,"requestedCommand":":","resolvedCommand":":","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["./x/**/*.json",["﻿bom","ns:key.path","a.b.c"],{"platform":{"a":{"b":"c"}},"cwd":"straße","requireExecutable":true,"lowerPriority":true}],"error":"Working directory not found: straße"}
+{"fn":"prepareProcess","args":["src/a/b.ts",["a😀b😀c","trailing.","ünïcödé"],{"platform":["a",1],"cwd":"a😀b😀c","env":null,"requireExecutable":false,"lowerPriority":true}],"ok":{"command":"src/a/b.ts","args":["a😀b😀c","trailing.","ünïcödé"],"shell":false,"requestedCommand":"src/a/b.ts","resolvedCommand":"src/a/b.ts","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["emoji 👍🏽 mix",[],{"cwd":"ΣΊΣΥΦΟΣ","env":true,"requireExecutable":true,"lowerPriority":false}],"error":"Working directory not found: ΣΊΣΥΦΟΣ"}
+{"fn":"prepareProcess","args":["ΣΊΣΥΦΟΣ",[".leading"],{"cwd":"日本語のテキストa","env":{"a":"b"},"requireExecutable":true}],"error":"Working directory not found: 日本語のテキストa"}
+{"fn":"prepareProcess","args":["key_name-1",[""],{"platform":{"a":"b"},"lowerPriority":false}],"ok":{"command":"key_name-1","args":[""],"shell":false,"requestedCommand":"key_name-1","resolvedCommand":"key_name-1","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["key_name-1",["Hello World"],{"platform":[],"cwd":"a.b.c","env":[],"lowerPriority":true}],"ok":{"command":"key_name-1","args":["Hello World"],"shell":false,"requestedCommand":"key_name-1","resolvedCommand":"key_name-1","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["ünïcödé",["line1\nline2"],{"env":{"a":{"b":"c"}},"lowerPriority":false}],"ok":{"command":"ünïcödé","args":["line1\nline2"],"shell":false,"requestedCommand":"ünïcödé","resolvedCommand":"ünïcödé","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["ab",["HELLO"],{"platform":true,"requireExecutable":false,"lowerPriority":true}],"ok":{"command":"/bin/sh","args":["-c","renice \"$1\" -p \"$$\" >/dev/null 2>/dev/null || printf \"%s\\n\" \"Synara: failed to lower agent process priority; continuing\" >&2; shift; exec \"$@\"","synara-agent-priority","10","/usr/sbin/ab","HELLO"],"shell":false,"requestedCommand":"ab","resolvedCommand":"/usr/sbin/ab","executionBackend":"native","priorityBeforeExec":true}}
+{"fn":"prepareProcess","args":["a..b",["hello","./x/**/*.json"],{"platform":"x","cwd":"straße","env":{"a":{"b":"c"}},"lowerPriority":true}],"ok":{"command":"a..b","args":["hello","./x/**/*.json"],"shell":false,"requestedCommand":"a..b","resolvedCommand":"a..b","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["",["İstanbul"],{"platform":0,"cwd":"HELLO","env":["a",1],"requireExecutable":true,"lowerPriority":false}],"error":"Working directory not found: HELLO"}
+{"fn":"prepareProcess","args":["a:b:cünïcödé",[],{"platform":{"a":"b"},"env":["a",1],"lowerPriority":false}],"ok":{"command":"a:b:cünïcödé","args":[],"shell":false,"requestedCommand":"a:b:cünïcödé","resolvedCommand":"a:b:cünïcödé","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["ünïcödé",[],{"platform":{"a":"b"},"cwd":"a","requireExecutable":true}],"error":"Working directory not found: a"}
+{"fn":"prepareProcess","args":["😀",["line1\nline2"],{"cwd":"a:b:cİstanbul","env":"x","requireExecutable":false}],"ok":{"command":"😀","args":["line1\nline2"],"shell":false,"requestedCommand":"😀","resolvedCommand":"😀","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["éhello",[],{"requireExecutable":true,"lowerPriority":true}],"error":"Command not found: éhello"}
+{"fn":"prepareProcess","args":["line1\nline2",["trailing.","abcline1\nline2"],{"platform":["a",1],"cwd":"ab","env":null,"lowerPriority":false}],"ok":{"command":"line1\nline2","args":["trailing.","abcline1\nline2"],"shell":false,"requestedCommand":"line1\nline2","resolvedCommand":"line1\nline2","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["hello",["a:b:c","ab"],{"platform":[],"env":{},"lowerPriority":true}],"ok":{"command":"hello","args":["a:b:c","ab"],"shell":false,"requestedCommand":"hello","resolvedCommand":"hello","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["emoji 👍🏽 mix",["emoji 👍🏽 mix","hello world","{name} has {count} items"],{"platform":"x","cwd":"İstanbul","requireExecutable":false}],"ok":{"command":"emoji 👍🏽 mix","args":["emoji 👍🏽 mix","hello world","{name} has {count} items"],"shell":false,"requestedCommand":"emoji 👍🏽 mix","resolvedCommand":"emoji 👍🏽 mix","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["é",["abc","line1\nline2"],{"platform":{"a":"b"},"cwd":"İstanbul","env":[],"requireExecutable":true,"lowerPriority":false}],"error":"Working directory not found: İstanbul"}
+{"fn":"prepareProcess","args":["a..b",[],{"cwd":"ünïcödé","env":{},"requireExecutable":false}],"ok":{"command":"a..b","args":[],"shell":false,"requestedCommand":"a..b","resolvedCommand":"a..b","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["src/a/b.ts",[],{"env":{"a":"b"},"requireExecutable":true,"lowerPriority":true}],"error":"Command not found: src/a/b.ts"}
+{"fn":"prepareProcess","args":["a..b",["ünïcödé","﻿bom"],{"platform":null,"cwd":"a..b","requireExecutable":true,"lowerPriority":false}],"error":"Working directory not found: a..b"}
+{"fn":"prepareProcess","args":["Hello World",[],{"cwd":".leading","env":true,"requireExecutable":true,"lowerPriority":false}],"error":"Working directory not found: .leading"}
+{"fn":"prepareProcess","args":["😀hello world",["abHELLO","  padded  "],{"platform":{"a":{"b":"c"}},"cwd":"İstanbul","requireExecutable":false}],"ok":{"command":"😀hello world","args":["abHELLO","  padded  "],"shell":false,"requestedCommand":"😀hello world","resolvedCommand":"😀hello world","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":[".leadinghello world",["tab\tseparated"],{"platform":["a",1],"env":{"a":"b"},"lowerPriority":true}],"ok":{"command":".leadinghello world","args":["tab\tseparated"],"shell":false,"requestedCommand":".leadinghello world","resolvedCommand":".leadinghello world","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["Hello World",["😀"],{"platform":["a",1],"cwd":"😀.leading","env":null,"requireExecutable":true,"lowerPriority":true}],"error":"Working directory not found: 😀.leading"}
+{"fn":"prepareProcess","args":["hello",["﻿bom"],{"$undefined":true}],"ok":{"command":"hello","args":["﻿bom"],"shell":false,"requestedCommand":"hello","resolvedCommand":"hello","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["  padded  ",["hello",".leadingtrailing.",""],{"a":"b"}],"ok":{"command":"  padded  ","args":["hello",".leadingtrailing.",""],"shell":false,"requestedCommand":"  padded  ","resolvedCommand":"  padded  ","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["a😀b😀c",["a:b:ca.b.c","a😀b😀c日本語のテキスト",".leading"],{"platform":0,"cwd":"trailing.","env":{},"requireExecutable":true,"lowerPriority":false}],"error":"Working directory not found: trailing."}
+{"fn":"prepareProcess","args":["straße",["a:b:c","ΣΊΣΥΦΟΣ"],{"cwd":"abc","env":0,"requireExecutable":true,"lowerPriority":false}],"error":"Working directory not found: abc"}
+{"fn":"prepareProcess","args":["hello",["{name} has {count} items"],{"platform":true,"cwd":"hello world","env":null,"requireExecutable":false}],"ok":{"command":"hello","args":["{name} has {count} items"],"shell":false,"requestedCommand":"hello","resolvedCommand":"hello","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["é",["ab","key_name-1"],{"platform":0,"requireExecutable":true,"lowerPriority":false}],"error":"Command not found: é"}
+{"fn":"prepareProcess","args":["a.b.c",["./x/**/*.jsonab","abc","ünïcödé"],{"platform":true,"env":{"a":"b"},"requireExecutable":false,"lowerPriority":true}],"ok":{"command":"a.b.c","args":["./x/**/*.jsonab","abc","ünïcödé"],"shell":false,"requestedCommand":"a.b.c","resolvedCommand":"a.b.c","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["ab",[".leading"],{"cwd":"  padded  ","requireExecutable":false,"lowerPriority":true}],"ok":{"command":"/bin/sh","args":["-c","renice \"$1\" -p \"$$\" >/dev/null 2>/dev/null || printf \"%s\\n\" \"Synara: failed to lower agent process priority; continuing\" >&2; shift; exec \"$@\"","synara-agent-priority","10","/usr/sbin/ab",".leading"],"shell":false,"requestedCommand":"ab","resolvedCommand":"/usr/sbin/ab","executionBackend":"native","priorityBeforeExec":true}}
+{"fn":"prepareProcess","args":["hello world",["","é"],{"a":"b"}],"ok":{"command":"hello world","args":["","é"],"shell":false,"requestedCommand":"hello world","resolvedCommand":"hello world","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["trailing.",["key_name-1","a","key_name-1a:b:c"],{"platform":{},"cwd":"straße","env":true,"requireExecutable":true,"lowerPriority":false}],"error":"Working directory not found: straße"}
+{"fn":"prepareProcess","args":["emoji 👍🏽 mix",[],{"a":"b"}],"ok":{"command":"emoji 👍🏽 mix","args":[],"shell":false,"requestedCommand":"emoji 👍🏽 mix","resolvedCommand":"emoji 👍🏽 mix","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["{name} has {count} items",["hello"],{"platform":["a",1],"cwd":"{name} has {count} items","env":null,"requireExecutable":true}],"error":"Working directory not found: {name} has {count} items"}
+{"fn":"prepareProcess","args":["ünïcödé",["a😀b😀c",".leading"],{"platform":[],"cwd":"a..b","requireExecutable":false,"lowerPriority":false}],"ok":{"command":"ünïcödé","args":["a😀b😀c",".leading"],"shell":false,"requestedCommand":"ünïcödé","resolvedCommand":"ünïcödé","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["a:b:c  padded  ",["ΣΊΣΥΦΟΣ",":abc","  padded  "],{"platform":null,"cwd":"ΣΊΣΥΦΟΣé","requireExecutable":true,"lowerPriority":false}],"error":"Working directory not found: ΣΊΣΥΦΟΣé"}
+{"fn":"prepareProcess","args":["Hello World",["key_name-1","Hello World","tab\tseparatedline1\nline2"],{"env":true,"requireExecutable":false,"lowerPriority":true}],"ok":{"command":"Hello World","args":["key_name-1","Hello World","tab\tseparatedline1\nline2"],"shell":false,"requestedCommand":"Hello World","resolvedCommand":"Hello World","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["tab\tseparatedns:key.path",[],{"a":"b"}],"ok":{"command":"tab\tseparatedns:key.path","args":[],"shell":false,"requestedCommand":"tab\tseparatedns:key.path","resolvedCommand":"tab\tseparatedns:key.path","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["tab\tseparated",["./x/**/*.json","😀","hello world"],{"$undefined":true}],"ok":{"command":"tab\tseparated","args":["./x/**/*.json","😀","hello world"],"shell":false,"requestedCommand":"tab\tseparated","resolvedCommand":"tab\tseparated","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["ns:key.path",[]],"ok":{"command":"ns:key.path","args":[],"shell":false,"requestedCommand":"ns:key.path","resolvedCommand":"ns:key.path","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["é",[],{"cwd":"Hello World","env":["a",1],"requireExecutable":false,"lowerPriority":true}],"ok":{"command":"é","args":[],"shell":false,"requestedCommand":"é","resolvedCommand":"é","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["a:b:c",["a:b:cΣΊΣΥΦΟΣ"]],"ok":{"command":"a:b:c","args":["a:b:cΣΊΣΥΦΟΣ"],"shell":false,"requestedCommand":"a:b:c","resolvedCommand":"a:b:c","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["src/a/b.ts",[],{"a":"b"}],"ok":{"command":"src/a/b.ts","args":[],"shell":false,"requestedCommand":"src/a/b.ts","resolvedCommand":"src/a/b.ts","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["./x/**/*.json",["","é"],{"platform":true,"cwd":"","lowerPriority":false}],"ok":{"command":"./x/**/*.json","args":["","é"],"shell":false,"requestedCommand":"./x/**/*.json","resolvedCommand":"./x/**/*.json","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["emoji 👍🏽 mix",["ΣΊΣΥΦΟΣ","  padded  key_name-1"],{"platform":["a",1],"cwd":"é","env":["a",1],"lowerPriority":false}],"ok":{"command":"emoji 👍🏽 mix","args":["ΣΊΣΥΦΟΣ","  padded  key_name-1"],"shell":false,"requestedCommand":"emoji 👍🏽 mix","resolvedCommand":"emoji 👍🏽 mix","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["emoji 👍🏽 mix",["İstanbul","src/a/b.tsa..b"],{"platform":0,"cwd":"straße","env":true,"requireExecutable":false}],"ok":{"command":"emoji 👍🏽 mix","args":["İstanbul","src/a/b.tsa..b"],"shell":false,"requestedCommand":"emoji 👍🏽 mix","resolvedCommand":"emoji 👍🏽 mix","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["a😀b😀c",["hello worldhello world"]],"ok":{"command":"a😀b😀c","args":["hello worldhello world"],"shell":false,"requestedCommand":"a😀b😀c","resolvedCommand":"a😀b😀c","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["a:b:c{name} has {count} items",["Hello Worldhello world","a.b.c","trailing."],{"$undefined":true}],"ok":{"command":"a:b:c{name} has {count} items","args":["Hello Worldhello world","a.b.c","trailing."],"shell":false,"requestedCommand":"a:b:c{name} has {count} items","resolvedCommand":"a:b:c{name} has {count} items","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["a:b:c",["key_name-1","ΣΊΣΥΦΟΣa😀b😀c","ΣΊΣΥΦΟΣ"],{"platform":{},"cwd":"hello world","env":"x","requireExecutable":true,"lowerPriority":false}],"error":"Working directory not found: hello world"}
+{"fn":"prepareProcess","args":["ΣΊΣΥΦΟΣ",["aba.b.c","tab\tseparateda😀b😀c","  padded  "],{}],"ok":{"command":"ΣΊΣΥΦΟΣ","args":["aba.b.c","tab\tseparateda😀b😀c","  padded  "],"shell":false,"requestedCommand":"ΣΊΣΥΦΟΣ","resolvedCommand":"ΣΊΣΥΦΟΣ","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["ab",["line1\nline2"],{"platform":null,"cwd":"a..b","env":[]}],"ok":{"command":"ab","args":["line1\nline2"],"shell":false,"requestedCommand":"ab","resolvedCommand":"ab","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["  padded  emoji 👍🏽 mix",[],{"platform":{"a":{"b":"c"}},"env":0,"requireExecutable":true}],"error":"Command not found:   padded  emoji 👍🏽 mix"}
+{"fn":"prepareProcess","args":["key_name-1",[],{"$undefined":true}],"ok":{"command":"key_name-1","args":[],"shell":false,"requestedCommand":"key_name-1","resolvedCommand":"key_name-1","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["ab",[],{"$undefined":true}],"ok":{"command":"/usr/sbin/ab","args":[],"shell":false,"requestedCommand":"ab","resolvedCommand":"/usr/sbin/ab","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["ΣΊΣΥΦΟΣ",[],{"platform":{"a":{"b":"c"}},"cwd":"a..b","env":true,"requireExecutable":false,"lowerPriority":false}],"ok":{"command":"ΣΊΣΥΦΟΣ","args":[],"shell":false,"requestedCommand":"ΣΊΣΥΦΟΣ","resolvedCommand":"ΣΊΣΥΦΟΣ","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["line1\nline2",["hello world"],{"platform":"x","cwd":"./x/**/*.json:","env":null,"requireExecutable":true,"lowerPriority":true}],"error":"Working directory not found: ./x/**/*.json:"}
+{"fn":"prepareProcess","args":["hello",[],{"platform":null,"cwd":"{name} has {count} items","env":[],"requireExecutable":true}],"error":"Working directory not found: {name} has {count} items"}
+{"fn":"prepareProcess","args":["日本語のテキスト",[],{"cwd":"a😀b😀c","env":[],"requireExecutable":true,"lowerPriority":true}],"error":"Working directory not found: a😀b😀c"}
+{"fn":"prepareProcess","args":["src/a/b.ts",["a","İstanbul"],{"platform":{},"cwd":"src/a/b.ts","env":0,"requireExecutable":false}],"ok":{"command":"src/a/b.ts","args":["a","İstanbul"],"shell":false,"requestedCommand":"src/a/b.ts","resolvedCommand":"src/a/b.ts","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["{name} has {count} items",["😀"],{"platform":{},"cwd":"trailing.","env":true,"requireExecutable":true,"lowerPriority":false}],"error":"Working directory not found: trailing."}
+{"fn":"prepareProcess","args":["",[":HELLO","line1\nline2","a"],{"platform":"x","env":null,"requireExecutable":true,"lowerPriority":false}],"error":"Command not found: "}
+{"fn":"prepareProcess","args":["{name} has {count} items",["tab\tseparated"],{"platform":0,"cwd":"{name} has {count} items","env":true,"lowerPriority":false}],"ok":{"command":"{name} has {count} items","args":["tab\tseparated"],"shell":false,"requestedCommand":"{name} has {count} items","resolvedCommand":"{name} has {count} items","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["abc",["tab\tseparateda😀b😀c","key_name-1"]],"ok":{"command":"abc","args":["tab\tseparateda😀b😀c","key_name-1"],"shell":false,"requestedCommand":"abc","resolvedCommand":"abc","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":[".leading",["a..b"],{"cwd":"abcHello World","env":true,"requireExecutable":true}],"error":"Working directory not found: abcHello World"}
+{"fn":"prepareProcess","args":["key_name-1",["﻿bom","helloa"],{"cwd":".leading","requireExecutable":true}],"error":"Working directory not found: .leading"}
+{"fn":"prepareProcess","args":["日本語のテキストsrc/a/b.ts",["ΣΊΣΥΦΟΣ"],{"platform":[],"cwd":"tab\tseparated","env":[],"requireExecutable":false,"lowerPriority":true}],"ok":{"command":"日本語のテキストsrc/a/b.ts","args":["ΣΊΣΥΦΟΣ"],"shell":false,"requestedCommand":"日本語のテキストsrc/a/b.ts","resolvedCommand":"日本語のテキストsrc/a/b.ts","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["a:b:c",["﻿bom","HELLOa:b:c"],{"platform":true,"env":0,"lowerPriority":false}],"ok":{"command":"a:b:c","args":["﻿bom","HELLOa:b:c"],"shell":false,"requestedCommand":"a:b:c","resolvedCommand":"a:b:c","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["tab\tseparated",["ünïcödé","trailing."],{"platform":{"a":{"b":"c"}},"cwd":"tab\tseparated","env":{},"requireExecutable":false,"lowerPriority":false}],"ok":{"command":"tab\tseparated","args":["ünïcödé","trailing."],"shell":false,"requestedCommand":"tab\tseparated","resolvedCommand":"tab\tseparated","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["HELLO",["line1\nline2"],{"platform":true,"cwd":"a:b:c﻿bom","env":["a",1],"lowerPriority":false}],"ok":{"command":"HELLO","args":["line1\nline2"],"shell":false,"requestedCommand":"HELLO","resolvedCommand":"HELLO","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["straße",["a:b:c","ΣΊΣΥΦΟΣ日本語のテキスト"],{"platform":[],"env":[],"requireExecutable":true,"lowerPriority":false}],"error":"Command not found: straße"}
+{"fn":"prepareProcess","args":["ns:key.path",[],"x"],"ok":{"command":"ns:key.path","args":[],"shell":false,"requestedCommand":"ns:key.path","resolvedCommand":"ns:key.path","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["é",["ΣΊΣΥΦΟΣ"],{"$undefined":true}],"ok":{"command":"é","args":["ΣΊΣΥΦΟΣ"],"shell":false,"requestedCommand":"é","resolvedCommand":"é","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["ünïcödé",["ΣΊΣΥΦΟΣ",":hello"],{"requireExecutable":false}],"ok":{"command":"ünïcödé","args":["ΣΊΣΥΦΟΣ",":hello"],"shell":false,"requestedCommand":"ünïcödé","resolvedCommand":"ünïcödé","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["ns:key.path",["ns:key.path:"],{"$undefined":true}],"ok":{"command":"ns:key.path","args":["ns:key.path:"],"shell":false,"requestedCommand":"ns:key.path","resolvedCommand":"ns:key.path","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["src/a/b.ts",[":","a:b:c","😀"],{"$undefined":true}],"ok":{"command":"src/a/b.ts","args":[":","a:b:c","😀"],"shell":false,"requestedCommand":"src/a/b.ts","resolvedCommand":"src/a/b.ts","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["ab",["./x/**/*.json","straße"],{"platform":0,"requireExecutable":false,"lowerPriority":true}],"ok":{"command":"/bin/sh","args":["-c","renice \"$1\" -p \"$$\" >/dev/null 2>/dev/null || printf \"%s\\n\" \"Synara: failed to lower agent process priority; continuing\" >&2; shift; exec \"$@\"","synara-agent-priority","10","/usr/sbin/ab","./x/**/*.json","straße"],"shell":false,"requestedCommand":"ab","resolvedCommand":"/usr/sbin/ab","executionBackend":"native","priorityBeforeExec":true}}
+{"fn":"prepareProcess","args":["日本語のテキスト日本語のテキスト",["{name} has {count} items","é","hello world"],{"platform":0,"cwd":"line1\nline2😀","env":["a",1],"requireExecutable":false,"lowerPriority":true}],"ok":{"command":"日本語のテキスト日本語のテキスト","args":["{name} has {count} items","é","hello world"],"shell":false,"requestedCommand":"日本語のテキスト日本語のテキスト","resolvedCommand":"日本語のテキスト日本語のテキスト","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["src/a/b.ts",["HELLO","İstanbul","a😀b😀c"]],"ok":{"command":"src/a/b.ts","args":["HELLO","İstanbul","a😀b😀c"],"shell":false,"requestedCommand":"src/a/b.ts","resolvedCommand":"src/a/b.ts","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":[".leading﻿bom",["aba","abc","hello"],true],"ok":{"command":".leading﻿bom","args":["aba","abc","hello"],"shell":false,"requestedCommand":".leading﻿bom","resolvedCommand":".leading﻿bom","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["trailing.",[],{"platform":["a",1],"cwd":"﻿bom","env":{"a":{"b":"c"}},"requireExecutable":false,"lowerPriority":false}],"ok":{"command":"trailing.","args":[],"shell":false,"requestedCommand":"trailing.","resolvedCommand":"trailing.","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["",["hello worldHELLO","ΣΊΣΥΦΟΣ"],{"$undefined":true}],"ok":{"command":"","args":["hello worldHELLO","ΣΊΣΥΦΟΣ"],"shell":false,"requestedCommand":"","resolvedCommand":"","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["trailing.a😀b😀c",["  padded  ","é"]],"ok":{"command":"trailing.a😀b😀c","args":["  padded  ","é"],"shell":false,"requestedCommand":"trailing.a😀b😀c","resolvedCommand":"trailing.a😀b😀c","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["hello",["HELLO","a..b","😀"],{}],"ok":{"command":"hello","args":["HELLO","a..b","😀"],"shell":false,"requestedCommand":"hello","resolvedCommand":"hello","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["",["hello world"],{"platform":{"a":"b"},"cwd":"{name} has {count} items","env":{"a":{"b":"c"}},"requireExecutable":true,"lowerPriority":false}],"error":"Working directory not found: {name} has {count} items"}
+{"fn":"prepareProcess","args":["",["﻿bom","key_name-1ΣΊΣΥΦΟΣ","日本語のテキスト"],[]],"ok":{"command":"","args":["﻿bom","key_name-1ΣΊΣΥΦΟΣ","日本語のテキスト"],"shell":false,"requestedCommand":"","resolvedCommand":"","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["helloab",[],{"platform":true,"cwd":"éΣΊΣΥΦΟΣ","requireExecutable":true}],"error":"Working directory not found: éΣΊΣΥΦΟΣ"}
+{"fn":"prepareProcess","args":["straße",[],{"platform":["a",1],"requireExecutable":true,"lowerPriority":false}],"error":"Command not found: straße"}
+{"fn":"prepareProcess","args":["a:b:c",["tab\tseparated","tab\tseparated","trailing."],{"env":true,"requireExecutable":true,"lowerPriority":false}],"error":"Command not found: a:b:c"}
+{"fn":"prepareProcess","args":["line1\nline2",["tab\tseparated","İstanbul","a😀b😀c"]],"ok":{"command":"line1\nline2","args":["tab\tseparated","İstanbul","a😀b😀c"],"shell":false,"requestedCommand":"line1\nline2","resolvedCommand":"line1\nline2","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["./x/**/*.json",["tab\tseparated","line1\nline2","é"],0],"ok":{"command":"./x/**/*.json","args":["tab\tseparated","line1\nline2","é"],"shell":false,"requestedCommand":"./x/**/*.json","resolvedCommand":"./x/**/*.json","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":[".leading",[],{"requireExecutable":false,"lowerPriority":false}],"ok":{"command":".leading","args":[],"shell":false,"requestedCommand":".leading","resolvedCommand":".leading","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["a😀b😀c",["İstanbul","ünïcödé","./x/**/*.json"]],"ok":{"command":"a😀b😀c","args":["İstanbul","ünïcödé","./x/**/*.json"],"shell":false,"requestedCommand":"a😀b😀c","resolvedCommand":"a😀b😀c","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["line1\nline2",["helloHELLO"],{}],"ok":{"command":"line1\nline2","args":["helloHELLO"],"shell":false,"requestedCommand":"line1\nline2","resolvedCommand":"line1\nline2","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["ünïcödé",["emoji 👍🏽 mixsrc/a/b.ts","é","src/a/b.ts"],{"$undefined":true}],"ok":{"command":"ünïcödé","args":["emoji 👍🏽 mixsrc/a/b.ts","é","src/a/b.ts"],"shell":false,"requestedCommand":"ünïcödé","resolvedCommand":"ünïcödé","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["a.b.c.leading",["a..ba.b.c","ΣΊΣΥΦΟΣtab\tseparated","emoji 👍🏽 mix"],{"platform":{"a":"b"},"cwd":"﻿bom","requireExecutable":true}],"error":"Working directory not found: ﻿bom"}
+{"fn":"prepareProcess","args":["straße",[],{"platform":null,"cwd":"emoji 👍🏽 mix","env":{},"requireExecutable":true}],"error":"Working directory not found: emoji 👍🏽 mix"}
+{"fn":"prepareProcess","args":["a..b",["İstanbul","İstanbul","a..b"],{"platform":{},"cwd":"{name} has {count} items","env":{"a":"b"},"requireExecutable":false,"lowerPriority":false}],"ok":{"command":"a..b","args":["İstanbul","İstanbul","a..b"],"shell":false,"requestedCommand":"a..b","resolvedCommand":"a..b","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["😀﻿bom",["a😀b😀c"],{"platform":["a",1],"cwd":"a.b.c","env":"x","requireExecutable":true,"lowerPriority":false}],"error":"Working directory not found: a.b.c"}
+{"fn":"prepareProcess","args":["straße",["src/a/b.ts","HELLO"],["a",1]],"ok":{"command":"straße","args":["src/a/b.ts","HELLO"],"shell":false,"requestedCommand":"straße","resolvedCommand":"straße","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["a:b:c",["😀","HELLO"]],"ok":{"command":"a:b:c","args":["😀","HELLO"],"shell":false,"requestedCommand":"a:b:c","resolvedCommand":"a:b:c","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["key_name-1",["HELLO  padded  ","hello world{name} has {count} items"],{"$undefined":true}],"ok":{"command":"key_name-1","args":["HELLO  padded  ","hello world{name} has {count} items"],"shell":false,"requestedCommand":"key_name-1","resolvedCommand":"key_name-1","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["ΣΊΣΥΦΟΣ",["  padded  ",""],{"platform":true,"cwd":"  padded  ","env":["a",1],"requireExecutable":false,"lowerPriority":true}],"ok":{"command":"ΣΊΣΥΦΟΣ","args":["  padded  ",""],"shell":false,"requestedCommand":"ΣΊΣΥΦΟΣ","resolvedCommand":"ΣΊΣΥΦΟΣ","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["{name} has {count} itemsa.b.c",[],{"platform":{"a":{"b":"c"}},"cwd":"tab\tseparated","env":0,"requireExecutable":true,"lowerPriority":true}],"error":"Working directory not found: tab\tseparated"}
+{"fn":"prepareProcess","args":["日本語のテキストns:key.path",["﻿bom","a😀b😀cé",":tab\tseparated"],{}],"ok":{"command":"日本語のテキストns:key.path","args":["﻿bom","a😀b😀cé",":tab\tseparated"],"shell":false,"requestedCommand":"日本語のテキストns:key.path","resolvedCommand":"日本語のテキストns:key.path","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["ΣΊΣΥΦΟΣ",["Hello World"],{"cwd":"a:b:c","env":{"a":"b"},"lowerPriority":false}],"ok":{"command":"ΣΊΣΥΦΟΣ","args":["Hello World"],"shell":false,"requestedCommand":"ΣΊΣΥΦΟΣ","resolvedCommand":"ΣΊΣΥΦΟΣ","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["straße",[],{"cwd":"ΣΊΣΥΦΟΣ.leading","env":true,"requireExecutable":true,"lowerPriority":true}],"error":"Working directory not found: ΣΊΣΥΦΟΣ.leading"}
+{"fn":"prepareProcess","args":[":",[],{"platform":null,"cwd":"a.b.c","env":[],"requireExecutable":true,"lowerPriority":true}],"error":"Working directory not found: a.b.c"}
+{"fn":"prepareProcess","args":["ΣΊΣΥΦΟΣ",["日本語のテキスト","a😀b😀c","﻿bom"],{"platform":true,"cwd":"straße","env":null,"requireExecutable":false}],"ok":{"command":"ΣΊΣΥΦΟΣ","args":["日本語のテキスト","a😀b😀c","﻿bom"],"shell":false,"requestedCommand":"ΣΊΣΥΦΟΣ","resolvedCommand":"ΣΊΣΥΦΟΣ","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["﻿bom",["abΣΊΣΥΦΟΣ","é","ab"],{"platform":{"a":"b"},"env":{"a":"b"},"requireExecutable":true,"lowerPriority":true}],"error":"Command not found: ﻿bom"}
+{"fn":"prepareProcess","args":["src/a/b.ts",[],{"platform":{"a":{"b":"c"}},"cwd":"ab","env":{"a":{"b":"c"}},"requireExecutable":true,"lowerPriority":false}],"error":"Working directory not found: ab"}
+{"fn":"prepareProcess","args":["trailing.",[],{"$undefined":true}],"ok":{"command":"trailing.","args":[],"shell":false,"requestedCommand":"trailing.","resolvedCommand":"trailing.","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["emoji 👍🏽 mix.leading",["a😀b😀c","tab\tseparated","Hello World"],{"env":[],"requireExecutable":true,"lowerPriority":true}],"error":"Command not found: emoji 👍🏽 mix.leading"}
+{"fn":"prepareProcess","args":["ΣΊΣΥΦΟΣ",["ab"],{"platform":{"a":"b"},"cwd":"emoji 👍🏽 mix"}],"ok":{"command":"ΣΊΣΥΦΟΣ","args":["ab"],"shell":false,"requestedCommand":"ΣΊΣΥΦΟΣ","resolvedCommand":"ΣΊΣΥΦΟΣ","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["emoji 👍🏽 mix",["é"],{"platform":{"a":"b"},"cwd":"İstanbulhello","env":true,"requireExecutable":false,"lowerPriority":true}],"ok":{"command":"emoji 👍🏽 mix","args":["é"],"shell":false,"requestedCommand":"emoji 👍🏽 mix","resolvedCommand":"emoji 👍🏽 mix","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["straße",["src/a/b.ts"],{"platform":{"a":"b"},"cwd":"ab","env":null}],"ok":{"command":"straße","args":["src/a/b.ts"],"shell":false,"requestedCommand":"straße","resolvedCommand":"straße","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["emoji 👍🏽 mix",["é"],{"platform":null,"cwd":"a😀b😀c","env":[],"requireExecutable":false,"lowerPriority":false}],"ok":{"command":"emoji 👍🏽 mix","args":["é"],"shell":false,"requestedCommand":"emoji 👍🏽 mix","resolvedCommand":"emoji 👍🏽 mix","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["a.b.c",["hello world","a😀b😀c","src/a/b.ts"],{"cwd":"./x/**/*.json","env":true,"requireExecutable":true,"lowerPriority":false}],"error":"Working directory not found: ./x/**/*.json"}
+{"fn":"prepareProcess","args":["tab\tseparated",["src/a/b.ts"],{"platform":null,"env":{},"requireExecutable":false}],"ok":{"command":"tab\tseparated","args":["src/a/b.ts"],"shell":false,"requestedCommand":"tab\tseparated","resolvedCommand":"tab\tseparated","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["İstanbul",["a..b"],{"platform":{},"env":{"a":"b"},"requireExecutable":true,"lowerPriority":false}],"error":"Command not found: İstanbul"}
+{"fn":"prepareProcess","args":["hello world",["trailing.","ünïcödé"]],"ok":{"command":"hello world","args":["trailing.","ünïcödé"],"shell":false,"requestedCommand":"hello world","resolvedCommand":"hello world","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["ΣΊΣΥΦΟΣ",["straße"],{"platform":"x","env":0,"requireExecutable":true,"lowerPriority":true}],"error":"Command not found: ΣΊΣΥΦΟΣ"}
+{"fn":"prepareProcess","args":["hellons:key.path",[],{"platform":null,"cwd":"ünïcödé","env":{"a":{"b":"c"}},"requireExecutable":false,"lowerPriority":true}],"ok":{"command":"hellons:key.path","args":[],"shell":false,"requestedCommand":"hellons:key.path","resolvedCommand":"hellons:key.path","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["﻿bom",[],{"$undefined":true}],"ok":{"command":"﻿bom","args":[],"shell":false,"requestedCommand":"﻿bom","resolvedCommand":"﻿bom","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["﻿bom",["hello","./x/**/*.json","{name} has {count} items"],{"platform":0,"env":["a",1],"requireExecutable":false,"lowerPriority":false}],"ok":{"command":"﻿bom","args":["hello","./x/**/*.json","{name} has {count} items"],"shell":false,"requestedCommand":"﻿bom","resolvedCommand":"﻿bom","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["HELLO",["ab"],{"platform":0,"env":null,"requireExecutable":true,"lowerPriority":false}],"error":"Command not found: HELLO"}
+{"fn":"prepareProcess","args":["İstanbul",["a","İstanbul"],{"platform":true,"cwd":"abc","requireExecutable":false,"lowerPriority":true}],"ok":{"command":"İstanbul","args":["a","İstanbul"],"shell":false,"requestedCommand":"İstanbul","resolvedCommand":"İstanbul","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["straße",["emoji 👍🏽 mixé"],{"cwd":":","env":{"a":{"b":"c"}},"requireExecutable":true}],"error":"Working directory not found: :"}
+{"fn":"prepareProcess","args":["a😀b😀c",[],{"platform":{"a":{"b":"c"}},"cwd":"İstanbul","requireExecutable":false,"lowerPriority":true}],"ok":{"command":"a😀b😀c","args":[],"shell":false,"requestedCommand":"a😀b😀c","resolvedCommand":"a😀b😀c","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["abc",["src/a/b.ts","a.b.c","ünïcödé"],{"platform":["a",1],"cwd":"﻿bom"}],"ok":{"command":"abc","args":["src/a/b.ts","a.b.c","ünïcödé"],"shell":false,"requestedCommand":"abc","resolvedCommand":"abc","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["hello",[],{"cwd":"Hello Worldns:key.path","env":null,"requireExecutable":true,"lowerPriority":false}],"error":"Working directory not found: Hello Worldns:key.path"}
+{"fn":"prepareProcess","args":["héllo wörld",["ΣΊΣΥΦΟΣns:key.path"],{"env":[],"requireExecutable":false,"lowerPriority":true}],"ok":{"command":"héllo wörld","args":["ΣΊΣΥΦΟΣns:key.path"],"shell":false,"requestedCommand":"héllo wörld","resolvedCommand":"héllo wörld","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["👍🏽 thumbs",["ΣΊΣΥΦΟΣns:key.path"],{"env":[],"requireExecutable":false,"lowerPriority":true}],"ok":{"command":"👍🏽 thumbs","args":["ΣΊΣΥΦΟΣns:key.path"],"shell":false,"requestedCommand":"👍🏽 thumbs","resolvedCommand":"👍🏽 thumbs","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["日本語",["ΣΊΣΥΦΟΣns:key.path"],{"env":[],"requireExecutable":false,"lowerPriority":true}],"ok":{"command":"日本語","args":["ΣΊΣΥΦΟΣns:key.path"],"shell":false,"requestedCommand":"日本語","resolvedCommand":"日本語","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["",["ΣΊΣΥΦΟΣns:key.path"],{"env":[],"requireExecutable":false,"lowerPriority":true}],"ok":{"command":"","args":["ΣΊΣΥΦΟΣns:key.path"],"shell":false,"requestedCommand":"","resolvedCommand":"","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["é",["ΣΊΣΥΦΟΣns:key.path"],{"env":[],"requireExecutable":false,"lowerPriority":true}],"ok":{"command":"é","args":["ΣΊΣΥΦΟΣns:key.path"],"shell":false,"requestedCommand":"é","resolvedCommand":"é","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["İstanbul",["ΣΊΣΥΦΟΣns:key.path"],{"env":[],"requireExecutable":false,"lowerPriority":true}],"ok":{"command":"İstanbul","args":["ΣΊΣΥΦΟΣns:key.path"],"shell":false,"requestedCommand":"İstanbul","resolvedCommand":"İstanbul","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["straße",["ΣΊΣΥΦΟΣns:key.path"],{"env":[],"requireExecutable":false,"lowerPriority":true}],"ok":{"command":"straße","args":["ΣΊΣΥΦΟΣns:key.path"],"shell":false,"requestedCommand":"straße","resolvedCommand":"straße","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["ılık ırmak",["ΣΊΣΥΦΟΣns:key.path"],{"env":[],"requireExecutable":false,"lowerPriority":true}],"ok":{"command":"ılık ırmak","args":["ΣΊΣΥΦΟΣns:key.path"],"shell":false,"requestedCommand":"ılık ırmak","resolvedCommand":"ılık ırmak","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["👨‍👩‍👧 family",["ΣΊΣΥΦΟΣns:key.path"],{"env":[],"requireExecutable":false,"lowerPriority":true}],"ok":{"command":"👨‍👩‍👧 family","args":["ΣΊΣΥΦΟΣns:key.path"],"shell":false,"requestedCommand":"👨‍👩‍👧 family","resolvedCommand":"👨‍👩‍👧 family","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["a b",["ΣΊΣΥΦΟΣns:key.path"],{"env":[],"requireExecutable":false,"lowerPriority":true}],"ok":{"command":"a b","args":["ΣΊΣΥΦΟΣns:key.path"],"shell":false,"requestedCommand":"a b","resolvedCommand":"a b","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["ΣΊΣΥΦΟΣ",["ΣΊΣΥΦΟΣns:key.path"],{"env":[],"requireExecutable":false,"lowerPriority":true}],"ok":{"command":"ΣΊΣΥΦΟΣ","args":["ΣΊΣΥΦΟΣns:key.path"],"shell":false,"requestedCommand":"ΣΊΣΥΦΟΣ","resolvedCommand":"ΣΊΣΥΦΟΣ","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["a😀b",["ΣΊΣΥΦΟΣns:key.path"],{"env":[],"requireExecutable":false,"lowerPriority":true}],"ok":{"command":"a😀b","args":["ΣΊΣΥΦΟΣns:key.path"],"shell":false,"requestedCommand":"a😀b","resolvedCommand":"a😀b","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["﻿bom",["ΣΊΣΥΦΟΣns:key.path"],{"env":[],"requireExecutable":false,"lowerPriority":true}],"ok":{"command":"﻿bom","args":["ΣΊΣΥΦΟΣns:key.path"],"shell":false,"requestedCommand":"﻿bom","resolvedCommand":"﻿bom","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["a²b x½ y①",["ΣΊΣΥΦΟΣns:key.path"],{"env":[],"requireExecutable":false,"lowerPriority":true}],"ok":{"command":"a²b x½ y①","args":["ΣΊΣΥΦΟΣns:key.path"],"shell":false,"requestedCommand":"a²b x½ y①","resolvedCommand":"a²b x½ y①","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["aⅠb Ⅻ",["ΣΊΣΥΦΟΣns:key.path"],{"env":[],"requireExecutable":false,"lowerPriority":true}],"ok":{"command":"aⅠb Ⅻ","args":["ΣΊΣΥΦΟΣns:key.path"],"shell":false,"requestedCommand":"aⅠb Ⅻ","resolvedCommand":"aⅠb Ⅻ","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["a𐐀b 𝐀bc",["ΣΊΣΥΦΟΣns:key.path"],{"env":[],"requireExecutable":false,"lowerPriority":true}],"ok":{"command":"a𐐀b 𝐀bc","args":["ΣΊΣΥΦΟΣns:key.path"],"shell":false,"requestedCommand":"a𐐀b 𝐀bc","resolvedCommand":"a𐐀b 𝐀bc","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["कि ٣٤",["ΣΊΣΥΦΟΣns:key.path"],{"env":[],"requireExecutable":false,"lowerPriority":true}],"ok":{"command":"कि ٣٤","args":["ΣΊΣΥΦΟΣns:key.path"],"shell":false,"requestedCommand":"कि ٣٤","resolvedCommand":"कि ٣٤","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["Iı İi",["ΣΊΣΥΦΟΣns:key.path"],{"env":[],"requireExecutable":false,"lowerPriority":true}],"ok":{"command":"Iı İi","args":["ΣΊΣΥΦΟΣns:key.path"],"shell":false,"requestedCommand":"Iı İi","resolvedCommand":"Iı İi","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["K K k",["ΣΊΣΥΦΟΣns:key.path"],{"env":[],"requireExecutable":false,"lowerPriority":true}],"ok":{"command":"K K k","args":["ΣΊΣΥΦΟΣns:key.path"],"shell":false,"requestedCommand":"K K k","resolvedCommand":"K K k","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["ſ s S",["ΣΊΣΥΦΟΣns:key.path"],{"env":[],"requireExecutable":false,"lowerPriority":true}],"ok":{"command":"ſ s S","args":["ΣΊΣΥΦΟΣns:key.path"],"shell":false,"requestedCommand":"ſ s S","resolvedCommand":"ſ s S","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["x‍y 👨‍👩‍👧",["ΣΊΣΥΦΟΣns:key.path"],{"env":[],"requireExecutable":false,"lowerPriority":true}],"ok":{"command":"x‍y 👨‍👩‍👧","args":["ΣΊΣΥΦΟΣns:key.path"],"shell":false,"requestedCommand":"x‍y 👨‍👩‍👧","resolvedCommand":"x‍y 👨‍👩‍👧","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["a b c　d",["ΣΊΣΥΦΟΣns:key.path"],{"env":[],"requireExecutable":false,"lowerPriority":true}],"ok":{"command":"a b c　d","args":["ΣΊΣΥΦΟΣns:key.path"],"shell":false,"requestedCommand":"a b c　d","resolvedCommand":"a b c　d","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["١٢٣ ٤٥",["ΣΊΣΥΦΟΣns:key.path"],{"env":[],"requireExecutable":false,"lowerPriority":true}],"ok":{"command":"١٢٣ ٤٥","args":["ΣΊΣΥΦΟΣns:key.path"],"shell":false,"requestedCommand":"١٢٣ ٤٥","resolvedCommand":"١٢٣ ٤٥","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["𝟘𝟙 ²³",["ΣΊΣΥΦΟΣns:key.path"],{"env":[],"requireExecutable":false,"lowerPriority":true}],"ok":{"command":"𝟘𝟙 ²³","args":["ΣΊΣΥΦΟΣns:key.path"],"shell":false,"requestedCommand":"𝟘𝟙 ²³","resolvedCommand":"𝟘𝟙 ²³","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["snake_case foo-bar o'neil",["ΣΊΣΥΦΟΣns:key.path"],{"env":[],"requireExecutable":false,"lowerPriority":true}],"ok":{"command":"snake_case foo-bar o'neil","args":["ΣΊΣΥΦΟΣns:key.path"],"shell":false,"requestedCommand":"snake_case foo-bar o'neil","resolvedCommand":"snake_case foo-bar o'neil","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["ǅungla Ǆ",["ΣΊΣΥΦΟΣns:key.path"],{"env":[],"requireExecutable":false,"lowerPriority":true}],"ok":{"command":"ǅungla Ǆ","args":["ΣΊΣΥΦΟΣns:key.path"],"shell":false,"requestedCommand":"ǅungla Ǆ","resolvedCommand":"ǅungla Ǆ","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["one\r\ntwo threefour",["ΣΊΣΥΦΟΣns:key.path"],{"env":[],"requireExecutable":false,"lowerPriority":true}],"ok":{"command":"one\r\ntwo threefour","args":["ΣΊΣΥΦΟΣns:key.path"],"shell":false,"requestedCommand":"one\r\ntwo threefour","resolvedCommand":"one\r\ntwo threefour","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["café café",["ΣΊΣΥΦΟΣns:key.path"],{"env":[],"requireExecutable":false,"lowerPriority":true}],"ok":{"command":"café café","args":["ΣΊΣΥΦΟΣns:key.path"],"shell":false,"requestedCommand":"café café","resolvedCommand":"café café","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["ΣΑΣ σας ς",["ΣΊΣΥΦΟΣns:key.path"],{"env":[],"requireExecutable":false,"lowerPriority":true}],"ok":{"command":"ΣΑΣ σας ς","args":["ΣΊΣΥΦΟΣns:key.path"],"shell":false,"requestedCommand":"ΣΑΣ σας ς","resolvedCommand":"ΣΑΣ σας ς","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["abc",[],{"env":[],"requireExecutable":false,"lowerPriority":true}],"ok":{"command":"abc","args":[],"shell":false,"requestedCommand":"abc","resolvedCommand":"abc","executionBackend":"native","priorityBeforeExec":false}}
+{"fn":"prepareProcess","args":["abc",["b","a","B","é","10","9","a"],{"env":[],"requireExecutable":false,"lowerPriority":true}],"ok":{"command":"abc","args":["b","a","B","é","10","9","a"],"shell":false,"requestedCommand":"abc","resolvedCommand":"abc","executionBackend":"native","priorityBeforeExec":false}}

@@ -1,0 +1,97 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/platformProcess.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "platformprocess-rs",
+  "exports": [
+    {
+      "name": "lowerProcessPriority",
+      "file": "packages/shared/src/platformProcess.ts",
+      "line": 25,
+      "params": [
+        {
+          "name": "pid",
+          "ts_type": "number | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "input",
+          "ts_type": "{ readonly platform?: NodeJS.Platform }",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isCommandNotFoundExit",
+      "file": "packages/shared/src/platformProcess.ts",
+      "line": 107,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly code: number | null;\n  readonly stderr: string;\n  readonly platform?: NodeJS.Platform;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "prepareProcess",
+      "file": "packages/shared/src/platformProcess.ts",
+      "line": 177,
+      "params": [
+        {
+          "name": "command",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "args",
+          "ts_type": "ReadonlyArray<string>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "input",
+          "ts_type": "ProcessLaunchInput",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "ProcessLaunchPlan",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "ExecutableNotFoundError",
+      "file": "packages/shared/src/platformProcess.ts",
+      "line": 64,
+      "reason": "class: extends another class, public field `_tag`, public field `command`"
+    },
+    {
+      "name": "WorkingDirectoryNotFoundError",
+      "file": "packages/shared/src/platformProcess.ts",
+      "line": 79,
+      "reason": "class: extends another class, public field `_tag`, public field `cwd`"
+    }
+  ]
+}

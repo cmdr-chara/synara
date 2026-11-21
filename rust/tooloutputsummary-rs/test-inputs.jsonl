@@ -1,0 +1,14 @@
+{"fn":"summarizeToolRawOutput","args":[{"totalFiles":33,"truncated":false}]}
+{"fn":"summarizeToolRawOutput","args":[{"totalFiles":1,"truncated":true}]}
+{"fn":"countTextLines","args":["one\ntwo\n"]}
+{"fn":"summarizeToolRawOutput","args":[{"content":"one\ntwo\n"}]}
+{"fn":"countTextLines","args":[""]}
+{"fn":"countTextLines","args":["one"]}
+{"fn":"countTextLines","args":["\n"]}
+{"fn":"countTextLines","args":["\n\n"]}
+{"fn":"countTextLines","args":["one\r\ntwo\nthree\r\n"]}
+{"fn":"countTextLines","args":["one\rtwo"]}
+{"fn":"countTextLines","args":["one two"]}
+{"fn":"summarizeToolRawOutput","args":[{"stdout":"done\nextra"}]}
+{"fn":"summarizeToolRawOutput","args":[{"rawInput":{}}]}
+{"fn":"summarizeToolRawOutput","args":[{"is_error":true,"output":{"Error":"Invalid creation plan: Unexpected key \"reasoningEffort\"\n  at [\"threads\"][1]"}}]}

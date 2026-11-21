@@ -1,0 +1,23 @@
+{
+  "unit": "packages/shared/src/toolOutputSummary.ts",
+  "files": 1,
+  "fingerprint": "dc11fd79c0595f23",
+  "coverage": {
+    "lines": 126,
+    "reached": 99,
+    "files": [
+      {
+        "file": "packages/shared/src/text.ts",
+        "lines": 57,
+        "reached": 33,
+        "missed": "10-11, 17-26, 31-34, 45-48, 53-56"
+      },
+      {
+        "file": "packages/shared/src/toolOutputSummary.ts",
+        "lines": 69,
+        "reached": 66,
+        "missed": "30-32"
+      }
+    ]
+  }
+}

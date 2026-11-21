@@ -1,0 +1,864 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/model.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "model-rs",
+  "exports": [
+    {
+      "name": "getModelOptions",
+      "file": "packages/shared/src/model.ts",
+      "line": 76,
+      "params": [
+        {
+          "name": "provider",
+          "ts_type": "typeof typeof typeof typeof ProviderKind.Type.Type.Type.Type",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "getDefaultModel",
+      "file": "packages/shared/src/model.ts",
+      "line": 87,
+      "params": [
+        {
+          "name": "provider",
+          "ts_type": "typeof typeof typeof typeof ProviderKind.Type.Type.Type.Type",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "((typeof MODEL_OPTIONS_BY_PROVIDER)[typeof typeof ProviderKind.Type.Type][number][\"slug\"] | (string & {})) | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "formatModelDisplayName",
+      "file": "packages/shared/src/model.ts",
+      "line": 97,
+      "params": [
+        {
+          "name": "model",
+          "ts_type": "string | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "parseCursorCliReasoningEffort",
+      "file": "packages/shared/src/model.ts",
+      "line": 108,
+      "params": [
+        {
+          "name": "model",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "hasEffortLevel",
+      "file": "packages/shared/src/model.ts",
+      "line": 134,
+      "params": [
+        {
+          "name": "caps",
+          "ts_type": "{\n  readonly optionDescriptors?: readonly typeof typeof typeof ProviderOptionDescriptor.Type.Type.Type[];\n  readonly reasoningEffortLevels: readonly (| ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource?: \"api-effort\";\n      readonly apiEffortValue?: never;\n    })\n  | ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource: \"provider-setting\";\n      readonly apiEffortValue: string;\n    })\n  | ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource: \"prompt-prefix\";\n      readonly apiEffortValue?: never;\n    }))[];\n  readonly supportsFastMode: boolean;\n  readonly supportsThinkingToggle: boolean;\n  readonly promptInjectedEffortLevels: readonly string[];\n  readonly contextWindowOptions: readonly {\n  readonly value: string;\n  readonly label: string;\n  readonly isDefault?: true;\n}[];\n  readonly autoCompactWindowOptions?: readonly {\n  readonly value: string;\n  readonly label: string;\n  readonly isDefault?: true;\n}[];\n  readonly contextWindowTokens?: number;\n  readonly variantOptions?: readonly (| ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource?: \"api-effort\";\n      readonly apiEffortValue?: never;\n    })\n  | ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource: \"provider-setting\";\n      readonly apiEffortValue: string;\n    })\n  | ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource: \"prompt-prefix\";\n      readonly apiEffortValue?: never;\n    }))[];\n  readonly agentOptions?: readonly (| ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource?: \"api-effort\";\n      readonly apiEffortValue?: never;\n    })\n  | ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource: \"provider-setting\";\n      readonly apiEffortValue: string;\n    })\n  | ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource: \"prompt-prefix\";\n      readonly apiEffortValue?: never;\n    }))[];\n}",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "value",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "getDefaultEffort",
+      "file": "packages/shared/src/model.ts",
+      "line": 138,
+      "params": [
+        {
+          "name": "caps",
+          "ts_type": "{\n  readonly optionDescriptors?: readonly typeof typeof typeof ProviderOptionDescriptor.Type.Type.Type[];\n  readonly reasoningEffortLevels: readonly (| ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource?: \"api-effort\";\n      readonly apiEffortValue?: never;\n    })\n  | ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource: \"provider-setting\";\n      readonly apiEffortValue: string;\n    })\n  | ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource: \"prompt-prefix\";\n      readonly apiEffortValue?: never;\n    }))[];\n  readonly supportsFastMode: boolean;\n  readonly supportsThinkingToggle: boolean;\n  readonly promptInjectedEffortLevels: readonly string[];\n  readonly contextWindowOptions: readonly {\n  readonly value: string;\n  readonly label: string;\n  readonly isDefault?: true;\n}[];\n  readonly autoCompactWindowOptions?: readonly {\n  readonly value: string;\n  readonly label: string;\n  readonly isDefault?: true;\n}[];\n  readonly contextWindowTokens?: number;\n  readonly variantOptions?: readonly (| ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource?: \"api-effort\";\n      readonly apiEffortValue?: never;\n    })\n  | ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource: \"provider-setting\";\n      readonly apiEffortValue: string;\n    })\n  | ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource: \"prompt-prefix\";\n      readonly apiEffortValue?: never;\n    }))[];\n  readonly agentOptions?: readonly (| ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource?: \"api-effort\";\n      readonly apiEffortValue?: never;\n    })\n  | ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource: \"provider-setting\";\n      readonly apiEffortValue: string;\n    })\n  | ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource: \"prompt-prefix\";\n      readonly apiEffortValue?: never;\n    }))[];\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "hasContextWindowOption",
+      "file": "packages/shared/src/model.ts",
+      "line": 142,
+      "params": [
+        {
+          "name": "caps",
+          "ts_type": "{\n  readonly optionDescriptors?: readonly typeof typeof typeof ProviderOptionDescriptor.Type.Type.Type[];\n  readonly reasoningEffortLevels: readonly (| ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource?: \"api-effort\";\n      readonly apiEffortValue?: never;\n    })\n  | ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource: \"provider-setting\";\n      readonly apiEffortValue: string;\n    })\n  | ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource: \"prompt-prefix\";\n      readonly apiEffortValue?: never;\n    }))[];\n  readonly supportsFastMode: boolean;\n  readonly supportsThinkingToggle: boolean;\n  readonly promptInjectedEffortLevels: readonly string[];\n  readonly contextWindowOptions: readonly {\n  readonly value: string;\n  readonly label: string;\n  readonly isDefault?: true;\n}[];\n  readonly autoCompactWindowOptions?: readonly {\n  readonly value: string;\n  readonly label: string;\n  readonly isDefault?: true;\n}[];\n  readonly contextWindowTokens?: number;\n  readonly variantOptions?: readonly (| ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource?: \"api-effort\";\n      readonly apiEffortValue?: never;\n    })\n  | ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource: \"provider-setting\";\n      readonly apiEffortValue: string;\n    })\n  | ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource: \"prompt-prefix\";\n      readonly apiEffortValue?: never;\n    }))[];\n  readonly agentOptions?: readonly (| ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource?: \"api-effort\";\n      readonly apiEffortValue?: never;\n    })\n  | ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource: \"provider-setting\";\n      readonly apiEffortValue: string;\n    })\n  | ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource: \"prompt-prefix\";\n      readonly apiEffortValue?: never;\n    }))[];\n}",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "value",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "getDefaultContextWindow",
+      "file": "packages/shared/src/model.ts",
+      "line": 146,
+      "params": [
+        {
+          "name": "caps",
+          "ts_type": "{\n  readonly optionDescriptors?: readonly typeof typeof typeof ProviderOptionDescriptor.Type.Type.Type[];\n  readonly reasoningEffortLevels: readonly (| ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource?: \"api-effort\";\n      readonly apiEffortValue?: never;\n    })\n  | ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource: \"provider-setting\";\n      readonly apiEffortValue: string;\n    })\n  | ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource: \"prompt-prefix\";\n      readonly apiEffortValue?: never;\n    }))[];\n  readonly supportsFastMode: boolean;\n  readonly supportsThinkingToggle: boolean;\n  readonly promptInjectedEffortLevels: readonly string[];\n  readonly contextWindowOptions: readonly {\n  readonly value: string;\n  readonly label: string;\n  readonly isDefault?: true;\n}[];\n  readonly autoCompactWindowOptions?: readonly {\n  readonly value: string;\n  readonly label: string;\n  readonly isDefault?: true;\n}[];\n  readonly contextWindowTokens?: number;\n  readonly variantOptions?: readonly (| ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource?: \"api-effort\";\n      readonly apiEffortValue?: never;\n    })\n  | ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource: \"provider-setting\";\n      readonly apiEffortValue: string;\n    })\n  | ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource: \"prompt-prefix\";\n      readonly apiEffortValue?: never;\n    }))[];\n  readonly agentOptions?: readonly (| ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource?: \"api-effort\";\n      readonly apiEffortValue?: never;\n    })\n  | ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource: \"provider-setting\";\n      readonly apiEffortValue: string;\n    })\n  | ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource: \"prompt-prefix\";\n      readonly apiEffortValue?: never;\n    }))[];\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "getDevinStaticModelVariants",
+      "file": "packages/shared/src/model.ts",
+      "line": 163,
+      "params": [
+        {
+          "name": "model",
+          "ts_type": "string | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ReadonlyArray<typeof typeof typeof typeof ProviderModelVariantDescriptor.Type.Type.Type.Type> | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveDevinModelVariant",
+      "file": "packages/shared/src/model.ts",
+      "line": 170,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly model?: string | null | undefined;\n  readonly runtimeModel?: typeof typeof typeof typeof ProviderModelDescriptor.Type.Type.Type.Type | undefined;\n  readonly modelVariant?: string | null | undefined;\n  readonly reasoningEffort?: string | null | undefined;\n  readonly fastMode?: boolean | undefined;\n  readonly thinking?: boolean | null | undefined;\n  readonly contextWindow?: string | null | undefined;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "hasAutoCompactWindowOption",
+      "file": "packages/shared/src/model.ts",
+      "line": 242,
+      "params": [
+        {
+          "name": "caps",
+          "ts_type": "{\n  readonly optionDescriptors?: readonly typeof typeof typeof ProviderOptionDescriptor.Type.Type.Type[];\n  readonly reasoningEffortLevels: readonly (| ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource?: \"api-effort\";\n      readonly apiEffortValue?: never;\n    })\n  | ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource: \"provider-setting\";\n      readonly apiEffortValue: string;\n    })\n  | ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource: \"prompt-prefix\";\n      readonly apiEffortValue?: never;\n    }))[];\n  readonly supportsFastMode: boolean;\n  readonly supportsThinkingToggle: boolean;\n  readonly promptInjectedEffortLevels: readonly string[];\n  readonly contextWindowOptions: readonly {\n  readonly value: string;\n  readonly label: string;\n  readonly isDefault?: true;\n}[];\n  readonly autoCompactWindowOptions?: readonly {\n  readonly value: string;\n  readonly label: string;\n  readonly isDefault?: true;\n}[];\n  readonly contextWindowTokens?: number;\n  readonly variantOptions?: readonly (| ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource?: \"api-effort\";\n      readonly apiEffortValue?: never;\n    })\n  | ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource: \"provider-setting\";\n      readonly apiEffortValue: string;\n    })\n  | ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource: \"prompt-prefix\";\n      readonly apiEffortValue?: never;\n    }))[];\n  readonly agentOptions?: readonly (| ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource?: \"api-effort\";\n      readonly apiEffortValue?: never;\n    })\n  | ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource: \"provider-setting\";\n      readonly apiEffortValue: string;\n    })\n  | ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource: \"prompt-prefix\";\n      readonly apiEffortValue?: never;\n    }))[];\n}",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "value",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "getClaudeContextWindowSuffix",
+      "file": "packages/shared/src/model.ts",
+      "line": 249,
+      "params": [
+        {
+          "name": "model",
+          "ts_type": "string | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "stripClaudeContextWindowSuffix",
+      "file": "packages/shared/src/model.ts",
+      "line": 254,
+      "params": [
+        {
+          "name": "model",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "getDefaultAutoCompactWindow",
+      "file": "packages/shared/src/model.ts",
+      "line": 258,
+      "params": [
+        {
+          "name": "caps",
+          "ts_type": "{\n  readonly optionDescriptors?: readonly typeof typeof typeof ProviderOptionDescriptor.Type.Type.Type[];\n  readonly reasoningEffortLevels: readonly (| ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource?: \"api-effort\";\n      readonly apiEffortValue?: never;\n    })\n  | ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource: \"provider-setting\";\n      readonly apiEffortValue: string;\n    })\n  | ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource: \"prompt-prefix\";\n      readonly apiEffortValue?: never;\n    }))[];\n  readonly supportsFastMode: boolean;\n  readonly supportsThinkingToggle: boolean;\n  readonly promptInjectedEffortLevels: readonly string[];\n  readonly contextWindowOptions: readonly {\n  readonly value: string;\n  readonly label: string;\n  readonly isDefault?: true;\n}[];\n  readonly autoCompactWindowOptions?: readonly {\n  readonly value: string;\n  readonly label: string;\n  readonly isDefault?: true;\n}[];\n  readonly contextWindowTokens?: number;\n  readonly variantOptions?: readonly (| ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource?: \"api-effort\";\n      readonly apiEffortValue?: never;\n    })\n  | ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource: \"provider-setting\";\n      readonly apiEffortValue: string;\n    })\n  | ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource: \"prompt-prefix\";\n      readonly apiEffortValue?: never;\n    }))[];\n  readonly agentOptions?: readonly (| ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource?: \"api-effort\";\n      readonly apiEffortValue?: never;\n    })\n  | ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource: \"provider-setting\";\n      readonly apiEffortValue: string;\n    })\n  | ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource: \"prompt-prefix\";\n      readonly apiEffortValue?: never;\n    }))[];\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveLabeledOptionValue",
+      "file": "packages/shared/src/model.ts",
+      "line": 262,
+      "params": [
+        {
+          "name": "options",
+          "ts_type": "ReadonlyArray<{ value: string; isDefault?: boolean | undefined }> | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "rawValue",
+          "ts_type": "string | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "getProviderOptionBooleanSelectionValue",
+      "file": "packages/shared/src/model.ts",
+      "line": 315,
+      "params": [
+        {
+          "name": "selections",
+          "ts_type": "(| ReadonlyArray<typeof typeof typeof ProviderOptionSelection.Type.Type.Type>\n  | Record<string, unknown>\n  | null\n  | undefined)",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "id",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "getModelSelectionStringOptionValue",
+      "file": "packages/shared/src/model.ts",
+      "line": 323,
+      "params": [
+        {
+          "name": "modelSelection",
+          "ts_type": "typeof typeof typeof typeof ModelSelection.Type.Type.Type.Type | null | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "id",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "getModelSelectionBooleanOptionValue",
+      "file": "packages/shared/src/model.ts",
+      "line": 334,
+      "params": [
+        {
+          "name": "modelSelection",
+          "ts_type": "typeof typeof typeof typeof ModelSelection.Type.Type.Type.Type | null | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "id",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "getProviderOptionDescriptors",
+      "file": "packages/shared/src/model.ts",
+      "line": 448,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  provider: typeof typeof typeof typeof ProviderKind.Type.Type.Type.Type;\n  caps: {\n  readonly optionDescriptors?: readonly typeof typeof typeof ProviderOptionDescriptor.Type.Type.Type[];\n  readonly reasoningEffortLevels: readonly (| ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource?: \"api-effort\";\n      readonly apiEffortValue?: never;\n    })\n  | ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource: \"provider-setting\";\n      readonly apiEffortValue: string;\n    })\n  | ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource: \"prompt-prefix\";\n      readonly apiEffortValue?: never;\n    }))[];\n  readonly supportsFastMode: boolean;\n  readonly supportsThinkingToggle: boolean;\n  readonly promptInjectedEffortLevels: readonly string[];\n  readonly contextWindowOptions: readonly {\n  readonly value: string;\n  readonly label: string;\n  readonly isDefault?: true;\n}[];\n  readonly autoCompactWindowOptions?: readonly {\n  readonly value: string;\n  readonly label: string;\n  readonly isDefault?: true;\n}[];\n  readonly contextWindowTokens?: number;\n  readonly variantOptions?: readonly (| ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource?: \"api-effort\";\n      readonly apiEffortValue?: never;\n    })\n  | ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource: \"provider-setting\";\n      readonly apiEffortValue: string;\n    })\n  | ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource: \"prompt-prefix\";\n      readonly apiEffortValue?: never;\n    }))[];\n  readonly agentOptions?: readonly (| ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource?: \"api-effort\";\n      readonly apiEffortValue?: never;\n    })\n  | ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource: \"provider-setting\";\n      readonly apiEffortValue: string;\n    })\n  | ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource: \"prompt-prefix\";\n      readonly apiEffortValue?: never;\n    }))[];\n};\n  selections?: (| ReadonlyArray<typeof typeof typeof ProviderOptionSelection.Type.Type.Type>\n  | Record<string, unknown>\n  | null\n  | undefined);\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ReadonlyArray<typeof typeof typeof typeof ProviderOptionDescriptor.Type.Type.Type.Type>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "getProviderOptionCurrentValue",
+      "file": "packages/shared/src/model.ts",
+      "line": 478,
+      "params": [
+        {
+          "name": "descriptor",
+          "ts_type": "typeof typeof typeof typeof ProviderOptionDescriptor.Type.Type.Type.Type | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | boolean | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "getModelCapabilities",
+      "file": "packages/shared/src/model.ts",
+      "line": 492,
+      "params": [
+        {
+          "name": "provider",
+          "ts_type": "typeof typeof typeof typeof ProviderKind.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "model",
+          "ts_type": "string | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "{\n  readonly optionDescriptors?: readonly typeof typeof typeof ProviderOptionDescriptor.Type.Type.Type[];\n  readonly reasoningEffortLevels: readonly (| ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource?: \"api-effort\";\n      readonly apiEffortValue?: never;\n    })\n  | ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource: \"provider-setting\";\n      readonly apiEffortValue: string;\n    })\n  | ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource: \"prompt-prefix\";\n      readonly apiEffortValue?: never;\n    }))[];\n  readonly supportsFastMode: boolean;\n  readonly supportsThinkingToggle: boolean;\n  readonly promptInjectedEffortLevels: readonly string[];\n  readonly contextWindowOptions: readonly {\n  readonly value: string;\n  readonly label: string;\n  readonly isDefault?: true;\n}[];\n  readonly autoCompactWindowOptions?: readonly {\n  readonly value: string;\n  readonly label: string;\n  readonly isDefault?: true;\n}[];\n  readonly contextWindowTokens?: number;\n  readonly variantOptions?: readonly (| ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource?: \"api-effort\";\n      readonly apiEffortValue?: never;\n    })\n  | ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource: \"provider-setting\";\n      readonly apiEffortValue: string;\n    })\n  | ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource: \"prompt-prefix\";\n      readonly apiEffortValue?: never;\n    }))[];\n  readonly agentOptions?: readonly (| ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource?: \"api-effort\";\n      readonly apiEffortValue?: never;\n    })\n  | ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource: \"provider-setting\";\n      readonly apiEffortValue: string;\n    })\n  | ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource: \"prompt-prefix\";\n      readonly apiEffortValue?: never;\n    }))[];\n}",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveNewestKnownClaudeFamilyModel",
+      "file": "packages/shared/src/model.ts",
+      "line": 565,
+      "params": [
+        {
+          "name": "model",
+          "ts_type": "string | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "((typeof MODEL_OPTIONS_BY_PROVIDER)[typeof typeof ProviderKind.Type.Type][number][\"slug\"] | (string & {})) | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveGrokEffortFamily",
+      "file": "packages/shared/src/model.ts",
+      "line": 583,
+      "params": [
+        {
+          "name": "model",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "\"build\" | \"4.5\" | \"4.6\"",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isClaudeUltrathinkPrompt",
+      "file": "packages/shared/src/model.ts",
+      "line": 630,
+      "params": [
+        {
+          "name": "text",
+          "ts_type": "string | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "normalizeModelSlug",
+      "file": "packages/shared/src/model.ts",
+      "line": 634,
+      "params": [
+        {
+          "name": "model",
+          "ts_type": "string | null | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "provider",
+          "ts_type": "typeof typeof typeof typeof ProviderKind.Type.Type.Type.Type",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "((typeof MODEL_OPTIONS_BY_PROVIDER)[typeof typeof ProviderKind.Type.Type][number][\"slug\"] | (string & {})) | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveSelectableModel",
+      "file": "packages/shared/src/model.ts",
+      "line": 666,
+      "params": [
+        {
+          "name": "provider",
+          "ts_type": "typeof typeof typeof typeof ProviderKind.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "value",
+          "ts_type": "string | null | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "options",
+          "ts_type": "ReadonlyArray<SelectableModelOption>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "((typeof MODEL_OPTIONS_BY_PROVIDER)[typeof typeof ProviderKind.Type.Type][number][\"slug\"] | (string & {})) | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveModelSlug",
+      "file": "packages/shared/src/model.ts",
+      "line": 717,
+      "params": [
+        {
+          "name": "model",
+          "ts_type": "string | null | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "provider",
+          "ts_type": "typeof typeof typeof typeof ProviderKind.Type.Type.Type.Type",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "((typeof MODEL_OPTIONS_BY_PROVIDER)[typeof typeof ProviderKind.Type.Type][number][\"slug\"] | (string & {})) | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveModelSlugForProvider",
+      "file": "packages/shared/src/model.ts",
+      "line": 738,
+      "params": [
+        {
+          "name": "provider",
+          "ts_type": "typeof typeof typeof typeof ProviderKind.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "model",
+          "ts_type": "string | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "((typeof MODEL_OPTIONS_BY_PROVIDER)[typeof typeof ProviderKind.Type.Type][number][\"slug\"] | (string & {})) | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "trimOrNull",
+      "file": "packages/shared/src/model.ts",
+      "line": 745,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "(string) | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(string) | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "normalizeClaudeModelOptions",
+      "file": "packages/shared/src/model.ts",
+      "line": 756,
+      "params": [
+        {
+          "name": "model",
+          "ts_type": "string | null | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "modelOptions",
+          "ts_type": "typeof typeof typeof typeof ClaudeModelOptions.Type.Type.Type.Type | null | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "caps",
+          "ts_type": "{\n  readonly optionDescriptors?: readonly typeof typeof typeof ProviderOptionDescriptor.Type.Type.Type[];\n  readonly reasoningEffortLevels: readonly (| ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource?: \"api-effort\";\n      readonly apiEffortValue?: never;\n    })\n  | ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource: \"provider-setting\";\n      readonly apiEffortValue: string;\n    })\n  | ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource: \"prompt-prefix\";\n      readonly apiEffortValue?: never;\n    }))[];\n  readonly supportsFastMode: boolean;\n  readonly supportsThinkingToggle: boolean;\n  readonly promptInjectedEffortLevels: readonly string[];\n  readonly contextWindowOptions: readonly {\n  readonly value: string;\n  readonly label: string;\n  readonly isDefault?: true;\n}[];\n  readonly autoCompactWindowOptions?: readonly {\n  readonly value: string;\n  readonly label: string;\n  readonly isDefault?: true;\n}[];\n  readonly contextWindowTokens?: number;\n  readonly variantOptions?: readonly (| ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource?: \"api-effort\";\n      readonly apiEffortValue?: never;\n    })\n  | ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource: \"provider-setting\";\n      readonly apiEffortValue: string;\n    })\n  | ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource: \"prompt-prefix\";\n      readonly apiEffortValue?: never;\n    }))[];\n  readonly agentOptions?: readonly (| ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource?: \"api-effort\";\n      readonly apiEffortValue?: never;\n    })\n  | ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource: \"provider-setting\";\n      readonly apiEffortValue: string;\n    })\n  | ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource: \"prompt-prefix\";\n      readonly apiEffortValue?: never;\n    }))[];\n}",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ClaudeModelOptions.Type.Type.Type.Type | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveApiModelId",
+      "file": "packages/shared/src/model.ts",
+      "line": 792,
+      "params": [
+        {
+          "name": "modelSelection",
+          "ts_type": "typeof typeof typeof typeof ModelSelection.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "getEffectiveClaudeCodeEffort",
+      "file": "packages/shared/src/model.ts",
+      "line": 809,
+      "params": [
+        {
+          "name": "effort",
+          "ts_type": "(typeof CLAUDE_CODE_EFFORT_OPTIONS)[number] | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(typeof CLAUDE_API_EFFORT_OPTIONS)[number] | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "claudeSelectionRequiresRestart",
+      "file": "packages/shared/src/model.ts",
+      "line": 838,
+      "params": [
+        {
+          "name": "previous",
+          "ts_type": "typeof typeof typeof typeof ModelSelection.Type.Type.Type.Type | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "next",
+          "ts_type": "typeof typeof typeof typeof ModelSelection.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "normalizeCursorModelOptions",
+      "file": "packages/shared/src/model.ts",
+      "line": 863,
+      "params": [
+        {
+          "name": "model",
+          "ts_type": "string | null | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "modelOptions",
+          "ts_type": "typeof typeof typeof typeof CursorModelOptions.Type.Type.Type.Type | null | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "capabilities",
+          "ts_type": "{\n  readonly optionDescriptors?: readonly typeof typeof typeof ProviderOptionDescriptor.Type.Type.Type[];\n  readonly reasoningEffortLevels: readonly (| ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource?: \"api-effort\";\n      readonly apiEffortValue?: never;\n    })\n  | ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource: \"provider-setting\";\n      readonly apiEffortValue: string;\n    })\n  | ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource: \"prompt-prefix\";\n      readonly apiEffortValue?: never;\n    }))[];\n  readonly supportsFastMode: boolean;\n  readonly supportsThinkingToggle: boolean;\n  readonly promptInjectedEffortLevels: readonly string[];\n  readonly contextWindowOptions: readonly {\n  readonly value: string;\n  readonly label: string;\n  readonly isDefault?: true;\n}[];\n  readonly autoCompactWindowOptions?: readonly {\n  readonly value: string;\n  readonly label: string;\n  readonly isDefault?: true;\n}[];\n  readonly contextWindowTokens?: number;\n  readonly variantOptions?: readonly (| ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource?: \"api-effort\";\n      readonly apiEffortValue?: never;\n    })\n  | ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource: \"provider-setting\";\n      readonly apiEffortValue: string;\n    })\n  | ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource: \"prompt-prefix\";\n      readonly apiEffortValue?: never;\n    }))[];\n  readonly agentOptions?: readonly (| ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource?: \"api-effort\";\n      readonly apiEffortValue?: never;\n    })\n  | ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource: \"provider-setting\";\n      readonly apiEffortValue: string;\n    })\n  | ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource: \"prompt-prefix\";\n      readonly apiEffortValue?: never;\n    }))[];\n}",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof CursorModelOptions.Type.Type.Type.Type | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "normalizeGrokModelOptions",
+      "file": "packages/shared/src/model.ts",
+      "line": 900,
+      "params": [
+        {
+          "name": "model",
+          "ts_type": "string | null | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "modelOptions",
+          "ts_type": "typeof typeof typeof typeof GrokModelOptions.Type.Type.Type.Type | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof GrokModelOptions.Type.Type.Type.Type | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "normalizeAntigravityModelOptions",
+      "file": "packages/shared/src/model.ts",
+      "line": 915,
+      "params": [
+        {
+          "name": "model",
+          "ts_type": "string | null | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "modelOptions",
+          "ts_type": "typeof typeof typeof typeof AntigravityModelOptions.Type.Type.Type.Type | null | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "capabilities",
+          "ts_type": "{\n  readonly optionDescriptors?: readonly typeof typeof typeof ProviderOptionDescriptor.Type.Type.Type[];\n  readonly reasoningEffortLevels: readonly (| ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource?: \"api-effort\";\n      readonly apiEffortValue?: never;\n    })\n  | ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource: \"provider-setting\";\n      readonly apiEffortValue: string;\n    })\n  | ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource: \"prompt-prefix\";\n      readonly apiEffortValue?: never;\n    }))[];\n  readonly supportsFastMode: boolean;\n  readonly supportsThinkingToggle: boolean;\n  readonly promptInjectedEffortLevels: readonly string[];\n  readonly contextWindowOptions: readonly {\n  readonly value: string;\n  readonly label: string;\n  readonly isDefault?: true;\n}[];\n  readonly autoCompactWindowOptions?: readonly {\n  readonly value: string;\n  readonly label: string;\n  readonly isDefault?: true;\n}[];\n  readonly contextWindowTokens?: number;\n  readonly variantOptions?: readonly (| ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource?: \"api-effort\";\n      readonly apiEffortValue?: never;\n    })\n  | ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource: \"provider-setting\";\n      readonly apiEffortValue: string;\n    })\n  | ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource: \"prompt-prefix\";\n      readonly apiEffortValue?: never;\n    }))[];\n  readonly agentOptions?: readonly (| ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource?: \"api-effort\";\n      readonly apiEffortValue?: never;\n    })\n  | ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource: \"provider-setting\";\n      readonly apiEffortValue: string;\n    })\n  | ({\n  readonly value: string;\n  readonly label: string;\n  readonly description?: string;\n  readonly isDefault?: true;\n} & {\n      readonly controlSource: \"prompt-prefix\";\n      readonly apiEffortValue?: never;\n    }))[];\n}",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof AntigravityModelOptions.Type.Type.Type.Type | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "normalizePiModelOptions",
+      "file": "packages/shared/src/model.ts",
+      "line": 930,
+      "params": [
+        {
+          "name": "modelOptions",
+          "ts_type": "typeof typeof typeof typeof PiModelOptions.Type.Type.Type.Type | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof PiModelOptions.Type.Type.Type.Type | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "normalizeOmpModelOptions",
+      "file": "packages/shared/src/model.ts",
+      "line": 938,
+      "params": [
+        {
+          "name": "modelOptions",
+          "ts_type": "typeof typeof typeof typeof OmpModelOptions.Type.Type.Type.Type | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof OmpModelOptions.Type.Type.Type.Type | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "normalizeOpenCodeModelOptions",
+      "file": "packages/shared/src/model.ts",
+      "line": 947,
+      "params": [
+        {
+          "name": "modelOptions",
+          "ts_type": "typeof typeof typeof typeof OpenCodeModelOptions.Type.Type.Type.Type | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof OpenCodeModelOptions.Type.Type.Type.Type | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "applyClaudePromptEffortPrefix",
+      "file": "packages/shared/src/model.ts",
+      "line": 959,
+      "params": [
+        {
+          "name": "text",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "effort",
+          "ts_type": "(typeof CLAUDE_CODE_EFFORT_OPTIONS)[number] | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

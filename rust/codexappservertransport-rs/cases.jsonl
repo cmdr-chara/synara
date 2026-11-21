@@ -1,0 +1,9 @@
+{"fn":"isFatalCodexLineError","args":[{}],"ok":false}
+{"fn":"isFatalCodexLineError","args":[["a",1]],"ok":false}
+{"fn":"isFatalCodexLineError","args":[0],"ok":false}
+{"fn":"isFatalCodexLineError","args":[{"a":{"b":"c"}}],"ok":false}
+{"fn":"isFatalCodexLineError","args":[true],"ok":false}
+{"fn":"isFatalCodexLineError","args":[{"a":"b"}],"ok":false}
+{"fn":"isFatalCodexLineError","args":[null],"error":"Cannot read properties of null (reading 'reason')"}
+{"fn":"isFatalCodexLineError","args":[[]],"ok":false}
+{"fn":"isFatalCodexLineError","args":["x"],"ok":false}

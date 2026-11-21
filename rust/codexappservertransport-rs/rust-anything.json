@@ -1,0 +1,49 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/codexAppServerTransport.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "codexappservertransport-rs",
+  "exports": [
+    {
+      "name": "isFatalCodexLineError",
+      "file": "apps/server/src/codexAppServerTransport.ts",
+      "line": 41,
+      "params": [
+        {
+          "name": "error",
+          "ts_type": "JsonRpcStdioTransportError",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "CodexAppServerTransportError",
+      "file": "apps/server/src/codexAppServerTransport.ts",
+      "line": 25,
+      "reason": "class: extends another class"
+    },
+    {
+      "name": "CodexJsonlFramer",
+      "file": "apps/server/src/codexAppServerTransport.ts",
+      "line": 45,
+      "reason": "class: extends another class"
+    },
+    {
+      "name": "CodexJsonlWriter",
+      "file": "apps/server/src/codexAppServerTransport.ts",
+      "line": 60,
+      "reason": "class: extends another class"
+    }
+  ]
+}

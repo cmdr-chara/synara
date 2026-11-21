@@ -4,19 +4,19 @@
   "fingerprint": "055b4c1840d7ae8a",
   "coverage": {
     "lines": 223,
-    "reached": 140,
+    "reached": 80,
     "files": [
       {
         "file": "packages/shared/src/threadEnvironment.ts",
         "lines": 58,
-        "reached": 58,
-        "missed": ""
+        "reached": 44,
+        "missed": "11-12, 43-54"
       },
       {
         "file": "packages/shared/src/threadWorkspace.ts",
         "lines": 165,
-        "reached": 82,
-        "missed": "24-25, 27-28, 39-40, 50, 61, 63-64, 73-81, 95-96, 114-117, 120-150, 153-160, 162-166, 168-172, 174-180, 182-183"
+        "reached": 36,
+        "missed": "22-30, 34-40, 42-53, 55-64, 66-70, 73-81, 88-102, 114-117, 120-150, 153-160, 162-166, 168-172, 174-180, 182-183"
       }
     ]
   }

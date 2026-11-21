@@ -1,0 +1,60 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/routeRestoreRefreshCoordinator.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "routerestorerefreshcoordinator-rs",
+  "exports": [
+    {
+      "name": "requestShellSnapshotRefresh",
+      "file": "apps/web/src/routeRestoreRefreshCoordinator.ts",
+      "line": 24,
+      "params": [
+        {
+          "name": "minSequence",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<boolean>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "requestEmptyRouteRestoreRefresh",
+      "file": "apps/web/src/routeRestoreRefreshCoordinator.ts",
+      "line": 55,
+      "params": [],
+      "returns": "Promise<(\"restored\" | \"verified-empty\" | \"unknown\")>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "registerShellSnapshotRefresh",
+      "file": "apps/web/src/routeRestoreRefreshCoordinator.ts",
+      "line": 15,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "registerEmptyRouteRestoreRefresh",
+      "file": "apps/web/src/routeRestoreRefreshCoordinator.ts",
+      "line": 28,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "runEmptyRouteRestoreRefresh",
+      "file": "apps/web/src/routeRestoreRefreshCoordinator.ts",
+      "line": 72,
+      "reason": "takes or returns a function"
+    }
+  ]
+}

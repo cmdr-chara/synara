@@ -1,0 +1,17 @@
+{
+  "unit": "apps/web/src/routeRestoreRefreshCoordinator.ts",
+  "files": 1,
+  "fingerprint": "13db6664055daa9e",
+  "coverage": {
+    "lines": 96,
+    "reached": 25,
+    "files": [
+      {
+        "file": "apps/web/src/routeRestoreRefreshCoordinator.ts",
+        "lines": 96,
+        "reached": 25,
+        "missed": "16-22, 29-35, 37-45, 47-53, 59-63, 73-84, 86-90, 92-95, 97-104, 106-112"
+      }
+    ]
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "unit": "apps/desktop/src/updateInstallMarker.ts",
+  "files": 1,
+  "fingerprint": "35b5000ab75c8760",
+  "coverage": {
+    "lines": 602,
+    "reached": 220,
+    "files": [
+      {
+        "file": "apps/desktop/src/updateArtifactIdentity.ts",
+        "lines": 91,
+        "reached": 21,
+        "missed": "18-30, 40-44, 46-59, 61-67, 69-80, 82-90, 93-102"
+      },
+      {
+        "file": "apps/desktop/src/updateInstallMarker.ts",
+        "lines": 233,
+        "reached": 144,
+        "missed": "69-70, 75-77, 93-99, 103-105, 137-138, 140-148, 156-175, 187-189, 191-202, 214-219, 221-232, 243-252"
+      },
+      {
+        "file": "apps/desktop/src/updateState.ts",
+        "lines": 278,
+        "reached": 55,
+        "missed": "12-13, 16-18, 21-30, 32-34, 37-44, 46-48, 50-59, 61-62, 65-70, 72-75, 77-80, 89-104, 107-111, 113-115, 117-139, 141-144, 156-175, 178-181, 184-185, 188-198, 200-203, 205-207, 209-212, 214-215, 218-238, 254-274, 277-284, 292-308"
+      }
+    ]
+  }
+}

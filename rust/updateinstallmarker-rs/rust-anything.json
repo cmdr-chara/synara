@@ -1,0 +1,204 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/desktop/src/updateInstallMarker.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "updateinstallmarker-rs",
+  "exports": [
+    {
+      "name": "installMarkerMatchesHandoffExpectation",
+      "file": "apps/desktop/src/updateInstallMarker.ts",
+      "line": 39,
+      "params": [
+        {
+          "name": "marker",
+          "ts_type": "UpdateInstallMarker",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "expected",
+          "ts_type": "UpdateInstallHandoffExpectation",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "createUpdateInstallMarker",
+      "file": "apps/desktop/src/updateInstallMarker.ts",
+      "line": 107,
+      "params": [
+        {
+          "name": "args",
+          "ts_type": "{\n  readonly fromVersion: string;\n  readonly toVersion: string;\n  readonly requestedAt: string;\n  readonly consecutiveFailures: number;\n  readonly lastFailureAt?: string | null;\n  readonly artifact: UpdateArtifactIdentity;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "UpdateInstallMarker",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "readInstallMarker",
+      "file": "apps/desktop/src/updateInstallMarker.ts",
+      "line": 129,
+      "params": [
+        {
+          "name": "filePath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(| { readonly status: \"missing\" }\n  | { readonly status: \"valid\"; readonly marker: UpdateInstallMarker }\n  | { readonly status: \"invalid\"; readonly error: string })",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "writeInstallMarker",
+      "file": "apps/desktop/src/updateInstallMarker.ts",
+      "line": 151,
+      "params": [
+        {
+          "name": "filePath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "marker",
+          "ts_type": "UpdateInstallMarker",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "markInstallHandoffSync",
+      "file": "apps/desktop/src/updateInstallMarker.ts",
+      "line": 178,
+      "params": [
+        {
+          "name": "filePath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "expected",
+          "ts_type": "UpdateInstallHandoffExpectation",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "nowIso",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "UpdateInstallMarker | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "recordInstallMarkerFailureSync",
+      "file": "apps/desktop/src/updateInstallMarker.ts",
+      "line": 205,
+      "params": [
+        {
+          "name": "filePath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "expected",
+          "ts_type": "UpdateInstallHandoffExpectation",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "nowIso",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(| { readonly status: \"recorded\" | \"already-failed\"; readonly marker: UpdateInstallMarker }\n  | { readonly status: \"missing\" }\n  | { readonly status: \"invalid\"; readonly error: string }\n  | { readonly status: \"mismatch\" }\n  | {\n      readonly status: \"write-failed\";\n      readonly marker: UpdateInstallMarker;\n      readonly error: unknown;\n    })",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveInstallMarkerOutcome",
+      "file": "apps/desktop/src/updateInstallMarker.ts",
+      "line": 235,
+      "params": [
+        {
+          "name": "marker",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "currentVersion",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "nowIso",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(\"success\" | \"failure\" | \"already-failed\" | \"stale\" | \"invalid\")",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "clearInstallMarker",
+      "file": "apps/desktop/src/updateInstallMarker.ts",
+      "line": 255,
+      "params": [
+        {
+          "name": "filePath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

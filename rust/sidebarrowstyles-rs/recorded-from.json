@@ -1,0 +1,23 @@
+{
+  "unit": "apps/web/src/sidebarRowStyles.ts",
+  "files": 1,
+  "fingerprint": "59703bb9f8cb23b7",
+  "coverage": {
+    "lines": 146,
+    "reached": 144,
+    "files": [
+      {
+        "file": "apps/web/src/rowHoverReveal.ts",
+        "lines": 48,
+        "reached": 46,
+        "missed": "49-50"
+      },
+      {
+        "file": "apps/web/src/sidebarRowStyles.ts",
+        "lines": 98,
+        "reached": 98,
+        "missed": ""
+      }
+    ]
+  }
+}

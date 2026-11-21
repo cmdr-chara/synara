@@ -1,0 +1,30 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/sidebarRowStyles.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "sidebarrowstyles-rs",
+  "exports": [
+    {
+      "name": "sidebarHoverRevealHideClassName",
+      "file": "apps/web/src/sidebarRowStyles.ts",
+      "line": 126,
+      "params": [
+        {
+          "name": "group",
+          "ts_type": "Exclude<(\"activity-row\" | \"project-header\" | \"thread-row\" | \"picker-row\"), \"picker-row\">",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

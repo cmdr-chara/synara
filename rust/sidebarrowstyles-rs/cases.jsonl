@@ -1,0 +1,9 @@
+{"fn":"sidebarHoverRevealHideClassName","args":[{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"sidebarHoverRevealHideClassName","args":[{}],"ok":{"$undefined":true}}
+{"fn":"sidebarHoverRevealHideClassName","args":[0],"ok":{"$undefined":true}}
+{"fn":"sidebarHoverRevealHideClassName","args":[true],"ok":{"$undefined":true}}
+{"fn":"sidebarHoverRevealHideClassName","args":["x"],"ok":{"$undefined":true}}
+{"fn":"sidebarHoverRevealHideClassName","args":[["a",1]],"ok":{"$undefined":true}}
+{"fn":"sidebarHoverRevealHideClassName","args":[{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"sidebarHoverRevealHideClassName","args":[null],"ok":{"$undefined":true}}
+{"fn":"sidebarHoverRevealHideClassName","args":[[]],"ok":{"$undefined":true}}

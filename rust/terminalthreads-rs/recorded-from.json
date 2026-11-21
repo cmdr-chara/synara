@@ -1,0 +1,17 @@
+{
+  "unit": "packages/shared/src/terminalThreads.ts",
+  "files": 1,
+  "fingerprint": "47171d1cb79afff7",
+  "coverage": {
+    "lines": 429,
+    "reached": 422,
+    "files": [
+      {
+        "file": "packages/shared/src/terminalThreads.ts",
+        "lines": 429,
+        "reached": 422,
+        "missed": "144-145, 172-173, 249, 347-348"
+      }
+    ]
+  }
+}

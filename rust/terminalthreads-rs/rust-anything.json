@@ -1,0 +1,240 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/terminalThreads.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "terminalthreads-rs",
+  "exports": [
+    {
+      "name": "dockTerminalScopeId",
+      "file": "packages/shared/src/terminalThreads.ts",
+      "line": 9,
+      "params": [
+        {
+          "name": "hostThreadId",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "terminalScopeIdsForThread",
+      "file": "packages/shared/src/terminalThreads.ts",
+      "line": 13,
+      "params": [
+        {
+          "name": "hostThreadId",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "readonly string[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isGenericTerminalThreadTitle",
+      "file": "packages/shared/src/terminalThreads.ts",
+      "line": 40,
+      "params": [
+        {
+          "name": "title",
+          "ts_type": "string | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "defaultTerminalTitleForCliKind",
+      "file": "packages/shared/src/terminalThreads.ts",
+      "line": 270,
+      "params": [
+        {
+          "name": "cliKind",
+          "ts_type": "(\"codex\" | \"claude\" | \"antigravity\")",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "managedTerminalCommandNameForCliKind",
+      "file": "packages/shared/src/terminalThreads.ts",
+      "line": 278,
+      "params": [
+        {
+          "name": "cliKind",
+          "ts_type": "Exclude<(\"codex\" | \"claude\" | \"antigravity\"), \"antigravity\">",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "terminalCliKindFromValue",
+      "file": "packages/shared/src/terminalThreads.ts",
+      "line": 282,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "string | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(\"codex\" | \"claude\" | \"antigravity\") | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "deriveTerminalProcessIdentity",
+      "file": "packages/shared/src/terminalThreads.ts",
+      "line": 292,
+      "params": [
+        {
+          "name": "command",
+          "ts_type": "string | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "TerminalCommandIdentity | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "deriveTerminalCommandIdentity",
+      "file": "packages/shared/src/terminalThreads.ts",
+      "line": 339,
+      "params": [
+        {
+          "name": "command",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "TerminalCommandIdentity | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "deriveTerminalTitleFromCommand",
+      "file": "packages/shared/src/terminalThreads.ts",
+      "line": 387,
+      "params": [
+        {
+          "name": "command",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "consumeTerminalIdentityInput",
+      "file": "packages/shared/src/terminalThreads.ts",
+      "line": 392,
+      "params": [
+        {
+          "name": "buffer",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "data",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "{ buffer: string; identity: TerminalCommandIdentity | null }",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "consumeTerminalTitleInput",
+      "file": "packages/shared/src/terminalThreads.ts",
+      "line": 432,
+      "params": [
+        {
+          "name": "buffer",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "data",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "{ buffer: string; title: string | null }",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveTerminalVisualIdentity",
+      "file": "packages/shared/src/terminalThreads.ts",
+      "line": 444,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  cliKind?: (\"codex\" | \"claude\" | \"antigravity\") | null | undefined;\n  fallbackTitle: string;\n  isRunning?: boolean | undefined;\n  state?: (\"idle\" | (\"running\" | \"attention\" | \"review\")) | null | undefined;\n  title?: string | null | undefined;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ResolvedTerminalVisualIdentity",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

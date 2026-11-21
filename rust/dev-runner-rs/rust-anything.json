@@ -1,0 +1,109 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "scripts/dev-runner.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "dev-runner-rs",
+  "exports": [
+    {
+      "name": "readDevRunnerBooleanEnvironment",
+      "file": "scripts/dev-runner.ts",
+      "line": 89,
+      "params": [
+        {
+          "name": "environment",
+          "ts_type": "NodeJS.ProcessEnv",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveOffset",
+      "file": "scripts/dev-runner.ts",
+      "line": 106,
+      "params": [
+        {
+          "name": "config",
+          "ts_type": "{\n  readonly portOffset: number | undefined;\n  readonly devInstance: string | undefined;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "{ readonly offset: number; readonly source: string }",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "createDevRunnerEnv",
+      "file": "scripts/dev-runner.ts",
+      "line": 172,
+      "params": [
+        {
+          "name": "arg0",
+          "ts_type": "CreateDevRunnerEnvInput",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Effect.Effect<NodeJS.ProcessEnv, never, Path.Path>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveDevRunnerBooleanOverrides",
+      "file": "scripts/dev-runner.ts",
+      "line": 420,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "Pick<\n    DevRunnerCliInput,\n    \"noBrowser\" | \"autoBootstrapProjectFromCwd\" | \"logWebSocketEvents\"\n  >",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "environment",
+          "ts_type": "DevRunnerBooleanEnv",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "DevRunnerBooleanEnv",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "findFirstAvailableOffset",
+      "file": "scripts/dev-runner.ts",
+      "line": 291,
+      "reason": "uses `FindFirstAvailableOffsetInput`, which has function members"
+    },
+    {
+      "name": "resolveModePortOffsets",
+      "file": "scripts/dev-runner.ts",
+      "line": 346,
+      "reason": "uses `ResolveModePortOffsetsInput`, which has function members"
+    },
+    {
+      "name": "runDevRunnerWithInput",
+      "file": "scripts/dev-runner.ts",
+      "line": 437,
+      "reason": "checks `instanceof`: class identity does not survive the bridge"
+    }
+  ]
+}

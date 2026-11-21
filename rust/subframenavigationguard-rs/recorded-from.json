@@ -1,0 +1,17 @@
+{
+  "unit": "apps/desktop/src/subframeNavigationGuard.ts",
+  "files": 1,
+  "fingerprint": "67dcb0f667ed5305",
+  "coverage": {
+    "lines": 41,
+    "reached": 22,
+    "files": [
+      {
+        "file": "apps/desktop/src/subframeNavigationGuard.ts",
+        "lines": 41,
+        "reached": 22,
+        "missed": "24-42"
+      }
+    ]
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/desktop/src/subframeNavigationGuard.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "subframenavigationguard-rs",
+  "exports": [
+    {
+      "name": "isAllowedAppSubframeNavigation",
+      "file": "apps/desktop/src/subframeNavigationGuard.ts",
+      "line": 16,
+      "params": [
+        {
+          "name": "url",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "attachAppSubframeNavigationGuard",
+      "file": "apps/desktop/src/subframeNavigationGuard.ts",
+      "line": 20,
+      "params": [
+        {
+          "name": "webContents",
+          "ts_type": "Pick<WebContents, \"on\" | \"mainFrame\">",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

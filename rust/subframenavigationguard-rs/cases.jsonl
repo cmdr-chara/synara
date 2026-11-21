@@ -1,0 +1,220 @@
+{"fn":"isAllowedAppSubframeNavigation","args":["HELLO﻿bom"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["aΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["a..b"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["a.b.c"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":[":a.b.c"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["hello world"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["Hello Worlda😀b😀c"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["hello"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["  padded  "],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["{name} has {count} items"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["ns:key.path"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["ab"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["  padded  hello world"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["./x/**/*.json"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["﻿bom"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["😀"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["key_name-1"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["trailing."],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["abkey_name-1"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["a😀b😀c"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["ünïcödé"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["straße"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":[""],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["日本語のテキスト"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["src/a/b.tsstraße"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["é"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["src/a/b.ts"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":[":  padded  "],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["abc"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["line1\nline2trailing."],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["emoji 👍🏽 mix"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":[".leadingns:key.path"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":[".leading"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["日本語のテキストa.b.c"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["hello world日本語のテキスト"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":[":"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["aa"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["HELLO"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["HELLOa"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["hello worldns:key.path"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["😀ünïcödé"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["a"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["straße  padded  "],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["a﻿bom"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["abc﻿bom"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["a:b:c"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["a.b.c😀"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["日本語のテキストa..b"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["tab\tseparatedline1\nline2"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["tab\tseparated"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["İstanbul"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["ΣΊΣΥΦΟΣabc"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["abc日本語のテキスト"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["İstanbulab"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["Hello World"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["a..bstraße"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["key_name-1ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["HELLOline1\nline2"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["Hello Worldhello"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["abcab"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["a..b.leading"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["emoji 👍🏽 mixhello world"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["  padded  :"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["😀src/a/b.ts"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["astraße"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":[".leadingHello World"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["./x/**/*.jsoné"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["ΣΊΣΥΦΟΣns:key.path"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["emoji 👍🏽 mixHELLO"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["HELLOa..b"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["line1\nline2ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["Hello Worldabc"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["src/a/b.tsHello World"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["tab\tseparatedabc"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["line1\nline2"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["helloünïcödé"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["trailing.key_name-1"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["::"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["hello:"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["a..bns:key.path"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["line1\nline2.leading"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["HELLOİstanbul"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["日本語のテキストab"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["a😀b😀cab"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["trailing.{name} has {count} items"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["./x/**/*.jsona😀b😀c"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["./x/**/*.jsonhello world"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["😀a:b:c"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["a..bİstanbul"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["./x/**/*.jsonab"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["hello worldHELLO"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["tab\tseparateda😀b😀c"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["a..ba😀b😀c"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["ünïcödéHello World"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":[".leadingab"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["  padded  key_name-1"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["abline1\nline2"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["key_name-1a😀b😀c"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["emoji 👍🏽 mix{name} has {count} items"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["ns:key.patha..b"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["abcΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["tab\tseparatedünïcödé"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["tab\tseparatedtab\tseparated"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["key_name-1a..b"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["line1\nline2{name} has {count} items"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["{name} has {count} itemsΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["straßeHELLO"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["src/a/b.ts./x/**/*.json"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["line1\nline2tab\tseparated"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["abtrailing."],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["😀﻿bom"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["a..b😀"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["😀a"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["helloa:b:c"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["straße😀"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["﻿bomemoji 👍🏽 mix"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["src/a/b.tshello"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["ns:key.path:"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["a😀"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["éhello"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["﻿bomΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["éa.b.c"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["😀emoji 👍🏽 mix"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["straßeabc"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["abcns:key.path"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["./x/**/*.jsonns:key.path"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["😀日本語のテキスト"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":[".leadingİstanbul"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["hellotrailing."],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":[".leading日本語のテキスト"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["hello world  padded  "],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["aa.b.c"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["hello worldhello world"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["a.b.cstraße"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["trailing.straße"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["ΣΊΣΥΦΟΣé"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["a..bhello"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["a..ba..b"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["a:b:cline1\nline2"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["emoji 👍🏽 mix.leading"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["﻿bom日本語のテキスト"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["{name} has {count} itemsHELLO"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":[".leadingstraße"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["﻿bom{name} has {count} items"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["line1\nline2key_name-1"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["a:b:ca😀b😀c"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["éa..b"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["İstanbulHELLO"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["﻿bom﻿bom"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["hello world😀"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["é﻿bom"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["Hello Worldhello world"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["trailing.a..b"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["HELLO./x/**/*.json"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["Hello World{name} has {count} items"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":[":tab\tseparated"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["a.b.csrc/a/b.ts"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["  padded  ünïcödé"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["helloab"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["{name} has {count} items  padded  "],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["aünïcödé"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":[":Hello World"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":[":hello world"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["日本語のテキストHELLO"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["{name} has {count} itemsHello World"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["ab﻿bom"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["emoji 👍🏽 mixline1\nline2"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["trailing.é"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["ünïcödéΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["tab\tseparatedab"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["key_name-1HELLO"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["a..b﻿bom"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["tab\tseparatedemoji 👍🏽 mix"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["ΣΊΣΥΦΟΣab"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["abΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["a:b:ctab\tseparated"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["key_name-1key_name-1"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["a😀b😀ctab\tseparated"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["😀Hello World"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["hello worldhello"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["a:b:ca:b:c"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["日本語のテキストkey_name-1"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["src/a/b.tstrailing."],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":[":hello"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["ns:key.path  padded  "],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["hello worlda.b.c"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["aba"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["﻿bom.leading"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["emoji 👍🏽 mix日本語のテキスト"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["a.b.c﻿bom"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["a:b:c﻿bom"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["ababc"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["a:b:chello world"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["line1\nline2é"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":[":a..b"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["a:b:c  padded  "],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["{name} has {count} items😀"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["a..btrailing."],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["étab\tseparated"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["héllo wörld"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["👍🏽 thumbs"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["日本語"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["ılık ırmak"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["👨‍👩‍👧 family"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["a b"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["a😀b"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["a²b x½ y①"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["aⅠb Ⅻ"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["a𐐀b 𝐀bc"],"ok":false}
+{"fn":"isAllowedAppSubframeNavigation","args":["कि ٣٤"],"ok":false}
+{"fn":"attachAppSubframeNavigationGuard","args":[["a",1]],"error":"webContents.on is not a function"}
+{"fn":"attachAppSubframeNavigationGuard","args":[[]],"error":"webContents.on is not a function"}
+{"fn":"attachAppSubframeNavigationGuard","args":[null],"error":"Cannot read properties of null (reading 'on')"}
+{"fn":"attachAppSubframeNavigationGuard","args":[0],"error":"webContents.on is not a function"}
+{"fn":"attachAppSubframeNavigationGuard","args":["x"],"error":"webContents.on is not a function"}
+{"fn":"attachAppSubframeNavigationGuard","args":[{}],"error":"webContents.on is not a function"}
+{"fn":"attachAppSubframeNavigationGuard","args":[true],"error":"webContents.on is not a function"}
+{"fn":"attachAppSubframeNavigationGuard","args":[{"a":"b"}],"error":"webContents.on is not a function"}
+{"fn":"attachAppSubframeNavigationGuard","args":[{"a":{"b":"c"}}],"error":"webContents.on is not a function"}

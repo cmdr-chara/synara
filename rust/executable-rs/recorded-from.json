@@ -1,0 +1,17 @@
+{
+  "unit": "packages/shared/src/executable.ts",
+  "files": 1,
+  "fingerprint": "1ecd0ac257a378ff",
+  "coverage": {
+    "lines": 299,
+    "reached": 203,
+    "files": [
+      {
+        "file": "packages/shared/src/executable.ts",
+        "lines": 299,
+        "reached": 203,
+        "missed": "48-51, 64-68, 94-96, 98-101, 103-111, 115-117, 196-204, 211-217, 251-258, 266-268, 278-291, 293-319"
+      }
+    ]
+  }
+}

@@ -1,0 +1,1326 @@
+{"fn":"envPathKeyFor","args":[{"a":{"b":"c"}}],"ok":"PATH"}
+{"fn":"envPathKeyFor","args":[null,{"$undefined":true}],"error":"Cannot use 'in' operator to search for 'PATH' in null"}
+{"fn":"envPathKeyFor","args":[[],{}],"ok":"PATH"}
+{"fn":"envPathKeyFor","args":[0,[]],"error":"Cannot use 'in' operator to search for 'PATH' in 0"}
+{"fn":"envPathKeyFor","args":[{},[]],"ok":"PATH"}
+{"fn":"envPathKeyFor","args":["x",{"$undefined":true}],"error":"Cannot use 'in' operator to search for 'PATH' in x"}
+{"fn":"envPathKeyFor","args":["x",{"a":{"b":"c"}}],"error":"Cannot use 'in' operator to search for 'PATH' in x"}
+{"fn":"envPathKeyFor","args":[[],{"a":{"b":"c"}}],"ok":"PATH"}
+{"fn":"envPathKeyFor","args":[{"a":"b"},{}],"ok":"PATH"}
+{"fn":"envPathKeyFor","args":[{},0],"ok":"PATH"}
+{"fn":"envPathKeyFor","args":[true,"x"],"error":"Cannot use 'in' operator to search for 'PATH' in true"}
+{"fn":"envPathKeyFor","args":[{"a":{"b":"c"}},{}],"ok":"PATH"}
+{"fn":"envPathKeyFor","args":[[],true],"ok":"PATH"}
+{"fn":"envPathKeyFor","args":[{}],"ok":"PATH"}
+{"fn":"envPathKeyFor","args":[0,{"a":"b"}],"error":"Cannot use 'in' operator to search for 'PATH' in 0"}
+{"fn":"envPathKeyFor","args":[["a",1]],"ok":"PATH"}
+{"fn":"envPathKeyFor","args":[{},{"a":{"b":"c"}}],"ok":"PATH"}
+{"fn":"envPathKeyFor","args":[0,null],"error":"Cannot use 'in' operator to search for 'PATH' in 0"}
+{"fn":"envPathKeyFor","args":[null,true],"error":"Cannot use 'in' operator to search for 'PATH' in null"}
+{"fn":"envPathKeyFor","args":["x","x"],"error":"Cannot use 'in' operator to search for 'PATH' in x"}
+{"fn":"envPathKeyFor","args":[true],"error":"Cannot use 'in' operator to search for 'PATH' in true"}
+{"fn":"envPathKeyFor","args":[["a",1],[]],"ok":"PATH"}
+{"fn":"envPathKeyFor","args":[[],[]],"ok":"PATH"}
+{"fn":"envPathKeyFor","args":[true,{"a":{"b":"c"}}],"error":"Cannot use 'in' operator to search for 'PATH' in true"}
+{"fn":"envPathKeyFor","args":[[],["a",1]],"ok":"PATH"}
+{"fn":"envPathKeyFor","args":[{},true],"ok":"PATH"}
+{"fn":"envPathKeyFor","args":["x",[]],"error":"Cannot use 'in' operator to search for 'PATH' in x"}
+{"fn":"envPathKeyFor","args":[["a",1],true],"ok":"PATH"}
+{"fn":"envPathKeyFor","args":[true,null],"error":"Cannot use 'in' operator to search for 'PATH' in true"}
+{"fn":"envPathKeyFor","args":[["a",1],["a",1]],"ok":"PATH"}
+{"fn":"envPathKeyFor","args":["x",{"a":"b"}],"error":"Cannot use 'in' operator to search for 'PATH' in x"}
+{"fn":"envPathKeyFor","args":[null],"error":"Cannot use 'in' operator to search for 'PATH' in null"}
+{"fn":"envPathKeyFor","args":[0,"x"],"error":"Cannot use 'in' operator to search for 'PATH' in 0"}
+{"fn":"envPathKeyFor","args":[0,{"$undefined":true}],"error":"Cannot use 'in' operator to search for 'PATH' in 0"}
+{"fn":"envPathKeyFor","args":[{"a":"b"},[]],"ok":"PATH"}
+{"fn":"envPathKeyFor","args":[null,0],"error":"Cannot use 'in' operator to search for 'PATH' in null"}
+{"fn":"envPathKeyFor","args":[0,["a",1]],"error":"Cannot use 'in' operator to search for 'PATH' in 0"}
+{"fn":"envPathKeyFor","args":[{"a":"b"},{"a":{"b":"c"}}],"ok":"PATH"}
+{"fn":"envPathKeyFor","args":[{},null],"ok":"PATH"}
+{"fn":"envPathKeyFor","args":[{"a":"b"},"x"],"ok":"PATH"}
+{"fn":"envPathKeyFor","args":["x",true],"error":"Cannot use 'in' operator to search for 'PATH' in x"}
+{"fn":"envPathKeyFor","args":[{"a":{"b":"c"}},{"a":{"b":"c"}}],"ok":"PATH"}
+{"fn":"envPathKeyFor","args":[{"a":"b"},0],"ok":"PATH"}
+{"fn":"envPathKeyFor","args":[["a",1],"x"],"ok":"PATH"}
+{"fn":"envPathKeyFor","args":[null,{}],"error":"Cannot use 'in' operator to search for 'PATH' in null"}
+{"fn":"envPathKeyFor","args":[["a",1],null],"ok":"PATH"}
+{"fn":"envPathKeyFor","args":[null,null],"error":"Cannot use 'in' operator to search for 'PATH' in null"}
+{"fn":"envPathKeyFor","args":[true,{}],"error":"Cannot use 'in' operator to search for 'PATH' in true"}
+{"fn":"envPathKeyFor","args":[{"a":"b"},true],"ok":"PATH"}
+{"fn":"envPathKeyFor","args":[["a",1],{"$undefined":true}],"ok":"PATH"}
+{"fn":"envPathKeyFor","args":[["a",1],{"a":"b"}],"ok":"PATH"}
+{"fn":"envPathKeyFor","args":[{},["a",1]],"ok":"PATH"}
+{"fn":"envPathKeyFor","args":[true,{"$undefined":true}],"error":"Cannot use 'in' operator to search for 'PATH' in true"}
+{"fn":"envPathKeyFor","args":[0],"error":"Cannot use 'in' operator to search for 'PATH' in 0"}
+{"fn":"envPathKeyFor","args":[{"a":"b"}],"ok":"PATH"}
+{"fn":"envPathKeyFor","args":[[],{"$undefined":true}],"ok":"PATH"}
+{"fn":"envPathKeyFor","args":[{"a":{"b":"c"}},"x"],"ok":"PATH"}
+{"fn":"envPathKeyFor","args":[{"a":"b"},{"a":"b"}],"ok":"PATH"}
+{"fn":"envPathKeyFor","args":[{"a":{"b":"c"}},["a",1]],"ok":"PATH"}
+{"fn":"envPathKeyFor","args":[null,["a",1]],"error":"Cannot use 'in' operator to search for 'PATH' in null"}
+{"fn":"envPathKeyFor","args":[{"a":{"b":"c"}},0],"ok":"PATH"}
+{"fn":"envPathKeyFor","args":[{},{"$undefined":true}],"ok":"PATH"}
+{"fn":"envPathKeyFor","args":["x"],"error":"Cannot use 'in' operator to search for 'PATH' in x"}
+{"fn":"envPathKeyFor","args":[[],null],"ok":"PATH"}
+{"fn":"envPathKeyFor","args":[[],0],"ok":"PATH"}
+{"fn":"envPathKeyFor","args":[{"a":{"b":"c"}},{"a":"b"}],"ok":"PATH"}
+{"fn":"envPathKeyFor","args":[true,["a",1]],"error":"Cannot use 'in' operator to search for 'PATH' in true"}
+{"fn":"envPathKeyFor","args":["x",["a",1]],"error":"Cannot use 'in' operator to search for 'PATH' in x"}
+{"fn":"envPathKeyFor","args":[["a",1],0],"ok":"PATH"}
+{"fn":"envPathKeyFor","args":[true,true],"error":"Cannot use 'in' operator to search for 'PATH' in true"}
+{"fn":"envPathKeyFor","args":[0,{}],"error":"Cannot use 'in' operator to search for 'PATH' in 0"}
+{"fn":"envPathKeyFor","args":[true,[]],"error":"Cannot use 'in' operator to search for 'PATH' in true"}
+{"fn":"envPathKeyFor","args":["x",null],"error":"Cannot use 'in' operator to search for 'PATH' in x"}
+{"fn":"envPathKeyFor","args":[{"a":{"b":"c"}},true],"ok":"PATH"}
+{"fn":"envPathKeyFor","args":[0,0],"error":"Cannot use 'in' operator to search for 'PATH' in 0"}
+{"fn":"envPathKeyFor","args":[["a",1],{"a":{"b":"c"}}],"ok":"PATH"}
+{"fn":"envPathKeyFor","args":[null,"x"],"error":"Cannot use 'in' operator to search for 'PATH' in null"}
+{"fn":"envPathKeyFor","args":[{"a":{"b":"c"}},{"$undefined":true}],"ok":"PATH"}
+{"fn":"envPathKeyFor","args":[null,[]],"error":"Cannot use 'in' operator to search for 'PATH' in null"}
+{"fn":"envPathKeyFor","args":[true,{"a":"b"}],"error":"Cannot use 'in' operator to search for 'PATH' in true"}
+{"fn":"envPathKeyFor","args":[["a",1],{}],"ok":"PATH"}
+{"fn":"envPathKeyFor","args":[{"a":"b"},{"$undefined":true}],"ok":"PATH"}
+{"fn":"envPathKeyFor","args":[{"a":{"b":"c"}},null],"ok":"PATH"}
+{"fn":"envPathKeyFor","args":[{"a":"b"},null],"ok":"PATH"}
+{"fn":"envPathKeyFor","args":[true,0],"error":"Cannot use 'in' operator to search for 'PATH' in true"}
+{"fn":"envPathKeyFor","args":[{"a":{"b":"c"}},[]],"ok":"PATH"}
+{"fn":"envPathKeyFor","args":["x",{}],"error":"Cannot use 'in' operator to search for 'PATH' in x"}
+{"fn":"envPathKeyFor","args":[null,{"a":{"b":"c"}}],"error":"Cannot use 'in' operator to search for 'PATH' in null"}
+{"fn":"envPathKeyFor","args":[[]],"ok":"PATH"}
+{"fn":"envPathKeyFor","args":[0,{"a":{"b":"c"}}],"error":"Cannot use 'in' operator to search for 'PATH' in 0"}
+{"fn":"envPathKeyFor","args":[null,{"a":"b"}],"error":"Cannot use 'in' operator to search for 'PATH' in null"}
+{"fn":"envPathKeyFor","args":[0,true],"error":"Cannot use 'in' operator to search for 'PATH' in 0"}
+{"fn":"envPathKeyFor","args":[{},{}],"ok":"PATH"}
+{"fn":"envPathKeyFor","args":[[],"x"],"ok":"PATH"}
+{"fn":"envPathKeyFor","args":[{},"x"],"ok":"PATH"}
+{"fn":"envPathKeyFor","args":[{"a":"b"},["a",1]],"ok":"PATH"}
+{"fn":"envPathKeyFor","args":[{},{"a":"b"}],"ok":"PATH"}
+{"fn":"envPathKeyFor","args":["x",0],"error":"Cannot use 'in' operator to search for 'PATH' in x"}
+{"fn":"envPathKeyFor","args":[[],{"a":"b"}],"ok":"PATH"}
+{"fn":"envPathKeyFor","args":["X","x"],"error":"Cannot use 'in' operator to search for 'PATH' in X"}
+{"fn":"envPathKeyFor","args":["x","X"],"error":"Cannot use 'in' operator to search for 'PATH' in x"}
+{"fn":"hasPathSeparator","args":["Hello World./x/**/*.json"],"ok":true}
+{"fn":"hasPathSeparator","args":["./x/**/*.json"],"ok":true}
+{"fn":"hasPathSeparator","args":["a.b.c"],"ok":false}
+{"fn":"hasPathSeparator","args":["line1\nline2"],"ok":false}
+{"fn":"hasPathSeparator","args":["😀"],"ok":false}
+{"fn":"hasPathSeparator","args":["{name} has {count} items"],"ok":false}
+{"fn":"hasPathSeparator","args":["abc:"],"ok":false}
+{"fn":"hasPathSeparator","args":["İstanbul"],"ok":false}
+{"fn":"hasPathSeparator","args":["ünïcödé"],"ok":false}
+{"fn":"hasPathSeparator","args":["a:b:c"],"ok":false}
+{"fn":"hasPathSeparator","args":["﻿bom"],"ok":false}
+{"fn":"hasPathSeparator","args":["ab"],"ok":false}
+{"fn":"hasPathSeparator","args":["ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"hasPathSeparator","args":["ns:key.path"],"ok":false}
+{"fn":"hasPathSeparator","args":["é"],"ok":false}
+{"fn":"hasPathSeparator","args":["hello world"],"ok":false}
+{"fn":"hasPathSeparator","args":["İstanbulstraße"],"ok":false}
+{"fn":"hasPathSeparator","args":["hello"],"ok":false}
+{"fn":"hasPathSeparator","args":[".leading"],"ok":false}
+{"fn":"hasPathSeparator","args":["tab\tseparated"],"ok":false}
+{"fn":"hasPathSeparator","args":["emoji 👍🏽 mix"],"ok":false}
+{"fn":"hasPathSeparator","args":[":"],"ok":false}
+{"fn":"hasPathSeparator","args":["straße.leading"],"ok":false}
+{"fn":"hasPathSeparator","args":["éHello World"],"ok":false}
+{"fn":"hasPathSeparator","args":["key_name-1"],"ok":false}
+{"fn":"hasPathSeparator","args":["trailing."],"ok":false}
+{"fn":"hasPathSeparator","args":["abc"],"ok":false}
+{"fn":"hasPathSeparator","args":["line1\nline2  padded  "],"ok":false}
+{"fn":"hasPathSeparator","args":["src/a/b.ts"],"ok":true}
+{"fn":"hasPathSeparator","args":["  padded  "],"ok":false}
+{"fn":"hasPathSeparator","args":["HELLO"],"ok":false}
+{"fn":"hasPathSeparator","args":["a..b"],"ok":false}
+{"fn":"hasPathSeparator","args":["Hello World"],"ok":false}
+{"fn":"hasPathSeparator","args":["ünïcödéa"],"ok":false}
+{"fn":"hasPathSeparator","args":[""],"ok":false}
+{"fn":"hasPathSeparator","args":["ΣΊΣΥΦΟΣ./x/**/*.json"],"ok":true}
+{"fn":"hasPathSeparator","args":["a..b:"],"ok":false}
+{"fn":"hasPathSeparator","args":["straßehello"],"ok":false}
+{"fn":"hasPathSeparator","args":["./x/**/*.jsonabc"],"ok":true}
+{"fn":"hasPathSeparator","args":["ns:key.pathabc"],"ok":false}
+{"fn":"hasPathSeparator","args":["hello world.leading"],"ok":false}
+{"fn":"hasPathSeparator","args":["straße"],"ok":false}
+{"fn":"hasPathSeparator","args":["İstanbula.b.c"],"ok":false}
+{"fn":"hasPathSeparator","args":["trailing..leading"],"ok":false}
+{"fn":"hasPathSeparator","args":["aabc"],"ok":false}
+{"fn":"hasPathSeparator","args":["./x/**/*.jsonline1\nline2"],"ok":true}
+{"fn":"hasPathSeparator","args":["ab  padded  "],"ok":false}
+{"fn":"hasPathSeparator","args":["a"],"ok":false}
+{"fn":"hasPathSeparator","args":["a.b.chello"],"ok":false}
+{"fn":"hasPathSeparator","args":["ΣΊΣΥΦΟΣhello"],"ok":false}
+{"fn":"hasPathSeparator","args":["ünïcödéabc"],"ok":false}
+{"fn":"hasPathSeparator","args":["trailing.a😀b😀c"],"ok":false}
+{"fn":"hasPathSeparator","args":["key_name-1hello world"],"ok":false}
+{"fn":"hasPathSeparator","args":["tab\tseparated  padded  "],"ok":false}
+{"fn":"hasPathSeparator","args":["😀日本語のテキスト"],"ok":false}
+{"fn":"hasPathSeparator","args":["tab\tseparated:"],"ok":false}
+{"fn":"hasPathSeparator","args":["a:b:csrc/a/b.ts"],"ok":true}
+{"fn":"hasPathSeparator","args":["日本語のテキスト"],"ok":false}
+{"fn":"hasPathSeparator","args":["HELLOİstanbul"],"ok":false}
+{"fn":"hasPathSeparator","args":["a..btrailing."],"ok":false}
+{"fn":"hasPathSeparator","args":["Hello Worldstraße"],"ok":false}
+{"fn":"hasPathSeparator","args":["😀{name} has {count} items"],"ok":false}
+{"fn":"hasPathSeparator","args":["﻿bom😀"],"ok":false}
+{"fn":"hasPathSeparator","args":[".leading{name} has {count} items"],"ok":false}
+{"fn":"hasPathSeparator","args":["a﻿bom"],"ok":false}
+{"fn":"hasPathSeparator","args":["éemoji 👍🏽 mix"],"ok":false}
+{"fn":"hasPathSeparator","args":["tab\tseparated.leading"],"ok":false}
+{"fn":"hasPathSeparator","args":["İstanbula😀b😀c"],"ok":false}
+{"fn":"hasPathSeparator","args":["İstanbulkey_name-1"],"ok":false}
+{"fn":"hasPathSeparator","args":["abca😀b😀c"],"ok":false}
+{"fn":"hasPathSeparator","args":["src/a/b.tsstraße"],"ok":true}
+{"fn":"hasPathSeparator","args":["trailing.😀"],"ok":false}
+{"fn":"hasPathSeparator","args":["abctab\tseparated"],"ok":false}
+{"fn":"hasPathSeparator","args":["ns:key.path😀"],"ok":false}
+{"fn":"hasPathSeparator","args":["ΣΊΣΥΦΟΣünïcödé"],"ok":false}
+{"fn":"hasPathSeparator","args":["a😀b😀c"],"ok":false}
+{"fn":"hasPathSeparator","args":["ΣΊΣΥΦΟΣkey_name-1"],"ok":false}
+{"fn":"hasPathSeparator","args":["key_name-1a.b.c"],"ok":false}
+{"fn":"hasPathSeparator","args":["key_name-1{name} has {count} items"],"ok":false}
+{"fn":"hasPathSeparator","args":["HELLOtab\tseparated"],"ok":false}
+{"fn":"hasPathSeparator","args":["line1\nline2ünïcödé"],"ok":false}
+{"fn":"hasPathSeparator","args":["a😀b😀cé"],"ok":false}
+{"fn":"hasPathSeparator","args":["src/a/b.ts日本語のテキスト"],"ok":true}
+{"fn":"hasPathSeparator","args":["./x/**/*.jsonstraße"],"ok":true}
+{"fn":"hasPathSeparator","args":["{name} has {count} itemsa.b.c"],"ok":false}
+{"fn":"hasPathSeparator","args":["ΣΊΣΥΦΟΣa"],"ok":false}
+{"fn":"hasPathSeparator","args":["trailing.tab\tseparated"],"ok":false}
+{"fn":"hasPathSeparator","args":["src/a/b.tsab"],"ok":true}
+{"fn":"hasPathSeparator","args":["line1\nline2ab"],"ok":false}
+{"fn":"hasPathSeparator","args":["key_name-1Hello World"],"ok":false}
+{"fn":"hasPathSeparator","args":["src/a/b.tsa"],"ok":true}
+{"fn":"hasPathSeparator","args":["key_name-1:"],"ok":false}
+{"fn":"hasPathSeparator","args":["trailing.a.b.c"],"ok":false}
+{"fn":"hasPathSeparator","args":["key_name-1trailing."],"ok":false}
+{"fn":"hasPathSeparator","args":["ΣΊΣΥΦΟΣé"],"ok":false}
+{"fn":"hasPathSeparator","args":["ünïcödé日本語のテキスト"],"ok":false}
+{"fn":"hasPathSeparator","args":["tab\tseparatedtab\tseparated"],"ok":false}
+{"fn":"hasPathSeparator","args":["éns:key.path"],"ok":false}
+{"fn":"hasPathSeparator","args":["aba"],"ok":false}
+{"fn":"hasPathSeparator","args":["İstanbulé"],"ok":false}
+{"fn":"hasPathSeparator","args":["hellokey_name-1"],"ok":false}
+{"fn":"hasPathSeparator","args":["hello  padded  "],"ok":false}
+{"fn":"hasPathSeparator","args":["ns:key.pathsrc/a/b.ts"],"ok":true}
+{"fn":"hasPathSeparator","args":["helloünïcödé"],"ok":false}
+{"fn":"hasPathSeparator","args":["{name} has {count} itemssrc/a/b.ts"],"ok":true}
+{"fn":"hasPathSeparator","args":["  padded  Hello World"],"ok":false}
+{"fn":"hasPathSeparator","args":["trailing.:"],"ok":false}
+{"fn":"hasPathSeparator","args":["key_name-1ünïcödé"],"ok":false}
+{"fn":"hasPathSeparator","args":["a.b.c😀"],"ok":false}
+{"fn":"hasPathSeparator","args":["abcsrc/a/b.ts"],"ok":true}
+{"fn":"hasPathSeparator","args":["a.b.c﻿bom"],"ok":false}
+{"fn":"hasPathSeparator","args":["a..bhello world"],"ok":false}
+{"fn":"hasPathSeparator","args":["HELLOa..b"],"ok":false}
+{"fn":"hasPathSeparator","args":["a..ba..b"],"ok":false}
+{"fn":"hasPathSeparator","args":["日本語のテキスト😀"],"ok":false}
+{"fn":"hasPathSeparator","args":["  padded  HELLO"],"ok":false}
+{"fn":"hasPathSeparator","args":["😀a😀b😀c"],"ok":false}
+{"fn":"hasPathSeparator","args":["emoji 👍🏽 mixΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"hasPathSeparator","args":["{name} has {count} items./x/**/*.json"],"ok":true}
+{"fn":"hasPathSeparator","args":["abemoji 👍🏽 mix"],"ok":false}
+{"fn":"hasPathSeparator","args":["abhello"],"ok":false}
+{"fn":"hasPathSeparator","args":["a.b.c.leading"],"ok":false}
+{"fn":"hasPathSeparator","args":["a:b:cΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"hasPathSeparator","args":["  padded  abc"],"ok":false}
+{"fn":"hasPathSeparator","args":["ns:key.pathtrailing."],"ok":false}
+{"fn":"hasPathSeparator","args":["{name} has {count} items﻿bom"],"ok":false}
+{"fn":"hasPathSeparator","args":["ΣΊΣΥΦΟΣHELLO"],"ok":false}
+{"fn":"hasPathSeparator","args":["a:b:cline1\nline2"],"ok":false}
+{"fn":"hasPathSeparator","args":["abhello world"],"ok":false}
+{"fn":"hasPathSeparator","args":["ns:key.pathhello"],"ok":false}
+{"fn":"hasPathSeparator","args":["atab\tseparated"],"ok":false}
+{"fn":"hasPathSeparator","args":["helloa😀b😀c"],"ok":false}
+{"fn":"hasPathSeparator","args":["😀Hello World"],"ok":false}
+{"fn":"hasPathSeparator","args":[":﻿bom"],"ok":false}
+{"fn":"hasPathSeparator","args":["日本語のテキストstraße"],"ok":false}
+{"fn":"hasPathSeparator","args":["aünïcödé"],"ok":false}
+{"fn":"hasPathSeparator","args":["./x/**/*.jsona"],"ok":true}
+{"fn":"hasPathSeparator","args":["line1\nline2Hello World"],"ok":false}
+{"fn":"hasPathSeparator","args":[".leadinga.b.c"],"ok":false}
+{"fn":"hasPathSeparator","args":["src/a/b.tsİstanbul"],"ok":true}
+{"fn":"hasPathSeparator","args":["a:b:cns:key.path"],"ok":false}
+{"fn":"hasPathSeparator","args":["日本語のテキストHello World"],"ok":false}
+{"fn":"hasPathSeparator","args":["src/a/b.ts😀"],"ok":true}
+{"fn":"hasPathSeparator","args":["ünïcödéab"],"ok":false}
+{"fn":"hasPathSeparator","args":["日本語のテキストtrailing."],"ok":false}
+{"fn":"hasPathSeparator","args":["line1\nline2abc"],"ok":false}
+{"fn":"hasPathSeparator","args":[".leadingab"],"ok":false}
+{"fn":"hasPathSeparator","args":["  padded  a:b:c"],"ok":false}
+{"fn":"hasPathSeparator","args":["Hello Worldtrailing."],"ok":false}
+{"fn":"hasPathSeparator","args":["a:b:c./x/**/*.json"],"ok":true}
+{"fn":"hasPathSeparator","args":["a:b:c日本語のテキスト"],"ok":false}
+{"fn":"hasPathSeparator","args":["ünïcödéstraße"],"ok":false}
+{"fn":"hasPathSeparator","args":["trailing.ab"],"ok":false}
+{"fn":"hasPathSeparator","args":["key_name-1ab"],"ok":false}
+{"fn":"hasPathSeparator","args":["日本語のテキストa"],"ok":false}
+{"fn":"hasPathSeparator","args":["aΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"hasPathSeparator","args":["ünïcödéns:key.path"],"ok":false}
+{"fn":"hasPathSeparator","args":["hello.leading"],"ok":false}
+{"fn":"hasPathSeparator","args":["a.b.chello world"],"ok":false}
+{"fn":"hasPathSeparator","args":["hello:"],"ok":false}
+{"fn":"hasPathSeparator","args":["HELLOHello World"],"ok":false}
+{"fn":"hasPathSeparator","args":["a..ba"],"ok":false}
+{"fn":"hasPathSeparator","args":["a.b.ca:b:c"],"ok":false}
+{"fn":"hasPathSeparator","args":["tab\tseparateda:b:c"],"ok":false}
+{"fn":"hasPathSeparator","args":["éΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"hasPathSeparator","args":["İstanbulab"],"ok":false}
+{"fn":"hasPathSeparator","args":[":a😀b😀c"],"ok":false}
+{"fn":"hasPathSeparator","args":["ΣΊΣΥΦΟΣ﻿bom"],"ok":false}
+{"fn":"hasPathSeparator","args":["line1\nline2hello world"],"ok":false}
+{"fn":"hasPathSeparator","args":["a:"],"ok":false}
+{"fn":"hasPathSeparator","args":["a.b.c:"],"ok":false}
+{"fn":"hasPathSeparator","args":["éhello world"],"ok":false}
+{"fn":"hasPathSeparator","args":["a.b.cemoji 👍🏽 mix"],"ok":false}
+{"fn":"hasPathSeparator","args":["aa..b"],"ok":false}
+{"fn":"hasPathSeparator","args":["straßetrailing."],"ok":false}
+{"fn":"hasPathSeparator","args":["a😀"],"ok":false}
+{"fn":"hasPathSeparator","args":["helloa.b.c"],"ok":false}
+{"fn":"hasPathSeparator","args":["﻿bomtab\tseparated"],"ok":false}
+{"fn":"hasPathSeparator","args":["hellohello"],"ok":false}
+{"fn":"hasPathSeparator","args":["😀key_name-1"],"ok":false}
+{"fn":"hasPathSeparator","args":["İstanbul./x/**/*.json"],"ok":true}
+{"fn":"hasPathSeparator","args":["a..b./x/**/*.json"],"ok":true}
+{"fn":"hasPathSeparator","args":["a😀b😀cabc"],"ok":false}
+{"fn":"hasPathSeparator","args":["Hello Worldabc"],"ok":false}
+{"fn":"hasPathSeparator","args":["aba:b:c"],"ok":false}
+{"fn":"hasPathSeparator","args":["a.b.csrc/a/b.ts"],"ok":true}
+{"fn":"hasPathSeparator","args":[":日本語のテキスト"],"ok":false}
+{"fn":"hasPathSeparator","args":["trailing.straße"],"ok":false}
+{"fn":"hasPathSeparator","args":["emoji 👍🏽 mixünïcödé"],"ok":false}
+{"fn":"hasPathSeparator","args":["Hello WorldΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"hasPathSeparator","args":["ns:key.pathΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"hasPathSeparator","args":["line1\nline2{name} has {count} items"],"ok":false}
+{"fn":"hasPathSeparator","args":["ünïcödé  padded  "],"ok":false}
+{"fn":"hasPathSeparator","args":["a..b.leading"],"ok":false}
+{"fn":"hasPathSeparator","args":["é😀"],"ok":false}
+{"fn":"hasPathSeparator","args":["trailing.key_name-1"],"ok":false}
+{"fn":"hasPathSeparator","args":["a:b:c😀"],"ok":false}
+{"fn":"hasPathSeparator","args":["{name} has {count} itemsé"],"ok":false}
+{"fn":"hasPathSeparator","args":["日本語のテキストkey_name-1"],"ok":false}
+{"fn":"hasPathSeparator","args":["ns:key.path:"],"ok":false}
+{"fn":"hasPathSeparator","args":["héllo wörld"],"ok":false}
+{"fn":"hasPathSeparator","args":["👍🏽 thumbs"],"ok":false}
+{"fn":"hasPathSeparator","args":["日本語"],"ok":false}
+{"fn":"hasPathSeparator","args":["ılık ırmak"],"ok":false}
+{"fn":"hasPathSeparator","args":["👨‍👩‍👧 family"],"ok":false}
+{"fn":"hasPathSeparator","args":["a b"],"ok":false}
+{"fn":"hasPathSeparator","args":["a😀b"],"ok":false}
+{"fn":"hasPathSeparator","args":["a²b x½ y①"],"ok":false}
+{"fn":"hasPathSeparator","args":["aⅠb Ⅻ"],"ok":false}
+{"fn":"hasPathSeparator","args":["a𐐀b 𝐀bc"],"ok":false}
+{"fn":"hasPathSeparator","args":["कि ٣٤"],"ok":false}
+{"fn":"hasPathSeparator","args":["Iı İi"],"ok":false}
+{"fn":"hasPathSeparator","args":["K K k"],"ok":false}
+{"fn":"hasPathSeparator","args":["ſ s S"],"ok":false}
+{"fn":"hasPathSeparator","args":["x‍y 👨‍👩‍👧"],"ok":false}
+{"fn":"hasPathSeparator","args":["a b c　d"],"ok":false}
+{"fn":"hasPathSeparator","args":["١٢٣ ٤٥"],"ok":false}
+{"fn":"hasPathSeparator","args":["𝟘𝟙 ²³"],"ok":false}
+{"fn":"hasPathSeparator","args":["snake_case foo-bar o'neil"],"ok":false}
+{"fn":"hasPathSeparator","args":["ǅungla Ǆ"],"ok":false}
+{"fn":"hasPathSeparator","args":["one\r\ntwo threefour"],"ok":false}
+{"fn":"hasPathSeparator","args":["café café"],"ok":false}
+{"fn":"hasPathSeparator","args":["ΣΑΣ σας ς"],"ok":false}
+{"fn":"windowsPathExtensions","args":[0],"ok":[".COM",".EXE",".BAT",".CMD"]}
+{"fn":"windowsPathExtensions","args":[["a",1]],"ok":[".COM",".EXE",".BAT",".CMD"]}
+{"fn":"windowsPathExtensions","args":["x"],"ok":[".COM",".EXE",".BAT",".CMD"]}
+{"fn":"windowsPathExtensions","args":[{"a":"b"}],"ok":[".COM",".EXE",".BAT",".CMD"]}
+{"fn":"windowsPathExtensions","args":[[]],"ok":[".COM",".EXE",".BAT",".CMD"]}
+{"fn":"windowsPathExtensions","args":[true],"ok":[".COM",".EXE",".BAT",".CMD"]}
+{"fn":"windowsPathExtensions","args":[null],"error":"Cannot read properties of null (reading 'PATHEXT')"}
+{"fn":"windowsPathExtensions","args":[{}],"ok":[".COM",".EXE",".BAT",".CMD"]}
+{"fn":"windowsPathExtensions","args":[{"a":{"b":"c"}}],"ok":[".COM",".EXE",".BAT",".CMD"]}
+{"fn":"pathEntries","args":[{"a":"b"},["a",1]],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":[[],null],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":[true,0],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":[["a",1],[]],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":[true,{}],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":[{"a":"b"},"x"],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":[null,null],"error":"Cannot read properties of null (reading 'PATH')"}
+{"fn":"pathEntries","args":[["a",1],"x"],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":[["a",1],null],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":[0,{"a":{"b":"c"}}],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":[{},null],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":[{"a":{"b":"c"}},{"a":{"b":"c"}}],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":[0,0],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":[{"a":{"b":"c"}},"x"],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":["x","X"],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":[{"a":"b"},[]],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":[0,null],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":[{"a":{"b":"c"}},{"a":"b"}],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":[{"a":"b"},{}],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":[[],{"a":{"b":"c"}}],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":[[],true],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":[null,{"a":"b"}],"error":"Cannot read properties of null (reading 'PATH')"}
+{"fn":"pathEntries","args":[{},{}],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":[0,"x"],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":[{"a":{"b":"c"}},["a",1]],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":[{},"x"],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":[0,{"a":"b"}],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":[0,["a",1]],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":[true,{"a":{"b":"c"}}],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":[null,"x"],"error":"Cannot read properties of null (reading 'PATH')"}
+{"fn":"pathEntries","args":[0,{}],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":[[],["a",1]],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":[{"a":{"b":"c"}},{}],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":["x",0],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":["x",true],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":[true,true],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":[{},true],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":[null,["a",1]],"error":"Cannot read properties of null (reading 'PATH')"}
+{"fn":"pathEntries","args":["x",null],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":[true,"x"],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":[true,{"a":"b"}],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":["x",["a",1]],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":[["a",1],true],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":[{},0],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":[0,true],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":[{},{"a":{"b":"c"}}],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":[{"a":{"b":"c"}},true],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":[{"a":{"b":"c"}},0],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":[{},{"a":"b"}],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":[{"a":"b"},{"a":{"b":"c"}}],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":[["a",1],0],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":[{},["a",1]],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":[["a",1],{"a":"b"}],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":[{"a":"b"},true],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":["x",{}],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":[null,{"a":{"b":"c"}}],"error":"Cannot read properties of null (reading 'PATH')"}
+{"fn":"pathEntries","args":[null,0],"error":"Cannot read properties of null (reading 'PATH')"}
+{"fn":"pathEntries","args":["x","x"],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":[null,{}],"error":"Cannot read properties of null (reading 'PATH')"}
+{"fn":"pathEntries","args":[[],"x"],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":[true,null],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":[[],[]],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":[["a",1],{"a":{"b":"c"}}],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":[[],0],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":[[],{}],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":["x",{"a":{"b":"c"}}],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":[{"a":"b"},null],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":[{},[]],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":[0,[]],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":[{"a":{"b":"c"}},null],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":[{"a":"b"},{"a":"b"}],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":["x",[]],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":[{"a":"b"},0],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":[null,[]],"error":"Cannot read properties of null (reading 'PATH')"}
+{"fn":"pathEntries","args":[{"a":{"b":"c"}},[]],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":[["a",1],{}],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":[[],{"a":"b"}],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":["x",{"a":"b"}],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":[["a",1],["a",1]],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":[null,true],"error":"Cannot read properties of null (reading 'PATH')"}
+{"fn":"pathEntries","args":[true,["a",1]],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":[true,[]],"ok":["/usr/bin","/bin"]}
+{"fn":"pathEntries","args":["X","x"],"ok":["/usr/bin","/bin"]}
+{"fn":"executableNameCandidates","args":["a😀b😀c",{"a":{"b":"c"}},null,false],"ok":["a😀b😀c"]}
+{"fn":"executableNameCandidates","args":["trailing.emoji 👍🏽 mix",true,[],false],"ok":["trailing.emoji 👍🏽 mix"]}
+{"fn":"executableNameCandidates","args":["trailing.",null,null,false],"ok":["trailing."]}
+{"fn":"executableNameCandidates","args":["a..b  padded  ",{"a":"b"},{"a":"b"},false],"ok":["a..b  padded  "]}
+{"fn":"executableNameCandidates","args":["HELLO",{"a":"b"},["a",1],false],"ok":["HELLO"]}
+{"fn":"executableNameCandidates","args":["İstanbul",null,{},{"$undefined":true}],"ok":["İstanbul"]}
+{"fn":"executableNameCandidates","args":["  padded  ",0,true,{"$undefined":true}],"ok":["  padded  "]}
+{"fn":"executableNameCandidates","args":["{name} has {count} items.leading","x",{"a":"b"}],"ok":["{name} has {count} items.leading"]}
+{"fn":"executableNameCandidates","args":["{name} has {count} items",{},0,true],"ok":["{name} has {count} items"]}
+{"fn":"executableNameCandidates","args":["abc",[],[]],"ok":["abc"]}
+{"fn":"executableNameCandidates","args":["key_name-1",{},true,true],"ok":["key_name-1"]}
+{"fn":"executableNameCandidates","args":["tab\tseparated",null,null,false],"ok":["tab\tseparated"]}
+{"fn":"executableNameCandidates","args":["ab",[],[],true],"ok":["ab"]}
+{"fn":"executableNameCandidates","args":["ΣΊΣΥΦΟΣ",[],true,false],"ok":["ΣΊΣΥΦΟΣ"]}
+{"fn":"executableNameCandidates","args":["a.b.c",[],true,false],"ok":["a.b.c"]}
+{"fn":"executableNameCandidates","args":["a:b:c",[],null,true],"ok":["a:b:c"]}
+{"fn":"executableNameCandidates","args":["key_name-1",["a",1],["a",1],true],"ok":["key_name-1"]}
+{"fn":"executableNameCandidates","args":["a:b:c",true,null,true],"ok":["a:b:c"]}
+{"fn":"executableNameCandidates","args":["a  padded  ","x",[],false],"ok":["a  padded  "]}
+{"fn":"executableNameCandidates","args":["line1\nline2",true,{"a":"b"},false],"ok":["line1\nline2"]}
+{"fn":"executableNameCandidates","args":["日本語のテキスト",null,[],false],"ok":["日本語のテキスト"]}
+{"fn":"executableNameCandidates","args":["trailing.",null,{},true],"ok":["trailing."]}
+{"fn":"executableNameCandidates","args":["Hello World",{"a":{"b":"c"}},"x",false],"ok":["Hello World"]}
+{"fn":"executableNameCandidates","args":["😀",{"a":{"b":"c"}},{"a":"b"},false],"ok":["😀"]}
+{"fn":"executableNameCandidates","args":["a..bstraße",{"a":"b"},{},false],"ok":["a..bstraße"]}
+{"fn":"executableNameCandidates","args":["日本語のテキスト",null,{"a":"b"},false],"ok":["日本語のテキスト"]}
+{"fn":"executableNameCandidates","args":["a:b:c",0,{},true],"ok":["a:b:c"]}
+{"fn":"executableNameCandidates","args":["a😀b😀c",["a",1],null,{"$undefined":true}],"ok":["a😀b😀c"]}
+{"fn":"executableNameCandidates","args":["😀","x",true,false],"ok":["😀"]}
+{"fn":"executableNameCandidates","args":["emoji 👍🏽 mix",{},true,true],"ok":["emoji 👍🏽 mix"]}
+{"fn":"executableNameCandidates","args":["X","x",0],"ok":["X"]}
+{"fn":"executableNameCandidates","args":["ΣΊΣΥΦΟΣ",[],["a",1],false],"ok":["ΣΊΣΥΦΟΣ"]}
+{"fn":"executableNameCandidates","args":["./x/**/*.json  padded  ",[],null,false],"ok":["./x/**/*.json  padded  "]}
+{"fn":"executableNameCandidates","args":["HELLOHello World",true,null],"ok":["HELLOHello World"]}
+{"fn":"executableNameCandidates","args":["trailing.",0,{"a":"b"},{"$undefined":true}],"ok":["trailing."]}
+{"fn":"executableNameCandidates","args":["😀",0,0,false],"ok":["😀"]}
+{"fn":"executableNameCandidates","args":["ΣΊΣΥΦΟΣ",{},[],true],"ok":["ΣΊΣΥΦΟΣ"]}
+{"fn":"executableNameCandidates","args":["aİstanbul",{},[],false],"ok":["aİstanbul"]}
+{"fn":"executableNameCandidates","args":["😀",true,{},true],"ok":["😀"]}
+{"fn":"executableNameCandidates","args":["abc",[],{"a":{"b":"c"}},{"$undefined":true}],"ok":["abc"]}
+{"fn":"executableNameCandidates","args":["ns:key.path﻿bom",0,0,true],"ok":["ns:key.path﻿bom"]}
+{"fn":"executableNameCandidates","args":["ünïcödéhello world",true,[],true],"ok":["ünïcödéhello world"]}
+{"fn":"executableNameCandidates","args":["a..ba😀b😀c",{"a":{"b":"c"}},true,true],"ok":["a..ba😀b😀c"]}
+{"fn":"executableNameCandidates","args":["日本語のテキスト","x",{"a":{"b":"c"}},false],"ok":["日本語のテキスト"]}
+{"fn":"executableNameCandidates","args":[":",true,"x"],"ok":[":"]}
+{"fn":"executableNameCandidates","args":["ns:key.path.leading",{"a":{"b":"c"}},{"a":"b"},true],"ok":["ns:key.path.leading"]}
+{"fn":"executableNameCandidates","args":["ns:key.pathtab\tseparated",true,{},false],"ok":["ns:key.pathtab\tseparated"]}
+{"fn":"executableNameCandidates","args":["  padded  ",true,0,false],"ok":["  padded  "]}
+{"fn":"executableNameCandidates","args":["trailing.",{},["a",1]],"ok":["trailing."]}
+{"fn":"executableNameCandidates","args":["emoji 👍🏽 mix",{"a":{"b":"c"}},true,false],"ok":["emoji 👍🏽 mix"]}
+{"fn":"executableNameCandidates","args":["é",["a",1],["a",1],false],"ok":["é"]}
+{"fn":"executableNameCandidates","args":["emoji 👍🏽 mix",{"a":"b"},[],false],"ok":["emoji 👍🏽 mix"]}
+{"fn":"executableNameCandidates","args":[".leading",{},null,true],"ok":[".leading"]}
+{"fn":"executableNameCandidates","args":["straße",0,["a",1],false],"ok":["straße"]}
+{"fn":"executableNameCandidates","args":["x","x",[],true],"ok":["x"]}
+{"fn":"executableNameCandidates","args":["ΣΊΣΥΦΟΣ",0,["a",1],false],"ok":["ΣΊΣΥΦΟΣ"]}
+{"fn":"executableNameCandidates","args":["a",true,{},false],"ok":["a"]}
+{"fn":"executableNameCandidates","args":["é",null,["a",1]],"ok":["é"]}
+{"fn":"executableNameCandidates","args":["abc",true,[],true],"ok":["abc"]}
+{"fn":"executableNameCandidates","args":[".leading",0,0,false],"ok":[".leading"]}
+{"fn":"executableNameCandidates","args":["hello world",{"a":{"b":"c"}},null,true],"ok":["hello world"]}
+{"fn":"executableNameCandidates","args":["ns:key.path",true,0,true],"ok":["ns:key.path"]}
+{"fn":"executableNameCandidates","args":["ab",[],"x",false],"ok":["ab"]}
+{"fn":"executableNameCandidates","args":["a:b:c",{"a":"b"},{},false],"ok":["a:b:c"]}
+{"fn":"executableNameCandidates","args":["tab\tseparateda..b",0,["a",1],false],"ok":["tab\tseparateda..b"]}
+{"fn":"executableNameCandidates","args":["straße",{},true,false],"ok":["straße"]}
+{"fn":"executableNameCandidates","args":["a",["a",1],null,true],"ok":["a"]}
+{"fn":"executableNameCandidates","args":["abctab\tseparated",{},null,false],"ok":["abctab\tseparated"]}
+{"fn":"executableNameCandidates","args":["  padded  ","x",["a",1],false],"ok":["  padded  "]}
+{"fn":"executableNameCandidates","args":["a.b.c",{"a":{"b":"c"}},["a",1],false],"ok":["a.b.c"]}
+{"fn":"executableNameCandidates","args":["straße",true,{"a":"b"},false],"ok":["straße"]}
+{"fn":"executableNameCandidates","args":["😀",true,"😀",false],"ok":["😀"]}
+{"fn":"executableNameCandidates","args":["abkey_name-1",null,{},true],"ok":["abkey_name-1"]}
+{"fn":"executableNameCandidates","args":["a:b:c",[],{"a":{"b":"c"}}],"ok":["a:b:c"]}
+{"fn":"executableNameCandidates","args":[".leading",["a",1],{}],"ok":[".leading"]}
+{"fn":"executableNameCandidates","args":["ab",{"a":{"b":"c"}},null,false],"ok":["ab"]}
+{"fn":"executableNameCandidates","args":["ab","x",{"a":"b"},false],"ok":["ab"]}
+{"fn":"executableNameCandidates","args":["İstanbul",true,{},false],"ok":["İstanbul"]}
+{"fn":"executableNameCandidates","args":["ΣΊΣΥΦΟΣ",{"a":"b"},null],"ok":["ΣΊΣΥΦΟΣ"]}
+{"fn":"executableNameCandidates","args":["line1\nline2",[],{"a":"b"},true],"ok":["line1\nline2"]}
+{"fn":"executableNameCandidates","args":[".leading",[],["a",1],true],"ok":[".leading"]}
+{"fn":"executableNameCandidates","args":["  padded  ",[],{"a":{"b":"c"}},false],"ok":["  padded  "]}
+{"fn":"executableNameCandidates","args":["a",["a",1],null],"ok":["a"]}
+{"fn":"executableNameCandidates","args":["a..b",0,0,true],"ok":["a..b"]}
+{"fn":"executableNameCandidates","args":["﻿bom","BOM",0,true],"ok":["﻿bom"]}
+{"fn":"executableNameCandidates","args":["emoji 👍🏽 mix",0,{},{"$undefined":true}],"ok":["emoji 👍🏽 mix"]}
+{"fn":"executableNameCandidates","args":["a:b:c",0,true,true],"ok":["a:b:c"]}
+{"fn":"executableNameCandidates","args":["a",null,{},false],"ok":["a"]}
+{"fn":"executableNameCandidates","args":["key_name-1",{"a":{"b":"c"}},["a",1],false],"ok":["key_name-1"]}
+{"fn":"executableNameCandidates","args":["a..b{name} has {count} items",{"a":{"b":"c"}},"x",true],"ok":["a..b{name} has {count} items"]}
+{"fn":"executableNameCandidates","args":["src/a/b.ts./x/**/*.json","x",0,true],"ok":["src/a/b.ts./x/**/*.json"]}
+{"fn":"executableNameCandidates","args":[":",{},null,true],"ok":[":"]}
+{"fn":"executableNameCandidates","args":["line1\nline2",{"a":"b"},0,false],"ok":["line1\nline2"]}
+{"fn":"executableNameCandidates","args":["ünïcödé",true,["a",1],false],"ok":["ünïcödé"]}
+{"fn":"executableNameCandidates","args":["src/a/b.ts﻿bom",{},0,false],"ok":["src/a/b.ts﻿bom"]}
+{"fn":"executableNameCandidates","args":["a😀b😀c",["a",1],true,true],"ok":["a😀b😀c"]}
+{"fn":"executableNameCandidates","args":["ünïcödé",0,{"a":{"b":"c"}},{"$undefined":true}],"ok":["ünïcödé"]}
+{"fn":"executableNameCandidates","args":["é","x",{},false],"ok":["é"]}
+{"fn":"executableNameCandidates","args":[":",{},{"a":{"b":"c"}},true],"ok":[":"]}
+{"fn":"executableNameCandidates","args":["src/a/b.ts",null,{},false],"ok":["src/a/b.ts"]}
+{"fn":"executableNameCandidates","args":["Hello World",["a",1],0,false],"ok":["Hello World"]}
+{"fn":"executableNameCandidates","args":["emoji 👍🏽 mix",{"a":{"b":"c"}},"x"],"ok":["emoji 👍🏽 mix"]}
+{"fn":"executableNameCandidates","args":["ab",["a",1],{"a":{"b":"c"}},false],"ok":["ab"]}
+{"fn":"executableNameCandidates","args":["HELLO",null,0,true],"ok":["HELLO"]}
+{"fn":"executableNameCandidates","args":["key_name-1",["a",1],{},false],"ok":["key_name-1"]}
+{"fn":"executableNameCandidates","args":["😀",0,["a",1],true],"ok":["😀"]}
+{"fn":"executableNameCandidates","args":["a😀b😀c",{},["a",1],true],"ok":["a😀b😀c"]}
+{"fn":"executableNameCandidates","args":["",{"a":{"b":"c"}},null,true],"ok":[""]}
+{"fn":"executableNameCandidates","args":["Hello World",{"a":{"b":"c"}},[]],"ok":["Hello World"]}
+{"fn":"executableNameCandidates","args":["Hello World",[],true,false],"ok":["Hello World"]}
+{"fn":"executableNameCandidates","args":["key_name-1",{},true],"ok":["key_name-1"]}
+{"fn":"executableNameCandidates","args":["emoji 👍🏽 mix",[],{},false],"ok":["emoji 👍🏽 mix"]}
+{"fn":"executableNameCandidates","args":["key_name-1",{"a":{"b":"c"}},{},true],"ok":["key_name-1"]}
+{"fn":"executableNameCandidates","args":["a",{},["a",1],{"$undefined":true}],"ok":["a"]}
+{"fn":"executableNameCandidates","args":["hello worldünïcödé",[],{},true],"ok":["hello worldünïcödé"]}
+{"fn":"executableNameCandidates","args":["",true,["a",1],{"$undefined":true}],"ok":[""]}
+{"fn":"executableNameCandidates","args":["ΣΊΣΥΦΟΣ",0,{"a":{"b":"c"}},false],"ok":["ΣΊΣΥΦΟΣ"]}
+{"fn":"executableNameCandidates","args":["ünïcödéemoji 👍🏽 mix",{"a":"b"},[],false],"ok":["ünïcödéemoji 👍🏽 mix"]}
+{"fn":"executableNameCandidates","args":[":",{"a":{"b":"c"}},{},true],"ok":[":"]}
+{"fn":"executableNameCandidates","args":[":﻿bom",0,{"a":{"b":"c"}},false],"ok":[":﻿bom"]}
+{"fn":"executableNameCandidates","args":["İstanbul",0,{"a":{"b":"c"}},false],"ok":["İstanbul"]}
+{"fn":"executableNameCandidates","args":["emoji 👍🏽 mix./x/**/*.json",{"a":{"b":"c"}},["a",1],{"$undefined":true}],"ok":["emoji 👍🏽 mix./x/**/*.json"]}
+{"fn":"executableNameCandidates","args":["  padded  ",["a",1],{},false],"ok":["  padded  "]}
+{"fn":"executableNameCandidates","args":["src/a/b.ts",true,{"a":{"b":"c"}},true],"ok":["src/a/b.ts"]}
+{"fn":"executableNameCandidates","args":["key_name-1","x",["a",1],false],"ok":["key_name-1"]}
+{"fn":"executableNameCandidates","args":["./x/**/*.json",null,0,true],"ok":["./x/**/*.json"]}
+{"fn":"executableNameCandidates","args":[".leading","eadin",[],true],"ok":[".leading"]}
+{"fn":"executableNameCandidates","args":["x","x",["a",1],{"$undefined":true}],"ok":["x"]}
+{"fn":"executableNameCandidates","args":["line1\nline2","x","x",false],"ok":["line1\nline2"]}
+{"fn":"executableNameCandidates","args":["ab.leading",{"a":{"b":"c"}},{"a":"b"},false],"ok":["ab.leading"]}
+{"fn":"executableNameCandidates","args":["emoji 👍🏽 mix",true,{},{"$undefined":true}],"ok":["emoji 👍🏽 mix"]}
+{"fn":"executableNameCandidates","args":["﻿bom",true,[],false],"ok":["﻿bom"]}
+{"fn":"executableNameCandidates","args":["é","x",null,true],"ok":["é"]}
+{"fn":"executableNameCandidates","args":["a😀b😀c",["a",1],["a",1],true],"ok":["a😀b😀c"]}
+{"fn":"executableNameCandidates","args":["line1\nline2",[],"IN",false],"ok":["line1\nline2"]}
+{"fn":"executableNameCandidates","args":["a:b:c",[],[],false],"ok":["a:b:c"]}
+{"fn":"executableNameCandidates","args":["src/a/b.ts",0,0,{"$undefined":true}],"ok":["src/a/b.ts"]}
+{"fn":"executableNameCandidates","args":["./x/**/*.json./x/**/*.json",null,{"a":{"b":"c"}},true],"ok":["./x/**/*.json./x/**/*.json"]}
+{"fn":"executableNameCandidates","args":["./x/**/*.json","x",{"a":"b"},true],"ok":["./x/**/*.json"]}
+{"fn":"executableNameCandidates","args":["trailing.trailing.",null,{"a":{"b":"c"}},false],"ok":["trailing.trailing."]}
+{"fn":"executableNameCandidates","args":["ns:key.pathHello World",null,[]],"ok":["ns:key.pathHello World"]}
+{"fn":"executableNameCandidates","args":["  padded  ",[],0,false],"ok":["  padded  "]}
+{"fn":"executableNameCandidates","args":["tab\tseparated",[],0,true],"ok":["tab\tseparated"]}
+{"fn":"executableNameCandidates","args":["emoji 👍🏽 mix",["a",1],{},false],"ok":["emoji 👍🏽 mix"]}
+{"fn":"executableNameCandidates","args":["﻿bom",[],["a",1],false],"ok":["﻿bom"]}
+{"fn":"executableNameCandidates","args":["HELLO",[],0,false],"ok":["HELLO"]}
+{"fn":"executableNameCandidates","args":["a..b",null,["a",1],true],"ok":["a..b"]}
+{"fn":"executableNameCandidates","args":["HELLO",[],null,true],"ok":["HELLO"]}
+{"fn":"executableNameCandidates","args":["{name} has {count} items",[],0,true],"ok":["{name} has {count} items"]}
+{"fn":"executableNameCandidates","args":["./x/**/*.json","x",["a",1],false],"ok":["./x/**/*.json"]}
+{"fn":"executableNameCandidates","args":["{name} has {count} items",[],[]],"ok":["{name} has {count} items"]}
+{"fn":"executableNameCandidates","args":["日本語のテキスト",{"a":{"b":"c"}},[],true],"ok":["日本語のテキスト"]}
+{"fn":"executableNameCandidates","args":["line1\nline2",[],null,true],"ok":["line1\nline2"]}
+{"fn":"executableNameCandidates","args":["line1\nline2",["a",1],true,true],"ok":["line1\nline2"]}
+{"fn":"executableNameCandidates","args":["Hello World",{"a":"b"},0,true],"ok":["Hello World"]}
+{"fn":"executableNameCandidates","args":["trailing.a:b:c",true,{"a":"b"},false],"ok":["trailing.a:b:c"]}
+{"fn":"executableNameCandidates","args":["hello world",null,0],"ok":["hello world"]}
+{"fn":"executableNameCandidates","args":[".leadinghello",null,{"a":"b"},true],"ok":[".leadinghello"]}
+{"fn":"executableNameCandidates","args":["x",{"a":"b"},"x",true],"ok":["x"]}
+{"fn":"executableNameCandidates","args":["ünïcödé",{"a":"b"},["a",1],true],"ok":["ünïcödé"]}
+{"fn":"executableNameCandidates","args":["ns:key.path",[],{"a":"b"},true],"ok":["ns:key.path"]}
+{"fn":"executableNameCandidates","args":["trailing..leading","x",["a",1]],"ok":["trailing..leading"]}
+{"fn":"executableNameCandidates","args":["İstanbul",{"a":{"b":"c"}},{},true],"ok":["İstanbul"]}
+{"fn":"executableNameCandidates","args":["abc",{"a":{"b":"c"}},[],false],"ok":["abc"]}
+{"fn":"executableNameCandidates","args":["﻿bom",{"a":{"b":"c"}},{},true],"ok":["﻿bom"]}
+{"fn":"executableNameCandidates","args":["line1\nline2","x",["a",1],{"$undefined":true}],"ok":["line1\nline2"]}
+{"fn":"executableNameCandidates","args":["a..ba.b.c",null,{},{"$undefined":true}],"ok":["a..ba.b.c"]}
+{"fn":"executableNameCandidates","args":["HELLOkey_name-1",{"a":"b"},{"a":"b"},true],"ok":["HELLOkey_name-1"]}
+{"fn":"executableNameCandidates","args":["ünïcödé","x",{"a":"b"},false],"ok":["ünïcödé"]}
+{"fn":"executableNameCandidates","args":[":",[],{"a":"b"},{"$undefined":true}],"ok":[":"]}
+{"fn":"executableNameCandidates","args":["  padded  ",null,{"a":{"b":"c"}},{"$undefined":true}],"ok":["  padded  "]}
+{"fn":"executableNameCandidates","args":["﻿bom","x",true],"ok":["﻿bom"]}
+{"fn":"executableNameCandidates","args":["😀",true,{},{"$undefined":true}],"ok":["😀"]}
+{"fn":"executableNameCandidates","args":["line1\nline2ab",0,"x",true],"ok":["line1\nline2ab"]}
+{"fn":"executableNameCandidates","args":["HELLO",null,{},false],"ok":["HELLO"]}
+{"fn":"executableNameCandidates","args":[":","x",{"a":"b"},true],"ok":[":"]}
+{"fn":"executableNameCandidates","args":["éİstanbul",{"a":"b"},"x",true],"ok":["éİstanbul"]}
+{"fn":"executableNameCandidates","args":["straße",{"a":{"b":"c"}},null],"ok":["straße"]}
+{"fn":"executableNameCandidates","args":["a:b:c",true,[],true],"ok":["a:b:c"]}
+{"fn":"executableNameCandidates","args":["日本語のテキスト",["a",1],{},{"$undefined":true}],"ok":["日本語のテキスト"]}
+{"fn":"executableNameCandidates","args":["src/a/b.tshello",true,{"a":{"b":"c"}},true],"ok":["src/a/b.tshello"]}
+{"fn":"executableNameCandidates","args":["x","x",["a",1],false],"ok":["x"]}
+{"fn":"executableNameCandidates","args":["日本語のテキスト",[],{},false],"ok":["日本語のテキスト"]}
+{"fn":"executableNameCandidates","args":[".leading",{},{"a":{"b":"c"}},false],"ok":[".leading"]}
+{"fn":"executableNameCandidates","args":["ünïcödé","x",{}],"ok":["ünïcödé"]}
+{"fn":"executableNameCandidates","args":["emoji 👍🏽 mix",{"a":"b"},"x"],"ok":["emoji 👍🏽 mix"]}
+{"fn":"executableNameCandidates","args":["İstanbul",{"a":{"b":"c"}},{"a":"b"},true],"ok":["İstanbul"]}
+{"fn":"executableNameCandidates","args":["ab",{},0,true],"ok":["ab"]}
+{"fn":"executableNameCandidates","args":["a😀b😀c",{},"x"],"ok":["a😀b😀c"]}
+{"fn":"executableNameCandidates","args":["line1\nline2key_name-1",null,"x",false],"ok":["line1\nline2key_name-1"]}
+{"fn":"executableNameCandidates","args":["日本語のテキスト",null,0,true],"ok":["日本語のテキスト"]}
+{"fn":"executableNameCandidates","args":["ans:key.path",{"a":"b"},["a",1],true],"ok":["ans:key.path"]}
+{"fn":"executableNameCandidates","args":["é",null,{"a":{"b":"c"}}],"ok":["é"]}
+{"fn":"executableNameCandidates","args":["HELLO",["a",1],{"a":"b"},false],"ok":["HELLO"]}
+{"fn":"executableNameCandidates","args":["ünïcödé",["a",1],{"a":{"b":"c"}},false],"ok":["ünïcödé"]}
+{"fn":"executableNameCandidates","args":["😀",{"a":{"b":"c"}},true,false],"ok":["😀"]}
+{"fn":"executableNameCandidates","args":["ünïcödé",{},{"a":{"b":"c"}},true],"ok":["ünïcödé"]}
+{"fn":"executableNameCandidates","args":["日本語のテキスト",null,["a",1],{"$undefined":true}],"ok":["日本語のテキスト"]}
+{"fn":"executableNameCandidates","args":["HELLO",{"a":{"b":"c"}},["a",1],{"$undefined":true}],"ok":["HELLO"]}
+{"fn":"executableNameCandidates","args":["Hello World",{"a":"b"},null,false],"ok":["Hello World"]}
+{"fn":"executableNameCandidates","args":["héllo wörld",{"a":{"b":"c"}},null,false],"ok":["héllo wörld"]}
+{"fn":"executableNameCandidates","args":["👍🏽 thumbs",{"a":{"b":"c"}},null,false],"ok":["👍🏽 thumbs"]}
+{"fn":"executableNameCandidates","args":["日本語",{"a":{"b":"c"}},null,false],"ok":["日本語"]}
+{"fn":"executableNameCandidates","args":["",{"a":{"b":"c"}},null,false],"ok":[""]}
+{"fn":"executableNameCandidates","args":["é",{"a":{"b":"c"}},null,false],"ok":["é"]}
+{"fn":"executableNameCandidates","args":["İstanbul",{"a":{"b":"c"}},null,false],"ok":["İstanbul"]}
+{"fn":"executableNameCandidates","args":["straße",{"a":{"b":"c"}},null,false],"ok":["straße"]}
+{"fn":"executableNameCandidates","args":["ılık ırmak",{"a":{"b":"c"}},null,false],"ok":["ılık ırmak"]}
+{"fn":"executableNameCandidates","args":["👨‍👩‍👧 family",{"a":{"b":"c"}},null,false],"ok":["👨‍👩‍👧 family"]}
+{"fn":"executableNameCandidates","args":["a b",{"a":{"b":"c"}},null,false],"ok":["a b"]}
+{"fn":"executableNameCandidates","args":["ΣΊΣΥΦΟΣ",{"a":{"b":"c"}},null,false],"ok":["ΣΊΣΥΦΟΣ"]}
+{"fn":"executableNameCandidates","args":["a😀b",{"a":{"b":"c"}},null,false],"ok":["a😀b"]}
+{"fn":"executableNameCandidates","args":["﻿bom",{"a":{"b":"c"}},null,false],"ok":["﻿bom"]}
+{"fn":"executableNameCandidates","args":["a²b x½ y①",{"a":{"b":"c"}},null,false],"ok":["a²b x½ y①"]}
+{"fn":"executableNameCandidates","args":["aⅠb Ⅻ",{"a":{"b":"c"}},null,false],"ok":["aⅠb Ⅻ"]}
+{"fn":"executableNameCandidates","args":["a𐐀b 𝐀bc",{"a":{"b":"c"}},null,false],"ok":["a𐐀b 𝐀bc"]}
+{"fn":"executableNameCandidates","args":["कि ٣٤",{"a":{"b":"c"}},null,false],"ok":["कि ٣٤"]}
+{"fn":"executableNameCandidates","args":["Iı İi",{"a":{"b":"c"}},null,false],"ok":["Iı İi"]}
+{"fn":"executableNameCandidates","args":["K K k",{"a":{"b":"c"}},null,false],"ok":["K K k"]}
+{"fn":"executableNameCandidates","args":["ſ s S",{"a":{"b":"c"}},null,false],"ok":["ſ s S"]}
+{"fn":"executableNameCandidates","args":["x‍y 👨‍👩‍👧",{"a":{"b":"c"}},null,false],"ok":["x‍y 👨‍👩‍👧"]}
+{"fn":"executableNameCandidates","args":["a b c　d",{"a":{"b":"c"}},null,false],"ok":["a b c　d"]}
+{"fn":"executableNameCandidates","args":["١٢٣ ٤٥",{"a":{"b":"c"}},null,false],"ok":["١٢٣ ٤٥"]}
+{"fn":"executableNameCandidates","args":["𝟘𝟙 ²³",{"a":{"b":"c"}},null,false],"ok":["𝟘𝟙 ²³"]}
+{"fn":"executableNameCandidates","args":["snake_case foo-bar o'neil",{"a":{"b":"c"}},null,false],"ok":["snake_case foo-bar o'neil"]}
+{"fn":"executableNameCandidates","args":["ǅungla Ǆ",{"a":{"b":"c"}},null,false],"ok":["ǅungla Ǆ"]}
+{"fn":"executableNameCandidates","args":["one\r\ntwo threefour",{"a":{"b":"c"}},null,false],"ok":["one\r\ntwo threefour"]}
+{"fn":"executableNameCandidates","args":["café café",{"a":{"b":"c"}},null,false],"ok":["café café"]}
+{"fn":"executableNameCandidates","args":["ΣΑΣ σας ς",{"a":{"b":"c"}},null,false],"ok":["ΣΑΣ σας ς"]}
+{"fn":"executableNameCandidates","args":["a😀b😀c",{"a":{"b":"c"}},null,{"$undefined":true}],"ok":["a😀b😀c"]}
+{"fn":"isExecutableFile","args":["  padded  ",{"platform":{"$undefined":true},"env":{"$undefined":true},"cwd":"日本語のテキスト","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":[":",{"platform":{"$undefined":true},"env":0,"cwd":"İstanbul","allowExtensionlessOnWindows":true}],"ok":false}
+{"fn":"isExecutableFile","args":["ΣΊΣΥΦΟΣ",{"platform":true,"cwd":":"}],"ok":false}
+{"fn":"isExecutableFile","args":["abc﻿bom",{"env":true,"cwd":"hello world","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["a..b",0],"ok":false}
+{"fn":"isExecutableFile","args":["  padded  ",{"env":{"$undefined":true},"cwd":"aΣΊΣΥΦΟΣ","allowExtensionlessOnWindows":true}],"ok":false}
+{"fn":"isExecutableFile","args":["emoji 👍🏽 mixa..b",{"platform":"x","env":{},"cwd":"hello worldns:key.path"}],"ok":false}
+{"fn":"isExecutableFile","args":[".leading",{"platform":{"$undefined":true},"env":{"$undefined":true},"allowExtensionlessOnWindows":true}],"ok":false}
+{"fn":"isExecutableFile","args":["HELLO"],"ok":false}
+{"fn":"isExecutableFile","args":["ésrc/a/b.ts",{"platform":{},"cwd":"Hello World","allowExtensionlessOnWindows":true}],"ok":false}
+{"fn":"isExecutableFile","args":["ΣΊΣΥΦΟΣ",{"env":{"$undefined":true},"cwd":"src/a/b.ts"}],"ok":false}
+{"fn":"isExecutableFile","args":["a:b:c",{"platform":{"$undefined":true},"env":{"$undefined":true},"cwd":"a.b.c"}],"ok":false}
+{"fn":"isExecutableFile","args":["a😀b😀c",{"platform":{"$undefined":true},"env":{"a":"b"},"cwd":":","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["  padded  {name} has {count} items",true],"ok":false}
+{"fn":"isExecutableFile","args":["abc"],"ok":false}
+{"fn":"isExecutableFile","args":["tab\tseparated"],"ok":false}
+{"fn":"isExecutableFile","args":["﻿bom",{"platform":"x","env":{"$undefined":true},"cwd":":ns:key.path","allowExtensionlessOnWindows":true}],"ok":false}
+{"fn":"isExecutableFile","args":["ab",{"$undefined":true}],"ok":false}
+{"fn":"isExecutableFile","args":["ab",{"env":{"$undefined":true},"allowExtensionlessOnWindows":true}],"ok":false}
+{"fn":"isExecutableFile","args":["{name} has {count} items",{}],"ok":false}
+{"fn":"isExecutableFile","args":["İstanbul",{"$undefined":true}],"ok":false}
+{"fn":"isExecutableFile","args":["src/a/b.ts",{"platform":null,"env":"x","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["trailing.",{"env":[],"cwd":"a😀b😀c./x/**/*.json","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["src/a/b.ts",{"$undefined":true}],"ok":false}
+{"fn":"isExecutableFile","args":["﻿bom",{"cwd":"straße","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["ns:key.path",{"platform":{"a":"b"},"cwd":"a😀b😀c","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["İstanbul",{"platform":{"$undefined":true},"env":{"$undefined":true},"cwd":"😀"}],"ok":false}
+{"fn":"isExecutableFile","args":["abc",{"cwd":"a:b:c","allowExtensionlessOnWindows":true}],"ok":false}
+{"fn":"isExecutableFile","args":["a😀b😀c",{"$undefined":true}],"ok":false}
+{"fn":"isExecutableFile","args":["﻿bom",{"platform":"x","env":{"$undefined":true},"allowExtensionlessOnWindows":true}],"ok":false}
+{"fn":"isExecutableFile","args":["ns:key.path",{"a":"b"}],"ok":false}
+{"fn":"isExecutableFile","args":["ns:key.path",{"env":["a",1],"cwd":"﻿bom","allowExtensionlessOnWindows":true}],"ok":false}
+{"fn":"isExecutableFile","args":["{name} has {count} itemsa.b.c"],"ok":false}
+{"fn":"isExecutableFile","args":["tab\tseparateda",{"env":{"$undefined":true},"cwd":""}],"ok":false}
+{"fn":"isExecutableFile","args":["a..bsrc/a/b.ts",null],"error":"Cannot read properties of null (reading 'platform')"}
+{"fn":"isExecutableFile","args":["HELLO","x"],"ok":false}
+{"fn":"isExecutableFile","args":["ΣΊΣΥΦΟΣ",{"$undefined":true}],"ok":false}
+{"fn":"isExecutableFile","args":["hellosrc/a/b.ts",{"platform":{},"env":[],"cwd":"é","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["key_name-1",{"env":{"$undefined":true},"cwd":".leading","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["src/a/b.ts",{"env":true,"cwd":"a:b:c","allowExtensionlessOnWindows":true}],"ok":false}
+{"fn":"isExecutableFile","args":["İstanbul",[]],"ok":false}
+{"fn":"isExecutableFile","args":["./x/**/*.jsona:b:c",{"platform":{"$undefined":true},"cwd":"hello world"}],"ok":false}
+{"fn":"isExecutableFile","args":["hello",{"env":{"$undefined":true}}],"ok":false}
+{"fn":"isExecutableFile","args":["a:b:c"],"ok":false}
+{"fn":"isExecutableFile","args":["﻿bom",0],"ok":false}
+{"fn":"isExecutableFile","args":["line1\nline2hello world",{"platform":{"$undefined":true},"cwd":"hello world","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["HELLO",{"platform":"x","env":["a",1],"cwd":"src/a/b.ts","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["src/a/b.tsa.b.c",{"platform":{"$undefined":true},"env":{"$undefined":true},"cwd":"straße","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["a.b.ca.b.c",{"platform":{"$undefined":true},"cwd":"  padded  İstanbul","allowExtensionlessOnWindows":true}],"ok":false}
+{"fn":"isExecutableFile","args":["﻿bom",{"platform":null,"env":{"$undefined":true},"cwd":""}],"ok":false}
+{"fn":"isExecutableFile","args":["abc",{"platform":{"$undefined":true},"env":{"$undefined":true}}],"ok":false}
+{"fn":"isExecutableFile","args":["line1\nline2",{"platform":"x","cwd":"emoji 👍🏽 mix","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":[".leading",{"platform":{"$undefined":true},"env":{"$undefined":true},"cwd":"abc","allowExtensionlessOnWindows":true}],"ok":false}
+{"fn":"isExecutableFile","args":["ns:key.path",{"env":{"a":"b"},"cwd":"{name} has {count} itemsİstanbul"}],"ok":false}
+{"fn":"isExecutableFile","args":["tab\tseparated",{"platform":{"$undefined":true},"env":{"$undefined":true},"cwd":"﻿bom"}],"ok":false}
+{"fn":"isExecutableFile","args":["trailing.","x"],"ok":false}
+{"fn":"isExecutableFile","args":["src/a/b.ts",{"platform":{"$undefined":true},"env":0,"cwd":"HELLO","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["a:b:c",{"platform":{"$undefined":true},"env":{"$undefined":true},"cwd":"a","allowExtensionlessOnWindows":true}],"ok":false}
+{"fn":"isExecutableFile","args":["./x/**/*.json"],"ok":false}
+{"fn":"isExecutableFile","args":["trailing.straße",{"platform":{"$undefined":true},"env":{"$undefined":true},"cwd":"abc","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["ünïcödéline1\nline2",{"platform":{"$undefined":true},"env":true,"cwd":"straße"}],"ok":false}
+{"fn":"isExecutableFile","args":["HELLO",{"platform":{"$undefined":true},"env":[],"allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["key_name-1",{"platform":{"$undefined":true},"env":"x","cwd":":"}],"ok":false}
+{"fn":"isExecutableFile","args":["straße",{"$undefined":true}],"ok":false}
+{"fn":"isExecutableFile","args":["日本語のテキスト",{"platform":0,"env":true,"allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["  padded  ",{"platform":{"$undefined":true},"cwd":"ab","allowExtensionlessOnWindows":true}],"ok":false}
+{"fn":"isExecutableFile","args":["tab\tseparateda",{"platform":{"$undefined":true},"env":{"$undefined":true},"cwd":"😀","allowExtensionlessOnWindows":true}],"ok":false}
+{"fn":"isExecutableFile","args":["ns:key.path"],"ok":false}
+{"fn":"isExecutableFile","args":["İstanbula:b:c",{"platform":true,"env":{"$undefined":true},"allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["line1\nline2",{"platform":{"$undefined":true},"env":{"$undefined":true},"cwd":":"}],"ok":false}
+{"fn":"isExecutableFile","args":["ΣΊΣΥΦΟΣ",{"platform":null,"env":{"a":"b"},"cwd":"trailing.","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["a..b",{"$undefined":true}],"ok":false}
+{"fn":"isExecutableFile","args":["a..bline1\nline2",{"env":{"$undefined":true},"cwd":"src/a/b.ts","allowExtensionlessOnWindows":true}],"ok":false}
+{"fn":"isExecutableFile","args":["",{"env":{"$undefined":true},"cwd":"İstanbul","allowExtensionlessOnWindows":true}],"ok":false}
+{"fn":"isExecutableFile","args":["﻿bom"],"ok":false}
+{"fn":"isExecutableFile","args":["hello",{"env":{"a":"b"},"cwd":"HELLOünïcödé"}],"ok":false}
+{"fn":"isExecutableFile","args":["😀  padded  ",{"platform":true,"env":{"$undefined":true},"cwd":"hello","allowExtensionlessOnWindows":true}],"ok":false}
+{"fn":"isExecutableFile","args":["a:b:c{name} has {count} items",{"env":{"$undefined":true},"allowExtensionlessOnWindows":true}],"ok":false}
+{"fn":"isExecutableFile","args":["😀hello",{"platform":{"$undefined":true}}],"ok":false}
+{"fn":"isExecutableFile","args":["hello"],"ok":false}
+{"fn":"isExecutableFile","args":["straße",{"platform":0,"env":{},"cwd":"😀"}],"ok":false}
+{"fn":"isExecutableFile","args":["line1\nline2",{"platform":{"a":"b"},"env":null,"cwd":"line1\nline2","allowExtensionlessOnWindows":true}],"ok":false}
+{"fn":"isExecutableFile","args":["tab\tseparated",["a",1]],"ok":false}
+{"fn":"isExecutableFile","args":["a.b.c",{"cwd":"./x/**/*.json","allowExtensionlessOnWindows":true}],"ok":false}
+{"fn":"isExecutableFile","args":[":{name} has {count} items",{"env":{"$undefined":true},"cwd":"日本語のテキスト"}],"ok":false}
+{"fn":"isExecutableFile","args":["😀",{"platform":true,"env":{"$undefined":true},"cwd":":","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["{name} has {count} items",{"platform":"x","env":{"a":"b"},"cwd":"ab","allowExtensionlessOnWindows":true}],"ok":false}
+{"fn":"isExecutableFile","args":["hello",{"$undefined":true}],"ok":false}
+{"fn":"isExecutableFile","args":["a😀b😀c",{"platform":{"$undefined":true},"cwd":"a.b.ckey_name-1","allowExtensionlessOnWindows":true}],"ok":false}
+{"fn":"isExecutableFile","args":["src/a/b.ts",{"platform":[],"cwd":"line1\nline2","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["tab\tseparated",{"env":{"a":"b"},"cwd":"key_name-1","allowExtensionlessOnWindows":true}],"ok":false}
+{"fn":"isExecutableFile","args":["HELLO",{"platform":{"$undefined":true},"cwd":"hello"}],"ok":false}
+{"fn":"isExecutableFile","args":["abc",{"platform":{"$undefined":true},"env":["a",1],"cwd":"ünïcödé","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["日本語のテキスト",{"platform":null,"cwd":":","allowExtensionlessOnWindows":true}],"ok":false}
+{"fn":"isExecutableFile","args":["./x/**/*.json",{"platform":{"$undefined":true},"allowExtensionlessOnWindows":true}],"ok":false}
+{"fn":"isExecutableFile","args":["src/a/b.tshello",{"platform":"x","env":{"$undefined":true},"cwd":"{name} has {count} items","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["abc",{}],"ok":false}
+{"fn":"isExecutableFile","args":["src/a/b.ts",{"platform":{"$undefined":true},"cwd":"日本語のテキスト","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["😀ünïcödé",{"$undefined":true}],"ok":false}
+{"fn":"isExecutableFile","args":["ünïcödé"],"ok":false}
+{"fn":"isExecutableFile","args":["a..b",{"platform":"x","cwd":"straße","allowExtensionlessOnWindows":true}],"ok":false}
+{"fn":"isExecutableFile","args":["a.b.c",{"platform":{"a":"b"},"cwd":"a.b.c"}],"ok":false}
+{"fn":"isExecutableFile","args":["straße",{"platform":0,"env":["a",1],"allowExtensionlessOnWindows":true}],"ok":false}
+{"fn":"isExecutableFile","args":["ΣΊΣΥΦΟΣ",{"platform":0,"env":{"$undefined":true},"allowExtensionlessOnWindows":true}],"ok":false}
+{"fn":"isExecutableFile","args":["line1\nline2a",{"cwd":"é日本語のテキスト","allowExtensionlessOnWindows":true}],"ok":false}
+{"fn":"isExecutableFile","args":["straße",{"platform":0,"cwd":":"}],"ok":false}
+{"fn":"isExecutableFile","args":["日本語のテキスト",{"platform":{},"env":{"$undefined":true},"cwd":"abc","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["hello",{"platform":"x","env":{"$undefined":true},"cwd":"line1\nline2","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["tab\tseparated",{"env":{"$undefined":true},"cwd":"abc","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["İstanbulab",{"platform":"x","env":{"$undefined":true},"cwd":"日本語のテキストhello world"}],"ok":false}
+{"fn":"isExecutableFile","args":["hello",{"platform":{"$undefined":true}}],"ok":false}
+{"fn":"isExecutableFile","args":["日本語のテキストé"],"ok":false}
+{"fn":"isExecutableFile","args":["  padded  ",{"env":{"$undefined":true},"cwd":"emoji 👍🏽 mix","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["hello world",{"platform":"x","env":[],"cwd":"hello world","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["ΣΊΣΥΦΟΣ",{"env":{"$undefined":true}}],"ok":false}
+{"fn":"isExecutableFile","args":["straße",{"platform":{"a":"b"},"cwd":"ababc","allowExtensionlessOnWindows":true}],"ok":false}
+{"fn":"isExecutableFile","args":["line1\nline2",{"platform":{"$undefined":true},"env":{"$undefined":true},"allowExtensionlessOnWindows":true}],"ok":false}
+{"fn":"isExecutableFile","args":["{name} has {count} items😀",{"platform":true,"env":"x","cwd":"a:b:c  padded  ","allowExtensionlessOnWindows":true}],"ok":false}
+{"fn":"isExecutableFile","args":["aba..b",{}],"ok":false}
+{"fn":"isExecutableFile","args":["ünïcödé",{"env":{"$undefined":true},"cwd":"日本語のテキストline1\nline2","allowExtensionlessOnWindows":true}],"ok":false}
+{"fn":"isExecutableFile","args":["日本語のテキスト",{"env":{"$undefined":true},"cwd":"a😀b😀c","allowExtensionlessOnWindows":true}],"ok":false}
+{"fn":"isExecutableFile","args":["İstanbul",{"platform":{"a":{"b":"c"}},"env":null,"allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["a:b:c",{"env":true,"cwd":"HELLO","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["hello world",{"platform":{"$undefined":true},"env":{"$undefined":true},"cwd":"Hello World"}],"ok":false}
+{"fn":"isExecutableFile","args":["{name} has {count} itemsİstanbul",null],"error":"Cannot read properties of null (reading 'platform')"}
+{"fn":"isExecutableFile","args":["key_name-1",true],"ok":false}
+{"fn":"isExecutableFile","args":["abca",{"$undefined":true}],"ok":false}
+{"fn":"isExecutableFile","args":["straße",{"platform":{},"env":{"$undefined":true},"allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["ΣΊΣΥΦΟΣ",{"platform":["a",1],"env":{"$undefined":true},"cwd":"日本語のテキスト","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["trailing.",{"env":{"$undefined":true},"cwd":"key_name-1","allowExtensionlessOnWindows":true}],"ok":false}
+{"fn":"isExecutableFile","args":["😀",{"cwd":"﻿bom","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":[".leading",{"env":{"a":{"b":"c"}},"cwd":"key_name-1","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["a:b:c",{}],"ok":false}
+{"fn":"isExecutableFile","args":["src/a/b.ts",{"env":{"a":"b"},"cwd":"ünïcödéa..b"}],"ok":false}
+{"fn":"isExecutableFile","args":["hello world",{"env":{"$undefined":true},"cwd":"line1\nline2","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["abc",{"$undefined":true}],"ok":false}
+{"fn":"isExecutableFile","args":["key_name-1😀",{"env":{"$undefined":true},"cwd":"src/a/b.ts","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["a..b",{"platform":{"$undefined":true},"env":0,"allowExtensionlessOnWindows":true}],"ok":false}
+{"fn":"isExecutableFile","args":["emoji 👍🏽 mix",{"env":{"$undefined":true},"cwd":"src/a/b.ts","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["日本語のテキスト"],"ok":false}
+{"fn":"isExecutableFile","args":["a",{"platform":null,"cwd":"Hello World","allowExtensionlessOnWindows":true}],"ok":false}
+{"fn":"isExecutableFile","args":["line1\nline2ünïcödé",{"$undefined":true}],"ok":false}
+{"fn":"isExecutableFile","args":[":",{"env":{"$undefined":true},"allowExtensionlessOnWindows":true}],"ok":false}
+{"fn":"isExecutableFile","args":["ΣΊΣΥΦΟΣ",{"platform":{"$undefined":true},"env":{"$undefined":true},"allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["😀",0],"ok":false}
+{"fn":"isExecutableFile","args":["trailing.😀",{"cwd":"./x/**/*.json","allowExtensionlessOnWindows":true}],"ok":false}
+{"fn":"isExecutableFile","args":["a..bkey_name-1",{"platform":{"$undefined":true},"env":"x","cwd":"é","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["key_name-1",[]],"ok":false}
+{"fn":"isExecutableFile","args":["日本語のテキスト",{"a":"b"}],"ok":false}
+{"fn":"isExecutableFile","args":["ns:key.pathHELLO",["a",1]],"ok":false}
+{"fn":"isExecutableFile","args":["a😀b😀c",{"platform":["a",1],"allowExtensionlessOnWindows":true}],"ok":false}
+{"fn":"isExecutableFile","args":["tab\tseparated",{"platform":{"$undefined":true},"allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":[""],"ok":false}
+{"fn":"isExecutableFile","args":["é",{"platform":{"$undefined":true},"env":{"$undefined":true},"cwd":"abc"}],"ok":false}
+{"fn":"isExecutableFile","args":["﻿bom",{"$undefined":true}],"ok":false}
+{"fn":"isExecutableFile","args":["trailing.",{"platform":{"$undefined":true},"env":{"$undefined":true},"cwd":":HELLO","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["ns:key.path",{"$undefined":true}],"ok":false}
+{"fn":"isExecutableFile","args":["a..b",null],"error":"Cannot read properties of null (reading 'platform')"}
+{"fn":"isExecutableFile","args":["﻿bom","x"],"ok":false}
+{"fn":"isExecutableFile","args":["a😀b😀c",{"platform":{"$undefined":true},"cwd":"tab\tseparated","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["emoji 👍🏽 mix",{"platform":[],"env":{"a":"b"}}],"ok":false}
+{"fn":"isExecutableFile","args":["  padded  ",{"platform":[],"allowExtensionlessOnWindows":true}],"ok":false}
+{"fn":"isExecutableFile","args":["  padded  ",null],"error":"Cannot read properties of null (reading 'platform')"}
+{"fn":"isExecutableFile","args":["HELLO",{"$undefined":true}],"ok":false}
+{"fn":"isExecutableFile","args":[":",[]],"ok":false}
+{"fn":"isExecutableFile","args":["  padded  ",{"env":{"$undefined":true},"cwd":"日本語のテキスト:"}],"ok":false}
+{"fn":"isExecutableFile","args":["ab",{"env":{"$undefined":true},"cwd":"ünïcödé"}],"ok":false}
+{"fn":"isExecutableFile","args":["straßea😀b😀c",{"platform":{"$undefined":true},"env":{"$undefined":true},"allowExtensionlessOnWindows":true}],"ok":false}
+{"fn":"isExecutableFile","args":["😀",null],"error":"Cannot read properties of null (reading 'platform')"}
+{"fn":"isExecutableFile","args":["a.b.c",{"$undefined":true}],"ok":false}
+{"fn":"isExecutableFile","args":["﻿bom",{"platform":"x","env":null,"cwd":"﻿bom"}],"ok":false}
+{"fn":"isExecutableFile","args":["﻿bom",{"platform":{"a":"b"},"env":{"a":"b"},"cwd":"abc😀","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":[":",{"platform":{"$undefined":true},"cwd":"trailing.é","allowExtensionlessOnWindows":true}],"ok":false}
+{"fn":"isExecutableFile","args":["ab",{"platform":"x","env":{"$undefined":true},"cwd":"İstanbul","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["abc",{"platform":{"$undefined":true}}],"ok":false}
+{"fn":"isExecutableFile","args":["a",null],"error":"Cannot read properties of null (reading 'platform')"}
+{"fn":"isExecutableFile","args":["./x/**/*.json",{"platform":{"$undefined":true},"cwd":"ΣΊΣΥΦΟΣ","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["Hello World",{"env":{"$undefined":true},"cwd":"İstanbul","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["a😀b😀c",{"platform":{"$undefined":true},"env":{"a":"b"},"cwd":".leading"}],"ok":false}
+{"fn":"isExecutableFile","args":["emoji 👍🏽 mix",{"cwd":"é","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["a😀",{"env":{"$undefined":true},"cwd":"ns:key.path"}],"ok":false}
+{"fn":"isExecutableFile","args":["a:b:chello world",{}],"ok":false}
+{"fn":"isExecutableFile","args":["ΣΊΣΥΦΟΣ",0],"ok":false}
+{"fn":"isExecutableFile","args":["src/a/b.ts",{"platform":true,"allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["straße",{"platform":{"$undefined":true},"env":true,"cwd":"trailing.","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["ΣΊΣΥΦΟΣ",{"platform":"x","cwd":"a😀b😀c","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["{name} has {count} itemsline1\nline2","x"],"ok":false}
+{"fn":"isExecutableFile","args":["a.b.c",{"platform":{"$undefined":true},"env":{"$undefined":true},"cwd":"straße","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["src/a/b.ts",0],"ok":false}
+{"fn":"isExecutableFile","args":["emoji 👍🏽 mix",{"$undefined":true}],"ok":false}
+{"fn":"isExecutableFile","args":["straße",{"platform":{"a":"b"},"env":{"$undefined":true},"allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["Hello World",{"platform":{"$undefined":true},"env":"x"}],"ok":false}
+{"fn":"isExecutableFile","args":[".leading﻿bom",{"env":{"$undefined":true},"cwd":"{name} has {count} items","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["﻿bomé",{"platform":{"$undefined":true},"env":{"$undefined":true},"cwd":"İstanbul","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["hello world",{"platform":{"$undefined":true},"env":{"$undefined":true},"cwd":"ünïcödé"}],"ok":false}
+{"fn":"isExecutableFile","args":["hello worldstraße",{"platform":{"$undefined":true},"cwd":"日本語のテキスト","allowExtensionlessOnWindows":true}],"ok":false}
+{"fn":"isExecutableFile","args":["İstanbul"],"ok":false}
+{"fn":"isExecutableFile","args":["Hello Worldtab\tseparated",{"platform":{"$undefined":true},"env":{"$undefined":true},"cwd":"key_name-1","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["{name} has {count} items",{"platform":[],"cwd":"src/a/b.ts","allowExtensionlessOnWindows":true}],"ok":false}
+{"fn":"isExecutableFile","args":["abc",["a",1]],"ok":false}
+{"fn":"isExecutableFile","args":["héllo wörld",{"platform":{"$undefined":true},"env":{"$undefined":true},"cwd":"日本語のテキスト","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["👍🏽 thumbs",{"platform":{"$undefined":true},"env":{"$undefined":true},"cwd":"日本語のテキスト","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["日本語",{"platform":{"$undefined":true},"env":{"$undefined":true},"cwd":"日本語のテキスト","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["",{"platform":{"$undefined":true},"env":{"$undefined":true},"cwd":"日本語のテキスト","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["é",{"platform":{"$undefined":true},"env":{"$undefined":true},"cwd":"日本語のテキスト","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["İstanbul",{"platform":{"$undefined":true},"env":{"$undefined":true},"cwd":"日本語のテキスト","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["straße",{"platform":{"$undefined":true},"env":{"$undefined":true},"cwd":"日本語のテキスト","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["ılık ırmak",{"platform":{"$undefined":true},"env":{"$undefined":true},"cwd":"日本語のテキスト","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["👨‍👩‍👧 family",{"platform":{"$undefined":true},"env":{"$undefined":true},"cwd":"日本語のテキスト","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["a b",{"platform":{"$undefined":true},"env":{"$undefined":true},"cwd":"日本語のテキスト","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["ΣΊΣΥΦΟΣ",{"platform":{"$undefined":true},"env":{"$undefined":true},"cwd":"日本語のテキスト","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["a😀b",{"platform":{"$undefined":true},"env":{"$undefined":true},"cwd":"日本語のテキスト","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["﻿bom",{"platform":{"$undefined":true},"env":{"$undefined":true},"cwd":"日本語のテキスト","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["a²b x½ y①",{"platform":{"$undefined":true},"env":{"$undefined":true},"cwd":"日本語のテキスト","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["aⅠb Ⅻ",{"platform":{"$undefined":true},"env":{"$undefined":true},"cwd":"日本語のテキスト","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["a𐐀b 𝐀bc",{"platform":{"$undefined":true},"env":{"$undefined":true},"cwd":"日本語のテキスト","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["कि ٣٤",{"platform":{"$undefined":true},"env":{"$undefined":true},"cwd":"日本語のテキスト","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["Iı İi",{"platform":{"$undefined":true},"env":{"$undefined":true},"cwd":"日本語のテキスト","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["K K k",{"platform":{"$undefined":true},"env":{"$undefined":true},"cwd":"日本語のテキスト","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["ſ s S",{"platform":{"$undefined":true},"env":{"$undefined":true},"cwd":"日本語のテキスト","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["x‍y 👨‍👩‍👧",{"platform":{"$undefined":true},"env":{"$undefined":true},"cwd":"日本語のテキスト","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["a b c　d",{"platform":{"$undefined":true},"env":{"$undefined":true},"cwd":"日本語のテキスト","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["١٢٣ ٤٥",{"platform":{"$undefined":true},"env":{"$undefined":true},"cwd":"日本語のテキスト","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["𝟘𝟙 ²³",{"platform":{"$undefined":true},"env":{"$undefined":true},"cwd":"日本語のテキスト","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["snake_case foo-bar o'neil",{"platform":{"$undefined":true},"env":{"$undefined":true},"cwd":"日本語のテキスト","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["ǅungla Ǆ",{"platform":{"$undefined":true},"env":{"$undefined":true},"cwd":"日本語のテキスト","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["one\r\ntwo threefour",{"platform":{"$undefined":true},"env":{"$undefined":true},"cwd":"日本語のテキスト","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["café café",{"platform":{"$undefined":true},"env":{"$undefined":true},"cwd":"日本語のテキスト","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"isExecutableFile","args":["ΣΑΣ σας ς",{"platform":{"$undefined":true},"env":{"$undefined":true},"cwd":"日本語のテキスト","allowExtensionlessOnWindows":false}],"ok":false}
+{"fn":"resolveExecutable","args":["a.b.c",{"platform":{"$undefined":true},"env":{"$undefined":true},"allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["{name} has {count} items./x/**/*.json",{"env":{"$undefined":true},"allowExtensionlessOnWindows":true}],"ok":null}
+{"fn":"resolveExecutable","args":[""],"ok":null}
+{"fn":"resolveExecutable","args":["日本語のテキストhello",{"platform":"x","env":{"$undefined":true},"allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["tab\tseparated",{"platform":{"$undefined":true},"env":["a",1]}],"ok":null}
+{"fn":"resolveExecutable","args":["Hello World",{"platform":{"$undefined":true},"env":"x","cwd":"ns:key.path"}],"ok":null}
+{"fn":"resolveExecutable","args":["a😀b😀c",{"env":{"$undefined":true},"cwd":"İstanbul","allowExtensionlessOnWindows":true}],"ok":null}
+{"fn":"resolveExecutable","args":["key_name-1",{"cwd":"a","allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["ünïcödé",{"env":{"$undefined":true},"allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["emoji 👍🏽 mix",{"platform":0}],"ok":null}
+{"fn":"resolveExecutable","args":["{name} has {count} items"],"ok":null}
+{"fn":"resolveExecutable","args":["tab\tseparated:"],"ok":null}
+{"fn":"resolveExecutable","args":["straßea😀b😀c",{}],"ok":null}
+{"fn":"resolveExecutable","args":["ns:key.path",{"env":{"$undefined":true}}],"ok":null}
+{"fn":"resolveExecutable","args":["a",{"platform":{"$undefined":true},"cwd":"a.b.c","allowExtensionlessOnWindows":true}],"ok":null}
+{"fn":"resolveExecutable","args":["a..b",{"env":{"a":{"b":"c"}},"allowExtensionlessOnWindows":true}],"ok":null}
+{"fn":"resolveExecutable","args":["key_name-1",{"platform":{"$undefined":true},"allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["﻿bom",{"cwd":"line1\nline2","allowExtensionlessOnWindows":true}],"ok":null}
+{"fn":"resolveExecutable","args":["atrailing.",{"platform":{"a":{"b":"c"}},"env":{"$undefined":true},"cwd":"src/a/b.ts","allowExtensionlessOnWindows":true}],"ok":null}
+{"fn":"resolveExecutable","args":["a",{"$undefined":true}],"ok":null}
+{"fn":"resolveExecutable","args":["",{"platform":[],"cwd":"hello","allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["hello world😀",{"platform":{"$undefined":true},"cwd":"ünïcödéHello World","allowExtensionlessOnWindows":true}],"ok":null}
+{"fn":"resolveExecutable","args":["a..b",{"platform":null,"cwd":"./x/**/*.json","allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["ns:key.path",{"allowExtensionlessOnWindows":true}],"ok":null}
+{"fn":"resolveExecutable","args":["  padded  ",{}],"ok":null}
+{"fn":"resolveExecutable","args":["ab",["a",1]],"ok":"/usr/sbin/ab"}
+{"fn":"resolveExecutable","args":["ΣΊΣΥΦΟΣ",{"env":{"$undefined":true},"allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":[".leading",null],"error":"Cannot read properties of null (reading 'platform')"}
+{"fn":"resolveExecutable","args":["﻿bomünïcödé",{"platform":{},"env":{"$undefined":true},"cwd":"./x/**/*.jsonns:key.path","allowExtensionlessOnWindows":true}],"ok":null}
+{"fn":"resolveExecutable","args":["a:b:c",{"platform":{"a":"b"},"env":{"$undefined":true},"cwd":"a./x/**/*.json"}],"ok":null}
+{"fn":"resolveExecutable","args":["a.b.c",{"$undefined":true}],"ok":null}
+{"fn":"resolveExecutable","args":["Hello World",{"platform":{"a":"b"},"cwd":"ab","allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["😀a:b:c",{"platform":{"$undefined":true},"env":null,"cwd":".leading","allowExtensionlessOnWindows":true}],"ok":null}
+{"fn":"resolveExecutable","args":["a:b:c",{"platform":[],"cwd":"ns:key.path","allowExtensionlessOnWindows":true}],"ok":null}
+{"fn":"resolveExecutable","args":["hello world",{"platform":{"a":{"b":"c"}},"cwd":"😀","allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["  padded  "],"ok":null}
+{"fn":"resolveExecutable","args":["HELLO",{"env":{"$undefined":true},"cwd":"HELLO"}],"ok":null}
+{"fn":"resolveExecutable","args":["src/a/b.ts",{"env":0,"cwd":"日本語のテキスト"}],"ok":null}
+{"fn":"resolveExecutable","args":["emoji 👍🏽 mix",{"platform":{"$undefined":true},"env":{"$undefined":true},"cwd":"key_name-1","allowExtensionlessOnWindows":true}],"ok":null}
+{"fn":"resolveExecutable","args":["😀"],"ok":null}
+{"fn":"resolveExecutable","args":["./x/**/*.json",{"$undefined":true}],"ok":null}
+{"fn":"resolveExecutable","args":["a",{"platform":["a",1],"env":{"$undefined":true},"allowExtensionlessOnWindows":true}],"ok":null}
+{"fn":"resolveExecutable","args":["key_name-1",{"$undefined":true}],"ok":null}
+{"fn":"resolveExecutable","args":["﻿bom",[]],"ok":null}
+{"fn":"resolveExecutable","args":["a:b:c",{"platform":{},"env":["a",1],"allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["a:b:c",{"$undefined":true}],"ok":null}
+{"fn":"resolveExecutable","args":["hello world",{"platform":["a",1],"env":{"$undefined":true},"cwd":"line1\nline2","allowExtensionlessOnWindows":true}],"ok":null}
+{"fn":"resolveExecutable","args":["😀",{"cwd":"trailing."}],"ok":null}
+{"fn":"resolveExecutable","args":["ns:key.path",{"platform":{"$undefined":true},"env":{"a":"b"},"cwd":"a..b"}],"ok":null}
+{"fn":"resolveExecutable","args":["straßeline1\nline2",{"platform":{},"env":{"$undefined":true},"cwd":":"}],"ok":null}
+{"fn":"resolveExecutable","args":["a",{"platform":{"$undefined":true},"cwd":"tab\tseparated","allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["hello world",{"allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["日本語のテキストtab\tseparated",{"platform":{"$undefined":true},"env":"x","allowExtensionlessOnWindows":true}],"ok":null}
+{"fn":"resolveExecutable","args":["trailing.",{"$undefined":true}],"ok":null}
+{"fn":"resolveExecutable","args":["ΣΊΣΥΦΟΣ",{"platform":["a",1],"env":{"$undefined":true},"allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":[".leading",{"$undefined":true}],"ok":null}
+{"fn":"resolveExecutable","args":["tab\tseparated",{"env":{},"cwd":"  padded  Hello World","allowExtensionlessOnWindows":true}],"ok":null}
+{"fn":"resolveExecutable","args":["a:b:c",{"platform":{"a":{"b":"c"}},"env":null,"cwd":"key_name-1","allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["日本語のテキストa.b.c",{"platform":{"$undefined":true},"cwd":"Hello World","allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["a😀b😀c",{"a":"b"}],"ok":null}
+{"fn":"resolveExecutable","args":["straße",{"platform":{"$undefined":true},"env":{"$undefined":true},"cwd":"Hello World","allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["line1\nline2",{"platform":{},"env":{"$undefined":true},"allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["",{"platform":["a",1],"env":{"$undefined":true},"cwd":"ab","allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["src/a/b.ts",{"platform":{"$undefined":true},"env":["a",1],"cwd":"ns:key.path","allowExtensionlessOnWindows":true}],"ok":null}
+{"fn":"resolveExecutable","args":["./x/**/*.json"],"ok":null}
+{"fn":"resolveExecutable","args":["﻿bom"],"ok":null}
+{"fn":"resolveExecutable","args":["日本語のテキスト",{"platform":{"$undefined":true},"env":[],"cwd":"src/a/b.ts","allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["hello world",{"env":{"$undefined":true},"cwd":"a:b:c","allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["日本語のテキストkey_name-1",{"platform":{"$undefined":true},"cwd":"a..b","allowExtensionlessOnWindows":true}],"ok":null}
+{"fn":"resolveExecutable","args":["ab",{"platform":[],"env":{"$undefined":true},"cwd":"ab","allowExtensionlessOnWindows":true}],"ok":"/usr/sbin/ab"}
+{"fn":"resolveExecutable","args":["tab\tseparated",{"platform":{"a":{"b":"c"}},"env":0,"cwd":"ns:key.path","allowExtensionlessOnWindows":true}],"ok":null}
+{"fn":"resolveExecutable","args":["hellohello world"],"ok":null}
+{"fn":"resolveExecutable","args":["a.b.c",{}],"ok":null}
+{"fn":"resolveExecutable","args":["😀src/a/b.ts",{}],"ok":null}
+{"fn":"resolveExecutable","args":["straße",{"platform":"x","cwd":"﻿bom","allowExtensionlessOnWindows":true}],"ok":null}
+{"fn":"resolveExecutable","args":["ab",{"env":0,"cwd":"line1\nline2","allowExtensionlessOnWindows":true}],"ok":null}
+{"fn":"resolveExecutable","args":["X","x"],"ok":null}
+{"fn":"resolveExecutable","args":["emoji 👍🏽 mix",{"$undefined":true}],"ok":null}
+{"fn":"resolveExecutable","args":["a",{"platform":0,"cwd":"HELLO","allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["{name} has {count} items",{"platform":{"a":"b"},"cwd":"./x/**/*.json","allowExtensionlessOnWindows":true}],"ok":null}
+{"fn":"resolveExecutable","args":["ab",{"env":null,"cwd":"hello","allowExtensionlessOnWindows":false}],"ok":"/usr/sbin/ab"}
+{"fn":"resolveExecutable","args":["日本語のテキスト",{"$undefined":true}],"ok":null}
+{"fn":"resolveExecutable","args":["ΣΊΣΥΦΟΣ",{}],"ok":null}
+{"fn":"resolveExecutable","args":["abtab\tseparated",{"platform":{},"env":{"$undefined":true}}],"ok":null}
+{"fn":"resolveExecutable","args":["a.b.c",{"env":{"$undefined":true},"allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["a",{"platform":{"$undefined":true},"env":true,"cwd":":hello world","allowExtensionlessOnWindows":true}],"ok":null}
+{"fn":"resolveExecutable","args":["straße",{"platform":{"$undefined":true},"cwd":"😀","allowExtensionlessOnWindows":true}],"ok":null}
+{"fn":"resolveExecutable","args":["  padded  ",{"env":{"$undefined":true},"cwd":"ab"}],"ok":null}
+{"fn":"resolveExecutable","args":["ns:key.path",{"platform":{"$undefined":true},"env":{"$undefined":true},"cwd":"日本語のテキスト","allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["emoji 👍🏽 mix",{"platform":null,"env":null,"cwd":"src/a/b.ts","allowExtensionlessOnWindows":true}],"ok":null}
+{"fn":"resolveExecutable","args":["hello world",{"platform":{"$undefined":true},"env":{"$undefined":true},"cwd":"ΣΊΣΥΦΟΣ","allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["line1\nline2",{"platform":{"a":"b"},"env":null,"cwd":"ab","allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["",{"cwd":"a😀b😀c","allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["İstanbul日本語のテキスト",{"a":{"b":"c"}}],"ok":null}
+{"fn":"resolveExecutable","args":["",{"$undefined":true}],"ok":null}
+{"fn":"resolveExecutable","args":[".leading.leading",{"env":{"a":{"b":"c"}},"allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["日本語のテキスト",{"platform":"x","allowExtensionlessOnWindows":true}],"ok":null}
+{"fn":"resolveExecutable","args":["Hello World",{"platform":null,"env":{"$undefined":true},"allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["İstanbultab\tseparated",{"platform":{"$undefined":true},"env":{},"cwd":"","allowExtensionlessOnWindows":true}],"ok":null}
+{"fn":"resolveExecutable","args":["trailing.",{"platform":[],"cwd":"日本語のテキスト"}],"ok":null}
+{"fn":"resolveExecutable","args":["﻿bom",{"platform":{"$undefined":true},"env":0,"cwd":"é","allowExtensionlessOnWindows":true}],"ok":null}
+{"fn":"resolveExecutable","args":["HELLO"],"ok":null}
+{"fn":"resolveExecutable","args":["ns:key.patha:b:c",{"platform":{"$undefined":true},"env":{"$undefined":true},"cwd":"trailing."}],"ok":null}
+{"fn":"resolveExecutable","args":["hello world",{"env":{"a":"b"},"cwd":"  padded  "}],"ok":null}
+{"fn":"resolveExecutable","args":["key_name-1line1\nline2"],"ok":null}
+{"fn":"resolveExecutable","args":["{name} has {count} items",{"env":true,"allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["a..bHELLO",{"platform":{"$undefined":true},"cwd":"ns:key.pathΣΊΣΥΦΟΣ","allowExtensionlessOnWindows":true}],"ok":null}
+{"fn":"resolveExecutable","args":[":",{"platform":"x","env":{"$undefined":true}}],"ok":null}
+{"fn":"resolveExecutable","args":["a"],"ok":null}
+{"fn":"resolveExecutable","args":["ΣΊΣΥΦΟΣ",{"env":0,"cwd":"key_name-1","allowExtensionlessOnWindows":true}],"ok":null}
+{"fn":"resolveExecutable","args":["a😀b😀cİstanbul",{"platform":[],"env":{"$undefined":true},"cwd":"Hello World","allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["  padded  ",{"platform":[],"env":{"$undefined":true},"cwd":"key_name-1","allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["key_name-1",{"a":"b"}],"ok":null}
+{"fn":"resolveExecutable","args":["  padded  ",{"platform":true,"env":{"$undefined":true},"cwd":"abhello"}],"ok":null}
+{"fn":"resolveExecutable","args":[".leading",{"env":null,"allowExtensionlessOnWindows":true}],"ok":null}
+{"fn":"resolveExecutable","args":["😀",{"platform":{"$undefined":true},"env":{"a":"b"},"cwd":".leading","allowExtensionlessOnWindows":true}],"ok":null}
+{"fn":"resolveExecutable","args":["key_name-1",{"platform":null,"cwd":"a😀b😀c","allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["./x/**/*.json",0],"ok":null}
+{"fn":"resolveExecutable","args":["a😀b😀c",{"env":[],"cwd":"ΣΊΣΥΦΟΣ"}],"ok":null}
+{"fn":"resolveExecutable","args":["﻿bom",{"platform":[],"cwd":":","allowExtensionlessOnWindows":true}],"ok":null}
+{"fn":"resolveExecutable","args":["{name} has {count} itemsé",{"$undefined":true}],"ok":null}
+{"fn":"resolveExecutable","args":["😀hello",{"env":{},"cwd":"key_name-1"}],"ok":null}
+{"fn":"resolveExecutable","args":["Hello Worlda..b",{"platform":{"$undefined":true},"env":0,"cwd":"ns:key.path"}],"ok":null}
+{"fn":"resolveExecutable","args":["Hello World",{"platform":null,"env":0,"cwd":"ΣΊΣΥΦΟΣ","allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["line1\nline2a.b.c",{"platform":{"$undefined":true},"cwd":"","allowExtensionlessOnWindows":true}],"ok":null}
+{"fn":"resolveExecutable","args":["{name} has {count} items",{"$undefined":true}],"ok":null}
+{"fn":"resolveExecutable","args":["tab\tseparateda","e"],"ok":null}
+{"fn":"resolveExecutable","args":["tab\tseparated",{"platform":{"$undefined":true},"env":{"$undefined":true},"cwd":"  padded  hello","allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":[":",{"$undefined":true}],"ok":null}
+{"fn":"resolveExecutable","args":["emoji 👍🏽 mix",{"a":"b"}],"ok":null}
+{"fn":"resolveExecutable","args":["ünïcödé",{"env":{"$undefined":true},"cwd":"hello","allowExtensionlessOnWindows":true}],"ok":null}
+{"fn":"resolveExecutable","args":["﻿bom",{"platform":{"$undefined":true},"env":{"$undefined":true},"allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["  padded  ",[]],"ok":null}
+{"fn":"resolveExecutable","args":["a:b:c"],"ok":null}
+{"fn":"resolveExecutable","args":["hello",0],"ok":null}
+{"fn":"resolveExecutable","args":["日本語のテキスト",{"env":{"$undefined":true}}],"ok":null}
+{"fn":"resolveExecutable","args":["日本語のテキスト",{"platform":"x","cwd":"﻿bom","allowExtensionlessOnWindows":true}],"ok":null}
+{"fn":"resolveExecutable","args":["emoji 👍🏽 mix",{"cwd":"İstanbul","allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["hello world",{"platform":{"a":{"b":"c"}},"env":{"$undefined":true},"cwd":"a.b.c"}],"ok":null}
+{"fn":"resolveExecutable","args":["trailing.emoji 👍🏽 mix",{"platform":["a",1],"env":{"$undefined":true},"cwd":"","allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["abc"],"ok":null}
+{"fn":"resolveExecutable","args":["abcemoji 👍🏽 mix"],"ok":null}
+{"fn":"resolveExecutable","args":["hello worlda..b",{"env":null,"cwd":"key_name-1a","allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["ns:key.path","x"],"ok":null}
+{"fn":"resolveExecutable","args":["ab",{"platform":{"$undefined":true},"env":{"$undefined":true},"cwd":"a","allowExtensionlessOnWindows":true}],"ok":"/usr/sbin/ab"}
+{"fn":"resolveExecutable","args":["trailing."],"ok":null}
+{"fn":"resolveExecutable","args":["emoji 👍🏽 mix",{"platform":"x","env":["a",1],"cwd":"aa:b:c","allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["  padded  ",{"platform":{"$undefined":true},"env":true,"cwd":"a😀b😀cab","allowExtensionlessOnWindows":true}],"ok":null}
+{"fn":"resolveExecutable","args":["a.b.c","x"],"ok":null}
+{"fn":"resolveExecutable","args":["trailing.",{"platform":{"$undefined":true},"env":{"$undefined":true},"cwd":"emoji 👍🏽 mix","allowExtensionlessOnWindows":true}],"ok":null}
+{"fn":"resolveExecutable","args":["é",{"$undefined":true}],"ok":null}
+{"fn":"resolveExecutable","args":["emoji 👍🏽 mixa:b:c",["a",1]],"ok":null}
+{"fn":"resolveExecutable","args":["src/a/b.ts",{"$undefined":true}],"ok":null}
+{"fn":"resolveExecutable","args":["ΣΊΣΥΦΟΣ.leading",{"platform":{"$undefined":true},"env":["a",1],"cwd":"😀","allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["",{"env":{"$undefined":true},"cwd":"key_name-1","allowExtensionlessOnWindows":true}],"ok":null}
+{"fn":"resolveExecutable","args":["日本語のテキスト"],"ok":null}
+{"fn":"resolveExecutable","args":["Hello World",["a",1]],"ok":null}
+{"fn":"resolveExecutable","args":["{name} has {count} items",{"platform":[],"env":{"$undefined":true},"cwd":""}],"ok":null}
+{"fn":"resolveExecutable","args":["ΣΊΣΥΦΟΣ",{"platform":null,"env":{"$undefined":true},"allowExtensionlessOnWindows":true}],"ok":null}
+{"fn":"resolveExecutable","args":["ns:key.path",{"platform":["a",1],"env":true,"allowExtensionlessOnWindows":true}],"ok":null}
+{"fn":"resolveExecutable","args":["key_name-1"],"ok":null}
+{"fn":"resolveExecutable","args":["key_name-1",{"platform":{"$undefined":true},"env":[],"cwd":"{name} has {count} items","allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["İstanbula:b:c",{"platform":["a",1],"env":{},"cwd":"  padded  日本語のテキスト","allowExtensionlessOnWindows":true}],"ok":null}
+{"fn":"resolveExecutable","args":["😀",{"platform":{"$undefined":true},"cwd":"hello world","allowExtensionlessOnWindows":true}],"ok":null}
+{"fn":"resolveExecutable","args":["ΣΊΣΥΦΟΣ",{"$undefined":true}],"ok":null}
+{"fn":"resolveExecutable","args":["hello world"],"ok":null}
+{"fn":"resolveExecutable","args":["trailing.",{"env":{"$undefined":true},"cwd":"hello world","allowExtensionlessOnWindows":true}],"ok":null}
+{"fn":"resolveExecutable","args":["a",0],"ok":null}
+{"fn":"resolveExecutable","args":["helloünïcödé",{"env":{"$undefined":true},"cwd":"a..b","allowExtensionlessOnWindows":true}],"ok":null}
+{"fn":"resolveExecutable","args":["a.b.cé",{"platform":{"$undefined":true},"env":{"$undefined":true},"cwd":"emoji 👍🏽 mix","allowExtensionlessOnWindows":true}],"ok":null}
+{"fn":"resolveExecutable","args":["emoji 👍🏽 mix",{"platform":{"a":"b"},"env":{"$undefined":true},"cwd":"emoji 👍🏽 mix","allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["trailing.",{"env":{"$undefined":true},"allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["é",{"platform":{"$undefined":true},"env":{"$undefined":true},"cwd":"{name} has {count} items","allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["  padded  ",{"$undefined":true}],"ok":null}
+{"fn":"resolveExecutable","args":["line1\nline2",0],"ok":null}
+{"fn":"resolveExecutable","args":["a😀b😀c"],"ok":null}
+{"fn":"resolveExecutable","args":["ünïcödé",{"platform":{},"env":"x","allowExtensionlessOnWindows":true}],"ok":null}
+{"fn":"resolveExecutable","args":["a:b:c",{"platform":{"a":{"b":"c"}},"env":{"$undefined":true},"cwd":"a😀b😀c","allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["a..b",{"platform":{"a":"b"},"env":0,"allowExtensionlessOnWindows":true}],"ok":null}
+{"fn":"resolveExecutable","args":["./x/**/*.json",{"platform":true,"env":{"$undefined":true},"cwd":"ns:key.path"}],"ok":null}
+{"fn":"resolveExecutable","args":["a:b:c",{"env":["a",1],"cwd":"{name} has {count} items"}],"ok":null}
+{"fn":"resolveExecutable","args":["İstanbul",["a",1]],"ok":null}
+{"fn":"resolveExecutable","args":["a:b:cemoji 👍🏽 mix",{"platform":true,"env":["a",1]}],"ok":null}
+{"fn":"resolveExecutable","args":["tab\tseparated",{"platform":null,"env":"x","cwd":"a:b:cé"}],"ok":null}
+{"fn":"resolveExecutable","args":["hello world",{"platform":{"$undefined":true},"env":null,"cwd":"İstanbul"}],"ok":null}
+{"fn":"resolveExecutable","args":["ns:key.path",{"platform":{"a":"b"},"allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["a",{"platform":{"$undefined":true},"env":["a",1],"allowExtensionlessOnWindows":true}],"ok":null}
+{"fn":"resolveExecutable","args":["é",{"platform":{"$undefined":true},"cwd":".leadinghello","allowExtensionlessOnWindows":true}],"ok":null}
+{"fn":"resolveExecutable","args":["line1\nline2",{"a":{"b":"c"}}],"ok":null}
+{"fn":"resolveExecutable","args":["ns:key.path",{"$undefined":true}],"ok":null}
+{"fn":"resolveExecutable","args":["Hello WorldHELLO",{"platform":"x","env":true,"allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["key_name-1",{"env":{"$undefined":true},"allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["a..b﻿bom",{"a":"b"}],"ok":null}
+{"fn":"resolveExecutable","args":["a",{"platform":{"$undefined":true},"env":{"$undefined":true},"cwd":"{name} has {count} items","allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["😀",[]],"ok":null}
+{"fn":"resolveExecutable","args":["key_name-1",{"platform":{"$undefined":true},"env":0,"cwd":"key_name-1"}],"ok":null}
+{"fn":"resolveExecutable","args":["abemoji 👍🏽 mix",{"platform":{"$undefined":true},"env":{"a":{"b":"c"}},"cwd":"trailing."}],"ok":null}
+{"fn":"resolveExecutable","args":["",{"platform":{"$undefined":true},"env":{"$undefined":true},"cwd":"ΣΊΣΥΦΟΣ"}],"ok":null}
+{"fn":"resolveExecutable","args":["Hello World",{"platform":{"$undefined":true},"allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["é",{"platform":null,"env":true,"cwd":"ab","allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["héllo wörld",{"platform":{"$undefined":true},"env":{"$undefined":true},"allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["👍🏽 thumbs",{"platform":{"$undefined":true},"env":{"$undefined":true},"allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["日本語",{"platform":{"$undefined":true},"env":{"$undefined":true},"allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["",{"platform":{"$undefined":true},"env":{"$undefined":true},"allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["é",{"platform":{"$undefined":true},"env":{"$undefined":true},"allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["İstanbul",{"platform":{"$undefined":true},"env":{"$undefined":true},"allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["straße",{"platform":{"$undefined":true},"env":{"$undefined":true},"allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["ılık ırmak",{"platform":{"$undefined":true},"env":{"$undefined":true},"allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["👨‍👩‍👧 family",{"platform":{"$undefined":true},"env":{"$undefined":true},"allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["a b",{"platform":{"$undefined":true},"env":{"$undefined":true},"allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["ΣΊΣΥΦΟΣ",{"platform":{"$undefined":true},"env":{"$undefined":true},"allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["a😀b",{"platform":{"$undefined":true},"env":{"$undefined":true},"allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["a²b x½ y①",{"platform":{"$undefined":true},"env":{"$undefined":true},"allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["aⅠb Ⅻ",{"platform":{"$undefined":true},"env":{"$undefined":true},"allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["a𐐀b 𝐀bc",{"platform":{"$undefined":true},"env":{"$undefined":true},"allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["कि ٣٤",{"platform":{"$undefined":true},"env":{"$undefined":true},"allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["Iı İi",{"platform":{"$undefined":true},"env":{"$undefined":true},"allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["K K k",{"platform":{"$undefined":true},"env":{"$undefined":true},"allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["ſ s S",{"platform":{"$undefined":true},"env":{"$undefined":true},"allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["x‍y 👨‍👩‍👧",{"platform":{"$undefined":true},"env":{"$undefined":true},"allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["a b c　d",{"platform":{"$undefined":true},"env":{"$undefined":true},"allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["١٢٣ ٤٥",{"platform":{"$undefined":true},"env":{"$undefined":true},"allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["𝟘𝟙 ²³",{"platform":{"$undefined":true},"env":{"$undefined":true},"allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["snake_case foo-bar o'neil",{"platform":{"$undefined":true},"env":{"$undefined":true},"allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["ǅungla Ǆ",{"platform":{"$undefined":true},"env":{"$undefined":true},"allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["one\r\ntwo threefour",{"platform":{"$undefined":true},"env":{"$undefined":true},"allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["café café",{"platform":{"$undefined":true},"env":{"$undefined":true},"allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"resolveExecutable","args":["ΣΑΣ σας ς",{"platform":{"$undefined":true},"env":{"$undefined":true},"allowExtensionlessOnWindows":false}],"ok":null}
+{"fn":"executableIdentity","args":["./x/**/*.json"],"ok":null}
+{"fn":"executableIdentity","args":["a😀b😀c"],"ok":null}
+{"fn":"executableIdentity","args":["{name} has {count} items"],"ok":null}
+{"fn":"executableIdentity","args":["😀"],"ok":null}
+{"fn":"executableIdentity","args":["tab\tseparated"],"ok":null}
+{"fn":"executableIdentity","args":["src/a/b.ts"],"ok":null}
+{"fn":"executableIdentity","args":["日本語のテキスト"],"ok":null}
+{"fn":"executableIdentity","args":["hello"],"ok":null}
+{"fn":"executableIdentity","args":["a..b"],"ok":null}
+{"fn":"executableIdentity","args":["ΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"executableIdentity","args":["straße"],"ok":null}
+{"fn":"executableIdentity","args":["﻿bom"],"ok":null}
+{"fn":"executableIdentity","args":["a"],"ok":null}
+{"fn":"executableIdentity","args":["ns:key.pathtrailing."],"ok":null}
+{"fn":"executableIdentity","args":["straßehello world"],"ok":null}
+{"fn":"executableIdentity","args":["İstanbul"],"ok":null}
+{"fn":"executableIdentity","args":["é"],"ok":null}
+{"fn":"executableIdentity","args":["a:b:c"],"ok":null}
+{"fn":"executableIdentity","args":[""],"ok":null}
+{"fn":"executableIdentity","args":["Hello World"],"ok":null}
+{"fn":"executableIdentity","args":["key_name-1"],"ok":null}
+{"fn":"executableIdentity","args":["  padded  "],"ok":null}
+{"fn":"executableIdentity","args":["line1\nline2日本語のテキスト"],"ok":null}
+{"fn":"executableIdentity","args":["hello world"],"ok":null}
+{"fn":"executableIdentity","args":[".leading"],"ok":null}
+{"fn":"executableIdentity","args":["ünïcödé{name} has {count} items"],"ok":null}
+{"fn":"executableIdentity","args":[":"],"ok":null}
+{"fn":"executableIdentity","args":["HELLO"],"ok":null}
+{"fn":"executableIdentity","args":["line1\nline2"],"ok":null}
+{"fn":"executableIdentity","args":["a..b:"],"ok":null}
+{"fn":"executableIdentity","args":["hello world😀"],"ok":null}
+{"fn":"executableIdentity","args":["emoji 👍🏽 mix"],"ok":null}
+{"fn":"executableIdentity","args":["ΣΊΣΥΦΟΣtab\tseparated"],"ok":null}
+{"fn":"executableIdentity","args":["src/a/b.tshello"],"ok":null}
+{"fn":"executableIdentity","args":["line1\nline2a.b.c"],"ok":null}
+{"fn":"executableIdentity","args":["ünïcödé"],"ok":null}
+{"fn":"executableIdentity","args":["ns:key.path"],"ok":null}
+{"fn":"executableIdentity","args":["{name} has {count} itemsİstanbul"],"ok":null}
+{"fn":"executableIdentity","args":["﻿bom./x/**/*.json"],"ok":null}
+{"fn":"executableIdentity","args":["ns:key.pathkey_name-1"],"ok":null}
+{"fn":"executableIdentity","args":["trailing."],"ok":null}
+{"fn":"executableIdentity","args":["ab"],"ok":null}
+{"fn":"executableIdentity","args":["a:b:c:"],"ok":null}
+{"fn":"executableIdentity","args":["src/a/b.tsHello World"],"ok":null}
+{"fn":"executableIdentity","args":["abc"],"ok":null}
+{"fn":"executableIdentity","args":["atab\tseparated"],"ok":null}
+{"fn":"executableIdentity","args":[":İstanbul"],"ok":null}
+{"fn":"executableIdentity","args":["aé"],"ok":null}
+{"fn":"executableIdentity","args":["src/a/b.tsemoji 👍🏽 mix"],"ok":null}
+{"fn":"executableIdentity","args":["﻿bomHello World"],"ok":null}
+{"fn":"executableIdentity","args":["tab\tseparatedsrc/a/b.ts"],"ok":null}
+{"fn":"executableIdentity","args":["line1\nline2HELLO"],"ok":null}
+{"fn":"executableIdentity","args":["a.b.c"],"ok":null}
+{"fn":"executableIdentity","args":["./x/**/*.jsonkey_name-1"],"ok":null}
+{"fn":"executableIdentity","args":[".leadingİstanbul"],"ok":null}
+{"fn":"executableIdentity","args":["hello worldünïcödé"],"ok":null}
+{"fn":"executableIdentity","args":["./x/**/*.jsona.b.c"],"ok":null}
+{"fn":"executableIdentity","args":["{name} has {count} itemsünïcödé"],"ok":null}
+{"fn":"executableIdentity","args":["ΣΊΣΥΦΟΣline1\nline2"],"ok":null}
+{"fn":"executableIdentity","args":["src/a/b.ts.leading"],"ok":null}
+{"fn":"executableIdentity","args":["HELLO﻿bom"],"ok":null}
+{"fn":"executableIdentity","args":["﻿bomemoji 👍🏽 mix"],"ok":null}
+{"fn":"executableIdentity","args":[":😀"],"ok":null}
+{"fn":"executableIdentity","args":["😀HELLO"],"ok":null}
+{"fn":"executableIdentity","args":["  padded  Hello World"],"ok":null}
+{"fn":"executableIdentity","args":["{name} has {count} itemshello"],"ok":null}
+{"fn":"executableIdentity","args":["key_name-1é"],"ok":null}
+{"fn":"executableIdentity","args":["  padded  src/a/b.ts"],"ok":null}
+{"fn":"executableIdentity","args":["﻿bomsrc/a/b.ts"],"ok":null}
+{"fn":"executableIdentity","args":["Hello WorldΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"executableIdentity","args":["abca😀b😀c"],"ok":null}
+{"fn":"executableIdentity","args":[".leadingHELLO"],"ok":null}
+{"fn":"executableIdentity","args":["ünïcödéa:b:c"],"ok":null}
+{"fn":"executableIdentity","args":["line1\nline2a"],"ok":null}
+{"fn":"executableIdentity","args":["ΣΊΣΥΦΟΣkey_name-1"],"ok":null}
+{"fn":"executableIdentity","args":["src/a/b.tstrailing."],"ok":null}
+{"fn":"executableIdentity","args":["key_name-1ns:key.path"],"ok":null}
+{"fn":"executableIdentity","args":["ΣΊΣΥΦΟΣHello World"],"ok":null}
+{"fn":"executableIdentity","args":["a..bİstanbul"],"ok":null}
+{"fn":"executableIdentity","args":["İstanbulİstanbul"],"ok":null}
+{"fn":"executableIdentity","args":["./x/**/*.json日本語のテキスト"],"ok":null}
+{"fn":"executableIdentity","args":["😀src/a/b.ts"],"ok":null}
+{"fn":"executableIdentity","args":["key_name-1ab"],"ok":null}
+{"fn":"executableIdentity","args":["日本語のテキスト./x/**/*.json"],"ok":null}
+{"fn":"executableIdentity","args":["ab{name} has {count} items"],"ok":null}
+{"fn":"executableIdentity","args":["ΣΊΣΥΦΟΣ﻿bom"],"ok":null}
+{"fn":"executableIdentity","args":["ünïcödéa..b"],"ok":null}
+{"fn":"executableIdentity","args":["abcabc"],"ok":null}
+{"fn":"executableIdentity","args":["key_name-1﻿bom"],"ok":null}
+{"fn":"executableIdentity","args":["Hello Worldline1\nline2"],"ok":null}
+{"fn":"executableIdentity","args":["line1\nline2straße"],"ok":null}
+{"fn":"executableIdentity","args":["a😀b😀ctab\tseparated"],"ok":null}
+{"fn":"executableIdentity","args":["{name} has {count} itemsa.b.c"],"ok":null}
+{"fn":"executableIdentity","args":["ns:key.patha😀b😀c"],"ok":null}
+{"fn":"executableIdentity","args":["İstanbulab"],"ok":null}
+{"fn":"executableIdentity","args":["abchello"],"ok":null}
+{"fn":"executableIdentity","args":["{name} has {count} itemstab\tseparated"],"ok":null}
+{"fn":"executableIdentity","args":["hellokey_name-1"],"ok":null}
+{"fn":"executableIdentity","args":["a😀b😀chello world"],"ok":null}
+{"fn":"executableIdentity","args":["ünïcödésrc/a/b.ts"],"ok":null}
+{"fn":"executableIdentity","args":["helloa"],"ok":null}
+{"fn":"executableIdentity","args":["İstanbulhello"],"ok":null}
+{"fn":"executableIdentity","args":["./x/**/*.jsoné"],"ok":null}
+{"fn":"executableIdentity","args":["hello world日本語のテキスト"],"ok":null}
+{"fn":"executableIdentity","args":["src/a/b.tsa..b"],"ok":null}
+{"fn":"executableIdentity","args":["a..b.leading"],"ok":null}
+{"fn":"executableIdentity","args":["emoji 👍🏽 mixabc"],"ok":null}
+{"fn":"executableIdentity","args":["./x/**/*.jsonns:key.path"],"ok":null}
+{"fn":"executableIdentity","args":["ΣΊΣΥΦΟΣHELLO"],"ok":null}
+{"fn":"executableIdentity","args":["İstanbulΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"executableIdentity","args":["ünïcödéemoji 👍🏽 mix"],"ok":null}
+{"fn":"executableIdentity","args":["a.b.cé"],"ok":null}
+{"fn":"executableIdentity","args":["😀hello world"],"ok":null}
+{"fn":"executableIdentity","args":["hello worldstraße"],"ok":null}
+{"fn":"executableIdentity","args":["key_name-1key_name-1"],"ok":null}
+{"fn":"executableIdentity","args":["straße:"],"ok":null}
+{"fn":"executableIdentity","args":[":src/a/b.ts"],"ok":null}
+{"fn":"executableIdentity","args":["hello worldemoji 👍🏽 mix"],"ok":null}
+{"fn":"executableIdentity","args":["a.b.c  padded  "],"ok":null}
+{"fn":"executableIdentity","args":["ns:key.pathİstanbul"],"ok":null}
+{"fn":"executableIdentity","args":["ünïcödéé"],"ok":null}
+{"fn":"executableIdentity","args":["src/a/b.tstab\tseparated"],"ok":null}
+{"fn":"executableIdentity","args":["é😀"],"ok":null}
+{"fn":"executableIdentity","args":["straßehello"],"ok":null}
+{"fn":"executableIdentity","args":["é.leading"],"ok":null}
+{"fn":"executableIdentity","args":["é:"],"ok":null}
+{"fn":"executableIdentity","args":["HELLOkey_name-1"],"ok":null}
+{"fn":"executableIdentity","args":["😀é"],"ok":null}
+{"fn":"executableIdentity","args":["emoji 👍🏽 mixhello"],"ok":null}
+{"fn":"executableIdentity","args":["a.b.ca.b.c"],"ok":null}
+{"fn":"executableIdentity","args":["straßestraße"],"ok":null}
+{"fn":"executableIdentity","args":["abkey_name-1"],"ok":null}
+{"fn":"executableIdentity","args":["😀.leading"],"ok":null}
+{"fn":"executableIdentity","args":["{name} has {count} itemsemoji 👍🏽 mix"],"ok":null}
+{"fn":"executableIdentity","args":["HELLOa..b"],"ok":null}
+{"fn":"executableIdentity","args":["src/a/b.ts./x/**/*.json"],"ok":null}
+{"fn":"executableIdentity","args":["a.b.c./x/**/*.json"],"ok":null}
+{"fn":"executableIdentity","args":["hellohello"],"ok":null}
+{"fn":"executableIdentity","args":["HELLOünïcödé"],"ok":null}
+{"fn":"executableIdentity","args":["astraße"],"ok":null}
+{"fn":"executableIdentity","args":["a.b.cünïcödé"],"ok":null}
+{"fn":"executableIdentity","args":["ΣΊΣΥΦΟΣİstanbul"],"ok":null}
+{"fn":"executableIdentity","args":["Hello Worlda😀b😀c"],"ok":null}
+{"fn":"executableIdentity","args":["  padded  :"],"ok":null}
+{"fn":"executableIdentity","args":["emoji 👍🏽 mixkey_name-1"],"ok":null}
+{"fn":"executableIdentity","args":["ΣΊΣΥΦΟΣ  padded  "],"ok":null}
+{"fn":"executableIdentity","args":["hello worlda..b"],"ok":null}
+{"fn":"executableIdentity","args":["hello.leading"],"ok":null}
+{"fn":"executableIdentity","args":["abc./x/**/*.json"],"ok":null}
+{"fn":"executableIdentity","args":["HELLO日本語のテキスト"],"ok":null}
+{"fn":"executableIdentity","args":["tab\tseparated日本語のテキスト"],"ok":null}
+{"fn":"executableIdentity","args":["emoji 👍🏽 mixİstanbul"],"ok":null}
+{"fn":"executableIdentity","args":["﻿bomtab\tseparated"],"ok":null}
+{"fn":"executableIdentity","args":["src/a/b.tsΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"executableIdentity","args":["İstanbulé"],"ok":null}
+{"fn":"executableIdentity","args":["a😀b😀ca:b:c"],"ok":null}
+{"fn":"executableIdentity","args":["aab"],"ok":null}
+{"fn":"executableIdentity","args":[".leadinga.b.c"],"ok":null}
+{"fn":"executableIdentity","args":["éabc"],"ok":null}
+{"fn":"executableIdentity","args":["key_name-1😀"],"ok":null}
+{"fn":"executableIdentity","args":["{name} has {count} items{name} has {count} items"],"ok":null}
+{"fn":"executableIdentity","args":["abc{name} has {count} items"],"ok":null}
+{"fn":"executableIdentity","args":["HELLO./x/**/*.json"],"ok":null}
+{"fn":"executableIdentity","args":["emoji 👍🏽 mixns:key.path"],"ok":null}
+{"fn":"executableIdentity","args":[".leading.leading"],"ok":null}
+{"fn":"executableIdentity","args":[".leading  padded  "],"ok":null}
+{"fn":"executableIdentity","args":["😀Hello World"],"ok":null}
+{"fn":"executableIdentity","args":["aHello World"],"ok":null}
+{"fn":"executableIdentity","args":["日本語のテキストa😀b😀c"],"ok":null}
+{"fn":"executableIdentity","args":["ünïcödéΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"executableIdentity","args":[":emoji 👍🏽 mix"],"ok":null}
+{"fn":"executableIdentity","args":["tab\tseparatedkey_name-1"],"ok":null}
+{"fn":"executableIdentity","args":["hello日本語のテキスト"],"ok":null}
+{"fn":"executableIdentity","args":["😀{name} has {count} items"],"ok":null}
+{"fn":"executableIdentity","args":["﻿bomΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"executableIdentity","args":[".leadingsrc/a/b.ts"],"ok":null}
+{"fn":"executableIdentity","args":["HELLOHELLO"],"ok":null}
+{"fn":"executableIdentity","args":["a..bHELLO"],"ok":null}
+{"fn":"executableIdentity","args":["{name} has {count} itemsabc"],"ok":null}
+{"fn":"executableIdentity","args":["a:b:cemoji 👍🏽 mix"],"ok":null}
+{"fn":"executableIdentity","args":["ésrc/a/b.ts"],"ok":null}
+{"fn":"executableIdentity","args":["key_name-1  padded  "],"ok":null}
+{"fn":"executableIdentity","args":["ünïcödé  padded  "],"ok":null}
+{"fn":"executableIdentity","args":[":a"],"ok":null}
+{"fn":"executableIdentity","args":["éab"],"ok":null}
+{"fn":"executableIdentity","args":["a:b:ctrailing."],"ok":null}
+{"fn":"executableIdentity","args":["line1\nline2line1\nline2"],"ok":null}
+{"fn":"executableIdentity","args":["tab\tseparateda😀b😀c"],"ok":null}
+{"fn":"executableIdentity","args":["key_name-1hello world"],"ok":null}
+{"fn":"executableIdentity","args":["日本語のテキストünïcödé"],"ok":null}
+{"fn":"executableIdentity","args":["a.b.cstraße"],"ok":null}
+{"fn":"executableIdentity","args":["😀hello"],"ok":null}
+{"fn":"executableIdentity","args":["éa:b:c"],"ok":null}
+{"fn":"executableIdentity","args":["src/a/b.ts:"],"ok":null}
+{"fn":"executableIdentity","args":["abcline1\nline2"],"ok":null}
+{"fn":"executableIdentity","args":["emoji 👍🏽 mix  padded  "],"ok":null}
+{"fn":"executableIdentity","args":["emoji 👍🏽 mixa.b.c"],"ok":null}
+{"fn":"executableIdentity","args":["😀straße"],"ok":null}
+{"fn":"executableIdentity","args":["ΣΊΣΥΦΟΣhello"],"ok":null}
+{"fn":"executableIdentity","args":["a😀b😀cstraße"],"ok":null}
+{"fn":"executableIdentity","args":["héllo wörld"],"ok":null}
+{"fn":"executableIdentity","args":["👍🏽 thumbs"],"ok":null}
+{"fn":"executableIdentity","args":["日本語"],"ok":null}
+{"fn":"executableIdentity","args":["ılık ırmak"],"ok":null}
+{"fn":"executableIdentity","args":["👨‍👩‍👧 family"],"ok":null}
+{"fn":"executableIdentity","args":["a b"],"ok":null}
+{"fn":"executableIdentity","args":["a😀b"],"ok":null}
+{"fn":"executableIdentity","args":["a²b x½ y①"],"ok":null}
+{"fn":"executableIdentity","args":["aⅠb Ⅻ"],"ok":null}
+{"fn":"executableIdentity","args":["a𐐀b 𝐀bc"],"ok":null}
+{"fn":"executableIdentity","args":["कि ٣٤"],"ok":null}
+{"fn":"executableIdentity","args":["Iı İi"],"ok":null}
+{"fn":"executableIdentity","args":["K K k"],"ok":null}
+{"fn":"executableIdentity","args":["ſ s S"],"ok":null}
+{"fn":"executableIdentity","args":["x‍y 👨‍👩‍👧"],"ok":null}
+{"fn":"executableIdentity","args":["a b c　d"],"ok":null}
+{"fn":"executableIdentity","args":["١٢٣ ٤٥"],"ok":null}
+{"fn":"executableIdentity","args":["𝟘𝟙 ²³"],"ok":null}
+{"fn":"executableIdentity","args":["snake_case foo-bar o'neil"],"ok":null}
+{"fn":"executableIdentity","args":["ǅungla Ǆ"],"ok":null}
+{"fn":"executableIdentity","args":["one\r\ntwo threefour"],"ok":null}
+{"fn":"executableIdentity","args":["café café"],"ok":null}
+{"fn":"executableIdentity","args":["ΣΑΣ σας ς"],"ok":null}

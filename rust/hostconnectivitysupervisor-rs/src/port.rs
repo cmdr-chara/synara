@@ -2,7 +2,7 @@
 
 #![forbid(unsafe_code)]
 
-use jscore::{js_to_string, js_truthy, json_stringify};
+use jscore::{js_truthy, json_stringify};
 use serde_json::{Value, json};
 
 fn undefined() -> Value {

@@ -1,0 +1,109 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/recapStats.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "recapstats-rs",
+  "exports": [
+    {
+      "name": "resolveRecapRanges",
+      "file": "apps/server/src/recapStats.ts",
+      "line": 97,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "typeof typeof typeof typeof StatsGetRecapInput.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "RecapRanges | { readonly error: string }",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "recapModelName",
+      "file": "apps/server/src/recapStats.ts",
+      "line": 135,
+      "params": [
+        {
+          "name": "provider",
+          "ts_type": "typeof typeof typeof typeof ProviderKind.Type.Type.Type.Type | \"unknown\"",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "model",
+          "ts_type": "string | null",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "turnRunSpan",
+      "file": "apps/server/src/recapStats.ts",
+      "line": 147,
+      "params": [
+        {
+          "name": "turn",
+          "ts_type": "Pick<TurnRow, \"startedAt\" | \"completedAt\" | \"state\">",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "nowMs",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "{ readonly startMs: number; readonly endMs: number } | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "buildRecap",
+      "file": "apps/server/src/recapStats.ts",
+      "line": 195,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly ranges: RecapRanges;\n  readonly promptRows: ReadonlyArray<PromptRow>;\n  readonly tokenRows: ReadonlyArray<TokenBucketRow>;\n  readonly turnRows: ReadonlyArray<TurnRow>;\n  readonly nowMs: number;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof StatsGetRecapResult.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "RecapStatsQuery",
+      "file": "apps/server/src/recapStats.ts",
+      "line": 327,
+      "reason": "class: extends another class"
+    },
+    {
+      "name": "makeRecapStatsQuery",
+      "file": "apps/server/src/recapStats.ts",
+      "line": 331,
+      "reason": "takes or returns a function"
+    }
+  ]
+}

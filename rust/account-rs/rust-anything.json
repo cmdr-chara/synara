@@ -1,0 +1,67 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/account.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "account-rs",
+  "exports": [
+    {
+      "name": "resolveConfiguredAccountUrl",
+      "file": "packages/shared/src/account.ts",
+      "line": 108,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "AccountUrlResolutionInput",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveAccountUrl",
+      "file": "packages/shared/src/account.ts",
+      "line": 116,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "AccountUrlResolutionInput",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "AccountApiError",
+      "file": "packages/shared/src/account.ts",
+      "line": 147,
+      "reason": "class: extends another class, public field `code`, public field `status`"
+    },
+    {
+      "name": "OrganizationRequiredError",
+      "file": "packages/shared/src/account.ts",
+      "line": 166,
+      "reason": "class: extends another class, public field `organizations`"
+    },
+    {
+      "name": "createAccountClient",
+      "file": "packages/shared/src/account.ts",
+      "line": 373,
+      "reason": "checks `instanceof`: class identity does not survive the bridge"
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/diffRouteSearch.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "diffroutesearch-rs",
+  "exports": [
+    {
+      "name": "diffRouteSearchEquals",
+      "file": "apps/web/src/diffRouteSearch.ts",
+      "line": 19,
+      "params": [
+        {
+          "name": "left",
+          "ts_type": "DiffRouteSearch",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "right",
+          "ts_type": "DiffRouteSearch",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "parseDiffRouteSearch",
+      "file": "apps/web/src/diffRouteSearch.ts",
+      "line": 56,
+      "params": [
+        {
+          "name": "search",
+          "ts_type": "Record<string, unknown>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "DiffRouteSearch",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "stripDiffSearchParams",
+      "file": "apps/web/src/diffRouteSearch.ts",
+      "line": 43,
+      "reason": "generic over `T`: values of any shape, functions included"
+    }
+  ]
+}

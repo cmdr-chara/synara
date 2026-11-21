@@ -1,0 +1,17 @@
+{
+  "unit": "packages/shared/src/chatThreads.ts",
+  "files": 1,
+  "fingerprint": "6ebd73bcf4f03c0a",
+  "coverage": {
+    "lines": 161,
+    "reached": 156,
+    "files": [
+      {
+        "file": "packages/shared/src/chatThreads.ts",
+        "lines": 161,
+        "reached": 156,
+        "missed": "62-64, 133-134"
+      }
+    ]
+  }
+}

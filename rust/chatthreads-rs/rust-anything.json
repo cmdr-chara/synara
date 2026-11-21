@@ -1,0 +1,126 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/chatThreads.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "chatthreads-rs",
+  "exports": [
+    {
+      "name": "buildThreadTitleConversationContext",
+      "file": "packages/shared/src/chatThreads.ts",
+      "line": 98,
+      "params": [
+        {
+          "name": "messages",
+          "ts_type": "ReadonlyArray<{\n    readonly role: \"user\" | \"assistant\" | \"system\";\n    readonly text: string;\n    readonly attachments?: ReadonlyArray<(| {\n      readonly type: \"image\" | \"file\";\n      readonly name: string;\n    }\n  | {\n      readonly type: \"assistant-selection\";\n      readonly text: string;\n    })> | undefined;\n    readonly streaming?: boolean | undefined;\n  }>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "truncateChatThreadTitle",
+      "file": "packages/shared/src/chatThreads.ts",
+      "line": 141,
+      "params": [
+        {
+          "name": "text",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "maxLength",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "buildPromptThreadTitleFallback",
+      "file": "packages/shared/src/chatThreads.ts",
+      "line": 153,
+      "params": [
+        {
+          "name": "message",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "sanitizeGeneratedThreadTitle",
+      "file": "packages/shared/src/chatThreads.ts",
+      "line": 162,
+      "params": [
+        {
+          "name": "raw",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isUsableGeneratedThreadTitle",
+      "file": "packages/shared/src/chatThreads.ts",
+      "line": 171,
+      "params": [
+        {
+          "name": "title",
+          "ts_type": "string | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isGenericChatThreadTitle",
+      "file": "packages/shared/src/chatThreads.ts",
+      "line": 176,
+      "params": [
+        {
+          "name": "title",
+          "ts_type": "string | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

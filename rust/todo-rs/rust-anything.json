@@ -1,0 +1,42 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/todo.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "todo-rs",
+  "exports": [
+    {
+      "name": "applyTodoPatch",
+      "file": "packages/shared/src/todo.ts",
+      "line": 12,
+      "params": [
+        {
+          "name": "todo",
+          "ts_type": "typeof typeof typeof typeof Todo.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "patch",
+          "ts_type": "typeof typeof typeof typeof TodoUpdateInput.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "updatedAt",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof Todo.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

@@ -1,0 +1,36 @@
+{"fn":"trackProcessSpawn","args":[[]],"error":"emitter.once is not a function"}
+{"fn":"trackProcessSpawn","args":[{"a":{"b":"c"}}],"error":"emitter.once is not a function"}
+{"fn":"trackProcessSpawn","args":[{"a":"b"}],"error":"emitter.once is not a function"}
+{"fn":"trackProcessSpawn","args":[null],"error":"Cannot read properties of null (reading 'once')"}
+{"fn":"trackProcessSpawn","args":["x"],"error":"emitter.once is not a function"}
+{"fn":"trackProcessSpawn","args":[{}],"error":"emitter.once is not a function"}
+{"fn":"trackProcessSpawn","args":[["a",1]],"error":"emitter.once is not a function"}
+{"fn":"trackProcessSpawn","args":[true],"error":"emitter.once is not a function"}
+{"fn":"trackProcessSpawn","args":[0],"error":"emitter.once is not a function"}
+{"fn":"didProcessFailToSpawn","args":[[]],"ok":false}
+{"fn":"didProcessFailToSpawn","args":["x"],"ok":false}
+{"fn":"didProcessFailToSpawn","args":[true],"ok":false}
+{"fn":"didProcessFailToSpawn","args":[{"a":{"b":"c"}}],"ok":false}
+{"fn":"didProcessFailToSpawn","args":[null],"ok":false}
+{"fn":"didProcessFailToSpawn","args":[{}],"ok":false}
+{"fn":"didProcessFailToSpawn","args":[0],"ok":false}
+{"fn":"didProcessFailToSpawn","args":[{"a":"b"}],"ok":false}
+{"fn":"didProcessFailToSpawn","args":[["a",1]],"ok":false}
+{"fn":"didProcessFailToSpawn","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6}],"ok":false}
+{"fn":"didProcessFailToSpawn","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7}],"ok":false}
+{"fn":"didProcessFailToSpawn","args":[[3,1,2]],"ok":false}
+{"fn":"didProcessFailToSpawn","args":["ENOENT"],"ok":false}
+{"fn":"didProcessFailToSpawn","args":["spawn ENOENT"],"ok":false}
+{"fn":"didProcessFailToSpawn","args":["Error: spawn cmd ENOENT"],"ok":false}
+{"fn":"didProcessFailToSpawn","args":["spawn cmd ENOENT"],"ok":false}
+{"fn":"didProcessFailToSpawn","args":["{\"spawnfile\":\"cmd\"}"],"ok":false}
+{"fn":"didProcessFailToSpawn","args":["command not found"],"ok":false}
+{"fn":"didProcessFailToSpawn","args":["pid:123"],"ok":false}
+{"fn":"trackProcessSpawn","args":["cmd"],"error":"emitter.once is not a function"}
+{"fn":"trackProcessSpawn","args":["cmd a b"],"error":"emitter.once is not a function"}
+{"fn":"trackProcessSpawn","args":["spawn cmd"],"error":"emitter.once is not a function"}
+{"fn":"trackProcessSpawn","args":["{\"spawnfile\":\"cmd\",\"spawnargs\":[\"a\"]}"],"error":"emitter.once is not a function"}
+{"fn":"trackProcessSpawn","args":["pid:123"],"error":"emitter.once is not a function"}
+{"fn":"trackProcessSpawn","args":["123"],"error":"emitter.once is not a function"}
+{"fn":"trackProcessSpawn","args":["spawn ENOENT"],"error":"emitter.once is not a function"}
+{"fn":"trackProcessSpawn","args":["Error: spawn cmd ENOENT"],"error":"emitter.once is not a function"}

@@ -1,0 +1,17 @@
+{
+  "unit": "packages/shared/src/processSpawnOutcome.ts",
+  "files": 1,
+  "fingerprint": "6e232d6051beea1a",
+  "coverage": {
+    "lines": 26,
+    "reached": 24,
+    "files": [
+      {
+        "file": "packages/shared/src/processSpawnOutcome.ts",
+        "lines": 26,
+        "reached": 24,
+        "missed": "20-21"
+      }
+    ]
+  }
+}

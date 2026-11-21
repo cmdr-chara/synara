@@ -1,0 +1,48 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/processSpawnOutcome.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "processspawnoutcome-rs",
+  "exports": [
+    {
+      "name": "trackProcessSpawn",
+      "file": "packages/shared/src/processSpawnOutcome.ts",
+      "line": 15,
+      "params": [
+        {
+          "name": "child",
+          "ts_type": "(ChildProcess)",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(ChildProcess)",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "didProcessFailToSpawn",
+      "file": "packages/shared/src/processSpawnOutcome.ts",
+      "line": 28,
+      "params": [
+        {
+          "name": "child",
+          "ts_type": "object",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

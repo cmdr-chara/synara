@@ -1,0 +1,302 @@
+{"fn":"applyTodoPatch","args":[{"a":"b"},["a",1],"ünïcödéa.b.c"],"ok":{"a":"b","completedAt":{"$undefined":true},"updatedAt":"ünïcödéa.b.c"}}
+{"fn":"applyTodoPatch","args":[{},null,"tab\tseparated"],"error":"Cannot read properties of null (reading 'completed')"}
+{"fn":"applyTodoPatch","args":[0,["a",1],"a"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"a"}}
+{"fn":"applyTodoPatch","args":[{},{},"  padded  abc"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"  padded  abc"}}
+{"fn":"applyTodoPatch","args":[null,{},"ab"],"error":"Cannot read properties of null (reading 'completedAt')"}
+{"fn":"applyTodoPatch","args":[true,true,"src/a/b.ts"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"src/a/b.ts"}}
+{"fn":"applyTodoPatch","args":[true,null,"ns:key.path./x/**/*.json"],"error":"Cannot read properties of null (reading 'completed')"}
+{"fn":"applyTodoPatch","args":[{"a":{"b":"c"}},"x","日本語のテキスト"],"ok":{"a":{"b":"c"},"completedAt":{"$undefined":true},"updatedAt":"日本語のテキスト"}}
+{"fn":"applyTodoPatch","args":[{},0,"ΣΊΣΥΦΟΣ"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"ΣΊΣΥΦΟΣ"}}
+{"fn":"applyTodoPatch","args":["x",null,"x"],"error":"Cannot read properties of null (reading 'completed')"}
+{"fn":"applyTodoPatch","args":[true,"x","a..b"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"a..b"}}
+{"fn":"applyTodoPatch","args":[null,["a",1],"日本語のテキスト😀"],"error":"Cannot read properties of null (reading 'completedAt')"}
+{"fn":"applyTodoPatch","args":[{},null,":"],"error":"Cannot read properties of null (reading 'completed')"}
+{"fn":"applyTodoPatch","args":["x",[],"a.b.c"],"ok":{"0":"x","completedAt":{"$undefined":true},"updatedAt":"a.b.c"}}
+{"fn":"applyTodoPatch","args":["x",["a",1],":"],"ok":{"0":"x","completedAt":{"$undefined":true},"updatedAt":":"}}
+{"fn":"applyTodoPatch","args":[{},"x","emoji 👍🏽 mix"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"emoji 👍🏽 mix"}}
+{"fn":"applyTodoPatch","args":["x","x","x"],"ok":{"0":"x","completedAt":{"$undefined":true},"updatedAt":"x"}}
+{"fn":"applyTodoPatch","args":[true,{},"a"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"a"}}
+{"fn":"applyTodoPatch","args":[true,{"a":"b"},"ab"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"ab"}}
+{"fn":"applyTodoPatch","args":[{},0,"hello"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"hello"}}
+{"fn":"applyTodoPatch","args":["x",true,"a..b"],"ok":{"0":"x","completedAt":{"$undefined":true},"updatedAt":"a..b"}}
+{"fn":"applyTodoPatch","args":[0,["a",1],"line1\nline2"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"line1\nline2"}}
+{"fn":"applyTodoPatch","args":["x",{"a":"b"},"﻿bomsrc/a/b.ts"],"ok":{"0":"x","completedAt":{"$undefined":true},"updatedAt":"﻿bomsrc/a/b.ts"}}
+{"fn":"applyTodoPatch","args":[0,null,"Hello World"],"error":"Cannot read properties of null (reading 'completed')"}
+{"fn":"applyTodoPatch","args":[true,["a",1],"trailing."],"ok":{"completedAt":{"$undefined":true},"updatedAt":"trailing."}}
+{"fn":"applyTodoPatch","args":[{},["a",1],"a"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"a"}}
+{"fn":"applyTodoPatch","args":["x",true,"src/a/b.ts"],"ok":{"0":"x","completedAt":{"$undefined":true},"updatedAt":"src/a/b.ts"}}
+{"fn":"applyTodoPatch","args":[null,["a",1],"hello"],"error":"Cannot read properties of null (reading 'completedAt')"}
+{"fn":"applyTodoPatch","args":[{"a":"b"},[],"ab"],"ok":{"a":"b","completedAt":{"$undefined":true},"updatedAt":"ab"}}
+{"fn":"applyTodoPatch","args":[0,{},"a😀b😀c"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"a😀b😀c"}}
+{"fn":"applyTodoPatch","args":[null,{"a":{"b":"c"}},""],"error":"Cannot read properties of null (reading 'completedAt')"}
+{"fn":"applyTodoPatch","args":[{},null,"﻿bom"],"error":"Cannot read properties of null (reading 'completed')"}
+{"fn":"applyTodoPatch","args":["x",null,"ΣΊΣΥΦΟΣ  padded  "],"error":"Cannot read properties of null (reading 'completed')"}
+{"fn":"applyTodoPatch","args":[{"a":{"b":"c"}},true,"ünïcödé"],"ok":{"a":{"b":"c"},"completedAt":{"$undefined":true},"updatedAt":"ünïcödé"}}
+{"fn":"applyTodoPatch","args":["x",["a",1],"  padded  "],"ok":{"0":"x","completedAt":{"$undefined":true},"updatedAt":"  padded  "}}
+{"fn":"applyTodoPatch","args":[[],{},"key_name-1straße"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"key_name-1straße"}}
+{"fn":"applyTodoPatch","args":[[],true,"a..bns:key.path"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"a..bns:key.path"}}
+{"fn":"applyTodoPatch","args":[{},0,"Hello World"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"Hello World"}}
+{"fn":"applyTodoPatch","args":[0,{"a":"b"},"key_name-1"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"key_name-1"}}
+{"fn":"applyTodoPatch","args":[true,["a",1],"日本語のテキスト"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"日本語のテキスト"}}
+{"fn":"applyTodoPatch","args":[0,null,"emoji 👍🏽 mix"],"error":"Cannot read properties of null (reading 'completed')"}
+{"fn":"applyTodoPatch","args":[{"a":{"b":"c"}},[],"src/a/b.ts"],"ok":{"a":{"b":"c"},"completedAt":{"$undefined":true},"updatedAt":"src/a/b.ts"}}
+{"fn":"applyTodoPatch","args":[null,[],"ΣΊΣΥΦΟΣ"],"error":"Cannot read properties of null (reading 'completedAt')"}
+{"fn":"applyTodoPatch","args":[{},0,"é"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"é"}}
+{"fn":"applyTodoPatch","args":[0,{"a":{"b":"c"}},"ab"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"ab"}}
+{"fn":"applyTodoPatch","args":[null,[],":"],"error":"Cannot read properties of null (reading 'completedAt')"}
+{"fn":"applyTodoPatch","args":[true,true,"{name} has {count} items"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"{name} has {count} items"}}
+{"fn":"applyTodoPatch","args":[["a",1],null,"straßestraße"],"error":"Cannot read properties of null (reading 'completed')"}
+{"fn":"applyTodoPatch","args":[true,{"a":{"b":"c"}},"{name} has {count} items"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"{name} has {count} items"}}
+{"fn":"applyTodoPatch","args":[0,true,"emoji 👍🏽 mix"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"emoji 👍🏽 mix"}}
+{"fn":"applyTodoPatch","args":["x",[],"Hello World"],"ok":{"0":"x","completedAt":{"$undefined":true},"updatedAt":"Hello World"}}
+{"fn":"applyTodoPatch","args":[[],{},"İstanbul./x/**/*.json"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"İstanbul./x/**/*.json"}}
+{"fn":"applyTodoPatch","args":["x",null,"emoji 👍🏽 mix"],"error":"Cannot read properties of null (reading 'completed')"}
+{"fn":"applyTodoPatch","args":[{"a":{"b":"c"}},{"a":{"b":"c"}},"﻿boma.b.c"],"ok":{"a":{"b":"c"},"completedAt":{"$undefined":true},"updatedAt":"﻿boma.b.c"}}
+{"fn":"applyTodoPatch","args":[{"a":{"b":"c"}},0,"a"],"ok":{"a":{"b":"c"},"completedAt":{"$undefined":true},"updatedAt":"a"}}
+{"fn":"applyTodoPatch","args":[{"a":"b"},{},"a.b.c"],"ok":{"a":"b","completedAt":{"$undefined":true},"updatedAt":"a.b.c"}}
+{"fn":"applyTodoPatch","args":[{"a":{"b":"c"}},[],"hello"],"ok":{"a":{"b":"c"},"completedAt":{"$undefined":true},"updatedAt":"hello"}}
+{"fn":"applyTodoPatch","args":[true,0,"ünïcödé"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"ünïcödé"}}
+{"fn":"applyTodoPatch","args":[true,{"a":"b"},""],"ok":{"completedAt":{"$undefined":true},"updatedAt":""}}
+{"fn":"applyTodoPatch","args":[{"a":"b"},null,"./x/**/*.jsonhello world"],"error":"Cannot read properties of null (reading 'completed')"}
+{"fn":"applyTodoPatch","args":[true,{"a":{"b":"c"}},"straßeünïcödé"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"straßeünïcödé"}}
+{"fn":"applyTodoPatch","args":[{"a":{"b":"c"}},0,"日本語のテキスト"],"ok":{"a":{"b":"c"},"completedAt":{"$undefined":true},"updatedAt":"日本語のテキスト"}}
+{"fn":"applyTodoPatch","args":[{},0,"a..b"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"a..b"}}
+{"fn":"applyTodoPatch","args":[0,"x","straße"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"straße"}}
+{"fn":"applyTodoPatch","args":[["a",1],0,"key_name-1"],"ok":{"0":"a","1":1,"completedAt":{"$undefined":true},"updatedAt":"key_name-1"}}
+{"fn":"applyTodoPatch","args":[null,null,"ns:key.path"],"error":"Cannot read properties of null (reading 'completed')"}
+{"fn":"applyTodoPatch","args":[0,["a",1],"éa😀b😀c"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"éa😀b😀c"}}
+{"fn":"applyTodoPatch","args":[0,null,"日本語のテキスト"],"error":"Cannot read properties of null (reading 'completed')"}
+{"fn":"applyTodoPatch","args":[{"a":"b"},true,"ns:key.path"],"ok":{"a":"b","completedAt":{"$undefined":true},"updatedAt":"ns:key.path"}}
+{"fn":"applyTodoPatch","args":[null,{},"hello"],"error":"Cannot read properties of null (reading 'completedAt')"}
+{"fn":"applyTodoPatch","args":[[],"x","{name} has {count} items"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"{name} has {count} items"}}
+{"fn":"applyTodoPatch","args":[["a",1],{},"😀"],"ok":{"0":"a","1":1,"completedAt":{"$undefined":true},"updatedAt":"😀"}}
+{"fn":"applyTodoPatch","args":["x",0,"ünïcödé"],"ok":{"0":"x","completedAt":{"$undefined":true},"updatedAt":"ünïcödé"}}
+{"fn":"applyTodoPatch","args":[{},{"a":{"b":"c"}},"{name} has {count} items"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"{name} has {count} items"}}
+{"fn":"applyTodoPatch","args":[{"a":"b"},["a",1],"Hello World"],"ok":{"a":"b","completedAt":{"$undefined":true},"updatedAt":"Hello World"}}
+{"fn":"applyTodoPatch","args":["x",{"a":"b"},"ΣΊΣΥΦΟΣ"],"ok":{"0":"x","completedAt":{"$undefined":true},"updatedAt":"ΣΊΣΥΦΟΣ"}}
+{"fn":"applyTodoPatch","args":[{},[],"./x/**/*.json"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"./x/**/*.json"}}
+{"fn":"applyTodoPatch","args":[["a",1],"x",".leading"],"ok":{"0":"a","1":1,"completedAt":{"$undefined":true},"updatedAt":".leading"}}
+{"fn":"applyTodoPatch","args":[[],[],"a.b.c.leading"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"a.b.c.leading"}}
+{"fn":"applyTodoPatch","args":["BOM",{"a":{"b":"c"}},"﻿bom"],"ok":{"0":"B","1":"O","2":"M","completedAt":{"$undefined":true},"updatedAt":"﻿bom"}}
+{"fn":"applyTodoPatch","args":[{},{"a":"b"},"a..b"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"a..b"}}
+{"fn":"applyTodoPatch","args":[[],{"a":{"b":"c"}},"hello"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"hello"}}
+{"fn":"applyTodoPatch","args":[{},{},"./x/**/*.json"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"./x/**/*.json"}}
+{"fn":"applyTodoPatch","args":[true,{"a":"b"},"é"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"é"}}
+{"fn":"applyTodoPatch","args":[null,{"a":"b"},"a"],"error":"Cannot read properties of null (reading 'completedAt')"}
+{"fn":"applyTodoPatch","args":[0,null,"hello./x/**/*.json"],"error":"Cannot read properties of null (reading 'completed')"}
+{"fn":"applyTodoPatch","args":[null,{"a":"b"},"emoji 👍🏽 mix"],"error":"Cannot read properties of null (reading 'completedAt')"}
+{"fn":"applyTodoPatch","args":[0,["a",1],"./x/**/*.jsonİstanbul"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"./x/**/*.jsonİstanbul"}}
+{"fn":"applyTodoPatch","args":[null,{},"ΣΊΣΥΦΟΣ"],"error":"Cannot read properties of null (reading 'completedAt')"}
+{"fn":"applyTodoPatch","args":[{"a":"b"},0,"straße"],"ok":{"a":"b","completedAt":{"$undefined":true},"updatedAt":"straße"}}
+{"fn":"applyTodoPatch","args":[true,null,"Hello World"],"error":"Cannot read properties of null (reading 'completed')"}
+{"fn":"applyTodoPatch","args":[0,[],"tab\tseparated"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"tab\tseparated"}}
+{"fn":"applyTodoPatch","args":[true,true,"a..b"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"a..b"}}
+{"fn":"applyTodoPatch","args":[{"a":{"b":"c"}},{"a":"b"},"./x/**/*.json"],"ok":{"a":{"b":"c"},"completedAt":{"$undefined":true},"updatedAt":"./x/**/*.json"}}
+{"fn":"applyTodoPatch","args":[[],{},"trailing."],"ok":{"completedAt":{"$undefined":true},"updatedAt":"trailing."}}
+{"fn":"applyTodoPatch","args":[{"a":"b"},{"a":{"b":"c"}},"日本語のテキスト"],"ok":{"a":"b","completedAt":{"$undefined":true},"updatedAt":"日本語のテキスト"}}
+{"fn":"applyTodoPatch","args":[{"a":"b"},{"a":"b"},"hello world"],"ok":{"a":"b","completedAt":{"$undefined":true},"updatedAt":"hello world"}}
+{"fn":"applyTodoPatch","args":[{"a":"b"},null,":"],"error":"Cannot read properties of null (reading 'completed')"}
+{"fn":"applyTodoPatch","args":["x",["a",1],"a"],"ok":{"0":"x","completedAt":{"$undefined":true},"updatedAt":"a"}}
+{"fn":"applyTodoPatch","args":[{"a":"b"},[],"a.b.c"],"ok":{"a":"b","completedAt":{"$undefined":true},"updatedAt":"a.b.c"}}
+{"fn":"applyTodoPatch","args":[{"a":{"b":"c"}},"x","Hello World"],"ok":{"a":{"b":"c"},"completedAt":{"$undefined":true},"updatedAt":"Hello World"}}
+{"fn":"applyTodoPatch","args":[null,0,"ünïcödésrc/a/b.ts"],"error":"Cannot read properties of null (reading 'completedAt')"}
+{"fn":"applyTodoPatch","args":[[],{"a":"b"},"aba:b:c"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"aba:b:c"}}
+{"fn":"applyTodoPatch","args":[{"a":{"b":"c"}},{"a":{"b":"c"}},"日本語のテキスト"],"ok":{"a":{"b":"c"},"completedAt":{"$undefined":true},"updatedAt":"日本語のテキスト"}}
+{"fn":"applyTodoPatch","args":[[],{"a":"b"},"  padded  é"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"  padded  é"}}
+{"fn":"applyTodoPatch","args":[{"a":{"b":"c"}},null,"src/a/b.ts"],"error":"Cannot read properties of null (reading 'completed')"}
+{"fn":"applyTodoPatch","args":[null,{"a":{"b":"c"}},"ünïcödé"],"error":"Cannot read properties of null (reading 'completedAt')"}
+{"fn":"applyTodoPatch","args":[{"a":{"b":"c"}},["a",1],"ΣΊΣΥΦΟΣ"],"ok":{"a":{"b":"c"},"completedAt":{"$undefined":true},"updatedAt":"ΣΊΣΥΦΟΣ"}}
+{"fn":"applyTodoPatch","args":[null,0,"Hello World"],"error":"Cannot read properties of null (reading 'completedAt')"}
+{"fn":"applyTodoPatch","args":[["a",1],["a",1],"line1\nline2"],"ok":{"0":"a","1":1,"completedAt":{"$undefined":true},"updatedAt":"line1\nline2"}}
+{"fn":"applyTodoPatch","args":[0,{},"a.b.c"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"a.b.c"}}
+{"fn":"applyTodoPatch","args":[true,{},"tab\tseparated"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"tab\tseparated"}}
+{"fn":"applyTodoPatch","args":[[],true,"./x/**/*.json"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"./x/**/*.json"}}
+{"fn":"applyTodoPatch","args":[0,true,"src/a/b.ts"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"src/a/b.ts"}}
+{"fn":"applyTodoPatch","args":[{},[],"a.b.c"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"a.b.c"}}
+{"fn":"applyTodoPatch","args":[[]," 👍🏽 mix日本語の","emoji 👍🏽 mix日本語のテキスト"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"emoji 👍🏽 mix日本語のテキスト"}}
+{"fn":"applyTodoPatch","args":[0,["a",1],"key_name-1"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"key_name-1"}}
+{"fn":"applyTodoPatch","args":[{},{},"ab"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"ab"}}
+{"fn":"applyTodoPatch","args":["x","x","straße"],"ok":{"0":"x","completedAt":{"$undefined":true},"updatedAt":"straße"}}
+{"fn":"applyTodoPatch","args":[["a",1],{"a":{"b":"c"}},"abc"],"ok":{"0":"a","1":1,"completedAt":{"$undefined":true},"updatedAt":"abc"}}
+{"fn":"applyTodoPatch","args":[{"a":{"b":"c"}},null,"  padded  "],"error":"Cannot read properties of null (reading 'completed')"}
+{"fn":"applyTodoPatch","args":["x",{"a":"b"},"./x/**/*.json"],"ok":{"0":"x","completedAt":{"$undefined":true},"updatedAt":"./x/**/*.json"}}
+{"fn":"applyTodoPatch","args":["x",{},"é"],"ok":{"0":"x","completedAt":{"$undefined":true},"updatedAt":"é"}}
+{"fn":"applyTodoPatch","args":[0,null,"src/a/b.ts"],"error":"Cannot read properties of null (reading 'completed')"}
+{"fn":"applyTodoPatch","args":[{},{},"ΣΊΣΥΦΟΣİstanbul"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"ΣΊΣΥΦΟΣİstanbul"}}
+{"fn":"applyTodoPatch","args":[[],"x","x"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"x"}}
+{"fn":"applyTodoPatch","args":[{"a":"b"},["a",1],"key_name-1"],"ok":{"a":"b","completedAt":{"$undefined":true},"updatedAt":"key_name-1"}}
+{"fn":"applyTodoPatch","args":[{"a":{"b":"c"}},{},"trailing."],"ok":{"a":{"b":"c"},"completedAt":{"$undefined":true},"updatedAt":"trailing."}}
+{"fn":"applyTodoPatch","args":[null,"x","x"],"error":"Cannot read properties of null (reading 'completedAt')"}
+{"fn":"applyTodoPatch","args":[{},null,"a:b:c"],"error":"Cannot read properties of null (reading 'completed')"}
+{"fn":"applyTodoPatch","args":[{"a":{"b":"c"}},"x","abhello"],"ok":{"a":{"b":"c"},"completedAt":{"$undefined":true},"updatedAt":"abhello"}}
+{"fn":"applyTodoPatch","args":[true,{"a":{"b":"c"}},"src/a/b.ts"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"src/a/b.ts"}}
+{"fn":"applyTodoPatch","args":["x",{"a":"b"},".leadingsrc/a/b.ts"],"ok":{"0":"x","completedAt":{"$undefined":true},"updatedAt":".leadingsrc/a/b.ts"}}
+{"fn":"applyTodoPatch","args":[{"a":{"b":"c"}},[],"aé"],"ok":{"a":{"b":"c"},"completedAt":{"$undefined":true},"updatedAt":"aé"}}
+{"fn":"applyTodoPatch","args":[null,[],"ns:key.path"],"error":"Cannot read properties of null (reading 'completedAt')"}
+{"fn":"applyTodoPatch","args":[["a",1],null,":"],"error":"Cannot read properties of null (reading 'completed')"}
+{"fn":"applyTodoPatch","args":[true,{"a":{"b":"c"}},"ab"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"ab"}}
+{"fn":"applyTodoPatch","args":[{"a":"b"},true,"ünïcödé"],"ok":{"a":"b","completedAt":{"$undefined":true},"updatedAt":"ünïcödé"}}
+{"fn":"applyTodoPatch","args":[true,["a",1],"key_name-1"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"key_name-1"}}
+{"fn":"applyTodoPatch","args":[["a",1],"x","x"],"ok":{"0":"a","1":1,"completedAt":{"$undefined":true},"updatedAt":"x"}}
+{"fn":"applyTodoPatch","args":[{"a":{"b":"c"}},["a",1],"a:b:c"],"ok":{"a":{"b":"c"},"completedAt":{"$undefined":true},"updatedAt":"a:b:c"}}
+{"fn":"applyTodoPatch","args":[{"a":{"b":"c"}},{"a":{"b":"c"}},"a.b.c"],"ok":{"a":{"b":"c"},"completedAt":{"$undefined":true},"updatedAt":"a.b.c"}}
+{"fn":"applyTodoPatch","args":[true,{"a":"b"},"a.leading"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"a.leading"}}
+{"fn":"applyTodoPatch","args":[{"a":"b"},[],"hello"],"ok":{"a":"b","completedAt":{"$undefined":true},"updatedAt":"hello"}}
+{"fn":"applyTodoPatch","args":[[],0,"ns:key.path"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"ns:key.path"}}
+{"fn":"applyTodoPatch","args":[{},{"a":{"b":"c"}},"hello worldkey_name-1"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"hello worldkey_name-1"}}
+{"fn":"applyTodoPatch","args":[[],{"a":{"b":"c"}},"ns:key.path"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"ns:key.path"}}
+{"fn":"applyTodoPatch","args":[[],{"a":{"b":"c"}},".leadinga.b.c"],"ok":{"completedAt":{"$undefined":true},"updatedAt":".leadinga.b.c"}}
+{"fn":"applyTodoPatch","args":[{"a":"b"},{"a":"b"},"HELLO"],"ok":{"a":"b","completedAt":{"$undefined":true},"updatedAt":"HELLO"}}
+{"fn":"applyTodoPatch","args":["x",{"a":{"b":"c"}},"x"],"ok":{"0":"x","completedAt":{"$undefined":true},"updatedAt":"x"}}
+{"fn":"applyTodoPatch","args":[{"a":"b"},{},"a..b"],"ok":{"a":"b","completedAt":{"$undefined":true},"updatedAt":"a..b"}}
+{"fn":"applyTodoPatch","args":[0,null,"{name} has {count} items"],"error":"Cannot read properties of null (reading 'completed')"}
+{"fn":"applyTodoPatch","args":[["a",1],{"a":"b"},"ab"],"ok":{"0":"a","1":1,"completedAt":{"$undefined":true},"updatedAt":"ab"}}
+{"fn":"applyTodoPatch","args":[true,["a",1],"src/a/b.ts"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"src/a/b.ts"}}
+{"fn":"applyTodoPatch","args":[null,["a",1],"HELLO"],"error":"Cannot read properties of null (reading 'completedAt')"}
+{"fn":"applyTodoPatch","args":[null,["a",1],"emoji 👍🏽 mix"],"error":"Cannot read properties of null (reading 'completedAt')"}
+{"fn":"applyTodoPatch","args":[{},true,"src/a/b.ts"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"src/a/b.ts"}}
+{"fn":"applyTodoPatch","args":[true,null,"﻿bom  padded  "],"error":"Cannot read properties of null (reading 'completed')"}
+{"fn":"applyTodoPatch","args":["x",null,"./x/**/*.json"],"error":"Cannot read properties of null (reading 'completed')"}
+{"fn":"applyTodoPatch","args":[{},{"a":{"b":"c"}},"İstanbul"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"İstanbul"}}
+{"fn":"applyTodoPatch","args":[0,{},"a"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"a"}}
+{"fn":"applyTodoPatch","args":[["a",1],0,"ΣΊΣΥΦΟΣ"],"ok":{"0":"a","1":1,"completedAt":{"$undefined":true},"updatedAt":"ΣΊΣΥΦΟΣ"}}
+{"fn":"applyTodoPatch","args":[{"a":{"b":"c"}},"AB","ab"],"ok":{"a":{"b":"c"},"completedAt":{"$undefined":true},"updatedAt":"ab"}}
+{"fn":"applyTodoPatch","args":[{"a":{"b":"c"}},"x","﻿bom"],"ok":{"a":{"b":"c"},"completedAt":{"$undefined":true},"updatedAt":"﻿bom"}}
+{"fn":"applyTodoPatch","args":[{},0,"straße"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"straße"}}
+{"fn":"applyTodoPatch","args":[{"a":"b"},{"a":{"b":"c"}},"line1\nline2"],"ok":{"a":"b","completedAt":{"$undefined":true},"updatedAt":"line1\nline2"}}
+{"fn":"applyTodoPatch","args":[true,null,"a..b"],"error":"Cannot read properties of null (reading 'completed')"}
+{"fn":"applyTodoPatch","args":[null,[],"emoji 👍🏽 mix"],"error":"Cannot read properties of null (reading 'completedAt')"}
+{"fn":"applyTodoPatch","args":[0,"x","{name} has {count} items"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"{name} has {count} items"}}
+{"fn":"applyTodoPatch","args":[{"a":{"b":"c"}},{},"emoji 👍🏽 mix"],"ok":{"a":{"b":"c"},"completedAt":{"$undefined":true},"updatedAt":"emoji 👍🏽 mix"}}
+{"fn":"applyTodoPatch","args":[{},null,"ünïcödé"],"error":"Cannot read properties of null (reading 'completed')"}
+{"fn":"applyTodoPatch","args":[0,0,"trailing."],"ok":{"completedAt":{"$undefined":true},"updatedAt":"trailing."}}
+{"fn":"applyTodoPatch","args":[{"a":{"b":"c"}},true,"HELLO"],"ok":{"a":{"b":"c"},"completedAt":{"$undefined":true},"updatedAt":"HELLO"}}
+{"fn":"applyTodoPatch","args":[["a",1],null,"a"],"error":"Cannot read properties of null (reading 'completed')"}
+{"fn":"applyTodoPatch","args":[{"a":"b"},true,"a"],"ok":{"a":"b","completedAt":{"$undefined":true},"updatedAt":"a"}}
+{"fn":"applyTodoPatch","args":["x",["a",1],"日本語のテキスト  padded  "],"ok":{"0":"x","completedAt":{"$undefined":true},"updatedAt":"日本語のテキスト  padded  "}}
+{"fn":"applyTodoPatch","args":[true,{"a":{"b":"c"}},"./x/**/*.json"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"./x/**/*.json"}}
+{"fn":"applyTodoPatch","args":[[],["a",1],"key_name-1"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"key_name-1"}}
+{"fn":"applyTodoPatch","args":[0,{"a":{"b":"c"}},":"],"ok":{"completedAt":{"$undefined":true},"updatedAt":":"}}
+{"fn":"applyTodoPatch","args":[{},{"a":"b"},"key_name-1"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"key_name-1"}}
+{"fn":"applyTodoPatch","args":[true,"x","a"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"a"}}
+{"fn":"applyTodoPatch","args":[null,{"a":{"b":"c"}},"key_name-1"],"error":"Cannot read properties of null (reading 'completedAt')"}
+{"fn":"applyTodoPatch","args":[null,[],"ünïcödé"],"error":"Cannot read properties of null (reading 'completedAt')"}
+{"fn":"applyTodoPatch","args":[true,"x","src/a/b.ts"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"src/a/b.ts"}}
+{"fn":"applyTodoPatch","args":["x",0,"straße"],"ok":{"0":"x","completedAt":{"$undefined":true},"updatedAt":"straße"}}
+{"fn":"applyTodoPatch","args":[{"a":"b"},null,"tab\tseparatedabc"],"error":"Cannot read properties of null (reading 'completed')"}
+{"fn":"applyTodoPatch","args":[[],0,"a.b.cemoji 👍🏽 mix"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"a.b.cemoji 👍🏽 mix"}}
+{"fn":"applyTodoPatch","args":[true,true,"😀"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"😀"}}
+{"fn":"applyTodoPatch","args":[{"a":"b"},{"a":"b"},"src/a/b.ts"],"ok":{"a":"b","completedAt":{"$undefined":true},"updatedAt":"src/a/b.ts"}}
+{"fn":"applyTodoPatch","args":[{"a":{"b":"c"}},{},"ΣΊΣΥΦΟΣHELLO"],"ok":{"a":{"b":"c"},"completedAt":{"$undefined":true},"updatedAt":"ΣΊΣΥΦΟΣHELLO"}}
+{"fn":"applyTodoPatch","args":[{"a":{"b":"c"}},{"a":{"b":"c"}},"key_name-1src/a/b.ts"],"ok":{"a":{"b":"c"},"completedAt":{"$undefined":true},"updatedAt":"key_name-1src/a/b.ts"}}
+{"fn":"applyTodoPatch","args":[{"a":"b"},{},"aba😀b😀c"],"ok":{"a":"b","completedAt":{"$undefined":true},"updatedAt":"aba😀b😀c"}}
+{"fn":"applyTodoPatch","args":[{},null,"a"],"error":"Cannot read properties of null (reading 'completed')"}
+{"fn":"applyTodoPatch","args":[[],{"a":"b"},"trailing.hello"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"trailing.hello"}}
+{"fn":"applyTodoPatch","args":[null,"x","  padded  "],"error":"Cannot read properties of null (reading 'completedAt')"}
+{"fn":"applyTodoPatch","args":[["a",1],{"a":{"b":"c"}},"hello world"],"ok":{"0":"a","1":1,"completedAt":{"$undefined":true},"updatedAt":"hello world"}}
+{"fn":"applyTodoPatch","args":[[],"x","ΣΊΣΥΦΟΣ😀"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"ΣΊΣΥΦΟΣ😀"}}
+{"fn":"applyTodoPatch","args":[null,{"a":{"b":"c"}},":"],"error":"Cannot read properties of null (reading 'completedAt')"}
+{"fn":"applyTodoPatch","args":[["a",1],{"a":"b"},"./x/**/*.json"],"ok":{"0":"a","1":1,"completedAt":{"$undefined":true},"updatedAt":"./x/**/*.json"}}
+{"fn":"applyTodoPatch","args":[0,true,"key_name-1"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"key_name-1"}}
+{"fn":"applyTodoPatch","args":[{"a":"b"},["a",1],"héllo wörld"],"ok":{"a":"b","completedAt":{"$undefined":true},"updatedAt":"héllo wörld"}}
+{"fn":"applyTodoPatch","args":[{"a":"b"},["a",1],"👍🏽 thumbs"],"ok":{"a":"b","completedAt":{"$undefined":true},"updatedAt":"👍🏽 thumbs"}}
+{"fn":"applyTodoPatch","args":[{"a":"b"},["a",1],"日本語"],"ok":{"a":"b","completedAt":{"$undefined":true},"updatedAt":"日本語"}}
+{"fn":"applyTodoPatch","args":[{"a":"b"},["a",1],""],"ok":{"a":"b","completedAt":{"$undefined":true},"updatedAt":""}}
+{"fn":"applyTodoPatch","args":[{"a":"b"},["a",1],"é"],"ok":{"a":"b","completedAt":{"$undefined":true},"updatedAt":"é"}}
+{"fn":"applyTodoPatch","args":[{"a":"b"},["a",1],"İstanbul"],"ok":{"a":"b","completedAt":{"$undefined":true},"updatedAt":"İstanbul"}}
+{"fn":"applyTodoPatch","args":[{"a":"b"},["a",1],"straße"],"ok":{"a":"b","completedAt":{"$undefined":true},"updatedAt":"straße"}}
+{"fn":"applyTodoPatch","args":[{"a":"b"},["a",1],"ılık ırmak"],"ok":{"a":"b","completedAt":{"$undefined":true},"updatedAt":"ılık ırmak"}}
+{"fn":"applyTodoPatch","args":[{"a":"b"},["a",1],"👨‍👩‍👧 family"],"ok":{"a":"b","completedAt":{"$undefined":true},"updatedAt":"👨‍👩‍👧 family"}}
+{"fn":"applyTodoPatch","args":[{"a":"b"},["a",1],"a b"],"ok":{"a":"b","completedAt":{"$undefined":true},"updatedAt":"a b"}}
+{"fn":"applyTodoPatch","args":[{"a":"b"},["a",1],"ΣΊΣΥΦΟΣ"],"ok":{"a":"b","completedAt":{"$undefined":true},"updatedAt":"ΣΊΣΥΦΟΣ"}}
+{"fn":"applyTodoPatch","args":[{"a":"b"},["a",1],"a😀b"],"ok":{"a":"b","completedAt":{"$undefined":true},"updatedAt":"a😀b"}}
+{"fn":"applyTodoPatch","args":[{"a":"b"},["a",1],"﻿bom"],"ok":{"a":"b","completedAt":{"$undefined":true},"updatedAt":"﻿bom"}}
+{"fn":"applyTodoPatch","args":[{"a":"b"},["a",1],"a²b x½ y①"],"ok":{"a":"b","completedAt":{"$undefined":true},"updatedAt":"a²b x½ y①"}}
+{"fn":"applyTodoPatch","args":[{"a":"b"},["a",1],"aⅠb Ⅻ"],"ok":{"a":"b","completedAt":{"$undefined":true},"updatedAt":"aⅠb Ⅻ"}}
+{"fn":"applyTodoPatch","args":[{"a":"b"},["a",1],"a𐐀b 𝐀bc"],"ok":{"a":"b","completedAt":{"$undefined":true},"updatedAt":"a𐐀b 𝐀bc"}}
+{"fn":"applyTodoPatch","args":[{"a":"b"},["a",1],"कि ٣٤"],"ok":{"a":"b","completedAt":{"$undefined":true},"updatedAt":"कि ٣٤"}}
+{"fn":"applyTodoPatch","args":[{"title":"x"},{"completed":true},"t"],"ok":{"title":"x","completedAt":"t","updatedAt":"t"}}
+{"fn":"applyTodoPatch","args":[{"title":"x"},{"completed":false},"t"],"ok":{"title":"x","completedAt":null,"updatedAt":"t"}}
+{"fn":"applyTodoPatch","args":[{"title":"x"},{"completed":1},"t"],"ok":{"title":"x","completedAt":"t","updatedAt":"t"}}
+{"fn":"applyTodoPatch","args":[{"title":"x"},{"completed":0},"t"],"ok":{"title":"x","completedAt":null,"updatedAt":"t"}}
+{"fn":"applyTodoPatch","args":[{"title":"x"},{"completed":"yes"},"t"],"ok":{"title":"x","completedAt":"t","updatedAt":"t"}}
+{"fn":"applyTodoPatch","args":[{"title":"x"},{"completed":""},"t"],"ok":{"title":"x","completedAt":null,"updatedAt":"t"}}
+{"fn":"applyTodoPatch","args":[{"title":"x"},{"completed":{}},"t"],"ok":{"title":"x","completedAt":"t","updatedAt":"t"}}
+{"fn":"applyTodoPatch","args":[{"title":"x"},{"completed":[1]},"t"],"ok":{"title":"x","completedAt":"t","updatedAt":"t"}}
+{"fn":"applyTodoPatch","args":[{"title":"x"},{"completed":null},"t"],"ok":{"title":"x","completedAt":null,"updatedAt":"t"}}
+{"fn":"applyTodoPatch","args":[{"title":"x"},{"completed":{"$undefined":true}},"t"],"ok":{"title":"x","completedAt":{"$undefined":true},"updatedAt":"t"}}
+{"fn":"applyTodoPatch","args":[{"title":"x","completedAt":"prev"},{"completed":true},"t"],"ok":{"title":"x","completedAt":"prev","updatedAt":"t"}}
+{"fn":"applyTodoPatch","args":[{"title":"x","completedAt":"prev"},{"completed":false},"t"],"ok":{"title":"x","completedAt":null,"updatedAt":"t"}}
+{"fn":"applyTodoPatch","args":[{"title":"x","completedAt":"prev"},{"completed":{"$undefined":true}},"t"],"ok":{"title":"x","completedAt":"prev","updatedAt":"t"}}
+{"fn":"applyTodoPatch","args":[{"title":"x","completedAt":0},{"completed":true},"t"],"ok":{"title":"x","completedAt":0,"updatedAt":"t"}}
+{"fn":"applyTodoPatch","args":[{"title":"x","completedAt":""},{"completed":true},"t"],"ok":{"title":"x","completedAt":"","updatedAt":"t"}}
+{"fn":"applyTodoPatch","args":[{"title":"x","completedAt":null},{"completed":true},"t"],"ok":{"title":"x","completedAt":"t","updatedAt":"t"}}
+{"fn":"applyTodoPatch","args":[{"title":"x","completedAt":false},{"completed":true},"t"],"ok":{"title":"x","completedAt":false,"updatedAt":"t"}}
+{"fn":"applyTodoPatch","args":[{"title":"x","completedAt":{"$undefined":true}},{"completed":true},"t"],"ok":{"title":"x","completedAt":"t","updatedAt":"t"}}
+{"fn":"applyTodoPatch","args":[{"completedAt":"prev"},{"completed":false},"t"],"ok":{"completedAt":null,"updatedAt":"t"}}
+{"fn":"applyTodoPatch","args":[{"title":"x","id":1},{"title":"new","completed":true},"t"],"ok":{"title":"new","id":1,"completedAt":"t","updatedAt":"t"}}
+{"fn":"applyTodoPatch","args":[{"title":"x"},{"title":null},"t"],"ok":{"title":null,"completedAt":{"$undefined":true},"updatedAt":"t"}}
+{"fn":"applyTodoPatch","args":[{"title":"x"},{"title":{"$undefined":true}},"t"],"ok":{"title":"x","completedAt":{"$undefined":true},"updatedAt":"t"}}
+{"fn":"applyTodoPatch","args":[{"title":"x"},{"title":""},"t"],"ok":{"title":"","completedAt":{"$undefined":true},"updatedAt":"t"}}
+{"fn":"applyTodoPatch","args":[{"title":"x"},{"title":123},"t"],"ok":{"title":123,"completedAt":{"$undefined":true},"updatedAt":"t"}}
+{"fn":"applyTodoPatch","args":[{},{"title":"y"},"t"],"ok":{"title":"y","completedAt":{"$undefined":true},"updatedAt":"t"}}
+{"fn":"applyTodoPatch","args":[{"a":1},{"notes":"n"},"t"],"ok":{"a":1,"notes":"n","completedAt":{"$undefined":true},"updatedAt":"t"}}
+{"fn":"applyTodoPatch","args":[{"a":1},{"priority":9},"t"],"ok":{"a":1,"priority":9,"completedAt":{"$undefined":true},"updatedAt":"t"}}
+{"fn":"applyTodoPatch","args":[{"a":1},{"dueDate":"dd"},"t"],"ok":{"a":1,"dueDate":"dd","completedAt":{"$undefined":true},"updatedAt":"t"}}
+{"fn":"applyTodoPatch","args":[{"a":1},{"projectId":"pi"},"t"],"ok":{"a":1,"projectId":"pi","completedAt":{"$undefined":true},"updatedAt":"t"}}
+{"fn":"applyTodoPatch","args":[{"a":1},{"delegationBaseTurnId":"db"},"t"],"ok":{"a":1,"delegationBaseTurnId":"db","completedAt":{"$undefined":true},"updatedAt":"t"}}
+{"fn":"applyTodoPatch","args":[{"a":1},{"threadId":"ti"},"t"],"ok":{"a":1,"threadId":"ti","linkedAt":"t","delegationBaseTurnId":null,"completedAt":{"$undefined":true},"updatedAt":"t"}}
+{"fn":"applyTodoPatch","args":[{"a":1},{"threadId":null},"t"],"ok":{"a":1,"threadId":null,"linkedAt":null,"delegationBaseTurnId":null,"completedAt":{"$undefined":true},"updatedAt":"t"}}
+{"fn":"applyTodoPatch","args":[{"a":1},{"threadId":""},"t"],"ok":{"a":1,"threadId":"","linkedAt":"t","delegationBaseTurnId":null,"completedAt":{"$undefined":true},"updatedAt":"t"}}
+{"fn":"applyTodoPatch","args":[{"a":1},{"threadId":0},"t"],"ok":{"a":1,"threadId":0,"linkedAt":"t","delegationBaseTurnId":null,"completedAt":{"$undefined":true},"updatedAt":"t"}}
+{"fn":"applyTodoPatch","args":[{"a":1},{"threadId":false},"t"],"ok":{"a":1,"threadId":false,"linkedAt":"t","delegationBaseTurnId":null,"completedAt":{"$undefined":true},"updatedAt":"t"}}
+{"fn":"applyTodoPatch","args":[{"a":1},{"threadId":123},"t"],"ok":{"a":1,"threadId":123,"linkedAt":"t","delegationBaseTurnId":null,"completedAt":{"$undefined":true},"updatedAt":"t"}}
+{"fn":"applyTodoPatch","args":[{"a":1},{"threadId":{"$undefined":true}},"t"],"ok":{"a":1,"completedAt":{"$undefined":true},"updatedAt":"t"}}
+{"fn":"applyTodoPatch","args":[{"a":1},{"threadId":"ti","delegationBaseTurnId":"db1"},"t"],"ok":{"a":1,"threadId":"ti","linkedAt":"t","delegationBaseTurnId":"db1","completedAt":{"$undefined":true},"updatedAt":"t"}}
+{"fn":"applyTodoPatch","args":[{"a":1},{"threadId":"ti","delegationBaseTurnId":null},"t"],"ok":{"a":1,"threadId":"ti","linkedAt":"t","delegationBaseTurnId":null,"completedAt":{"$undefined":true},"updatedAt":"t"}}
+{"fn":"applyTodoPatch","args":[{"a":1},{"threadId":"ti","delegationBaseTurnId":{"$undefined":true}},"t"],"ok":{"a":1,"threadId":"ti","linkedAt":"t","delegationBaseTurnId":null,"completedAt":{"$undefined":true},"updatedAt":"t"}}
+{"fn":"applyTodoPatch","args":[{"a":1,"threadId":"old","linkedAt":"l","delegationBaseTurnId":"db"},{"threadId":null},"t"],"ok":{"a":1,"threadId":null,"linkedAt":null,"delegationBaseTurnId":null,"completedAt":{"$undefined":true},"updatedAt":"t"}}
+{"fn":"applyTodoPatch","args":[{"a":1,"threadId":"old","linkedAt":"l"},{"threadId":"new"},"t"],"ok":{"a":1,"threadId":"new","linkedAt":"t","delegationBaseTurnId":null,"completedAt":{"$undefined":true},"updatedAt":"t"}}
+{"fn":"applyTodoPatch","args":[{"a":1,"delegationBaseTurnId":"keep"},{"threadId":"ti"},"t"],"ok":{"a":1,"delegationBaseTurnId":null,"threadId":"ti","linkedAt":"t","completedAt":{"$undefined":true},"updatedAt":"t"}}
+{"fn":"applyTodoPatch","args":[{"a":1},{"threadId":"ti","completed":true},"t"],"ok":{"a":1,"threadId":"ti","linkedAt":"t","delegationBaseTurnId":null,"completedAt":"t","updatedAt":"t"}}
+{"fn":"applyTodoPatch","args":[{"a":1},{"threadId":"ti","completed":{"$undefined":true},"completedAt":"p"},"t"],"ok":{"a":1,"threadId":"ti","linkedAt":"t","delegationBaseTurnId":null,"completedAt":{"$undefined":true},"updatedAt":"t"}}
+{"fn":"applyTodoPatch","args":[{"a":1},{"title":"T","notes":"N","priority":1,"dueDate":"D","projectId":"P","threadId":"TH","delegationBaseTurnId":"DB"},"t"],"ok":{"a":1,"title":"T","notes":"N","priority":1,"projectId":"P","dueDate":"D","threadId":"TH","linkedAt":"t","delegationBaseTurnId":"DB","completedAt":{"$undefined":true},"updatedAt":"t"}}
+{"fn":"applyTodoPatch","args":[{"a":1},{"notes":"n","delegationBaseTurnId":"db"},"t"],"ok":{"a":1,"notes":"n","delegationBaseTurnId":"db","completedAt":{"$undefined":true},"updatedAt":"t"}}
+{"fn":"applyTodoPatch","args":[{"a":1},{"linkedAt":"l"},"t"],"ok":{"a":1,"completedAt":{"$undefined":true},"updatedAt":"t"}}
+{"fn":"applyTodoPatch","args":[{"a":1},{"id":"i"},"t"],"ok":{"a":1,"completedAt":{"$undefined":true},"updatedAt":"t"}}
+{"fn":"applyTodoPatch","args":[{"a":1},{"createdAt":"c"},"t"],"ok":{"a":1,"completedAt":{"$undefined":true},"updatedAt":"t"}}
+{"fn":"applyTodoPatch","args":[{"a":1},{"status":"s","done":true,"label":"l","text":"tx","description":"d","note":"n"},"t"],"ok":{"a":1,"completedAt":{"$undefined":true},"updatedAt":"t"}}
+{"fn":"applyTodoPatch","args":[{"a":1},{"completedAt":"y","updatedAt":"z"},"t"],"ok":{"a":1,"completedAt":{"$undefined":true},"updatedAt":"t"}}
+{"fn":"applyTodoPatch","args":[{"title":"x"},{"completed":true,"other":1},"t"],"ok":{"title":"x","completedAt":"t","updatedAt":"t"}}
+{"fn":"applyTodoPatch","args":[["a",1],{"completed":true},"t"],"ok":{"0":"a","1":1,"completedAt":"t","updatedAt":"t"}}
+{"fn":"applyTodoPatch","args":[["a",1],{"title":"T"},"t"],"ok":{"0":"a","1":1,"title":"T","completedAt":{"$undefined":true},"updatedAt":"t"}}
+{"fn":"applyTodoPatch","args":["xy",{"completed":true},"t"],"ok":{"0":"x","1":"y","completedAt":"t","updatedAt":"t"}}
+{"fn":"applyTodoPatch","args":["xy",{"title":"T"},"t"],"ok":{"0":"x","1":"y","title":"T","completedAt":{"$undefined":true},"updatedAt":"t"}}
+{"fn":"applyTodoPatch","args":[0,{"title":"T"},"t"],"ok":{"title":"T","completedAt":{"$undefined":true},"updatedAt":"t"}}
+{"fn":"applyTodoPatch","args":[0,{},"a"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"a"}}
+{"fn":"applyTodoPatch","args":[true,{},"a"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"a"}}
+{"fn":"applyTodoPatch","args":[{},{},"ab"],"ok":{"completedAt":{"$undefined":true},"updatedAt":"ab"}}
+{"fn":"applyTodoPatch","args":[null,{"completed":true},"t"],"error":"Cannot read properties of null (reading 'completedAt')"}
+{"fn":"applyTodoPatch","args":[null,{},"ab"],"error":"Cannot read properties of null (reading 'completedAt')"}
+{"fn":"applyTodoPatch","args":[null,null,"x"],"error":"Cannot read properties of null (reading 'completed')"}
+{"fn":"applyTodoPatch","args":[{"$undefined":true},{"completed":true},"t"],"error":"Cannot read properties of undefined (reading 'completedAt')"}
+{"fn":"applyTodoPatch","args":[{"$undefined":true},{},"t"],"error":"Cannot read properties of undefined (reading 'completedAt')"}
+{"fn":"applyTodoPatch","args":[{"title":"x"},null,"t"],"error":"Cannot read properties of null (reading 'completed')"}
+{"fn":"applyTodoPatch","args":[{"title":"x"},{"$undefined":true},"t"],"error":"Cannot read properties of undefined (reading 'completed')"}
+{"fn":"applyTodoPatch","args":[{},null,":"],"error":"Cannot read properties of null (reading 'completed')"}
+{"fn":"applyTodoPatch","args":[{"title":"x"},"t","u"],"ok":{"title":"x","completedAt":{"$undefined":true},"updatedAt":"u"}}
+{"fn":"applyTodoPatch","args":[{"title":"x"},[],"t"],"ok":{"title":"x","completedAt":{"$undefined":true},"updatedAt":"t"}}
+{"fn":"applyTodoPatch","args":[{"title":"x"},0,"t"],"ok":{"title":"x","completedAt":{"$undefined":true},"updatedAt":"t"}}
+{"fn":"applyTodoPatch","args":[{"title":"x"},true,"t"],"ok":{"title":"x","completedAt":{"$undefined":true},"updatedAt":"t"}}
+{"fn":"applyTodoPatch","args":[{"title":"x"},{"completed":true},""],"ok":{"title":"x","completedAt":"","updatedAt":""}}
+{"fn":"applyTodoPatch","args":[{"title":"x"},{"completed":true},123],"ok":{"title":"x","completedAt":123,"updatedAt":123}}
+{"fn":"applyTodoPatch","args":[{"title":"x"},{"completed":true},null],"ok":{"title":"x","completedAt":null,"updatedAt":null}}
+{"fn":"applyTodoPatch","args":[{"title":"x"},{"completed":true},{"$undefined":true}],"ok":{"title":"x","completedAt":{"$undefined":true},"updatedAt":{"$undefined":true}}}
+{"fn":"applyTodoPatch","args":[{"title":"x"},{"completed":2},"t"],"ok":{"title":"x","completedAt":"t","updatedAt":"t"}}
+{"fn":"applyTodoPatch","args":[{"a":1,"b":2},{"a":9,"order":3,"position":9},"t"],"ok":{"a":1,"b":2,"completedAt":{"$undefined":true},"updatedAt":"t"}}
+{"fn":"applyTodoPatch","args":[{"title":"x","completedAt":"prev","done":true},{"completed":false,"status":"y"},"t"],"ok":{"title":"x","completedAt":null,"done":true,"updatedAt":"t"}}
+{"fn":"applyTodoPatch","args":[{"title":"x"},{"completed":false,"completedAt":"p"},"t"],"ok":{"title":"x","completedAt":null,"updatedAt":"t"}}
+{"fn":"applyTodoPatch","args":[{"title":"x"},{"completed":true,"notes":"n"},"t"],"ok":{"title":"x","notes":"n","completedAt":"t","updatedAt":"t"}}
+{"fn":"applyTodoPatch","args":[{"a":1,"completedAt":null},{"completed":true},"t"],"ok":{"a":1,"completedAt":"t","updatedAt":"t"}}
+{"fn":"applyTodoPatch","args":[{"a":1,"completedAt":{"$undefined":true}},{"completed":{"$undefined":true}},"t"],"ok":{"a":1,"completedAt":{"$undefined":true},"updatedAt":"t"}}
+{"fn":"applyTodoPatch","args":[{"a":1},{"threadId":{"$undefined":true},"delegationBaseTurnId":"db"},"t"],"ok":{"a":1,"delegationBaseTurnId":"db","completedAt":{"$undefined":true},"updatedAt":"t"}}

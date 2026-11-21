@@ -1,0 +1,36 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/turnStopActivity.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "turnstopactivity-rs",
+  "exports": [
+    {
+      "name": "deriveTurnStopActivity",
+      "file": "packages/shared/src/turnStopActivity.ts",
+      "line": 5,
+      "params": [
+        {
+          "name": "event",
+          "ts_type": "Extract<typeof typeof typeof typeof OrchestrationEvent.Type.Type.Type.Type, { type: \"thread.turn-interrupt-requested\" }>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "activeTurnId",
+          "ts_type": "typeof typeof typeof typeof TurnId.Type.Type.Type.Type | null",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof OrchestrationThreadActivity.Type.Type.Type.Type | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

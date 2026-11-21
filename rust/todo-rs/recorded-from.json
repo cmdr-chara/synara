@@ -1,0 +1,17 @@
+{
+  "unit": "packages/shared/src/todo.ts",
+  "files": 1,
+  "fingerprint": "ea30f07a0d49bbcc",
+  "coverage": {
+    "lines": 37,
+    "reached": 37,
+    "files": [
+      {
+        "file": "packages/shared/src/todo.ts",
+        "lines": 37,
+        "reached": 37,
+        "missed": ""
+      }
+    ]
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/threadDetailCatchupPolicy.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "threaddetailcatchuppolicy-rs",
+  "exports": [
+    {
+      "name": "isThreadDetailVerifiedInSync",
+      "file": "apps/web/src/threadDetailCatchupPolicy.ts",
+      "line": 34,
+      "params": [
+        {
+          "name": "evidence",
+          "ts_type": "ThreadDetailSyncEvidence",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isLiveThreadStreamDelivering",
+      "file": "apps/web/src/threadDetailCatchupPolicy.ts",
+      "line": 48,
+      "params": [
+        {
+          "name": "lastLiveEventAt",
+          "ts_type": "number | null",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "nowMs",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "windowMs",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

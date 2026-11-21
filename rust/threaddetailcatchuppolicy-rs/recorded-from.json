@@ -1,0 +1,17 @@
+{
+  "unit": "apps/web/src/threadDetailCatchupPolicy.ts",
+  "files": 1,
+  "fingerprint": "e24c6103b556e485",
+  "coverage": {
+    "lines": 51,
+    "reached": 51,
+    "files": [
+      {
+        "file": "apps/web/src/threadDetailCatchupPolicy.ts",
+        "lines": 51,
+        "reached": 51,
+        "missed": ""
+      }
+    ]
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "unit": "apps/desktop/src/cuaRuntimeOwnership.ts",
+  "files": 1,
+  "fingerprint": "5e503dd7e30dce82",
+  "coverage": {
+    "lines": 139,
+    "reached": 42,
+    "files": [
+      {
+        "file": "apps/desktop/src/cuaRuntimeOwnership.ts",
+        "lines": 139,
+        "reached": 42,
+        "missed": "47-143"
+      }
+    ]
+  }
+}

@@ -1,0 +1,248 @@
+{"fn":"cuaHostProcessIsAlive","args":[0.5],"ok":true}
+{"fn":"cuaHostProcessIsAlive","args":[{"$num":"NaN"}],"ok":true}
+{"fn":"cuaHostProcessIsAlive","args":[-2.5],"ok":true}
+{"fn":"cuaHostProcessIsAlive","args":[-1],"ok":true}
+{"fn":"cuaHostProcessIsAlive","args":[{"$num":"-0"}],"ok":true}
+{"fn":"cuaHostProcessIsAlive","args":[9007199254740992],"ok":true}
+{"fn":"cuaHostProcessIsAlive","args":[0],"ok":true}
+{"fn":"cuaHostProcessIsAlive","args":[3],"ok":false}
+{"fn":"cuaHostProcessIsAlive","args":[1000000],"ok":false}
+{"fn":"cuaHostProcessIsAlive","args":[10],"ok":false}
+{"fn":"cuaHostProcessIsAlive","args":[2147483648],"ok":true}
+{"fn":"cuaHostProcessIsAlive","args":[1],"ok":true}
+{"fn":"cuaHostProcessIsAlive","args":[42],"ok":false}
+{"fn":"cuaHostProcessIsAlive","args":[{"$num":"-Infinity"}],"ok":true}
+{"fn":"cuaHostProcessIsAlive","args":[{"$num":"Infinity"}],"ok":true}
+{"fn":"cuaHostProcessIsAlive","args":[2],"ok":false}
+{"fn":"cuaHostProcessIsAlive","args":[100],"ok":false}
+{"fn":"cuaHostProcessIsAlive","args":[1000],"ok":false}
+{"fn":"cuaHostProcessIsAlive","args":[-7.5],"ok":true}
+{"fn":"cuaHostProcessIsAlive","args":[0.1],"ok":true}
+{"fn":"cuaHostProcessIsAlive","args":[0.30000000000000004],"ok":true}
+{"fn":"cuaHostProcessIsAlive","args":[1e+21],"ok":true}
+{"fn":"cuaHostProcessIsAlive","args":[1e-7],"ok":true}
+{"fn":"cuaHostProcessIsAlive","args":[5e-324],"ok":true}
+{"fn":"cuaHostProcessIsAlive","args":[1.7976931348623157e+308],"ok":true}
+{"fn":"markCuaRuntimeDirectory","args":["é"],"error":"ENOENT: no such file or directory, open 'é/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["a..b"],"error":"ENOENT: no such file or directory, open 'a..b/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":[""],"ok":{"$undefined":true}}
+{"fn":"markCuaRuntimeDirectory","args":["a:b:c"],"error":"ENOENT: no such file or directory, open 'a:b:c/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["a😀b😀cline1\nline2"],"error":"ENOENT: no such file or directory, open 'a😀b😀cline1\nline2/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["ab  padded  "],"error":"ENOENT: no such file or directory, open 'ab  padded  /.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["hello"],"error":"ENOENT: no such file or directory, open 'hello/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["key_name-1"],"error":"ENOENT: no such file or directory, open 'key_name-1/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["src/a/b.ts"],"error":"ENOENT: no such file or directory, open 'src/a/b.ts/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["ns:key.path"],"error":"ENOENT: no such file or directory, open 'ns:key.path/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["İstanbul😀"],"error":"ENOENT: no such file or directory, open 'İstanbul😀/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["😀"],"error":"ENOENT: no such file or directory, open '😀/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["ab"],"error":"ENOENT: no such file or directory, open 'ab/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["./x/**/*.json"],"error":"ENOENT: no such file or directory, open 'x/**/*.json/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["ΣΊΣΥΦΟΣ"],"error":"ENOENT: no such file or directory, open 'ΣΊΣΥΦΟΣ/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["HELLO﻿bom"],"error":"ENOENT: no such file or directory, open 'HELLO﻿bom/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["straße:"],"error":"ENOENT: no such file or directory, open 'straße:/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["hello world"],"error":"ENOENT: no such file or directory, open 'hello world/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["trailing."],"error":"ENOENT: no such file or directory, open 'trailing./.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["line1\nline2"],"error":"ENOENT: no such file or directory, open 'line1\nline2/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["tab\tseparated"],"error":"ENOENT: no such file or directory, open 'tab\tseparated/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["  padded  ΣΊΣΥΦΟΣ"],"error":"ENOENT: no such file or directory, open '  padded  ΣΊΣΥΦΟΣ/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["emoji 👍🏽 mix"],"error":"ENOENT: no such file or directory, open 'emoji 👍🏽 mix/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["日本語のテキスト"],"error":"ENOENT: no such file or directory, open '日本語のテキスト/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["ünïcödé"],"error":"ENOENT: no such file or directory, open 'ünïcödé/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["😀abc"],"error":"ENOENT: no such file or directory, open '😀abc/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["a.b.c"],"error":"ENOENT: no such file or directory, open 'a.b.c/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["{name} has {count} itemssrc/a/b.ts"],"error":"ENOENT: no such file or directory, open '{name} has {count} itemssrc/a/b.ts/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["﻿bom"],"error":"ENOENT: no such file or directory, open '﻿bom/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["straße"],"error":"ENOENT: no such file or directory, open 'straße/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["tab\tseparated😀"],"error":"ENOENT: no such file or directory, open 'tab\tseparated😀/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["Hello World"],"error":"ENOENT: no such file or directory, open 'Hello World/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["hello worldkey_name-1"],"error":"ENOENT: no such file or directory, open 'hello worldkey_name-1/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":[":"],"error":"ENOENT: no such file or directory, open ':/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["İstanbulHELLO"],"error":"ENOENT: no such file or directory, open 'İstanbulHELLO/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["a😀b😀c"],"error":"ENOENT: no such file or directory, open 'a😀b😀c/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["aHello World"],"error":"ENOENT: no such file or directory, open 'aHello World/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["line1\nline2HELLO"],"error":"ENOENT: no such file or directory, open 'line1\nline2HELLO/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["a"],"error":"ENOENT: no such file or directory, open 'a/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["  padded  "],"error":"ENOENT: no such file or directory, open '  padded  /.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["HELLO"],"error":"ENOENT: no such file or directory, open 'HELLO/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":[".leading"],"error":"ENOENT: no such file or directory, open '.leading/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["absrc/a/b.ts"],"error":"ENOENT: no such file or directory, open 'absrc/a/b.ts/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["abc"],"error":"ENOENT: no such file or directory, open 'abc/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["  padded  é"],"error":"ENOENT: no such file or directory, open '  padded  é/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["a:b:c:"],"error":"ENOENT: no such file or directory, open 'a:b:c:/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["İstanbul"],"error":"ENOENT: no such file or directory, open 'İstanbul/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["a:b:chello"],"error":"ENOENT: no such file or directory, open 'a:b:chello/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["abünïcödé"],"error":"ENOENT: no such file or directory, open 'abünïcödé/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["aa😀b😀c"],"error":"ENOENT: no such file or directory, open 'aa😀b😀c/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["İstanbultab\tseparated"],"error":"ENOENT: no such file or directory, open 'İstanbultab\tseparated/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["aünïcödé"],"error":"ENOENT: no such file or directory, open 'aünïcödé/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["abé"],"error":"ENOENT: no such file or directory, open 'abé/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["Hello Worldns:key.path"],"error":"ENOENT: no such file or directory, open 'Hello Worldns:key.path/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["{name} has {count} items"],"error":"ENOENT: no such file or directory, open '{name} has {count} items/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["key_name-1İstanbul"],"error":"ENOENT: no such file or directory, open 'key_name-1İstanbul/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["key_name-1a😀b😀c"],"error":"ENOENT: no such file or directory, open 'key_name-1a😀b😀c/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["a😀b😀cİstanbul"],"error":"ENOENT: no such file or directory, open 'a😀b😀cİstanbul/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["abΣΊΣΥΦΟΣ"],"error":"ENOENT: no such file or directory, open 'abΣΊΣΥΦΟΣ/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["trailing.tab\tseparated"],"error":"ENOENT: no such file or directory, open 'trailing.tab\tseparated/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["straßeemoji 👍🏽 mix"],"error":"ENOENT: no such file or directory, open 'straßeemoji 👍🏽 mix/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["  padded  line1\nline2"],"error":"ENOENT: no such file or directory, open '  padded  line1\nline2/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["a..bemoji 👍🏽 mix"],"error":"ENOENT: no such file or directory, open 'a..bemoji 👍🏽 mix/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["😀trailing."],"error":"ENOENT: no such file or directory, open '😀trailing./.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["straßekey_name-1"],"error":"ENOENT: no such file or directory, open 'straßekey_name-1/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["Hello Worlda..b"],"error":"ENOENT: no such file or directory, open 'Hello Worlda..b/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["a..ba😀b😀c"],"error":"ENOENT: no such file or directory, open 'a..ba😀b😀c/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["src/a/b.tstab\tseparated"],"error":"ENOENT: no such file or directory, open 'src/a/b.tstab\tseparated/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["trailing.emoji 👍🏽 mix"],"error":"ENOENT: no such file or directory, open 'trailing.emoji 👍🏽 mix/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["﻿bom😀"],"error":"ENOENT: no such file or directory, open '﻿bom😀/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["ns:key.pathΣΊΣΥΦΟΣ"],"error":"ENOENT: no such file or directory, open 'ns:key.pathΣΊΣΥΦΟΣ/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["Hello Worldtab\tseparated"],"error":"ENOENT: no such file or directory, open 'Hello Worldtab\tseparated/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["ünïcödé﻿bom"],"error":"ENOENT: no such file or directory, open 'ünïcödé﻿bom/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["a:b:c./x/**/*.json"],"error":"ENOENT: no such file or directory, open 'a:b:c./x/**/*.json/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["hello worldabc"],"error":"ENOENT: no such file or directory, open 'hello worldabc/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["Hello Worlda.b.c"],"error":"ENOENT: no such file or directory, open 'Hello Worlda.b.c/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["aba😀b😀c"],"error":"ENOENT: no such file or directory, open 'aba😀b😀c/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["line1\nline2ns:key.path"],"error":"ENOENT: no such file or directory, open 'line1\nline2ns:key.path/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["::"],"error":"ENOENT: no such file or directory, open '::/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["ΣΊΣΥΦΟΣhello world"],"error":"ENOENT: no such file or directory, open 'ΣΊΣΥΦΟΣhello world/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["ΣΊΣΥΦΟΣkey_name-1"],"error":"ENOENT: no such file or directory, open 'ΣΊΣΥΦΟΣkey_name-1/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["abchello"],"error":"ENOENT: no such file or directory, open 'abchello/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["a😀"],"error":"ENOENT: no such file or directory, open 'a😀/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["😀straße"],"error":"ENOENT: no such file or directory, open '😀straße/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["helloline1\nline2"],"error":"ENOENT: no such file or directory, open 'helloline1\nline2/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["﻿bomkey_name-1"],"error":"ENOENT: no such file or directory, open '﻿bomkey_name-1/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["a:b:cstraße"],"error":"ENOENT: no such file or directory, open 'a:b:cstraße/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["ab😀"],"error":"ENOENT: no such file or directory, open 'ab😀/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":[":ünïcödé"],"error":"ENOENT: no such file or directory, open ':ünïcödé/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["a.b.ctab\tseparated"],"error":"ENOENT: no such file or directory, open 'a.b.ctab\tseparated/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":[":./x/**/*.json"],"error":"ENOENT: no such file or directory, open ':./x/**/*.json/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["tab\tseparatedhello"],"error":"ENOENT: no such file or directory, open 'tab\tseparatedhello/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["ünïcödétrailing."],"error":"ENOENT: no such file or directory, open 'ünïcödétrailing./.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["straßeünïcödé"],"error":"ENOENT: no such file or directory, open 'straßeünïcödé/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["key_name-1tab\tseparated"],"error":"ENOENT: no such file or directory, open 'key_name-1tab\tseparated/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["﻿boma:b:c"],"error":"ENOENT: no such file or directory, open '﻿boma:b:c/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["abkey_name-1"],"error":"ENOENT: no such file or directory, open 'abkey_name-1/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["abemoji 👍🏽 mix"],"error":"ENOENT: no such file or directory, open 'abemoji 👍🏽 mix/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["😀HELLO"],"error":"ENOENT: no such file or directory, open '😀HELLO/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["ünïcödéa:b:c"],"error":"ENOENT: no such file or directory, open 'ünïcödéa:b:c/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["é.leading"],"error":"ENOENT: no such file or directory, open 'é.leading/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["./x/**/*.json😀"],"error":"ENOENT: no such file or directory, open 'x/**/*.json😀/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["./x/**/*.jsonemoji 👍🏽 mix"],"error":"ENOENT: no such file or directory, open 'x/**/*.jsonemoji 👍🏽 mix/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["İstanbulns:key.path"],"error":"ENOENT: no such file or directory, open 'İstanbulns:key.path/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["日本語のテキストünïcödé"],"error":"ENOENT: no such file or directory, open '日本語のテキストünïcödé/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["a:b:cünïcödé"],"error":"ENOENT: no such file or directory, open 'a:b:cünïcödé/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["emoji 👍🏽 mix日本語のテキスト"],"error":"ENOENT: no such file or directory, open 'emoji 👍🏽 mix日本語のテキスト/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["İstanbul./x/**/*.json"],"error":"ENOENT: no such file or directory, open 'İstanbul./x/**/*.json/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["ünïcödéemoji 👍🏽 mix"],"error":"ENOENT: no such file or directory, open 'ünïcödéemoji 👍🏽 mix/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":[":straße"],"error":"ENOENT: no such file or directory, open ':straße/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["abtab\tseparated"],"error":"ENOENT: no such file or directory, open 'abtab\tseparated/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["src/a/b.tsİstanbul"],"error":"ENOENT: no such file or directory, open 'src/a/b.tsİstanbul/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["İstanbula.b.c"],"error":"ENOENT: no such file or directory, open 'İstanbula.b.c/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["abc😀"],"error":"ENOENT: no such file or directory, open 'abc😀/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["line1\nline2key_name-1"],"error":"ENOENT: no such file or directory, open 'line1\nline2key_name-1/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["ns:key.pathhello world"],"error":"ENOENT: no such file or directory, open 'ns:key.pathhello world/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["tab\tseparatedabc"],"error":"ENOENT: no such file or directory, open 'tab\tseparatedabc/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":[".leadingünïcödé"],"error":"ENOENT: no such file or directory, open '.leadingünïcödé/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["HELLOHello World"],"error":"ENOENT: no such file or directory, open 'HELLOHello World/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":[".leading{name} has {count} items"],"error":"ENOENT: no such file or directory, open '.leading{name} has {count} items/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["a😀b😀cΣΊΣΥΦΟΣ"],"error":"ENOENT: no such file or directory, open 'a😀b😀cΣΊΣΥΦΟΣ/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["./x/**/*.jsonΣΊΣΥΦΟΣ"],"error":"ENOENT: no such file or directory, open 'x/**/*.jsonΣΊΣΥΦΟΣ/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["😀key_name-1"],"error":"ENOENT: no such file or directory, open '😀key_name-1/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["a😀b😀cHELLO"],"error":"ENOENT: no such file or directory, open 'a😀b😀cHELLO/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["a:b:cabc"],"error":"ENOENT: no such file or directory, open 'a:b:cabc/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["tab\tseparatedns:key.path"],"error":"ENOENT: no such file or directory, open 'tab\tseparatedns:key.path/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["aa..b"],"error":"ENOENT: no such file or directory, open 'aa..b/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["﻿bomsrc/a/b.ts"],"error":"ENOENT: no such file or directory, open '﻿bomsrc/a/b.ts/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":[":a😀b😀c"],"error":"ENOENT: no such file or directory, open ':a😀b😀c/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["HELLOemoji 👍🏽 mix"],"error":"ENOENT: no such file or directory, open 'HELLOemoji 👍🏽 mix/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":[":﻿bom"],"error":"ENOENT: no such file or directory, open ':﻿bom/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":[".leading./x/**/*.json"],"error":"ENOENT: no such file or directory, open '.leading./x/**/*.json/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["étab\tseparated"],"error":"ENOENT: no such file or directory, open 'étab\tseparated/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["ünïcödéHello World"],"error":"ENOENT: no such file or directory, open 'ünïcödéHello World/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["a:"],"error":"ENOENT: no such file or directory, open 'a:/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["ΣΊΣΥΦΟΣline1\nline2"],"error":"ENOENT: no such file or directory, open 'ΣΊΣΥΦΟΣline1\nline2/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["İstanbul:"],"error":"ENOENT: no such file or directory, open 'İstanbul:/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["éhello"],"error":"ENOENT: no such file or directory, open 'éhello/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["ns:key.pathemoji 👍🏽 mix"],"error":"ENOENT: no such file or directory, open 'ns:key.pathemoji 👍🏽 mix/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["a.b.cab"],"error":"ENOENT: no such file or directory, open 'a.b.cab/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["key_name-1﻿bom"],"error":"ENOENT: no such file or directory, open 'key_name-1﻿bom/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["a..btrailing."],"error":"ENOENT: no such file or directory, open 'a..btrailing./.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["hello worldİstanbul"],"error":"ENOENT: no such file or directory, open 'hello worldİstanbul/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["a.b.c﻿bom"],"error":"ENOENT: no such file or directory, open 'a.b.c﻿bom/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["Hello Worldkey_name-1"],"error":"ENOENT: no such file or directory, open 'Hello Worldkey_name-1/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["abcstraße"],"error":"ENOENT: no such file or directory, open 'abcstraße/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["trailing.  padded  "],"error":"ENOENT: no such file or directory, open 'trailing.  padded  /.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["helloHello World"],"error":"ENOENT: no such file or directory, open 'helloHello World/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["emoji 👍🏽 mixns:key.path"],"error":"ENOENT: no such file or directory, open 'emoji 👍🏽 mixns:key.path/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["﻿bomtrailing."],"error":"ENOENT: no such file or directory, open '﻿bomtrailing./.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["ns:key.path./x/**/*.json"],"error":"ENOENT: no such file or directory, open 'ns:key.path./x/**/*.json/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["abab"],"error":"ENOENT: no such file or directory, open 'abab/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["src/a/b.tsa..b"],"error":"ENOENT: no such file or directory, open 'src/a/b.tsa..b/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["src/a/b.ts  padded  "],"error":"ENOENT: no such file or directory, open 'src/a/b.ts  padded  /.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["straße./x/**/*.json"],"error":"ENOENT: no such file or directory, open 'straße./x/**/*.json/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["ΣΊΣΥΦΟΣHELLO"],"error":"ENOENT: no such file or directory, open 'ΣΊΣΥΦΟΣHELLO/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["line1\nline2trailing."],"error":"ENOENT: no such file or directory, open 'line1\nline2trailing./.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["日本語のテキストhello world"],"error":"ENOENT: no such file or directory, open '日本語のテキストhello world/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["a..b.leading"],"error":"ENOENT: no such file or directory, open 'a..b.leading/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["İstanbultrailing."],"error":"ENOENT: no such file or directory, open 'İstanbultrailing./.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["ΣΊΣΥΦΟΣa😀b😀c"],"error":"ENOENT: no such file or directory, open 'ΣΊΣΥΦΟΣa😀b😀c/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["trailing.a..b"],"error":"ENOENT: no such file or directory, open 'trailing.a..b/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["ékey_name-1"],"error":"ENOENT: no such file or directory, open 'ékey_name-1/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["ab日本語のテキスト"],"error":"ENOENT: no such file or directory, open 'ab日本語のテキスト/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["line1\nline2a:b:c"],"error":"ENOENT: no such file or directory, open 'line1\nline2a:b:c/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["{name} has {count} itemskey_name-1"],"error":"ENOENT: no such file or directory, open '{name} has {count} itemskey_name-1/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["HELLO./x/**/*.json"],"error":"ENOENT: no such file or directory, open 'HELLO./x/**/*.json/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["a.b.cİstanbul"],"error":"ENOENT: no such file or directory, open 'a.b.cİstanbul/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["ünïcödéhello"],"error":"ENOENT: no such file or directory, open 'ünïcödéhello/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["  padded  emoji 👍🏽 mix"],"error":"ENOENT: no such file or directory, open '  padded  emoji 👍🏽 mix/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["line1\nline2ünïcödé"],"error":"ENOENT: no such file or directory, open 'line1\nline2ünïcödé/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["﻿bom.leading"],"error":"ENOENT: no such file or directory, open '﻿bom.leading/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":[".leading日本語のテキスト"],"error":"ENOENT: no such file or directory, open '.leading日本語のテキスト/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["emoji 👍🏽 mix{name} has {count} items"],"error":"ENOENT: no such file or directory, open 'emoji 👍🏽 mix{name} has {count} items/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["İstanbula..b"],"error":"ENOENT: no such file or directory, open 'İstanbula..b/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["key_name-1a"],"error":"ENOENT: no such file or directory, open 'key_name-1a/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["./x/**/*.json./x/**/*.json"],"error":"ENOENT: no such file or directory, open 'x/**/*.json./x/**/*.json/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["./x/**/*.json  padded  "],"error":"ENOENT: no such file or directory, open 'x/**/*.json  padded  /.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["HELLOa"],"error":"ENOENT: no such file or directory, open 'HELLOa/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["a..bstraße"],"error":"ENOENT: no such file or directory, open 'a..bstraße/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["ünïcödésrc/a/b.ts"],"error":"ENOENT: no such file or directory, open 'ünïcödésrc/a/b.ts/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["a😀b😀c😀"],"error":"ENOENT: no such file or directory, open 'a😀b😀c😀/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["key_name-1a:b:c"],"error":"ENOENT: no such file or directory, open 'key_name-1a:b:c/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["😀😀"],"error":"ENOENT: no such file or directory, open '😀😀/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["a  padded  "],"error":"ENOENT: no such file or directory, open 'a  padded  /.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["a.b.cünïcödé"],"error":"ENOENT: no such file or directory, open 'a.b.cünïcödé/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["abca😀b😀c"],"error":"ENOENT: no such file or directory, open 'abca😀b😀c/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["key_name-1ab"],"error":"ENOENT: no such file or directory, open 'key_name-1ab/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["ésrc/a/b.ts"],"error":"ENOENT: no such file or directory, open 'ésrc/a/b.ts/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["a:b:ca:b:c"],"error":"ENOENT: no such file or directory, open 'a:b:ca:b:c/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["a😀b😀ckey_name-1"],"error":"ENOENT: no such file or directory, open 'a😀b😀ckey_name-1/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["ΣΊΣΥΦΟΣa..b"],"error":"ENOENT: no such file or directory, open 'ΣΊΣΥΦΟΣa..b/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["ns:key.patha😀b😀c"],"error":"ENOENT: no such file or directory, open 'ns:key.patha😀b😀c/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["emoji 👍🏽 mixa"],"error":"ENOENT: no such file or directory, open 'emoji 👍🏽 mixa/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["helloΣΊΣΥΦΟΣ"],"error":"ENOENT: no such file or directory, open 'helloΣΊΣΥΦΟΣ/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["{name} has {count} itemshello"],"error":"ENOENT: no such file or directory, open '{name} has {count} itemshello/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["😀src/a/b.ts"],"error":"ENOENT: no such file or directory, open '😀src/a/b.ts/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["trailing.trailing."],"error":"ENOENT: no such file or directory, open 'trailing.trailing./.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["ΣΊΣΥΦΟΣa.b.c"],"error":"ENOENT: no such file or directory, open 'ΣΊΣΥΦΟΣa.b.c/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["ünïcödéhello world"],"error":"ENOENT: no such file or directory, open 'ünïcödéhello world/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["héllo wörld"],"error":"ENOENT: no such file or directory, open 'héllo wörld/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["👍🏽 thumbs"],"error":"ENOENT: no such file or directory, open '👍🏽 thumbs/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["日本語"],"error":"ENOENT: no such file or directory, open '日本語/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["ılık ırmak"],"error":"ENOENT: no such file or directory, open 'ılık ırmak/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["👨‍👩‍👧 family"],"error":"ENOENT: no such file or directory, open '👨‍👩‍👧 family/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["a b"],"error":"ENOENT: no such file or directory, open 'a b/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["a😀b"],"error":"ENOENT: no such file or directory, open 'a😀b/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["a²b x½ y①"],"error":"ENOENT: no such file or directory, open 'a²b x½ y①/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["aⅠb Ⅻ"],"error":"ENOENT: no such file or directory, open 'aⅠb Ⅻ/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["a𐐀b 𝐀bc"],"error":"ENOENT: no such file or directory, open 'a𐐀b 𝐀bc/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["कि ٣٤"],"error":"ENOENT: no such file or directory, open 'कि ٣٤/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["Iı İi"],"error":"ENOENT: no such file or directory, open 'Iı İi/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["K K k"],"error":"ENOENT: no such file or directory, open 'K K k/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["ſ s S"],"error":"ENOENT: no such file or directory, open 'ſ s S/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["x‍y 👨‍👩‍👧"],"error":"ENOENT: no such file or directory, open 'x‍y 👨‍👩‍👧/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["a b c　d"],"error":"ENOENT: no such file or directory, open 'a b c　d/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["١٢٣ ٤٥"],"error":"ENOENT: no such file or directory, open '١٢٣ ٤٥/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["𝟘𝟙 ²³"],"error":"ENOENT: no such file or directory, open '𝟘𝟙 ²³/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["snake_case foo-bar o'neil"],"error":"ENOENT: no such file or directory, open 'snake_case foo-bar o'neil/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["ǅungla Ǆ"],"error":"ENOENT: no such file or directory, open 'ǅungla Ǆ/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["one\r\ntwo threefour"],"error":"ENOENT: no such file or directory, open 'one\r\ntwo threefour/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["café café"],"error":"ENOENT: no such file or directory, open 'café café/.synara-cua-runtime.json'"}
+{"fn":"markCuaRuntimeDirectory","args":["ΣΑΣ σας ς"],"error":"ENOENT: no such file or directory, open 'ΣΑΣ σας ς/.synara-cua-runtime.json'"}

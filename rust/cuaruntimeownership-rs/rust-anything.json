@@ -1,0 +1,55 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/desktop/src/cuaRuntimeOwnership.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "cuaruntimeownership-rs",
+  "exports": [
+    {
+      "name": "cuaHostProcessIsAlive",
+      "file": "apps/desktop/src/cuaRuntimeOwnership.ts",
+      "line": 19,
+      "params": [
+        {
+          "name": "pid",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "markCuaRuntimeDirectory",
+      "file": "apps/desktop/src/cuaRuntimeOwnership.ts",
+      "line": 29,
+      "params": [
+        {
+          "name": "directory",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<void>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "sweepOwnedCuaRuntimeDirectories",
+      "file": "apps/desktop/src/cuaRuntimeOwnership.ts",
+      "line": 46,
+      "reason": "takes or returns a function"
+    }
+  ]
+}

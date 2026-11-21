@@ -4,6 +4,8 @@ Port Synara (TypeScript monorepo) to a pure Rust application using [rust-anythin
 
 **Clean-room rule (ADR-001):** Synara's TS code is MIT-licensed to T3 Tools Inc / Emanuele Di Pietro, so the Rust port must contain no T3-authored code. Ports are written only from recorded behavior (`cases.jsonl`), exported signatures and contract types — never by reading or translating the original source bodies. See [rust/DECISIONS.md](rust/DECISIONS.md).
 
+**Attribution:** the Rust port is licensed MIT under `rust/` — Copyright (c) 2026 cmdr-chara and Emanuele Di Pietro ([rust/LICENSE](rust/LICENSE)).
+
 Full generated plan with every unit, wave, readiness score and risk: [rust/plan.md](rust/plan.md) (`rust-anything analyze --whole-app`, 2026-11-20).
 
 ## Analysis snapshot (phase 0 done)

@@ -1,0 +1,90 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/desktop/src/agentCursorPreference.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "agentcursorpreference-rs",
+  "exports": [
+    {
+      "name": "normalizeAgentCursorStylePreference",
+      "file": "apps/desktop/src/agentCursorPreference.ts",
+      "line": 37,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "AgentCursorStylePreference | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "parseAgentCursorPreference",
+      "file": "apps/desktop/src/agentCursorPreference.ts",
+      "line": 53,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "PersistedAgentCursorPreference | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "readAgentCursorPreference",
+      "file": "apps/desktop/src/agentCursorPreference.ts",
+      "line": 61,
+      "params": [
+        {
+          "name": "filePath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "AgentCursorStylePreference | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "writeAgentCursorPreference",
+      "file": "apps/desktop/src/agentCursorPreference.ts",
+      "line": 74,
+      "params": [
+        {
+          "name": "filePath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "style",
+          "ts_type": "AgentCursorStylePreference | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

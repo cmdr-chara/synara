@@ -1,0 +1,29 @@
+{
+  "unit": "packages/shared/src/threadPullRequestLinks.ts",
+  "files": 1,
+  "fingerprint": "cae233ceb1d43703",
+  "coverage": {
+    "lines": 491,
+    "reached": 305,
+    "files": [
+      {
+        "file": "packages/shared/src/githubRepository.ts",
+        "lines": 72,
+        "reached": 46,
+        "missed": "7-8, 11-12, 21-22, 24-29, 33-36, 38-46, 67"
+      },
+      {
+        "file": "packages/shared/src/pullRequestList.ts",
+        "lines": 138,
+        "reached": 26,
+        "missed": "15-18, 22-34, 37-41, 44-51, 53-71, 73-81, 83-93, 104-113, 115-130, 134-150"
+      },
+      {
+        "file": "packages/shared/src/threadPullRequestLinks.ts",
+        "lines": 281,
+        "reached": 233,
+        "missed": "72-75, 85, 105-108, 150-151, 155-171, 173-179, 206-209, 225, 248-255"
+      }
+    ]
+  }
+}

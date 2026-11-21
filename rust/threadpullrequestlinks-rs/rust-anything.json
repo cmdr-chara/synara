@@ -1,0 +1,414 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/threadPullRequestLinks.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "threadpullrequestlinks-rs",
+  "exports": [
+    {
+      "name": "pullRequestLinkKey",
+      "file": "packages/shared/src/threadPullRequestLinks.ts",
+      "line": 29,
+      "params": [
+        {
+          "name": "url",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isExplicitPullRequestLinkSource",
+      "file": "packages/shared/src/threadPullRequestLinks.ts",
+      "line": 40,
+      "params": [
+        {
+          "name": "source",
+          "ts_type": "typeof typeof typeof typeof OrchestrationThreadPullRequestLinkSource.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "source is typeof typeof typeof typeof OrchestrationThreadPullRequestExplicitLinkSource.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isPullRequestLinkVisible",
+      "file": "packages/shared/src/threadPullRequestLinks.ts",
+      "line": 46,
+      "params": [
+        {
+          "name": "link",
+          "ts_type": "typeof typeof typeof typeof OrchestrationThreadPullRequestLink.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "visiblePullRequestLinks",
+      "file": "packages/shared/src/threadPullRequestLinks.ts",
+      "line": 50,
+      "params": [
+        {
+          "name": "links",
+          "ts_type": "ReadonlyArray<typeof typeof typeof OrchestrationThreadPullRequestLink.Type.Type.Type> | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof OrchestrationThreadPullRequestLink.Type.Type.Type.Type[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "findPullRequestLink",
+      "file": "packages/shared/src/threadPullRequestLinks.ts",
+      "line": 56,
+      "params": [
+        {
+          "name": "links",
+          "ts_type": "ReadonlyArray<typeof typeof typeof OrchestrationThreadPullRequestLink.Type.Type.Type> | null | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "url",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof OrchestrationThreadPullRequestLink.Type.Type.Type.Type | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isPullRequestDismissed",
+      "file": "packages/shared/src/threadPullRequestLinks.ts",
+      "line": 65,
+      "params": [
+        {
+          "name": "links",
+          "ts_type": "ReadonlyArray<typeof typeof typeof OrchestrationThreadPullRequestLink.Type.Type.Type> | null | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "url",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "compareLinkedPullRequests",
+      "file": "packages/shared/src/threadPullRequestLinks.ts",
+      "line": 78,
+      "params": [
+        {
+          "name": "left",
+          "ts_type": "typeof typeof typeof typeof OrchestrationThreadPullRequestLink.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "right",
+          "ts_type": "typeof typeof typeof typeof OrchestrationThreadPullRequestLink.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "number",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveCurrentPullRequestLink",
+      "file": "packages/shared/src/threadPullRequestLinks.ts",
+      "line": 92,
+      "params": [
+        {
+          "name": "links",
+          "ts_type": "ReadonlyArray<typeof typeof typeof OrchestrationThreadPullRequestLink.Type.Type.Type> | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof OrchestrationThreadPullRequestLink.Type.Type.Type.Type | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveCurrentPullRequest",
+      "file": "packages/shared/src/threadPullRequestLinks.ts",
+      "line": 113,
+      "params": [
+        {
+          "name": "links",
+          "ts_type": "ReadonlyArray<typeof typeof typeof OrchestrationThreadPullRequestLink.Type.Type.Type> | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof OrchestrationThreadPullRequest.Type.Type.Type.Type | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveBranchManagedPullRequest",
+      "file": "packages/shared/src/threadPullRequestLinks.ts",
+      "line": 120,
+      "params": [
+        {
+          "name": "links",
+          "ts_type": "ReadonlyArray<typeof typeof typeof OrchestrationThreadPullRequestLink.Type.Type.Type> | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof OrchestrationThreadPullRequest.Type.Type.Type.Type | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "legacyPullRequestLinks",
+      "file": "packages/shared/src/threadPullRequestLinks.ts",
+      "line": 129,
+      "params": [
+        {
+          "name": "pullRequest",
+          "ts_type": "typeof typeof typeof typeof OrchestrationThreadPullRequest.Type.Type.Type.Type | null | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "linkedAt",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof OrchestrationThreadPullRequestLink.Type.Type.Type.Type[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "pullRequestLinksFromEventPayload",
+      "file": "packages/shared/src/threadPullRequestLinks.ts",
+      "line": 141,
+      "params": [
+        {
+          "name": "payload",
+          "ts_type": "{\n    readonly pullRequests?: ReadonlyArray<typeof typeof typeof OrchestrationThreadPullRequestLink.Type.Type.Type> | undefined;\n    readonly lastKnownPr?: typeof typeof typeof typeof OrchestrationThreadPullRequest.Type.Type.Type.Type | null | undefined;\n  }",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "occurredAt",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof OrchestrationThreadPullRequestLink.Type.Type.Type.Type[] | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "linkPullRequest",
+      "file": "packages/shared/src/threadPullRequestLinks.ts",
+      "line": 190,
+      "params": [
+        {
+          "name": "links",
+          "ts_type": "ReadonlyArray<typeof typeof typeof OrchestrationThreadPullRequestLink.Type.Type.Type> | null | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "input",
+          "ts_type": "{\n    readonly pullRequest: typeof typeof typeof typeof OrchestrationThreadPullRequest.Type.Type.Type.Type;\n    readonly source: typeof typeof typeof typeof OrchestrationThreadPullRequestExplicitLinkSource.Type.Type.Type.Type;\n    readonly linkedAt: string;\n  }",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof OrchestrationThreadPullRequestLink.Type.Type.Type.Type[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "unlinkPullRequest",
+      "file": "packages/shared/src/threadPullRequestLinks.ts",
+      "line": 216,
+      "params": [
+        {
+          "name": "links",
+          "ts_type": "ReadonlyArray<typeof typeof typeof OrchestrationThreadPullRequestLink.Type.Type.Type> | null | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "url",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "dismissedAt",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof OrchestrationThreadPullRequestLink.Type.Type.Type.Type[] | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "syncDiscoveredPullRequest",
+      "file": "packages/shared/src/threadPullRequestLinks.ts",
+      "line": 233,
+      "params": [
+        {
+          "name": "links",
+          "ts_type": "ReadonlyArray<typeof typeof typeof OrchestrationThreadPullRequestLink.Type.Type.Type> | null | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "pullRequest",
+          "ts_type": "typeof typeof typeof typeof OrchestrationThreadPullRequest.Type.Type.Type.Type | null",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "observedAt",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof OrchestrationThreadPullRequestLink.Type.Type.Type.Type[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "refreshPullRequestSnapshots",
+      "file": "packages/shared/src/threadPullRequestLinks.ts",
+      "line": 259,
+      "params": [
+        {
+          "name": "links",
+          "ts_type": "ReadonlyArray<typeof typeof typeof OrchestrationThreadPullRequestLink.Type.Type.Type> | null | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "pullRequests",
+          "ts_type": "ReadonlyArray<typeof typeof typeof typeof OrchestrationThreadPullRequest.Type.Type.Type.Type>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof OrchestrationThreadPullRequestLink.Type.Type.Type.Type[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "threadPullRequestsEqual",
+      "file": "packages/shared/src/threadPullRequestLinks.ts",
+      "line": 271,
+      "params": [
+        {
+          "name": "left",
+          "ts_type": "typeof typeof typeof typeof OrchestrationThreadPullRequest.Type.Type.Type.Type | null | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "right",
+          "ts_type": "typeof typeof typeof typeof OrchestrationThreadPullRequest.Type.Type.Type.Type | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "pullRequestLinksEqual",
+      "file": "packages/shared/src/threadPullRequestLinks.ts",
+      "line": 292,
+      "params": [
+        {
+          "name": "left",
+          "ts_type": "ReadonlyArray<typeof typeof typeof OrchestrationThreadPullRequestLink.Type.Type.Type> | null | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "right",
+          "ts_type": "ReadonlyArray<typeof typeof typeof OrchestrationThreadPullRequestLink.Type.Type.Type> | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

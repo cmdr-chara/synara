@@ -1,0 +1,30 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/accountUsageReporterRegistry.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "accountusagereporterregistry-rs",
+  "exports": [
+    {
+      "name": "nudgeAccountUsageReporter",
+      "file": "apps/server/src/accountUsageReporterRegistry.ts",
+      "line": 22,
+      "params": [],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "registerAccountUsageReporterNudge",
+      "file": "apps/server/src/accountUsageReporterRegistry.ts",
+      "line": 17,
+      "reason": "takes or returns a function"
+    }
+  ]
+}

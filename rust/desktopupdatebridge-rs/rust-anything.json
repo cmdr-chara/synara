@@ -1,0 +1,41 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/desktopUpdateBridge.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "desktopupdatebridge-rs",
+  "exports": [
+    {
+      "name": "desktopUpdateBridgeAvailable",
+      "file": "apps/server/src/desktopUpdateBridge.ts",
+      "line": 23,
+      "params": [],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "initializeDesktopUpdateBridge",
+      "file": "apps/server/src/desktopUpdateBridge.ts",
+      "line": 28,
+      "params": [],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "requestDesktopUpdate",
+      "file": "apps/server/src/desktopUpdateBridge.ts",
+      "line": 57,
+      "reason": "checks `instanceof`: class identity does not survive the bridge"
+    }
+  ]
+}

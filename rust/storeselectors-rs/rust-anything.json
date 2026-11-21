@@ -1,0 +1,169 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/storeSelectors.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "storeselectors-rs",
+  "exports": [
+    {
+      "name": "collectSnoozedThreadIds",
+      "file": "apps/web/src/storeSelectors.ts",
+      "line": 550,
+      "params": [
+        {
+          "name": "threads",
+          "ts_type": "readonly Pick<SidebarThreadSummary, \"id\" | \"parentThreadId\" | \"snoozedUntil\">[]",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ReadonlySet<typeof typeof typeof typeof ThreadId.Type.Type.Type.Type>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isSidebarThreadVisible",
+      "file": "apps/web/src/storeSelectors.ts",
+      "line": 568,
+      "params": [
+        {
+          "name": "thread",
+          "ts_type": "SidebarThreadSummary",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "options",
+          "ts_type": "SidebarThreadVisibilityOptions",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "createProjectSelector",
+      "file": "apps/web/src/storeSelectors.ts",
+      "line": 59,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "createThreadSelector",
+      "file": "apps/web/src/storeSelectors.ts",
+      "line": 65,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "createAllThreadsSelector",
+      "file": "apps/web/src/storeSelectors.ts",
+      "line": 71,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "createAccountRateLimitThreadsSelector",
+      "file": "apps/web/src/storeSelectors.ts",
+      "line": 132,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "createThreadShellsSelector",
+      "file": "apps/web/src/storeSelectors.ts",
+      "line": 208,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "createAllThreadsMessagelessSelector",
+      "file": "apps/web/src/storeSelectors.ts",
+      "line": 214,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "createThreadShellSettingsSelector",
+      "file": "apps/web/src/storeSelectors.ts",
+      "line": 251,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "createThreadProjectIdSelector",
+      "file": "apps/web/src/storeSelectors.ts",
+      "line": 270,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "createThreadWorkspaceMetadataSelector",
+      "file": "apps/web/src/storeSelectors.ts",
+      "line": 281,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "createThreadGitActionsMetadataSelector",
+      "file": "apps/web/src/storeSelectors.ts",
+      "line": 338,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "createThreadExistsSelector",
+      "file": "apps/web/src/storeSelectors.ts",
+      "line": 377,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "createSidebarThreadSummariesSelector",
+      "file": "apps/web/src/storeSelectors.ts",
+      "line": 383,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "createLastActivityTimestampSelector",
+      "file": "apps/web/src/storeSelectors.ts",
+      "line": 418,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "createComposerThreadMentionSourcesSelector",
+      "file": "apps/web/src/storeSelectors.ts",
+      "line": 482,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "createSidechatSummariesForSourceSelector",
+      "file": "apps/web/src/storeSelectors.ts",
+      "line": 611,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "createSidechatSummariesForGitHubItemSelector",
+      "file": "apps/web/src/storeSelectors.ts",
+      "line": 620,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "createSidebarDisplayThreadsSelector",
+      "file": "apps/web/src/storeSelectors.ts",
+      "line": 634,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "createProjectLastActivityAtSelector",
+      "file": "apps/web/src/storeSelectors.ts",
+      "line": 667,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "createFirstProjectSelector",
+      "file": "apps/web/src/storeSelectors.ts",
+      "line": 709,
+      "reason": "takes or returns a function"
+    }
+  ]
+}

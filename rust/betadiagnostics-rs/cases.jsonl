@@ -1,0 +1,209 @@
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[[],"tab\tseparated"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[{},"src/a/b.ts","a..bstraße"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[["a",1],{"$undefined":true},"line1\nline2"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[true,"src/a/b.ts","tab\tseparated"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[null,{"$undefined":true}],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":["x","ünïcödé"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[true,{"$undefined":true},"atab\tseparated"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[0,"日本語のテキスト","テキスト"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":["x","hello worldé","日本語のテキスト"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[{"a":{"b":"c"}},{"$undefined":true},"日本語のテキスト"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[0,"HELLO","abc﻿bom"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":["x",{"$undefined":true},"ΣΊΣΥΦΟΣ"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[{"a":"b"},{"$undefined":true},"trailing."],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[{},"ab",{"$undefined":true}],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[{},"line1\nline2",{"$undefined":true}],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[true,"hello","a..b"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[{"a":{"b":"c"}},"key_name-1","HELLO"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[[],{"$undefined":true},"HELLO"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":["x",{"$undefined":true},{"$undefined":true}],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[{"a":"b"},":","﻿bom"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":["x",{"$undefined":true},"HELLOa😀b😀c"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[{"a":{"b":"c"}},{"$undefined":true},"straße"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[["a",1],"  padded  ns:key.path","a"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[["a",1],{"$undefined":true},"abns:key.path"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":["x","a:b:c",""],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[{"a":{"b":"c"}},"ab","ns:key.path"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[{"a":"b"},"HELLO","src/a/b.ts"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[{},"İstanbulhello",{"$undefined":true}],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[true,{"$undefined":true},"a.b.csrc/a/b.ts"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[null,"ell","Hello World"],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[true,"..","a..b"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":["x","a.b.c","emoji 👍🏽 mix"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[{},"é","e"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":["x",{"$undefined":true},"x"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[0,"a","a"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[null,"b","ab"],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":["x","a:b:csrc/a/b.ts",":"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[["a",1],":","日本語のテキスト"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[null,{"$undefined":true},".leading"],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[true,"😀","Hello World"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[["a",1],"ab","a"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[["a",1],{"$undefined":true},"a"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[{"a":"b"},".leading"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[["a",1],"ΣΊΣΥΦΟΣ.leading","ΥΦΟΣ"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[["a",1],"h","ns:key.path"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[0,"ünïcödé:",{"$undefined":true}],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[0,"﻿bom",{"$undefined":true}],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[true],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[{"a":"b"},{"$undefined":true}],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[{"a":{"b":"c"}},"hello world",{"$undefined":true}],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[null,{"$undefined":true},"ΣΊΣΥΦΟΣ"],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[null,{"$undefined":true},{"$undefined":true}],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[true,{"$undefined":true},"src/a/b.ts﻿bom"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":["x","a..b","src/a/b.ts"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":["x","","line1\nline2"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[[],"é",".leading"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[{"a":"b"},"﻿bom","o"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[{"a":"b"},"ünïcödé"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[{"a":"b"},"hello world  padded  ","ded"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[true,"ünïcödé"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[["a",1],"src/a/b.ts","Hello World"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[[],"{name} has {count} itemsa:b:c","tab\tseparated"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[{},{"$undefined":true},"key_name-1"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[0,"é","e"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[null,"straße","  padded  "],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[true,"İstanbul"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[{"a":"b"},"a..btrailing.","a.b.c"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[null,{"$undefined":true},"trailing.  padded  "],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[{"a":"b"},"{name} has {count} items","﻿bom"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[["a",1],"hello","key_name-1"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[{"a":{"b":"c"}},":",":"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[[],"HELLO"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[["a",1],"😀","{name} has {count} items"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[["a",1],"ab",{"$undefined":true}],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[null,"straße",".leadingtrailing."],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[{"a":{"b":"c"}},"abc","./x/**/*.json./x/**/*.json"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[0,"a.b.c",{"$undefined":true}],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[true,"Hello World","ab{name} has {count} items"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":["x","a..b",":"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[{"a":"b"}],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[[],"src/a/b.tsİstanbul","a"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[[],"hello world"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[true,""],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[{"a":"b"},"İstanbul","straße"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[{},"ng",".leading"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[null,"日本語のテキスト","a:b:cHello World"],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[["a",1],{"$undefined":true},"é"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[null,{"$undefined":true},"hello worldİstanbul"],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[null,"ΣΊΣΥΦΟΣ","ΣΊΣΥΦΟΣ"],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[["a",1],"a:b:c"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":["x","x","straße"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[{"a":"b"},"é","trailing.﻿bom"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[{},{"$undefined":true},"a.b.c"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[0,"e1","line1\nline2"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[{"a":{"b":"c"}},"","abc"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":["😀","😀"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[true,"😀  padded  ","ADDE"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[{},"Hello World","ünïcödé"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":["x","","ΣΊΣΥΦΟΣ"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[{"a":"b"},"L","helloHELLO"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[0,"",{"$undefined":true}],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[[]],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[0,"😀","😀"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[[],{"$undefined":true},"a😀b😀c"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[0,"a.b.c","."],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[{"a":{"b":"c"}},"a😀b😀c","é"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":["x","Hello World",{"$undefined":true}],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[true,"src/a/b.ts",".leading"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":["x",{"$undefined":true},"a..ba:b:c"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":["x","ns:key.path","é"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[{},"﻿bom./x/**/*.json","straße"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[{"a":"b"},"key_name-1","a:b:ca..b"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[[],"a..b","straße"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[0,"hello world","tab\tseparated"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[{"a":"b"},"HELLO","LO"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[{},"a:b:c",{"$undefined":true}],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[{"a":"b"},{"$undefined":true},{"$undefined":true}],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[{},"a","a.b.c"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[null,"hello",{"$undefined":true}],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":["x","src/a/b.ts",{"$undefined":true}],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[[],"日本語のテキストHELLO","ns:key.path"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[[],"",".leading"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[{"a":"b"},"key_name-1","ünïcödéHello World"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[["a",1],"src/a/b.ts",":"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[["a",1],{"$undefined":true},"HELLO"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[true,"a:b:c﻿bom"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[0,"./x/**/*.json","HELLO"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[["a",1],"","emoji 👍🏽 mix"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[0,"hello"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[{"a":{"b":"c"}},"日本語のテキスト","tab\tseparated"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[0,"straße","é"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[{},"nbu","İstanbul"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[{"a":{"b":"c"}}],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":["x","a😀b😀c",""],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[{"a":{"b":"c"}},"hello world","{name} has {count} items"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[{},{"$undefined":true},"ab./x/**/*.json"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[true,{"$undefined":true},"a😀b😀c"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[{"a":{"b":"c"}},{"$undefined":true},""],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[{},"./x/**/*.jsonabc","a😀b😀c"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[true,"HELLO","HELLO"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[null,{"$undefined":true},"line1\nline2"],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[0,"﻿bom",":"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":["x"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[0,{"$undefined":true},"a:b:c"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[{"a":"b"},":","İstanbulHello World"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[["a",1],{"$undefined":true},{"$undefined":true}],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[[],"hello","ns:key.path"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[0,"ns:key.patha😀b😀c","key_name-1"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[true,"g",".leading"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[null,"emoji 👍🏽 mix","a"],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[{"a":{"b":"c"}},{"$undefined":true},".leading"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[[],"src/a/b.ts","é"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[[],"trailing.","ΣΊΣΥΦΟΣİstanbul"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[["a",1],"a😀b😀c","ns:key.path"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[{"a":{"b":"c"}},"a.b.c"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[null,{"$undefined":true},"HELLO"],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[{},"abc","straßeΣΊΣΥΦΟΣ"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[{},{"$undefined":true},".leading"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[{"a":{"b":"c"}},".leading",".leading"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[{"a":"b"},"","ünïcödé"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[0,"tab\tseparated","\tSEPAR"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[0,{"$undefined":true},"a.b.c"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[0,{"$undefined":true},"ahello"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[{"a":"b"},".leading","a:b:ca:b:c"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[0,"straße"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[{"a":{"b":"c"}},"a","ns:key.path"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[[],"Hello World"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[0,"trailing.","src/a/b.ts"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[null,"tab\tseparated","ns:key.path"],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[{},"","emoji 👍🏽 mixa..b"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[{"a":{"b":"c"}},"src/a/b.ts"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[true,"ns:key.path:"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[["a",1],"tab\tseparated","{name} has {count} items"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[true,{"$undefined":true},"tab\tseparated"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[0,{"$undefined":true},"日本語のテキスト"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[{"a":{"b":"c"}},{"$undefined":true}],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[0,"ns:key.path",{"$undefined":true}],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":["x","x",{"$undefined":true}],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[true,{"$undefined":true},"src/a/b.ts"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[0,"HELLOkey_name-1",":"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[true,{"$undefined":true},"straße"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[["a",1],"line1\nline2",{"$undefined":true}],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":["x","Hello World","Hello World"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[{"a":"b"},"ünïcödé","a..b"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[0,"a..b","ab"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[null,"","a"],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[["a",1],"é"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[0,{"$undefined":true},"tab\tseparated"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[true,"hello world﻿bom",".leading"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[0,"日本語のテキスト","Hello World"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[true,"hello world","ΣΊΣΥΦΟΣ"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[[],"😀","straße"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[["a",1],"emoji 👍🏽 mix"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[[],"EL","hello"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":["x","a😀b😀c",":"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[{"a":{"b":"c"}},"é","éline1\nline2"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[["a",1],"","ns:key.path"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":["x","./x/**/*.json","a..b"],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[[],{"$undefined":true},{"$undefined":true}],"ok":{"kind":"beta"}}
+{"fn":"sanitizeBetaDiagnosticsPayload","args":[true,{"$undefined":true},"😀"],"ok":{"kind":"beta"}}
+{"fn":"resolveBetaDiagnosticsEndpoint","args":[{}],"ok":"https://synara-beta-diagnostics.synara-orgs.workers.dev"}
+{"fn":"resolveBetaDiagnosticsEndpoint","args":[["a",1]],"ok":"https://synara-beta-diagnostics.synara-orgs.workers.dev"}
+{"fn":"resolveBetaDiagnosticsEndpoint","args":[0],"ok":"https://synara-beta-diagnostics.synara-orgs.workers.dev"}
+{"fn":"resolveBetaDiagnosticsEndpoint","args":[null],"error":"Cannot read properties of null (reading 'SYNARA_BETA_DIAGNOSTICS_URL')"}
+{"fn":"resolveBetaDiagnosticsEndpoint","args":[[]],"ok":"https://synara-beta-diagnostics.synara-orgs.workers.dev"}
+{"fn":"resolveBetaDiagnosticsEndpoint","args":[{"a":"b"}],"ok":"https://synara-beta-diagnostics.synara-orgs.workers.dev"}
+{"fn":"resolveBetaDiagnosticsEndpoint","args":[true],"ok":"https://synara-beta-diagnostics.synara-orgs.workers.dev"}
+{"fn":"resolveBetaDiagnosticsEndpoint","args":["x"],"ok":"https://synara-beta-diagnostics.synara-orgs.workers.dev"}
+{"fn":"resolveBetaDiagnosticsEndpoint","args":[{"a":{"b":"c"}}],"ok":"https://synara-beta-diagnostics.synara-orgs.workers.dev"}

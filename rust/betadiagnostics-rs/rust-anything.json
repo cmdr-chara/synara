@@ -1,0 +1,67 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/desktop/src/betaDiagnostics.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "betadiagnostics-rs",
+  "exports": [
+    {
+      "name": "sanitizeBetaDiagnosticsPayload",
+      "file": "apps/desktop/src/betaDiagnostics.ts",
+      "line": 210,
+      "params": [
+        {
+          "name": "payload",
+          "ts_type": "(| {\n      readonly kind: \"lifecycle\";\n      readonly durationMs?: number;\n      /** Major.minor OS version (e.g. \"15.3\"); app.start only. */\n      readonly osVersion?: string | undefined;\n      /** Primary language subtag (e.g. \"en\"); app.start only. */\n      readonly locale?: string | undefined;\n    }\n  | {\n      readonly kind: \"crash\";\n      readonly processType: string;\n      readonly reason: string;\n      /** Legacy input only; the technical serializer always drops this field. */\n      readonly logTail?: string | undefined;\n    }\n  | {\n      readonly kind: \"error\";\n      readonly source: \"main\" | \"renderer\";\n      readonly message: string;\n      readonly stack?: string | undefined;\n      readonly fingerprint: string;\n    }\n  | {\n      readonly kind: \"update\";\n      readonly outcome: \"ok\" | \"error\";\n      readonly durationMs?: number;\n      readonly targetVersion?: string;\n      readonly errorContext?: \"check\" | \"download\" | \"install\";\n      readonly reason?: typeof typeof typeof DesktopUpdateFailureReason.Type.Type.Type;\n      /** Legacy local input only; never retained or transmitted. */\n      readonly message?: string;\n    }\n  | {\n      readonly kind: \"usage\";\n      /** Accepted only to scrub old callers; never serialized by the diagnostics sender. */\n      readonly providers?: readonly BetaUsageProviderEntry[];\n      readonly projects: number;\n      readonly activeThreads: number;\n    }\n  | {\n      readonly kind: \"beta\";\n      readonly outcome: \"imported\" | \"import-failed\" | \"fresh\" | \"trash\" | \"keep\";\n    })",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "_homeDir",
+          "ts_type": "string",
+          "optional": true,
+          "rest": false
+        },
+        {
+          "name": "event",
+          "ts_type": "(| \"app.start\"\n  | \"app.exit\"\n  | \"app.error\"\n  | \"app.renderer-crash\"\n  | \"app.child-process-crash\"\n  | \"update.check\"\n  | \"update.available\"\n  | \"update.downloaded\"\n  | \"update.installed\"\n  | \"update.error\"\n  | \"usage.daily\"\n  | \"beta.installed\"\n  | \"beta.left\")",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "(| {\n      readonly kind: \"lifecycle\";\n      readonly durationMs?: number;\n      /** Major.minor OS version (e.g. \"15.3\"); app.start only. */\n      readonly osVersion?: string | undefined;\n      /** Primary language subtag (e.g. \"en\"); app.start only. */\n      readonly locale?: string | undefined;\n    }\n  | {\n      readonly kind: \"crash\";\n      readonly processType: string;\n      readonly reason: string;\n      /** Legacy input only; the technical serializer always drops this field. */\n      readonly logTail?: string | undefined;\n    }\n  | {\n      readonly kind: \"error\";\n      readonly source: \"main\" | \"renderer\";\n      readonly message: string;\n      readonly stack?: string | undefined;\n      readonly fingerprint: string;\n    }\n  | {\n      readonly kind: \"update\";\n      readonly outcome: \"ok\" | \"error\";\n      readonly durationMs?: number;\n      readonly targetVersion?: string;\n      readonly errorContext?: \"check\" | \"download\" | \"install\";\n      readonly reason?: typeof typeof typeof DesktopUpdateFailureReason.Type.Type.Type;\n      /** Legacy local input only; never retained or transmitted. */\n      readonly message?: string;\n    }\n  | {\n      readonly kind: \"usage\";\n      /** Accepted only to scrub old callers; never serialized by the diagnostics sender. */\n      readonly providers?: readonly BetaUsageProviderEntry[];\n      readonly projects: number;\n      readonly activeThreads: number;\n    }\n  | {\n      readonly kind: \"beta\";\n      readonly outcome: \"imported\" | \"import-failed\" | \"fresh\" | \"trash\" | \"keep\";\n    })",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveBetaDiagnosticsEndpoint",
+      "file": "apps/desktop/src/betaDiagnostics.ts",
+      "line": 273,
+      "params": [
+        {
+          "name": "env",
+          "ts_type": "NodeJS.ProcessEnv",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "BetaDiagnostics",
+      "file": "apps/desktop/src/betaDiagnostics.ts",
+      "line": 294,
+      "reason": "class: public field `installId`, async or generator method `flush`, async or generator method `dispose`"
+    }
+  ]
+}

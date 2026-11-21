@@ -1,0 +1,30 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/projectInstructionsStore.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "projectinstructionsstore-rs",
+  "exports": [
+    {
+      "name": "mergeProjectInstructionsIntoThreadNotes",
+      "file": "apps/web/src/projectInstructionsStore.ts",
+      "line": 69,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly threadNotes: string;\n  readonly projectInstructions: string;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

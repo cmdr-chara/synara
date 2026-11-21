@@ -1,0 +1,200 @@
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"a:b:c","projectInstructions":"ΣΊΣΥΦΟΣ"}],"ok":"a:b:c\n\nΣΊΣΥΦΟΣ"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"trailing.","projectInstructions":"hello world"}],"ok":"trailing.\n\nhello world"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"日本語のテキストa:b:c","projectInstructions":"./x/**/*.jsona:b:c"}],"ok":"日本語のテキストa:b:c\n\n./x/**/*.jsona:b:c"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"  padded  ","projectInstructions":"hello"}],"ok":"  padded\n\nhello"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"emoji 👍🏽 mix","projectInstructions":"{name} has {count} itemsline1\nline2"}],"ok":"emoji 👍🏽 mix\n\n{name} has {count} itemsline1\nline2"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[null],"error":"Cannot read properties of null (reading 'projectInstructions')"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"Hello World","projectInstructions":"Hello WorldHello World"}],"ok":"Hello World\n\nHello WorldHello World"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"{name} has {count} items","projectInstructions":""}],"ok":"{name} has {count} items"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"{name} has {count} items","projectInstructions":"ΣΊΣΥΦΟΣ"}],"ok":"{name} has {count} items\n\nΣΊΣΥΦΟΣ"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"helloabc","projectInstructions":"日本語のテキスト"}],"ok":"helloabc\n\n日本語のテキスト"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[0],"error":"Cannot read properties of undefined (reading 'trim')"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"src/a/b.ts","projectInstructions":"a:b:c"}],"ok":"src/a/b.ts\n\na:b:c"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"é","projectInstructions":"{name} has {count} items"}],"ok":"é\n\n{name} has {count} items"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"  padded  a..b","projectInstructions":"日本語のテキストsrc/a/b.ts"}],"ok":"  padded  a..b\n\n日本語のテキストsrc/a/b.ts"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"emoji 👍🏽 mix","projectInstructions":"a..b"}],"ok":"emoji 👍🏽 mix\n\na..b"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"abc","projectInstructions":"ns:key.path"}],"ok":"abc\n\nns:key.path"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"a:b:c","projectInstructions":"a..b"}],"ok":"a:b:c\n\na..b"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"a:b:c","projectInstructions":".leading"}],"ok":"a:b:c\n\n.leading"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"a":"b"}],"error":"Cannot read properties of undefined (reading 'trim')"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"ΣΊΣΥΦΟΣ","projectInstructions":"😀"}],"ok":"ΣΊΣΥΦΟΣ\n\n😀"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{}],"error":"Cannot read properties of undefined (reading 'trim')"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"😀a..b","projectInstructions":"aba.b.c"}],"ok":"😀a..b\n\naba.b.c"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"ns:key.path","projectInstructions":"ünïcödé"}],"ok":"ns:key.path\n\nünïcödé"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"abc","projectInstructions":"hellons:key.path"}],"ok":"abc\n\nhellons:key.path"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"ns:key.pathhello","projectInstructions":"ΣΊΣΥΦΟΣ"}],"ok":"ns:key.pathhello\n\nΣΊΣΥΦΟΣ"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"a:b:ca.b.c","projectInstructions":"ünïcödé"}],"ok":"a:b:ca.b.c\n\nünïcödé"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"İstanbul","projectInstructions":"a..b"}],"ok":"İstanbul\n\na..b"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[true],"error":"Cannot read properties of undefined (reading 'trim')"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":":","projectInstructions":"hello"}],"ok":":\n\nhello"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"ab","projectInstructions":"tab\tseparated"}],"ok":"ab\n\ntab\tseparated"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"","projectInstructions":"a..b"}],"ok":"a..b"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":["x"],"error":"Cannot read properties of undefined (reading 'trim')"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"İstanbulünïcödé","projectInstructions":"a"}],"ok":"İstanbulünïcödé\n\na"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"emoji 👍🏽 mix","projectInstructions":"hello"}],"ok":"emoji 👍🏽 mix\n\nhello"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"abc","projectInstructions":"ab"}],"ok":"abc\n\nab"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":":","projectInstructions":":"}],"ok":":"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":":","projectInstructions":"src/a/b.ts"}],"ok":":\n\nsrc/a/b.ts"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"a","projectInstructions":"😀"}],"ok":"a\n\n😀"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"ab","projectInstructions":"line1\nline2"}],"ok":"ab\n\nline1\nline2"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"{name} has {count} items","projectInstructions":"a:b:c"}],"ok":"{name} has {count} items\n\na:b:c"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[["a",1]],"error":"Cannot read properties of undefined (reading 'trim')"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"./x/**/*.json","projectInstructions":"./x/**/*.json"}],"ok":"./x/**/*.json"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"a","projectInstructions":"tab\tseparated"}],"ok":"a\n\ntab\tseparated"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"emoji 👍🏽 mix","projectInstructions":"ab"}],"ok":"emoji 👍🏽 mix\n\nab"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"  padded  ","projectInstructions":"ab"}],"ok":"  padded\n\nab"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"😀","projectInstructions":"emoji 👍🏽 mix"}],"ok":"😀\n\nemoji 👍🏽 mix"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"😀","projectInstructions":"./x/**/*.json  padded  "}],"ok":"😀\n\n./x/**/*.json  padded"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"a😀b😀ca","projectInstructions":".leading"}],"ok":"a😀b😀ca\n\n.leading"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"{name} has {count} items","projectInstructions":":"}],"ok":"{name} has {count} items\n\n:"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"İstanbul","projectInstructions":"trailing."}],"ok":"İstanbul\n\ntrailing."}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"hello worldns:key.path","projectInstructions":"src/a/b.ts"}],"ok":"hello worldns:key.path\n\nsrc/a/b.ts"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"ns:key.path","projectInstructions":"a😀b😀c"}],"ok":"ns:key.path\n\na😀b😀c"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"trailing.","projectInstructions":"hello"}],"ok":"trailing.\n\nhello"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":".leading","projectInstructions":"ab"}],"ok":".leading\n\nab"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"a","projectInstructions":"ΣΊΣΥΦΟΣ"}],"ok":"a\n\nΣΊΣΥΦΟΣ"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"key_name-1","projectInstructions":"Hello World"}],"ok":"key_name-1\n\nHello World"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"HELLOkey_name-1","projectInstructions":"a"}],"ok":"HELLOkey_name-1\n\na"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"日本語のテキスト","projectInstructions":"a:b:c"}],"ok":"日本語のテキスト\n\na:b:c"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"trailing.","projectInstructions":"trailing."}],"ok":"trailing."}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"a","projectInstructions":"line1\nline2"}],"ok":"a\n\nline1\nline2"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"./x/**/*.json","projectInstructions":"tab\tseparated./x/**/*.json"}],"ok":"./x/**/*.json\n\ntab\tseparated./x/**/*.json"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"a😀b😀c","projectInstructions":"İstanbul  padded  "}],"ok":"a😀b😀c\n\nİstanbul  padded"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"Hello Worldİstanbul","projectInstructions":"a"}],"ok":"Hello Worldİstanbul\n\na"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"😀","projectInstructions":"key_name-1"}],"ok":"😀\n\nkey_name-1"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"hello./x/**/*.json","projectInstructions":"src/a/b.ts"}],"ok":"hello./x/**/*.json\n\nsrc/a/b.ts"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"HELLO","projectInstructions":"trailing.a"}],"ok":"HELLO\n\ntrailing.a"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"日本語のテキスト","projectInstructions":"﻿bom"}],"ok":"日本語のテキスト\n\nbom"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":":","projectInstructions":"ünïcödé"}],"ok":":\n\nünïcödé"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"straße","projectInstructions":":"}],"ok":"straße\n\n:"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":":","projectInstructions":"helloé"}],"ok":":\n\nhelloé"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"trailing.","projectInstructions":"a.b.c"}],"ok":"trailing.\n\na.b.c"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"İstanbul","projectInstructions":"ünïcödé"}],"ok":"İstanbul\n\nünïcödé"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"a","projectInstructions":"ab:"}],"ok":"a\n\nab:"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"abc","projectInstructions":"😀"}],"ok":"abc\n\n😀"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"src/a/b.ts","projectInstructions":"hello world"}],"ok":"src/a/b.ts\n\nhello world"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"Hello World","projectInstructions":"emoji 👍🏽 mix"}],"ok":"Hello World\n\nemoji 👍🏽 mix"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"a😀b😀c","projectInstructions":"Hello World"}],"ok":"a😀b😀c\n\nHello World"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"﻿bom","projectInstructions":":"}],"ok":"﻿bom\n\n:"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"key_name-1","projectInstructions":"ΣΊΣΥΦΟΣ"}],"ok":"key_name-1\n\nΣΊΣΥΦΟΣ"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"ΣΊΣΥΦΟΣ","projectInstructions":"  padded  "}],"ok":"ΣΊΣΥΦΟΣ\n\npadded"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"İstanbul","projectInstructions":"a.b.c"}],"ok":"İstanbul\n\na.b.c"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"  padded  ","projectInstructions":"ΣΊΣΥΦΟΣ"}],"ok":"  padded\n\nΣΊΣΥΦΟΣ"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'trim')"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"ünïcödé","projectInstructions":"{name} has {count} items"}],"ok":"ünïcödé\n\n{name} has {count} items"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"hello world","projectInstructions":"{name} has {count} items"}],"ok":"hello world\n\n{name} has {count} items"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"emoji 👍🏽 mix","projectInstructions":"src/a/b.ts"}],"ok":"emoji 👍🏽 mix\n\nsrc/a/b.ts"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"ünïcödé","projectInstructions":"ns:key.path"}],"ok":"ünïcödé\n\nns:key.path"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"日本語のテキスト","projectInstructions":"😀{name} has {count} items"}],"ok":"日本語のテキスト\n\n😀{name} has {count} items"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"Hello World","projectInstructions":"Hello World"}],"ok":"Hello World"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":":hello world","projectInstructions":"abc"}],"ok":":hello world\n\nabc"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[[]],"error":"Cannot read properties of undefined (reading 'trim')"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"HELLO","projectInstructions":"abc"}],"ok":"HELLO\n\nabc"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":".leading﻿bom","projectInstructions":".leading"}],"ok":".leading﻿bom\n\n.leading"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"ab","projectInstructions":"straße"}],"ok":"ab\n\nstraße"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"Hello World","projectInstructions":"abc"}],"ok":"Hello World\n\nabc"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"./x/**/*.json","projectInstructions":"ΣΊΣΥΦΟΣ"}],"ok":"./x/**/*.json\n\nΣΊΣΥΦΟΣ"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"line1\nline2İstanbul","projectInstructions":"日本語のテキスト"}],"ok":"line1\nline2İstanbul\n\n日本語のテキスト"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"HELLO","projectInstructions":"a😀b😀c"}],"ok":"HELLO\n\na😀b😀c"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"😀","projectInstructions":"straße"}],"ok":"😀\n\nstraße"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"key_name-1","projectInstructions":"ns:key.path"}],"ok":"key_name-1\n\nns:key.path"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"😀","projectInstructions":"a..b"}],"ok":"😀\n\na..b"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"Hello World","projectInstructions":"ünïcödé"}],"ok":"Hello World\n\nünïcödé"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"line1\nline2","projectInstructions":"tab\tseparatedHello World"}],"ok":"line1\nline2\n\ntab\tseparatedHello World"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"emoji 👍🏽 mix","projectInstructions":"tab\tseparated"}],"ok":"emoji 👍🏽 mix\n\ntab\tseparated"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"hello world","projectInstructions":"  padded  "}],"ok":"hello world\n\npadded"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"straße","projectInstructions":"a.b.c"}],"ok":"straße\n\na.b.c"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"a.b.c","projectInstructions":"trailing."}],"ok":"a.b.c\n\ntrailing."}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"src/a/b.ts","projectInstructions":"İstanbul"}],"ok":"src/a/b.ts\n\nİstanbul"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"abc:","projectInstructions":"HELLO"}],"ok":"abc:\n\nHELLO"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"İstanbul  padded  ","projectInstructions":"  padded  "}],"ok":"İstanbul  padded\n\npadded"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":":","projectInstructions":"emoji 👍🏽 mix"}],"ok":":\n\nemoji 👍🏽 mix"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"日本語のテキスト","projectInstructions":"İstanbul"}],"ok":"日本語のテキスト\n\nİstanbul"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"😀","projectInstructions":".leading"}],"ok":"😀\n\n.leading"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":".leadingkey_name-1","projectInstructions":"😀"}],"ok":".leadingkey_name-1\n\n😀"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"HELLO","projectInstructions":"{name} has {count} items"}],"ok":"HELLO\n\n{name} has {count} items"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"hello world","projectInstructions":"straße"}],"ok":"hello world\n\nstraße"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":".leading","projectInstructions":"emoji 👍🏽 mix"}],"ok":".leading\n\nemoji 👍🏽 mix"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"ΣΊΣΥΦΟΣ","projectInstructions":"ns:key.path"}],"ok":"ΣΊΣΥΦΟΣ\n\nns:key.path"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"a","projectInstructions":""}],"ok":"a"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"ünïcödé","projectInstructions":"a"}],"ok":"ünïcödé\n\na"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"key_name-1ns:key.path","projectInstructions":"a"}],"ok":"key_name-1ns:key.path\n\na"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"tab\tseparated","projectInstructions":":"}],"ok":"tab\tseparated\n\n:"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"helloΣΊΣΥΦΟΣ","projectInstructions":""}],"ok":"helloΣΊΣΥΦΟΣ"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"a","projectInstructions":"ns:key.path"}],"ok":"a\n\nns:key.path"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"a.b.c","projectInstructions":"é"}],"ok":"a.b.c\n\né"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"HELLO","projectInstructions":"src/a/b.tsa😀b😀c"}],"ok":"HELLO\n\nsrc/a/b.tsa😀b😀c"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"İstanbul","projectInstructions":"İstanbul"}],"ok":"İstanbul"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"ns:key.pathtab\tseparated","projectInstructions":"line1\nline2"}],"ok":"ns:key.pathtab\tseparated\n\nline1\nline2"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"ab","projectInstructions":".leading"}],"ok":"ab\n\n.leading"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"tab\tseparated","projectInstructions":""}],"ok":"tab\tseparated"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"tab\tseparatedns:key.path","projectInstructions":"ünïcödé"}],"ok":"tab\tseparatedns:key.path\n\nünïcödé"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"tab\tseparated","projectInstructions":"straße"}],"ok":"tab\tseparated\n\nstraße"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"tab\tseparated","projectInstructions":"ns:key.path"}],"ok":"tab\tseparated\n\nns:key.path"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"a😀b😀c","projectInstructions":"./x/**/*.jsonemoji 👍🏽 mix"}],"ok":"a😀b😀c\n\n./x/**/*.jsonemoji 👍🏽 mix"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"İstanbulé","projectInstructions":"a..btab\tseparated"}],"ok":"İstanbulé\n\na..btab\tseparated"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"a..b日本語のテキスト","projectInstructions":"İstanbul"}],"ok":"a..b日本語のテキスト\n\nİstanbul"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"😀","projectInstructions":"{name} has {count} items"}],"ok":"😀\n\n{name} has {count} items"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"","projectInstructions":"ΣΊΣΥΦΟΣ./x/**/*.json"}],"ok":"ΣΊΣΥΦΟΣ./x/**/*.json"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"hello world","projectInstructions":"ΣΊΣΥΦΟΣ"}],"ok":"hello world\n\nΣΊΣΥΦΟΣ"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"😀a:b:c","projectInstructions":"😀😀"}],"ok":"😀a:b:c\n\n😀😀"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"HELLO","projectInstructions":"  padded  "}],"ok":"HELLO\n\npadded"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"ns:key.path  padded  ","projectInstructions":"ΣΊΣΥΦΟΣ"}],"ok":"ns:key.path  padded\n\nΣΊΣΥΦΟΣ"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"src/a/b.ts","projectInstructions":"src/a/b.ts"}],"ok":"src/a/b.ts"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"HELLOab","projectInstructions":".leadinga"}],"ok":"HELLOab\n\n.leadinga"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"Hello World","projectInstructions":"a😀b😀c"}],"ok":"Hello World\n\na😀b😀c"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"İstanbul","projectInstructions":"straße"}],"ok":"İstanbul\n\nstraße"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"😀Hello World","projectInstructions":"😀"}],"ok":"😀Hello World\n\n😀"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"abc😀","projectInstructions":"emoji 👍🏽 mix"}],"ok":"abc😀\n\nemoji 👍🏽 mix"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"tab\tseparated","projectInstructions":"a:b:c.leading"}],"ok":"tab\tseparated\n\na:b:c.leading"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"a.b.c","projectInstructions":"emoji 👍🏽 mix"}],"ok":"a.b.c\n\nemoji 👍🏽 mix"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"hello","projectInstructions":"abc"}],"ok":"hello\n\nabc"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":".leading","projectInstructions":"a:b:c"}],"ok":".leading\n\na:b:c"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"hello","projectInstructions":"﻿bom"}],"ok":"hello\n\nbom"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"İstanbul","projectInstructions":"key_name-1"}],"ok":"İstanbul\n\nkey_name-1"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"a..b","projectInstructions":"emoji 👍🏽 mixa"}],"ok":"a..b\n\nemoji 👍🏽 mixa"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"a😀b😀c","projectInstructions":"a:b:c"}],"ok":"a😀b😀c\n\na:b:c"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"a.b.c","projectInstructions":"  padded  "}],"ok":"a.b.c\n\npadded"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"a😀b😀c","projectInstructions":"a"}],"ok":"a😀b😀c\n\na"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"emoji 👍🏽 mix","projectInstructions":"./x/**/*.json{name} has {count} items"}],"ok":"emoji 👍🏽 mix\n\n./x/**/*.json{name} has {count} items"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"{name} has {count} items","projectInstructions":"a..bhello world"}],"ok":"{name} has {count} items\n\na..bhello world"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"ns:key.path","projectInstructions":"ΣΊΣΥΦΟΣ"}],"ok":"ns:key.path\n\nΣΊΣΥΦΟΣ"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"hello world","projectInstructions":"ns:key.path"}],"ok":"hello world\n\nns:key.path"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"","projectInstructions":"HELLO"}],"ok":"HELLO"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"﻿bom","projectInstructions":"straße"}],"ok":"﻿bom\n\nstraße"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"ab","projectInstructions":"hello"}],"ok":"ab\n\nhello"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"HELLO","projectInstructions":"line1\nline2"}],"ok":"HELLO\n\nline1\nline2"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"tab\tseparated","projectInstructions":"tab\tseparated"}],"ok":"tab\tseparated"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"a","projectInstructions":"{name} has {count} items"}],"ok":"a\n\n{name} has {count} items"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"hello world","projectInstructions":"hello world"}],"ok":"hello world"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"  padded  😀","projectInstructions":"a:b:c./x/**/*.json"}],"ok":"  padded  😀\n\na:b:c./x/**/*.json"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"é","projectInstructions":"abc"}],"ok":"é\n\nabc"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"trailing.","projectInstructions":"HELLO"}],"ok":"trailing.\n\nHELLO"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"abc","projectInstructions":"hello world"}],"ok":"abc\n\nhello world"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"{name} has {count} items","projectInstructions":"src/a/b.ts"}],"ok":"{name} has {count} items\n\nsrc/a/b.ts"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"src/a/b.tstab\tseparated","projectInstructions":"﻿bom"}],"ok":"src/a/b.tstab\tseparated\n\nbom"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"ΣΊΣΥΦΟΣ","projectInstructions":"﻿bom"}],"ok":"ΣΊΣΥΦΟΣ\n\nbom"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"a","projectInstructions":"Hello World"}],"ok":"a\n\nHello World"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"line1\nline2","projectInstructions":"emoji 👍🏽 mix"}],"ok":"line1\nline2\n\nemoji 👍🏽 mix"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"Hello World","projectInstructions":""}],"ok":"Hello World"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"İstanbul","projectInstructions":"ünïcödétab\tseparated"}],"ok":"İstanbul\n\nünïcödétab\tseparated"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"key_name-1","projectInstructions":".leading"}],"ok":"key_name-1\n\n.leading"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"key_name-1","projectInstructions":"hello world"}],"ok":"key_name-1\n\nhello world"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"{name} has {count} items","projectInstructions":"😀"}],"ok":"{name} has {count} items\n\n😀"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"Hello World","projectInstructions":"straßehello world"}],"ok":"Hello World\n\nstraßehello world"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"é","projectInstructions":"İstanbul"}],"ok":"é\n\nİstanbul"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"src/a/b.ts日本語のテキスト","projectInstructions":"line1\nline2"}],"ok":"src/a/b.ts日本語のテキスト\n\nline1\nline2"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"emoji 👍🏽 mix","projectInstructions":"﻿bom"}],"ok":"emoji 👍🏽 mix\n\nbom"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"{name} has {count} items","projectInstructions":"./x/**/*.json"}],"ok":"{name} has {count} items\n\n./x/**/*.json"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"ΣΊΣΥΦΟΣ","projectInstructions":"line1\nline2"}],"ok":"ΣΊΣΥΦΟΣ\n\nline1\nline2"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"İstanbul","projectInstructions":"Hello World.leading"}],"ok":"İstanbul\n\nHello World.leading"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"key_name-1Hello World","projectInstructions":"hello"}],"ok":"key_name-1Hello World\n\nhello"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"{name} has {count} items","projectInstructions":"a"}],"ok":"{name} has {count} items\n\na"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"😀a.b.c","projectInstructions":"ΣΊΣΥΦΟΣ"}],"ok":"😀a.b.c\n\nΣΊΣΥΦΟΣ"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"{name} has {count} items","projectInstructions":"trailing."}],"ok":"{name} has {count} items\n\ntrailing."}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"éhello world","projectInstructions":"straße"}],"ok":"éhello world\n\nstraße"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"{name} has {count} itemsabc","projectInstructions":"﻿bom"}],"ok":"{name} has {count} itemsabc\n\nbom"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"😀","projectInstructions":"Hello World"}],"ok":"😀\n\nHello World"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":".leading","projectInstructions":"a..b"}],"ok":".leading\n\na..b"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"straße","projectInstructions":"straße"}],"ok":"straße"}
+{"fn":"mergeProjectInstructionsIntoThreadNotes","args":[{"threadNotes":"{name} has {count} items","projectInstructions":"ab"}],"ok":"{name} has {count} items\n\nab"}

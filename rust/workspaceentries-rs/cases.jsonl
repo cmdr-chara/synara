@@ -1,0 +1,495 @@
+{"fn":"clearWorkspaceIndexCache","args":["{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["ab"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["line1\nline2"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["straßehello world"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["İstanbul"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":[""],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["﻿bomHello World"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["ΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["./x/**/*.jsoné"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["src/a/b.ts"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["abc"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["abc{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["a:b:ctrailing."],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["a:b:c"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["ns:key.path"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["HELLOhello world"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["日本語のテキストa..b"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["Hello World"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["😀"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["straße"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["ΣΊΣΥΦΟΣstraße"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["a😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":[":"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["emoji 👍🏽 mixsrc/a/b.ts"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["a"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["trailing.line1\nline2"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["ünïcödéline1\nline2"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["hellotrailing."],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["hello"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["  padded  "],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["é"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["key_name-1"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["hello world"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["tab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["trailing."],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["a.b.c"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["trailing.😀"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["a..b"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["HELLOHello World"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["HELLO"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":[".leading"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["emoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["﻿bom"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["abc  padded  "],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["straße{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["İstanbul./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["emoji 👍🏽 mixa😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["a😀b😀cns:key.path"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["ünïcödé"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["src/a/b.tsab"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["﻿bomemoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["Hello Worldsrc/a/b.ts"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["a:b:c﻿bom"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":[".leadingΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["ΣΊΣΥΦΟΣ😀"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["  padded  emoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["trailing.﻿bom"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":[".leadingHello World"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["a.b.ctab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["ΣΊΣΥΦΟΣünïcödé"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["atab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["a😀b😀ca..b"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["line1\nline2a"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["İstanbulkey_name-1"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["a.b.cΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":[".leadinghello world"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["a日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["ΣΊΣΥΦΟΣHello World"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["hello world:"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["HELLOabc"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["ab﻿bom"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["tab\tseparateda:b:c"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["tab\tseparatedtab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["src/a/b.tsa..b"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["key_name-1trailing."],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["trailing.trailing."],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["ns:key.pathİstanbul"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["straßeΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["😀ΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["é﻿bom"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["  padded  tab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["a😀b😀c./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["﻿bomsrc/a/b.ts"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["aline1\nline2"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["line1\nline2./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["hello﻿bom"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["a.leading"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["a:b:c.leading"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["src/a/b.ts{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["HELLOhello"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["straßeabc"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["hello worldkey_name-1"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["trailing.é"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["﻿bomns:key.path"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["straßea..b"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["Hello Worlda..b"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["ns:key.pathstraße"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["straßeline1\nline2"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["﻿bom日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["日本語のテキストemoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["Hello World.leading"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["line1\nline2﻿bom"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["ünïcödékey_name-1"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["😀﻿bom"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["  padded  ab"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["helloa:b:c"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["ΣΊΣΥΦΟΣhello world"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["ésrc/a/b.ts"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["abcé"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["﻿bomİstanbul"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["ünïcödé.leading"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["trailing.ns:key.path"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["tab\tseparatedabc"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["﻿bomhello"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["aba:b:c"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["abline1\nline2"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["./x/**/*.jsona:b:c"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["abctab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["a..bns:key.path"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["src/a/b.ts./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["Hello Worldkey_name-1"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["emoji 👍🏽 mixa:b:c"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["src/a/b.tsline1\nline2"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["tab\tseparatedline1\nline2"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["a😀b😀cİstanbul"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["ns:key.path﻿bom"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["ünïcödéünïcödé"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["src/a/b.tsé"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["a{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["abcsrc/a/b.ts"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["ΣΊΣΥΦΟΣİstanbul"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["ab:"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":[":line1\nline2"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["key_name-1a😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["{name} has {count} itemshello world"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["trailing.tab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["a.b.cHELLO"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["a..ba😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["ab😀"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["😀hello"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["aba..b"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["ünïcödéhello"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["./x/**/*.jsonHELLO"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["ünïcödéhello world"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["straßeünïcödé"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["ünïcödéHello World"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["HELLO:"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["éa"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["  padded  a"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":[".leadinga"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["key_name-1:"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["ékey_name-1"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["İstanbul:"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["abHello World"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["HELLO😀"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["straßeİstanbul"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["İstanbulemoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["aemoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["hello world日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["İstanbulΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["emoji 👍🏽 mixstraße"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["a:b:ca.b.c"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["{name} has {count} itemstab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["İstanbul  padded  "],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["trailing.:"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["İstanbul{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["é:"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["line1\nline2.leading"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["日本語のテキストab"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["trailing.a😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["a😀b😀cab"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["helloİstanbul"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["﻿bomab"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["a:"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":[".leadingab"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["line1\nline2hello world"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["helloabc"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["a😀"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["abc日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["a😀b😀ca😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["{name} has {count} itemsa:b:c"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["😀straße"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["ns:key.pathsrc/a/b.ts"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["a😀b😀cé"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["İstanbulab"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["tab\tseparatedsrc/a/b.ts"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["emoji 👍🏽 mixabc"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["éé"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["ünïcödé﻿bom"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["abİstanbul"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["日本語のテキストHELLO"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["İstanbula😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["line1\nline2ünïcödé"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["﻿bomHELLO"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["a.b.ctrailing."],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["  padded  :"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["İstanbul日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["tab\tseparatedemoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["héllo wörld"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["👍🏽 thumbs"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["日本語"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["ılık ırmak"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["👨‍👩‍👧 family"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["a b"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["a😀b"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["a²b x½ y①"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["aⅠb Ⅻ"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["a𐐀b 𝐀bc"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["कि ٣٤"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["Iı İi"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["K K k"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["ſ s S"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["x‍y 👨‍👩‍👧"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["a b c　d"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["١٢٣ ٤٥"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["𝟘𝟙 ²³"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["snake_case foo-bar o'neil"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["ǅungla Ǆ"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["one\r\ntwo threefour"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["café café"],"ok":{"$undefined":true}}
+{"fn":"clearWorkspaceIndexCache","args":["ΣΑΣ σας ς"],"ok":{"$undefined":true}}
+{"fn":"prewarmWorkspaceSearchIndex","args":[{"a":"b"}],"ok":{"started":true}}
+{"fn":"prewarmWorkspaceSearchIndex","args":[true],"ok":{"started":true}}
+{"fn":"prewarmWorkspaceSearchIndex","args":[["a",1]],"ok":{"started":true}}
+{"fn":"prewarmWorkspaceSearchIndex","args":[{}],"ok":{"started":true}}
+{"fn":"prewarmWorkspaceSearchIndex","args":[{"a":{"b":"c"}}],"ok":{"started":true}}
+{"fn":"prewarmWorkspaceSearchIndex","args":[[]],"ok":{"started":true}}
+{"fn":"prewarmWorkspaceSearchIndex","args":[0],"ok":{"started":true}}
+{"fn":"prewarmWorkspaceSearchIndex","args":[null],"error":"Cannot read properties of null (reading 'cwd')"}
+{"fn":"prewarmWorkspaceSearchIndex","args":["x"],"ok":{"started":true}}
+{"fn":"browseWorkspaceEntries","args":[["a",1]],"error":"Cannot read properties of undefined (reading 'startsWith')"}
+{"fn":"browseWorkspaceEntries","args":[{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'startsWith')"}
+{"fn":"browseWorkspaceEntries","args":[[]],"error":"Cannot read properties of undefined (reading 'startsWith')"}
+{"fn":"browseWorkspaceEntries","args":["x"],"error":"Cannot read properties of undefined (reading 'startsWith')"}
+{"fn":"browseWorkspaceEntries","args":[{"a":"b"}],"error":"Cannot read properties of undefined (reading 'startsWith')"}
+{"fn":"browseWorkspaceEntries","args":[0],"error":"Cannot read properties of undefined (reading 'startsWith')"}
+{"fn":"browseWorkspaceEntries","args":[null],"error":"Cannot read properties of null (reading 'partialPath')"}
+{"fn":"browseWorkspaceEntries","args":[true],"error":"Cannot read properties of undefined (reading 'startsWith')"}
+{"fn":"browseWorkspaceEntries","args":[{}],"error":"Cannot read properties of undefined (reading 'startsWith')"}
+{"fn":"searchWorkspaceEntries","args":[null],"error":"Cannot read properties of null (reading 'cwd')"}
+{"fn":"searchWorkspaceEntries","args":[{"a":{"b":"c"}}],"error":"Unable to scan workspace entries at 'undefined': The \"path\" argument must be of type string or an instance of Buffer or URL. Received undefined"}
+{"fn":"searchWorkspaceEntries","args":["x"],"error":"Unable to scan workspace entries at 'undefined': The \"path\" argument must be of type string or an instance of Buffer or URL. Received undefined"}
+{"fn":"searchWorkspaceEntries","args":[[]],"error":"Unable to scan workspace entries at 'undefined': The \"path\" argument must be of type string or an instance of Buffer or URL. Received undefined"}
+{"fn":"searchWorkspaceEntries","args":[true],"error":"Unable to scan workspace entries at 'undefined': The \"path\" argument must be of type string or an instance of Buffer or URL. Received undefined"}
+{"fn":"searchWorkspaceEntries","args":[["a",1]],"error":"Unable to scan workspace entries at 'undefined': The \"path\" argument must be of type string or an instance of Buffer or URL. Received undefined"}
+{"fn":"searchWorkspaceEntries","args":[{"a":"b"}],"error":"Unable to scan workspace entries at 'undefined': The \"path\" argument must be of type string or an instance of Buffer or URL. Received undefined"}
+{"fn":"searchWorkspaceEntries","args":[0],"error":"Unable to scan workspace entries at 'undefined': The \"path\" argument must be of type string or an instance of Buffer or URL. Received undefined"}
+{"fn":"searchWorkspaceEntries","args":[{}],"error":"Unable to scan workspace entries at 'undefined': The \"path\" argument must be of type string or an instance of Buffer or URL. Received undefined"}
+{"fn":"searchWorkspaceContent","args":[0],"error":"Cannot read properties of undefined (reading 'trim')"}
+{"fn":"searchWorkspaceContent","args":[{"a":"b"}],"error":"Cannot read properties of undefined (reading 'trim')"}
+{"fn":"searchWorkspaceContent","args":[true],"error":"Cannot read properties of undefined (reading 'trim')"}
+{"fn":"searchWorkspaceContent","args":[null],"error":"Cannot read properties of null (reading 'query')"}
+{"fn":"searchWorkspaceContent","args":[{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'trim')"}
+{"fn":"searchWorkspaceContent","args":[["a",1]],"error":"Cannot read properties of undefined (reading 'trim')"}
+{"fn":"searchWorkspaceContent","args":[[]],"error":"Cannot read properties of undefined (reading 'trim')"}
+{"fn":"searchWorkspaceContent","args":["x"],"error":"Cannot read properties of undefined (reading 'trim')"}
+{"fn":"searchWorkspaceContent","args":[{}],"error":"Cannot read properties of undefined (reading 'trim')"}
+{"fn":"resolveWorkspaceFileReferences","args":[["a",1]],"error":"Unable to scan workspace entries at 'undefined': The \"path\" argument must be of type string or an instance of Buffer or URL. Received undefined"}
+{"fn":"resolveWorkspaceFileReferences","args":[{}],"error":"Unable to scan workspace entries at 'undefined': The \"path\" argument must be of type string or an instance of Buffer or URL. Received undefined"}
+{"fn":"resolveWorkspaceFileReferences","args":[{"a":"b"}],"error":"Unable to scan workspace entries at 'undefined': The \"path\" argument must be of type string or an instance of Buffer or URL. Received undefined"}
+{"fn":"resolveWorkspaceFileReferences","args":[true],"error":"Unable to scan workspace entries at 'undefined': The \"path\" argument must be of type string or an instance of Buffer or URL. Received undefined"}
+{"fn":"resolveWorkspaceFileReferences","args":["x"],"error":"Unable to scan workspace entries at 'undefined': The \"path\" argument must be of type string or an instance of Buffer or URL. Received undefined"}
+{"fn":"resolveWorkspaceFileReferences","args":[{"a":{"b":"c"}}],"error":"Unable to scan workspace entries at 'undefined': The \"path\" argument must be of type string or an instance of Buffer or URL. Received undefined"}
+{"fn":"resolveWorkspaceFileReferences","args":[null],"error":"Cannot read properties of null (reading 'cwd')"}
+{"fn":"resolveWorkspaceFileReferences","args":[[]],"error":"Unable to scan workspace entries at 'undefined': The \"path\" argument must be of type string or an instance of Buffer or URL. Received undefined"}
+{"fn":"resolveWorkspaceFileReferences","args":[0],"error":"Unable to scan workspace entries at 'undefined': The \"path\" argument must be of type string or an instance of Buffer or URL. Received undefined"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[[]],"error":"Unable to scan workspace entries at 'undefined': The \"path\" argument must be of type string or an instance of Buffer or URL. Received undefined"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"é","relativePath":"tab\tseparated"}],"error":"Unable to scan workspace entries at 'é': ENOENT: no such file or directory, scandir 'é'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"a..b日本語のテキスト","relativePath":"ünïcödéns:key.path"}],"error":"Unable to scan workspace entries at 'a..b日本語のテキスト': ENOENT: no such file or directory, scandir 'a..b日本語のテキスト'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[0],"error":"Unable to scan workspace entries at 'undefined': The \"path\" argument must be of type string or an instance of Buffer or URL. Received undefined"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"a.b.c","relativePath":"a.b.c"}],"error":"Unable to scan workspace entries at 'a.b.c': ENOENT: no such file or directory, scandir 'a.b.c'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"日本語のテキスト","relativePath":"abc"}],"error":"Unable to scan workspace entries at '日本語のテキスト': ENOENT: no such file or directory, scandir '日本語のテキスト'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"emoji 👍🏽 mixa😀b😀c","relativePath":"hello"}],"error":"Unable to scan workspace entries at 'emoji 👍🏽 mixa😀b😀c': ENOENT: no such file or directory, scandir 'emoji 👍🏽 mixa😀b😀c'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{}],"error":"Unable to scan workspace entries at 'undefined': The \"path\" argument must be of type string or an instance of Buffer or URL. Received undefined"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"helloünïcödé","relativePath":"line1\nline2"}],"error":"Unable to scan workspace entries at 'helloünïcödé': ENOENT: no such file or directory, scandir 'helloünïcödé'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"a😀b😀c","relativePath":"Hello World"}],"error":"Unable to scan workspace entries at 'a😀b😀c': ENOENT: no such file or directory, scandir 'a😀b😀c'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"ns:key.path","relativePath":"{name} has {count} itemsline1\nline2"}],"error":"Unable to scan workspace entries at 'ns:key.path': ENOENT: no such file or directory, scandir 'ns:key.path'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"﻿bom","relativePath":"line1\nline2"}],"error":"Unable to scan workspace entries at '﻿bom': ENOENT: no such file or directory, scandir '﻿bom'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"Hello World","relativePath":"hello"}],"error":"Unable to scan workspace entries at 'Hello World': ENOENT: no such file or directory, scandir 'Hello World'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"a:b:cΣΊΣΥΦΟΣ","relativePath":"﻿bom"}],"error":"Unable to scan workspace entries at 'a:b:cΣΊΣΥΦΟΣ': ENOENT: no such file or directory, scandir 'a:b:cΣΊΣΥΦΟΣ'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"{name} has {count} items","relativePath":"abc"}],"error":"Unable to scan workspace entries at '{name} has {count} items': ENOENT: no such file or directory, scandir '{name} has {count} items'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"a.b.c","relativePath":":"}],"error":"Unable to scan workspace entries at 'a.b.c': ENOENT: no such file or directory, scandir 'a.b.c'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"﻿bom","relativePath":"Hello World"}],"error":"Unable to scan workspace entries at '﻿bom': ENOENT: no such file or directory, scandir '﻿bom'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[null],"error":"Cannot read properties of null (reading 'cwd')"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"é","relativePath":"ns:key.pathΣΊΣΥΦΟΣ"}],"error":"Unable to scan workspace entries at 'é': ENOENT: no such file or directory, scandir 'é'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"abc","relativePath":"abc"}],"error":"Unable to scan workspace entries at 'abc': ENOENT: no such file or directory, scandir 'abc'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"emoji 👍🏽 mix","relativePath":"abtab\tseparated"}],"error":"Unable to scan workspace entries at 'emoji 👍🏽 mix': ENOENT: no such file or directory, scandir 'emoji 👍🏽 mix'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"﻿bom","relativePath":"hello"}],"error":"Unable to scan workspace entries at '﻿bom': ENOENT: no such file or directory, scandir '﻿bom'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"İstanbul","relativePath":":"}],"error":"Unable to scan workspace entries at 'İstanbul': ENOENT: no such file or directory, scandir 'İstanbul'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"key_name-1","relativePath":"./x/**/*.json"}],"error":"Unable to scan workspace entries at 'key_name-1': ENOENT: no such file or directory, scandir 'key_name-1'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"trailing.","relativePath":"a"}],"error":"Unable to scan workspace entries at 'trailing.': ENOENT: no such file or directory, scandir 'trailing.'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"日本語のテキスト","relativePath":"  padded  "}],"error":"Unable to scan workspace entries at '日本語のテキスト': ENOENT: no such file or directory, scandir '日本語のテキスト'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"a:b:c","relativePath":"src/a/b.ts"}],"error":"Unable to scan workspace entries at 'a:b:c': ENOENT: no such file or directory, scandir 'a:b:c'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"a.b.c","relativePath":"İstanbul"}],"error":"Unable to scan workspace entries at 'a.b.c': ENOENT: no such file or directory, scandir 'a.b.c'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"a","relativePath":"ΣΊΣΥΦΟΣ"}],"error":"Unable to scan workspace entries at 'a': ENOENT: no such file or directory, scandir 'a'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"emoji 👍🏽 mix","relativePath":"line1\nline2"}],"error":"Unable to scan workspace entries at 'emoji 👍🏽 mix': ENOENT: no such file or directory, scandir 'emoji 👍🏽 mix'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"./x/**/*.json","relativePath":"HELLOabc"}],"error":"Unable to scan workspace entries at './x/**/*.json': ENOENT: no such file or directory, scandir './x/**/*.json'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":".leading","relativePath":"HELLO"}],"error":"Unable to scan workspace entries at '.leading': ENOENT: no such file or directory, scandir '.leading'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"","relativePath":"emoji 👍🏽 mix"}],"error":"Unable to scan workspace entries at '': ENOENT: no such file or directory, scandir ''"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"trailing.","relativePath":""}],"error":"Unable to scan workspace entries at 'trailing.': ENOENT: no such file or directory, scandir 'trailing.'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"﻿bom","relativePath":""}],"error":"Unable to scan workspace entries at '﻿bom': ENOENT: no such file or directory, scandir '﻿bom'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"abc","relativePath":":"}],"error":"Unable to scan workspace entries at 'abc': ENOENT: no such file or directory, scandir 'abc'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"{name} has {count} items","relativePath":"key_name-1emoji 👍🏽 mix"}],"error":"Unable to scan workspace entries at '{name} has {count} items': ENOENT: no such file or directory, scandir '{name} has {count} items'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"./x/**/*.json:","relativePath":"line1\nline2straße"}],"error":"Unable to scan workspace entries at './x/**/*.json:': ENOENT: no such file or directory, scandir './x/**/*.json:'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[["a",1]],"error":"Unable to scan workspace entries at 'undefined': The \"path\" argument must be of type string or an instance of Buffer or URL. Received undefined"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"ΣΊΣΥΦΟΣ","relativePath":"é"}],"error":"Unable to scan workspace entries at 'ΣΊΣΥΦΟΣ': ENOENT: no such file or directory, scandir 'ΣΊΣΥΦΟΣ'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"ab","relativePath":"HELLO"}],"error":"Unable to scan workspace entries at 'ab': ENOENT: no such file or directory, scandir 'ab'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":":","relativePath":":﻿bom"}],"error":"Unable to scan workspace entries at ':': ENOENT: no such file or directory, scandir ':'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"İstanbul","relativePath":"ΣΊΣΥΦΟΣ"}],"error":"Unable to scan workspace entries at 'İstanbul': ENOENT: no such file or directory, scandir 'İstanbul'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"key_name-1","relativePath":"İstanbul"}],"error":"Unable to scan workspace entries at 'key_name-1': ENOENT: no such file or directory, scandir 'key_name-1'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"trailing.","relativePath":"ns:key.path"}],"error":"Unable to scan workspace entries at 'trailing.': ENOENT: no such file or directory, scandir 'trailing.'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"","relativePath":"hello"}],"error":"Unable to scan workspace entries at '': ENOENT: no such file or directory, scandir ''"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"hello","relativePath":"hello"}],"error":"Unable to scan workspace entries at 'hello': ENOENT: no such file or directory, scandir 'hello'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"a":"b"}],"error":"Unable to scan workspace entries at 'undefined': The \"path\" argument must be of type string or an instance of Buffer or URL. Received undefined"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"﻿bom","relativePath":"src/a/b.tsa😀b😀c"}],"error":"Unable to scan workspace entries at '﻿bom': ENOENT: no such file or directory, scandir '﻿bom'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"hello","relativePath":"ab"}],"error":"Unable to scan workspace entries at 'hello': ENOENT: no such file or directory, scandir 'hello'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"ns:key.path","relativePath":".leading"}],"error":"Unable to scan workspace entries at 'ns:key.path': ENOENT: no such file or directory, scandir 'ns:key.path'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"a😀b😀c","relativePath":"😀hello world"}],"error":"Unable to scan workspace entries at 'a😀b😀c': ENOENT: no such file or directory, scandir 'a😀b😀c'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":["x"],"error":"Unable to scan workspace entries at 'undefined': The \"path\" argument must be of type string or an instance of Buffer or URL. Received undefined"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"a.b.cns:key.path","relativePath":"src/a/b.ts"}],"error":"Unable to scan workspace entries at 'a.b.cns:key.path': ENOENT: no such file or directory, scandir 'a.b.cns:key.path'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"ab","relativePath":"{name} has {count} items"}],"error":"Unable to scan workspace entries at 'ab': ENOENT: no such file or directory, scandir 'ab'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"emoji 👍🏽 mix","relativePath":"trailing."}],"error":"Unable to scan workspace entries at 'emoji 👍🏽 mix': ENOENT: no such file or directory, scandir 'emoji 👍🏽 mix'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"a.b.c","relativePath":"  padded  "}],"error":"Unable to scan workspace entries at 'a.b.c': ENOENT: no such file or directory, scandir 'a.b.c'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"hello","relativePath":"emoji 👍🏽 mix"}],"error":"Unable to scan workspace entries at 'hello': ENOENT: no such file or directory, scandir 'hello'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"a","relativePath":"src/a/b.ts"}],"error":"Unable to scan workspace entries at 'a': ENOENT: no such file or directory, scandir 'a'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"straße","relativePath":"日本語のテキスト"}],"error":"Unable to scan workspace entries at 'straße': ENOENT: no such file or directory, scandir 'straße'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"a..b","relativePath":"﻿bom"}],"error":"Unable to scan workspace entries at 'a..b': ENOENT: no such file or directory, scandir 'a..b'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"straße","relativePath":"tab\tseparated"}],"error":"Unable to scan workspace entries at 'straße': ENOENT: no such file or directory, scandir 'straße'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"hello","relativePath":"a..b"}],"error":"Unable to scan workspace entries at 'hello': ENOENT: no such file or directory, scandir 'hello'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"line1\nline2","relativePath":"akey_name-1"}],"error":"Unable to scan workspace entries at 'line1\nline2': ENOENT: no such file or directory, scandir 'line1\nline2'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"straße","relativePath":"a"}],"error":"Unable to scan workspace entries at 'straße': ENOENT: no such file or directory, scandir 'straße'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"./x/**/*.json","relativePath":"😀abc"}],"error":"Unable to scan workspace entries at './x/**/*.json': ENOENT: no such file or directory, scandir './x/**/*.json'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"İstanbul","relativePath":"a"}],"error":"Unable to scan workspace entries at 'İstanbul': ENOENT: no such file or directory, scandir 'İstanbul'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":".leading","relativePath":"a.b.c"}],"error":"Unable to scan workspace entries at '.leading': ENOENT: no such file or directory, scandir '.leading'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"a😀b😀c","relativePath":""}],"error":"Unable to scan workspace entries at 'a😀b😀c': ENOENT: no such file or directory, scandir 'a😀b😀c'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"a..b","relativePath":"😀"}],"error":"Unable to scan workspace entries at 'a..b': ENOENT: no such file or directory, scandir 'a..b'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"İstanbul","relativePath":"tab\tseparated"}],"error":"Unable to scan workspace entries at 'İstanbul': ENOENT: no such file or directory, scandir 'İstanbul'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"😀","relativePath":"ab"}],"error":"Unable to scan workspace entries at '😀': ENOENT: no such file or directory, scandir '😀'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"hello world","relativePath":"a..b"}],"error":"Unable to scan workspace entries at 'hello world': ENOENT: no such file or directory, scandir 'hello world'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":":","relativePath":"日本語のテキスト"}],"error":"Unable to scan workspace entries at ':': ENOENT: no such file or directory, scandir ':'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":":","relativePath":"{name} has {count} items"}],"error":"Unable to scan workspace entries at ':': ENOENT: no such file or directory, scandir ':'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"src/a/b.ts","relativePath":"İstanbul"}],"error":"Unable to scan workspace entries at 'src/a/b.ts': ENOENT: no such file or directory, scandir 'src/a/b.ts'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":":","relativePath":"ΣΊΣΥΦΟΣ"}],"error":"Unable to scan workspace entries at ':': ENOENT: no such file or directory, scandir ':'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"İstanbul","relativePath":"Hello World"}],"error":"Unable to scan workspace entries at 'İstanbul': ENOENT: no such file or directory, scandir 'İstanbul'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"日本語のテキスト","relativePath":"emoji 👍🏽 mix"}],"error":"Unable to scan workspace entries at '日本語のテキスト': ENOENT: no such file or directory, scandir '日本語のテキスト'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"key_name-1","relativePath":"a..b"}],"error":"Unable to scan workspace entries at 'key_name-1': ENOENT: no such file or directory, scandir 'key_name-1'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"é","relativePath":"a..b日本語のテキスト"}],"error":"Unable to scan workspace entries at 'é': ENOENT: no such file or directory, scandir 'é'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"ünïcödé","relativePath":"key_name-1"}],"error":"Unable to scan workspace entries at 'ünïcödé': ENOENT: no such file or directory, scandir 'ünïcödé'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"日本語のテキストemoji 👍🏽 mix","relativePath":":﻿bom"}],"error":"Unable to scan workspace entries at '日本語のテキストemoji 👍🏽 mix': ENOENT: no such file or directory, scandir '日本語のテキストemoji 👍🏽 mix'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"abc","relativePath":".leading"}],"error":"Unable to scan workspace entries at 'abc': ENOENT: no such file or directory, scandir 'abc'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"key_name-1","relativePath":"a.b.c"}],"error":"Unable to scan workspace entries at 'key_name-1': ENOENT: no such file or directory, scandir 'key_name-1'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"src/a/b.tstrailing.","relativePath":"a.b.c"}],"error":"Unable to scan workspace entries at 'src/a/b.tstrailing.': ENOENT: no such file or directory, scandir 'src/a/b.tstrailing.'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"  padded  ","relativePath":"  padded  "}],"error":"Unable to scan workspace entries at '  padded  ': ENOENT: no such file or directory, scandir '  padded  '"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"line1\nline2","relativePath":"a"}],"error":"Unable to scan workspace entries at 'line1\nline2': ENOENT: no such file or directory, scandir 'line1\nline2'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"emoji 👍🏽 mix","relativePath":"é"}],"error":"Unable to scan workspace entries at 'emoji 👍🏽 mix': ENOENT: no such file or directory, scandir 'emoji 👍🏽 mix'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"ünïcödé","relativePath":"ékey_name-1"}],"error":"Unable to scan workspace entries at 'ünïcödé': ENOENT: no such file or directory, scandir 'ünïcödé'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"a..b","relativePath":"a..b"}],"error":"Unable to scan workspace entries at 'a..b': ENOENT: no such file or directory, scandir 'a..b'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"a😀b😀c","relativePath":"HELLO"}],"error":"Unable to scan workspace entries at 'a😀b😀c': ENOENT: no such file or directory, scandir 'a😀b😀c'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"  padded  ","relativePath":".leading"}],"error":"Unable to scan workspace entries at '  padded  ': ENOENT: no such file or directory, scandir '  padded  '"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"ab","relativePath":"trailing."}],"error":"Unable to scan workspace entries at 'ab': ENOENT: no such file or directory, scandir 'ab'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"{name} has {count} itemssrc/a/b.ts","relativePath":"src/a/b.tsHello World"}],"error":"Unable to scan workspace entries at '{name} has {count} itemssrc/a/b.ts': ENOENT: no such file or directory, scandir '{name} has {count} itemssrc/a/b.ts'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"a:b:c","relativePath":"a..b"}],"error":"Unable to scan workspace entries at 'a:b:c': ENOENT: no such file or directory, scandir 'a:b:c'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"abc.leading","relativePath":"a:b:c"}],"error":"Unable to scan workspace entries at 'abc.leading': ENOENT: no such file or directory, scandir 'abc.leading'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"İstanbul","relativePath":"hello world"}],"error":"Unable to scan workspace entries at 'İstanbul': ENOENT: no such file or directory, scandir 'İstanbul'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":":","relativePath":"src/a/b.ts"}],"error":"Unable to scan workspace entries at ':': ENOENT: no such file or directory, scandir ':'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"a:b:c","relativePath":"a..bİstanbul"}],"error":"Unable to scan workspace entries at 'a:b:c': ENOENT: no such file or directory, scandir 'a:b:c'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"a":{"b":"c"}}],"error":"Unable to scan workspace entries at 'undefined': The \"path\" argument must be of type string or an instance of Buffer or URL. Received undefined"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"a.b.c","relativePath":"a:b:c"}],"error":"Unable to scan workspace entries at 'a.b.c': ENOENT: no such file or directory, scandir 'a.b.c'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"Hello World{name} has {count} items","relativePath":"  padded  "}],"error":"Unable to scan workspace entries at 'Hello World{name} has {count} items': ENOENT: no such file or directory, scandir 'Hello World{name} has {count} items'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"İstanbul","relativePath":"ns:key.path"}],"error":"Unable to scan workspace entries at 'İstanbul': ENOENT: no such file or directory, scandir 'İstanbul'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"tab\tseparated","relativePath":":"}],"error":"Unable to scan workspace entries at 'tab\tseparated': ENOENT: no such file or directory, scandir 'tab\tseparated'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"😀","relativePath":"./x/**/*.json"}],"error":"Unable to scan workspace entries at '😀': ENOENT: no such file or directory, scandir '😀'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"Hello World","relativePath":"😀line1\nline2"}],"error":"Unable to scan workspace entries at 'Hello World': ENOENT: no such file or directory, scandir 'Hello World'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"ab","relativePath":"line1\nline2"}],"error":"Unable to scan workspace entries at 'ab': ENOENT: no such file or directory, scandir 'ab'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"Hello World{name} has {count} items","relativePath":"Hello World"}],"error":"Unable to scan workspace entries at 'Hello World{name} has {count} items': ENOENT: no such file or directory, scandir 'Hello World{name} has {count} items'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"aemoji 👍🏽 mix","relativePath":"{name} has {count} items"}],"error":"Unable to scan workspace entries at 'aemoji 👍🏽 mix': ENOENT: no such file or directory, scandir 'aemoji 👍🏽 mix'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"  padded  é","relativePath":"ab"}],"error":"Unable to scan workspace entries at '  padded  é': ENOENT: no such file or directory, scandir '  padded  é'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"日本語のテキスト","relativePath":".leading"}],"error":"Unable to scan workspace entries at '日本語のテキスト': ENOENT: no such file or directory, scandir '日本語のテキスト'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"tab\tseparated","relativePath":"İstanbul"}],"error":"Unable to scan workspace entries at 'tab\tseparated': ENOENT: no such file or directory, scandir 'tab\tseparated'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"HELLO","relativePath":"日本語のテキスト"}],"error":"Unable to scan workspace entries at 'HELLO': ENOENT: no such file or directory, scandir 'HELLO'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"key_name-1tab\tseparated","relativePath":"key_name-1"}],"error":"Unable to scan workspace entries at 'key_name-1tab\tseparated': ENOENT: no such file or directory, scandir 'key_name-1tab\tseparated'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"  padded  ","relativePath":"hello world"}],"error":"Unable to scan workspace entries at '  padded  ': ENOENT: no such file or directory, scandir '  padded  '"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"a","relativePath":"hello worldHello World"}],"error":"Unable to scan workspace entries at 'a': ENOENT: no such file or directory, scandir 'a'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"src/a/b.ts","relativePath":"ns:key.path"}],"error":"Unable to scan workspace entries at 'src/a/b.ts': ENOENT: no such file or directory, scandir 'src/a/b.ts'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"./x/**/*.json","relativePath":"straße"}],"error":"Unable to scan workspace entries at './x/**/*.json': ENOENT: no such file or directory, scandir './x/**/*.json'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"abcHELLO","relativePath":"ΣΊΣΥΦΟΣ"}],"error":"Unable to scan workspace entries at 'abcHELLO': ENOENT: no such file or directory, scandir 'abcHELLO'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"a.b.c","relativePath":"ab"}],"error":"Unable to scan workspace entries at 'a.b.c': ENOENT: no such file or directory, scandir 'a.b.c'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"tab\tseparated","relativePath":"a.b.c"}],"error":"Unable to scan workspace entries at 'tab\tseparated': ENOENT: no such file or directory, scandir 'tab\tseparated'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"straße","relativePath":"Hello World"}],"error":"Unable to scan workspace entries at 'straße': ENOENT: no such file or directory, scandir 'straße'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":".leadingé","relativePath":"ΣΊΣΥΦΟΣ"}],"error":"Unable to scan workspace entries at '.leadingé': ENOENT: no such file or directory, scandir '.leadingé'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":":","relativePath":"line1\nline2line1\nline2"}],"error":"Unable to scan workspace entries at ':': ENOENT: no such file or directory, scandir ':'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"a:b:cünïcödé","relativePath":"hello world"}],"error":"Unable to scan workspace entries at 'a:b:cünïcödé': ENOENT: no such file or directory, scandir 'a:b:cünïcödé'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"a","relativePath":"ns:key.path"}],"error":"Unable to scan workspace entries at 'a': ENOENT: no such file or directory, scandir 'a'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"ab","relativePath":"ΣΊΣΥΦΟΣ"}],"error":"Unable to scan workspace entries at 'ab': ENOENT: no such file or directory, scandir 'ab'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"hello world","relativePath":"trailing."}],"error":"Unable to scan workspace entries at 'hello world': ENOENT: no such file or directory, scandir 'hello world'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"trailing.","relativePath":"ns:key.pathHELLO"}],"error":"Unable to scan workspace entries at 'trailing.': ENOENT: no such file or directory, scandir 'trailing.'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"straße","relativePath":"ns:key.path"}],"error":"Unable to scan workspace entries at 'straße': ENOENT: no such file or directory, scandir 'straße'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"key_name-1ΣΊΣΥΦΟΣ","relativePath":"emoji 👍🏽 mixΣΊΣΥΦΟΣ"}],"error":"Unable to scan workspace entries at 'key_name-1ΣΊΣΥΦΟΣ': ENOENT: no such file or directory, scandir 'key_name-1ΣΊΣΥΦΟΣ'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[true],"error":"Unable to scan workspace entries at 'undefined': The \"path\" argument must be of type string or an instance of Buffer or URL. Received undefined"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"key_name-1","relativePath":"emoji 👍🏽 mix"}],"error":"Unable to scan workspace entries at 'key_name-1': ENOENT: no such file or directory, scandir 'key_name-1'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"hello","relativePath":"hello world"}],"error":"Unable to scan workspace entries at 'hello': ENOENT: no such file or directory, scandir 'hello'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"ünïcödé","relativePath":"HELLO"}],"error":"Unable to scan workspace entries at 'ünïcödé': ENOENT: no such file or directory, scandir 'ünïcödé'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"a..b","relativePath":"line1\nline2  padded  "}],"error":"Unable to scan workspace entries at 'a..b': ENOENT: no such file or directory, scandir 'a..b'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"emoji 👍🏽 mix","relativePath":"😀"}],"error":"Unable to scan workspace entries at 'emoji 👍🏽 mix': ENOENT: no such file or directory, scandir 'emoji 👍🏽 mix'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"abc","relativePath":"line1\nline2"}],"error":"Unable to scan workspace entries at 'abc': ENOENT: no such file or directory, scandir 'abc'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"emoji 👍🏽 mix","relativePath":"{name} has {count} itemskey_name-1"}],"error":"Unable to scan workspace entries at 'emoji 👍🏽 mix': ENOENT: no such file or directory, scandir 'emoji 👍🏽 mix'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"trailing.","relativePath":"﻿bom"}],"error":"Unable to scan workspace entries at 'trailing.': ENOENT: no such file or directory, scandir 'trailing.'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"Hello World","relativePath":"a😀b😀c"}],"error":"Unable to scan workspace entries at 'Hello World': ENOENT: no such file or directory, scandir 'Hello World'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"hello","relativePath":"src/a/b.ts"}],"error":"Unable to scan workspace entries at 'hello': ENOENT: no such file or directory, scandir 'hello'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"trailing.","relativePath":"trailing."}],"error":"Unable to scan workspace entries at 'trailing.': ENOENT: no such file or directory, scandir 'trailing.'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"key_name-1","relativePath":"aba..b"}],"error":"Unable to scan workspace entries at 'key_name-1': ENOENT: no such file or directory, scandir 'key_name-1'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":".leading","relativePath":"日本語のテキスト"}],"error":"Unable to scan workspace entries at '.leading': ENOENT: no such file or directory, scandir '.leading'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"  padded  ","relativePath":"key_name-1"}],"error":"Unable to scan workspace entries at '  padded  ': ENOENT: no such file or directory, scandir '  padded  '"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"  padded  ","relativePath":"src/a/b.ts"}],"error":"Unable to scan workspace entries at '  padded  ': ENOENT: no such file or directory, scandir '  padded  '"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"ΣΊΣΥΦΟΣ","relativePath":"﻿bom"}],"error":"Unable to scan workspace entries at 'ΣΊΣΥΦΟΣ': ENOENT: no such file or directory, scandir 'ΣΊΣΥΦΟΣ'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":":","relativePath":"a😀b😀c"}],"error":"Unable to scan workspace entries at ':': ENOENT: no such file or directory, scandir ':'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"abc","relativePath":"İstanbul"}],"error":"Unable to scan workspace entries at 'abc': ENOENT: no such file or directory, scandir 'abc'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"日本語のテキスト","relativePath":"é"}],"error":"Unable to scan workspace entries at '日本語のテキスト': ENOENT: no such file or directory, scandir '日本語のテキスト'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"日本語のテキストstraße","relativePath":"key_name-1"}],"error":"Unable to scan workspace entries at '日本語のテキストstraße': ENOENT: no such file or directory, scandir '日本語のテキストstraße'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"{name} has {count} items","relativePath":".leading"}],"error":"Unable to scan workspace entries at '{name} has {count} items': ENOENT: no such file or directory, scandir '{name} has {count} items'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"emoji 👍🏽 mix","relativePath":"Hello World😀"}],"error":"Unable to scan workspace entries at 'emoji 👍🏽 mix': ENOENT: no such file or directory, scandir 'emoji 👍🏽 mix'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"ΣΊΣΥΦΟΣ","relativePath":"tab\tseparated"}],"error":"Unable to scan workspace entries at 'ΣΊΣΥΦΟΣ': ENOENT: no such file or directory, scandir 'ΣΊΣΥΦΟΣ'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"ünïcödé","relativePath":"helloa..b"}],"error":"Unable to scan workspace entries at 'ünïcödé': ENOENT: no such file or directory, scandir 'ünïcödé'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"é","relativePath":"ünïcödé"}],"error":"Unable to scan workspace entries at 'é': ENOENT: no such file or directory, scandir 'é'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"😀key_name-1","relativePath":"hello world"}],"error":"Unable to scan workspace entries at '😀key_name-1': ENOENT: no such file or directory, scandir '😀key_name-1'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"a:b:c","relativePath":"日本語のテキストemoji 👍🏽 mix"}],"error":"Unable to scan workspace entries at 'a:b:c': ENOENT: no such file or directory, scandir 'a:b:c'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"HELLO","relativePath":"a"}],"error":"Unable to scan workspace entries at 'HELLO': ENOENT: no such file or directory, scandir 'HELLO'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"tab\tseparated","relativePath":"  padded  "}],"error":"Unable to scan workspace entries at 'tab\tseparated': ENOENT: no such file or directory, scandir 'tab\tseparated'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"Hello World😀","relativePath":"line1\nline2a"}],"error":"Unable to scan workspace entries at 'Hello World😀': ENOENT: no such file or directory, scandir 'Hello World😀'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"trailing.","relativePath":"src/a/b.ts"}],"error":"Unable to scan workspace entries at 'trailing.': ENOENT: no such file or directory, scandir 'trailing.'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"ünïcödé","relativePath":"a.b.c"}],"error":"Unable to scan workspace entries at 'ünïcödé': ENOENT: no such file or directory, scandir 'ünïcödé'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"ünïcödé","relativePath":"line1\nline2straße"}],"error":"Unable to scan workspace entries at 'ünïcödé': ENOENT: no such file or directory, scandir 'ünïcödé'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"src/a/b.ts","relativePath":"{name} has {count} items"}],"error":"Unable to scan workspace entries at 'src/a/b.ts': ENOENT: no such file or directory, scandir 'src/a/b.ts'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"ünïcödé.leading","relativePath":"ünïcödé"}],"error":"Unable to scan workspace entries at 'ünïcödé.leading': ENOENT: no such file or directory, scandir 'ünïcödé.leading'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"﻿bom","relativePath":"abc"}],"error":"Unable to scan workspace entries at '﻿bom': ENOENT: no such file or directory, scandir '﻿bom'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"a..b日本語のテキスト","relativePath":"src/a/b.ts"}],"error":"Unable to scan workspace entries at 'a..b日本語のテキスト': ENOENT: no such file or directory, scandir 'a..b日本語のテキスト'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"ünïcödé","relativePath":"日本語のテキスト"}],"error":"Unable to scan workspace entries at 'ünïcödé': ENOENT: no such file or directory, scandir 'ünïcödé'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"ns:key.path","relativePath":":"}],"error":"Unable to scan workspace entries at 'ns:key.path': ENOENT: no such file or directory, scandir 'ns:key.path'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"","relativePath":"straße"}],"error":"Unable to scan workspace entries at '': ENOENT: no such file or directory, scandir ''"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"😀","relativePath":"hello world"}],"error":"Unable to scan workspace entries at '😀': ENOENT: no such file or directory, scandir '😀'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"HELLO","relativePath":"straße"}],"error":"Unable to scan workspace entries at 'HELLO': ENOENT: no such file or directory, scandir 'HELLO'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"abcline1\nline2","relativePath":"line1\nline2"}],"error":"Unable to scan workspace entries at 'abcline1\nline2': ENOENT: no such file or directory, scandir 'abcline1\nline2'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"ünïcödéline1\nline2","relativePath":"a..bünïcödé"}],"error":"Unable to scan workspace entries at 'ünïcödéline1\nline2': ENOENT: no such file or directory, scandir 'ünïcödéline1\nline2'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"tab\tseparated","relativePath":"ns:key.path"}],"error":"Unable to scan workspace entries at 'tab\tseparated': ENOENT: no such file or directory, scandir 'tab\tseparated'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"abc","relativePath":"﻿bom"}],"error":"Unable to scan workspace entries at 'abc': ENOENT: no such file or directory, scandir 'abc'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"Hello World","relativePath":"tab\tseparated"}],"error":"Unable to scan workspace entries at 'Hello World': ENOENT: no such file or directory, scandir 'Hello World'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"straße","relativePath":"ΣΊΣΥΦΟΣ"}],"error":"Unable to scan workspace entries at 'straße': ENOENT: no such file or directory, scandir 'straße'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"emoji 👍🏽 mix","relativePath":"emoji 👍🏽 mix"}],"error":"Unable to scan workspace entries at 'emoji 👍🏽 mix': ENOENT: no such file or directory, scandir 'emoji 👍🏽 mix'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"é","relativePath":"straßestraße"}],"error":"Unable to scan workspace entries at 'é': ENOENT: no such file or directory, scandir 'é'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"a😀b😀c","relativePath":"abckey_name-1"}],"error":"Unable to scan workspace entries at 'a😀b😀c': ENOENT: no such file or directory, scandir 'a😀b😀c'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"ans:key.path","relativePath":"  padded  ﻿bom"}],"error":"Unable to scan workspace entries at 'ans:key.path': ENOENT: no such file or directory, scandir 'ans:key.path'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"helloHELLO","relativePath":"日本語のテキスト"}],"error":"Unable to scan workspace entries at 'helloHELLO': ENOENT: no such file or directory, scandir 'helloHELLO'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"helloé","relativePath":"emoji 👍🏽 mix😀"}],"error":"Unable to scan workspace entries at 'helloé': ENOENT: no such file or directory, scandir 'helloé'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"a😀b😀c","relativePath":"İstanbula😀b😀c"}],"error":"Unable to scan workspace entries at 'a😀b😀c': ENOENT: no such file or directory, scandir 'a😀b😀c'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"ns:key.path","relativePath":"é"}],"error":"Unable to scan workspace entries at 'ns:key.path': ENOENT: no such file or directory, scandir 'ns:key.path'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"﻿bom","relativePath":"ab"}],"error":"Unable to scan workspace entries at '﻿bom': ENOENT: no such file or directory, scandir '﻿bom'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"﻿bom","relativePath":"emoji 👍🏽 mix"}],"error":"Unable to scan workspace entries at '﻿bom': ENOENT: no such file or directory, scandir '﻿bom'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"hello world","relativePath":"ahello world"}],"error":"Unable to scan workspace entries at 'hello world': ENOENT: no such file or directory, scandir 'hello world'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"abc","relativePath":"hello world"}],"error":"Unable to scan workspace entries at 'abc': ENOENT: no such file or directory, scandir 'abc'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"日本語のテキスト","relativePath":"line1\nline2"}],"error":"Unable to scan workspace entries at '日本語のテキスト': ENOENT: no such file or directory, scandir '日本語のテキスト'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"{name} has {count} items","relativePath":"emoji 👍🏽 mix"}],"error":"Unable to scan workspace entries at '{name} has {count} items': ENOENT: no such file or directory, scandir '{name} has {count} items'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"ΣΊΣΥΦΟΣ","relativePath":"😀"}],"error":"Unable to scan workspace entries at 'ΣΊΣΥΦΟΣ': ENOENT: no such file or directory, scandir 'ΣΊΣΥΦΟΣ'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"emoji 👍🏽 mix","relativePath":"HELLO"}],"error":"Unable to scan workspace entries at 'emoji 👍🏽 mix': ENOENT: no such file or directory, scandir 'emoji 👍🏽 mix'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"hello world","relativePath":".leading"}],"error":"Unable to scan workspace entries at 'hello world': ENOENT: no such file or directory, scandir 'hello world'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"a:b:c","relativePath":"HELLOa"}],"error":"Unable to scan workspace entries at 'a:b:c': ENOENT: no such file or directory, scandir 'a:b:c'"}
+{"fn":"resolveWorkspaceFileBySuffix","args":[{"cwd":"HELLO","relativePath":"emoji 👍🏽 mix"}],"error":"Unable to scan workspace entries at 'HELLO': ENOENT: no such file or directory, scandir 'HELLO'"}
+{"fn":"discoverProjectScripts","args":[{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'startsWith')"}
+{"fn":"discoverProjectScripts","args":[{"a":"b"}],"error":"Cannot read properties of undefined (reading 'startsWith')"}
+{"fn":"discoverProjectScripts","args":[null],"error":"Cannot read properties of null (reading 'cwd')"}
+{"fn":"discoverProjectScripts","args":[[]],"error":"Cannot read properties of undefined (reading 'startsWith')"}
+{"fn":"discoverProjectScripts","args":[{}],"error":"Cannot read properties of undefined (reading 'startsWith')"}
+{"fn":"discoverProjectScripts","args":[["a",1]],"error":"Cannot read properties of undefined (reading 'startsWith')"}
+{"fn":"discoverProjectScripts","args":[0],"error":"Cannot read properties of undefined (reading 'startsWith')"}
+{"fn":"discoverProjectScripts","args":[true],"error":"Cannot read properties of undefined (reading 'startsWith')"}
+{"fn":"discoverProjectScripts","args":["x"],"error":"Cannot read properties of undefined (reading 'startsWith')"}
+{"fn":"listWorkspaceDirectories","args":[["a",1]],"error":"The \"path\" argument must be of type string or an instance of Buffer or URL. Received undefined"}
+{"fn":"listWorkspaceDirectories","args":[{"a":"b"}],"error":"The \"path\" argument must be of type string or an instance of Buffer or URL. Received undefined"}
+{"fn":"listWorkspaceDirectories","args":["x"],"error":"The \"path\" argument must be of type string or an instance of Buffer or URL. Received undefined"}
+{"fn":"listWorkspaceDirectories","args":[{}],"error":"The \"path\" argument must be of type string or an instance of Buffer or URL. Received undefined"}
+{"fn":"listWorkspaceDirectories","args":[0],"error":"The \"path\" argument must be of type string or an instance of Buffer or URL. Received undefined"}
+{"fn":"listWorkspaceDirectories","args":[{"a":{"b":"c"}}],"error":"The \"path\" argument must be of type string or an instance of Buffer or URL. Received undefined"}
+{"fn":"listWorkspaceDirectories","args":[true],"error":"The \"path\" argument must be of type string or an instance of Buffer or URL. Received undefined"}
+{"fn":"listWorkspaceDirectories","args":[null],"error":"Cannot read properties of null (reading 'relativePath')"}
+{"fn":"listWorkspaceDirectories","args":[[]],"error":"The \"path\" argument must be of type string or an instance of Buffer or URL. Received undefined"}
+{"fn":"searchLocalEntries","args":[0],"error":"Cannot read properties of undefined (reading 'trim')"}
+{"fn":"searchLocalEntries","args":[["a",1]],"error":"Cannot read properties of undefined (reading 'trim')"}
+{"fn":"searchLocalEntries","args":[[]],"error":"Cannot read properties of undefined (reading 'trim')"}
+{"fn":"searchLocalEntries","args":["x"],"error":"Cannot read properties of undefined (reading 'trim')"}
+{"fn":"searchLocalEntries","args":[true],"error":"Cannot read properties of undefined (reading 'trim')"}
+{"fn":"searchLocalEntries","args":[{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'trim')"}
+{"fn":"searchLocalEntries","args":[null],"error":"Cannot read properties of null (reading 'query')"}
+{"fn":"searchLocalEntries","args":[{}],"error":"Cannot read properties of undefined (reading 'trim')"}
+{"fn":"searchLocalEntries","args":[{"a":"b"}],"error":"Cannot read properties of undefined (reading 'trim')"}

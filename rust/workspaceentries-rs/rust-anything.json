@@ -1,0 +1,192 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/workspaceEntries.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "workspaceentries-rs",
+  "exports": [
+    {
+      "name": "clearWorkspaceIndexCache",
+      "file": "apps/server/src/workspaceEntries.ts",
+      "line": 811,
+      "params": [
+        {
+          "name": "cwd",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "prewarmWorkspaceSearchIndex",
+      "file": "apps/server/src/workspaceEntries.ts",
+      "line": 821,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "typeof typeof typeof typeof ProjectPrewarmSearchIndexInput.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ProjectPrewarmSearchIndexResult.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "browseWorkspaceEntries",
+      "file": "apps/server/src/workspaceEntries.ts",
+      "line": 854,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "typeof typeof typeof typeof FilesystemBrowseInput.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<typeof typeof typeof typeof FilesystemBrowseResult.Type.Type.Type.Type>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "searchWorkspaceEntries",
+      "file": "apps/server/src/workspaceEntries.ts",
+      "line": 884,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "typeof typeof typeof typeof ProjectSearchEntriesInput.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<typeof typeof typeof typeof ProjectSearchEntriesResult.Type.Type.Type.Type>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "searchWorkspaceContent",
+      "file": "apps/server/src/workspaceEntries.ts",
+      "line": 1009,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "typeof typeof typeof typeof ProjectSearchContentInput.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<typeof typeof typeof typeof ProjectSearchContentResult.Type.Type.Type.Type>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveWorkspaceFileReferences",
+      "file": "apps/server/src/workspaceEntries.ts",
+      "line": 1154,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "typeof typeof typeof typeof ProjectResolveWorkspaceFileReferencesInput.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<typeof typeof typeof typeof ProjectResolveWorkspaceFileReferencesResult.Type.Type.Type.Type>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveWorkspaceFileBySuffix",
+      "file": "apps/server/src/workspaceEntries.ts",
+      "line": 1166,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  cwd: string;\n  relativePath: string;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<string | null>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "discoverProjectScripts",
+      "file": "apps/server/src/workspaceEntries.ts",
+      "line": 1177,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "typeof typeof typeof typeof ProjectDiscoverScriptsInput.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<typeof typeof typeof typeof ProjectDiscoverScriptsResult.Type.Type.Type.Type>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "listWorkspaceDirectories",
+      "file": "apps/server/src/workspaceEntries.ts",
+      "line": 1231,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "typeof typeof typeof typeof ProjectListDirectoriesInput.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<typeof typeof typeof typeof ProjectListDirectoriesResult.Type.Type.Type.Type>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "searchLocalEntries",
+      "file": "apps/server/src/workspaceEntries.ts",
+      "line": 1376,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "typeof typeof typeof typeof ProjectSearchLocalEntriesInput.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<typeof typeof typeof typeof ProjectSearchLocalEntriesResult.Type.Type.Type.Type>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

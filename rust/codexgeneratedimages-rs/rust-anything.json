@@ -1,0 +1,396 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/codexGeneratedImages.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "codexgeneratedimages-rs",
+  "exports": [
+    {
+      "name": "normalizeNonEmptyString",
+      "file": "apps/server/src/codexGeneratedImages.ts",
+      "line": 55,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "normalizeCodexGeneratedImageItemType",
+      "file": "apps/server/src/codexGeneratedImages.ts",
+      "line": 60,
+      "params": [
+        {
+          "name": "raw",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isCodexGeneratedImageItemType",
+      "file": "apps/server/src/codexGeneratedImages.ts",
+      "line": 70,
+      "params": [
+        {
+          "name": "raw",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveCodexHomePath",
+      "file": "apps/server/src/codexGeneratedImages.ts",
+      "line": 131,
+      "params": [
+        {
+          "name": "codexHome",
+          "ts_type": "string | CodexGeneratedImageHomeContext",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveCodexGeneratedImagesRoot",
+      "file": "apps/server/src/codexGeneratedImages.ts",
+      "line": 136,
+      "params": [
+        {
+          "name": "codexHome",
+          "ts_type": "string | CodexGeneratedImageHomeContext",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "codexConfiguredHomePathsFromSettings",
+      "file": "apps/server/src/codexGeneratedImages.ts",
+      "line": 147,
+      "params": [
+        {
+          "name": "settings",
+          "ts_type": "typeof typeof typeof typeof ServerSettings.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "readonly (string | CodexGeneratedImageHomeContext)[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "enabledCodexProviderInstanceIdsFromSettings",
+      "file": "apps/server/src/codexGeneratedImages.ts",
+      "line": 176,
+      "params": [
+        {
+          "name": "settings",
+          "ts_type": "typeof typeof typeof typeof ServerSettings.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ReadonlySet<typeof typeof typeof typeof ProviderInstanceId.Type.Type.Type.Type>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveCodexGeneratedImagesRoots",
+      "file": "apps/server/src/codexGeneratedImages.ts",
+      "line": 190,
+      "params": [
+        {
+          "name": "homePath",
+          "ts_type": "(string | CodexGeneratedImageHomeContext)",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "readonly string[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveCodexGeneratedImageHomes",
+      "file": "apps/server/src/codexGeneratedImages.ts",
+      "line": 198,
+      "params": [
+        {
+          "name": "homePath",
+          "ts_type": "(string | CodexGeneratedImageHomeContext)",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "readonly string[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "firstStringValue",
+      "file": "apps/server/src/codexGeneratedImages.ts",
+      "line": 204,
+      "params": [
+        {
+          "name": "record",
+          "ts_type": "Record<string, unknown> | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "keys",
+          "ts_type": "readonly string[]",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "extractCodexGeneratedImagePath",
+      "file": "apps/server/src/codexGeneratedImages.ts",
+      "line": 216,
+      "params": [
+        {
+          "name": "record",
+          "ts_type": "Record<string, unknown> | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "extractCodexGeneratedImageCallId",
+      "file": "apps/server/src/codexGeneratedImages.ts",
+      "line": 222,
+      "params": [
+        {
+          "name": "record",
+          "ts_type": "Record<string, unknown> | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "predictedCodexGeneratedImagePath",
+      "file": "apps/server/src/codexGeneratedImages.ts",
+      "line": 228,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly item: Record<string, unknown>;\n  readonly threadId: typeof typeof typeof typeof ThreadId.Type.Type.Type.Type | string | undefined;\n  readonly codexHome?: string | CodexGeneratedImageHomeContext;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "annotateCodexGeneratedImagePayload",
+      "file": "apps/server/src/codexGeneratedImages.ts",
+      "line": 242,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly value: unknown;\n  readonly threadId: typeof typeof typeof typeof ThreadId.Type.Type.Type.Type | string | undefined;\n  readonly codexHome?: string | CodexGeneratedImageHomeContext;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "sanitizeNestedCodexGeneratedImagePayloads",
+      "file": "apps/server/src/codexGeneratedImages.ts",
+      "line": 277,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly value: unknown;\n  readonly threadId: typeof typeof typeof typeof ThreadId.Type.Type.Type.Type | string | undefined;\n  readonly codexHome?: string | CodexGeneratedImageHomeContext;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "extractCodexGeneratedImageReference",
+      "file": "apps/server/src/codexGeneratedImages.ts",
+      "line": 316,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly value: unknown;\n  readonly threadId: typeof typeof typeof typeof ThreadId.Type.Type.Type.Type | string | undefined;\n  readonly codexHome?: string | CodexGeneratedImageHomeContext;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "CodexGeneratedImageReference | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "codexGeneratedImageArtifact",
+      "file": "apps/server/src/codexGeneratedImages.ts",
+      "line": 342,
+      "params": [
+        {
+          "name": "reference",
+          "ts_type": "CodexGeneratedImageReference",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof CodexGeneratedImageArtifact.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isCodexGeneratedImageArtifact",
+      "file": "apps/server/src/codexGeneratedImages.ts",
+      "line": 352,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "value is typeof typeof typeof typeof CodexGeneratedImageArtifact.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "markdownImagePath",
+      "file": "apps/server/src/codexGeneratedImages.ts",
+      "line": 363,
+      "params": [
+        {
+          "name": "filePath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "generatedImageMarkdown",
+      "file": "apps/server/src/codexGeneratedImages.ts",
+      "line": 372,
+      "params": [
+        {
+          "name": "filePath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "generatedImagePathFromRuntimeEvent",
+      "file": "apps/server/src/codexGeneratedImages.ts",
+      "line": 380,
+      "params": [
+        {
+          "name": "event",
+          "ts_type": "typeof typeof typeof ProviderRuntimeEventV2.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

@@ -1,0 +1,819 @@
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"ΣΊΣΥΦΟΣ"}],"ok":"ΣΊΣΥΦΟΣ cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"line1\nline2.leading"}],"ok":"line1\nline2.leading cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"a"}],"ok":"a cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"tab\tseparated"}],"ok":"tab\tseparated cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"a":"b"}],"ok":"undefined cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{}],"ok":"undefined cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"﻿bom"}],"ok":"﻿bom cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"{name} has {count} itemsünïcödé"}],"ok":"{name} has {count} itemsünïcödé cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"src/a/b.tsΣΊΣΥΦΟΣ"}],"ok":"src/a/b.tsΣΊΣΥΦΟΣ cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"src/a/b.ts"}],"ok":"src/a/b.ts cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"./x/**/*.json"}],"ok":"./x/**/*.json cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"İstanbul"}],"ok":"İstanbul cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"a.b.c"}],"ok":"a.b.c cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"aba.b.c"}],"ok":"aba.b.c cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"hello"}],"ok":"hello cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"abc"}],"ok":"abc cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"ab"}],"ok":"ab cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"ünïcödé"}],"ok":"ünïcödé cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"trailing."}],"ok":"trailing. cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"ünïcödéstraße"}],"ok":"ünïcödéstraße cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"a.b.c{name} has {count} items"}],"ok":"a.b.c{name} has {count} items cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[["a",1]],"ok":"undefined cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"HELLO"}],"ok":"HELLO cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"日本語のテキスト"}],"ok":"日本語のテキスト cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"é"}],"ok":"é cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"Hello World"}],"ok":"Hello World cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"a😀b😀c"}],"ok":"a😀b😀c cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"line1\nline2"}],"ok":"line1\nline2 cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"😀"}],"ok":"😀 cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"ΣΊΣΥΦΟΣa..b"}],"ok":"ΣΊΣΥΦΟΣa..b cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"hello worldünïcödé"}],"ok":"hello worldünïcödé cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[[]],"ok":"undefined cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"a..b"}],"ok":"a..b cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"hello world"}],"ok":"hello world cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"straßea.b.c"}],"ok":"straßea.b.c cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"key_name-1"}],"ok":"key_name-1 cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"a:b:ca..b"}],"ok":"a:b:ca..b cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":""}],"ok":" cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"a:b:c"}],"ok":"a:b:c cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"HELLO😀"}],"ok":"HELLO😀 cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[true],"ok":"undefined cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":":src/a/b.ts"}],"ok":":src/a/b.ts cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"straße"}],"ok":"straße cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"abca.b.c"}],"ok":"abca.b.c cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[0],"ok":"undefined cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"ns:key.path"}],"ok":"ns:key.path cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"a":{"b":"c"}}],"ok":"undefined cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"  padded  "}],"ok":"  padded   cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"ns:key.pathΣΊΣΥΦΟΣ"}],"ok":"ns:key.pathΣΊΣΥΦΟΣ cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"  padded  a..b"}],"ok":"  padded  a..b cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"trailing.a:b:c"}],"ok":"trailing.a:b:c cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"{name} has {count} items"}],"ok":"{name} has {count} items cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"helloΣΊΣΥΦΟΣ"}],"ok":"helloΣΊΣΥΦΟΣ cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"trailing.HELLO"}],"ok":"trailing.HELLO cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"key_name-1tab\tseparated"}],"ok":"key_name-1tab\tseparated cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"emoji 👍🏽 mix"}],"ok":"emoji 👍🏽 mix cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"straße😀"}],"ok":"straße😀 cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"ab日本語のテキスト"}],"ok":"ab日本語のテキスト cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"key_name-1😀"}],"ok":"key_name-1😀 cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"Hello Worldemoji 👍🏽 mix"}],"ok":"Hello Worldemoji 👍🏽 mix cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"Hello World﻿bom"}],"ok":"Hello World﻿bom cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":".leading"}],"ok":".leading cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"éns:key.path"}],"ok":"éns:key.path cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"éünïcödé"}],"ok":"éünïcödé cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[null],"error":"Cannot read properties of null (reading 'provider')"}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"a.b.cünïcödé"}],"ok":"a.b.cünïcödé cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"hello worldHELLO"}],"ok":"hello worldHELLO cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"abHello World"}],"ok":"abHello World cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"ns:key.pathHello World"}],"ok":"ns:key.pathHello World cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"trailing.emoji 👍🏽 mix"}],"ok":"trailing.emoji 👍🏽 mix cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"./x/**/*.jsona.b.c"}],"ok":"./x/**/*.jsona.b.c cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"a.b.ctrailing."}],"ok":"a.b.ctrailing. cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"ab.leading"}],"ok":"ab.leading cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":["x"],"ok":"undefined cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"tab\tseparated{name} has {count} items"}],"ok":"tab\tseparated{name} has {count} items cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"{name} has {count} items﻿bom"}],"ok":"{name} has {count} items﻿bom cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"é./x/**/*.json"}],"ok":"é./x/**/*.json cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"ns:key.pathİstanbul"}],"ok":"ns:key.pathİstanbul cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"HELLOns:key.path"}],"ok":"HELLOns:key.path cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"a:b:c日本語のテキスト"}],"ok":"a:b:c日本語のテキスト cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"😀a:b:c"}],"ok":"😀a:b:c cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":".leadingHELLO"}],"ok":".leadingHELLO cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":":"}],"ok":": cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"src/a/b.ts{name} has {count} items"}],"ok":"src/a/b.ts{name} has {count} items cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"HELLOstraße"}],"ok":"HELLOstraße cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"ünïcödé  padded  "}],"ok":"ünïcödé  padded   cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"Hello World😀"}],"ok":"Hello World😀 cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"ns:key.pathünïcödé"}],"ok":"ns:key.pathünïcödé cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"./x/**/*.jsonHello World"}],"ok":"./x/**/*.jsonHello World cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"😀a..b"}],"ok":"😀a..b cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"éabc"}],"ok":"éabc cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"src/a/b.ts😀"}],"ok":"src/a/b.ts😀 cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"ΣΊΣΥΦΟΣstraße"}],"ok":"ΣΊΣΥΦΟΣstraße cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"ΣΊΣΥΦΟΣhello"}],"ok":"ΣΊΣΥΦΟΣhello cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"  padded  hello world"}],"ok":"  padded  hello world cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"HELLOemoji 👍🏽 mix"}],"ok":"HELLOemoji 👍🏽 mix cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"emoji 👍🏽 mixns:key.path"}],"ok":"emoji 👍🏽 mixns:key.path cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"straßea..b"}],"ok":"straßea..b cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"日本語のテキスト  padded  "}],"ok":"日本語のテキスト  padded   cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"key_name-1a:b:c"}],"ok":"key_name-1a:b:c cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"hello😀"}],"ok":"hello😀 cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"😀ab"}],"ok":"😀ab cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"straßens:key.path"}],"ok":"straßens:key.path cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"src/a/b.tsline1\nline2"}],"ok":"src/a/b.tsline1\nline2 cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"﻿bomtab\tseparated"}],"ok":"﻿bomtab\tseparated cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"Hello Worlda.b.c"}],"ok":"Hello Worlda.b.c cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"src/a/b.tsa.b.c"}],"ok":"src/a/b.tsa.b.c cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"straßea:b:c"}],"ok":"straßea:b:c cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"hello world:"}],"ok":"hello world: cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"é:"}],"ok":"é: cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"key_name-1trailing."}],"ok":"key_name-1trailing. cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"  padded  src/a/b.ts"}],"ok":"  padded  src/a/b.ts cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"akey_name-1"}],"ok":"akey_name-1 cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"a:b:c  padded  "}],"ok":"a:b:c  padded   cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"ΣΊΣΥΦΟΣ  padded  "}],"ok":"ΣΊΣΥΦΟΣ  padded   cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"line1\nline2key_name-1"}],"ok":"line1\nline2key_name-1 cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"a..bab"}],"ok":"a..bab cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"ΣΊΣΥΦΟΣa:b:c"}],"ok":"ΣΊΣΥΦΟΣa:b:c cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"emoji 👍🏽 mixab"}],"ok":"emoji 👍🏽 mixab cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"﻿bom./x/**/*.json"}],"ok":"﻿bom./x/**/*.json cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"abcİstanbul"}],"ok":"abcİstanbul cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"İstanbulab"}],"ok":"İstanbulab cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"﻿bomünïcödé"}],"ok":"﻿bomünïcödé cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"src/a/b.tsab"}],"ok":"src/a/b.tsab cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":":ns:key.path"}],"ok":":ns:key.path cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"helloa:b:c"}],"ok":"helloa:b:c cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"a😀b😀csrc/a/b.ts"}],"ok":"a😀b😀csrc/a/b.ts cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"key_name-1ünïcödé"}],"ok":"key_name-1ünïcödé cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"a:b:csrc/a/b.ts"}],"ok":"a:b:csrc/a/b.ts cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"straße日本語のテキスト"}],"ok":"straße日本語のテキスト cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"ΣΊΣΥΦΟΣİstanbul"}],"ok":"ΣΊΣΥΦΟΣİstanbul cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"straßeé"}],"ok":"straßeé cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"ns:key.patha😀b😀c"}],"ok":"ns:key.patha😀b😀c cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"aemoji 👍🏽 mix"}],"ok":"aemoji 👍🏽 mix cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"a..bsrc/a/b.ts"}],"ok":"a..bsrc/a/b.ts cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"abab"}],"ok":"abab cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"abca:b:c"}],"ok":"abca:b:c cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"ns:key.pathHELLO"}],"ok":"ns:key.pathHELLO cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"日本語のテキストtab\tseparated"}],"ok":"日本語のテキストtab\tseparated cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"line1\nline2line1\nline2"}],"ok":"line1\nline2line1\nline2 cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"İstanbul﻿bom"}],"ok":"İstanbul﻿bom cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":".leadingkey_name-1"}],"ok":".leadingkey_name-1 cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"abkey_name-1"}],"ok":"abkey_name-1 cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"é﻿bom"}],"ok":"é﻿bom cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"a😀b😀ctab\tseparated"}],"ok":"a😀b😀ctab\tseparated cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"straßeHELLO"}],"ok":"straßeHELLO cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"😀straße"}],"ok":"😀straße cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"emoji 👍🏽 mixkey_name-1"}],"ok":"emoji 👍🏽 mixkey_name-1 cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"HELLOünïcödé"}],"ok":"HELLOünïcödé cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"./x/**/*.jsonemoji 👍🏽 mix"}],"ok":"./x/**/*.jsonemoji 👍🏽 mix cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"Hello Worldns:key.path"}],"ok":"Hello Worldns:key.path cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"line1\nline2ns:key.path"}],"ok":"line1\nline2ns:key.path cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"key_name-1emoji 👍🏽 mix"}],"ok":"key_name-1emoji 👍🏽 mix cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"helloé"}],"ok":"helloé cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"line1\nline2日本語のテキスト"}],"ok":"line1\nline2日本語のテキスト cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"﻿bomemoji 👍🏽 mix"}],"ok":"﻿bomemoji 👍🏽 mix cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"😀HELLO"}],"ok":"😀HELLO cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"日本語のテキストHELLO"}],"ok":"日本語のテキストHELLO cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"aé"}],"ok":"aé cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"日本語のテキストsrc/a/b.ts"}],"ok":"日本語のテキストsrc/a/b.ts cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"😀{name} has {count} items"}],"ok":"😀{name} has {count} items cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"a:b:ctab\tseparated"}],"ok":"a:b:ctab\tseparated cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"hellons:key.path"}],"ok":"hellons:key.path cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"aba"}],"ok":"aba cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"tab\tseparated😀"}],"ok":"tab\tseparated😀 cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"a:b:cünïcödé"}],"ok":"a:b:cünïcödé cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"ab{name} has {count} items"}],"ok":"ab{name} has {count} items cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"a😀b😀cns:key.path"}],"ok":"a😀b😀cns:key.path cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"ΣΊΣΥΦΟΣab"}],"ok":"ΣΊΣΥΦΟΣab cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"{name} has {count} itemsabc"}],"ok":"{name} has {count} itemsabc cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"ünïcödéhello"}],"ok":"ünïcödéhello cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"İstanbulsrc/a/b.ts"}],"ok":"İstanbulsrc/a/b.ts cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"src/a/b.tstab\tseparated"}],"ok":"src/a/b.tstab\tseparated cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"line1\nline2İstanbul"}],"ok":"line1\nline2İstanbul cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":".leading./x/**/*.json"}],"ok":".leading./x/**/*.json cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"a..b:"}],"ok":"a..b: cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":":straße"}],"ok":":straße cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"abca..b"}],"ok":"abca..b cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"ünïcödé{name} has {count} items"}],"ok":"ünïcödé{name} has {count} items cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"ünïcödéns:key.path"}],"ok":"ünïcödéns:key.path cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"ns:key.path{name} has {count} items"}],"ok":"ns:key.path{name} has {count} items cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"trailing.abc"}],"ok":"trailing.abc cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":".leadingİstanbul"}],"ok":".leadingİstanbul cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"a.leading"}],"ok":"a.leading cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":":ΣΊΣΥΦΟΣ"}],"ok":":ΣΊΣΥΦΟΣ cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"İstanbulns:key.path"}],"ok":"İstanbulns:key.path cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"İstanbulabc"}],"ok":"İstanbulabc cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"Hello Worlda:b:c"}],"ok":"Hello Worlda:b:c cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"src/a/b.tsa..b"}],"ok":"src/a/b.tsa..b cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"😀a😀b😀c"}],"ok":"😀a😀b😀c cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"hellokey_name-1"}],"ok":"hellokey_name-1 cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"src/a/b.ts.leading"}],"ok":"src/a/b.ts.leading cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"abé"}],"ok":"abé cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"a.b.cstraße"}],"ok":"a.b.cstraße cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"emoji 👍🏽 mixİstanbul"}],"ok":"emoji 👍🏽 mixİstanbul cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"😀a.b.c"}],"ok":"😀a.b.c cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"a..bhello"}],"ok":"a..bhello cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"ns:key.path:"}],"ok":"ns:key.path: cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":":key_name-1"}],"ok":":key_name-1 cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":".leadinga:b:c"}],"ok":".leadinga:b:c cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}
+{"fn":"findProjectFolderProblem","args":[["日本語のテキスト","a.b.c"],{"platform":"ab"}],"ok":"Use an absolute path: 日本語のテキスト"}
+{"fn":"findProjectFolderProblem","args":[["éa.b.c","ns:key.path","tab\tseparated"],{"platform":"straße"}],"ok":"Use an absolute path: éa.b.c"}
+{"fn":"findProjectFolderProblem","args":[["line1\nline2","😀HELLO","ünïcödé"],{"platform":"😀"}],"ok":"Use an absolute path: line1\nline2"}
+{"fn":"findProjectFolderProblem","args":[["a.b.ca..b","  padded  ","İstanbul"],{"platform":""}],"ok":"Use an absolute path: a.b.ca..b"}
+{"fn":"findProjectFolderProblem","args":[["a:b:c"],{"platform":""}],"ok":"Use an absolute path: a:b:c"}
+{"fn":"findProjectFolderProblem","args":[[],{"$undefined":true}],"ok":"Add at least one folder."}
+{"fn":"findProjectFolderProblem","args":[["a😀b😀c","./x/**/*.json","straße"]],"ok":"Use an absolute path: a😀b😀c"}
+{"fn":"findProjectFolderProblem","args":[["./x/**/*.json"]],"ok":"Use an absolute path: ./x/**/*.json"}
+{"fn":"findProjectFolderProblem","args":[["İstanbul"],{}],"ok":"Use an absolute path: İstanbul"}
+{"fn":"findProjectFolderProblem","args":[["İstanbul"],{"platform":"﻿bom日本語のテキスト"}],"ok":"Use an absolute path: İstanbul"}
+{"fn":"findProjectFolderProblem","args":[["é",""],{"platform":"é"}],"ok":"Use an absolute path: é"}
+{"fn":"findProjectFolderProblem","args":[[],{"platform":".leading"}],"ok":"Add at least one folder."}
+{"fn":"findProjectFolderProblem","args":[[],{"platform":"é"}],"ok":"Add at least one folder."}
+{"fn":"findProjectFolderProblem","args":[[".leading","Hello Worlda:b:c","straße"],{"platform":"é"}],"ok":"Use an absolute path: .leading"}
+{"fn":"findProjectFolderProblem","args":[["line1\nline2ΣΊΣΥΦΟΣ"],{"platform":"key_name-1"}],"ok":"Use an absolute path: line1\nline2ΣΊΣΥΦΟΣ"}
+{"fn":"findProjectFolderProblem","args":[[],{"platform":"emoji 👍🏽 mixΣΊΣΥΦΟΣ"}],"ok":"Add at least one folder."}
+{"fn":"findProjectFolderProblem","args":[[],{}],"ok":"Add at least one folder."}
+{"fn":"findProjectFolderProblem","args":[["ab","key_name-1"],{}],"ok":"Use an absolute path: ab"}
+{"fn":"findProjectFolderProblem","args":[["İstanbul😀","src/a/b.ts","日本語のテキスト"],{"platform":"ΣΊΣΥΦΟΣ"}],"ok":"Use an absolute path: İstanbul😀"}
+{"fn":"findProjectFolderProblem","args":[["a..b","straße"],{"platform":"é.leading"}],"ok":"Use an absolute path: a..b"}
+{"fn":"findProjectFolderProblem","args":[["İstanbul","a","line1\nline2"],{"platform":"key_name-1"}],"ok":"Use an absolute path: İstanbul"}
+{"fn":"findProjectFolderProblem","args":[["hello world","﻿bom"]],"ok":"Use an absolute path: hello world"}
+{"fn":"findProjectFolderProblem","args":[["tab\tseparated","😀ünïcödé","abc"]],"ok":"Use an absolute path: tab\tseparated"}
+{"fn":"findProjectFolderProblem","args":[["hello world"],{"platform":"a😀b😀c"}],"ok":"Use an absolute path: hello world"}
+{"fn":"findProjectFolderProblem","args":[["a","😀abc","aé"],{"platform":"src/a/b.ts"}],"ok":"Use an absolute path: a"}
+{"fn":"findProjectFolderProblem","args":[["emoji 👍🏽 mix","  padded  "],{"platform":"İstanbul"}],"ok":"Use an absolute path: emoji 👍🏽 mix"}
+{"fn":"findProjectFolderProblem","args":[[],{"platform":"﻿bom"}],"ok":"Add at least one folder."}
+{"fn":"findProjectFolderProblem","args":[[],{"platform":"日本語のテキスト"}],"ok":"Add at least one folder."}
+{"fn":"findProjectFolderProblem","args":[["ns:key.path","emoji 👍🏽 mix"],{"$undefined":true}],"ok":"Use an absolute path: ns:key.path"}
+{"fn":"findProjectFolderProblem","args":[["trailing..leading","straße","ΣΊΣΥΦΟΣ"],{"platform":""}],"ok":"Use an absolute path: trailing..leading"}
+{"fn":"findProjectFolderProblem","args":[["hello",""],{"platform":"ab"}],"ok":"Use an absolute path: hello"}
+{"fn":"findProjectFolderProblem","args":[[".leading","trailing.","HELLO"],{}],"ok":"Use an absolute path: .leading"}
+{"fn":"findProjectFolderProblem","args":[[""],{"$undefined":true}],"ok":"Use an absolute path: "}
+{"fn":"findProjectFolderProblem","args":[[],{"platform":""}],"ok":"Add at least one folder."}
+{"fn":"findProjectFolderProblem","args":[[],{"platform":"emoji 👍🏽 mix"}],"ok":"Add at least one folder."}
+{"fn":"findProjectFolderProblem","args":[["日本語のテキスト","{name} has {count} items"],{"platform":"日本語のテキスト"}],"ok":"Use an absolute path: 日本語のテキスト"}
+{"fn":"findProjectFolderProblem","args":[["ünïcödé"],{"platform":""}],"ok":"Use an absolute path: ünïcödé"}
+{"fn":"findProjectFolderProblem","args":[["ab","hello world"],{}],"ok":"Use an absolute path: ab"}
+{"fn":"findProjectFolderProblem","args":[["a﻿bom","a","ünïcödé"],{"$undefined":true}],"ok":"Use an absolute path: a﻿bom"}
+{"fn":"findProjectFolderProblem","args":[["trailing.","a.b.c"],{"platform":"abHello World"}],"ok":"Use an absolute path: trailing."}
+{"fn":"findProjectFolderProblem","args":[["hello world"],{"platform":"{name} has {count} items"}],"ok":"Use an absolute path: hello world"}
+{"fn":"findProjectFolderProblem","args":[["tab\tseparated","a.b.ca😀b😀c","ns:key.path"],{"platform":"a"}],"ok":"Use an absolute path: tab\tseparated"}
+{"fn":"findProjectFolderProblem","args":[[]],"ok":"Add at least one folder."}
+{"fn":"findProjectFolderProblem","args":[["Hello WorldΣΊΣΥΦΟΣ","hello world","  padded  "],{}],"ok":"Use an absolute path: Hello WorldΣΊΣΥΦΟΣ"}
+{"fn":"findProjectFolderProblem","args":[["İstanbulİstanbul","é","key_name-1"],{}],"ok":"Use an absolute path: İstanbulİstanbul"}
+{"fn":"findProjectFolderProblem","args":[[":straße","ΣΊΣΥΦΟΣ"],{"platform":"key_name-1"}],"ok":"Use an absolute path: :straße"}
+{"fn":"findProjectFolderProblem","args":[["hello"],{}],"ok":"Use an absolute path: hello"}
+{"fn":"findProjectFolderProblem","args":[["ab","hello","Hello World"],{}],"ok":"Use an absolute path: ab"}
+{"fn":"findProjectFolderProblem","args":[["a.b.c",".leading","{name} has {count} items"],{"$undefined":true}],"ok":"Use an absolute path: a.b.c"}
+{"fn":"findProjectFolderProblem","args":[["abc"],{"platform":"straße"}],"ok":"Use an absolute path: abc"}
+{"fn":"findProjectFolderProblem","args":[[":"],{"$undefined":true}],"ok":"Use an absolute path: :"}
+{"fn":"findProjectFolderProblem","args":[["hello world","src/a/b.tsHELLO","ns:key.path"],{}],"ok":"Use an absolute path: hello world"}
+{"fn":"findProjectFolderProblem","args":[["ΣΊΣΥΦΟΣ","HELLO"],{"$undefined":true}],"ok":"Use an absolute path: ΣΊΣΥΦΟΣ"}
+{"fn":"findProjectFolderProblem","args":[["a..b","  padded  ","  padded  "],{}],"ok":"Use an absolute path: a..b"}
+{"fn":"findProjectFolderProblem","args":[["😀"],{"platform":"a:b:c"}],"ok":"Use an absolute path: 😀"}
+{"fn":"findProjectFolderProblem","args":[["",":"]],"ok":"Use an absolute path: "}
+{"fn":"findProjectFolderProblem","args":[[],{"platform":":"}],"ok":"Add at least one folder."}
+{"fn":"findProjectFolderProblem","args":[["{name} has {count} items","é"],{}],"ok":"Use an absolute path: {name} has {count} items"}
+{"fn":"findProjectFolderProblem","args":[["a😀b😀c"],{"platform":"Hello World﻿bom"}],"ok":"Use an absolute path: a😀b😀c"}
+{"fn":"findProjectFolderProblem","args":[["a..b"],{"$undefined":true}],"ok":"Use an absolute path: a..b"}
+{"fn":"findProjectFolderProblem","args":[["src/a/b.ts","Hello World","a:b:c"]],"ok":"Use an absolute path: src/a/b.ts"}
+{"fn":"findProjectFolderProblem","args":[["line1\nline2ab","hello world"],{"platform":"straße"}],"ok":"Use an absolute path: line1\nline2ab"}
+{"fn":"findProjectFolderProblem","args":[["{name} has {count} items","ns:key.path"],{"platform":".leading"}],"ok":"Use an absolute path: {name} has {count} items"}
+{"fn":"findProjectFolderProblem","args":[["a..b","key_name-1","a.b.c"]],"ok":"Use an absolute path: a..b"}
+{"fn":"findProjectFolderProblem","args":[["{name} has {count} items  padded  "],null],"ok":"Use an absolute path: {name} has {count} items  padded  "}
+{"fn":"findProjectFolderProblem","args":[["helloΣΊΣΥΦΟΣ","trailing.","a:b:c"],{"platform":"a:b:c"}],"ok":"Use an absolute path: helloΣΊΣΥΦΟΣ"}
+{"fn":"findProjectFolderProblem","args":[["key_name-1","İstanbul","abc"],{"platform":"abchello world"}],"ok":"Use an absolute path: key_name-1"}
+{"fn":"findProjectFolderProblem","args":[["日本語のテキスト",""],{}],"ok":"Use an absolute path: 日本語のテキスト"}
+{"fn":"findProjectFolderProblem","args":[["{name} has {count} items","key_name-1","ns:key.path"],{}],"ok":"Use an absolute path: {name} has {count} items"}
+{"fn":"findProjectFolderProblem","args":[["a😀b😀ca.b.c"],{"platform":"a..b"}],"ok":"Use an absolute path: a😀b😀ca.b.c"}
+{"fn":"findProjectFolderProblem","args":[[],{"platform":"﻿bomkey_name-1"}],"ok":"Add at least one folder."}
+{"fn":"findProjectFolderProblem","args":[["a😀b😀c","Hello World","line1\nline2"],{}],"ok":"Use an absolute path: a😀b😀c"}
+{"fn":"findProjectFolderProblem","args":[["  padded  tab\tseparated"],{"platform":"HELLO"}],"ok":"Use an absolute path:   padded  tab\tseparated"}
+{"fn":"findProjectFolderProblem","args":[[],{"platform":"key_name-1"}],"ok":"Add at least one folder."}
+{"fn":"findProjectFolderProblem","args":[[],true],"ok":"Add at least one folder."}
+{"fn":"findProjectFolderProblem","args":[["ünïcödé"],{}],"ok":"Use an absolute path: ünïcödé"}
+{"fn":"findProjectFolderProblem","args":[[],{"platform":"hello world"}],"ok":"Add at least one folder."}
+{"fn":"findProjectFolderProblem","args":[[":src/a/b.ts"]],"ok":"Use an absolute path: :src/a/b.ts"}
+{"fn":"findProjectFolderProblem","args":[["ab","  padded  "],{}],"ok":"Use an absolute path: ab"}
+{"fn":"findProjectFolderProblem","args":[["trailing.","hello","ünïcödé"],{"platform":"a.b.c"}],"ok":"Use an absolute path: trailing."}
+{"fn":"findProjectFolderProblem","args":[[],{"platform":"ΣΊΣΥΦΟΣ"}],"ok":"Add at least one folder."}
+{"fn":"findProjectFolderProblem","args":[["a😀b😀c"],{"platform":"key_name-1"}],"ok":"Use an absolute path: a😀b😀c"}
+{"fn":"findProjectFolderProblem","args":[["{name} has {count} items"],"x"],"ok":"Use an absolute path: {name} has {count} items"}
+{"fn":"findProjectFolderProblem","args":[["hello world","line1\nline2{name} has {count} items","a😀b😀c"],{"platform":"ab:"}],"ok":"Use an absolute path: hello world"}
+{"fn":"findProjectFolderProblem","args":[["emoji 👍🏽 mix","a😀b😀c","HELLOhello world"],{"$undefined":true}],"ok":"Use an absolute path: emoji 👍🏽 mix"}
+{"fn":"findProjectFolderProblem","args":[["abc","tab\tseparated","a..b"],{}],"ok":"Use an absolute path: abc"}
+{"fn":"findProjectFolderProblem","args":[[],{"platform":"😀"}],"ok":"Add at least one folder."}
+{"fn":"findProjectFolderProblem","args":[[],{"a":{"b":"c"}}],"ok":"Add at least one folder."}
+{"fn":"findProjectFolderProblem","args":[["ünïcödé",""],{"platform":"ünïcödé"}],"ok":"Use an absolute path: ünïcödé"}
+{"fn":"findProjectFolderProblem","args":[["emoji 👍🏽 mix","{name} has {count} items","ΣΊΣΥΦΟΣHELLO"],{"platform":"﻿bom"}],"ok":"Use an absolute path: emoji 👍🏽 mix"}
+{"fn":"findProjectFolderProblem","args":[["a"],{}],"ok":"Use an absolute path: a"}
+{"fn":"findProjectFolderProblem","args":[["éa.b.c",".leading"],{"platform":":"}],"ok":"Use an absolute path: éa.b.c"}
+{"fn":"findProjectFolderProblem","args":[["ns:key.path","日本語のテキスト"],{"platform":"hello world"}],"ok":"Use an absolute path: ns:key.path"}
+{"fn":"findProjectFolderProblem","args":[["emoji 👍🏽 mix","trailing.","﻿bom"],[]],"ok":"Use an absolute path: emoji 👍🏽 mix"}
+{"fn":"findProjectFolderProblem","args":[["src/a/b.ts"],{}],"ok":"Use an absolute path: src/a/b.ts"}
+{"fn":"findProjectFolderProblem","args":[["emoji 👍🏽 mix","a.b.c"],{"a":"b"}],"ok":"Use an absolute path: emoji 👍🏽 mix"}
+{"fn":"findProjectFolderProblem","args":[["key_name-1{name} has {count} items","line1\nline2","HELLO"]],"ok":"Use an absolute path: key_name-1{name} has {count} items"}
+{"fn":"findProjectFolderProblem","args":[["a..btrailing."],{"$undefined":true}],"ok":"Use an absolute path: a..btrailing."}
+{"fn":"findProjectFolderProblem","args":[["straße","HELLO"],{}],"ok":"Use an absolute path: straße"}
+{"fn":"findProjectFolderProblem","args":[[],{"platform":"straße"}],"ok":"Add at least one folder."}
+{"fn":"findProjectFolderProblem","args":[["ab日本語のテキスト","hello world"],{"platform":"a..b"}],"ok":"Use an absolute path: ab日本語のテキスト"}
+{"fn":"findProjectFolderProblem","args":[["ab","a:b:c"],{"platform":"﻿bom"}],"ok":"Use an absolute path: ab"}
+{"fn":"findProjectFolderProblem","args":[["key_name-1:"],{"platform":"abc"}],"ok":"Use an absolute path: key_name-1:"}
+{"fn":"findProjectFolderProblem","args":[["./x/**/*.json","😀a..b","emoji 👍🏽 mix😀"]],"ok":"Use an absolute path: ./x/**/*.json"}
+{"fn":"findProjectFolderProblem","args":[["a..b","a..bline1\nline2"],{}],"ok":"Use an absolute path: a..b"}
+{"fn":"findProjectFolderProblem","args":[[],{"platform":"src/a/b.ts"}],"ok":"Add at least one folder."}
+{"fn":"findProjectFolderProblem","args":[["a😀b😀c","","  padded  "],{"$undefined":true}],"ok":"Use an absolute path: a😀b😀c"}
+{"fn":"findProjectFolderProblem","args":[["./x/**/*.json","emoji 👍🏽 mixkey_name-1","a:b:c"],{"platform":"a"}],"ok":"Use an absolute path: ./x/**/*.json"}
+{"fn":"findProjectFolderProblem","args":[[],{"platform":"trailing."}],"ok":"Add at least one folder."}
+{"fn":"findProjectFolderProblem","args":[["  padded  "],{"platform":"straße"}],"ok":"Use an absolute path:   padded  "}
+{"fn":"findProjectFolderProblem","args":[["trailing.","{name} has {count} items"],{"platform":"straße"}],"ok":"Use an absolute path: trailing."}
+{"fn":"findProjectFolderProblem","args":[["hello world","a"],{"platform":"trailing."}],"ok":"Use an absolute path: hello world"}
+{"fn":"findProjectFolderProblem","args":[["a.b.c"],{}],"ok":"Use an absolute path: a.b.c"}
+{"fn":"findProjectFolderProblem","args":[["😀","  padded  ","emoji 👍🏽 mix"]],"ok":"Use an absolute path: 😀"}
+{"fn":"findProjectFolderProblem","args":[["  padded  "]],"ok":"Use an absolute path:   padded  "}
+{"fn":"findProjectFolderProblem","args":[["hello","a😀b😀c","helloline1\nline2"]],"ok":"Use an absolute path: hello"}
+{"fn":"findProjectFolderProblem","args":[["日本語のテキストünïcödé","{name} has {count} items","é"],{"$undefined":true}],"ok":"Use an absolute path: 日本語のテキストünïcödé"}
+{"fn":"findProjectFolderProblem","args":[["./x/**/*.json"],{"platform":".leading"}],"ok":"Use an absolute path: ./x/**/*.json"}
+{"fn":"findProjectFolderProblem","args":[["trailing."],{"platform":"a"}],"ok":"Use an absolute path: trailing."}
+{"fn":"findProjectFolderProblem","args":[[],{"platform":".leading日本語のテキスト"}],"ok":"Add at least one folder."}
+{"fn":"findProjectFolderProblem","args":[["a😀b😀c"],{}],"ok":"Use an absolute path: a😀b😀c"}
+{"fn":"findProjectFolderProblem","args":[["","HELLO","  padded  "],{}],"ok":"Use an absolute path: "}
+{"fn":"findProjectFolderProblem","args":[["Hello Worldkey_name-1"],{"platform":"{name} has {count} items"}],"ok":"Use an absolute path: Hello Worldkey_name-1"}
+{"fn":"findProjectFolderProblem","args":[["hello",".leadingabc"],{}],"ok":"Use an absolute path: hello"}
+{"fn":"findProjectFolderProblem","args":[[],{"platform":"line1\nline2HELLO"}],"ok":"Add at least one folder."}
+{"fn":"findProjectFolderProblem","args":[["a.b.csrc/a/b.ts"],{}],"ok":"Use an absolute path: a.b.csrc/a/b.ts"}
+{"fn":"findProjectFolderProblem","args":[["tab\tseparated","hello","HELLO"],{"platform":"a..b😀"}],"ok":"Use an absolute path: tab\tseparated"}
+{"fn":"findProjectFolderProblem","args":[["ns:key.path","İstanbul","İstanbul"],{}],"ok":"Use an absolute path: ns:key.path"}
+{"fn":"findProjectFolderProblem","args":[["emoji 👍🏽 mix"],{}],"ok":"Use an absolute path: emoji 👍🏽 mix"}
+{"fn":"findProjectFolderProblem","args":[[],{"platform":"{name} has {count} items"}],"ok":"Add at least one folder."}
+{"fn":"findProjectFolderProblem","args":[["hello world","emoji 👍🏽 mixns:key.path"],{"a":"b"}],"ok":"Use an absolute path: hello world"}
+{"fn":"findProjectFolderProblem","args":[["日本語のテキスト"],{}],"ok":"Use an absolute path: 日本語のテキスト"}
+{"fn":"findProjectFolderProblem","args":[["line1\nline2","hello","tab\tseparated"],{"platform":"Hello World"}],"ok":"Use an absolute path: line1\nline2"}
+{"fn":"findProjectFolderProblem","args":[[],{"a":"b"}],"ok":"Add at least one folder."}
+{"fn":"findProjectFolderProblem","args":[["  padded  ","Hello World","😀"],{"platform":"a:b:c"}],"ok":"Use an absolute path:   padded  "}
+{"fn":"findProjectFolderProblem","args":[["HELLO﻿bom"]],"ok":"Use an absolute path: HELLO﻿bom"}
+{"fn":"findProjectFolderProblem","args":[["İstanbul","abc"],{"platform":""}],"ok":"Use an absolute path: İstanbul"}
+{"fn":"findProjectFolderProblem","args":[["ns:key.path","tab\tseparated","a..b"],{"a":{"b":"c"}}],"ok":"Use an absolute path: ns:key.path"}
+{"fn":"findProjectFolderProblem","args":[["straße","{name} has {count} items"],{"platform":"{name} has {count} items"}],"ok":"Use an absolute path: straße"}
+{"fn":"findProjectFolderProblem","args":[[],{"platform":"a"}],"ok":"Add at least one folder."}
+{"fn":"findProjectFolderProblem","args":[["a.b.c","emoji 👍🏽 mix"],{"platform":"ΣΊΣΥΦΟΣ"}],"ok":"Use an absolute path: a.b.c"}
+{"fn":"findProjectFolderProblem","args":[["absrc/a/b.ts"],{"platform":"hello world"}],"ok":"Use an absolute path: absrc/a/b.ts"}
+{"fn":"findProjectFolderProblem","args":[["ns:key.path"],{}],"ok":"Use an absolute path: ns:key.path"}
+{"fn":"findProjectFolderProblem","args":[["Hello World"],{"platform":"line1\nline2"}],"ok":"Use an absolute path: Hello World"}
+{"fn":"findProjectFolderProblem","args":[["hello","日本語のテキスト"],{"platform":"a😀b😀c"}],"ok":"Use an absolute path: hello"}
+{"fn":"findProjectFolderProblem","args":[["a..b"],{"platform":"😀  padded  "}],"ok":"Use an absolute path: a..b"}
+{"fn":"findProjectFolderProblem","args":[[],{"platform":"tab\tseparated"}],"ok":"Add at least one folder."}
+{"fn":"findProjectFolderProblem","args":[["{name} has {count} items","İstanbul"],{"platform":"tab\tseparated./x/**/*.json"}],"ok":"Use an absolute path: {name} has {count} items"}
+{"fn":"findProjectFolderProblem","args":[["ünïcödé","src/a/b.ts","a..b"],{"platform":"line1\nline2"}],"ok":"Use an absolute path: ünïcödé"}
+{"fn":"findProjectFolderProblem","args":[["emoji 👍🏽 mix","straße","straße"],{}],"ok":"Use an absolute path: emoji 👍🏽 mix"}
+{"fn":"findProjectFolderProblem","args":[[],{"platform":"ns:key.path"}],"ok":"Add at least one folder."}
+{"fn":"findProjectFolderProblem","args":[["ab"],["a",1]],"ok":"Use an absolute path: ab"}
+{"fn":"findProjectFolderProblem","args":[["line1\nline2","é"],{"platform":"ΣΊΣΥΦΟΣ"}],"ok":"Use an absolute path: line1\nline2"}
+{"fn":"findProjectFolderProblem","args":[[],{"platform":"😀hello"}],"ok":"Add at least one folder."}
+{"fn":"findProjectFolderProblem","args":[["a:b:c","é","line1\nline2"],{}],"ok":"Use an absolute path: a:b:c"}
+{"fn":"findProjectFolderProblem","args":[["😀a..b"],{"platform":"line1\nline2"}],"ok":"Use an absolute path: 😀a..b"}
+{"fn":"findProjectFolderProblem","args":[["a:b:c"],{"platform":"key_name-1"}],"ok":"Use an absolute path: a:b:c"}
+{"fn":"findProjectFolderProblem","args":[["a..b","İstanbul","HELLOHELLO"],{}],"ok":"Use an absolute path: a..b"}
+{"fn":"findProjectFolderProblem","args":[["ünïcödé"],{"platform":"ns:key.path"}],"ok":"Use an absolute path: ünïcödé"}
+{"fn":"findProjectFolderProblem","args":[["a😀b😀c{name} has {count} items"],{"platform":"src/a/b.tsstraße"}],"ok":"Use an absolute path: a😀b😀c{name} has {count} items"}
+{"fn":"findProjectFolderProblem","args":[[],null],"ok":"Add at least one folder."}
+{"fn":"findProjectFolderProblem","args":[["é","","﻿bom"],{"platform":"tab\tseparatedİstanbul"}],"ok":"Use an absolute path: é"}
+{"fn":"findProjectFolderProblem","args":[["a..b","a.b.c"],{"platform":""}],"ok":"Use an absolute path: a..b"}
+{"fn":"findProjectFolderProblem","args":[["ab","HELLO"],{"platform":"ns:key.path"}],"ok":"Use an absolute path: ab"}
+{"fn":"findProjectFolderProblem","args":[["a.b.cΣΊΣΥΦΟΣ",".leading",":"],{"platform":"tab\tseparated"}],"ok":"Use an absolute path: a.b.cΣΊΣΥΦΟΣ"}
+{"fn":"findProjectFolderProblem","args":[[],"x"],"ok":"Add at least one folder."}
+{"fn":"findProjectFolderProblem","args":[["ns:key.path","tab\tseparated","./x/**/*.json"],{"a":"b"}],"ok":"Use an absolute path: ns:key.path"}
+{"fn":"findProjectFolderProblem","args":[["emoji 👍🏽 mix日本語のテキスト","helloHELLO",""],{}],"ok":"Use an absolute path: emoji 👍🏽 mix日本語のテキスト"}
+{"fn":"findProjectFolderProblem","args":[["abc","abc","ΣΊΣΥΦΟΣsrc/a/b.ts"],{"platform":"tab\tseparated"}],"ok":"Use an absolute path: abc"}
+{"fn":"findProjectFolderProblem","args":[["{name} has {count} items{name} has {count} items","Hello World"],{"platform":"a..btab\tseparated"}],"ok":"Use an absolute path: {name} has {count} items{name} has {count} items"}
+{"fn":"findProjectFolderProblem","args":[["﻿bom"],{}],"ok":"Use an absolute path: ﻿bom"}
+{"fn":"findProjectFolderProblem","args":[[],{"platform":"a.b.c"}],"ok":"Add at least one folder."}
+{"fn":"findProjectFolderProblem","args":[["src/a/b.ts","emoji 👍🏽 mix","日本語のテキスト"],{"platform":"a.b.c"}],"ok":"Use an absolute path: src/a/b.ts"}
+{"fn":"findProjectFolderProblem","args":[["abc"],"x"],"ok":"Use an absolute path: abc"}
+{"fn":"findProjectFolderProblem","args":[[".leadinga😀b😀c","a😀b😀cline1\nline2","ns:key.path"],{"platform":"😀"}],"ok":"Use an absolute path: .leadinga😀b😀c"}
+{"fn":"findProjectFolderProblem","args":[["a:b:c"],{"platform":"a.b.c"}],"ok":"Use an absolute path: a:b:c"}
+{"fn":"findProjectFolderProblem","args":[["﻿bom",":","ΣΊΣΥΦΟΣ"],{"platform":""}],"ok":"Use an absolute path: ﻿bom"}
+{"fn":"findProjectFolderProblem","args":[["hello worldünïcödé","İstanbul"],{"platform":":"}],"ok":"Use an absolute path: hello worldünïcödé"}
+{"fn":"findProjectFolderProblem","args":[["a.b.cemoji 👍🏽 mix","abc"],{}],"ok":"Use an absolute path: a.b.cemoji 👍🏽 mix"}
+{"fn":"findProjectFolderProblem","args":[["src/a/b.ts","tab\tseparated"],{"platform":"trailing."}],"ok":"Use an absolute path: src/a/b.ts"}
+{"fn":"findProjectFolderProblem","args":[["ns:key.pathline1\nline2","a:b:cstraße"],{"platform":"日本語のテキスト"}],"ok":"Use an absolute path: ns:key.pathline1\nline2"}
+{"fn":"findProjectFolderProblem","args":[["  padded  ","😀Hello World","😀src/a/b.ts"],{"platform":"line1\nline2"}],"ok":"Use an absolute path:   padded  "}
+{"fn":"findProjectFolderProblem","args":[["abc"],{"platform":"tab\tseparated"}],"ok":"Use an absolute path: abc"}
+{"fn":"findProjectFolderProblem","args":[[],{"platform":"İstanbul"}],"ok":"Add at least one folder."}
+{"fn":"findProjectFolderProblem","args":[["Hello World","ab"],{"platform":"Hello World"}],"ok":"Use an absolute path: Hello World"}
+{"fn":"findProjectFolderProblem","args":[["ünïcödé","Hello World",":"],[]],"ok":"Use an absolute path: ünïcödé"}
+{"fn":"findProjectFolderProblem","args":[[],{"platform":"Hello World"}],"ok":"Add at least one folder."}
+{"fn":"findProjectFolderProblem","args":[[".leading","ns:key.path","a:b:c"],{"$undefined":true}],"ok":"Use an absolute path: .leading"}
+{"fn":"findProjectFolderProblem","args":[["HELLO","ΣΊΣΥΦΟΣ","日本語のテキスト"],{"platform":"  padded  "}],"ok":"Use an absolute path: HELLO"}
+{"fn":"findProjectFolderProblem","args":[[],{"platform":"HELLO"}],"ok":"Add at least one folder."}
+{"fn":"findProjectFolderProblem","args":[["日本語のテキスト"],null],"ok":"Use an absolute path: 日本語のテキスト"}
+{"fn":"findProjectFolderProblem","args":[["Hello World","{name} has {count} items","😀"],{"platform":"ab:"}],"ok":"Use an absolute path: Hello World"}
+{"fn":"findProjectFolderProblem","args":[["a:b:c"],{"platform":"straße"}],"ok":"Use an absolute path: a:b:c"}
+{"fn":"findProjectFolderProblem","args":[[":"],{"platform":"line1\nline2ΣΊΣΥΦΟΣ"}],"ok":"Use an absolute path: :"}
+{"fn":"findProjectFolderProblem","args":[["ns:key.path","hello"],{"platform":"😀😀"}],"ok":"Use an absolute path: ns:key.path"}
+{"fn":"findProjectFolderProblem","args":[["src/a/b.ts",".leading","日本語のテキスト"],{"platform":"line1\nline2"}],"ok":"Use an absolute path: src/a/b.ts"}
+{"fn":"findProjectFolderProblem","args":[["a😀b😀c","emoji 👍🏽 mix","tab\tseparated"],{"platform":"  padded  "}],"ok":"Use an absolute path: a😀b😀c"}
+{"fn":"findProjectFolderProblem","args":[["日本語のテキスト","a:b:c","src/a/b.ts"],{"platform":"tab\tseparated"}],"ok":"Use an absolute path: 日本語のテキスト"}
+{"fn":"findProjectFolderProblem","args":[["a.b.ctrailing.","tab\tseparated./x/**/*.json","{name} has {count} items"],{}],"ok":"Use an absolute path: a.b.ctrailing."}
+{"fn":"findProjectFolderProblem","args":[["hello","hello world"],{"platform":"a:b:c"}],"ok":"Use an absolute path: hello"}
+{"fn":"findProjectFolderProblem","args":[[],{"platform":"ab"}],"ok":"Add at least one folder."}
+{"fn":"findProjectFolderProblem","args":[["b","a","B","é","10","9","a"],{"platform":"ab"}],"ok":"Use an absolute path: b"}
+{"fn":"deriveProjectFolderLabels","args":[["src/a/b.ts","étab\tseparated"]],"ok":["b.ts","étab\tseparated"]}
+{"fn":"deriveProjectFolderLabels","args":[[]],"ok":[]}
+{"fn":"deriveProjectFolderLabels","args":[["a..b"]],"ok":["a..b"]}
+{"fn":"deriveProjectFolderLabels","args":[["a😀b😀c","é  padded  ","hellohello world"]],"ok":["a😀b😀c","é  padded  ","hellohello world"]}
+{"fn":"deriveProjectFolderLabels","args":[["src/a/b.ts","trailing.{name} has {count} items"]],"ok":["b.ts","trailing.{name} has {count} items"]}
+{"fn":"deriveProjectFolderLabels","args":[["tab\tseparated","aHELLO"]],"ok":["tab\tseparated","aHELLO"]}
+{"fn":"deriveProjectFolderLabels","args":[["HELLOemoji 👍🏽 mix",""]],"ok":["HELLOemoji 👍🏽 mix",""]}
+{"fn":"deriveProjectFolderLabels","args":[["İstanbul"]],"ok":["İstanbul"]}
+{"fn":"deriveProjectFolderLabels","args":[["line1\nline2"]],"ok":["line1\nline2"]}
+{"fn":"deriveProjectFolderLabels","args":[["İstanbulé","HELLO","a.b.c"]],"ok":["İstanbulé","HELLO","a.b.c"]}
+{"fn":"deriveProjectFolderLabels","args":[["straße","  padded  a:b:c","😀"]],"ok":["straße","  padded  a:b:c","😀"]}
+{"fn":"deriveProjectFolderLabels","args":[["  padded  ","./x/**/*.json","HELLO"]],"ok":["  padded  ","*.json","HELLO"]}
+{"fn":"deriveProjectFolderLabels","args":[["ünïcödé","日本語のテキスト","﻿boma😀b😀c"]],"ok":["ünïcödé","日本語のテキスト","﻿boma😀b😀c"]}
+{"fn":"deriveProjectFolderLabels","args":[["a.b.c","😀"]],"ok":["a.b.c","😀"]}
+{"fn":"deriveProjectFolderLabels","args":[["straße"]],"ok":["straße"]}
+{"fn":"deriveProjectFolderLabels","args":[["tab\tseparated"]],"ok":["tab\tseparated"]}
+{"fn":"deriveProjectFolderLabels","args":[["ns:key.pathünïcödé","﻿bom",":"]],"ok":["ns:key.pathünïcödé","﻿bom",":"]}
+{"fn":"deriveProjectFolderLabels","args":[["","İstanbul","ab"]],"ok":["","İstanbul","ab"]}
+{"fn":"deriveProjectFolderLabels","args":[["hello world"]],"ok":["hello world"]}
+{"fn":"deriveProjectFolderLabels","args":[["ünïcödéa..b","İstanbul","key_name-1"]],"ok":["ünïcödéa..b","İstanbul","key_name-1"]}
+{"fn":"deriveProjectFolderLabels","args":[["Hello World"]],"ok":["Hello World"]}
+{"fn":"deriveProjectFolderLabels","args":[["tab\tseparatedünïcödé","src/a/b.ts",".leading"]],"ok":["tab\tseparatedünïcödé","b.ts",".leading"]}
+{"fn":"deriveProjectFolderLabels","args":[["src/a/b.ts","﻿bom"]],"ok":["b.ts","﻿bom"]}
+{"fn":"deriveProjectFolderLabels","args":[["","ΣΊΣΥΦΟΣa.b.c"]],"ok":["","ΣΊΣΥΦΟΣa.b.c"]}
+{"fn":"deriveProjectFolderLabels","args":[["a﻿bom"]],"ok":["a﻿bom"]}
+{"fn":"deriveProjectFolderLabels","args":[["Hello World","","Hello World"]],"ok":["Hello World","","Hello World"]}
+{"fn":"deriveProjectFolderLabels","args":[["trailing.emoji 👍🏽 mix","emoji 👍🏽 mixünïcödé",".leading"]],"ok":["trailing.emoji 👍🏽 mix","emoji 👍🏽 mixünïcödé",".leading"]}
+{"fn":"deriveProjectFolderLabels","args":[["abc","trailing.","a..b"]],"ok":["abc","trailing.","a..b"]}
+{"fn":"deriveProjectFolderLabels","args":[["abc","a😀b😀cns:key.path"]],"ok":["abc","a😀b😀cns:key.path"]}
+{"fn":"deriveProjectFolderLabels","args":[["hello","tab\tseparatedkey_name-1"]],"ok":["hello","tab\tseparatedkey_name-1"]}
+{"fn":"deriveProjectFolderLabels","args":[["  padded  "]],"ok":["  padded  "]}
+{"fn":"deriveProjectFolderLabels","args":[["emoji 👍🏽 mix"]],"ok":["emoji 👍🏽 mix"]}
+{"fn":"deriveProjectFolderLabels","args":[["ab","  padded  "]],"ok":["ab","  padded  "]}
+{"fn":"deriveProjectFolderLabels","args":[[".leading"]],"ok":[".leading"]}
+{"fn":"deriveProjectFolderLabels","args":[["./x/**/*.json"]],"ok":["*.json"]}
+{"fn":"deriveProjectFolderLabels","args":[["ns:key.path","hello world","é"]],"ok":["ns:key.path","hello world","é"]}
+{"fn":"deriveProjectFolderLabels","args":[["a..b","  padded  é","Hello World"]],"ok":["a..b","  padded  é","Hello World"]}
+{"fn":"deriveProjectFolderLabels","args":[["emoji 👍🏽 mix","emoji 👍🏽 mixkey_name-1"]],"ok":["emoji 👍🏽 mix","emoji 👍🏽 mixkey_name-1"]}
+{"fn":"deriveProjectFolderLabels","args":[["  padded  ","a:b:c"]],"ok":["  padded  ","a:b:c"]}
+{"fn":"deriveProjectFolderLabels","args":[["a:b:cΣΊΣΥΦΟΣ"]],"ok":["a:b:cΣΊΣΥΦΟΣ"]}
+{"fn":"deriveProjectFolderLabels","args":[["  padded  ","straße"]],"ok":["  padded  ","straße"]}
+{"fn":"deriveProjectFolderLabels","args":[["abc","HELLOa","key_name-1"]],"ok":["abc","HELLOa","key_name-1"]}
+{"fn":"deriveProjectFolderLabels","args":[["a😀b😀c","a:b:c"]],"ok":["a😀b😀c","a:b:c"]}
+{"fn":"deriveProjectFolderLabels","args":[["日本語のテキストtab\tseparated","﻿bom"]],"ok":["日本語のテキストtab\tseparated","﻿bom"]}
+{"fn":"deriveProjectFolderLabels","args":[["ΣΊΣΥΦΟΣ  padded  ","ns:key.pathemoji 👍🏽 mix","hello world"]],"ok":["ΣΊΣΥΦΟΣ  padded  ","ns:key.pathemoji 👍🏽 mix","hello world"]}
+{"fn":"deriveProjectFolderLabels","args":[["ns:key.path","a..b","akey_name-1"]],"ok":["ns:key.path","a..b","akey_name-1"]}
+{"fn":"deriveProjectFolderLabels","args":[["straße","HELLO","abc"]],"ok":["straße","HELLO","abc"]}
+{"fn":"deriveProjectFolderLabels","args":[["key_name-1"]],"ok":["key_name-1"]}
+{"fn":"deriveProjectFolderLabels","args":[["a:b:c","ünïcödé","﻿bomkey_name-1"]],"ok":["a:b:c","ünïcödé","﻿bomkey_name-1"]}
+{"fn":"deriveProjectFolderLabels","args":[["abc"]],"ok":["abc"]}
+{"fn":"deriveProjectFolderLabels","args":[["abhello","日本語のテキスト"]],"ok":["abhello","日本語のテキスト"]}
+{"fn":"deriveProjectFolderLabels","args":[["straße","{name} has {count} items"]],"ok":["straße","{name} has {count} items"]}
+{"fn":"deriveProjectFolderLabels","args":[["./x/**/*.json","a"]],"ok":["*.json","a"]}
+{"fn":"deriveProjectFolderLabels","args":[["hello",".leading","a.b.c"]],"ok":["hello",".leading","a.b.c"]}
+{"fn":"deriveProjectFolderLabels","args":[["hello","emoji 👍🏽 mix"]],"ok":["hello","emoji 👍🏽 mix"]}
+{"fn":"deriveProjectFolderLabels","args":[["straße","a"]],"ok":["straße","a"]}
+{"fn":"deriveProjectFolderLabels","args":[["hello",".leading"]],"ok":["hello",".leading"]}
+{"fn":"deriveProjectFolderLabels","args":[["  padded  ","a😀b😀cstraße","HELLO"]],"ok":["  padded  ","a😀b😀cstraße","HELLO"]}
+{"fn":"deriveProjectFolderLabels","args":[["a.b.cHELLO","é","😀"]],"ok":["a.b.cHELLO","é","😀"]}
+{"fn":"deriveProjectFolderLabels","args":[["é","hello world日本語のテキスト"]],"ok":["é","hello world日本語のテキスト"]}
+{"fn":"deriveProjectFolderLabels","args":[["a😀b😀c",".leading","key_name-1"]],"ok":["a😀b😀c",".leading","key_name-1"]}
+{"fn":"deriveProjectFolderLabels","args":[["é"]],"ok":["é"]}
+{"fn":"deriveProjectFolderLabels","args":[["tab\tseparated","emoji 👍🏽 mix"]],"ok":["tab\tseparated","emoji 👍🏽 mix"]}
+{"fn":"deriveProjectFolderLabels","args":[["","abab"]],"ok":["","abab"]}
+{"fn":"deriveProjectFolderLabels","args":[["trailing.",":"]],"ok":["trailing.",":"]}
+{"fn":"deriveProjectFolderLabels","args":[["日本語のテキスト"]],"ok":["日本語のテキスト"]}
+{"fn":"deriveProjectFolderLabels","args":[["hello world","日本語のテキスト"]],"ok":["hello world","日本語のテキスト"]}
+{"fn":"deriveProjectFolderLabels","args":[["ΣΊΣΥΦΟΣ"]],"ok":["ΣΊΣΥΦΟΣ"]}
+{"fn":"deriveProjectFolderLabels","args":[[""]],"ok":[""]}
+{"fn":"deriveProjectFolderLabels","args":[["😀😀","src/a/b.ts  padded  "]],"ok":["😀😀","b.ts  padded  "]}
+{"fn":"deriveProjectFolderLabels","args":[["src/a/b.ts","straße"]],"ok":["b.ts","straße"]}
+{"fn":"deriveProjectFolderLabels","args":[["Hello World","trailing."]],"ok":["Hello World","trailing."]}
+{"fn":"deriveProjectFolderLabels","args":[["abc","tab\tseparatedünïcödé","a😀b😀c"]],"ok":["abc","tab\tseparatedünïcödé","a😀b😀c"]}
+{"fn":"deriveProjectFolderLabels","args":[["hello","日本語のテキストtab\tseparated"]],"ok":["hello","日本語のテキストtab\tseparated"]}
+{"fn":"deriveProjectFolderLabels","args":[["ünïcödé","a..b","./x/**/*.json"]],"ok":["ünïcödé","a..b","*.json"]}
+{"fn":"deriveProjectFolderLabels","args":[["日本語のテキスト","日本語のテキスト","straßeab"]],"ok":["日本語のテキスト","日本語のテキスト","straßeab"]}
+{"fn":"deriveProjectFolderLabels","args":[["tab\tseparated","key_name-1line1\nline2","ns:key.path"]],"ok":["tab\tseparated","key_name-1line1\nline2","ns:key.path"]}
+{"fn":"deriveProjectFolderLabels","args":[["日本語のテキスト","a..b","ünïcödé"]],"ok":["日本語のテキスト","a..b","ünïcödé"]}
+{"fn":"deriveProjectFolderLabels","args":[["straße","é","emoji 👍🏽 mix"]],"ok":["straße","é","emoji 👍🏽 mix"]}
+{"fn":"deriveProjectFolderLabels","args":[["a:b:c",":"]],"ok":["a:b:c",":"]}
+{"fn":"deriveProjectFolderLabels","args":[["key_name-1","😀","emoji 👍🏽 mix"]],"ok":["key_name-1","😀","emoji 👍🏽 mix"]}
+{"fn":"deriveProjectFolderLabels","args":[["﻿boma..b"]],"ok":["﻿boma..b"]}
+{"fn":"deriveProjectFolderLabels","args":[["hello"]],"ok":["hello"]}
+{"fn":"deriveProjectFolderLabels","args":[["HELLO",".leadingHELLO","straße"]],"ok":["HELLO",".leadingHELLO","straße"]}
+{"fn":"deriveProjectFolderLabels","args":[["{name} has {count} items","tab\tseparated"]],"ok":["{name} has {count} items","tab\tseparated"]}
+{"fn":"deriveProjectFolderLabels","args":[["",":"]],"ok":["",":"]}
+{"fn":"deriveProjectFolderLabels","args":[["  padded  ","İstanbul","  padded  "]],"ok":["  padded  ","İstanbul","  padded  "]}
+{"fn":"deriveProjectFolderLabels","args":[["İstanbulkey_name-1","abc"]],"ok":["İstanbulkey_name-1","abc"]}
+{"fn":"deriveProjectFolderLabels","args":[["ns:key.pathtrailing.","é"]],"ok":["ns:key.pathtrailing.","é"]}
+{"fn":"deriveProjectFolderLabels","args":[["HELLO","﻿bom"]],"ok":["HELLO","﻿bom"]}
+{"fn":"deriveProjectFolderLabels","args":[["a.b.c","a","ünïcödé"]],"ok":["a.b.c","a","ünïcödé"]}
+{"fn":"deriveProjectFolderLabels","args":[["a:b:c"]],"ok":["a:b:c"]}
+{"fn":"deriveProjectFolderLabels","args":[["key_name-1  padded  ","line1\nline2日本語のテキスト"]],"ok":["key_name-1  padded  ","line1\nline2日本語のテキスト"]}
+{"fn":"deriveProjectFolderLabels","args":[["😀","ünïcödé","ans:key.path"]],"ok":["😀","ünïcödé","ans:key.path"]}
+{"fn":"deriveProjectFolderLabels","args":[["é","emoji 👍🏽 mix"]],"ok":["é","emoji 👍🏽 mix"]}
+{"fn":"deriveProjectFolderLabels","args":[["a😀b😀c","trailing."]],"ok":["a😀b😀c","trailing."]}
+{"fn":"deriveProjectFolderLabels","args":[["ab"]],"ok":["ab"]}
+{"fn":"deriveProjectFolderLabels","args":[["a😀b😀c"]],"ok":["a😀b😀c"]}
+{"fn":"deriveProjectFolderLabels","args":[["trailing."]],"ok":["trailing."]}
+{"fn":"deriveProjectFolderLabels","args":[["trailing.abc","ΣΊΣΥΦΟΣ","ünïcödé"]],"ok":["trailing.abc","ΣΊΣΥΦΟΣ","ünïcödé"]}
+{"fn":"deriveProjectFolderLabels","args":[["日本語のテキスト","ns:key.path","hello world"]],"ok":["日本語のテキスト","ns:key.path","hello world"]}
+{"fn":"deriveProjectFolderLabels","args":[["Hello World","a😀b😀c"]],"ok":["Hello World","a😀b😀c"]}
+{"fn":"deriveProjectFolderLabels","args":[["ns:key.path"]],"ok":["ns:key.path"]}
+{"fn":"deriveProjectFolderLabels","args":[["straße","straße"]],"ok":["straße","straße"]}
+{"fn":"deriveProjectFolderLabels","args":[["﻿bom","a:b:c﻿bom",":"]],"ok":["﻿bom","a:b:c﻿bom",":"]}
+{"fn":"deriveProjectFolderLabels","args":[["ns:key.path","a..b","ns:key.patha:b:c"]],"ok":["ns:key.path","a..b","ns:key.patha:b:c"]}
+{"fn":"deriveProjectFolderLabels","args":[["./x/**/*.json","ns:key.path"]],"ok":["*.json","ns:key.path"]}
+{"fn":"deriveProjectFolderLabels","args":[["abc","a.b.c","😀"]],"ok":["abc","a.b.c","😀"]}
+{"fn":"deriveProjectFolderLabels","args":[["﻿bomΣΊΣΥΦΟΣ"]],"ok":["﻿bomΣΊΣΥΦΟΣ"]}
+{"fn":"deriveProjectFolderLabels","args":[["  padded  ","hello日本語のテキスト","straße"]],"ok":["  padded  ","hello日本語のテキスト","straße"]}
+{"fn":"deriveProjectFolderLabels","args":[["trailing.hello","a..b"]],"ok":["trailing.hello","a..b"]}
+{"fn":"deriveProjectFolderLabels","args":[["hello","hello worldtab\tseparated","tab\tseparated"]],"ok":["hello","hello worldtab\tseparated","tab\tseparated"]}
+{"fn":"deriveProjectFolderLabels","args":[["hello world","日本語のテキスト.leading"]],"ok":["hello world","日本語のテキスト.leading"]}
+{"fn":"deriveProjectFolderLabels","args":[["","ΣΊΣΥΦΟΣ"]],"ok":["","ΣΊΣΥΦΟΣ"]}
+{"fn":"deriveProjectFolderLabels","args":[["src/a/b.ts","ab"]],"ok":["b.ts","ab"]}
+{"fn":"deriveProjectFolderLabels","args":[["straßehello"]],"ok":["straßehello"]}
+{"fn":"deriveProjectFolderLabels","args":[["é{name} has {count} items","😀","日本語のテキスト"]],"ok":["é{name} has {count} items","😀","日本語のテキスト"]}
+{"fn":"deriveProjectFolderLabels","args":[["HELLOline1\nline2","  padded  ","HELLO:"]],"ok":["HELLOline1\nline2","  padded  ","HELLO:"]}
+{"fn":"deriveProjectFolderLabels","args":[["a:b:c","tab\tseparated","./x/**/*.json"]],"ok":["a:b:c","tab\tseparated","*.json"]}
+{"fn":"deriveProjectFolderLabels","args":[["é",":","{name} has {count} items"]],"ok":["é",":","{name} has {count} items"]}
+{"fn":"deriveProjectFolderLabels","args":[["a.b.c","{name} has {count} items"]],"ok":["a.b.c","{name} has {count} items"]}
+{"fn":"deriveProjectFolderLabels","args":[["src/a/b.ts","İstanbul","trailing."]],"ok":["b.ts","İstanbul","trailing."]}
+{"fn":"deriveProjectFolderLabels","args":[["ΣΊΣΥΦΟΣ","日本語のテキスト"]],"ok":["ΣΊΣΥΦΟΣ","日本語のテキスト"]}
+{"fn":"deriveProjectFolderLabels","args":[[":","﻿bom","./x/**/*.json"]],"ok":[":","﻿bom","*.json"]}
+{"fn":"deriveProjectFolderLabels","args":[["İstanbul","a.b.c"]],"ok":["İstanbul","a.b.c"]}
+{"fn":"deriveProjectFolderLabels","args":[["ΣΊΣΥΦΟΣ","hello world",""]],"ok":["ΣΊΣΥΦΟΣ","hello world",""]}
+{"fn":"deriveProjectFolderLabels","args":[["😀","key_name-1","  padded  "]],"ok":["😀","key_name-1","  padded  "]}
+{"fn":"deriveProjectFolderLabels","args":[["","İstanbul","./x/**/*.json"]],"ok":["","İstanbul","*.json"]}
+{"fn":"deriveProjectFolderLabels","args":[["line1\nline2","ünïcödé","İstanbulé"]],"ok":["line1\nline2","ünïcödé","İstanbulé"]}
+{"fn":"deriveProjectFolderLabels","args":[["tab\tseparated","abc"]],"ok":["tab\tseparated","abc"]}
+{"fn":"deriveProjectFolderLabels","args":[["hello world","{name} has {count} items","İstanbul"]],"ok":["hello world","{name} has {count} items","İstanbul"]}
+{"fn":"deriveProjectFolderLabels","args":[["HELLO",""]],"ok":["HELLO",""]}
+{"fn":"deriveProjectFolderLabels","args":[["line1\nline2","﻿bom","a.b.c"]],"ok":["line1\nline2","﻿bom","a.b.c"]}
+{"fn":"deriveProjectFolderLabels","args":[["a..b","emoji 👍🏽 mix"]],"ok":["a..b","emoji 👍🏽 mix"]}
+{"fn":"deriveProjectFolderLabels","args":[["é","a.b.c","tab\tseparated"]],"ok":["é","a.b.c","tab\tseparated"]}
+{"fn":"deriveProjectFolderLabels","args":[["HELLO",".leading"]],"ok":["HELLO",".leading"]}
+{"fn":"deriveProjectFolderLabels","args":[["éns:key.path"]],"ok":["éns:key.path"]}
+{"fn":"deriveProjectFolderLabels","args":[["line1\nline2","😀","trailing."]],"ok":["line1\nline2","😀","trailing."]}
+{"fn":"deriveProjectFolderLabels","args":[["./x/**/*.json日本語のテキスト","hello"]],"ok":["*.json日本語のテキスト","hello"]}
+{"fn":"deriveProjectFolderLabels","args":[["😀","abkey_name-1","ns:key.path"]],"ok":["😀","abkey_name-1","ns:key.path"]}
+{"fn":"deriveProjectFolderLabels","args":[["日本語のテキスト","emoji 👍🏽 mix😀","./x/**/*.json.leading"]],"ok":["日本語のテキスト","emoji 👍🏽 mix😀","*.json.leading"]}
+{"fn":"deriveProjectFolderLabels","args":[["ünïcödé","trailing.","İstanbul"]],"ok":["ünïcödé","trailing.","İstanbul"]}
+{"fn":"deriveProjectFolderLabels","args":[[":ns:key.path",""]],"ok":[":ns:key.path",""]}
+{"fn":"deriveProjectFolderLabels","args":[["😀./x/**/*.json","tab\tseparated",":"]],"ok":["*.json","tab\tseparated",":"]}
+{"fn":"deriveProjectFolderLabels","args":[["ünïcödé"]],"ok":["ünïcödé"]}
+{"fn":"deriveProjectFolderLabels","args":[["ünïcödé","src/a/b.ts",""]],"ok":["ünïcödé","b.ts",""]}
+{"fn":"deriveProjectFolderLabels","args":[["ab","﻿bom"]],"ok":["ab","﻿bom"]}
+{"fn":"deriveProjectFolderLabels","args":[["ünïcödé","ΣΊΣΥΦΟΣ","trailing.straße"]],"ok":["ünïcödé","ΣΊΣΥΦΟΣ","trailing.straße"]}
+{"fn":"deriveProjectFolderLabels","args":[["hello world","﻿bom"]],"ok":["hello world","﻿bom"]}
+{"fn":"deriveProjectFolderLabels","args":[["a..b","tab\tseparated","line1\nline2"]],"ok":["a..b","tab\tseparated","line1\nline2"]}
+{"fn":"deriveProjectFolderLabels","args":[["a:b:c","  padded  ab","a..b"]],"ok":["a:b:c","  padded  ab","a..b"]}
+{"fn":"deriveProjectFolderLabels","args":[[":"]],"ok":[":"]}
+{"fn":"deriveProjectFolderLabels","args":[["﻿boma..b","a"]],"ok":["﻿boma..b","a"]}
+{"fn":"deriveProjectFolderLabels","args":[["","key_name-1"]],"ok":["","key_name-1"]}
+{"fn":"deriveProjectFolderLabels","args":[["emoji 👍🏽 mix","İstanbul","hello worldkey_name-1"]],"ok":["emoji 👍🏽 mix","İstanbul","hello worldkey_name-1"]}
+{"fn":"deriveProjectFolderLabels","args":[["  padded  ","hello world"]],"ok":["  padded  ","hello world"]}
+{"fn":"deriveProjectFolderLabels","args":[["line1\nline2hello","line1\nline2","key_name-1"]],"ok":["line1\nline2hello","line1\nline2","key_name-1"]}
+{"fn":"deriveProjectFolderLabels","args":[["ΣΊΣΥΦΟΣa..b"]],"ok":["ΣΊΣΥΦΟΣa..b"]}
+{"fn":"deriveProjectFolderLabels","args":[["hello worldé","a"]],"ok":["hello worldé","a"]}
+{"fn":"deriveProjectFolderLabels","args":[["  padded  İstanbul"]],"ok":["  padded  İstanbul"]}
+{"fn":"deriveProjectFolderLabels","args":[["hellohello"]],"ok":["hellohello"]}
+{"fn":"deriveProjectFolderLabels","args":[["İstanbulstraße","tab\tseparatedemoji 👍🏽 mix","trailing."]],"ok":["İstanbulstraße","tab\tseparatedemoji 👍🏽 mix","trailing."]}
+{"fn":"deriveProjectFolderLabels","args":[["a😀b😀c","a","a😀b😀c"]],"ok":["a😀b😀c","a","a😀b😀c"]}
+{"fn":"deriveProjectFolderLabels","args":[["abİstanbul"]],"ok":["abİstanbul"]}
+{"fn":"deriveProjectFolderLabels","args":[["😀"]],"ok":["😀"]}
+{"fn":"deriveProjectFolderLabels","args":[["abc",":","ΣΊΣΥΦΟΣ日本語のテキスト"]],"ok":["abc",":","ΣΊΣΥΦΟΣ日本語のテキスト"]}
+{"fn":"deriveProjectFolderLabels","args":[["hello{name} has {count} items","ünïcödétrailing.","tab\tseparated"]],"ok":["hello{name} has {count} items","ünïcödétrailing.","tab\tseparated"]}
+{"fn":"deriveProjectFolderLabels","args":[["😀","ΣΊΣΥΦΟΣ"]],"ok":["😀","ΣΊΣΥΦΟΣ"]}
+{"fn":"deriveProjectFolderLabels","args":[["src/a/b.tsabc"]],"ok":["b.tsabc"]}
+{"fn":"deriveProjectFolderLabels","args":[["{name} has {count} items","trailing."]],"ok":["{name} has {count} items","trailing."]}
+{"fn":"deriveProjectFolderLabels","args":[["a:b:c","a.b.c","İstanbul"]],"ok":["a:b:c","a.b.c","İstanbul"]}
+{"fn":"deriveProjectFolderLabels","args":[["line1\nline2Hello World","HELLO","src/a/b.ts"]],"ok":["line1\nline2Hello World","HELLO","b.ts"]}
+{"fn":"deriveProjectFolderLabels","args":[["hello world","key_name-1","éΣΊΣΥΦΟΣ"]],"ok":["hello world","key_name-1","éΣΊΣΥΦΟΣ"]}
+{"fn":"deriveProjectFolderLabels","args":[["{name} has {count} items","  padded  ","é"]],"ok":["{name} has {count} items","  padded  ","é"]}
+{"fn":"deriveProjectFolderLabels","args":[["﻿bom"]],"ok":["﻿bom"]}
+{"fn":"deriveProjectFolderLabels","args":[["ΣΊΣΥΦΟΣ","line1\nline2","key_name-1"]],"ok":["ΣΊΣΥΦΟΣ","line1\nline2","key_name-1"]}
+{"fn":"deriveProjectFolderLabels","args":[["  padded  ","key_name-1straße","src/a/b.ts"]],"ok":["  padded  ","key_name-1straße","b.ts"]}
+{"fn":"deriveProjectFolderLabels","args":[["ab日本語のテキスト","😀"]],"ok":["ab日本語のテキスト","😀"]}
+{"fn":"deriveProjectFolderLabels","args":[["tab\tseparated😀",".leading","  padded  "]],"ok":["tab\tseparated😀",".leading","  padded  "]}
+{"fn":"deriveProjectFolderLabels","args":[["key_name-1","straße","﻿bomΣΊΣΥΦΟΣ"]],"ok":["key_name-1","straße","﻿bomΣΊΣΥΦΟΣ"]}
+{"fn":"deriveProjectFolderLabels","args":[[":","{name} has {count} items","atab\tseparated"]],"ok":[":","{name} has {count} items","atab\tseparated"]}
+{"fn":"deriveProjectFolderLabels","args":[["{name} has {count} items","hello","./x/**/*.jsonkey_name-1"]],"ok":["{name} has {count} items","hello","*.jsonkey_name-1"]}
+{"fn":"deriveProjectFolderLabels","args":[["ΣΊΣΥΦΟΣHello World"]],"ok":["ΣΊΣΥΦΟΣHello World"]}
+{"fn":"deriveProjectFolderLabels","args":[["日本語のテキスト","a"]],"ok":["日本語のテキスト","a"]}
+{"fn":"deriveProjectFolderLabels","args":[["é","ünïcödé"]],"ok":["é","ünïcödé"]}
+{"fn":"deriveProjectFolderLabels","args":[["hello","hello world","ünïcödéa:b:c"]],"ok":["hello","hello world","ünïcödéa:b:c"]}
+{"fn":"deriveProjectFolderLabels","args":[["HELLO","ns:key.path.leading"]],"ok":["HELLO","ns:key.path.leading"]}
+{"fn":"deriveProjectFolderLabels","args":[["tab\tseparated",""]],"ok":["tab\tseparated",""]}
+{"fn":"deriveProjectFolderLabels","args":[["a",".leading","é"]],"ok":["a",".leading","é"]}
+{"fn":"deriveProjectFolderLabels","args":[["İstanbul","a"]],"ok":["İstanbul","a"]}
+{"fn":"deriveProjectFolderLabels","args":[["éé","straße","😀"]],"ok":["éé","straße","😀"]}
+{"fn":"deriveProjectFolderLabels","args":[["trailing.  padded  ","hello","  padded  a..b"]],"ok":["trailing.  padded  ","hello","  padded  a..b"]}
+{"fn":"deriveProjectFolderLabels","args":[[".leading",""]],"ok":[".leading",""]}
+{"fn":"deriveProjectFolderLabels","args":[["tab\tseparated","ΣΊΣΥΦΟΣ",":"]],"ok":["tab\tseparated","ΣΊΣΥΦΟΣ",":"]}
+{"fn":"deriveProjectFolderLabels","args":[["helloa:b:c","HELLO",":ΣΊΣΥΦΟΣ"]],"ok":["helloa:b:c","HELLO",":ΣΊΣΥΦΟΣ"]}
+{"fn":"deriveProjectFolderLabels","args":[[".leading","{name} has {count} items"]],"ok":[".leading","{name} has {count} items"]}
+{"fn":"deriveProjectFolderLabels","args":[["line1\nline2","ns:key.path"]],"ok":["line1\nline2","ns:key.path"]}
+{"fn":"deriveProjectFolderLabels","args":[["a😀b😀c","hello world./x/**/*.json"]],"ok":["a😀b😀c","*.json"]}
+{"fn":"deriveProjectFolderLabels","args":[["a😀b😀c","ns:key.path"]],"ok":["a😀b😀c","ns:key.path"]}
+{"fn":"deriveProjectFolderLabels","args":[["abcHello World","İstanbul"]],"ok":["abcHello World","İstanbul"]}
+{"fn":"deriveProjectFolderLabels","args":[["b","a","B","é","10","9","a"]],"ok":["b","a","B","é","10","9","a"]}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"😀","additionalFolders":[],"worktreeOf":{"$undefined":true}}],"ok":null}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"trailing.","additionalFolders":["key_name-1","tab\tseparated"]}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- trailing.: trailing. (primary)\n- key_name-1: key_name-1\n- tab\tseparated: tab\tseparated\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"trailing.","additionalFolders":["a:b:c","a:b:c﻿bom"]}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- trailing.: trailing. (primary)\n- a:b:c: a:b:c\n- a:b:c﻿bom: a:b:c﻿bom\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"HELLO","additionalFolders":["line1\nline2","tab\tseparated"],"worktreeOf":"日本語のテキスト"}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- HELLO: HELLO (primary, worktree of 日本語のテキスト)\n- line1\nline2: line1\nline2\n- tab\tseparated: tab\tseparated\nEdit the primary folder only inside its worktree path above, never in the original checkout. The other folders are not isolated: edits there apply directly.\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"HELLO","additionalFolders":["trailing.Hello World","ünïcödé"]}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- HELLO: HELLO (primary)\n- trailing.Hello World: trailing.Hello World\n- ünïcödé: ünïcödé\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"a😀b😀c","additionalFolders":["HELLOΣΊΣΥΦΟΣ","ns:key.pathabc","ns:key.pathns:key.path"]}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- a😀b😀c: a😀b😀c (primary)\n- HELLOΣΊΣΥΦΟΣ: HELLOΣΊΣΥΦΟΣ\n- ns:key.pathabc: ns:key.pathabc\n- ns:key.pathns:key.path: ns:key.pathns:key.path\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":["x"],"error":"Cannot read properties of undefined (reading 'length')"}
+{"fn":"buildProjectFoldersPreamble","args":[0],"error":"Cannot read properties of undefined (reading 'length')"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"a..b","additionalFolders":["Hello World","﻿bom",":"],"worktreeOf":"hello worlda.b.c"}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- a..b: a..b (primary, worktree of hello worlda.b.c)\n- Hello World: Hello World\n- ﻿bom: ﻿bom\n- :: :\nEdit the primary folder only inside its worktree path above, never in the original checkout. The other folders are not isolated: edits there apply directly.\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"HELLOa..b","additionalFolders":["  padded  ","ab","hello world"],"worktreeOf":null}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- HELLOa..b: HELLOa..b (primary)\n-   padded  :   padded  \n- ab: ab\n- hello world: hello world\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"{name} has {count} itemshello","additionalFolders":["hello"],"worktreeOf":null}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- {name} has {count} itemshello: {name} has {count} itemshello (primary)\n- hello: hello\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":".leading","additionalFolders":[],"worktreeOf":"ΣΊΣΥΦΟΣ"}],"ok":null}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"abcns:key.path","additionalFolders":["😀","a..b"],"worktreeOf":null}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- abcns:key.path: abcns:key.path (primary)\n- 😀: 😀\n- a..b: a..b\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"a.b.c","additionalFolders":[],"worktreeOf":".leading"}],"ok":null}
+{"fn":"buildProjectFoldersPreamble","args":[{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'length')"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":".leading","additionalFolders":["./x/**/*.json"],"worktreeOf":null}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- .leading: .leading (primary)\n- *.json: ./x/**/*.json\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"HELLOtrailing.","additionalFolders":["é","line1\nline2","é"],"worktreeOf":{"$undefined":true}}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- HELLOtrailing.: HELLOtrailing. (primary)\n- é: é\n- line1\nline2: line1\nline2\n- é: é\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"emoji 👍🏽 mixé","additionalFolders":["straße"]}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- emoji 👍🏽 mixé: emoji 👍🏽 mixé (primary)\n- straße: straße\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":":","additionalFolders":["😀","ab"]}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- :: : (primary)\n- 😀: 😀\n- ab: ab\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":".leading","additionalFolders":["é","a..ba:b:c"],"worktreeOf":{"$undefined":true}}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- .leading: .leading (primary)\n- é: é\n- a..ba:b:c: a..ba:b:c\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[true],"error":"Cannot read properties of undefined (reading 'length')"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"key_name-1","additionalFolders":[]}],"ok":null}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"trailing.{name} has {count} items","additionalFolders":["tab\tseparated","a:b:c"],"worktreeOf":null}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- trailing.{name} has {count} items: trailing.{name} has {count} items (primary)\n- tab\tseparated: tab\tseparated\n- a:b:c: a:b:c\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"日本語のテキスト","additionalFolders":["a😀b😀csrc/a/b.ts","  padded  ","  padded  .leading"],"worktreeOf":"./x/**/*.json😀"}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- 日本語のテキスト: 日本語のテキスト (primary, worktree of ./x/**/*.json😀)\n- b.ts: a😀b😀csrc/a/b.ts\n-   padded  :   padded  \n-   padded  .leading:   padded  .leading\nEdit the primary folder only inside its worktree path above, never in the original checkout. The other folders are not isolated: edits there apply directly.\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"﻿bom","additionalFolders":["","src/a/b.ts","tab\tseparated"],"worktreeOf":{"$undefined":true}}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- ﻿bom: ﻿bom (primary)\n- : \n- b.ts: src/a/b.ts\n- tab\tseparated: tab\tseparated\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"Hello World","additionalFolders":["./x/**/*.json","HELLO","./x/**/*.json"],"worktreeOf":{"$undefined":true}}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- Hello World: Hello World (primary)\n- ./x/**/*.json: ./x/**/*.json\n- HELLO: HELLO\n- ./x/**/*.json: ./x/**/*.json\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"HELLOé","additionalFolders":[]}],"ok":null}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"emoji 👍🏽 mix","additionalFolders":["{name} has {count} items","a..btrailing.","é"],"worktreeOf":{"$undefined":true}}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- emoji 👍🏽 mix: emoji 👍🏽 mix (primary)\n- {name} has {count} items: {name} has {count} items\n- a..btrailing.: a..btrailing.\n- é: é\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"emoji 👍🏽 mix","additionalFolders":["hello world","ab","  padded  "]}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- emoji 👍🏽 mix: emoji 👍🏽 mix (primary)\n- hello world: hello world\n- ab: ab\n-   padded  :   padded  \nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"a😀b😀c","additionalFolders":[":","line1\nline2","  padded  "],"worktreeOf":"./x/**/*.json"}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- a😀b😀c: a😀b😀c (primary, worktree of ./x/**/*.json)\n- :: :\n- line1\nline2: line1\nline2\n-   padded  :   padded  \nEdit the primary folder only inside its worktree path above, never in the original checkout. The other folders are not isolated: edits there apply directly.\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"a😀b😀c","additionalFolders":["ΣΊΣΥΦΟΣemoji 👍🏽 mix","a..b"],"worktreeOf":null}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- a😀b😀c: a😀b😀c (primary)\n- ΣΊΣΥΦΟΣemoji 👍🏽 mix: ΣΊΣΥΦΟΣemoji 👍🏽 mix\n- a..b: a..b\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"line1\nline2","additionalFolders":["﻿bom","src/a/b.ts"],"worktreeOf":{"$undefined":true}}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- line1\nline2: line1\nline2 (primary)\n- ﻿bom: ﻿bom\n- b.ts: src/a/b.ts\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"日本語のテキスト","additionalFolders":[],"worktreeOf":"{name} has {count} items"}],"ok":null}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"a.b.cstraße","additionalFolders":["tab\tseparated","﻿bom"]}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- a.b.cstraße: a.b.cstraße (primary)\n- tab\tseparated: tab\tseparated\n- ﻿bom: ﻿bom\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"a😀b😀c","additionalFolders":["tab\tseparated"],"worktreeOf":"a:b:c"}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- a😀b😀c: a😀b😀c (primary, worktree of a:b:c)\n- tab\tseparated: tab\tseparated\nEdit the primary folder only inside its worktree path above, never in the original checkout. The other folders are not isolated: edits there apply directly.\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"  padded  ","additionalFolders":[],"worktreeOf":null}],"ok":null}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"straße","additionalFolders":["a😀b😀cHello World"],"worktreeOf":"ab"}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- straße: straße (primary, worktree of ab)\n- a😀b😀cHello World: a😀b😀cHello World\nEdit the primary folder only inside its worktree path above, never in the original checkout. The other folders are not isolated: edits there apply directly.\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{}],"error":"Cannot read properties of undefined (reading 'length')"}
+{"fn":"buildProjectFoldersPreamble","args":[[]],"error":"Cannot read properties of undefined (reading 'length')"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"😀","additionalFolders":["a.b.c","straße","{name} has {count} items"],"worktreeOf":null}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- 😀: 😀 (primary)\n- a.b.c: a.b.c\n- straße: straße\n- {name} has {count} items: {name} has {count} items\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":".leadingline1\nline2","additionalFolders":["./x/**/*.json"],"worktreeOf":null}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- .leadingline1\nline2: .leadingline1\nline2 (primary)\n- *.json: ./x/**/*.json\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"{name} has {count} items","additionalFolders":[],"worktreeOf":{"$undefined":true}}],"ok":null}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"key_name-1","additionalFolders":["a.b.c","ünïcödé","HELLO"],"worktreeOf":{"$undefined":true}}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- key_name-1: key_name-1 (primary)\n- a.b.c: a.b.c\n- ünïcödé: ünïcödé\n- HELLO: HELLO\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"  padded  ","additionalFolders":["straße","hello","./x/**/*.jsonline1\nline2"],"worktreeOf":{"$undefined":true}}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n-   padded  :   padded   (primary)\n- straße: straße\n- hello: hello\n- *.jsonline1\nline2: ./x/**/*.jsonline1\nline2\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"hello worldns:key.path","additionalFolders":["src/a/b.ts"],"worktreeOf":{"$undefined":true}}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- hello worldns:key.path: hello worldns:key.path (primary)\n- b.ts: src/a/b.ts\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"src/a/b.ts","additionalFolders":[""],"worktreeOf":{"$undefined":true}}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- b.ts: src/a/b.ts (primary)\n- : \nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"{name} has {count} items","additionalFolders":[],"worktreeOf":"src/a/b.ts"}],"ok":null}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"ünïcödé","additionalFolders":["ΣΊΣΥΦΟΣ","src/a/b.ts","ns:key.path"],"worktreeOf":{"$undefined":true}}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- ünïcödé: ünïcödé (primary)\n- ΣΊΣΥΦΟΣ: ΣΊΣΥΦΟΣ\n- b.ts: src/a/b.ts\n- ns:key.path: ns:key.path\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"ns:key.path","additionalFolders":[],"worktreeOf":{"$undefined":true}}],"ok":null}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"emoji 👍🏽 mix","additionalFolders":["İstanbul","a😀b😀ca.b.c"],"worktreeOf":null}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- emoji 👍🏽 mix: emoji 👍🏽 mix (primary)\n- İstanbul: İstanbul\n- a😀b😀ca.b.c: a😀b😀ca.b.c\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"tab\tseparated","additionalFolders":[]}],"ok":null}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"a","additionalFolders":["  padded  ","a"],"worktreeOf":{"$undefined":true}}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- a: a (primary)\n-   padded  :   padded  \n- a: a\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"","additionalFolders":["emoji 👍🏽 mix  padded  ","trailing.","line1\nline2"],"worktreeOf":"ΣΊΣΥΦΟΣ"}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- :  (primary, worktree of ΣΊΣΥΦΟΣ)\n- emoji 👍🏽 mix  padded  : emoji 👍🏽 mix  padded  \n- trailing.: trailing.\n- line1\nline2: line1\nline2\nEdit the primary folder only inside its worktree path above, never in the original checkout. The other folders are not isolated: edits there apply directly.\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":":Hello World","additionalFolders":["tab\tseparated",""]}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- :Hello World: :Hello World (primary)\n- tab\tseparated: tab\tseparated\n- : \nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"hello world","additionalFolders":[],"worktreeOf":{"$undefined":true}}],"ok":null}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"Hello World","additionalFolders":["  padded  ","ns:key.path","./x/**/*.json"],"worktreeOf":null}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- Hello World: Hello World (primary)\n-   padded  :   padded  \n- ns:key.path: ns:key.path\n- *.json: ./x/**/*.json\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"﻿bom","additionalFolders":["ns:key.pathtrailing.","straße"],"worktreeOf":{"$undefined":true}}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- ﻿bom: ﻿bom (primary)\n- ns:key.pathtrailing.: ns:key.pathtrailing.\n- straße: straße\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"line1\nline2","additionalFolders":[],"worktreeOf":"abc"}],"ok":null}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"😀","additionalFolders":[""],"worktreeOf":null}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- 😀: 😀 (primary)\n- : \nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"hello","additionalFolders":["ΣΊΣΥΦΟΣ"],"worktreeOf":null}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- hello: hello (primary)\n- ΣΊΣΥΦΟΣ: ΣΊΣΥΦΟΣ\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"ab","additionalFolders":[],"worktreeOf":{"$undefined":true}}],"ok":null}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"src/a/b.ts","additionalFolders":[],"worktreeOf":{"$undefined":true}}],"ok":null}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"tab\tseparated","additionalFolders":["line1\nline2","ΣΊΣΥΦΟΣ",""],"worktreeOf":null}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- tab\tseparated: tab\tseparated (primary)\n- line1\nline2: line1\nline2\n- ΣΊΣΥΦΟΣ: ΣΊΣΥΦΟΣ\n- : \nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"emoji 👍🏽 mix","additionalFolders":["Hello World","./x/**/*.json",""],"worktreeOf":{"$undefined":true}}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- emoji 👍🏽 mix: emoji 👍🏽 mix (primary)\n- Hello World: Hello World\n- *.json: ./x/**/*.json\n- : \nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"abca😀b😀c","additionalFolders":["hello","a.b.c",".leading"],"worktreeOf":"emoji 👍🏽 mix"}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- abca😀b😀c: abca😀b😀c (primary, worktree of emoji 👍🏽 mix)\n- hello: hello\n- a.b.c: a.b.c\n- .leading: .leading\nEdit the primary folder only inside its worktree path above, never in the original checkout. The other folders are not isolated: edits there apply directly.\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"","additionalFolders":[]}],"ok":null}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"a.b.c","additionalFolders":["trailing.","./x/**/*.json"],"worktreeOf":{"$undefined":true}}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- a.b.c: a.b.c (primary)\n- trailing.: trailing.\n- *.json: ./x/**/*.json\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"Hello World","additionalFolders":[],"worktreeOf":null}],"ok":null}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"ünïcödé","additionalFolders":[".leading","src/a/b.ts"],"worktreeOf":{"$undefined":true}}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- ünïcödé: ünïcödé (primary)\n- .leading: .leading\n- b.ts: src/a/b.ts\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[["a",1]],"error":"Cannot read properties of undefined (reading 'length')"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":":","additionalFolders":["./x/**/*.jsoné","  padded  ΣΊΣΥΦΟΣ"]}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- :: : (primary)\n- *.jsoné: ./x/**/*.jsoné\n-   padded  ΣΊΣΥΦΟΣ:   padded  ΣΊΣΥΦΟΣ\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"a","additionalFolders":["emoji 👍🏽 mix","{name} has {count} items"]}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- a: a (primary)\n- emoji 👍🏽 mix: emoji 👍🏽 mix\n- {name} has {count} items: {name} has {count} items\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"straße","additionalFolders":["a"],"worktreeOf":null}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- straße: straße (primary)\n- a: a\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"日本語のテキスト","additionalFolders":[],"worktreeOf":"  padded  "}],"ok":null}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"a..b","additionalFolders":[],"worktreeOf":"emoji 👍🏽 mixhello"}],"ok":null}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"straße","additionalFolders":["hello world"],"worktreeOf":null}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- straße: straße (primary)\n- hello world: hello world\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"src/a/b.ts","additionalFolders":["line1\nline2"],"worktreeOf":{"$undefined":true}}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- b.ts: src/a/b.ts (primary)\n- line1\nline2: line1\nline2\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"line1\nline2","additionalFolders":["a😀b😀c:"],"worktreeOf":"a:b:c"}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- line1\nline2: line1\nline2 (primary, worktree of a:b:c)\n- a😀b😀c:: a😀b😀c:\nEdit the primary folder only inside its worktree path above, never in the original checkout. The other folders are not isolated: edits there apply directly.\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"hello","additionalFolders":["ns:key.pathns:key.path"],"worktreeOf":"a..b"}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- hello: hello (primary, worktree of a..b)\n- ns:key.pathns:key.path: ns:key.pathns:key.path\nEdit the primary folder only inside its worktree path above, never in the original checkout. The other folders are not isolated: edits there apply directly.\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"😀","additionalFolders":["hello","abHello World","trailing.a..b"]}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- 😀: 😀 (primary)\n- hello: hello\n- abHello World: abHello World\n- trailing.a..b: trailing.a..b\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"ünïcödé","additionalFolders":[],"worktreeOf":"hello world"}],"ok":null}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"ünïcödé","additionalFolders":["a😀b😀c","ab","hello"],"worktreeOf":"﻿bom"}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- ünïcödé: ünïcödé (primary, worktree of ﻿bom)\n- a😀b😀c: a😀b😀c\n- ab: ab\n- hello: hello\nEdit the primary folder only inside its worktree path above, never in the original checkout. The other folders are not isolated: edits there apply directly.\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"./x/**/*.json﻿bom","additionalFolders":["{name} has {count} items","emoji 👍🏽 mix",":"],"worktreeOf":{"$undefined":true}}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- *.json﻿bom: ./x/**/*.json﻿bom (primary)\n- {name} has {count} items: {name} has {count} items\n- emoji 👍🏽 mix: emoji 👍🏽 mix\n- :: :\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"ΣΊΣΥΦΟΣ","additionalFolders":["HELLO","HELLO",":"],"worktreeOf":"HELLO😀"}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- ΣΊΣΥΦΟΣ: ΣΊΣΥΦΟΣ (primary, worktree of HELLO😀)\n- HELLO: HELLO\n- HELLO: HELLO\n- :: :\nEdit the primary folder only inside its worktree path above, never in the original checkout. The other folders are not isolated: edits there apply directly.\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"key_name-1","additionalFolders":["tab\tseparated"],"worktreeOf":null}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- key_name-1: key_name-1 (primary)\n- tab\tseparated: tab\tseparated\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"ünïcödé","additionalFolders":["a..ba","  padded  "],"worktreeOf":{"$undefined":true}}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- ünïcödé: ünïcödé (primary)\n- a..ba: a..ba\n-   padded  :   padded  \nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"a":"b"}],"error":"Cannot read properties of undefined (reading 'length')"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"HELLO","additionalFolders":["abc","","emoji 👍🏽 mix"]}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- HELLO: HELLO (primary)\n- abc: abc\n- : \n- emoji 👍🏽 mix: emoji 👍🏽 mix\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"é","additionalFolders":[],"worktreeOf":{"$undefined":true}}],"ok":null}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"HELLO","additionalFolders":[],"worktreeOf":{"$undefined":true}}],"ok":null}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"a..b","additionalFolders":["İstanbul","line1\nline2"],"worktreeOf":""}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- a..b: a..b (primary)\n- İstanbul: İstanbul\n- line1\nline2: line1\nline2\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"Hello Worlda😀b😀c","additionalFolders":[]}],"ok":null}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"日本語のテキスト","additionalFolders":["😀"],"worktreeOf":null}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- 日本語のテキスト: 日本語のテキスト (primary)\n- 😀: 😀\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"{name} has {count} items","additionalFolders":[]}],"ok":null}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"line1\nline2","additionalFolders":[],"worktreeOf":{"$undefined":true}}],"ok":null}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"ΣΊΣΥΦΟΣ","additionalFolders":["a..b","abc","line1\nline2"]}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- ΣΊΣΥΦΟΣ: ΣΊΣΥΦΟΣ (primary)\n- a..b: a..b\n- abc: abc\n- line1\nline2: line1\nline2\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"a.b.c","additionalFolders":[],"worktreeOf":{"$undefined":true}}],"ok":null}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"  padded  a.b.c","additionalFolders":["tab\tseparated","😀tab\tseparated"],"worktreeOf":{"$undefined":true}}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n-   padded  a.b.c:   padded  a.b.c (primary)\n- tab\tseparated: tab\tseparated\n- 😀tab\tseparated: 😀tab\tseparated\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"abc","additionalFolders":[],"worktreeOf":null}],"ok":null}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"a.b.c","additionalFolders":[""],"worktreeOf":{"$undefined":true}}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- a.b.c: a.b.c (primary)\n- : \nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"a😀b😀c","additionalFolders":["İstanbul",":"],"worktreeOf":"ab"}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- a😀b😀c: a😀b😀c (primary, worktree of ab)\n- İstanbul: İstanbul\n- :: :\nEdit the primary folder only inside its worktree path above, never in the original checkout. The other folders are not isolated: edits there apply directly.\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"a:b:c","additionalFolders":["ünïcödé","line1\nline2"],"worktreeOf":{"$undefined":true}}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- a:b:c: a:b:c (primary)\n- ünïcödé: ünïcödé\n- line1\nline2: line1\nline2\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"abc","additionalFolders":["tab\tseparated","😀",":"]}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- abc: abc (primary)\n- tab\tseparated: tab\tseparated\n- 😀: 😀\n- :: :\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"line1\nline2","additionalFolders":["HELLO","HELLO","a.b.c"],"worktreeOf":"﻿bomé"}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- line1\nline2: line1\nline2 (primary, worktree of ﻿bomé)\n- HELLO: HELLO\n- HELLO: HELLO\n- a.b.c: a.b.c\nEdit the primary folder only inside its worktree path above, never in the original checkout. The other folders are not isolated: edits there apply directly.\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"Hello World","additionalFolders":[]}],"ok":null}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"src/a/b.tsHello World","additionalFolders":["HELLO"],"worktreeOf":"é"}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- b.tsHello World: src/a/b.tsHello World (primary, worktree of é)\n- HELLO: HELLO\nEdit the primary folder only inside its worktree path above, never in the original checkout. The other folders are not isolated: edits there apply directly.\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"ünïcödé","additionalFolders":["😀","ab","ΣΊΣΥΦΟΣ"]}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- ünïcödé: ünïcödé (primary)\n- 😀: 😀\n- ab: ab\n- ΣΊΣΥΦΟΣ: ΣΊΣΥΦΟΣ\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"src/a/b.ts","additionalFolders":["ab","ΣΊΣΥΦΟΣ","ns:key.path"],"worktreeOf":null}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- b.ts: src/a/b.ts (primary)\n- ab: ab\n- ΣΊΣΥΦΟΣ: ΣΊΣΥΦΟΣ\n- ns:key.path: ns:key.path\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"HELLO","additionalFolders":["a..b"],"worktreeOf":null}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- HELLO: HELLO (primary)\n- a..b: a..b\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"a","additionalFolders":["ΣΊΣΥΦΟΣ","line1\nline2"]}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- a: a (primary)\n- ΣΊΣΥΦΟΣ: ΣΊΣΥΦΟΣ\n- line1\nline2: line1\nline2\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"ünïcödé","additionalFolders":[],"worktreeOf":null}],"ok":null}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"a","additionalFolders":["Hello World","hello","tab\tseparated"],"worktreeOf":".leading"}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- a: a (primary, worktree of .leading)\n- Hello World: Hello World\n- hello: hello\n- tab\tseparated: tab\tseparated\nEdit the primary folder only inside its worktree path above, never in the original checkout. The other folders are not isolated: edits there apply directly.\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"abc","additionalFolders":["a.b.c"]}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- abc: abc (primary)\n- a.b.c: a.b.c\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"  padded  ","additionalFolders":["ünïcödé","ns:key.path","😀"]}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n-   padded  :   padded   (primary)\n- ünïcödé: ünïcödé\n- ns:key.path: ns:key.path\n- 😀: 😀\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"{name} has {count} items﻿bom","additionalFolders":[],"worktreeOf":null}],"ok":null}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"ünïcödé","additionalFolders":["abc"],"worktreeOf":null}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- ünïcödé: ünïcödé (primary)\n- abc: abc\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"./x/**/*.json","additionalFolders":["é","{name} has {count} items"]}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- *.json: ./x/**/*.json (primary)\n- é: é\n- {name} has {count} items: {name} has {count} items\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"emoji 👍🏽 mixa:b:c","additionalFolders":["﻿bom","ünïcödé","./x/**/*.json"],"worktreeOf":null}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- emoji 👍🏽 mixa:b:c: emoji 👍🏽 mixa:b:c (primary)\n- ﻿bom: ﻿bom\n- ünïcödé: ünïcödé\n- *.json: ./x/**/*.json\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"a:b:c","additionalFolders":[],"worktreeOf":null}],"ok":null}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"line1\nline2","additionalFolders":["key_name-1"],"worktreeOf":"hello world"}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- line1\nline2: line1\nline2 (primary, worktree of hello world)\n- key_name-1: key_name-1\nEdit the primary folder only inside its worktree path above, never in the original checkout. The other folders are not isolated: edits there apply directly.\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"line1\nline2","additionalFolders":["é"],"worktreeOf":null}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- line1\nline2: line1\nline2 (primary)\n- é: é\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"HELLOé","additionalFolders":["ünïcödé"]}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- HELLOé: HELLOé (primary)\n- ünïcödé: ünïcödé\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[null],"error":"Cannot read properties of null (reading 'additionalFolders')"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"","additionalFolders":["./x/**/*.json","HELLO","a..bhello"],"worktreeOf":{"$undefined":true}}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- :  (primary)\n- *.json: ./x/**/*.json\n- HELLO: HELLO\n- a..bhello: a..bhello\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"line1\nline2","additionalFolders":[],"worktreeOf":null}],"ok":null}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"😀","additionalFolders":["{name} has {count} items"],"worktreeOf":null}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- 😀: 😀 (primary)\n- {name} has {count} items: {name} has {count} items\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"ns:key.path","additionalFolders":["hellostraße","HELLO日本語のテキスト","  padded  "],"worktreeOf":null}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- ns:key.path: ns:key.path (primary)\n- hellostraße: hellostraße\n- HELLO日本語のテキスト: HELLO日本語のテキスト\n-   padded  :   padded  \nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"a😀b😀c","additionalFolders":["{name} has {count} items"],"worktreeOf":{"$undefined":true}}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- a😀b😀c: a😀b😀c (primary)\n- {name} has {count} items: {name} has {count} items\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"﻿bom","additionalFolders":[":"],"worktreeOf":{"$undefined":true}}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- ﻿bom: ﻿bom (primary)\n- :: :\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"emoji 👍🏽 mix","additionalFolders":["tab\tseparatedhello","straße"]}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- emoji 👍🏽 mix: emoji 👍🏽 mix (primary)\n- tab\tseparatedhello: tab\tseparatedhello\n- straße: straße\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"日本語のテキストtrailing.","additionalFolders":["a😀b😀c","key_name-1","ünïcödé"],"worktreeOf":"İstanbul"}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- 日本語のテキストtrailing.: 日本語のテキストtrailing. (primary, worktree of İstanbul)\n- a😀b😀c: a😀b😀c\n- key_name-1: key_name-1\n- ünïcödé: ünïcödé\nEdit the primary folder only inside its worktree path above, never in the original checkout. The other folders are not isolated: edits there apply directly.\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"😀","additionalFolders":[],"worktreeOf":"ab"}],"ok":null}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"line1\nline2","additionalFolders":[]}],"ok":null}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"a:b:c","additionalFolders":[],"worktreeOf":":abc"}],"ok":null}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"ns:key.path","additionalFolders":["hello world","HELLO","emoji 👍🏽 mix"],"worktreeOf":null}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- ns:key.path: ns:key.path (primary)\n- hello world: hello world\n- HELLO: HELLO\n- emoji 👍🏽 mix: emoji 👍🏽 mix\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"😀","additionalFolders":[],"worktreeOf":null}],"ok":null}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"{name} has {count} items","additionalFolders":["a..b","hello world","key_name-1key_name-1"]}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- {name} has {count} items: {name} has {count} items (primary)\n- a..b: a..b\n- hello world: hello world\n- key_name-1key_name-1: key_name-1key_name-1\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"İstanbul","additionalFolders":[]}],"ok":null}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"HELLO","additionalFolders":["{name} has {count} items","./x/**/*.json","aba..b"],"worktreeOf":"﻿bom"}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- HELLO: HELLO (primary, worktree of ﻿bom)\n- {name} has {count} items: {name} has {count} items\n- *.json: ./x/**/*.json\n- aba..b: aba..b\nEdit the primary folder only inside its worktree path above, never in the original checkout. The other folders are not isolated: edits there apply directly.\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"key_name-1","additionalFolders":["a..bemoji 👍🏽 mix","a:b:c","line1\nline2"],"worktreeOf":null}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- key_name-1: key_name-1 (primary)\n- a..bemoji 👍🏽 mix: a..bemoji 👍🏽 mix\n- a:b:c: a:b:c\n- line1\nline2: line1\nline2\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"ΣΊΣΥΦΟΣ","additionalFolders":[],"worktreeOf":"a"}],"ok":null}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"a","additionalFolders":["ΣΊΣΥΦΟΣ"],"worktreeOf":null}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- a: a (primary)\n- ΣΊΣΥΦΟΣ: ΣΊΣΥΦΟΣ\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"ünïcödé","additionalFolders":[],"worktreeOf":"line1\nline2"}],"ok":null}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"hello","additionalFolders":["{name} has {count} items","  padded  ","hello world"]}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- hello: hello (primary)\n- {name} has {count} items: {name} has {count} items\n-   padded  :   padded  \n- hello world: hello world\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"emoji 👍🏽 mix","additionalFolders":[],"worktreeOf":{"$undefined":true}}],"ok":null}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"./x/**/*.json","additionalFolders":[],"worktreeOf":"a"}],"ok":null}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"日本語のテキスト","additionalFolders":["hellosrc/a/b.ts",".leading"],"worktreeOf":"{name} has {count} items"}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- 日本語のテキスト: 日本語のテキスト (primary, worktree of {name} has {count} items)\n- b.ts: hellosrc/a/b.ts\n- .leading: .leading\nEdit the primary folder only inside its worktree path above, never in the original checkout. The other folders are not isolated: edits there apply directly.\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"  padded  ","additionalFolders":["./x/**/*.json"],"worktreeOf":null}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n-   padded  :   padded   (primary)\n- *.json: ./x/**/*.json\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"line1\nline2é","additionalFolders":["a﻿bom","hello world","ns:key.path😀"],"worktreeOf":null}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- line1\nline2é: line1\nline2é (primary)\n- a﻿bom: a﻿bom\n- hello world: hello world\n- ns:key.path😀: ns:key.path😀\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"src/a/b.tsHello World","additionalFolders":["ΣΊΣΥΦΟΣ","straße","a.b.cünïcödé"]}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- b.tsHello World: src/a/b.tsHello World (primary)\n- ΣΊΣΥΦΟΣ: ΣΊΣΥΦΟΣ\n- straße: straße\n- a.b.cünïcödé: a.b.cünïcödé\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"trailing.","additionalFolders":["Hello World","trailing.a","  padded  a"],"worktreeOf":":a"}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- trailing.: trailing. (primary, worktree of :a)\n- Hello World: Hello World\n- trailing.a: trailing.a\n-   padded  a:   padded  a\nEdit the primary folder only inside its worktree path above, never in the original checkout. The other folders are not isolated: edits there apply directly.\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"a","additionalFolders":[]}],"ok":null}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"日本語のテキストstraße","additionalFolders":["﻿bom"]}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- 日本語のテキストstraße: 日本語のテキストstraße (primary)\n- ﻿bom: ﻿bom\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"a..b","additionalFolders":["src/a/b.ts","hello","😀"],"worktreeOf":null}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- a..b: a..b (primary)\n- b.ts: src/a/b.ts\n- hello: hello\n- 😀: 😀\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"a.b.c","additionalFolders":["hellotrailing.","  padded  "],"worktreeOf":{"$undefined":true}}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- a.b.c: a.b.c (primary)\n- hellotrailing.: hellotrailing.\n-   padded  :   padded  \nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"İstanbul","additionalFolders":[],"worktreeOf":null}],"ok":null}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"line1\nline2","additionalFolders":["src/a/b.ts﻿bom"]}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- line1\nline2: line1\nline2 (primary)\n- b.ts﻿bom: src/a/b.ts﻿bom\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"key_name-1","additionalFolders":["a..b"],"worktreeOf":null}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- key_name-1: key_name-1 (primary)\n- a..b: a..b\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"key_name-1","additionalFolders":["İstanbul","{name} has {count} items"]}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- key_name-1: key_name-1 (primary)\n- İstanbul: İstanbul\n- {name} has {count} items: {name} has {count} items\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"a.b.cHELLO","additionalFolders":["éhello","a.b.c","line1\nline2"]}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- a.b.cHELLO: a.b.cHELLO (primary)\n- éhello: éhello\n- a.b.c: a.b.c\n- line1\nline2: line1\nline2\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"😀","additionalFolders":["straße"],"worktreeOf":"Hello World"}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- 😀: 😀 (primary, worktree of Hello World)\n- straße: straße\nEdit the primary folder only inside its worktree path above, never in the original checkout. The other folders are not isolated: edits there apply directly.\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"a","additionalFolders":["hello world"],"worktreeOf":null}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- a: a (primary)\n- hello world: hello world\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"abc","additionalFolders":["trailing.","hello","ésrc/a/b.ts"],"worktreeOf":{"$undefined":true}}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- abc: abc (primary)\n- trailing.: trailing.\n- hello: hello\n- b.ts: ésrc/a/b.ts\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"trailing.","additionalFolders":["İstanbul"],"worktreeOf":null}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- trailing.: trailing. (primary)\n- İstanbul: İstanbul\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"ab","additionalFolders":[],"worktreeOf":"a.b.c"}],"ok":null}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"abc","additionalFolders":["trailing.","﻿bom"],"worktreeOf":"straße"}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- abc: abc (primary, worktree of straße)\n- trailing.: trailing.\n- ﻿bom: ﻿bom\nEdit the primary folder only inside its worktree path above, never in the original checkout. The other folders are not isolated: edits there apply directly.\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":":","additionalFolders":["hello worldstraße","key_name-1./x/**/*.json"],"worktreeOf":"tab\tseparated"}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- :: : (primary, worktree of tab\tseparated)\n- hello worldstraße: hello worldstraße\n- *.json: key_name-1./x/**/*.json\nEdit the primary folder only inside its worktree path above, never in the original checkout. The other folders are not isolated: edits there apply directly.\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"hello","additionalFolders":[],"worktreeOf":null}],"ok":null}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"a😀b😀c","additionalFolders":["trailing.","{name} has {count} itemshello world"]}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- a😀b😀c: a😀b😀c (primary)\n- trailing.: trailing.\n- {name} has {count} itemshello world: {name} has {count} itemshello world\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"tab\tseparated","additionalFolders":["absrc/a/b.ts"],"worktreeOf":""}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- tab\tseparated: tab\tseparated (primary)\n- b.ts: absrc/a/b.ts\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"a..b","additionalFolders":["hello worldline1\nline2","line1\nline2İstanbul"]}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- a..b: a..b (primary)\n- hello worldline1\nline2: hello worldline1\nline2\n- line1\nline2İstanbul: line1\nline2İstanbul\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"{name} has {count} items","additionalFolders":["a"],"worktreeOf":{"$undefined":true}}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- {name} has {count} items: {name} has {count} items (primary)\n- a: a\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"trailing.","additionalFolders":[],"worktreeOf":{"$undefined":true}}],"ok":null}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"Hello World","additionalFolders":["{name} has {count} itemsemoji 👍🏽 mix","src/a/b.ts","hello"]}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- Hello World: Hello World (primary)\n- {name} has {count} itemsemoji 👍🏽 mix: {name} has {count} itemsemoji 👍🏽 mix\n- b.ts: src/a/b.ts\n- hello: hello\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"ab","additionalFolders":["é","  padded  ","ns:key.pathünïcödé"],"worktreeOf":"ns:key.path"}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- ab: ab (primary, worktree of ns:key.path)\n- é: é\n-   padded  :   padded  \n- ns:key.pathünïcödé: ns:key.pathünïcödé\nEdit the primary folder only inside its worktree path above, never in the original checkout. The other folders are not isolated: edits there apply directly.\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"ΣΊΣΥΦΟΣab","additionalFolders":["﻿bom","src/a/b.ts"],"worktreeOf":null}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- ΣΊΣΥΦΟΣab: ΣΊΣΥΦΟΣab (primary)\n- ﻿bom: ﻿bom\n- b.ts: src/a/b.ts\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"HELLO","additionalFolders":[]}],"ok":null}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"trailing.","additionalFolders":["ab"]}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- trailing.: trailing. (primary)\n- ab: ab\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"﻿bomstraße","additionalFolders":["src/a/b.ts",":  padded  "],"worktreeOf":{"$undefined":true}}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- ﻿bomstraße: ﻿bomstraße (primary)\n- b.ts: src/a/b.ts\n- :  padded  : :  padded  \nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"","additionalFolders":["éHello World","helloabc","line1\nline2"],"worktreeOf":"{name} has {count} items"}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- :  (primary, worktree of {name} has {count} items)\n- éHello World: éHello World\n- helloabc: helloabc\n- line1\nline2: line1\nline2\nEdit the primary folder only inside its worktree path above, never in the original checkout. The other folders are not isolated: edits there apply directly.\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"key_name-1","additionalFolders":["a😀b😀c"],"worktreeOf":{"$undefined":true}}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- key_name-1: key_name-1 (primary)\n- a😀b😀c: a😀b😀c\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"a..b😀","additionalFolders":[],"worktreeOf":null}],"ok":null}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"a:b:c","additionalFolders":[]}],"ok":null}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"ab","additionalFolders":["a..b"],"worktreeOf":null}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- ab: ab (primary)\n- a..b: a..b\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"emoji 👍🏽 mixHello World","additionalFolders":["ab"]}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- emoji 👍🏽 mixHello World: emoji 👍🏽 mixHello World (primary)\n- ab: ab\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"  padded  ","additionalFolders":["ünïcödéab","hello world"],"worktreeOf":"{name} has {count} itemsHELLO"}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n-   padded  :   padded   (primary, worktree of {name} has {count} itemsHELLO)\n- ünïcödéab: ünïcödéab\n- hello world: hello world\nEdit the primary folder only inside its worktree path above, never in the original checkout. The other folders are not isolated: edits there apply directly.\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"HELLOé","additionalFolders":["日本語のテキスト","hello world"],"worktreeOf":"a:b:c"}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- HELLOé: HELLOé (primary, worktree of a:b:c)\n- 日本語のテキスト: 日本語のテキスト\n- hello world: hello world\nEdit the primary folder only inside its worktree path above, never in the original checkout. The other folders are not isolated: edits there apply directly.\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"{name} has {count} items﻿bom","additionalFolders":["ünïcödé",".leading","﻿boma:b:c"],"worktreeOf":"key_name-1ns:key.path"}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- {name} has {count} items﻿bom: {name} has {count} items﻿bom (primary, worktree of key_name-1ns:key.path)\n- ünïcödé: ünïcödé\n- .leading: .leading\n- ﻿boma:b:c: ﻿boma:b:c\nEdit the primary folder only inside its worktree path above, never in the original checkout. The other folders are not isolated: edits there apply directly.\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"./x/**/*.json","additionalFolders":["  padded  abc","a😀b😀c"],"worktreeOf":{"$undefined":true}}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- *.json: ./x/**/*.json (primary)\n-   padded  abc:   padded  abc\n- a😀b😀c: a😀b😀c\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"ΣΊΣΥΦΟΣ","additionalFolders":["ΣΊΣΥΦΟΣ","key_name-1"]}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- ΣΊΣΥΦΟΣ: ΣΊΣΥΦΟΣ (primary)\n- ΣΊΣΥΦΟΣ: ΣΊΣΥΦΟΣ\n- key_name-1: key_name-1\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"straße","additionalFolders":[],"worktreeOf":{"$undefined":true}}],"ok":null}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"a..bünïcödé","additionalFolders":["HELLO","hello","abc"]}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- a..bünïcödé: a..bünïcödé (primary)\n- HELLO: HELLO\n- hello: hello\n- abc: abc\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"a..b","additionalFolders":[]}],"ok":null}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"  padded  ","additionalFolders":["a"],"worktreeOf":{"$undefined":true}}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n-   padded  :   padded   (primary)\n- a: a\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"key_name-1","additionalFolders":[":"]}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- key_name-1: key_name-1 (primary)\n- :: :\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"key_name-1","additionalFolders":["Hello World","a"],"worktreeOf":"a:b:c"}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- key_name-1: key_name-1 (primary, worktree of a:b:c)\n- Hello World: Hello World\n- a: a\nEdit the primary folder only inside its worktree path above, never in the original checkout. The other folders are not isolated: edits there apply directly.\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"trailing.","additionalFolders":["{name} has {count} itemsΣΊΣΥΦΟΣ","hello world","emoji 👍🏽 mix"],"worktreeOf":{"$undefined":true}}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- trailing.: trailing. (primary)\n- {name} has {count} itemsΣΊΣΥΦΟΣ: {name} has {count} itemsΣΊΣΥΦΟΣ\n- hello world: hello world\n- emoji 👍🏽 mix: emoji 👍🏽 mix\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"a.b.ctab\tseparated","additionalFolders":[],"worktreeOf":"😀"}],"ok":null}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"İstanbul","additionalFolders":["src/a/b.ts"],"worktreeOf":null}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- İstanbul: İstanbul (primary)\n- b.ts: src/a/b.ts\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"a:b:c","additionalFolders":["HELLO","{name} has {count} itemsa"],"worktreeOf":null}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- a:b:c: a:b:c (primary)\n- HELLO: HELLO\n- {name} has {count} itemsa: {name} has {count} itemsa\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"findProjectFolderProblem","args":[["/repos/web","/repos/api","/repos/shared"]],"ok":null}
+{"fn":"findProjectFolderProblem","args":[[]],"ok":"Add at least one folder."}
+{"fn":"findProjectFolderProblem","args":[["/repos/web","api"]],"ok":"Use an absolute path: api"}
+{"fn":"findProjectFolderProblem","args":[["C:\\repos\\web","\\\\server\\share\\api"]],"ok":null}
+{"fn":"findProjectFolderProblem","args":[["/repos/web","/repos/web/"]],"ok":"web is already in this project."}
+{"fn":"findProjectFolderProblem","args":[["/repos","/repos/api"]],"ok":"api is inside repos. Add only one of them."}
+{"fn":"findProjectFolderProblem","args":[["/repos/api","/repos"]],"ok":"api is inside repos. Add only one of them."}
+{"fn":"deriveProjectFolderLabels","args":[["/repos/web","/repos/api"]],"ok":["web","api"]}
+{"fn":"deriveProjectFolderLabels","args":[["/a/server/api","/b/client/api","/c/web"]],"ok":["server/api","client/api","web"]}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"/repos/web","additionalFolders":[]}],"ok":null}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"/repos/web","additionalFolders":["/repos/api"]}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- web: /repos/web (primary)\n- api: /repos/api\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"/worktrees/web-feature","additionalFolders":["/repos/api"],"worktreeOf":"/repos/web"}],"ok":"<project_folders>\nThis project spans several folders. You can read and edit all of them:\n- web-feature: /worktrees/web-feature (primary, worktree of /repos/web)\n- api: /repos/api\nEdit the primary folder only inside its worktree path above, never in the original checkout. The other folders are not isolated: edits there apply directly.\nUse absolute paths for files outside the primary folder.\n</project_folders>"}
+{"fn":"deriveProjectFolderLabels","args":[["/worktrees/web-feature","/repos/api"]],"ok":["web-feature","api"]}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"codex"}],"ok":null}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"claudeAgent"}],"ok":null}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"opencode"}],"ok":"OpenCode cannot access a project's additional folders. Use Codex or Claude for this multi-folder project."}

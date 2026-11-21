@@ -1,0 +1,90 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/projectFolders.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "projectfolders-rs",
+  "exports": [
+    {
+      "name": "projectFoldersSessionIssue",
+      "file": "packages/shared/src/projectFolders.ts",
+      "line": 21,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{ readonly provider: string }",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "findProjectFolderProblem",
+      "file": "packages/shared/src/projectFolders.ts",
+      "line": 42,
+      "params": [
+        {
+          "name": "paths",
+          "ts_type": "ReadonlyArray<string>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "options",
+          "ts_type": "{ readonly platform?: string }",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "deriveProjectFolderLabels",
+      "file": "packages/shared/src/projectFolders.ts",
+      "line": 72,
+      "params": [
+        {
+          "name": "paths",
+          "ts_type": "ReadonlyArray<string>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ReadonlyArray<string>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "buildProjectFoldersPreamble",
+      "file": "packages/shared/src/projectFolders.ts",
+      "line": 96,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly primaryFolder: string;\n  readonly additionalFolders: ReadonlyArray<string>;\n  /** The project's primary folder when `primaryFolder` is a worktree of it. */\n  readonly worktreeOf?: string | null | undefined;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

@@ -1,0 +1,16 @@
+{"fn":"findProjectFolderProblem","args":[["/repos/web","/repos/api","/repos/shared"]]}
+{"fn":"findProjectFolderProblem","args":[[]]}
+{"fn":"findProjectFolderProblem","args":[["/repos/web","api"]]}
+{"fn":"findProjectFolderProblem","args":[["C:\\repos\\web","\\\\server\\share\\api"]]}
+{"fn":"findProjectFolderProblem","args":[["/repos/web","/repos/web/"]]}
+{"fn":"findProjectFolderProblem","args":[["/repos","/repos/api"]]}
+{"fn":"findProjectFolderProblem","args":[["/repos/api","/repos"]]}
+{"fn":"deriveProjectFolderLabels","args":[["/repos/web","/repos/api"]]}
+{"fn":"deriveProjectFolderLabels","args":[["/a/server/api","/b/client/api","/c/web"]]}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"/repos/web","additionalFolders":[]}]}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"/repos/web","additionalFolders":["/repos/api"]}]}
+{"fn":"buildProjectFoldersPreamble","args":[{"primaryFolder":"/worktrees/web-feature","additionalFolders":["/repos/api"],"worktreeOf":"/repos/web"}]}
+{"fn":"deriveProjectFolderLabels","args":[["/worktrees/web-feature","/repos/api"]]}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"codex"}]}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"claudeAgent"}]}
+{"fn":"projectFoldersSessionIssue","args":[{"provider":"opencode"}]}

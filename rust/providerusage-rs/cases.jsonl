@@ -1,0 +1,972 @@
+{"fn":"providerUsageLabel","args":["ns:key.path"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["Hello World"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["Hello Worldns:key.path"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["hello"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["日本語のテキスト"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["é"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["İstanbul"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["ab"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["straße"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["emoji 👍🏽 mix"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":[{"$undefined":true}],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["{name} has {count} items"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["a😀b😀cabc"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["﻿bom"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["😀"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":[".leading"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["key_name-1a"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["line1\nline2"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["日本語のテキストa"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["éa:b:c"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["ünïcödéab"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":[],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["😀hello"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["emoji 👍🏽 mix.leading"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["helloé"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["a😀b😀c"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["a"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["  padded  "],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["ünïcödé"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["a.b.c"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["Hello Worlda"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["ab😀"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["trailing."],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["./x/**/*.json"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["a..b"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["key_name-1src/a/b.ts"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["😀src/a/b.ts"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["hello world"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["src/a/b.ts"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["a:b:c😀"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["key_name-1"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["  padded  trailing."],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["{name} has {count} itemshello world"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["HELLO"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["abc"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["ns:key.path.leading"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":[""],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["ünïcödéHello World"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["éé"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["a..b  padded  "],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["tab\tseparated"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["./x/**/*.jsonabc"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["./x/**/*.jsonline1\nline2"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["ΣΊΣΥΦΟΣ"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["{name} has {count} itemstab\tseparated"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["a:b:c"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["Hello Worldsrc/a/b.ts"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["tab\tseparated﻿bom"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["abns:key.path"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["tab\tseparatedhello"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["a.b.cΣΊΣΥΦΟΣ"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":[":"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["a😀b😀c{name} has {count} items"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["a..bΣΊΣΥΦΟΣ"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["日本語のテキストab"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":[".leadingΣΊΣΥΦΟΣ"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["hello world.leading"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["key_name-1İstanbul"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["trailing.tab\tseparated"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["﻿bomünïcödé"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["aline1\nline2"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["  padded  ns:key.path"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["hellons:key.path"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["éabc"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":[".leadingé"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["key_name-1HELLO"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["Hello Worldİstanbul"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["a..bstraße"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["HELLOns:key.path"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["éa😀b😀c"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["ab{name} has {count} items"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["﻿bomé"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":[":trailing."],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["﻿bom😀"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["line1\nline2  padded  "],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["a..bünïcödé"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["Hello Worldabc"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["é./x/**/*.json"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["HELLOİstanbul"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["tab\tseparateda..b"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["tab\tseparatedline1\nline2"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":[".leadingns:key.path"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["😀a:b:c"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["İstanbulsrc/a/b.ts"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["ns:key.pathhello"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["key_name-1./x/**/*.json"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["日本語のテキストline1\nline2"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["a..bHello World"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["日本語のテキストa..b"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["./x/**/*.jsona:b:c"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["﻿bomΣΊΣΥΦΟΣ"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["emoji 👍🏽 mixa..b"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["line1\nline2emoji 👍🏽 mix"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["tab\tseparateda😀b😀c"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["😀ünïcödé"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["﻿boma..b"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["a.b.cstraße"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["abc:"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["  padded  tab\tseparated"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["hello:"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["line1\nline2abc"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["ünïcödétrailing."],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["straßeünïcödé"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["hellohello world"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["trailing.a😀b😀c"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["a😀b😀cHELLO"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["a.b.ctab\tseparated"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["ab.leading"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["a..b日本語のテキスト"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":[".leading.leading"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["﻿bomabc"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["src/a/b.tsa.b.c"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["a😀b😀cns:key.path"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["line1\nline2tab\tseparated"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["a:b:cünïcödé"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["ünïcödéé"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["ünïcödé:"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["{name} has {count} itemsHello World"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":[".leadingkey_name-1"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["{name} has {count} itemstrailing."],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":[":abc"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["straßeHELLO"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["trailing.{name} has {count} items"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["trailing.ΣΊΣΥΦΟΣ"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["{name} has {count} items.leading"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["hello worldtrailing."],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["a:b:c./x/**/*.json"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["trailing.é"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["日本語のテキスト  padded  "],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["a.b.ca.b.c"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["Hello World{name} has {count} items"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["src/a/b.tsabc"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["a  padded  "],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":[":hello"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["İstanbulhello world"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["ns:key.path:"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["ns:key.pathé"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["ns:key.pathHello World"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["ünïcödésrc/a/b.ts"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["a.b.c日本語のテキスト"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["ΣΊΣΥΦΟΣ.leading"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["abca:b:c"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["a:b:cHello World"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["line1\nline2a..b"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["ünïcödéHELLO"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["hello日本語のテキスト"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["﻿boma:b:c"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["a:b:c﻿bom"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["tab\tseparatedtab\tseparated"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["﻿bomns:key.path"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["tab\tseparated  padded  "],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["abcΣΊΣΥΦΟΣ"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["a.b.cünïcödé"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["line1\nline2ab"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":[".leadingİstanbul"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["﻿bomab"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["﻿bomemoji 👍🏽 mix"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["HELLOab"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["src/a/b.ts﻿bom"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["a:b:cns:key.path"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["abc{name} has {count} items"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["a..bab"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["éünïcödé"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["straßetab\tseparated"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["a.b.chello"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["日本語のテキスト😀"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["./x/**/*.json日本語のテキスト"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["ΣΊΣΥΦΟΣemoji 👍🏽 mix"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["helloa.b.c"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["ΣΊΣΥΦΟΣhello world"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["﻿bom﻿bom"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["abline1\nline2"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["HELLOa..b"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["./x/**/*.json😀"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["aab"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["key_name-1tab\tseparated"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["src/a/b.tshello"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["😀key_name-1"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["ΣΊΣΥΦΟΣΣΊΣΥΦΟΣ"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["helloa..b"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["::"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["a:b:ckey_name-1"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["line1\nline2hello world"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":[".leadingünïcödé"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["trailing.日本語のテキスト"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["./x/**/*.jsona"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["emoji 👍🏽 mixabc"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["ns:key.pathns:key.path"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["😀hello world"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["key_name-1ab"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["héllo wörld"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["👍🏽 thumbs"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["日本語"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["ılık ırmak"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["👨‍👩‍👧 family"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["a b"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["a😀b"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["a²b x½ y①"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["aⅠb Ⅻ"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["a𐐀b 𝐀bc"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["कि ٣٤"],"ok":"Usage"}
+{"fn":"providerUsageDisplayName","args":["line1\nline2"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["src/a/b.tsab"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["a"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":[],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":[".leading"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["src/a/b.ts﻿bom"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["a😀b😀c"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":[":"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["日本語のテキストstraße"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["trailing.hello"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["hello"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":[".leadingab"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["HELLO"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":[{"$undefined":true}],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["😀"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["a:b:c"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":[""],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["emoji 👍🏽 mix"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["trailing.tab\tseparated"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["étrailing."],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["  padded  é"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["ns:key.path"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["line1\nline2İstanbul"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["a.b.c"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["key_name-1"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":[".leadinghello world"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["ΣΊΣΥΦΟΣns:key.path"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["ab.leading"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["src/a/b.ts日本語のテキスト"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["😀hello world"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["日本語のテキスト"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["./x/**/*.json"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["trailing."],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["Hello World"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["HELLOabc"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["  padded  "],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["ΣΊΣΥΦΟΣ"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["line1\nline2ünïcödé"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["abc"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["HELLOa😀b😀c"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["Hello Worldünïcödé"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["{name} has {count} items"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["ΣΊΣΥΦΟΣkey_name-1"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["{name} has {count} itemsé"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["a..b"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["İstanbul"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["tab\tseparatedΣΊΣΥΦΟΣ"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["日本語のテキスト{name} has {count} items"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["hello world"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["é"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["日本語のテキストhello world"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["trailing.src/a/b.ts"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["ékey_name-1"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["tab\tseparated"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["src/a/b.tsa:b:c"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["日本語のテキストa:b:c"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["trailing.line1\nline2"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["line1\nline2hello"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["a😀b😀ca.b.c"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["a..bİstanbul"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["straße日本語のテキスト"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["ünïcödé"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["日本語のテキストa😀b😀c"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["emoji 👍🏽 mixHello World"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["a..bé"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["a:b:c:"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["HELLOünïcödé"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["tab\tseparatedHELLO"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["straßea:b:c"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["﻿bom"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["a..bkey_name-1"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["ab"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["straße"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["a:b:cHello World"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["😀tab\tseparated"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["﻿bomé"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["ns:key.pathHello World"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["ünïcödé{name} has {count} items"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["{name} has {count} itemsHELLO"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["{name} has {count} items日本語のテキスト"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["😀:"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["a..bΣΊΣΥΦΟΣ"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["./x/**/*.jsona😀b😀c"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["Hello Worlda"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["abcns:key.path"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["line1\nline2  padded  "],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["HELLOHELLO"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["a.b.c./x/**/*.json"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["trailing.a..b"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["İstanbulstraße"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":[".leadinga😀b😀c"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["ünïcödéemoji 👍🏽 mix"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["ünïcödé日本語のテキスト"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["src/a/b.ts"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["{name} has {count} itemstrailing."],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["﻿bomİstanbul"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["tab\tseparatedabc"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["Hello Worldemoji 👍🏽 mix"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["﻿boma.b.c"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["😀ab"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":[".leadingemoji 👍🏽 mix"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["a😀b😀ca"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["trailing.é"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["ns:key.patha:b:c"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["é.leading"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["İstanbula:b:c"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["  padded  key_name-1"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["﻿bomsrc/a/b.ts"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["HELLOhello"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["hello worldline1\nline2"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["emoji 👍🏽 mixabc"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["a..ba.b.c"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["  padded  tab\tseparated"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":[":emoji 👍🏽 mix"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["a..bline1\nline2"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["日本語のテキスト😀"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["a.b.ca:b:c"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["key_name-1﻿bom"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["line1\nline2Hello World"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["{name} has {count} itemsab"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["abc﻿bom"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["hello worldΣΊΣΥΦΟΣ"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["ünïcödé﻿bom"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["😀﻿bom"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["ΣΊΣΥΦΟΣemoji 👍🏽 mix"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["{name} has {count} itemsabc"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["emoji 👍🏽 mixtab\tseparated"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["ns:key.pathtrailing."],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["ns:key.patha.b.c"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["日本語のテキスト﻿bom"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["HELLOa:b:c"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["ünïcödéé"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["ns:key.patha"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["abHELLO"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["line1\nline2ΣΊΣΥΦΟΣ"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["a:b:ca😀b😀c"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["日本語のテキストkey_name-1"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["a.b.c日本語のテキスト"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["trailing.HELLO"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["./x/**/*.jsonünïcödé"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["ünïcödéhello world"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["key_name-1ünïcödé"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["hello world  padded  "],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["abHello World"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["{name} has {count} itemssrc/a/b.ts"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["İstanbul{name} has {count} items"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["a.b.c😀"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["straßeab"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["{name} has {count} items./x/**/*.json"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["😀src/a/b.ts"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["a..b.leading"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["  padded  hello"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["hello world./x/**/*.json"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["straßea😀b😀c"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["src/a/b.tstab\tseparated"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["abcab"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["a:b:cé"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["{name} has {count} itemsline1\nline2"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["HELLOtab\tseparated"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["a😀b😀csrc/a/b.ts"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["aba"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["./x/**/*.jsona.b.c"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["aba..b"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["abctab\tseparated"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["a😀b😀c:"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["HELLOstraße"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["😀ünïcödé"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["abca..b"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["straßekey_name-1"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["emoji 👍🏽 mixa..b"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["src/a/b.ts.leading"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["﻿bomns:key.path"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":[":HELLO"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["{name} has {count} itemsa"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["emoji 👍🏽 mixhello"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":[":Hello World"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["abstraße"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["ünïcödé.leading"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":[".leadinga:b:c"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["straßeİstanbul"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["日本語のテキストns:key.path"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["./x/**/*.jsona:b:c"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["é{name} has {count} items"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["tab\tseparatedé"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["a😀b😀c{name} has {count} items"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["line1\nline2trailing."],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["./x/**/*.jsonΣΊΣΥΦΟΣ"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["  padded  line1\nline2"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["a😀b😀ca:b:c"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["straßehello world"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["a..b:"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["hello{name} has {count} items"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["key_name-1  padded  "],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["😀{name} has {count} items"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["a..ba😀b😀c"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["Hello Worldtab\tseparated"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["﻿bom:"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["é  padded  "],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["line1\nline2HELLO"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["日本語のテキストabc"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["héllo wörld"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["👍🏽 thumbs"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["日本語"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["ılık ırmak"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["👨‍👩‍👧 family"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["a b"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["a😀b"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["a²b x½ y①"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["aⅠb Ⅻ"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["a𐐀b 𝐀bc"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["कि ٣٤"],"ok":"Provider"}
+{"fn":"providerUsageLearnMoreHref","args":["./x/**/*.json"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["src/a/b.ts"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":[],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["emoji 👍🏽 mix"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["a😀b😀cİstanbul"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["tab\tseparated"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["a.b.c"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":[".leading"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["日本語のテキスト"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["日本語のテキストsrc/a/b.ts"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["a..bİstanbul"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["line1\nline2"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["﻿bom"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":[""],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["a😀b😀c"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":[{"$undefined":true}],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["a:b:c"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["aa:b:c"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["Hello World"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["日本語のテキストhello"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["Hello World😀"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["é"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["hello"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["straßesrc/a/b.ts"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["trailing."],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["a..bünïcödé"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["tab\tseparated  padded  "],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["straßea.b.c"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["ünïcödéa"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["src/a/b.tsa😀b😀c"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["ΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["ünïcödéhello world"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["HELLO.leading"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["İstanbul"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["a"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["😀"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["hello world"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["straße"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["./x/**/*.json  padded  "],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["  padded  "],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["abİstanbul"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["HELLO"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["abc"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["line1\nline2hello world"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["key_name-1"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["hello worldé"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["a..b"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["  padded  ./x/**/*.json"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["ab"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["ns:key.path"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["key_name-1a..b"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":[":"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["tab\tseparateda.b.c"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["a:b:c  padded  "],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["trailing.ns:key.path"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["ahello world"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["ünïcödé"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["İstanbulİstanbul"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["line1\nline2ns:key.path"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["aa..b"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["{name} has {count} items"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["tab\tseparatedünïcödé"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["Hello Worldé"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["ünïcödé:"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["emoji 👍🏽 mixtrailing."],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["./x/**/*.jsontrailing."],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["{name} has {count} itemsHello World"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["a..ba:b:c"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["a😀b😀cabc"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["HELLOa"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["a.b.ca.b.c"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["key_name-1ΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["😀a😀b😀c"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["İstanbul😀"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["key_name-1  padded  "],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["straße.leading"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["Hello Worlda:b:c"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["HELLO日本語のテキスト"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["Hello Worldemoji 👍🏽 mix"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["src/a/b.ts  padded  "],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["HELLO{name} has {count} items"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["日本語のテキストa.b.c"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["aba..b"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["hello{name} has {count} items"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["İstanbula😀b😀c"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["ΣΊΣΥΦΟΣline1\nline2"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["key_name-1HELLO"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["key_name-1a.b.c"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["﻿bom﻿bom"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["trailing.İstanbul"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["{name} has {count} itemsa.b.c"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["ns:key.path日本語のテキスト"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":[":😀"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["﻿boma..b"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["Hello Worldab"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["src/a/b.tstrailing."],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["straßestraße"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["Hello Worldsrc/a/b.ts"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["İstanbulΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["abctrailing."],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":[".leadingns:key.path"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["HELLOhello world"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["  padded  hello"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["日本語のテキストΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":[".leadingtab\tseparated"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["﻿bomabc"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["./x/**/*.jsona..b"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["a..btrailing."],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["ns:key.patha"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["日本語のテキストHELLO"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["  padded  hello world"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["日本語のテキストünïcödé"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["{name} has {count} items😀"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["hello worldhello"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["ns:key.pathtrailing."],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["key_name-1abc"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["﻿bomünïcödé"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["abab"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["src/a/b.ts{name} has {count} items"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["trailing.abc"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["﻿bomΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["a.b.cab"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["abc﻿bom"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["﻿bomstraße"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["line1\nline2./x/**/*.json"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["  padded  a..b"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["a:b:ca..b"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["./x/**/*.jsonhello world"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["helloa"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":[".leadingİstanbul"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["{name} has {count} itemsünïcödé"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["ns:key.pathé"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["aline1\nline2"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["line1\nline2HELLO"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["src/a/b.tssrc/a/b.ts"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["abΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["./x/**/*.jsonsrc/a/b.ts"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":[":hello world"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["HELLOns:key.path"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["hello:"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["abhello"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["😀:"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["a:b:ca:b:c"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["abca"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["emoji 👍🏽 mixa"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["straße﻿bom"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["日本語のテキスト{name} has {count} items"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["key_name-1ab"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["{name} has {count} itemsa😀b😀c"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["İstanbulkey_name-1"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["trailing..leading"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["﻿boma"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["hello worlda..b"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["a:b:cHello World"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["Hello Worldünïcödé"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["İstanbulé"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["line1\nline2tab\tseparated"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["ünïcödé﻿bom"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["😀a:b:c"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["straßeline1\nline2"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["a😀b😀csrc/a/b.ts"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["éns:key.path"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["a..b:"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["{name} has {count} items:"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["line1\nline2İstanbul"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["😀tab\tseparated"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":[":ns:key.path"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["ΣΊΣΥΦΟΣ  padded  "],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["a😀b😀cstraße"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["key_name-1a"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["日本語のテキスト./x/**/*.json"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["emoji 👍🏽 mixa..b"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["./x/**/*.jsonΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["straße:"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["a:b:chello"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["Hello World:"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["hello日本語のテキスト"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["﻿bomHello World"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["{name} has {count} itemstrailing."],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["./x/**/*.jsonab"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["日本語のテキスト日本語のテキスト"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["éab"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["straßeHello World"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["src/a/b.tsé"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["Hello Worldkey_name-1"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["ünïcödé日本語のテキスト"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["😀a"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["emoji 👍🏽 mixkey_name-1"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":[":  padded  "],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["日本語のテキストtrailing."],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["key_name-1line1\nline2"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["hello worldtab\tseparated"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["﻿bomtab\tseparated"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["straßeHELLO"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["tab\tseparatedstraße"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["a./x/**/*.json"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["a.b.cns:key.path"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["ns:key.pathtab\tseparated"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["abline1\nline2"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["ns:key.pathİstanbul"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["héllo wörld"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["👍🏽 thumbs"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["日本語"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["ılık ırmak"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["👨‍👩‍👧 family"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["a b"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["a😀b"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["a²b x½ y①"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["aⅠb Ⅻ"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["a𐐀b 𝐀bc"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["कि ٣٤"],"ok":null}
+{"fn":"providerUsageNeedsAuthDetail","args":["abc"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":[],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":[{"$undefined":true}],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["{name} has {count} itemsé"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["hello world"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":[".leading"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["emoji 👍🏽 mix"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["﻿bom"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["hello"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["日本語のテキスト"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["./x/**/*.jsonHELLO"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["é"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["a:b:c"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["a..b"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["  padded  "],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["{name} has {count} items"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["Hello World"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["./x/**/*.json"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":[":"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["straße日本語のテキスト"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["a😀b😀c"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["日本語のテキストline1\nline2"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["a.b.c"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":[""],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["ΣΊΣΥΦΟΣsrc/a/b.ts"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["./x/**/*.json:"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["src/a/b.ts"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["ns:key.path"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["line1\nline2ab"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["line1\nline2"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["key_name-1"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["abİstanbul"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["straße"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["İstanbul"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":[":key_name-1"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["a:b:c  padded  "],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["ünïcödéhello world"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["a.b.ckey_name-1"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["😀emoji 👍🏽 mix"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["a😀b😀ca"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["ünïcödé﻿bom"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["trailing."],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["hellosrc/a/b.ts"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["ΣΊΣΥΦΟΣ"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["a"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["a.b.cline1\nline2"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["Hello Worldns:key.path"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["helloabc"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["éHELLO"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["😀"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["ΣΊΣΥΦΟΣemoji 👍🏽 mix"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["ns:key.pathé"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["tab\tseparated"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["İstanbul😀"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["ünïcödé"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["abns:key.path"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["key_name-1hello"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["a:b:cns:key.path"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["a{name} has {count} items"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["HELLO"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["ans:key.path"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["a😀b😀ckey_name-1"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["a..b﻿bom"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["a:b:c{name} has {count} items"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["Hello World日本語のテキスト"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["😀trailing."],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["./x/**/*.jsonsrc/a/b.ts"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["hellokey_name-1"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["a.b.cé"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["hellohello world"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["trailing.{name} has {count} items"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["a..bΣΊΣΥΦΟΣ"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["hello world:"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["line1\nline2  padded  "],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["ΣΊΣΥΦΟΣHELLO"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["ns:key.pathsrc/a/b.ts"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["emoji 👍🏽 mixΣΊΣΥΦΟΣ"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["abtrailing."],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["ab"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["./x/**/*.jsonab"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["éns:key.path"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["﻿bomns:key.path"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["line1\nline2İstanbul"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["straße.leading"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["straßekey_name-1"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["aé"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["hello{name} has {count} items"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["helloΣΊΣΥΦΟΣ"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["abca"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["straßeé"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["😀line1\nline2"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["hello worldünïcödé"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["abcabc"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["key_name-1straße"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["hello world  padded  "],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["日本語のテキストabc"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["﻿bomé"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["trailing.İstanbul"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["src/a/b.tsa😀b😀c"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["HELLOstraße"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["key_name-1İstanbul"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["./x/**/*.json  padded  "],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["ΣΊΣΥΦΟΣhello world"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["ahello"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["﻿boma😀b😀c"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":[":😀"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["aHello World"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["emoji 👍🏽 mix﻿bom"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["key_name-1hello world"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["ns:key.patha..b"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["line1\nline2é"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":[":hello world"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["HELLOa..b"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["﻿bomhello"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["  padded  trailing."],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["a😀"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["a.b.c./x/**/*.json"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["😀:"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["a:"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["trailing.hello"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["trailing.a"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["ns:key.pathkey_name-1"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["日本語のテキストemoji 👍🏽 mix"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["ababc"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["a..b.leading"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["trailing.  padded  "],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["straßeİstanbul"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":[".leadingünïcödé"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["﻿bom日本語のテキスト"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["Hello Worldtab\tseparated"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["HELLOtrailing."],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["a.b.cns:key.path"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["a😀b😀chello"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["line1\nline2hello world"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["straßesrc/a/b.ts"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["日本語のテキストa😀b😀c"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["a.b.chello"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["  padded  Hello World"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["src/a/b.tshello world"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["ns:key.pathtrailing."],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["aba..b"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["Hello WorldHELLO"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["a:b:cΣΊΣΥΦΟΣ"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["tab\tseparatedline1\nline2"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["HELLOabc"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["ns:key.patha.b.c"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["ΣΊΣΥΦΟΣünïcödé"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["tab\tseparatedsrc/a/b.ts"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["a😀b😀cline1\nline2"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["a😀b😀cé"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["  padded  hello"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["./x/**/*.jsoné"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["ns:key.pathhello"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["a.b.cstraße"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["a😀b😀c{name} has {count} items"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["helloünïcödé"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["{name} has {count} itemsa"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["./x/**/*.jsonünïcödé"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["./x/**/*.jsonhello world"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["emoji 👍🏽 mixtrailing."],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["src/a/b.tsİstanbul"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["line1\nline2ns:key.path"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["a:b:cabc"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["trailing.tab\tseparated"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["./x/**/*.jsona.b.c"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["line1\nline2日本語のテキスト"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["ünïcödéhello"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["İstanbula"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["  padded  :"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["aba😀b😀c"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["ab:"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["ünïcödékey_name-1"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["tab\tseparatedhello world"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["emoji 👍🏽 mixemoji 👍🏽 mix"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["src/a/b.ts{name} has {count} items"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["{name} has {count} itemsünïcödé"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["emoji 👍🏽 mixİstanbul"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["key_name-1.leading"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["emoji 👍🏽 mixsrc/a/b.ts"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["﻿bomline1\nline2"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["key_name-1key_name-1"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":[".leading日本語のテキスト"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["İstanbul./x/**/*.json"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["a:b:c:"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["./x/**/*.json.leading"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["Hello Worldtrailing."],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["emoji 👍🏽 mix.leading"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["abline1\nline2"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["a..ba:b:c"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["HELLOa"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["hello world.leading"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["src/a/b.ts﻿bom"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["src/a/b.tstab\tseparated"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["Hello World:"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["ünïcödé./x/**/*.json"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["HELLOkey_name-1"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["HELLOline1\nline2"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["key_name-1日本語のテキスト"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["asrc/a/b.ts"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["a.b.c﻿bom"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["héllo wörld"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["👍🏽 thumbs"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["日本語"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["ılık ırmak"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["👨‍👩‍👧 family"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["a b"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["a😀b"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["a²b x½ y①"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["aⅠb Ⅻ"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["a𐐀b 𝐀bc"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["कि ٣٤"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"selectVisibleProviderUsageSnapshots","args":[[]],"ok":[]}
+{"fn":"selectVisibleProviderUsageSnapshots","args":[true],"error":"snapshots.filter is not a function"}
+{"fn":"selectVisibleProviderUsageSnapshots","args":["x"],"error":"snapshots.filter is not a function"}
+{"fn":"selectVisibleProviderUsageSnapshots","args":[{"a":"b"}],"error":"snapshots.filter is not a function"}
+{"fn":"selectVisibleProviderUsageSnapshots","args":[["a",1]],"ok":[]}
+{"fn":"selectVisibleProviderUsageSnapshots","args":[0],"error":"snapshots.filter is not a function"}
+{"fn":"selectVisibleProviderUsageSnapshots","args":[null],"error":"Cannot read properties of null (reading 'filter')"}
+{"fn":"selectVisibleProviderUsageSnapshots","args":[{}],"error":"snapshots.filter is not a function"}
+{"fn":"selectVisibleProviderUsageSnapshots","args":[{"a":{"b":"c"}}],"error":"snapshots.filter is not a function"}
+{"fn":"providerUsageLabel","args":["codex"],"ok":"Codex usage"}
+{"fn":"providerUsageLabel","args":["claudeAgent"],"ok":"Claude usage"}
+{"fn":"providerUsageLabel","args":["cursor"],"ok":"Cursor usage"}
+{"fn":"providerUsageLabel","args":["antigravity"],"ok":"Antigravity usage"}
+{"fn":"providerUsageLabel","args":["grok"],"ok":"Grok usage"}
+{"fn":"providerUsageLabel","args":["droid"],"ok":"Droid usage"}
+{"fn":"providerUsageLabel","args":["opencode"],"ok":"OpenCode usage"}
+{"fn":"providerUsageLabel","args":["pi"],"ok":"Pi usage"}
+{"fn":"providerUsageLabel","args":["devin"],"ok":"Devin usage"}
+{"fn":"providerUsageLabel","args":["omp"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["unknown"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":[""],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["CODEX"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["Codex"],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":[null],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":[{"k":1}],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":[["codex"]],"ok":"Codex usage"}
+{"fn":"providerUsageLabel","args":[0],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":[1],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":[true],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":[],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":["codex","x",1],"ok":"Codex usage"}
+{"fn":"providerUsageDisplayName","args":["codex"],"ok":"Codex"}
+{"fn":"providerUsageDisplayName","args":["claudeAgent"],"ok":"Claude"}
+{"fn":"providerUsageDisplayName","args":["cursor"],"ok":"Cursor"}
+{"fn":"providerUsageDisplayName","args":["antigravity"],"ok":"Antigravity"}
+{"fn":"providerUsageDisplayName","args":["grok"],"ok":"Grok"}
+{"fn":"providerUsageDisplayName","args":["droid"],"ok":"Droid"}
+{"fn":"providerUsageDisplayName","args":["opencode"],"ok":"OpenCode"}
+{"fn":"providerUsageDisplayName","args":["pi"],"ok":"Pi"}
+{"fn":"providerUsageDisplayName","args":["devin"],"ok":"Devin"}
+{"fn":"providerUsageDisplayName","args":["omp"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["unknown"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":[""],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["CODEX"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["Codex"],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":[null],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":[{"k":1}],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":[["codex"]],"ok":"Codex"}
+{"fn":"providerUsageDisplayName","args":[0],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":[1],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":[true],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":[],"ok":"Provider"}
+{"fn":"providerUsageDisplayName","args":["codex","x",1],"ok":"Codex"}
+{"fn":"providerUsageLearnMoreHref","args":["codex"],"ok":"https://platform.openai.com/usage"}
+{"fn":"providerUsageLearnMoreHref","args":["claudeAgent"],"ok":"https://docs.anthropic.com/en/docs/about-claude/models#rate-limits"}
+{"fn":"providerUsageLearnMoreHref","args":["cursor"],"ok":"https://cursor.com/dashboard"}
+{"fn":"providerUsageLearnMoreHref","args":["antigravity"],"ok":"https://antigravity.google"}
+{"fn":"providerUsageLearnMoreHref","args":["grok"],"ok":"https://console.x.ai"}
+{"fn":"providerUsageLearnMoreHref","args":["droid"],"ok":"https://docs.factory.ai/pricing"}
+{"fn":"providerUsageLearnMoreHref","args":["opencode"],"ok":"https://opencode.ai"}
+{"fn":"providerUsageLearnMoreHref","args":["pi"],"ok":"https://pi.dev"}
+{"fn":"providerUsageLearnMoreHref","args":["devin"],"ok":"https://app.devin.ai/usage"}
+{"fn":"providerUsageLearnMoreHref","args":["omp"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["unknown"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":[""],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["CODEX"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["Codex"],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":[null],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":[{"k":1}],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":[["codex"]],"ok":"https://platform.openai.com/usage"}
+{"fn":"providerUsageLearnMoreHref","args":[0],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":[1],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":[true],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":[],"ok":null}
+{"fn":"providerUsageLearnMoreHref","args":["codex","x",1],"ok":"https://platform.openai.com/usage"}
+{"fn":"providerUsageNeedsAuthDetail","args":["codex"],"ok":"Sign in with `codex login` to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["claudeAgent"],"ok":"Sign in with `claude` to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["cursor"],"ok":"Sign in with `cursor-agent login` to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["antigravity"],"ok":"Sign in with `agy` to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["grok"],"ok":"Sign in with `grok login` to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["droid"],"ok":"Sign in with `droid` to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["opencode"],"ok":"Sign in with `opencode auth login` to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["pi"],"ok":"Sign in with `pi` to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["devin"],"ok":"Sign in with `devin auth login` to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["omp"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["unknown"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":[""],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["CODEX"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["Codex"],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":[null],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":[{"k":1}],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":[["codex"]],"ok":"Sign in with `codex login` to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":[0],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":[1],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":[true],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":[],"ok":"Sign in with the provider CLI to see usage."}
+{"fn":"providerUsageNeedsAuthDetail","args":["codex","x",1],"ok":"Sign in with `codex login` to see usage."}
+{"fn":"selectVisibleProviderUsageSnapshots","args":[[]],"ok":[]}
+{"fn":"selectVisibleProviderUsageSnapshots","args":[[{"provider":"codex"}]],"ok":[{"provider":"codex"}]}
+{"fn":"selectVisibleProviderUsageSnapshots","args":[[{"provider":"codex","status":"ok"}]],"ok":[{"provider":"codex","status":"ok"}]}
+{"fn":"selectVisibleProviderUsageSnapshots","args":[[{"provider":"codex","status":"needs-auth"}]],"ok":[{"provider":"codex","status":"needs-auth"}]}
+{"fn":"selectVisibleProviderUsageSnapshots","args":[[{"provider":"codex","status":"needs-auth"},{"provider":"pi","status":"ok"}]],"ok":[{"provider":"pi","status":"ok"}]}
+{"fn":"selectVisibleProviderUsageSnapshots","args":[[{"provider":"devin"},{"provider":"codex"}]],"ok":[{"provider":"codex"},{"provider":"devin"}]}
+{"fn":"selectVisibleProviderUsageSnapshots","args":[[{"provider":"unknown"},{"provider":"codex"}]],"ok":[{"provider":"codex"}]}
+{"fn":"selectVisibleProviderUsageSnapshots","args":[[{"provider":"unknown"}]],"ok":[]}
+{"fn":"selectVisibleProviderUsageSnapshots","args":[[{"provider":"claudeAgent","status":"needs-auth"},{"provider":"codex","status":"needs-auth"}]],"ok":[{"provider":"codex","status":"needs-auth"},{"provider":"claudeAgent","status":"needs-auth"}]}
+{"fn":"selectVisibleProviderUsageSnapshots","args":[[{"provider":"pi","status":"rate-limited"},{"provider":"codex","status":"needs-auth"}]],"ok":[{"provider":"pi","status":"rate-limited"}]}
+{"fn":"selectVisibleProviderUsageSnapshots","args":[[{"provider":"codex","status":null}]],"ok":[{"provider":"codex","status":null}]}
+{"fn":"selectVisibleProviderUsageSnapshots","args":[[{"provider":"codex","status":0}]],"ok":[{"provider":"codex","status":0}]}
+{"fn":"selectVisibleProviderUsageSnapshots","args":[[{"provider":"codex","status":""}]],"ok":[{"provider":"codex","status":""}]}
+{"fn":"selectVisibleProviderUsageSnapshots","args":[[{"provider":"codex","status":false}]],"ok":[{"provider":"codex","status":false}]}
+{"fn":"selectVisibleProviderUsageSnapshots","args":[[{"provider":"codex","status":"needs-auth"},{"provider":"codex"}]],"ok":[{"provider":"codex"}]}
+{"fn":"selectVisibleProviderUsageSnapshots","args":[[{"provider":"codex"},{"provider":"codex","status":"error"}]],"ok":[{"provider":"codex"},{"provider":"codex","status":"error"}]}
+{"fn":"selectVisibleProviderUsageSnapshots","args":[[{"provider":"codex","status":{"x":1}}]],"ok":[{"provider":"codex","status":{"x":1}}]}
+{"fn":"selectVisibleProviderUsageSnapshots","args":[[{"provider":"codex","status":["needs-auth"]}]],"ok":[{"provider":"codex","status":["needs-auth"]}]}
+{"fn":"selectVisibleProviderUsageSnapshots","args":[null],"error":"Cannot read properties of null (reading 'filter')"}
+{"fn":"selectVisibleProviderUsageSnapshots","args":["x"],"error":"snapshots.filter is not a function"}
+{"fn":"selectVisibleProviderUsageSnapshots","args":[{}],"error":"snapshots.filter is not a function"}
+{"fn":"selectVisibleProviderUsageSnapshots","args":[],"error":"Cannot read properties of undefined (reading 'filter')"}
+{"fn":"selectVisibleProviderUsageSnapshots","args":[[null]],"error":"Cannot read properties of null (reading 'provider')"}
+{"fn":"selectVisibleProviderUsageSnapshots","args":[[1]],"ok":[]}
+{"fn":"selectVisibleProviderUsageSnapshots","args":[["codex"]],"ok":[]}
+{"fn":"selectVisibleProviderUsageSnapshots","args":[[{"provider":"codex","status":{"$undefined":true}}]],"ok":[{"provider":"codex","status":{"$undefined":true}}]}
+{"fn":"selectVisibleProviderUsageSnapshots","args":[[{"provider":"codex","status":"needs-auth","extra":1}]],"ok":[{"provider":"codex","status":"needs-auth","extra":1}]}
+{"fn":"selectVisibleProviderUsageSnapshots","args":[[{"provider":"codex","status":"needs-auth "}]],"ok":[{"provider":"codex","status":"needs-auth "}]}
+{"fn":"providerUsageLabel","args":[[["codex","pi"]]],"ok":"Usage"}
+{"fn":"providerUsageLabel","args":[[[]]],"ok":"Usage"}
+{"fn":"providerUsageLearnMoreHref","args":[["devin"]],"ok":"https://app.devin.ai/usage"}

@@ -1,0 +1,102 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/providerUsage.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "providerusage-rs",
+  "exports": [
+    {
+      "name": "providerUsageLabel",
+      "file": "packages/shared/src/providerUsage.ts",
+      "line": 27,
+      "params": [
+        {
+          "name": "provider",
+          "ts_type": "string | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "providerUsageDisplayName",
+      "file": "packages/shared/src/providerUsage.ts",
+      "line": 32,
+      "params": [
+        {
+          "name": "provider",
+          "ts_type": "string | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "providerUsageLearnMoreHref",
+      "file": "packages/shared/src/providerUsage.ts",
+      "line": 36,
+      "params": [
+        {
+          "name": "provider",
+          "ts_type": "string | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "providerUsageNeedsAuthDetail",
+      "file": "packages/shared/src/providerUsage.ts",
+      "line": 41,
+      "params": [
+        {
+          "name": "provider",
+          "ts_type": "string | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "selectVisibleProviderUsageSnapshots",
+      "file": "packages/shared/src/providerUsage.ts",
+      "line": 54,
+      "params": [
+        {
+          "name": "snapshots",
+          "ts_type": "ReadonlyArray<typeof typeof typeof typeof ServerProviderUsageSnapshot.Type.Type.Type.Type>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ReadonlyArray<typeof typeof typeof typeof ServerProviderUsageSnapshot.Type.Type.Type.Type>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

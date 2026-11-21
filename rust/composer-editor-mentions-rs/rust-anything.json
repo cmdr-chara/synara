@@ -1,0 +1,108 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/composer-editor-mentions.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "composer-editor-mentions-rs",
+  "exports": [
+    {
+      "name": "matchComposerLinkToken",
+      "file": "apps/web/src/composer-editor-mentions.ts",
+      "line": 100,
+      "params": [
+        {
+          "name": "text",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "options",
+          "ts_type": "{ includeTrailingTokenAtEnd: boolean }",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "{ url: string; start: number; end: number } | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "matchComposerSlashCommandChipToken",
+      "file": "apps/web/src/composer-editor-mentions.ts",
+      "line": 167,
+      "params": [
+        {
+          "name": "text",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "{ command: (typeof BUILT_IN_COMPOSER_SLASH_COMMANDS)[number]; start: number; end: number } | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "splitPromptIntoDisplaySegments",
+      "file": "apps/web/src/composer-editor-mentions.ts",
+      "line": 382,
+      "params": [
+        {
+          "name": "prompt",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "mentionReferences",
+          "ts_type": "ReadonlyArray<typeof typeof typeof typeof ProviderMentionReference.Type.Type.Type.Type>",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "(| {\n      type: \"text\";\n      text: string;\n    }\n  | {\n      type: \"mention\";\n      path: string;\n      kind?: \"path\" | \"plugin\" | \"thread\" | \"connector\";\n      threadId?: string;\n      /**\n       * Raw token length in the source text (`@name` vs `@\"name with spaces\"`).\n       * Cursor math must use this — quoted tokens are longer than path.length + 1.\n       */\n      tokenLength?: number;\n    }\n  | {\n      type: \"skill\";\n      name: string;\n      prefix?: string;\n    }\n  | {\n      type: \"slash-command\";\n      command: (typeof BUILT_IN_COMPOSER_SLASH_COMMANDS)[number];\n    }\n  | {\n      type: \"terminal-context\";\n      context: TerminalContextDraft | null;\n    }\n  | {\n      /** Agent mention: @alias - chip for subagent reference (parens are plain text) */\n      type: \"agent-mention\";\n      alias: string;\n      color: string;\n    }\n  | {\n      /** URL/domain rendered as a tappable link chip. */\n      type: \"link\";\n      url: string;\n    })[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "splitPromptIntoComposerSegments",
+      "file": "apps/web/src/composer-editor-mentions.ts",
+      "line": 396,
+      "params": [
+        {
+          "name": "prompt",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "terminalContexts",
+          "ts_type": "ReadonlyArray<TerminalContextDraft>",
+          "optional": true,
+          "rest": false
+        },
+        {
+          "name": "mentionReferences",
+          "ts_type": "ReadonlyArray<typeof typeof typeof typeof ProviderMentionReference.Type.Type.Type.Type>",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "(| {\n      type: \"text\";\n      text: string;\n    }\n  | {\n      type: \"mention\";\n      path: string;\n      kind?: \"path\" | \"plugin\" | \"thread\" | \"connector\";\n      threadId?: string;\n      /**\n       * Raw token length in the source text (`@name` vs `@\"name with spaces\"`).\n       * Cursor math must use this — quoted tokens are longer than path.length + 1.\n       */\n      tokenLength?: number;\n    }\n  | {\n      type: \"skill\";\n      name: string;\n      prefix?: string;\n    }\n  | {\n      type: \"slash-command\";\n      command: (typeof BUILT_IN_COMPOSER_SLASH_COMMANDS)[number];\n    }\n  | {\n      type: \"terminal-context\";\n      context: TerminalContextDraft | null;\n    }\n  | {\n      /** Agent mention: @alias - chip for subagent reference (parens are plain text) */\n      type: \"agent-mention\";\n      alias: string;\n      color: string;\n    }\n  | {\n      /** URL/domain rendered as a tappable link chip. */\n      type: \"link\";\n      url: string;\n    })[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

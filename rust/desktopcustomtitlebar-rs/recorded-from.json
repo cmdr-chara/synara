@@ -1,0 +1,17 @@
+{
+  "unit": "apps/desktop/src/desktopCustomTitleBar.ts",
+  "files": 1,
+  "fingerprint": "f20485c3e326e8e9",
+  "coverage": {
+    "lines": 72,
+    "reached": 70,
+    "files": [
+      {
+        "file": "apps/desktop/src/desktopCustomTitleBar.ts",
+        "lines": 72,
+        "reached": 70,
+        "missed": "30, 60"
+      }
+    ]
+  }
+}

@@ -1,0 +1,670 @@
+{"fn":"parseCustomTitleBarPreference","args":[0],"ok":null}
+{"fn":"parseCustomTitleBarPreference","args":[{}],"ok":null}
+{"fn":"parseCustomTitleBarPreference","args":[[]],"ok":null}
+{"fn":"parseCustomTitleBarPreference","args":[["a",1]],"ok":null}
+{"fn":"parseCustomTitleBarPreference","args":[{"a":{"b":"c"}}],"ok":null}
+{"fn":"parseCustomTitleBarPreference","args":[null],"ok":null}
+{"fn":"parseCustomTitleBarPreference","args":[{"a":"b"}],"ok":null}
+{"fn":"parseCustomTitleBarPreference","args":[true],"ok":null}
+{"fn":"parseCustomTitleBarPreference","args":["x"],"ok":null}
+{"fn":"parseCustomTitleBarPreference","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6}],"ok":null}
+{"fn":"parseCustomTitleBarPreference","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7}],"ok":null}
+{"fn":"parseCustomTitleBarPreference","args":[[3,1,2]],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["Hello World  padded  "],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["a:b:c"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["a.b.c"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["  padded  "],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["key_name-1"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["a😀b😀c"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["./x/**/*.json"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["日本語のテキスト"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["key_name-1日本語のテキスト"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["{name} has {count} items"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["a😀b😀c😀"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["é"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["Hello World"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["trailing."],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["a"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":[""],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["HELLO"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["﻿bom"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["ΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["ünïcödé"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["a..b"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":[":"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["HELLO﻿bom"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["ünïcödéünïcödé"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["😀"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["hello"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["a{name} has {count} items"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["ns:key.path"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["  padded  HELLO"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["Hello Worldé"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["line1\nline2"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["İstanbul"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["src/a/b.ts"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["straße"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["tab\tseparated"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["emoji 👍🏽 mix"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["abab"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["😀ab"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":[".leading"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["straßeline1\nline2"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["trailing.src/a/b.ts"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["hellohello world"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["Hello Worldns:key.path"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["trailing.ab"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["ünïcödé﻿bom"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["hello world"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["日本語のテキスト日本語のテキスト"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":[".leadingΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["ab"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":[":İstanbul"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["a:b:cΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["abcHello World"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["src/a/b.ts.leading"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["﻿bom:"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["é﻿bom"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["a..ba😀b😀c"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["a😀b😀ca"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["aba"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["日本語のテキスト{name} has {count} items"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["Hello WorldHello World"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["﻿bomİstanbul"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["abc"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["tab\tseparated😀"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["étab\tseparated"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["src/a/b.tsa..b"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["a..bstraße"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["ünïcödétab\tseparated"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["emoji 👍🏽 mixhello world"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["trailing.HELLO"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["日本語のテキストtrailing."],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":[".leading{name} has {count} items"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["😀line1\nline2"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["tab\tseparated./x/**/*.json"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["😀ns:key.path"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["hellotab\tseparated"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["straßeemoji 👍🏽 mix"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["ΣΊΣΥΦΟΣé"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["hello﻿bom"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["a😀b😀cemoji 👍🏽 mix"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["aΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["a.b.c{name} has {count} items"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["./x/**/*.jsonHello World"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["日本語のテキストΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["ΣΊΣΥΦΟΣ.leading"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["  padded  日本語のテキスト"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["tab\tseparatedtrailing."],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["Hello Worldhello world"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["a.b.cstraße"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["./x/**/*.jsonHELLO"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["é:"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["src/a/b.tsab"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["a😀b😀cHello World"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["é  padded  "],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["helloab"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["  padded  .leading"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["hello{name} has {count} items"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["日本語のテキストns:key.path"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["hello worldkey_name-1"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":[":ünïcödé"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["ΣΊΣΥΦΟΣa..b"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["tab\tseparatedkey_name-1"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":[":a😀b😀c"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["line1\nline2HELLO"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["line1\nline2  padded  "],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["  padded  tab\tseparated"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["aHello World"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["{name} has {count} itemshello world"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["ΣΊΣΥΦΟΣ:"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["ΣΊΣΥΦΟΣİstanbul"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["src/a/b.tshello world"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["﻿bomHELLO"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["abstraße"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["./x/**/*.jsona..b"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["éhello"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":[".leading.leading"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["./x/**/*.jsonkey_name-1"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["﻿bomHello World"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":[":Hello World"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["éHello World"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["HELLOline1\nline2"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["ns:key.path😀"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["abcab"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["Hello Worldemoji 👍🏽 mix"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["tab\tseparateda..b"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["ΣΊΣΥΦΟΣstraße"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["ünïcödé😀"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["emoji 👍🏽 mixab"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["abé"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["😀ünïcödé"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["abckey_name-1"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["HELLOİstanbul"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["Hello Worlda😀b😀c"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["trailing.日本語のテキスト"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["İstanbul./x/**/*.json"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["日本語のテキスト:"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["straßea..b"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["trailing.trailing."],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["abtrailing."],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["key_name-1line1\nline2"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["abc日本語のテキスト"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["a:b:ca"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["a😀b😀csrc/a/b.ts"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["{name} has {count} itemsΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["a😀b😀c.leading"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":[":straße"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["src/a/b.ts日本語のテキスト"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["Hello Worlda.b.c"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["key_name-1a..b"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["Hello Worldkey_name-1"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["a.b.ca.b.c"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["key_name-1﻿bom"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["a:b:ctrailing."],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["İstanbulHELLO"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["a..ba"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["HELLO😀"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["éİstanbul"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["abns:key.path"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["trailing.ünïcödé"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["ΣΊΣΥΦΟΣ{name} has {count} items"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["ns:key.patha😀b😀c"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["日本語のテキストa😀b😀c"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["﻿boma"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["日本語のテキストünïcödé"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["HELLO日本語のテキスト"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["﻿boma.b.c"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["trailing.﻿bom"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["key_name-1:"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["é.leading"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["a:b:csrc/a/b.ts"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["straßeΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["atab\tseparated"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["ns:key.patha.b.c"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["a..bns:key.path"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["a.b.cHELLO"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["😀a.b.c"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["hellokey_name-1"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["src/a/b.tsa😀b😀c"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["key_name-1.leading"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["a.b.csrc/a/b.ts"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["helloa..b"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["trailing.straße"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["a.b.cline1\nline2"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["  padded  Hello World"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["İstanbulhello world"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["a😀b😀c./x/**/*.json"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["a..babc"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["ünïcödéa😀b😀c"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["a:b:cé"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["Hello World./x/**/*.json"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["Hello WorldHELLO"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["ns:key.pathtrailing."],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["absrc/a/b.ts"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["😀a😀b😀c"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["emoji 👍🏽 mix日本語のテキスト"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["src/a/b.tstab\tseparated"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["line1\nline2ünïcödé"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["a😀b😀cΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":[".leadingtab\tseparated"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["src/a/b.tsa:b:c"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["./x/**/*.jsona:b:c"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["héllo wörld"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["👍🏽 thumbs"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["日本語"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["ılık ırmak"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["👨‍👩‍👧 family"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["a b"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["a😀b"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["a²b x½ y①"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["aⅠb Ⅻ"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["a𐐀b 𝐀bc"],"ok":null}
+{"fn":"readCustomTitleBarPreference","args":["कि ٣٤"],"ok":null}
+{"fn":"writeCustomTitleBarPreference","args":["key_name-1",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["key_name-1trailing.",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["src/a/b.ts",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["./x/**/*.json😀",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["ns:key.path",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["hello",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["a",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["ns:key.path",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["  padded  .leading",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":[":",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["a..b﻿bom",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["hello world",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["﻿bom",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["ünïcödé",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["key_name-1abc",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["abc.leading",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["ab",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["ünïcödéline1\nline2",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["Hello World",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["straße",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["src/a/b.ts",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["ΣΊΣΥΦΟΣ",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["a😀b😀c",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["abc",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["",false],"error":"ENOENT: no such file or directory, open ''"}
+{"fn":"writeCustomTitleBarPreference","args":["hello worldünïcödé",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["İstanbul",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["ünïcödé",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["tab\tseparated",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["a..b",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["日本語のテキスト",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":[".leading",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["a..b",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["ns:key.patha😀b😀c",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["İstanbul",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["tab\tseparated",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["ΣΊΣΥΦΟΣ",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["straße",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["hello world",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["./x/**/*.json",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["line1\nline2",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":[":HELLO",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["a:b:c",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["tab\tseparateda..b",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["ünïcödéa.b.c",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["trailing.",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["😀",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["é日本語のテキスト",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["./x/**/*.json",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["a..btab\tseparated",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["straße.leading",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["é",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":[":",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["a:b:c",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["HELLO",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["hello",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["﻿bom",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["trailing.",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["{name} has {count} itemsa",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["emoji 👍🏽 mixé",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["ünïcödéabc",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["a",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["日本語のテキスト",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["İstanbulsrc/a/b.ts",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["ns:key.pathünïcödé",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["emoji 👍🏽 mixsrc/a/b.ts",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["emoji 👍🏽 mix",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["😀a",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["a😀b😀cstraße",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["hello worldHello World",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["a😀b😀c",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["tab\tseparated.leading",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["ünïcödéa",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["straße:",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["a.b.c",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["Hello World",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["  padded  src/a/b.ts",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["./x/**/*.jsonstraße",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["line1\nline2日本語のテキスト",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["😀",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["ΣΊΣΥΦΟΣa",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["﻿bomİstanbul",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["ΣΊΣΥΦΟΣa:b:c",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["a.b.c./x/**/*.json",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["ab日本語のテキスト",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["é",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["  padded  ",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["HELLO",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["emoji 👍🏽 mix",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["a..bhello world",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["﻿bomtab\tseparated",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["  padded  ",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["line1\nline2HELLO",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":[".leading日本語のテキスト",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["line1\nline2trailing.",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["src/a/b.tsé",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["abc",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["aba.b.c",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["é  padded  ",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":[":ünïcödé",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["key_name-1",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["./x/**/*.jsona😀b😀c",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["abtrailing.",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["line1\nline2",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["",true],"error":"ENOENT: no such file or directory, open ''"}
+{"fn":"writeCustomTitleBarPreference","args":["HELLOünïcödé",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["a..btrailing.",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["a😀b😀c.leading",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":[".leadingİstanbul",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["ΣΊΣΥΦΟΣhello world",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["tab\tseparated{name} has {count} items",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":[".leadingsrc/a/b.ts",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":[".leadingkey_name-1",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["  padded  tab\tseparated",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["./x/**/*.jsonhello",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["İstanbula.b.c",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["line1\nline2ünïcödé",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["a😀b😀cemoji 👍🏽 mix",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["hello worlda😀b😀c",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["emoji 👍🏽 mixhello world",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["ab",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["hellotrailing.",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["straßestraße",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["{name} has {count} items",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["﻿bomhello world",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["ünïcödéΣΊΣΥΦΟΣ",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["src/a/b.ts:",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["a.b.c",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["src/a/b.tsa.b.c",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["./x/**/*.json日本語のテキスト",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["  padded  日本語のテキスト",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["Hello Worldhello world",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["./x/**/*.jsonstraße",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["asrc/a/b.ts",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["aa😀b😀c",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["trailing.Hello World",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["{name} has {count} items",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["abca.b.c",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["trailing.HELLO",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["a:b:cns:key.path",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["straße{name} has {count} items",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["hello﻿bom",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["./x/**/*.json.leading",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["a.b.cns:key.path",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["  padded  {name} has {count} items",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["﻿bom﻿bom",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":[".leading",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["a:b:c😀",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["abstraße",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["ésrc/a/b.ts",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["﻿bomHELLO",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["a:b:ctrailing.",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["ababc",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["emoji 👍🏽 mix😀",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["a.b.cab",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["hellohello",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["ns:key.pathİstanbul",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":[":{name} has {count} items",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["😀ünïcödé",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["İstanbulkey_name-1",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["abc😀",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["line1\nline2a",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":[".leadingns:key.path",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["hello world日本語のテキスト",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["tab\tseparatedsrc/a/b.ts",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["﻿boma:b:c",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["Hello Worldstraße",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["a:b:csrc/a/b.ts",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["İstanbula..b",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["a..bHello World",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["a:b:c:",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["a😀b😀chello world",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["ΣΊΣΥΦΟΣ﻿bom",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["abca:b:c",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["a.b.cΣΊΣΥΦΟΣ",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["Hello WorldHELLO",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["./x/**/*.jsoné",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["hello./x/**/*.json",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["abcab",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["日本語のテキストns:key.path",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["a..bns:key.path",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["trailing.😀",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["é./x/**/*.json",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["éΣΊΣΥΦΟΣ",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["./x/**/*.jsonabc",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["ns:key.pathtrailing.",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["İstanbulns:key.path",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["line1\nline2ünïcödé",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["Hello WorldHello World",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["a{name} has {count} items",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["Hello Worlda",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":[":😀",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["{name} has {count} itemsé",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["a:b:cΣΊΣΥΦΟΣ",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["﻿bomemoji 👍🏽 mix",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["HELLOΣΊΣΥΦΟΣ",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["./x/**/*.json{name} has {count} items",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["hello{name} has {count} items",false],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["ΣΊΣΥΦΟΣ./x/**/*.json",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["tab\tseparatedstraße",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["héllo wörld",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["👍🏽 thumbs",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["日本語",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["ılık ırmak",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["👨‍👩‍👧 family",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["a b",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["a😀b",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["a²b x½ y①",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["aⅠb Ⅻ",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["a𐐀b 𝐀bc",true],"ok":{"$undefined":true}}
+{"fn":"writeCustomTitleBarPreference","args":["कि ٣٤",true],"ok":{"$undefined":true}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":":","preference":null,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"trailing.İstanbul","preference":true,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"ΣΊΣΥΦΟΣ","preference":true,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[true],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"😀","preference":false,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"a😀b😀c","preference":false,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"日本語のテキストİstanbul","preference":null,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"abc","preference":null,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"ahello","preference":false,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":".leading","preference":null,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"a😀b😀c","preference":null,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"emoji 👍🏽 mix","preference":false,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"ab:","preference":null,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"abc","preference":false,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"a﻿bom","preference":null,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"HELLO","preference":true,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"src/a/b.ts","preference":true,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"emoji 👍🏽 mix","preference":null,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"😀","preference":true,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"ünïcödé","preference":false,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"aba","preference":false,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"日本語のテキストline1\nline2","preference":true,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"é","preference":true,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"a..bünïcödé","preference":null,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[[]],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"é","preference":null,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"emoji 👍🏽 mix","preference":null,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"{name} has {count} items","preference":null,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"{name} has {count} items","preference":null,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"hello","preference":null,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"  padded  ","preference":true,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"emoji 👍🏽 mixhello world","preference":true,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"日本語のテキストns:key.path","preference":null,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"line1\nline2","preference":null,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":".leading","preference":true,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"key_name-1","preference":true,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"","preference":true,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"src/a/b.ts","preference":true,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"HELLOa😀b😀c","preference":null,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":".leading","preference":null,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"straßeHello World","preference":true,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[0],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"  padded  emoji 👍🏽 mix","preference":true,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"tab\tseparated","preference":null,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[["a",1]],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"HELLO","preference":null,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"ns:key.path﻿bom","preference":false,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":":","preference":null,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"a","preference":true,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"Hello World","preference":null,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"a.b.ctrailing.","preference":null,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"helloΣΊΣΥΦΟΣ","preference":false,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"﻿bom","preference":false,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"é","preference":false,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"line1\nline2","preference":false,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"","preference":null,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"src/a/b.tsé","preference":false,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"é","preference":null,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"abc","preference":null,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"😀","preference":null,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":".leading","preference":true,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"key_name-1tab\tseparated","preference":null,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"straße","preference":null,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"Hello World","preference":false,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"trailing.","preference":null,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"  padded  ","preference":null,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"ns:key.path","preference":true,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"Hello World","preference":null,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"hello world","preference":null,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"straße","preference":false,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"tab\tseparated","preference":null,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[null],"error":"Cannot read properties of null (reading 'platform')"}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"a.b.c","preference":true,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"Hello World","preference":true,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"straße","preference":false,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"{name} has {count} items","preference":false,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"ns:key.path","preference":null,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"hello","preference":false,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"emoji 👍🏽 mixa","preference":false,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"日本語のテキスト","preference":false,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":["x"],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"İstanbul","preference":null,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"a":"b"}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"ΣΊΣΥΦΟΣ","preference":true,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"./x/**/*.json","preference":false,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"src/a/b.tsHELLO","preference":null,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"{name} has {count} items","preference":true,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"ns:key.path","preference":false,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"Hello Worldtrailing.","preference":null,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"a😀b😀ca","preference":true,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"key_name-1","preference":false,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"a.b.c","preference":null,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"a..b","preference":null,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"Hello Worldhello world","preference":false,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"﻿bom","preference":null,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"ab","preference":true,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"ns:key.path","preference":null,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"a..bhello world","preference":false,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"HELLOkey_name-1","preference":false,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"hello world","preference":true,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"./x/**/*.json","preference":null,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"line1\nline2","preference":true,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"straße","preference":true,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"日本語のテキスト","preference":false,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"line1\nline2","preference":null,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"Hello Worldabc","preference":false,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"","preference":false,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"﻿bom","preference":false,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"ab","preference":null,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"Hello Worldünïcödé","preference":false,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"src/a/b.ts","preference":null,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"日本語のテキスト","preference":true,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"hello","preference":null,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"key_name-1","preference":null,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"{name} has {count} items","preference":false,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"emoji 👍🏽 mix","preference":true,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"HELLO","preference":null,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"trailing.hello","preference":false,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"abctrailing.","preference":null,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"trailing.","preference":false,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"a.b.c","preference":null,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"﻿bom","preference":true,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"tab\tseparatedstraße","preference":true,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"Hello World","preference":false,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"a..b","preference":true,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"hello world","preference":false,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"","preference":null,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"a:b:c","preference":null,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"ünïcödé","preference":true,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"日本語のテキスト","preference":null,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"hellohello world","preference":null,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"line1\nline2","preference":false,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"HELLOa😀b😀c","preference":null,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"a":{"b":"c"}}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"helloa:b:c","preference":null,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"ab","preference":false,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"ünïcödé","preference":null,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"İstanbul","preference":false,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"ab","preference":true,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"abc","preference":true,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"ünïcödé","preference":null,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"line1\nline2./x/**/*.json","preference":null,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"Hello WorldΣΊΣΥΦΟΣ","preference":true,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"trailing.","preference":null,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":".leadingtrailing.","preference":false,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"HELLO","preference":false,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":":straße","preference":false,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"./x/**/*.json","preference":true,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"hello world","preference":null,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"😀abc","preference":null,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"{name} has {count} itemsline1\nline2","preference":false,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"src/a/b.ts.leading","preference":true,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"ab","preference":null,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"İstanbul","preference":false,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"hello world","preference":false,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"line1\nline2ns:key.path","preference":null,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"ΣΊΣΥΦΟΣ","preference":null,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"Hello Worldtab\tseparated","preference":true,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"é","preference":true,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"a..b  padded  ","preference":true,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"straße","preference":null,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"日本語のテキストemoji 👍🏽 mix","preference":null,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"HELLO","preference":false,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"日本語のテキスト","preference":null,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"  padded  é","preference":false,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"  padded  ","preference":false,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"key_name-1","preference":null,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"日本語のテキストtrailing.","preference":null,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"tab\tseparated","preference":false,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"İstanbul","preference":null,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"","preference":true,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"a.b.c","preference":false,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"src/a/b.ts  padded  ","preference":null,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"tab\tseparated","preference":false,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"helloHELLO","preference":true,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"﻿bom.leading","preference":false,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"a..b","preference":true,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"a:b:c","preference":null,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"{name} has {count} items","preference":true,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"ΣΊΣΥΦΟΣ","preference":false,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"a.b.c","preference":true,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"a","preference":null,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"a.b.ctrailing.","preference":true,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"hello:","preference":false,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"abctab\tseparated","preference":null,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"line1\nline2a😀b😀c","preference":true,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"ünïcödéHello World","preference":null,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"./x/**/*.jsona..b","preference":true,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"a..b:","preference":false,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"./x/**/*.jsonİstanbul","preference":true,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"a..b","preference":false,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"ΣΊΣΥΦΟΣ","preference":null,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"a..b","preference":null,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"{name} has {count} itemsa.b.c","preference":null,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":":","preference":false,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"straßesrc/a/b.ts","preference":null,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"trailing.","preference":false,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"ns:key.path","preference":true,"active":false}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopCustomTitleBarState","args":[{"platform":"src/a/b.ts","preference":null,"active":true}],"ok":{"supported":false,"preference":false,"active":false,"restartRequired":false}}
+{"fn":"resolveDesktopTitleBarFrameOptions","args":[{"platform":[],"preference":false}],"ok":{}}
+{"fn":"resolveDesktopTitleBarFrameOptions","args":["x"],"ok":{}}
+{"fn":"resolveDesktopTitleBarFrameOptions","args":[{"platform":["a",1],"preference":true}],"ok":{}}
+{"fn":"resolveDesktopTitleBarFrameOptions","args":[{"platform":true,"preference":true}],"ok":{}}
+{"fn":"resolveDesktopTitleBarFrameOptions","args":[{"platform":0,"preference":false}],"ok":{}}
+{"fn":"resolveDesktopTitleBarFrameOptions","args":[{"platform":{"a":"b"},"preference":null}],"ok":{}}
+{"fn":"resolveDesktopTitleBarFrameOptions","args":[{"platform":"x","preference":true}],"ok":{}}
+{"fn":"resolveDesktopTitleBarFrameOptions","args":[{"platform":null,"preference":null}],"ok":{}}
+{"fn":"resolveDesktopTitleBarFrameOptions","args":[{"platform":{"a":{"b":"c"}},"preference":null}],"ok":{}}
+{"fn":"resolveDesktopTitleBarFrameOptions","args":[{"platform":{},"preference":false}],"ok":{}}
+{"fn":"resolveDesktopTitleBarFrameOptions","args":[{"platform":0,"preference":true}],"ok":{}}
+{"fn":"resolveDesktopTitleBarFrameOptions","args":[{"platform":[],"preference":null}],"ok":{}}
+{"fn":"resolveDesktopTitleBarFrameOptions","args":[{"platform":[],"preference":true}],"ok":{}}
+{"fn":"resolveDesktopTitleBarFrameOptions","args":[{"platform":0,"preference":null}],"ok":{}}
+{"fn":"resolveDesktopTitleBarFrameOptions","args":[{"platform":["a",1],"preference":false}],"ok":{}}
+{"fn":"resolveDesktopTitleBarFrameOptions","args":[{"a":{"b":"c"}}],"ok":{}}
+{"fn":"resolveDesktopTitleBarFrameOptions","args":[{"platform":"x","preference":false}],"ok":{}}
+{"fn":"resolveDesktopTitleBarFrameOptions","args":[{"platform":["a",1],"preference":null}],"ok":{}}
+{"fn":"resolveDesktopTitleBarFrameOptions","args":[{"platform":{"a":{"b":"c"}},"preference":true}],"ok":{}}
+{"fn":"resolveDesktopTitleBarFrameOptions","args":[{"platform":{"a":{"b":"c"}},"preference":false}],"ok":{}}
+{"fn":"resolveDesktopTitleBarFrameOptions","args":[{"platform":{},"preference":null}],"ok":{}}
+{"fn":"resolveDesktopTitleBarFrameOptions","args":[{"platform":true,"preference":false}],"ok":{}}
+{"fn":"resolveDesktopTitleBarFrameOptions","args":[{"platform":"x","preference":null}],"ok":{}}
+{"fn":"resolveDesktopTitleBarFrameOptions","args":[{"platform":{"a":"b"},"preference":false}],"ok":{}}
+{"fn":"resolveDesktopTitleBarFrameOptions","args":[["a",1]],"ok":{}}
+{"fn":"resolveDesktopTitleBarFrameOptions","args":[{"platform":true,"preference":null}],"ok":{}}
+{"fn":"resolveDesktopTitleBarFrameOptions","args":[{}],"ok":{}}
+{"fn":"resolveDesktopTitleBarFrameOptions","args":[{"platform":null,"preference":false}],"ok":{}}
+{"fn":"resolveDesktopTitleBarFrameOptions","args":[true],"ok":{}}
+{"fn":"resolveDesktopTitleBarFrameOptions","args":[{"platform":null,"preference":true}],"ok":{}}
+{"fn":"resolveDesktopTitleBarFrameOptions","args":[{"platform":{},"preference":true}],"ok":{}}
+{"fn":"resolveDesktopTitleBarFrameOptions","args":[[]],"ok":{}}
+{"fn":"resolveDesktopTitleBarFrameOptions","args":[null],"error":"Cannot read properties of null (reading 'platform')"}
+{"fn":"resolveDesktopTitleBarFrameOptions","args":[0],"ok":{}}
+{"fn":"resolveDesktopTitleBarFrameOptions","args":[{"platform":{"a":"b"},"preference":true}],"ok":{}}
+{"fn":"resolveDesktopTitleBarFrameOptions","args":[{"a":"b"}],"ok":{}}

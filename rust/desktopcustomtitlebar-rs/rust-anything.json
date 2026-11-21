@@ -1,0 +1,108 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/desktop/src/desktopCustomTitleBar.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "desktopcustomtitlebar-rs",
+  "exports": [
+    {
+      "name": "parseCustomTitleBarPreference",
+      "file": "apps/desktop/src/desktopCustomTitleBar.ts",
+      "line": 20,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "PersistedCustomTitleBarPreference | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "readCustomTitleBarPreference",
+      "file": "apps/desktop/src/desktopCustomTitleBar.ts",
+      "line": 33,
+      "params": [
+        {
+          "name": "filePath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "writeCustomTitleBarPreference",
+      "file": "apps/desktop/src/desktopCustomTitleBar.ts",
+      "line": 42,
+      "params": [
+        {
+          "name": "filePath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "enabled",
+          "ts_type": "boolean",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveDesktopCustomTitleBarState",
+      "file": "apps/desktop/src/desktopCustomTitleBar.ts",
+      "line": 48,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly platform: string;\n  readonly preference: boolean | null;\n  readonly active: boolean;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "{\n  readonly supported: boolean;\n  readonly preference: boolean;\n  readonly active: boolean;\n  readonly restartRequired: boolean;\n}",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveDesktopTitleBarFrameOptions",
+      "file": "apps/desktop/src/desktopCustomTitleBar.ts",
+      "line": 71,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly platform: NodeJS.Platform;\n  readonly preference: boolean | null;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "{ frame: false } | Record<string, never>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

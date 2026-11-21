@@ -1,0 +1,61 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/desktop/src/windowMaterial.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "windowmaterial-rs",
+  "exports": [
+    {
+      "name": "parseHyprlandBlurEnabled",
+      "file": "apps/desktop/src/windowMaterial.ts",
+      "line": 45,
+      "params": [
+        {
+          "name": "stdout",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "parseDesktopWindowMaterial",
+      "file": "apps/desktop/src/windowMaterial.ts",
+      "line": 66,
+      "params": [
+        {
+          "name": "raw",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "DesktopWindowMaterial | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "resolveDesktopWindowTranslucency",
+      "file": "apps/desktop/src/windowMaterial.ts",
+      "line": 25,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "createWindowMaterialApplier",
+      "file": "apps/desktop/src/windowMaterial.ts",
+      "line": 83,
+      "reason": "takes or returns a function"
+    }
+  ]
+}

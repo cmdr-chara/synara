@@ -1,0 +1,43 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/desktop/src/backendStartupReadiness.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "backendstartupreadiness-rs",
+  "exports": [
+    {
+      "name": "isBackendStartupReadyResponse",
+      "file": "apps/desktop/src/backendStartupReadiness.ts",
+      "line": 34,
+      "params": [
+        {
+          "name": "response",
+          "ts_type": "Response",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<boolean>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "monitorBackendStartupHealth",
+      "file": "apps/desktop/src/backendStartupReadiness.ts",
+      "line": 48,
+      "reason": "uses `MonitorBackendStartupHealthOptions`, which has function members"
+    },
+    {
+      "name": "waitForBackendStartupReady",
+      "file": "apps/desktop/src/backendStartupReadiness.ts",
+      "line": 76,
+      "reason": "uses `WaitForBackendStartupReadyOptions`, which has function members"
+    }
+  ]
+}

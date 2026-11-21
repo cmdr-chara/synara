@@ -1,0 +1,9 @@
+{"fn":"isBackendStartupReadyResponse","args":[{"a":"b"}],"ok":false}
+{"fn":"isBackendStartupReadyResponse","args":[0],"ok":false}
+{"fn":"isBackendStartupReadyResponse","args":[true],"ok":false}
+{"fn":"isBackendStartupReadyResponse","args":[{}],"ok":false}
+{"fn":"isBackendStartupReadyResponse","args":[[]],"ok":false}
+{"fn":"isBackendStartupReadyResponse","args":[{"a":{"b":"c"}}],"ok":false}
+{"fn":"isBackendStartupReadyResponse","args":["x"],"ok":false}
+{"fn":"isBackendStartupReadyResponse","args":[null],"error":"Cannot read properties of null (reading 'ok')"}
+{"fn":"isBackendStartupReadyResponse","args":[["a",1]],"ok":false}

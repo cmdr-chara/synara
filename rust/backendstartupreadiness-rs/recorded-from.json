@@ -1,0 +1,23 @@
+{
+  "unit": "apps/desktop/src/backendStartupReadiness.ts",
+  "files": 1,
+  "fingerprint": "1a1382ca047b99a9",
+  "coverage": {
+    "lines": 211,
+    "reached": 41,
+    "files": [
+      {
+        "file": "apps/desktop/src/backendReadiness.ts",
+        "lines": 98,
+        "reached": 21,
+        "missed": "21-24, 27-32, 34-37, 39-42, 44-48, 50-52, 55-56, 60-70, 72-75, 77-84, 86-105, 107-109, 111-113"
+      },
+      {
+        "file": "apps/desktop/src/backendStartupReadiness.ts",
+        "lines": 113,
+        "reached": 20,
+        "missed": "18-21, 23-32, 38-45, 49-52, 54-64, 66-71, 73-74, 77-80, 82-85, 87-88, 90-99, 101-107, 109-129"
+      }
+    ]
+  }
+}

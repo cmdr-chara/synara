@@ -1,0 +1,17 @@
+{
+  "unit": "packages/shared/src/text.ts",
+  "files": 1,
+  "fingerprint": "eb35d8790b93d038",
+  "coverage": {
+    "lines": 57,
+    "reached": 57,
+    "files": [
+      {
+        "file": "packages/shared/src/text.ts",
+        "lines": 57,
+        "reached": 57,
+        "missed": ""
+      }
+    ]
+  }
+}

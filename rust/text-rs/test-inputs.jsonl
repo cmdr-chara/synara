@@ -1,0 +1,22 @@
+{"fn":"unicodeSafeEndOffset","args":["a📌b",0]}
+{"fn":"splitsSurrogatePair","args":["a📌b",0]}
+{"fn":"unicodeSafeEndOffset","args":["a📌b",1]}
+{"fn":"splitsSurrogatePair","args":["a📌b",1]}
+{"fn":"unicodeSafeEndOffset","args":["a📌b",2]}
+{"fn":"splitsSurrogatePair","args":["a📌b",2]}
+{"fn":"unicodeSafeEndOffset","args":["a📌b",3]}
+{"fn":"splitsSurrogatePair","args":["a📌b",3]}
+{"fn":"unicodeSafeEndOffset","args":["a📌b",4]}
+{"fn":"splitsSurrogatePair","args":["a📌b",4]}
+{"fn":"stripTerminalControlSequences","args":["\u001b[38;2;215;119;87mTransmuting...\u001b[0m\u001b[?25l"]}
+{"fn":"stripTerminalControlSequences","args":["[test] completed"]}
+{"fn":"stripTerminalControlSequences","args":["[38;2;215;119;87mCaveman level: FULL[0m"]}
+{"fn":"stripTerminalControlSequences","args":["\u001b]8;;https://example.com\u0007visible\u001b]8;;\u0007 after \u001b]8;;https://example.com\u0007visible\u001b]8;;\u0007"]}
+{"fn":"stripTerminalControlSequences","args":["\u001b]8;;https://example.com\u001b\\visible\u001b]8;;\u001b\\ after \u001b]8;;https://example.com\u001b\\visible\u001b]8;;\u001b\\"]}
+{"fn":"stripTerminalControlSequences","args":["\u001b]8;;https://example.comvisible\u001b]8;; after \u001b]8;;https://example.comvisible\u001b]8;;"]}
+{"fn":"stripTerminalControlSequences","args":["31mred0m"]}
+{"fn":"stripTerminalControlSequences","args":["8;;https://example.comvisible8;;"]}
+{"fn":"pluralize","args":[0,"file"]}
+{"fn":"pluralize","args":[2,"file"]}
+{"fn":"pluralize","args":[1,"has","have"]}
+{"fn":"pluralize","args":[3,"has","have"]}

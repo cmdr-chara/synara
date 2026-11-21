@@ -1,0 +1,37 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/hostConnectivitySupervisor.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "hostconnectivitysupervisor-rs",
+  "exports": [
+    {
+      "name": "hostLinkKey",
+      "file": "apps/server/src/hostConnectivitySupervisor.ts",
+      "line": 26,
+      "params": [
+        {
+          "name": "file",
+          "ts_type": "StoredAccountFile | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "superviseHostConnectivity",
+      "file": "apps/server/src/hostConnectivitySupervisor.ts",
+      "line": 72,
+      "reason": "uses `HostConnectivitySupervisorOptions`, which has function members"
+    }
+  ]
+}

@@ -1,0 +1,150 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/pullRequestList.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "pullrequestlist-rs",
+  "exports": [
+    {
+      "name": "pullRequestListRepositoryIdentity",
+      "file": "packages/shared/src/pullRequestList.ts",
+      "line": 14,
+      "params": [
+        {
+          "name": "entry",
+          "ts_type": "Pick<typeof typeof typeof typeof PullRequestListEntry.Type.Type.Type.Type, \"repository\" | \"number\">",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "pullRequestListProjectContexts",
+      "file": "packages/shared/src/pullRequestList.ts",
+      "line": 21,
+      "params": [
+        {
+          "name": "entry",
+          "ts_type": "(Pick<\n  typeof typeof typeof PullRequestListEntry.Type.Type.Type,\n  \"projectId\" | \"repository\" | \"number\" | \"isPinned\"\n> & {\n  readonly projectTitle?: string | undefined;\n  readonly headBranch?: string | undefined;\n  readonly projectContexts?: ReadonlyArray<typeof typeof typeof PullRequestProjectContext.Type.Type.Type> | undefined;\n})",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof PullRequestProjectContext.Type.Type.Type.Type[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "pullRequestListEntryHasProject",
+      "file": "packages/shared/src/pullRequestList.ts",
+      "line": 36,
+      "params": [
+        {
+          "name": "entry",
+          "ts_type": "(Pick<\n  typeof typeof typeof PullRequestListEntry.Type.Type.Type,\n  \"projectId\" | \"repository\" | \"number\" | \"isPinned\"\n> & {\n  readonly projectTitle?: string | undefined;\n  readonly headBranch?: string | undefined;\n  readonly projectContexts?: ReadonlyArray<typeof typeof typeof PullRequestProjectContext.Type.Type.Type> | undefined;\n})",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "projectId",
+          "ts_type": "typeof typeof typeof typeof ProjectId.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "pullRequestListProjectPin",
+      "file": "packages/shared/src/pullRequestList.ts",
+      "line": 43,
+      "params": [
+        {
+          "name": "entry",
+          "ts_type": "(Pick<\n  typeof typeof typeof PullRequestListEntry.Type.Type.Type,\n  \"projectId\" | \"repository\" | \"number\" | \"isPinned\"\n> & {\n  readonly projectTitle?: string | undefined;\n  readonly headBranch?: string | undefined;\n  readonly projectContexts?: ReadonlyArray<typeof typeof typeof PullRequestProjectContext.Type.Type.Type> | undefined;\n})",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "projectId",
+          "ts_type": "typeof typeof typeof typeof ProjectId.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "coalescePullRequestListEntries",
+      "file": "packages/shared/src/pullRequestList.ts",
+      "line": 103,
+      "params": [
+        {
+          "name": "entries",
+          "ts_type": "readonly ((Pick<\n  typeof typeof PullRequestListEntry.Type.Type,\n  \"projectId\" | \"repository\" | \"number\" | \"isPinned\"\n> & {\n  readonly projectTitle?: string | undefined;\n  readonly headBranch?: string | undefined;\n  readonly projectContexts?: ReadonlyArray<typeof typeof PullRequestProjectContext.Type.Type> | undefined;\n}) & {\n  readonly projectTitle: string;\n  readonly viewerReviewRequested?: boolean;\n})[]",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "options",
+          "ts_type": "{ readonly preferredProjectId?: typeof typeof typeof typeof ProjectId.Type.Type.Type.Type | undefined }",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "((Pick<\n  typeof typeof PullRequestListEntry.Type.Type,\n  \"projectId\" | \"repository\" | \"number\" | \"isPinned\"\n> & {\n  readonly projectTitle?: string | undefined;\n  readonly headBranch?: string | undefined;\n  readonly projectContexts?: ReadonlyArray<typeof typeof PullRequestProjectContext.Type.Type> | undefined;\n}) & {\n  readonly projectTitle: string;\n  readonly viewerReviewRequested?: boolean;\n})[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "updatePullRequestListEntryProjectPin",
+      "file": "packages/shared/src/pullRequestList.ts",
+      "line": 133,
+      "params": [
+        {
+          "name": "entry",
+          "ts_type": "((Pick<\n  typeof typeof typeof PullRequestListEntry.Type.Type.Type,\n  \"projectId\" | \"repository\" | \"number\" | \"isPinned\"\n> & {\n  readonly projectTitle?: string | undefined;\n  readonly headBranch?: string | undefined;\n  readonly projectContexts?: ReadonlyArray<typeof typeof typeof PullRequestProjectContext.Type.Type.Type> | undefined;\n}))",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "projectId",
+          "ts_type": "typeof typeof typeof typeof ProjectId.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "isPinned",
+          "ts_type": "boolean",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "((Pick<\n  typeof typeof typeof PullRequestListEntry.Type.Type.Type,\n  \"projectId\" | \"repository\" | \"number\" | \"isPinned\"\n> & {\n  readonly projectTitle?: string | undefined;\n  readonly headBranch?: string | undefined;\n  readonly projectContexts?: ReadonlyArray<typeof typeof typeof PullRequestProjectContext.Type.Type.Type> | undefined;\n}))",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

@@ -1,0 +1,17 @@
+{
+  "unit": "packages/shared/src/pullRequestList.ts",
+  "files": 1,
+  "fingerprint": "258afeb6ab4a4bf1",
+  "coverage": {
+    "lines": 138,
+    "reached": 135,
+    "files": [
+      {
+        "file": "packages/shared/src/pullRequestList.ts",
+        "lines": 138,
+        "reached": 135,
+        "missed": "126, 140-141"
+      }
+    ]
+  }
+}

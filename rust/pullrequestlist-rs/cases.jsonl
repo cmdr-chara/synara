@@ -1,0 +1,473 @@
+{"fn":"pullRequestListRepositoryIdentity","args":[{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'trim')"}
+{"fn":"pullRequestListRepositoryIdentity","args":[true],"error":"Cannot read properties of undefined (reading 'trim')"}
+{"fn":"pullRequestListRepositoryIdentity","args":[0],"error":"Cannot read properties of undefined (reading 'trim')"}
+{"fn":"pullRequestListRepositoryIdentity","args":[null],"error":"Cannot read properties of null (reading 'repository')"}
+{"fn":"pullRequestListRepositoryIdentity","args":[[]],"error":"Cannot read properties of undefined (reading 'trim')"}
+{"fn":"pullRequestListRepositoryIdentity","args":["x"],"error":"Cannot read properties of undefined (reading 'trim')"}
+{"fn":"pullRequestListRepositoryIdentity","args":[{}],"error":"Cannot read properties of undefined (reading 'trim')"}
+{"fn":"pullRequestListRepositoryIdentity","args":[["a",1]],"error":"Cannot read properties of undefined (reading 'trim')"}
+{"fn":"pullRequestListRepositoryIdentity","args":[{"a":"b"}],"error":"Cannot read properties of undefined (reading 'trim')"}
+{"fn":"pullRequestListProjectContexts","args":[0],"ok":[{"projectId":{"$undefined":true},"projectTitle":"undefined","isPinned":false}]}
+{"fn":"pullRequestListProjectContexts","args":["x"],"ok":[{"projectId":{"$undefined":true},"projectTitle":"undefined","isPinned":false}]}
+{"fn":"pullRequestListProjectContexts","args":[true],"ok":[{"projectId":{"$undefined":true},"projectTitle":"undefined","isPinned":false}]}
+{"fn":"pullRequestListProjectContexts","args":[{}],"ok":[{"projectId":{"$undefined":true},"projectTitle":"undefined","isPinned":false}]}
+{"fn":"pullRequestListProjectContexts","args":[null],"error":"Cannot read properties of null (reading 'projectContexts')"}
+{"fn":"pullRequestListProjectContexts","args":[["a",1]],"ok":[{"projectId":{"$undefined":true},"projectTitle":"undefined","isPinned":false}]}
+{"fn":"pullRequestListProjectContexts","args":[[]],"ok":[{"projectId":{"$undefined":true},"projectTitle":"undefined","isPinned":false}]}
+{"fn":"pullRequestListProjectContexts","args":[{"a":"b"}],"ok":[{"projectId":{"$undefined":true},"projectTitle":"undefined","isPinned":false}]}
+{"fn":"pullRequestListProjectContexts","args":[{"a":{"b":"c"}}],"ok":[{"projectId":{"$undefined":true},"projectTitle":"undefined","isPinned":false}]}
+{"fn":"pullRequestListEntryHasProject","args":[{"a":"b"},0],"ok":false}
+{"fn":"pullRequestListEntryHasProject","args":[[],true],"ok":false}
+{"fn":"pullRequestListEntryHasProject","args":[0,{}],"ok":false}
+{"fn":"pullRequestListEntryHasProject","args":[null,0],"error":"Cannot read properties of null (reading 'projectContexts')"}
+{"fn":"pullRequestListEntryHasProject","args":[true,[]],"ok":false}
+{"fn":"pullRequestListEntryHasProject","args":[null,true],"error":"Cannot read properties of null (reading 'projectContexts')"}
+{"fn":"pullRequestListEntryHasProject","args":[true,null],"ok":false}
+{"fn":"pullRequestListEntryHasProject","args":[null,[]],"error":"Cannot read properties of null (reading 'projectContexts')"}
+{"fn":"pullRequestListEntryHasProject","args":[{"a":{"b":"c"}},true],"ok":false}
+{"fn":"pullRequestListEntryHasProject","args":[[],[]],"ok":false}
+{"fn":"pullRequestListEntryHasProject","args":[null,{}],"error":"Cannot read properties of null (reading 'projectContexts')"}
+{"fn":"pullRequestListEntryHasProject","args":["x",0],"ok":false}
+{"fn":"pullRequestListEntryHasProject","args":["x",{"a":{"b":"c"}}],"ok":false}
+{"fn":"pullRequestListEntryHasProject","args":[{"a":{"b":"c"}},"x"],"ok":false}
+{"fn":"pullRequestListEntryHasProject","args":["x",["a",1]],"ok":false}
+{"fn":"pullRequestListEntryHasProject","args":[{"a":"b"},[]],"ok":false}
+{"fn":"pullRequestListEntryHasProject","args":[["a",1],{"a":"b"}],"ok":false}
+{"fn":"pullRequestListEntryHasProject","args":[true,true],"ok":false}
+{"fn":"pullRequestListEntryHasProject","args":[true,{"a":"b"}],"ok":false}
+{"fn":"pullRequestListEntryHasProject","args":[{},true],"ok":false}
+{"fn":"pullRequestListEntryHasProject","args":["x",null],"ok":false}
+{"fn":"pullRequestListEntryHasProject","args":[true,0],"ok":false}
+{"fn":"pullRequestListEntryHasProject","args":["x",{"a":"b"}],"ok":false}
+{"fn":"pullRequestListEntryHasProject","args":["x",true],"ok":false}
+{"fn":"pullRequestListEntryHasProject","args":[["a",1],"x"],"ok":false}
+{"fn":"pullRequestListEntryHasProject","args":[{"a":{"b":"c"}},{"a":"b"}],"ok":false}
+{"fn":"pullRequestListEntryHasProject","args":[{},{}],"ok":false}
+{"fn":"pullRequestListEntryHasProject","args":[[],{}],"ok":false}
+{"fn":"pullRequestListEntryHasProject","args":[[],{"a":"b"}],"ok":false}
+{"fn":"pullRequestListEntryHasProject","args":[{"a":{"b":"c"}},[]],"ok":false}
+{"fn":"pullRequestListEntryHasProject","args":["x",[]],"ok":false}
+{"fn":"pullRequestListEntryHasProject","args":[{},{"a":"b"}],"ok":false}
+{"fn":"pullRequestListEntryHasProject","args":[["a",1],null],"ok":false}
+{"fn":"pullRequestListEntryHasProject","args":[[],["a",1]],"ok":false}
+{"fn":"pullRequestListEntryHasProject","args":[["a",1],{}],"ok":false}
+{"fn":"pullRequestListEntryHasProject","args":[0,"x"],"ok":false}
+{"fn":"pullRequestListEntryHasProject","args":[{},0],"ok":false}
+{"fn":"pullRequestListEntryHasProject","args":[0,{"a":{"b":"c"}}],"ok":false}
+{"fn":"pullRequestListEntryHasProject","args":[{"a":"b"},{"a":{"b":"c"}}],"ok":false}
+{"fn":"pullRequestListEntryHasProject","args":[["a",1],0],"ok":false}
+{"fn":"pullRequestListEntryHasProject","args":[null,["a",1]],"error":"Cannot read properties of null (reading 'projectContexts')"}
+{"fn":"pullRequestListEntryHasProject","args":[{"a":{"b":"c"}},{"a":{"b":"c"}}],"ok":false}
+{"fn":"pullRequestListEntryHasProject","args":[["a",1],[]],"ok":false}
+{"fn":"pullRequestListEntryHasProject","args":[{"a":{"b":"c"}},null],"ok":false}
+{"fn":"pullRequestListEntryHasProject","args":[["a",1],true],"ok":false}
+{"fn":"pullRequestListEntryHasProject","args":[{},[]],"ok":false}
+{"fn":"pullRequestListEntryHasProject","args":[true,["a",1]],"ok":false}
+{"fn":"pullRequestListEntryHasProject","args":[{"a":"b"},{}],"ok":false}
+{"fn":"pullRequestListEntryHasProject","args":[[],"x"],"ok":false}
+{"fn":"pullRequestListEntryHasProject","args":[0,["a",1]],"ok":false}
+{"fn":"pullRequestListEntryHasProject","args":["x","x"],"ok":false}
+{"fn":"pullRequestListEntryHasProject","args":[{},{"a":{"b":"c"}}],"ok":false}
+{"fn":"pullRequestListEntryHasProject","args":[0,{"a":"b"}],"ok":false}
+{"fn":"pullRequestListEntryHasProject","args":[["a",1],{"a":{"b":"c"}}],"ok":false}
+{"fn":"pullRequestListEntryHasProject","args":[0,null],"ok":false}
+{"fn":"pullRequestListEntryHasProject","args":[{"a":"b"},true],"ok":false}
+{"fn":"pullRequestListEntryHasProject","args":[{"a":"b"},{"a":"b"}],"ok":false}
+{"fn":"pullRequestListEntryHasProject","args":[{"a":"b"},null],"ok":false}
+{"fn":"pullRequestListEntryHasProject","args":[{"a":{"b":"c"}},{}],"ok":false}
+{"fn":"pullRequestListEntryHasProject","args":[0,true],"ok":false}
+{"fn":"pullRequestListEntryHasProject","args":[{},"x"],"ok":false}
+{"fn":"pullRequestListEntryHasProject","args":[["a",1],["a",1]],"ok":false}
+{"fn":"pullRequestListEntryHasProject","args":[null,"x"],"error":"Cannot read properties of null (reading 'projectContexts')"}
+{"fn":"pullRequestListEntryHasProject","args":[{"a":{"b":"c"}},["a",1]],"ok":false}
+{"fn":"pullRequestListEntryHasProject","args":[[],0],"ok":false}
+{"fn":"pullRequestListEntryHasProject","args":[{"a":{"b":"c"}},0],"ok":false}
+{"fn":"pullRequestListEntryHasProject","args":[null,null],"error":"Cannot read properties of null (reading 'projectContexts')"}
+{"fn":"pullRequestListEntryHasProject","args":[[],{"a":{"b":"c"}}],"ok":false}
+{"fn":"pullRequestListEntryHasProject","args":["x",{}],"ok":false}
+{"fn":"pullRequestListEntryHasProject","args":[true,{}],"ok":false}
+{"fn":"pullRequestListEntryHasProject","args":[{"a":"b"},["a",1]],"ok":false}
+{"fn":"pullRequestListEntryHasProject","args":[[],null],"ok":false}
+{"fn":"pullRequestListEntryHasProject","args":[true,{"a":{"b":"c"}}],"ok":false}
+{"fn":"pullRequestListEntryHasProject","args":[null,{"a":{"b":"c"}}],"error":"Cannot read properties of null (reading 'projectContexts')"}
+{"fn":"pullRequestListEntryHasProject","args":[0,[]],"ok":false}
+{"fn":"pullRequestListEntryHasProject","args":[true,"x"],"ok":false}
+{"fn":"pullRequestListEntryHasProject","args":[{},["a",1]],"ok":false}
+{"fn":"pullRequestListEntryHasProject","args":[{},null],"ok":false}
+{"fn":"pullRequestListEntryHasProject","args":[null,{"a":"b"}],"error":"Cannot read properties of null (reading 'projectContexts')"}
+{"fn":"pullRequestListEntryHasProject","args":[{"a":"b"},"x"],"ok":false}
+{"fn":"pullRequestListEntryHasProject","args":[0,0],"ok":false}
+{"fn":"pullRequestListProjectPin","args":[[],true],"ok":null}
+{"fn":"pullRequestListProjectPin","args":[0,null],"ok":null}
+{"fn":"pullRequestListProjectPin","args":[true,0],"ok":null}
+{"fn":"pullRequestListProjectPin","args":[["a",1],"x"],"ok":null}
+{"fn":"pullRequestListProjectPin","args":[0,{"a":{"b":"c"}}],"ok":null}
+{"fn":"pullRequestListProjectPin","args":[true,null],"ok":null}
+{"fn":"pullRequestListProjectPin","args":[0,"x"],"ok":null}
+{"fn":"pullRequestListProjectPin","args":[{},0],"ok":null}
+{"fn":"pullRequestListProjectPin","args":[{"a":"b"},[]],"ok":null}
+{"fn":"pullRequestListProjectPin","args":[["a",1],true],"ok":null}
+{"fn":"pullRequestListProjectPin","args":[0,true],"ok":null}
+{"fn":"pullRequestListProjectPin","args":[null,"x"],"error":"Cannot read properties of null (reading 'projectContexts')"}
+{"fn":"pullRequestListProjectPin","args":[{"a":"b"},null],"ok":null}
+{"fn":"pullRequestListProjectPin","args":[{},null],"ok":null}
+{"fn":"pullRequestListProjectPin","args":[0,{}],"ok":null}
+{"fn":"pullRequestListProjectPin","args":[null,[]],"error":"Cannot read properties of null (reading 'projectContexts')"}
+{"fn":"pullRequestListProjectPin","args":[null,{"a":"b"}],"error":"Cannot read properties of null (reading 'projectContexts')"}
+{"fn":"pullRequestListProjectPin","args":[[],0],"ok":null}
+{"fn":"pullRequestListProjectPin","args":[{"a":{"b":"c"}},{}],"ok":null}
+{"fn":"pullRequestListProjectPin","args":[{},{}],"ok":null}
+{"fn":"pullRequestListProjectPin","args":[null,true],"error":"Cannot read properties of null (reading 'projectContexts')"}
+{"fn":"pullRequestListProjectPin","args":[{},[]],"ok":null}
+{"fn":"pullRequestListProjectPin","args":["x","x"],"ok":null}
+{"fn":"pullRequestListProjectPin","args":[0,{"a":"b"}],"ok":null}
+{"fn":"pullRequestListProjectPin","args":[{"a":{"b":"c"}},true],"ok":null}
+{"fn":"pullRequestListProjectPin","args":[{},["a",1]],"ok":null}
+{"fn":"pullRequestListProjectPin","args":[[],null],"ok":null}
+{"fn":"pullRequestListProjectPin","args":[{"a":{"b":"c"}},{"a":{"b":"c"}}],"ok":null}
+{"fn":"pullRequestListProjectPin","args":["x",{"a":{"b":"c"}}],"ok":null}
+{"fn":"pullRequestListProjectPin","args":[[],["a",1]],"ok":null}
+{"fn":"pullRequestListProjectPin","args":[{"a":"b"},true],"ok":null}
+{"fn":"pullRequestListProjectPin","args":[{"a":"b"},["a",1]],"ok":null}
+{"fn":"pullRequestListProjectPin","args":[["a",1],{"a":"b"}],"ok":null}
+{"fn":"pullRequestListProjectPin","args":[true,true],"ok":null}
+{"fn":"pullRequestListProjectPin","args":["x",null],"ok":null}
+{"fn":"pullRequestListProjectPin","args":["x",["a",1]],"ok":null}
+{"fn":"pullRequestListProjectPin","args":[0,[]],"ok":null}
+{"fn":"pullRequestListProjectPin","args":[[],"x"],"ok":null}
+{"fn":"pullRequestListProjectPin","args":[["a",1],[]],"ok":null}
+{"fn":"pullRequestListProjectPin","args":[{"a":{"b":"c"}},0],"ok":null}
+{"fn":"pullRequestListProjectPin","args":[{"a":"b"},"x"],"ok":null}
+{"fn":"pullRequestListProjectPin","args":["x",0],"ok":null}
+{"fn":"pullRequestListProjectPin","args":[[],{"a":{"b":"c"}}],"ok":null}
+{"fn":"pullRequestListProjectPin","args":[{},{"a":{"b":"c"}}],"ok":null}
+{"fn":"pullRequestListProjectPin","args":[true,{"a":"b"}],"ok":null}
+{"fn":"pullRequestListProjectPin","args":[null,["a",1]],"error":"Cannot read properties of null (reading 'projectContexts')"}
+{"fn":"pullRequestListProjectPin","args":["x",{"a":"b"}],"ok":null}
+{"fn":"pullRequestListProjectPin","args":["x",true],"ok":null}
+{"fn":"pullRequestListProjectPin","args":[{"a":"b"},{}],"ok":null}
+{"fn":"pullRequestListProjectPin","args":[{},{"a":"b"}],"ok":null}
+{"fn":"pullRequestListProjectPin","args":[{},"x"],"ok":null}
+{"fn":"pullRequestListProjectPin","args":[[],[]],"ok":null}
+{"fn":"pullRequestListProjectPin","args":["x",[]],"ok":null}
+{"fn":"pullRequestListProjectPin","args":[{"a":{"b":"c"}},"x"],"ok":null}
+{"fn":"pullRequestListProjectPin","args":[{"a":"b"},{"a":"b"}],"ok":null}
+{"fn":"pullRequestListProjectPin","args":[{"a":"b"},0],"ok":null}
+{"fn":"pullRequestListProjectPin","args":[{"a":{"b":"c"}},["a",1]],"ok":null}
+{"fn":"pullRequestListProjectPin","args":[["a",1],{}],"ok":null}
+{"fn":"pullRequestListProjectPin","args":[null,{"a":{"b":"c"}}],"error":"Cannot read properties of null (reading 'projectContexts')"}
+{"fn":"pullRequestListProjectPin","args":[true,"x"],"ok":null}
+{"fn":"pullRequestListProjectPin","args":[["a",1],null],"ok":null}
+{"fn":"pullRequestListProjectPin","args":[0,["a",1]],"ok":null}
+{"fn":"pullRequestListProjectPin","args":[[],{"a":"b"}],"ok":null}
+{"fn":"pullRequestListProjectPin","args":[["a",1],["a",1]],"ok":null}
+{"fn":"pullRequestListProjectPin","args":[{"a":"b"},{"a":{"b":"c"}}],"ok":null}
+{"fn":"pullRequestListProjectPin","args":[true,[]],"ok":null}
+{"fn":"pullRequestListProjectPin","args":[[],{}],"ok":null}
+{"fn":"pullRequestListProjectPin","args":[["a",1],0],"ok":null}
+{"fn":"pullRequestListProjectPin","args":[null,0],"error":"Cannot read properties of null (reading 'projectContexts')"}
+{"fn":"pullRequestListProjectPin","args":[null,{}],"error":"Cannot read properties of null (reading 'projectContexts')"}
+{"fn":"pullRequestListProjectPin","args":[{"a":{"b":"c"}},null],"ok":null}
+{"fn":"pullRequestListProjectPin","args":[true,{"a":{"b":"c"}}],"ok":null}
+{"fn":"pullRequestListProjectPin","args":[{},true],"ok":null}
+{"fn":"pullRequestListProjectPin","args":[true,["a",1]],"ok":null}
+{"fn":"pullRequestListProjectPin","args":[null,null],"error":"Cannot read properties of null (reading 'projectContexts')"}
+{"fn":"pullRequestListProjectPin","args":[{"a":{"b":"c"}},[]],"ok":null}
+{"fn":"pullRequestListProjectPin","args":[0,0],"ok":null}
+{"fn":"pullRequestListProjectPin","args":["x",{}],"ok":null}
+{"fn":"pullRequestListProjectPin","args":[true,{}],"ok":null}
+{"fn":"pullRequestListProjectPin","args":[["a",1],{"a":{"b":"c"}}],"ok":null}
+{"fn":"pullRequestListProjectPin","args":[{"a":{"b":"c"}},{"a":"b"}],"ok":null}
+{"fn":"pullRequestListProjectPin","args":["x","X"],"ok":null}
+{"fn":"coalescePullRequestListEntries","args":["x"],"error":"Cannot read properties of undefined (reading 'trim')"}
+{"fn":"coalescePullRequestListEntries","args":[{},{"$undefined":true}],"error":"entries is not iterable"}
+{"fn":"coalescePullRequestListEntries","args":[0,[]],"error":"entries is not iterable"}
+{"fn":"coalescePullRequestListEntries","args":[{"a":{"b":"c"}},null],"error":"entries is not iterable"}
+{"fn":"coalescePullRequestListEntries","args":[[],"x"],"ok":[]}
+{"fn":"coalescePullRequestListEntries","args":[{"a":"b"},{"a":"b"}],"error":"entries is not iterable"}
+{"fn":"coalescePullRequestListEntries","args":["x",0],"error":"Cannot read properties of undefined (reading 'trim')"}
+{"fn":"coalescePullRequestListEntries","args":[["a",1],{"a":"b"}],"error":"Cannot read properties of undefined (reading 'trim')"}
+{"fn":"coalescePullRequestListEntries","args":[null,true],"error":"entries is not iterable"}
+{"fn":"coalescePullRequestListEntries","args":[0,["a",1]],"error":"entries is not iterable"}
+{"fn":"coalescePullRequestListEntries","args":[["a",1],["a",1]],"error":"Cannot read properties of undefined (reading 'trim')"}
+{"fn":"coalescePullRequestListEntries","args":["x",null],"error":"Cannot read properties of undefined (reading 'trim')"}
+{"fn":"coalescePullRequestListEntries","args":[true,[]],"error":"entries is not iterable"}
+{"fn":"coalescePullRequestListEntries","args":[{},{"a":"b"}],"error":"entries is not iterable"}
+{"fn":"coalescePullRequestListEntries","args":[{"a":"b"},null],"error":"entries is not iterable"}
+{"fn":"coalescePullRequestListEntries","args":[[],null],"ok":[]}
+{"fn":"coalescePullRequestListEntries","args":[{"a":"b"}],"error":"entries is not iterable"}
+{"fn":"coalescePullRequestListEntries","args":[{"a":{"b":"c"}}],"error":"entries is not iterable"}
+{"fn":"coalescePullRequestListEntries","args":[{}],"error":"entries is not iterable"}
+{"fn":"coalescePullRequestListEntries","args":[{},{}],"error":"entries is not iterable"}
+{"fn":"coalescePullRequestListEntries","args":[null,["a",1]],"error":"entries is not iterable"}
+{"fn":"coalescePullRequestListEntries","args":["x",{"a":"b"}],"error":"Cannot read properties of undefined (reading 'trim')"}
+{"fn":"coalescePullRequestListEntries","args":[null,null],"error":"entries is not iterable"}
+{"fn":"coalescePullRequestListEntries","args":[[],true],"ok":[]}
+{"fn":"coalescePullRequestListEntries","args":["x",{}],"error":"Cannot read properties of undefined (reading 'trim')"}
+{"fn":"coalescePullRequestListEntries","args":[{"a":"b"},{"$undefined":true}],"error":"entries is not iterable"}
+{"fn":"coalescePullRequestListEntries","args":[null,{}],"error":"entries is not iterable"}
+{"fn":"coalescePullRequestListEntries","args":[["a",1],{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'trim')"}
+{"fn":"coalescePullRequestListEntries","args":[["a",1],"x"],"error":"Cannot read properties of undefined (reading 'trim')"}
+{"fn":"coalescePullRequestListEntries","args":[[]],"ok":[]}
+{"fn":"coalescePullRequestListEntries","args":[null,{"a":"b"}],"error":"entries is not iterable"}
+{"fn":"coalescePullRequestListEntries","args":[{},[]],"error":"entries is not iterable"}
+{"fn":"coalescePullRequestListEntries","args":[{"a":{"b":"c"}},"x"],"error":"entries is not iterable"}
+{"fn":"coalescePullRequestListEntries","args":[null,[]],"error":"entries is not iterable"}
+{"fn":"coalescePullRequestListEntries","args":[[],{}],"ok":[]}
+{"fn":"coalescePullRequestListEntries","args":[null,{"$undefined":true}],"error":"entries is not iterable"}
+{"fn":"coalescePullRequestListEntries","args":["x",true],"error":"Cannot read properties of undefined (reading 'trim')"}
+{"fn":"coalescePullRequestListEntries","args":[{"a":"b"},{"a":{"b":"c"}}],"error":"entries is not iterable"}
+{"fn":"coalescePullRequestListEntries","args":[0,{"a":{"b":"c"}}],"error":"entries is not iterable"}
+{"fn":"coalescePullRequestListEntries","args":[0],"error":"entries is not iterable"}
+{"fn":"coalescePullRequestListEntries","args":[{},null],"error":"entries is not iterable"}
+{"fn":"coalescePullRequestListEntries","args":[{},true],"error":"entries is not iterable"}
+{"fn":"coalescePullRequestListEntries","args":[0,true],"error":"entries is not iterable"}
+{"fn":"coalescePullRequestListEntries","args":[["a",1]],"error":"Cannot read properties of undefined (reading 'trim')"}
+{"fn":"coalescePullRequestListEntries","args":[["a",1],{}],"error":"Cannot read properties of undefined (reading 'trim')"}
+{"fn":"coalescePullRequestListEntries","args":[0,{}],"error":"entries is not iterable"}
+{"fn":"coalescePullRequestListEntries","args":[{"a":"b"},true],"error":"entries is not iterable"}
+{"fn":"coalescePullRequestListEntries","args":[null],"error":"entries is not iterable"}
+{"fn":"coalescePullRequestListEntries","args":[null,{"a":{"b":"c"}}],"error":"entries is not iterable"}
+{"fn":"coalescePullRequestListEntries","args":[[],["a",1]],"ok":[]}
+{"fn":"coalescePullRequestListEntries","args":["x","x"],"error":"Cannot read properties of undefined (reading 'trim')"}
+{"fn":"coalescePullRequestListEntries","args":["x",{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'trim')"}
+{"fn":"coalescePullRequestListEntries","args":[["a",1],true],"error":"Cannot read properties of undefined (reading 'trim')"}
+{"fn":"coalescePullRequestListEntries","args":[0,0],"error":"entries is not iterable"}
+{"fn":"coalescePullRequestListEntries","args":[{},"x"],"error":"entries is not iterable"}
+{"fn":"coalescePullRequestListEntries","args":[true,true],"error":"entries is not iterable"}
+{"fn":"coalescePullRequestListEntries","args":[{},["a",1]],"error":"entries is not iterable"}
+{"fn":"coalescePullRequestListEntries","args":[{"a":{"b":"c"}},true],"error":"entries is not iterable"}
+{"fn":"coalescePullRequestListEntries","args":[true,0],"error":"entries is not iterable"}
+{"fn":"coalescePullRequestListEntries","args":[true,["a",1]],"error":"entries is not iterable"}
+{"fn":"coalescePullRequestListEntries","args":[{"a":"b"},"x"],"error":"entries is not iterable"}
+{"fn":"coalescePullRequestListEntries","args":["x",{"$undefined":true}],"error":"Cannot read properties of undefined (reading 'trim')"}
+{"fn":"coalescePullRequestListEntries","args":[[],{"a":"b"}],"ok":[]}
+{"fn":"coalescePullRequestListEntries","args":[true,{"a":{"b":"c"}}],"error":"entries is not iterable"}
+{"fn":"coalescePullRequestListEntries","args":[true,{"a":"b"}],"error":"entries is not iterable"}
+{"fn":"coalescePullRequestListEntries","args":[true],"error":"entries is not iterable"}
+{"fn":"coalescePullRequestListEntries","args":[{"a":{"b":"c"}},{"a":{"b":"c"}}],"error":"entries is not iterable"}
+{"fn":"coalescePullRequestListEntries","args":[{"a":{"b":"c"}},[]],"error":"entries is not iterable"}
+{"fn":"coalescePullRequestListEntries","args":[[],{"a":{"b":"c"}}],"ok":[]}
+{"fn":"coalescePullRequestListEntries","args":[{"a":{"b":"c"}},["a",1]],"error":"entries is not iterable"}
+{"fn":"coalescePullRequestListEntries","args":["x",["a",1]],"error":"Cannot read properties of undefined (reading 'trim')"}
+{"fn":"coalescePullRequestListEntries","args":[["a",1],null],"error":"Cannot read properties of undefined (reading 'trim')"}
+{"fn":"coalescePullRequestListEntries","args":[{"a":"b"},0],"error":"entries is not iterable"}
+{"fn":"coalescePullRequestListEntries","args":[0,null],"error":"entries is not iterable"}
+{"fn":"coalescePullRequestListEntries","args":[["a",1],[]],"error":"Cannot read properties of undefined (reading 'trim')"}
+{"fn":"coalescePullRequestListEntries","args":[null,"x"],"error":"entries is not iterable"}
+{"fn":"coalescePullRequestListEntries","args":[0,{"$undefined":true}],"error":"entries is not iterable"}
+{"fn":"coalescePullRequestListEntries","args":[true,{"$undefined":true}],"error":"entries is not iterable"}
+{"fn":"coalescePullRequestListEntries","args":[[],0],"ok":[]}
+{"fn":"coalescePullRequestListEntries","args":[{"a":"b"},["a",1]],"error":"entries is not iterable"}
+{"fn":"coalescePullRequestListEntries","args":[["a",1],{"$undefined":true}],"error":"Cannot read properties of undefined (reading 'trim')"}
+{"fn":"coalescePullRequestListEntries","args":[{"a":"b"},{}],"error":"entries is not iterable"}
+{"fn":"coalescePullRequestListEntries","args":[true,{}],"error":"entries is not iterable"}
+{"fn":"coalescePullRequestListEntries","args":[["a",1],0],"error":"Cannot read properties of undefined (reading 'trim')"}
+{"fn":"coalescePullRequestListEntries","args":["x",[]],"error":"Cannot read properties of undefined (reading 'trim')"}
+{"fn":"coalescePullRequestListEntries","args":[{},{"a":{"b":"c"}}],"error":"entries is not iterable"}
+{"fn":"coalescePullRequestListEntries","args":[{"a":{"b":"c"}},{}],"error":"entries is not iterable"}
+{"fn":"coalescePullRequestListEntries","args":[{"a":{"b":"c"}},{"a":"b"}],"error":"entries is not iterable"}
+{"fn":"coalescePullRequestListEntries","args":[true,"x"],"error":"entries is not iterable"}
+{"fn":"coalescePullRequestListEntries","args":[0,{"a":"b"}],"error":"entries is not iterable"}
+{"fn":"coalescePullRequestListEntries","args":[null,0],"error":"entries is not iterable"}
+{"fn":"coalescePullRequestListEntries","args":[{},0],"error":"entries is not iterable"}
+{"fn":"coalescePullRequestListEntries","args":[0,"x"],"error":"entries is not iterable"}
+{"fn":"coalescePullRequestListEntries","args":["x","X"],"error":"Cannot read properties of undefined (reading 'trim')"}
+{"fn":"coalescePullRequestListEntries","args":[[],{"$undefined":true}],"ok":[]}
+{"fn":"coalescePullRequestListEntries","args":[{"a":{"b":"c"}},{"$undefined":true}],"error":"entries is not iterable"}
+{"fn":"coalescePullRequestListEntries","args":[{"a":"b"},[]],"error":"entries is not iterable"}
+{"fn":"coalescePullRequestListEntries","args":[[],[]],"ok":[]}
+{"fn":"coalescePullRequestListEntries","args":[true,null],"error":"entries is not iterable"}
+{"fn":"coalescePullRequestListEntries","args":[{"a":{"b":"c"}},0],"error":"entries is not iterable"}
+{"fn":"coalescePullRequestListEntries","args":["X","x"],"error":"Cannot read properties of undefined (reading 'trim')"}
+{"fn":"updatePullRequestListEntryProjectPin","args":[["a",1],{"a":"b"},false],"ok":["a",1]}
+{"fn":"updatePullRequestListEntryProjectPin","args":[{},[],true],"ok":{}}
+{"fn":"updatePullRequestListEntryProjectPin","args":[0,0,false],"ok":0}
+{"fn":"updatePullRequestListEntryProjectPin","args":[true,0,false],"ok":true}
+{"fn":"updatePullRequestListEntryProjectPin","args":[{"a":{"b":"c"}},["a",1],false],"ok":{"a":{"b":"c"}}}
+{"fn":"updatePullRequestListEntryProjectPin","args":[[],{"a":{"b":"c"}},true],"ok":[]}
+{"fn":"updatePullRequestListEntryProjectPin","args":[{"a":"b"},"x",true],"ok":{"a":"b"}}
+{"fn":"updatePullRequestListEntryProjectPin","args":[{},{},true],"ok":{}}
+{"fn":"updatePullRequestListEntryProjectPin","args":[null,"x",true],"error":"Cannot read properties of null (reading 'projectContexts')"}
+{"fn":"updatePullRequestListEntryProjectPin","args":[{"a":{"b":"c"}},{"a":"b"},true],"ok":{"a":{"b":"c"}}}
+{"fn":"updatePullRequestListEntryProjectPin","args":[["a",1],{"a":{"b":"c"}},true],"ok":["a",1]}
+{"fn":"updatePullRequestListEntryProjectPin","args":[true,"x",false],"ok":true}
+{"fn":"updatePullRequestListEntryProjectPin","args":[{},[],false],"ok":{}}
+{"fn":"updatePullRequestListEntryProjectPin","args":[null,["a",1],false],"error":"Cannot read properties of null (reading 'projectContexts')"}
+{"fn":"updatePullRequestListEntryProjectPin","args":[{"a":"b"},{},false],"ok":{"a":"b"}}
+{"fn":"updatePullRequestListEntryProjectPin","args":["x",null,false],"ok":"x"}
+{"fn":"updatePullRequestListEntryProjectPin","args":[{"a":"b"},{"a":"b"},true],"ok":{"a":"b"}}
+{"fn":"updatePullRequestListEntryProjectPin","args":[0,null,true],"ok":0}
+{"fn":"updatePullRequestListEntryProjectPin","args":[["a",1],"x",false],"ok":["a",1]}
+{"fn":"updatePullRequestListEntryProjectPin","args":[[],true,true],"ok":[]}
+{"fn":"updatePullRequestListEntryProjectPin","args":[{"a":{"b":"c"}},{"a":{"b":"c"}},true],"ok":{"a":{"b":"c"}}}
+{"fn":"updatePullRequestListEntryProjectPin","args":[true,"x",true],"ok":true}
+{"fn":"updatePullRequestListEntryProjectPin","args":[null,"x",false],"error":"Cannot read properties of null (reading 'projectContexts')"}
+{"fn":"updatePullRequestListEntryProjectPin","args":[{"a":{"b":"c"}},0,true],"ok":{"a":{"b":"c"}}}
+{"fn":"updatePullRequestListEntryProjectPin","args":[0,null,false],"ok":0}
+{"fn":"updatePullRequestListEntryProjectPin","args":[[],true,false],"ok":[]}
+{"fn":"updatePullRequestListEntryProjectPin","args":["x",{"a":{"b":"c"}},false],"ok":"x"}
+{"fn":"updatePullRequestListEntryProjectPin","args":[{},null,false],"ok":{}}
+{"fn":"updatePullRequestListEntryProjectPin","args":[[],{},false],"ok":[]}
+{"fn":"updatePullRequestListEntryProjectPin","args":[["a",1],{"a":"b"},true],"ok":["a",1]}
+{"fn":"updatePullRequestListEntryProjectPin","args":[["a",1],null,true],"ok":["a",1]}
+{"fn":"updatePullRequestListEntryProjectPin","args":[0,{"a":{"b":"c"}},false],"ok":0}
+{"fn":"updatePullRequestListEntryProjectPin","args":[{"a":"b"},[],false],"ok":{"a":"b"}}
+{"fn":"updatePullRequestListEntryProjectPin","args":[true,null,false],"ok":true}
+{"fn":"updatePullRequestListEntryProjectPin","args":[{},true,true],"ok":{}}
+{"fn":"updatePullRequestListEntryProjectPin","args":[null,null,true],"error":"Cannot read properties of null (reading 'projectContexts')"}
+{"fn":"updatePullRequestListEntryProjectPin","args":[{"a":"b"},true,true],"ok":{"a":"b"}}
+{"fn":"updatePullRequestListEntryProjectPin","args":[["a",1],{},false],"ok":["a",1]}
+{"fn":"updatePullRequestListEntryProjectPin","args":[{"a":{"b":"c"}},["a",1],true],"ok":{"a":{"b":"c"}}}
+{"fn":"updatePullRequestListEntryProjectPin","args":[{},{"a":"b"},true],"ok":{}}
+{"fn":"updatePullRequestListEntryProjectPin","args":[[],{"a":"b"},true],"ok":[]}
+{"fn":"updatePullRequestListEntryProjectPin","args":[{"a":"b"},{"a":{"b":"c"}},false],"ok":{"a":"b"}}
+{"fn":"updatePullRequestListEntryProjectPin","args":[0,{"a":{"b":"c"}},true],"ok":0}
+{"fn":"updatePullRequestListEntryProjectPin","args":[{"a":{"b":"c"}},0,false],"ok":{"a":{"b":"c"}}}
+{"fn":"updatePullRequestListEntryProjectPin","args":[{"a":{"b":"c"}},null,true],"ok":{"a":{"b":"c"}}}
+{"fn":"updatePullRequestListEntryProjectPin","args":[{},{},false],"ok":{}}
+{"fn":"updatePullRequestListEntryProjectPin","args":[["a",1],["a",1],false],"ok":["a",1]}
+{"fn":"updatePullRequestListEntryProjectPin","args":[[],null,true],"ok":[]}
+{"fn":"updatePullRequestListEntryProjectPin","args":["x",["a",1],true],"ok":"x"}
+{"fn":"updatePullRequestListEntryProjectPin","args":[{"a":{"b":"c"}},{},false],"ok":{"a":{"b":"c"}}}
+{"fn":"updatePullRequestListEntryProjectPin","args":[["a",1],null,false],"ok":["a",1]}
+{"fn":"updatePullRequestListEntryProjectPin","args":[{"a":"b"},true,false],"ok":{"a":"b"}}
+{"fn":"updatePullRequestListEntryProjectPin","args":[{"a":"b"},null,false],"ok":{"a":"b"}}
+{"fn":"updatePullRequestListEntryProjectPin","args":[{"a":{"b":"c"}},null,false],"ok":{"a":{"b":"c"}}}
+{"fn":"updatePullRequestListEntryProjectPin","args":[{},"x",false],"ok":{}}
+{"fn":"updatePullRequestListEntryProjectPin","args":["x",{"a":"b"},false],"ok":"x"}
+{"fn":"updatePullRequestListEntryProjectPin","args":[["a",1],0,true],"ok":["a",1]}
+{"fn":"updatePullRequestListEntryProjectPin","args":[[],{"a":"b"},false],"ok":[]}
+{"fn":"updatePullRequestListEntryProjectPin","args":["x",{"a":{"b":"c"}},true],"ok":"x"}
+{"fn":"updatePullRequestListEntryProjectPin","args":[{},0,true],"ok":{}}
+{"fn":"updatePullRequestListEntryProjectPin","args":[[],[],false],"ok":[]}
+{"fn":"updatePullRequestListEntryProjectPin","args":[0,true,false],"ok":0}
+{"fn":"updatePullRequestListEntryProjectPin","args":[0,{"a":"b"},true],"ok":0}
+{"fn":"updatePullRequestListEntryProjectPin","args":[null,{"a":"b"},false],"error":"Cannot read properties of null (reading 'projectContexts')"}
+{"fn":"updatePullRequestListEntryProjectPin","args":[{},{"a":{"b":"c"}},true],"ok":{}}
+{"fn":"updatePullRequestListEntryProjectPin","args":[{"a":"b"},0,true],"ok":{"a":"b"}}
+{"fn":"updatePullRequestListEntryProjectPin","args":[true,{},true],"ok":true}
+{"fn":"updatePullRequestListEntryProjectPin","args":["x",[],false],"ok":"x"}
+{"fn":"updatePullRequestListEntryProjectPin","args":[0,true,true],"ok":0}
+{"fn":"updatePullRequestListEntryProjectPin","args":[[],null,false],"ok":[]}
+{"fn":"updatePullRequestListEntryProjectPin","args":[0,"x",false],"ok":0}
+{"fn":"updatePullRequestListEntryProjectPin","args":[{"a":"b"},["a",1],true],"ok":{"a":"b"}}
+{"fn":"updatePullRequestListEntryProjectPin","args":[["a",1],"x",true],"ok":["a",1]}
+{"fn":"updatePullRequestListEntryProjectPin","args":["x",{"a":"b"},true],"ok":"x"}
+{"fn":"updatePullRequestListEntryProjectPin","args":[null,{"a":{"b":"c"}},false],"error":"Cannot read properties of null (reading 'projectContexts')"}
+{"fn":"updatePullRequestListEntryProjectPin","args":["x",null,true],"ok":"x"}
+{"fn":"updatePullRequestListEntryProjectPin","args":[0,["a",1],true],"ok":0}
+{"fn":"updatePullRequestListEntryProjectPin","args":[true,null,true],"ok":true}
+{"fn":"updatePullRequestListEntryProjectPin","args":[0,[],true],"ok":0}
+{"fn":"updatePullRequestListEntryProjectPin","args":[{},null,true],"ok":{}}
+{"fn":"updatePullRequestListEntryProjectPin","args":[["a",1],0,false],"ok":["a",1]}
+{"fn":"updatePullRequestListEntryProjectPin","args":[true,0,true],"ok":true}
+{"fn":"updatePullRequestListEntryProjectPin","args":["x",{},false],"ok":"x"}
+{"fn":"updatePullRequestListEntryProjectPin","args":[{"a":"b"},null,true],"ok":{"a":"b"}}
+{"fn":"updatePullRequestListEntryProjectPin","args":["x",true,true],"ok":"x"}
+{"fn":"updatePullRequestListEntryProjectPin","args":[{},{"a":{"b":"c"}},false],"ok":{}}
+{"fn":"updatePullRequestListEntryProjectPin","args":[0,{"a":"b"},false],"ok":0}
+{"fn":"updatePullRequestListEntryProjectPin","args":[true,[],false],"ok":true}
+{"fn":"updatePullRequestListEntryProjectPin","args":[true,{"a":{"b":"c"}},true],"ok":true}
+{"fn":"updatePullRequestListEntryProjectPin","args":[null,0,false],"error":"Cannot read properties of null (reading 'projectContexts')"}
+{"fn":"updatePullRequestListEntryProjectPin","args":["x",0,true],"ok":"x"}
+{"fn":"updatePullRequestListEntryProjectPin","args":[0,[],false],"ok":0}
+{"fn":"updatePullRequestListEntryProjectPin","args":[{"a":{"b":"c"}},true,true],"ok":{"a":{"b":"c"}}}
+{"fn":"updatePullRequestListEntryProjectPin","args":[[],{"a":{"b":"c"}},false],"ok":[]}
+{"fn":"updatePullRequestListEntryProjectPin","args":[{"a":"b"},0,false],"ok":{"a":"b"}}
+{"fn":"updatePullRequestListEntryProjectPin","args":[null,null,false],"error":"Cannot read properties of null (reading 'projectContexts')"}
+{"fn":"updatePullRequestListEntryProjectPin","args":[true,true,false],"ok":true}
+{"fn":"updatePullRequestListEntryProjectPin","args":["x","x",false],"ok":"x"}
+{"fn":"updatePullRequestListEntryProjectPin","args":[{"a":"b"},"x",false],"ok":{"a":"b"}}
+{"fn":"updatePullRequestListEntryProjectPin","args":[{},true,false],"ok":{}}
+{"fn":"updatePullRequestListEntryProjectPin","args":[{"a":{"b":"c"}},"x",false],"ok":{"a":{"b":"c"}}}
+{"fn":"updatePullRequestListEntryProjectPin","args":[0,0,true],"ok":0}
+{"fn":"updatePullRequestListEntryProjectPin","args":["x",["a",1],false],"ok":"x"}
+{"fn":"updatePullRequestListEntryProjectPin","args":[null,{},true],"error":"Cannot read properties of null (reading 'projectContexts')"}
+{"fn":"updatePullRequestListEntryProjectPin","args":[null,["a",1],true],"error":"Cannot read properties of null (reading 'projectContexts')"}
+{"fn":"updatePullRequestListEntryProjectPin","args":[0,{},false],"ok":0}
+{"fn":"updatePullRequestListEntryProjectPin","args":[{"a":"b"},{"a":{"b":"c"}},true],"ok":{"a":"b"}}
+{"fn":"updatePullRequestListEntryProjectPin","args":[true,{"a":"b"},true],"ok":true}
+{"fn":"updatePullRequestListEntryProjectPin","args":[{"a":"b"},{"a":"b"},false],"ok":{"a":"b"}}
+{"fn":"updatePullRequestListEntryProjectPin","args":[{},"x",true],"ok":{}}
+{"fn":"updatePullRequestListEntryProjectPin","args":[{"a":{"b":"c"}},[],false],"ok":{"a":{"b":"c"}}}
+{"fn":"updatePullRequestListEntryProjectPin","args":[null,{"a":"b"},true],"error":"Cannot read properties of null (reading 'projectContexts')"}
+{"fn":"updatePullRequestListEntryProjectPin","args":["x",0,false],"ok":"x"}
+{"fn":"updatePullRequestListEntryProjectPin","args":[true,["a",1],true],"ok":true}
+{"fn":"updatePullRequestListEntryProjectPin","args":[{},0,false],"ok":{}}
+{"fn":"updatePullRequestListEntryProjectPin","args":["x",[],true],"ok":"x"}
+{"fn":"updatePullRequestListEntryProjectPin","args":[[],"x",true],"ok":[]}
+{"fn":"updatePullRequestListEntryProjectPin","args":[["a",1],["a",1],true],"ok":["a",1]}
+{"fn":"updatePullRequestListEntryProjectPin","args":[["a",1],[],true],"ok":["a",1]}
+{"fn":"updatePullRequestListEntryProjectPin","args":[[],["a",1],false],"ok":[]}
+{"fn":"updatePullRequestListEntryProjectPin","args":[{"a":{"b":"c"}},{},true],"ok":{"a":{"b":"c"}}}
+{"fn":"updatePullRequestListEntryProjectPin","args":[[],["a",1],true],"ok":[]}
+{"fn":"updatePullRequestListEntryProjectPin","args":[[],[],true],"ok":[]}
+{"fn":"updatePullRequestListEntryProjectPin","args":[0,{},true],"ok":0}
+{"fn":"updatePullRequestListEntryProjectPin","args":[true,{"a":{"b":"c"}},false],"ok":true}
+{"fn":"updatePullRequestListEntryProjectPin","args":[{"a":{"b":"c"}},[],true],"ok":{"a":{"b":"c"}}}
+{"fn":"updatePullRequestListEntryProjectPin","args":[["a",1],{"a":{"b":"c"}},false],"ok":["a",1]}
+{"fn":"updatePullRequestListEntryProjectPin","args":[null,0,true],"error":"Cannot read properties of null (reading 'projectContexts')"}
+{"fn":"updatePullRequestListEntryProjectPin","args":[["a",1],true,false],"ok":["a",1]}
+{"fn":"updatePullRequestListEntryProjectPin","args":[{"a":"b"},{},true],"ok":{"a":"b"}}
+{"fn":"updatePullRequestListEntryProjectPin","args":[true,true,true],"ok":true}
+{"fn":"updatePullRequestListEntryProjectPin","args":[{"a":{"b":"c"}},true,false],"ok":{"a":{"b":"c"}}}
+{"fn":"updatePullRequestListEntryProjectPin","args":[[],0,false],"ok":[]}
+{"fn":"updatePullRequestListEntryProjectPin","args":["x","x",true],"ok":"x"}
+{"fn":"updatePullRequestListEntryProjectPin","args":[{"a":"b"},["a",1],false],"ok":{"a":"b"}}
+{"fn":"updatePullRequestListEntryProjectPin","args":[["a",1],true,true],"ok":["a",1]}
+{"fn":"updatePullRequestListEntryProjectPin","args":[null,{"a":{"b":"c"}},true],"error":"Cannot read properties of null (reading 'projectContexts')"}
+{"fn":"updatePullRequestListEntryProjectPin","args":[{"a":{"b":"c"}},"x",true],"ok":{"a":{"b":"c"}}}
+{"fn":"updatePullRequestListEntryProjectPin","args":[[],0,true],"ok":[]}
+{"fn":"updatePullRequestListEntryProjectPin","args":[null,true,false],"error":"Cannot read properties of null (reading 'projectContexts')"}
+{"fn":"updatePullRequestListEntryProjectPin","args":[[],"x",false],"ok":[]}
+{"fn":"updatePullRequestListEntryProjectPin","args":[null,true,true],"error":"Cannot read properties of null (reading 'projectContexts')"}
+{"fn":"updatePullRequestListEntryProjectPin","args":[{"a":"b"},[],true],"ok":{"a":"b"}}
+{"fn":"updatePullRequestListEntryProjectPin","args":[0,["a",1],false],"ok":0}
+{"fn":"updatePullRequestListEntryProjectPin","args":["x",true,false],"ok":"x"}
+{"fn":"updatePullRequestListEntryProjectPin","args":[true,{"a":"b"},false],"ok":true}
+{"fn":"updatePullRequestListEntryProjectPin","args":[{},{"a":"b"},false],"ok":{}}
+{"fn":"updatePullRequestListEntryProjectPin","args":[{"a":{"b":"c"}},{"a":{"b":"c"}},false],"ok":{"a":{"b":"c"}}}
+{"fn":"updatePullRequestListEntryProjectPin","args":[null,[],true],"error":"Cannot read properties of null (reading 'projectContexts')"}
+{"fn":"updatePullRequestListEntryProjectPin","args":[true,[],true],"ok":true}
+{"fn":"updatePullRequestListEntryProjectPin","args":[{},["a",1],true],"ok":{}}
+{"fn":"updatePullRequestListEntryProjectPin","args":[true,{},false],"ok":true}
+{"fn":"updatePullRequestListEntryProjectPin","args":["x",{},true],"ok":"x"}
+{"fn":"updatePullRequestListEntryProjectPin","args":[[],{},true],"ok":[]}
+{"fn":"updatePullRequestListEntryProjectPin","args":[0,"x",true],"ok":0}
+{"fn":"updatePullRequestListEntryProjectPin","args":[["a",1],{},true],"ok":["a",1]}
+{"fn":"updatePullRequestListEntryProjectPin","args":[null,[],false],"error":"Cannot read properties of null (reading 'projectContexts')"}
+{"fn":"updatePullRequestListEntryProjectPin","args":[{"a":{"b":"c"}},{"a":"b"},false],"ok":{"a":{"b":"c"}}}
+{"fn":"updatePullRequestListEntryProjectPin","args":[true,["a",1],false],"ok":true}
+{"fn":"updatePullRequestListEntryProjectPin","args":[null,{},false],"error":"Cannot read properties of null (reading 'projectContexts')"}
+{"fn":"updatePullRequestListEntryProjectPin","args":[{},["a",1],false],"ok":{}}
+{"fn":"updatePullRequestListEntryProjectPin","args":[["a",1],[],false],"ok":["a",1]}
+{"fn":"updatePullRequestListEntryProjectPin","args":["X","x",true],"ok":"X"}
+{"fn":"updatePullRequestListEntryProjectPin","args":["x","X",true],"ok":"x"}
+{"fn":"pullRequestListRepositoryIdentity","args":[{"projectId":"project-1","projectTitle":"Project One","repository":" Acme/Widgets ","number":1,"title":"PR 1","url":"https://github.com/acme/widgets/pull/1","author":null,"headBranch":"feature-1","baseBranch":"main","state":"open","isDraft":false,"additions":1,"deletions":0,"createdAt":"2026-07-01T00:00:00.000Z","updatedAt":"2026-07-02T00:00:00.000Z","reviewDecision":null,"viewerReviewRequested":false,"isPinned":false,"projectContexts":[{"projectId":"project-1","projectTitle":"Project One","isPinned":false}],"mergeability":"unknown","labels":[]}],"ok":"acme/widgets#1"}
+{"fn":"coalescePullRequestListEntries","args":[[{"projectId":"project-1","projectTitle":"Project One","repository":"acme/widgets","number":1,"title":"PR 1","url":"https://github.com/acme/widgets/pull/1","author":null,"headBranch":"feature-1","baseBranch":"main","state":"open","isDraft":false,"additions":1,"deletions":0,"createdAt":"2026-07-01T00:00:00.000Z","updatedAt":"2026-07-02T00:00:00.000Z","reviewDecision":null,"viewerReviewRequested":false,"isPinned":false,"projectContexts":[{"projectId":"project-1","projectTitle":"Project One","isPinned":false}],"mergeability":"unknown","labels":[]},{"projectId":"project-2","projectTitle":"feature-1","repository":"acme/widgets","number":1,"title":"PR 1","url":"https://github.com/acme/widgets/pull/1","author":null,"headBranch":"feature-1","baseBranch":"main","state":"open","isDraft":false,"additions":1,"deletions":0,"createdAt":"2026-07-01T00:00:00.000Z","updatedAt":"2026-07-02T00:00:00.000Z","reviewDecision":null,"viewerReviewRequested":false,"isPinned":false,"projectContexts":[{"projectId":"project-2","projectTitle":"feature-1","isPinned":false}],"mergeability":"unknown","labels":[]}]],"ok":[{"projectId":"project-2","projectTitle":"feature-1","repository":"acme/widgets","number":1,"title":"PR 1","url":"https://github.com/acme/widgets/pull/1","author":null,"headBranch":"feature-1","baseBranch":"main","state":"open","isDraft":false,"additions":1,"deletions":0,"createdAt":"2026-07-01T00:00:00.000Z","updatedAt":"2026-07-02T00:00:00.000Z","reviewDecision":null,"viewerReviewRequested":false,"isPinned":false,"projectContexts":[{"projectId":"project-2","projectTitle":"feature-1","isPinned":false},{"projectId":"project-1","projectTitle":"Project One","isPinned":false}],"mergeability":"unknown","labels":[]}]}
+{"fn":"pullRequestListRepositoryIdentity","args":[{"projectId":"project-1","projectTitle":"Project One","repository":"acme/widgets","number":1,"title":"PR 1","url":"https://github.com/acme/widgets/pull/1","author":null,"headBranch":"feature-1","baseBranch":"main","state":"open","isDraft":false,"additions":1,"deletions":0,"createdAt":"2026-07-01T00:00:00.000Z","updatedAt":"2026-07-02T00:00:00.000Z","reviewDecision":null,"viewerReviewRequested":false,"isPinned":false,"projectContexts":[{"projectId":"project-1","projectTitle":"Project One","isPinned":false}],"mergeability":"unknown","labels":[]}],"ok":"acme/widgets#1"}
+{"fn":"pullRequestListRepositoryIdentity","args":[{"projectId":"project-2","projectTitle":"feature-1","repository":"acme/widgets","number":1,"title":"PR 1","url":"https://github.com/acme/widgets/pull/1","author":null,"headBranch":"feature-1","baseBranch":"main","state":"open","isDraft":false,"additions":1,"deletions":0,"createdAt":"2026-07-01T00:00:00.000Z","updatedAt":"2026-07-02T00:00:00.000Z","reviewDecision":null,"viewerReviewRequested":false,"isPinned":false,"projectContexts":[{"projectId":"project-2","projectTitle":"feature-1","isPinned":false}],"mergeability":"unknown","labels":[]}],"ok":"acme/widgets#1"}
+{"fn":"pullRequestListProjectContexts","args":[{"projectId":"project-1","projectTitle":"Project One","repository":"acme/widgets","number":1,"title":"PR 1","url":"https://github.com/acme/widgets/pull/1","author":null,"headBranch":"feature-1","baseBranch":"main","state":"open","isDraft":false,"additions":1,"deletions":0,"createdAt":"2026-07-01T00:00:00.000Z","updatedAt":"2026-07-02T00:00:00.000Z","reviewDecision":null,"viewerReviewRequested":false,"isPinned":false,"projectContexts":[{"projectId":"project-1","projectTitle":"Project One","isPinned":false}],"mergeability":"unknown","labels":[]}],"ok":[{"projectId":"project-1","projectTitle":"Project One","isPinned":false}]}
+{"fn":"pullRequestListProjectContexts","args":[{"projectId":"project-2","projectTitle":"feature-1","repository":"acme/widgets","number":1,"title":"PR 1","url":"https://github.com/acme/widgets/pull/1","author":null,"headBranch":"feature-1","baseBranch":"main","state":"open","isDraft":false,"additions":1,"deletions":0,"createdAt":"2026-07-01T00:00:00.000Z","updatedAt":"2026-07-02T00:00:00.000Z","reviewDecision":null,"viewerReviewRequested":false,"isPinned":false,"projectContexts":[{"projectId":"project-2","projectTitle":"feature-1","isPinned":false}],"mergeability":"unknown","labels":[]}],"ok":[{"projectId":"project-2","projectTitle":"feature-1","isPinned":false}]}
+{"fn":"coalescePullRequestListEntries","args":[[{"projectId":"project-1","projectTitle":"feature-1","repository":"acme/widgets","number":1,"title":"PR 1","url":"https://github.com/acme/widgets/pull/1","author":null,"headBranch":"feature-1","baseBranch":"main","state":"open","isDraft":false,"additions":1,"deletions":0,"createdAt":"2026-07-01T00:00:00.000Z","updatedAt":"2026-07-02T00:00:00.000Z","reviewDecision":null,"viewerReviewRequested":false,"isPinned":false,"projectContexts":[{"projectId":"project-1","projectTitle":"feature-1","isPinned":false}],"mergeability":"unknown","labels":[]},{"projectId":"project-2","projectTitle":"Pinned workspace","repository":"acme/widgets","number":1,"title":"PR 1","url":"https://github.com/acme/widgets/pull/1","author":null,"headBranch":"feature-1","baseBranch":"main","state":"open","isDraft":false,"additions":1,"deletions":0,"createdAt":"2026-07-01T00:00:00.000Z","updatedAt":"2026-07-02T00:00:00.000Z","reviewDecision":null,"viewerReviewRequested":false,"isPinned":true,"projectContexts":[{"projectId":"project-2","projectTitle":"Pinned workspace","isPinned":true}],"mergeability":"unknown","labels":[]},{"projectId":"project-1","projectTitle":"Project One","repository":"acme/other","number":1,"title":"PR 1","url":"https://github.com/acme/widgets/pull/1","author":null,"headBranch":"feature-1","baseBranch":"main","state":"open","isDraft":false,"additions":1,"deletions":0,"createdAt":"2026-07-01T00:00:00.000Z","updatedAt":"2026-07-02T00:00:00.000Z","reviewDecision":null,"viewerReviewRequested":false,"isPinned":false,"projectContexts":[{"projectId":"project-1","projectTitle":"Project One","isPinned":false}],"mergeability":"unknown","labels":[]}]],"ok":[{"projectId":"project-1","projectTitle":"feature-1","repository":"acme/widgets","number":1,"title":"PR 1","url":"https://github.com/acme/widgets/pull/1","author":null,"headBranch":"feature-1","baseBranch":"main","state":"open","isDraft":false,"additions":1,"deletions":0,"createdAt":"2026-07-01T00:00:00.000Z","updatedAt":"2026-07-02T00:00:00.000Z","reviewDecision":null,"viewerReviewRequested":false,"isPinned":true,"projectContexts":[{"projectId":"project-1","projectTitle":"feature-1","isPinned":false},{"projectId":"project-2","projectTitle":"Pinned workspace","isPinned":true}],"mergeability":"unknown","labels":[]},{"projectId":"project-1","projectTitle":"Project One","repository":"acme/other","number":1,"title":"PR 1","url":"https://github.com/acme/widgets/pull/1","author":null,"headBranch":"feature-1","baseBranch":"main","state":"open","isDraft":false,"additions":1,"deletions":0,"createdAt":"2026-07-01T00:00:00.000Z","updatedAt":"2026-07-02T00:00:00.000Z","reviewDecision":null,"viewerReviewRequested":false,"isPinned":false,"projectContexts":[{"projectId":"project-1","projectTitle":"Project One","isPinned":false}],"mergeability":"unknown","labels":[]}]}
+{"fn":"pullRequestListRepositoryIdentity","args":[{"projectId":"project-1","projectTitle":"feature-1","repository":"acme/widgets","number":1,"title":"PR 1","url":"https://github.com/acme/widgets/pull/1","author":null,"headBranch":"feature-1","baseBranch":"main","state":"open","isDraft":false,"additions":1,"deletions":0,"createdAt":"2026-07-01T00:00:00.000Z","updatedAt":"2026-07-02T00:00:00.000Z","reviewDecision":null,"viewerReviewRequested":false,"isPinned":false,"projectContexts":[{"projectId":"project-1","projectTitle":"feature-1","isPinned":false}],"mergeability":"unknown","labels":[]}],"ok":"acme/widgets#1"}
+{"fn":"pullRequestListRepositoryIdentity","args":[{"projectId":"project-2","projectTitle":"Pinned workspace","repository":"acme/widgets","number":1,"title":"PR 1","url":"https://github.com/acme/widgets/pull/1","author":null,"headBranch":"feature-1","baseBranch":"main","state":"open","isDraft":false,"additions":1,"deletions":0,"createdAt":"2026-07-01T00:00:00.000Z","updatedAt":"2026-07-02T00:00:00.000Z","reviewDecision":null,"viewerReviewRequested":false,"isPinned":true,"projectContexts":[{"projectId":"project-2","projectTitle":"Pinned workspace","isPinned":true}],"mergeability":"unknown","labels":[]}],"ok":"acme/widgets#1"}
+{"fn":"pullRequestListRepositoryIdentity","args":[{"projectId":"project-1","projectTitle":"Project One","repository":"acme/other","number":1,"title":"PR 1","url":"https://github.com/acme/widgets/pull/1","author":null,"headBranch":"feature-1","baseBranch":"main","state":"open","isDraft":false,"additions":1,"deletions":0,"createdAt":"2026-07-01T00:00:00.000Z","updatedAt":"2026-07-02T00:00:00.000Z","reviewDecision":null,"viewerReviewRequested":false,"isPinned":false,"projectContexts":[{"projectId":"project-1","projectTitle":"Project One","isPinned":false}],"mergeability":"unknown","labels":[]}],"ok":"acme/other#1"}
+{"fn":"pullRequestListProjectContexts","args":[{"projectId":"project-1","projectTitle":"feature-1","repository":"acme/widgets","number":1,"title":"PR 1","url":"https://github.com/acme/widgets/pull/1","author":null,"headBranch":"feature-1","baseBranch":"main","state":"open","isDraft":false,"additions":1,"deletions":0,"createdAt":"2026-07-01T00:00:00.000Z","updatedAt":"2026-07-02T00:00:00.000Z","reviewDecision":null,"viewerReviewRequested":false,"isPinned":false,"projectContexts":[{"projectId":"project-1","projectTitle":"feature-1","isPinned":false}],"mergeability":"unknown","labels":[]}],"ok":[{"projectId":"project-1","projectTitle":"feature-1","isPinned":false}]}
+{"fn":"pullRequestListProjectContexts","args":[{"projectId":"project-2","projectTitle":"Pinned workspace","repository":"acme/widgets","number":1,"title":"PR 1","url":"https://github.com/acme/widgets/pull/1","author":null,"headBranch":"feature-1","baseBranch":"main","state":"open","isDraft":false,"additions":1,"deletions":0,"createdAt":"2026-07-01T00:00:00.000Z","updatedAt":"2026-07-02T00:00:00.000Z","reviewDecision":null,"viewerReviewRequested":false,"isPinned":true,"projectContexts":[{"projectId":"project-2","projectTitle":"Pinned workspace","isPinned":true}],"mergeability":"unknown","labels":[]}],"ok":[{"projectId":"project-2","projectTitle":"Pinned workspace","isPinned":true}]}
+{"fn":"pullRequestListProjectContexts","args":[{"projectId":"project-1","projectTitle":"Project One","repository":"acme/other","number":1,"title":"PR 1","url":"https://github.com/acme/widgets/pull/1","author":null,"headBranch":"feature-1","baseBranch":"main","state":"open","isDraft":false,"additions":1,"deletions":0,"createdAt":"2026-07-01T00:00:00.000Z","updatedAt":"2026-07-02T00:00:00.000Z","reviewDecision":null,"viewerReviewRequested":false,"isPinned":false,"projectContexts":[{"projectId":"project-1","projectTitle":"Project One","isPinned":false}],"mergeability":"unknown","labels":[]}],"ok":[{"projectId":"project-1","projectTitle":"Project One","isPinned":false}]}
+{"fn":"coalescePullRequestListEntries","args":[[{"projectId":"project-1","projectTitle":"Project One","repository":"acme/widgets","number":1,"title":"PR 1","url":"https://github.com/acme/widgets/pull/1","author":null,"headBranch":"feature-1","baseBranch":"main","state":"open","isDraft":false,"additions":1,"deletions":0,"createdAt":"2026-07-01T00:00:00.000Z","updatedAt":"2026-07-02T00:00:00.000Z","reviewDecision":null,"viewerReviewRequested":false,"isPinned":false,"projectContexts":[{"projectId":"project-1","projectTitle":"Project One","isPinned":false}],"mergeability":"unknown","labels":[]},{"projectId":"project-2","projectTitle":"Project Two","repository":"acme/widgets","number":1,"title":"PR 1","url":"https://github.com/acme/widgets/pull/1","author":null,"headBranch":"feature-1","baseBranch":"main","state":"open","isDraft":false,"additions":1,"deletions":0,"createdAt":"2026-07-01T00:00:00.000Z","updatedAt":"2026-07-02T00:00:00.000Z","reviewDecision":null,"viewerReviewRequested":false,"isPinned":false,"projectContexts":[{"projectId":"project-2","projectTitle":"Project Two","isPinned":false}],"mergeability":"unknown","labels":[]}],{"preferredProjectId":"project-2"}],"ok":[{"projectId":"project-2","projectTitle":"Project Two","repository":"acme/widgets","number":1,"title":"PR 1","url":"https://github.com/acme/widgets/pull/1","author":null,"headBranch":"feature-1","baseBranch":"main","state":"open","isDraft":false,"additions":1,"deletions":0,"createdAt":"2026-07-01T00:00:00.000Z","updatedAt":"2026-07-02T00:00:00.000Z","reviewDecision":null,"viewerReviewRequested":false,"isPinned":false,"projectContexts":[{"projectId":"project-1","projectTitle":"Project One","isPinned":false},{"projectId":"project-2","projectTitle":"Project Two","isPinned":false}],"mergeability":"unknown","labels":[]}]}
+{"fn":"pullRequestListRepositoryIdentity","args":[{"projectId":"project-2","projectTitle":"Project Two","repository":"acme/widgets","number":1,"title":"PR 1","url":"https://github.com/acme/widgets/pull/1","author":null,"headBranch":"feature-1","baseBranch":"main","state":"open","isDraft":false,"additions":1,"deletions":0,"createdAt":"2026-07-01T00:00:00.000Z","updatedAt":"2026-07-02T00:00:00.000Z","reviewDecision":null,"viewerReviewRequested":false,"isPinned":false,"projectContexts":[{"projectId":"project-2","projectTitle":"Project Two","isPinned":false}],"mergeability":"unknown","labels":[]}],"ok":"acme/widgets#1"}
+{"fn":"pullRequestListProjectContexts","args":[{"projectId":"project-2","projectTitle":"Project Two","repository":"acme/widgets","number":1,"title":"PR 1","url":"https://github.com/acme/widgets/pull/1","author":null,"headBranch":"feature-1","baseBranch":"main","state":"open","isDraft":false,"additions":1,"deletions":0,"createdAt":"2026-07-01T00:00:00.000Z","updatedAt":"2026-07-02T00:00:00.000Z","reviewDecision":null,"viewerReviewRequested":false,"isPinned":false,"projectContexts":[{"projectId":"project-2","projectTitle":"Project Two","isPinned":false}],"mergeability":"unknown","labels":[]}],"ok":[{"projectId":"project-2","projectTitle":"Project Two","isPinned":false}]}
+{"fn":"coalescePullRequestListEntries","args":[[{"projectId":"project-1","projectTitle":"Project One","repository":"acme/widgets","number":1,"title":"PR 1","url":"https://github.com/acme/widgets/pull/1","author":null,"headBranch":"feature-1","baseBranch":"main","state":"open","isDraft":false,"additions":1,"deletions":0,"createdAt":"2026-07-01T00:00:00.000Z","updatedAt":"2026-07-02T00:00:00.000Z","reviewDecision":null,"viewerReviewRequested":false,"isPinned":true,"projectContexts":[{"projectId":"project-1","projectTitle":"Project One","isPinned":true}],"mergeability":"unknown","labels":[]},{"projectId":"project-2","projectTitle":"Project Two","repository":"acme/widgets","number":1,"title":"PR 1","url":"https://github.com/acme/widgets/pull/1","author":null,"headBranch":"feature-1","baseBranch":"main","state":"open","isDraft":false,"additions":1,"deletions":0,"createdAt":"2026-07-01T00:00:00.000Z","updatedAt":"2026-07-02T00:00:00.000Z","reviewDecision":null,"viewerReviewRequested":false,"isPinned":true,"projectContexts":[{"projectId":"project-2","projectTitle":"Project Two","isPinned":true}],"mergeability":"unknown","labels":[]}]],"ok":[{"projectId":"project-1","projectTitle":"Project One","repository":"acme/widgets","number":1,"title":"PR 1","url":"https://github.com/acme/widgets/pull/1","author":null,"headBranch":"feature-1","baseBranch":"main","state":"open","isDraft":false,"additions":1,"deletions":0,"createdAt":"2026-07-01T00:00:00.000Z","updatedAt":"2026-07-02T00:00:00.000Z","reviewDecision":null,"viewerReviewRequested":false,"isPinned":true,"projectContexts":[{"projectId":"project-1","projectTitle":"Project One","isPinned":true},{"projectId":"project-2","projectTitle":"Project Two","isPinned":true}],"mergeability":"unknown","labels":[]}]}
+{"fn":"pullRequestListRepositoryIdentity","args":[{"projectId":"project-1","projectTitle":"Project One","repository":"acme/widgets","number":1,"title":"PR 1","url":"https://github.com/acme/widgets/pull/1","author":null,"headBranch":"feature-1","baseBranch":"main","state":"open","isDraft":false,"additions":1,"deletions":0,"createdAt":"2026-07-01T00:00:00.000Z","updatedAt":"2026-07-02T00:00:00.000Z","reviewDecision":null,"viewerReviewRequested":false,"isPinned":true,"projectContexts":[{"projectId":"project-1","projectTitle":"Project One","isPinned":true}],"mergeability":"unknown","labels":[]}],"ok":"acme/widgets#1"}
+{"fn":"pullRequestListRepositoryIdentity","args":[{"projectId":"project-2","projectTitle":"Project Two","repository":"acme/widgets","number":1,"title":"PR 1","url":"https://github.com/acme/widgets/pull/1","author":null,"headBranch":"feature-1","baseBranch":"main","state":"open","isDraft":false,"additions":1,"deletions":0,"createdAt":"2026-07-01T00:00:00.000Z","updatedAt":"2026-07-02T00:00:00.000Z","reviewDecision":null,"viewerReviewRequested":false,"isPinned":true,"projectContexts":[{"projectId":"project-2","projectTitle":"Project Two","isPinned":true}],"mergeability":"unknown","labels":[]}],"ok":"acme/widgets#1"}
+{"fn":"pullRequestListProjectContexts","args":[{"projectId":"project-1","projectTitle":"Project One","repository":"acme/widgets","number":1,"title":"PR 1","url":"https://github.com/acme/widgets/pull/1","author":null,"headBranch":"feature-1","baseBranch":"main","state":"open","isDraft":false,"additions":1,"deletions":0,"createdAt":"2026-07-01T00:00:00.000Z","updatedAt":"2026-07-02T00:00:00.000Z","reviewDecision":null,"viewerReviewRequested":false,"isPinned":true,"projectContexts":[{"projectId":"project-1","projectTitle":"Project One","isPinned":true}],"mergeability":"unknown","labels":[]}],"ok":[{"projectId":"project-1","projectTitle":"Project One","isPinned":true}]}
+{"fn":"pullRequestListProjectContexts","args":[{"projectId":"project-2","projectTitle":"Project Two","repository":"acme/widgets","number":1,"title":"PR 1","url":"https://github.com/acme/widgets/pull/1","author":null,"headBranch":"feature-1","baseBranch":"main","state":"open","isDraft":false,"additions":1,"deletions":0,"createdAt":"2026-07-01T00:00:00.000Z","updatedAt":"2026-07-02T00:00:00.000Z","reviewDecision":null,"viewerReviewRequested":false,"isPinned":true,"projectContexts":[{"projectId":"project-2","projectTitle":"Project Two","isPinned":true}],"mergeability":"unknown","labels":[]}],"ok":[{"projectId":"project-2","projectTitle":"Project Two","isPinned":true}]}
+{"fn":"updatePullRequestListEntryProjectPin","args":[{"projectId":"project-1","projectTitle":"Project One","repository":"acme/widgets","number":1,"title":"PR 1","url":"https://github.com/acme/widgets/pull/1","author":null,"headBranch":"feature-1","baseBranch":"main","state":"open","isDraft":false,"additions":1,"deletions":0,"createdAt":"2026-07-01T00:00:00.000Z","updatedAt":"2026-07-02T00:00:00.000Z","reviewDecision":null,"viewerReviewRequested":false,"isPinned":true,"projectContexts":[{"projectId":"project-1","projectTitle":"Project One","isPinned":true},{"projectId":"project-2","projectTitle":"Project Two","isPinned":true}],"mergeability":"unknown","labels":[]},"project-1",false],"ok":{"projectId":"project-1","projectTitle":"Project One","repository":"acme/widgets","number":1,"title":"PR 1","url":"https://github.com/acme/widgets/pull/1","author":null,"headBranch":"feature-1","baseBranch":"main","state":"open","isDraft":false,"additions":1,"deletions":0,"createdAt":"2026-07-01T00:00:00.000Z","updatedAt":"2026-07-02T00:00:00.000Z","reviewDecision":null,"viewerReviewRequested":false,"isPinned":true,"projectContexts":[{"projectId":"project-1","projectTitle":"Project One","isPinned":false},{"projectId":"project-2","projectTitle":"Project Two","isPinned":true}],"mergeability":"unknown","labels":[]}}
+{"fn":"pullRequestListEntryHasProject","args":[{"projectId":"project-1","projectTitle":"Project One","repository":"acme/widgets","number":1,"title":"PR 1","url":"https://github.com/acme/widgets/pull/1","author":null,"headBranch":"feature-1","baseBranch":"main","state":"open","isDraft":false,"additions":1,"deletions":0,"createdAt":"2026-07-01T00:00:00.000Z","updatedAt":"2026-07-02T00:00:00.000Z","reviewDecision":null,"viewerReviewRequested":false,"isPinned":true,"projectContexts":[{"projectId":"project-1","projectTitle":"Project One","isPinned":true},{"projectId":"project-2","projectTitle":"Project Two","isPinned":true}],"mergeability":"unknown","labels":[]},"project-1"],"ok":true}
+{"fn":"pullRequestListProjectContexts","args":[{"projectId":"project-1","projectTitle":"Project One","repository":"acme/widgets","number":1,"title":"PR 1","url":"https://github.com/acme/widgets/pull/1","author":null,"headBranch":"feature-1","baseBranch":"main","state":"open","isDraft":false,"additions":1,"deletions":0,"createdAt":"2026-07-01T00:00:00.000Z","updatedAt":"2026-07-02T00:00:00.000Z","reviewDecision":null,"viewerReviewRequested":false,"isPinned":true,"projectContexts":[{"projectId":"project-1","projectTitle":"Project One","isPinned":true},{"projectId":"project-2","projectTitle":"Project Two","isPinned":true}],"mergeability":"unknown","labels":[]}],"ok":[{"projectId":"project-1","projectTitle":"Project One","isPinned":true},{"projectId":"project-2","projectTitle":"Project Two","isPinned":true}]}
+{"fn":"updatePullRequestListEntryProjectPin","args":[{"projectId":"project-1","projectTitle":"Project One","repository":"acme/widgets","number":1,"title":"PR 1","url":"https://github.com/acme/widgets/pull/1","author":null,"headBranch":"feature-1","baseBranch":"main","state":"open","isDraft":false,"additions":1,"deletions":0,"createdAt":"2026-07-01T00:00:00.000Z","updatedAt":"2026-07-02T00:00:00.000Z","reviewDecision":null,"viewerReviewRequested":false,"isPinned":true,"projectContexts":[{"projectId":"project-1","projectTitle":"Project One","isPinned":false},{"projectId":"project-2","projectTitle":"Project Two","isPinned":true}],"mergeability":"unknown","labels":[]},"project-2",false],"ok":{"projectId":"project-1","projectTitle":"Project One","repository":"acme/widgets","number":1,"title":"PR 1","url":"https://github.com/acme/widgets/pull/1","author":null,"headBranch":"feature-1","baseBranch":"main","state":"open","isDraft":false,"additions":1,"deletions":0,"createdAt":"2026-07-01T00:00:00.000Z","updatedAt":"2026-07-02T00:00:00.000Z","reviewDecision":null,"viewerReviewRequested":false,"isPinned":false,"projectContexts":[{"projectId":"project-1","projectTitle":"Project One","isPinned":false},{"projectId":"project-2","projectTitle":"Project Two","isPinned":false}],"mergeability":"unknown","labels":[]}}
+{"fn":"pullRequestListEntryHasProject","args":[{"projectId":"project-1","projectTitle":"Project One","repository":"acme/widgets","number":1,"title":"PR 1","url":"https://github.com/acme/widgets/pull/1","author":null,"headBranch":"feature-1","baseBranch":"main","state":"open","isDraft":false,"additions":1,"deletions":0,"createdAt":"2026-07-01T00:00:00.000Z","updatedAt":"2026-07-02T00:00:00.000Z","reviewDecision":null,"viewerReviewRequested":false,"isPinned":true,"projectContexts":[{"projectId":"project-1","projectTitle":"Project One","isPinned":false},{"projectId":"project-2","projectTitle":"Project Two","isPinned":true}],"mergeability":"unknown","labels":[]},"project-2"],"ok":true}
+{"fn":"pullRequestListProjectContexts","args":[{"projectId":"project-1","projectTitle":"Project One","repository":"acme/widgets","number":1,"title":"PR 1","url":"https://github.com/acme/widgets/pull/1","author":null,"headBranch":"feature-1","baseBranch":"main","state":"open","isDraft":false,"additions":1,"deletions":0,"createdAt":"2026-07-01T00:00:00.000Z","updatedAt":"2026-07-02T00:00:00.000Z","reviewDecision":null,"viewerReviewRequested":false,"isPinned":true,"projectContexts":[{"projectId":"project-1","projectTitle":"Project One","isPinned":false},{"projectId":"project-2","projectTitle":"Project Two","isPinned":true}],"mergeability":"unknown","labels":[]}],"ok":[{"projectId":"project-1","projectTitle":"Project One","isPinned":false},{"projectId":"project-2","projectTitle":"Project Two","isPinned":true}]}

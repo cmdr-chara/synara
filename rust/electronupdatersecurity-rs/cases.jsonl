@@ -1,0 +1,644 @@
+{"fn":"buildPowerShellExecutablePath","args":[{"a":{"b":"c"}}],"ok":"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"}
+{"fn":"buildPowerShellExecutablePath","args":[{"a":"b"}],"ok":"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"}
+{"fn":"buildPowerShellExecutablePath","args":["x"],"ok":"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"}
+{"fn":"buildPowerShellExecutablePath","args":[null],"error":"Cannot read properties of null (reading 'SystemRoot')"}
+{"fn":"buildPowerShellExecutablePath","args":[{"$undefined":true}],"ok":"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"}
+{"fn":"buildPowerShellExecutablePath","args":[true],"ok":"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"}
+{"fn":"buildPowerShellExecutablePath","args":[["a",1]],"ok":"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"}
+{"fn":"buildPowerShellExecutablePath","args":[[]],"ok":"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"}
+{"fn":"buildPowerShellExecutablePath","args":[{}],"ok":"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"}
+{"fn":"buildPowerShellExecutablePath","args":[],"ok":"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"}
+{"fn":"buildPowerShellExecutablePath","args":[0],"ok":"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"}
+{"fn":"buildPowerShellExecArgs","args":[".leading"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; .leading"]}
+{"fn":"buildPowerShellExecArgs","args":["straße"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; straße"]}
+{"fn":"buildPowerShellExecArgs","args":["aabc"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; aabc"]}
+{"fn":"buildPowerShellExecArgs","args":["a:b:c"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; a:b:c"]}
+{"fn":"buildPowerShellExecArgs","args":["a"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; a"]}
+{"fn":"buildPowerShellExecArgs","args":["ns:key.pathab"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; ns:key.pathab"]}
+{"fn":"buildPowerShellExecArgs","args":["ns:key.path"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; ns:key.path"]}
+{"fn":"buildPowerShellExecArgs","args":["Hello World"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; Hello World"]}
+{"fn":"buildPowerShellExecArgs","args":["😀"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; 😀"]}
+{"fn":"buildPowerShellExecArgs","args":["abc"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; abc"]}
+{"fn":"buildPowerShellExecArgs","args":["emoji 👍🏽 mix"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; emoji 👍🏽 mix"]}
+{"fn":"buildPowerShellExecArgs","args":["trailing."],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; trailing."]}
+{"fn":"buildPowerShellExecArgs","args":["key_name-1"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; key_name-1"]}
+{"fn":"buildPowerShellExecArgs","args":["  padded  é"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8;   padded  é"]}
+{"fn":"buildPowerShellExecArgs","args":["  padded  "],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8;   padded  "]}
+{"fn":"buildPowerShellExecArgs","args":["Hello Worlda😀b😀c"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; Hello Worlda😀b😀c"]}
+{"fn":"buildPowerShellExecArgs","args":["İstanbul"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; İstanbul"]}
+{"fn":"buildPowerShellExecArgs","args":["a😀b😀c"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; a😀b😀c"]}
+{"fn":"buildPowerShellExecArgs","args":["{name} has {count} items"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; {name} has {count} items"]}
+{"fn":"buildPowerShellExecArgs","args":["﻿bom"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; ﻿bom"]}
+{"fn":"buildPowerShellExecArgs","args":["ΣΊΣΥΦΟΣ"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; ΣΊΣΥΦΟΣ"]}
+{"fn":"buildPowerShellExecArgs","args":[":"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; :"]}
+{"fn":"buildPowerShellExecArgs","args":["a..b"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; a..b"]}
+{"fn":"buildPowerShellExecArgs","args":["ns:key.patha😀b😀c"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; ns:key.patha😀b😀c"]}
+{"fn":"buildPowerShellExecArgs","args":["a.b.c"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; a.b.c"]}
+{"fn":"buildPowerShellExecArgs","args":["line1\nline2"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; line1\nline2"]}
+{"fn":"buildPowerShellExecArgs","args":["abc:"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; abc:"]}
+{"fn":"buildPowerShellExecArgs","args":["ab"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; ab"]}
+{"fn":"buildPowerShellExecArgs","args":["tab\tseparated"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; tab\tseparated"]}
+{"fn":"buildPowerShellExecArgs","args":[""],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; "]}
+{"fn":"buildPowerShellExecArgs","args":["hello world.leading"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; hello world.leading"]}
+{"fn":"buildPowerShellExecArgs","args":["ünïcödé"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; ünïcödé"]}
+{"fn":"buildPowerShellExecArgs","args":["src/a/b.ts"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; src/a/b.ts"]}
+{"fn":"buildPowerShellExecArgs","args":["hello world"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; hello world"]}
+{"fn":"buildPowerShellExecArgs","args":["HELLO"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; HELLO"]}
+{"fn":"buildPowerShellExecArgs","args":["abcline1\nline2"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; abcline1\nline2"]}
+{"fn":"buildPowerShellExecArgs","args":["﻿bomabc"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; ﻿bomabc"]}
+{"fn":"buildPowerShellExecArgs","args":[".leadingİstanbul"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; .leadingİstanbul"]}
+{"fn":"buildPowerShellExecArgs","args":["éHello World"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; éHello World"]}
+{"fn":"buildPowerShellExecArgs","args":["ünïcödéa..b"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; ünïcödéa..b"]}
+{"fn":"buildPowerShellExecArgs","args":["line1\nline2ns:key.path"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; line1\nline2ns:key.path"]}
+{"fn":"buildPowerShellExecArgs","args":["tab\tseparatedHello World"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; tab\tseparatedHello World"]}
+{"fn":"buildPowerShellExecArgs","args":["straßehello world"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; straßehello world"]}
+{"fn":"buildPowerShellExecArgs","args":["a😀b😀cemoji 👍🏽 mix"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; a😀b😀cemoji 👍🏽 mix"]}
+{"fn":"buildPowerShellExecArgs","args":[".leadingstraße"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; .leadingstraße"]}
+{"fn":"buildPowerShellExecArgs","args":["./x/**/*.json"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; ./x/**/*.json"]}
+{"fn":"buildPowerShellExecArgs","args":["日本語のテキスト"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; 日本語のテキスト"]}
+{"fn":"buildPowerShellExecArgs","args":["hello"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; hello"]}
+{"fn":"buildPowerShellExecArgs","args":["ΣΊΣΥΦΟΣns:key.path"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; ΣΊΣΥΦΟΣns:key.path"]}
+{"fn":"buildPowerShellExecArgs","args":["é"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; é"]}
+{"fn":"buildPowerShellExecArgs","args":["日本語のテキスト  padded  "],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; 日本語のテキスト  padded  "]}
+{"fn":"buildPowerShellExecArgs","args":["日本語のテキスト{name} has {count} items"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; 日本語のテキスト{name} has {count} items"]}
+{"fn":"buildPowerShellExecArgs","args":[":a:b:c"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; :a:b:c"]}
+{"fn":"buildPowerShellExecArgs","args":["aba..b"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; aba..b"]}
+{"fn":"buildPowerShellExecArgs","args":["Hello World  padded  "],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; Hello World  padded  "]}
+{"fn":"buildPowerShellExecArgs","args":["{name} has {count} itemshello world"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; {name} has {count} itemshello world"]}
+{"fn":"buildPowerShellExecArgs","args":["ab.leading"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; ab.leading"]}
+{"fn":"buildPowerShellExecArgs","args":["İstanbulkey_name-1"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; İstanbulkey_name-1"]}
+{"fn":"buildPowerShellExecArgs","args":["ns:key.pathkey_name-1"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; ns:key.pathkey_name-1"]}
+{"fn":"buildPowerShellExecArgs","args":["a😀b😀ca..b"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; a😀b😀ca..b"]}
+{"fn":"buildPowerShellExecArgs","args":["  padded  😀"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8;   padded  😀"]}
+{"fn":"buildPowerShellExecArgs","args":["😀İstanbul"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; 😀İstanbul"]}
+{"fn":"buildPowerShellExecArgs","args":["straßeΣΊΣΥΦΟΣ"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; straßeΣΊΣΥΦΟΣ"]}
+{"fn":"buildPowerShellExecArgs","args":["hello日本語のテキスト"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; hello日本語のテキスト"]}
+{"fn":"buildPowerShellExecArgs","args":["abcHello World"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; abcHello World"]}
+{"fn":"buildPowerShellExecArgs","args":["😀.leading"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; 😀.leading"]}
+{"fn":"buildPowerShellExecArgs","args":["helloabc"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; helloabc"]}
+{"fn":"buildPowerShellExecArgs","args":["İstanbulé"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; İstanbulé"]}
+{"fn":"buildPowerShellExecArgs","args":["Hello Worldns:key.path"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; Hello Worldns:key.path"]}
+{"fn":"buildPowerShellExecArgs","args":["emoji 👍🏽 mixΣΊΣΥΦΟΣ"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; emoji 👍🏽 mixΣΊΣΥΦΟΣ"]}
+{"fn":"buildPowerShellExecArgs","args":["ns:key.pathΣΊΣΥΦΟΣ"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; ns:key.pathΣΊΣΥΦΟΣ"]}
+{"fn":"buildPowerShellExecArgs","args":["ünïcödéstraße"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; ünïcödéstraße"]}
+{"fn":"buildPowerShellExecArgs","args":["key_name-1日本語のテキスト"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; key_name-1日本語のテキスト"]}
+{"fn":"buildPowerShellExecArgs","args":["日本語のテキストé"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; 日本語のテキストé"]}
+{"fn":"buildPowerShellExecArgs","args":["😀hello"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; 😀hello"]}
+{"fn":"buildPowerShellExecArgs","args":["a..bΣΊΣΥΦΟΣ"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; a..bΣΊΣΥΦΟΣ"]}
+{"fn":"buildPowerShellExecArgs","args":["日本語のテキストΣΊΣΥΦΟΣ"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; 日本語のテキストΣΊΣΥΦΟΣ"]}
+{"fn":"buildPowerShellExecArgs","args":["İstanbulabc"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; İstanbulabc"]}
+{"fn":"buildPowerShellExecArgs","args":["ΣΊΣΥΦΟΣ日本語のテキスト"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; ΣΊΣΥΦΟΣ日本語のテキスト"]}
+{"fn":"buildPowerShellExecArgs","args":["ns:key.pathns:key.path"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; ns:key.pathns:key.path"]}
+{"fn":"buildPowerShellExecArgs","args":["a😀b😀ca😀b😀c"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; a😀b😀ca😀b😀c"]}
+{"fn":"buildPowerShellExecArgs","args":["{name} has {count} itemshello"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; {name} has {count} itemshello"]}
+{"fn":"buildPowerShellExecArgs","args":["a..ba.b.c"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; a..ba.b.c"]}
+{"fn":"buildPowerShellExecArgs","args":["ab日本語のテキスト"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; ab日本語のテキスト"]}
+{"fn":"buildPowerShellExecArgs","args":["ahello"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; ahello"]}
+{"fn":"buildPowerShellExecArgs","args":["hello world﻿bom"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; hello world﻿bom"]}
+{"fn":"buildPowerShellExecArgs","args":["a😀b😀ca:b:c"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; a😀b😀ca:b:c"]}
+{"fn":"buildPowerShellExecArgs","args":["Hello Worldtab\tseparated"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; Hello Worldtab\tseparated"]}
+{"fn":"buildPowerShellExecArgs","args":["a..btrailing."],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; a..btrailing."]}
+{"fn":"buildPowerShellExecArgs","args":["﻿bom😀"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; ﻿bom😀"]}
+{"fn":"buildPowerShellExecArgs","args":["key_name-1  padded  "],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; key_name-1  padded  "]}
+{"fn":"buildPowerShellExecArgs","args":["İstanbulline1\nline2"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; İstanbulline1\nline2"]}
+{"fn":"buildPowerShellExecArgs","args":[":line1\nline2"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; :line1\nline2"]}
+{"fn":"buildPowerShellExecArgs","args":["trailing.key_name-1"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; trailing.key_name-1"]}
+{"fn":"buildPowerShellExecArgs","args":["a..ba:b:c"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; a..ba:b:c"]}
+{"fn":"buildPowerShellExecArgs","args":["hello world./x/**/*.json"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; hello world./x/**/*.json"]}
+{"fn":"buildPowerShellExecArgs","args":["😀emoji 👍🏽 mix"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; 😀emoji 👍🏽 mix"]}
+{"fn":"buildPowerShellExecArgs","args":["a😀"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; a😀"]}
+{"fn":"buildPowerShellExecArgs","args":[".leading.leading"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; .leading.leading"]}
+{"fn":"buildPowerShellExecArgs","args":["😀trailing."],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; 😀trailing."]}
+{"fn":"buildPowerShellExecArgs","args":["a:b:c{name} has {count} items"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; a:b:c{name} has {count} items"]}
+{"fn":"buildPowerShellExecArgs","args":["Hello Worlda:b:c"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; Hello Worlda:b:c"]}
+{"fn":"buildPowerShellExecArgs","args":["a.b.c:"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; a.b.c:"]}
+{"fn":"buildPowerShellExecArgs","args":["  padded  hello world"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8;   padded  hello world"]}
+{"fn":"buildPowerShellExecArgs","args":["line1\nline2a:b:c"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; line1\nline2a:b:c"]}
+{"fn":"buildPowerShellExecArgs","args":["./x/**/*.jsonemoji 👍🏽 mix"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; ./x/**/*.jsonemoji 👍🏽 mix"]}
+{"fn":"buildPowerShellExecArgs","args":["ns:key.path日本語のテキスト"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; ns:key.path日本語のテキスト"]}
+{"fn":"buildPowerShellExecArgs","args":["abemoji 👍🏽 mix"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; abemoji 👍🏽 mix"]}
+{"fn":"buildPowerShellExecArgs","args":["😀Hello World"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; 😀Hello World"]}
+{"fn":"buildPowerShellExecArgs","args":["﻿bomtab\tseparated"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; ﻿bomtab\tseparated"]}
+{"fn":"buildPowerShellExecArgs","args":["emoji 👍🏽 mixabc"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; emoji 👍🏽 mixabc"]}
+{"fn":"buildPowerShellExecArgs","args":["﻿bomns:key.path"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; ﻿bomns:key.path"]}
+{"fn":"buildPowerShellExecArgs","args":["aünïcödé"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; aünïcödé"]}
+{"fn":"buildPowerShellExecArgs","args":["trailing.ab"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; trailing.ab"]}
+{"fn":"buildPowerShellExecArgs","args":[".leading:"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; .leading:"]}
+{"fn":"buildPowerShellExecArgs","args":["a.b.c日本語のテキスト"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; a.b.c日本語のテキスト"]}
+{"fn":"buildPowerShellExecArgs","args":["src/a/b.tssrc/a/b.ts"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; src/a/b.tssrc/a/b.ts"]}
+{"fn":"buildPowerShellExecArgs","args":["日本語のテキストns:key.path"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; 日本語のテキストns:key.path"]}
+{"fn":"buildPowerShellExecArgs","args":["{name} has {count} itemsa:b:c"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; {name} has {count} itemsa:b:c"]}
+{"fn":"buildPowerShellExecArgs","args":["src/a/b.ts﻿bom"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; src/a/b.ts﻿bom"]}
+{"fn":"buildPowerShellExecArgs","args":["İstanbulİstanbul"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; İstanbulİstanbul"]}
+{"fn":"buildPowerShellExecArgs","args":[".leadingtab\tseparated"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; .leadingtab\tseparated"]}
+{"fn":"buildPowerShellExecArgs","args":["abca😀b😀c"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; abca😀b😀c"]}
+{"fn":"buildPowerShellExecArgs","args":["a😀b😀c./x/**/*.json"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; a😀b😀c./x/**/*.json"]}
+{"fn":"buildPowerShellExecArgs","args":["a..b日本語のテキスト"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; a..b日本語のテキスト"]}
+{"fn":"buildPowerShellExecArgs","args":["  padded  .leading"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8;   padded  .leading"]}
+{"fn":"buildPowerShellExecArgs","args":["./x/**/*.jsonHELLO"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; ./x/**/*.jsonHELLO"]}
+{"fn":"buildPowerShellExecArgs","args":["straßesrc/a/b.ts"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; straßesrc/a/b.ts"]}
+{"fn":"buildPowerShellExecArgs","args":["HELLOa:b:c"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; HELLOa:b:c"]}
+{"fn":"buildPowerShellExecArgs","args":["src/a/b.ts./x/**/*.json"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; src/a/b.ts./x/**/*.json"]}
+{"fn":"buildPowerShellExecArgs","args":["日本語のテキストhello world"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; 日本語のテキストhello world"]}
+{"fn":"buildPowerShellExecArgs","args":["line1\nline2hello world"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; line1\nline2hello world"]}
+{"fn":"buildPowerShellExecArgs","args":["abc.leading"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; abc.leading"]}
+{"fn":"buildPowerShellExecArgs","args":["emoji 👍🏽 mixİstanbul"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; emoji 👍🏽 mixİstanbul"]}
+{"fn":"buildPowerShellExecArgs","args":["ns:key.path  padded  "],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; ns:key.path  padded  "]}
+{"fn":"buildPowerShellExecArgs","args":["key_name-1straße"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; key_name-1straße"]}
+{"fn":"buildPowerShellExecArgs","args":["key_name-1a"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; key_name-1a"]}
+{"fn":"buildPowerShellExecArgs","args":["a{name} has {count} items"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; a{name} has {count} items"]}
+{"fn":"buildPowerShellExecArgs","args":["a..bHello World"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; a..bHello World"]}
+{"fn":"buildPowerShellExecArgs","args":["tab\tseparatedabc"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; tab\tseparatedabc"]}
+{"fn":"buildPowerShellExecArgs","args":["helloHello World"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; helloHello World"]}
+{"fn":"buildPowerShellExecArgs","args":["helloHELLO"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; helloHELLO"]}
+{"fn":"buildPowerShellExecArgs","args":[":{name} has {count} items"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; :{name} has {count} items"]}
+{"fn":"buildPowerShellExecArgs","args":["line1\nline2tab\tseparated"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; line1\nline2tab\tseparated"]}
+{"fn":"buildPowerShellExecArgs","args":["a.b.ca😀b😀c"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; a.b.ca😀b😀c"]}
+{"fn":"buildPowerShellExecArgs","args":["src/a/b.tsa😀b😀c"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; src/a/b.tsa😀b😀c"]}
+{"fn":"buildPowerShellExecArgs","args":["a😀b😀chello world"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; a😀b😀chello world"]}
+{"fn":"buildPowerShellExecArgs","args":["hello﻿bom"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; hello﻿bom"]}
+{"fn":"buildPowerShellExecArgs","args":["tab\tseparated  padded  "],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; tab\tseparated  padded  "]}
+{"fn":"buildPowerShellExecArgs","args":["a.b.cline1\nline2"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; a.b.cline1\nline2"]}
+{"fn":"buildPowerShellExecArgs","args":["a..b:"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; a..b:"]}
+{"fn":"buildPowerShellExecArgs","args":["emoji 👍🏽 mixHELLO"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; emoji 👍🏽 mixHELLO"]}
+{"fn":"buildPowerShellExecArgs","args":["src/a/b.tsİstanbul"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; src/a/b.tsİstanbul"]}
+{"fn":"buildPowerShellExecArgs","args":["line1\nline2İstanbul"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; line1\nline2İstanbul"]}
+{"fn":"buildPowerShellExecArgs","args":["src/a/b.tsstraße"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; src/a/b.tsstraße"]}
+{"fn":"buildPowerShellExecArgs","args":["straße日本語のテキスト"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; straße日本語のテキスト"]}
+{"fn":"buildPowerShellExecArgs","args":["HELLO日本語のテキスト"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; HELLO日本語のテキスト"]}
+{"fn":"buildPowerShellExecArgs","args":["ab😀"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; ab😀"]}
+{"fn":"buildPowerShellExecArgs","args":["a😀b😀c{name} has {count} items"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; a😀b😀c{name} has {count} items"]}
+{"fn":"buildPowerShellExecArgs","args":["tab\tseparatedtrailing."],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; tab\tseparatedtrailing."]}
+{"fn":"buildPowerShellExecArgs","args":["  padded  a:b:c"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8;   padded  a:b:c"]}
+{"fn":"buildPowerShellExecArgs","args":["日本語のテキストa"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; 日本語のテキストa"]}
+{"fn":"buildPowerShellExecArgs","args":["src/a/b.tstab\tseparated"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; src/a/b.tstab\tseparated"]}
+{"fn":"buildPowerShellExecArgs","args":["ΣΊΣΥΦΟΣ  padded  "],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; ΣΊΣΥΦΟΣ  padded  "]}
+{"fn":"buildPowerShellExecArgs","args":["hello worldtab\tseparated"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; hello worldtab\tseparated"]}
+{"fn":"buildPowerShellExecArgs","args":["a:b:cHELLO"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; a:b:cHELLO"]}
+{"fn":"buildPowerShellExecArgs","args":[".leadingkey_name-1"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; .leadingkey_name-1"]}
+{"fn":"buildPowerShellExecArgs","args":["hello worldΣΊΣΥΦΟΣ"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; hello worldΣΊΣΥΦΟΣ"]}
+{"fn":"buildPowerShellExecArgs","args":[".leadingsrc/a/b.ts"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; .leadingsrc/a/b.ts"]}
+{"fn":"buildPowerShellExecArgs","args":[":./x/**/*.json"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; :./x/**/*.json"]}
+{"fn":"buildPowerShellExecArgs","args":["日本語のテキストünïcödé"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; 日本語のテキストünïcödé"]}
+{"fn":"buildPowerShellExecArgs","args":["ΣΊΣΥΦΟΣkey_name-1"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; ΣΊΣΥΦΟΣkey_name-1"]}
+{"fn":"buildPowerShellExecArgs","args":[".leadingline1\nline2"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; .leadingline1\nline2"]}
+{"fn":"buildPowerShellExecArgs","args":["hello.leading"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; hello.leading"]}
+{"fn":"buildPowerShellExecArgs","args":["  padded    padded  "],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8;   padded    padded  "]}
+{"fn":"buildPowerShellExecArgs","args":["ns:key.patha:b:c"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; ns:key.patha:b:c"]}
+{"fn":"buildPowerShellExecArgs","args":[":HELLO"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; :HELLO"]}
+{"fn":"buildPowerShellExecArgs","args":["a😀b😀csrc/a/b.ts"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; a😀b😀csrc/a/b.ts"]}
+{"fn":"buildPowerShellExecArgs","args":["  padded  日本語のテキスト"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8;   padded  日本語のテキスト"]}
+{"fn":"buildPowerShellExecArgs","args":["Hello WorldHello World"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; Hello WorldHello World"]}
+{"fn":"buildPowerShellExecArgs","args":[".leading😀"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; .leading😀"]}
+{"fn":"buildPowerShellExecArgs","args":["hello{name} has {count} items"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; hello{name} has {count} items"]}
+{"fn":"buildPowerShellExecArgs","args":["{name} has {count} itemsline1\nline2"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; {name} has {count} itemsline1\nline2"]}
+{"fn":"buildPowerShellExecArgs","args":["ΣΊΣΥΦΟΣab"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; ΣΊΣΥΦΟΣab"]}
+{"fn":"buildPowerShellExecArgs","args":["line1\nline2src/a/b.ts"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; line1\nline2src/a/b.ts"]}
+{"fn":"buildPowerShellExecArgs","args":["line1\nline2.leading"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; line1\nline2.leading"]}
+{"fn":"buildPowerShellExecArgs","args":["😀a:b:c"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; 😀a:b:c"]}
+{"fn":"buildPowerShellExecArgs","args":["line1\nline2  padded  "],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; line1\nline2  padded  "]}
+{"fn":"buildPowerShellExecArgs","args":["a.b.cabc"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; a.b.cabc"]}
+{"fn":"buildPowerShellExecArgs","args":["hello😀"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; hello😀"]}
+{"fn":"buildPowerShellExecArgs","args":["İstanbulünïcödé"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; İstanbulünïcödé"]}
+{"fn":"buildPowerShellExecArgs","args":["aline1\nline2"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; aline1\nline2"]}
+{"fn":"buildPowerShellExecArgs","args":["a.b.ca..b"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; a.b.ca..b"]}
+{"fn":"buildPowerShellExecArgs","args":["İstanbula😀b😀c"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; İstanbula😀b😀c"]}
+{"fn":"buildPowerShellExecArgs","args":["😀ΣΊΣΥΦΟΣ"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; 😀ΣΊΣΥΦΟΣ"]}
+{"fn":"buildPowerShellExecArgs","args":["abkey_name-1"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; abkey_name-1"]}
+{"fn":"buildPowerShellExecArgs","args":["emoji 👍🏽 mixab"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; emoji 👍🏽 mixab"]}
+{"fn":"buildPowerShellExecArgs","args":[":straße"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; :straße"]}
+{"fn":"buildPowerShellExecArgs","args":["line1\nline2trailing."],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; line1\nline2trailing."]}
+{"fn":"buildPowerShellExecArgs","args":[".leading  padded  "],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; .leading  padded  "]}
+{"fn":"buildPowerShellExecArgs","args":["héllo wörld"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; héllo wörld"]}
+{"fn":"buildPowerShellExecArgs","args":["👍🏽 thumbs"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; 👍🏽 thumbs"]}
+{"fn":"buildPowerShellExecArgs","args":["日本語"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; 日本語"]}
+{"fn":"buildPowerShellExecArgs","args":["ılık ırmak"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; ılık ırmak"]}
+{"fn":"buildPowerShellExecArgs","args":["👨‍👩‍👧 family"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; 👨‍👩‍👧 family"]}
+{"fn":"buildPowerShellExecArgs","args":["a b"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; a b"]}
+{"fn":"buildPowerShellExecArgs","args":["a😀b"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; a😀b"]}
+{"fn":"buildPowerShellExecArgs","args":["a²b x½ y①"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; a²b x½ y①"]}
+{"fn":"buildPowerShellExecArgs","args":["aⅠb Ⅻ"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; aⅠb Ⅻ"]}
+{"fn":"buildPowerShellExecArgs","args":["a𐐀b 𝐀bc"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; a𐐀b 𝐀bc"]}
+{"fn":"buildPowerShellExecArgs","args":["कि ٣٤"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; कि ٣٤"]}
+{"fn":"buildPowerShellExecArgs","args":["Iı İi"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; Iı İi"]}
+{"fn":"buildPowerShellExecArgs","args":["K K k"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; K K k"]}
+{"fn":"buildPowerShellExecArgs","args":["ſ s S"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; ſ s S"]}
+{"fn":"buildPowerShellExecArgs","args":["x‍y 👨‍👩‍👧"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; x‍y 👨‍👩‍👧"]}
+{"fn":"buildPowerShellExecArgs","args":["a b c　d"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; a b c　d"]}
+{"fn":"buildPowerShellExecArgs","args":["١٢٣ ٤٥"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; ١٢٣ ٤٥"]}
+{"fn":"buildPowerShellExecArgs","args":["𝟘𝟙 ²³"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; 𝟘𝟙 ²³"]}
+{"fn":"buildPowerShellExecArgs","args":["snake_case foo-bar o'neil"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; snake_case foo-bar o'neil"]}
+{"fn":"buildPowerShellExecArgs","args":["ǅungla Ǆ"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; ǅungla Ǆ"]}
+{"fn":"buildPowerShellExecArgs","args":["one\r\ntwo threefour"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; one\r\ntwo threefour"]}
+{"fn":"buildPowerShellExecArgs","args":["café café"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; café café"]}
+{"fn":"buildPowerShellExecArgs","args":["ΣΑΣ σας ς"],"ok":["-NoProfile","-NonInteractive","-InputFormat","None","-Command","[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $OutputEncoding = [System.Text.Encoding]::UTF8; ΣΑΣ σας ς"]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["line1\nline2","key_name-1"],[]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["ab","😀","﻿bom"],["trailing.","hello world"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[[],["straße","﻿bom"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["hello"],[":","key_name-1","abc"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[[":","trailing.hello","﻿bom"],[":"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["ns:key.path","src/a/b.tstrailing."]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["","a..b","line1\nline2emoji 👍🏽 mix"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["{name} has {count} items"],["emoji 👍🏽 mix"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["./x/**/*.json",".leading日本語のテキスト","trailing.trailing."],{"$undefined":true}],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["😀","abns:key.path","  padded  "],{"$undefined":true}],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[[]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["ab﻿bom"],["key_name-1a","straße﻿bom","HELLO"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["é"],["emoji 👍🏽 mix","","  padded  "]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[[],[]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["line1\nline2","straße"],["a..b","::","key_name-1hello"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["hello","./x/**/*.json",".leading"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[[],["ünïcödé","İstanbul","{name} has {count} items:"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["./x/**/*.json"],[".leading"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[[":","ns:key.path","é"],["é","Hello World","Hello World"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["src/a/b.ts","emoji 👍🏽 mix"],["trailing.","﻿bom","Hello World"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["hello","./x/**/*.json","a.b.c"],["src/a/b.ts"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["{name} has {count} items"],["ns:key.path","ab","emoji 👍🏽 mix"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["ünïcödé","é","a"],{"$undefined":true}],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["src/a/b.ts","key_name-1"],["src/a/b.ts","a:b:c:","a"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[[],["ünïcödé"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["./x/**/*.json"],[]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["./x/**/*.json","Hello World","emoji 👍🏽 mixa..b"],["key_name-1","emoji 👍🏽 mix","a.b.ca.b.c"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["line1\nline2","abc"],["ünïcödé","{name} has {count} items"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[[],["ns:key.path","a😀b😀c"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["  padded  ","ab","key_name-1Hello World"],[]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["emoji 👍🏽 mix","./x/**/*.json","éab"],["日本語のテキストHello World","ab","😀"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["key_name-1"],[]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["﻿bom","Hello World"],["😀","hello worldHELLO","  padded  a:b:c"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[[],{"$undefined":true}],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[[".leading"],[]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[[":","HELLOab","ab"],["ns:key.path"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["  padded  ",".leading","hello world.leading"],["﻿bomhello","a..b"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["﻿bom"],[":","ab"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["{name} has {count} items",""],["ΣΊΣΥΦΟΣ"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[[],["  padded  ",":","a.b.c"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["hello","ns:key.path","./x/**/*.jsonΣΊΣΥΦΟΣ"],["  padded  "]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["ns:key.path./x/**/*.json","﻿bom"],["HELLO"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["abc","😀"],{"$undefined":true}],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["a😀b😀c","key_name-1straße"],["😀"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["hello world","Hello World","a:b:c"],[]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["emoji 👍🏽 mix","src/a/b.ts"],{"$undefined":true}],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[[],["HELLO"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[[],["emoji 👍🏽 mix","a.b.c","./x/**/*.json"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[[],["emoji 👍🏽 mix"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["","a..b","{name} has {count} items"],["﻿bom","a"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["./x/**/*.json","İstanbula.b.c","a..b"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["abc","abc"],{"$undefined":true}],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["Hello Worldab","﻿bom","key_name-1"],{"$undefined":true}],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["ab",""],["﻿bom","src/a/b.ts"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["{name} has {count} items","trailing."],[]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["{name} has {count} items","İstanbul😀"],["ΣΊΣΥΦΟΣsrc/a/b.ts","straße"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[[":straße","src/a/b.ts","key_name-1"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["key_name-1","a..b"],["hello world","emoji 👍🏽 mix"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["./x/**/*.json","Hello World"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["😀"],{"$undefined":true}],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["ab","ΣΊΣΥΦΟΣ"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["a😀b😀c","İstanbul"],["  padded  a😀b😀c","hellons:key.path","ünïcödé"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["key_name-1",":","src/a/b.ts"],["emoji 👍🏽 mix"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[[],["a..b","line1\nline2","./x/**/*.json"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["é","ΣΊΣΥΦΟΣ.leading","İstanbul"],[".leading","  padded  "]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["ΣΊΣΥΦΟΣ"],["a:b:c"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["abc","a.b.c"],[]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["straße","日本語のテキスト","straße"],["İstanbul","日本語のテキストab","Hello World"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["a:b:cns:key.path"],["trailing.","trailing.","日本語のテキスト"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["日本語のテキスト😀","ünïcödé","key_name-1﻿bom"],{"$undefined":true}],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[[],["abc","tab\tseparated"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["a.b.c"],["hello world"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["Hello World"],["é日本語のテキスト","ns:key.path","key_name-1"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["a..b"],{"$undefined":true}],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["ünïcödéline1\nline2"],["a"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["é"],[]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[[],["ns:key.path","Hello World"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["a.b.c",":"],[]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[[],["İstanbul","ab"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[[],[".leading","./x/**/*.jsonab","a:b:c"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[[],["a","日本語のテキスト","ünïcödé"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["éhello"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["😀","a..b"],[]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["İstanbul","emoji 👍🏽 mix日本語のテキスト","a..b"],[]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["a.b.c","line1\nline2",""],["a.b.c"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[[],["straße"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["a😀b😀c","abΣΊΣΥΦΟΣ"],["ab"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["hello",":","hello worldünïcödé"],["hello"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["é","abc"],["a"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["﻿bom","straße"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["日本語のテキスト","straße","ns:key.path"],{"$undefined":true}],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["abstraße","hello"],["日本語のテキストHELLO"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["{name} has {count} items","{name} has {count} items","line1\nline2ΣΊΣΥΦΟΣ"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["İstanbul"],["a:b:c","é","hello worldtab\tseparated"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["😀",""]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["Hello World"],["emoji 👍🏽 mix"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["HELLO"],[]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["a..b"],["a..b","a"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[[],["ünïcödé./x/**/*.json","straße"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["a..b","İstanbul","  padded  a..b"],["hello worldkey_name-1"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["line1\nline2"],["HELLO","a",":"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["a.b.c","straßeline1\nline2"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["a..b"],[]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["straße","key_name-1"],[]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["a..b","a:b:c","ΣΊΣΥΦΟΣ"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["hello worldabc",":",":"],["","line1\nline2","a😀b😀c﻿bom"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["ΣΊΣΥΦΟΣHello World"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["İstanbul","emoji 👍🏽 mix"],["a"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["a..b",":"],[":HELLO","hello world","ünïcödésrc/a/b.ts"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["a"],["key_name-1a:b:c"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[[],["{name} has {count} items","{name} has {count} items"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["日本語のテキスト","src/a/b.ts"],[]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["é","😀key_name-1",".leading"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["ΣΊΣΥΦΟΣ","helloa😀b😀c","ΣΊΣΥΦΟΣ"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["日本語のテキスト"],["﻿bom","","straße"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["﻿bom","ns:key.path","a"],[]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["emoji 👍🏽 mix"],["a😀b😀c","é","./x/**/*.json"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[[],["ünïcödé","a😀b😀cHello World"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["Hello World","ünïcödé"],["ab"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[[":"],["src/a/b.ts","straße","  padded  "]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["İstanbul日本語のテキスト","a..b","trailing."],{"$undefined":true}],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["hello world",".leadingHELLO","日本語のテキスト"],[]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["line1\nline2"],["İstanbul"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["a.b.c"],["straßeİstanbul","key_name-1","hello"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["a.b.cé"],[]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["a{name} has {count} items","./x/**/*.json","﻿bom"],[]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["aba","straße  padded  "],["ünïcödé"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["a","a😀b😀c","Hello World"],{"$undefined":true}],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["ΣΊΣΥΦΟΣ","ns:key.path","﻿bom"],["line1\nline2"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["  padded  ","{name} has {count} items","ab"],["﻿bomé","trailing.",""]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["abc","日本語のテキスト","ΣΊΣΥΦΟΣΣΊΣΥΦΟΣ"],[]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["ns:key.path","./x/**/*.json","﻿bom"],["ns:key.pathHello World"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["a",":"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[[],["src/a/b.ts😀"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["aba😀b😀c"],["a:b:c","./x/**/*.json"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["é","﻿boma","a..b"],[]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["trailing."],["😀","a","日本語のテキスト"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["key_name-1"],["abckey_name-1"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["a.b.ctab\tseparated","src/a/b.tsns:key.path","ünïcödé"],[".leadingHello World","日本語のテキスト","hello world"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["emoji 👍🏽 mix"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["tab\tseparated","é","line1\nline2"],["😀"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["İstanbul","ab"],["a..b"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[[],["hello world",".leading","ns:key.path"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["ns:key.path","key_name-1ünïcödé","emoji 👍🏽 mix"],[]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[[],["./x/**/*.json","src/a/b.ts"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["😀","a.b.c"],{"$undefined":true}],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[[".leading","{name} has {count} items"],[]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[[],["key_name-1","日本語のテキスト"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["emoji 👍🏽 mix","{name} has {count} items","hello world"],["line1\nline2","line1\nline2"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[[],["tab\tseparated"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["a.b.c","a.b.c","./x/**/*.jsonİstanbul"],[]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["a:b:c","﻿bom","ünïcödéline1\nline2"],["﻿bom","trailing."]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["  padded  ","😀"],{"$undefined":true}],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["./x/**/*.json"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["  padded  ","  padded  "],["é","İstanbul"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["﻿bom","Hello World","ab"],[]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["日本語のテキスト","abcΣΊΣΥΦΟΣ"],["a","😀"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[[".leadinga.b.c","straße"],["é","Hello World"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["a:b:c","İstanbula😀b😀c"],["trailing."]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["{name} has {count} items"],["","Hello World"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["😀","ünïcödé"],["hello worldabc"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[[],["hello","./x/**/*.json"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["😀"],[]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["hello","Hello World"],["İstanbul",".leadinga😀b😀c","😀"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["﻿bom"],["emoji 👍🏽 mix"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["{name} has {count} items"],["emoji 👍🏽 mixhello","ab"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["a😀b😀c"],["😀"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["trailing."],["日本語のテキスト","straßeabc","ünïcödé"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["😀","ns:key.path",".leading"],["ΣΊΣΥΦΟΣ","a.b.c"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["key_name-1","a:b:c","ésrc/a/b.ts"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[[],["a😀b😀cemoji 👍🏽 mix"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[[":","tab\tseparateda..b"],["emoji 👍🏽 mixünïcödé"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[[],["trailing."]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[[],["src/a/b.tsa..b","ns:key.path"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[[],["HELLOab"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["abHello World","ab"],["a😀b😀c","ΣΊΣΥΦΟΣ",":"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["a😀b😀c","hello"],[]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["é","﻿bom","trailing.ns:key.path"],["ab"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["ns:key.pathemoji 👍🏽 mix"],["{name} has {count} items","trailing."]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["trailing.ns:key.path"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["a:b:c","ΣΊΣΥΦΟΣ","ab"],["ékey_name-1","Hello World","hello world"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["HELLO",""],["é:"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["Hello World"],[]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["ns:key.path","a.b.c","hello world"],["emoji 👍🏽 mix",":  padded  "]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["./x/**/*.json","a😀b😀chello world",".leadingemoji 👍🏽 mix"],[]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[[],["abc","straße","line1\nline2"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["hello","hello","😀"],{"$undefined":true}],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["İstanbula😀b😀c"],["{name} has {count} itemsab"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["trailing.é","😀","HELLO"],["emoji 👍🏽 mix"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["﻿bom","line1\nline2","trailing../x/**/*.json"],{"$undefined":true}],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["ΣΊΣΥΦΟΣ","trailing."],["a.b.c","ΣΊΣΥΦΟΣ:","a:b:c"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["日本語のテキスト日本語のテキスト"],{"$undefined":true}],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["straße","trailing.HELLO"],["line1\nline2😀"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["étab\tseparated"],["a.b.c","hello","a😀b😀c"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["a:b:cns:key.path"],["line1\nline2{name} has {count} items","abcünïcödé","hello worldünïcödé"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["ΣΊΣΥΦΟΣa:b:c","ab"],["a..b","a","{name} has {count} items"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[[],["line1\nline2"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[[],["hello","hello"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["src/a/b.ts",":","HELLOabc"],["﻿bom","😀straße"]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["{name} has {count} items","ünïcödé",""],[]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["b","a","B","é","10","9","a"],[]],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["line1\nline2","key_name-1"],{"$undefined":true}],"ok":[]}
+{"fn":"resolveWindowsUpdatePublisherNames","args":[["line1\nline2","key_name-1"],["b","a","B","é","10","9","a"]],"ok":[]}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":[]},["a",1],true,["line1\nline2"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":{"a":"b"}},"x",{},[":","src/a/b.ts","trailing."]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":0},0,0,["{name} has {count} items","a:b:c","  padded  "]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":true},null,{},[]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":0},{"a":{"b":"c"}},0,["a.b.c"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":["a",1]},true,[],["a:b:c"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":["a",1]},{"a":"b"},"x",[]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":true},["a",1],["a",1],["line1\nline2","{name} has {count} itemsé","abc"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":"x"},0,null,["hello"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"a":"b"},{"a":{"b":"c"}},[],[]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":null},{"a":{"b":"c"}},null],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[true,[],"x",{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":"x"},{},{"a":{"b":"c"}},["abab"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":null},[],{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":{"a":{"b":"c"}}},true,null,["a.b.c","a😀b😀c"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[["a",1],{},null],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":[]},true,{"$undefined":true},["hello world"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":["a",1]},{"a":"b"},{},[]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":true},0,{},{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":[]},{},{"$undefined":true},["Hello World","src/a/b.ts"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":true},[],"x",["::"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":["a",1]},0,{"a":{"b":"c"}},{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":[]},{"a":{"b":"c"}},0],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{},0,0],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{},["a",1],true,{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":true},[],{"a":{"b":"c"}},[]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{},[],["a",1],{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":["a",1]},{"a":"b"},{}],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":[]},{"a":"b"},null,["{name} has {count} items","ab"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{},{"a":{"b":"c"}},{"$undefined":true},[]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[0,["a",1],true,["key_name-1","hello world","ab"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{},null,{"$undefined":true},["😀","a","abc{name} has {count} items"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":{"a":{"b":"c"}}},[],{"$undefined":true},["aa.b.c",":","İstanbul"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{},{},{"a":{"b":"c"}},["","hello","ΣΊΣΥΦΟΣ"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{},true,0,["abc","trailing."]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[null,["a",1],true,["  padded  "]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"a":"b"},{"a":"b"},"x",["","{name} has {count} items"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":0},[],0,["a..b"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":["a",1]},null,"x",["src/a/b.ts","abc"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{},0,{"a":"b"},["emoji 👍🏽 mix","a..b:","./x/**/*.json"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":["a",1]},{},{"a":{"b":"c"}},[]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":[]},["a",1],["a",1],["line1\nline2"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":{}},{"a":{"b":"c"}},[],["straße﻿bom","日本語のテキスト","hello"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":null},[],{},["line1\nline2","line1\nline2","a.b.c"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":null},{"a":"b"},0,{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[0,null,["a",1],["a😀b😀c","ΣΊΣΥΦΟΣ"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":true},{},null,[]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":"x"},{"a":{"b":"c"}},{}],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[null,0,{"$undefined":true},[]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":0},["a",1],"x",["a","line1\nline2","a:b:c"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[0,null,"x",["﻿bom","astraße","ab"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{},true,null,["Hello World","HELLO","a😀b😀c"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":["a",1]},{"a":{"b":"c"}},"x",["{name} has {count} items","a:b:c","{name} has {count} items"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{},{},{"$undefined":true},["a..bns:key.path","straße日本語のテキスト"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[true,{"a":"b"},{"$undefined":true},{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":{}},[],["a",1],{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":[]},{"a":"b"},{},[]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{},"x",true,["HELLO","a..b"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{},true,{"$undefined":true},{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":{"a":"b"}},"x",null,[".leading","a..b",":ns:key.path"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":true},[],["a",1],{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":{"a":"b"}},"x",true,["  padded  "]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":null},null,"x"],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":{}},{"a":{"b":"c"}},["a",1],["ünïcödé","{name} has {count} items"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{},{"a":"b"},[]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{},null,{"a":"b"},["{name} has {count} items"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":{"a":{"b":"c"}}},"x",["a",1],["HELLO","{name} has {count} items","emoji 👍🏽 mix"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":[]},null,"x",[]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":[]},["a",1],{"a":{"b":"c"}},["ünïcödé","straße"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[true,"x",{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":"x"},{},{"a":{"b":"c"}},[":"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":null},["a",1],{"a":"b"},[]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":["a",1]},["a",1],null,["éa😀b😀c","src/a/b.ts"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"a":"b"},{"a":{"b":"c"}},0,["src/a/b.ts"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":{"a":"b"}},["a",1],0,[]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"a":{"b":"c"}},0,"x",["HELLO"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{},null,0,{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":true},0,0],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{},0,"x",[]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":[]},null,{},["hello world","line1\nline2","HELLO"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":true},"x",{},["a:b:c"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":0},null,null],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":null},["a",1],{"a":{"b":"c"}},{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":{"a":"b"}},{"a":"b"},[],["ns:key.path","abΣΊΣΥΦΟΣ"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"a":{"b":"c"}},true,{"a":"b"},["./x/**/*.json","  padded  ","a"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{},["a",1],[]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":["a",1]},["a",1],{},{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{},null,{"$undefined":true},["emoji 👍🏽 mix","ékey_name-1"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{},null,{"$undefined":true},["a","a./x/**/*.json"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":0},[],0,[]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":null},[],null,["日本語のテキストa:b:c","é﻿bom","abc"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":true},{"a":{"b":"c"}},{"a":{"b":"c"}},[]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":["a",1]},true,{"$undefined":true},["a.b.c","key_name-1"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{},0,{}],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":{}},{},true,{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":0},0,{"$undefined":true},["line1\nline2"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":0},null,0,["key_name-1"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":true},[],[],["key_name-1",":"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{},0,{"a":"b"},[]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":["a",1]},{"a":{"b":"c"}},true,[]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":0},"x",{},["tab\tseparated"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":{}},"x",{},[":a:b:c","src/a/b.ts"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":0},["a",1],null,[]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":true},true,0,["Hello World",".leading"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{},null,"x",["﻿bom"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{},["a",1],{"a":"b"},["HELLO日本語のテキスト","straße"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{},{"a":"b"},["a",1],["﻿bom","line1\nline2"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":0},["a",1],true,["日本語のテキストa:b:c"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":["x",true,null,[".leadingünïcödé"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{},[],0,["straße",":a","ΣΊΣΥΦΟΣ"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[null,{},null,[]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":{"a":"b"}},{},"x",["./x/**/*.json","a"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":[]},null,null,["trailing."]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":null},{"a":"b"},{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{},"x",{"$undefined":true},["a.b.ca"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[["a",1],[],0,["HELLO","ΣΊΣΥΦΟΣ"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":[]},null,{},["src/a/b.ts"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":[]},true,{"a":"b"},[]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":null},0,true],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":{"a":"b"}},true,true,["Hello World.leading"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":{"a":{"b":"c"}}},["a",1],["a",1],["","tab\tseparated"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{},true,{}],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":true},[],{},["ünïcödé","tab\tseparated","aba"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":{"a":{"b":"c"}}},null,[],["key_name-1"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":{"a":"b"}},["a",1],["a",1],["Hello World"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":{}},{"a":{"b":"c"}},"x",["ab","line1\nline2"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":{"a":"b"}},["a",1],{"$undefined":true},["Hello World"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":["x",0,{"$undefined":true},["a.b.c"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":["a",1]},"x",null,["a..bhello world","Hello World"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{},{"a":"b"},{"$undefined":true},["{name} has {count} items","  padded  "]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{},null,"x",["line1\nline2"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{},{"a":{"b":"c"}},{"$undefined":true},["ünïcödé"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":{"a":{"b":"c"}}},0,null,["trailing.","  padded  "]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"a":"b"},["a",1],{},["straße","./x/**/*.jsonİstanbul"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":"x"},"x",true,[]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{},0,{"$undefined":true},["ünïcödé","tab\tseparateda","straße"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[true,{"a":"b"},"x",["日本語のテキスト"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":["x",{"a":{"b":"c"}},["a",1],{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[null,[],null,[]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":0},{},null,["a..ba..b","straßehello world"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{},0,[],["é","emoji 👍🏽 mixhello","Hello World"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":true},0,["a",1]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"a":{"b":"c"}},{"a":{"b":"c"}},["a",1],["日本語のテキスト","ns:key.path"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":"x"},null,[],{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":{"a":"b"}},{},{"$undefined":true},["  padded  "]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":{"a":"b"}},{},[],["{name} has {count} items","ΣΊΣΥΦΟΣ"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{},{"a":"b"},{"$undefined":true},{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":{"a":"b"}},["a",1],"x",["{name} has {count} items","a.b.c",".leading"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"a":{"b":"c"}},{"a":{"b":"c"}},{"$undefined":true},["ünïcödé"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{},["a",1],true,["a😀b😀c","ünïcödé./x/**/*.json"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{},"x",[],["ΣΊΣΥΦΟΣ","./x/**/*.jsona.b.c","a:b:c"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":{}},0,["a",1],["","İstanbul"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{},null,["a",1],["trailing.  padded  ","日本語のテキスト","trailing.a.b.c"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":{"a":"b"}},{"a":{"b":"c"}},{"$undefined":true},[]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[null,{"a":"b"},{},["","a:b:c",""]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":["a",1]},null,null,["ab"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{},["a",1],{"a":"b"},{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":[]},null,{"a":{"b":"c"}},{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":0},["a",1],[],["{name} has {count} items"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":[]},{"a":{"b":"c"}},{"a":"b"},["a:b:c","ns:key.path","a:b:c.leading"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":"x"},"x",{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":"x"},null,{"a":{"b":"c"}},{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{},true,true],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":true},"x",[]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":"x"},{},{"$undefined":true},["﻿bom","hello worldHELLO"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":[]},{"a":{"b":"c"}},[],{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{},0,true,[".leading","hello world"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{},null,0,["a:b:ca.b.c","straße","src/a/b.ts"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":0},{"a":"b"},"x",[]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":"x"},{"a":"b"},{"$undefined":true},[]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{},[]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":{}},null,[],["éa..b"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":[]},{"a":"b"},0,["İstanbultab\tseparated","é","{name} has {count} items"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":["a",1]},"x",0,["é","HELLOtrailing."]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":[]},["a",1],"x",["./x/**/*.json"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":["a",1]},{"a":"b"},[],["İstanbul","straße","tab\tseparated"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":[]},{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":0},[],"x"],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":{"a":{"b":"c"}}},0,null,["HELLO","ünïcödétrailing.","{name} has {count} items"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"a":"b"},null,{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[true,0,{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":true},["a",1],null,[]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{},["a",1],["a",1],["./x/**/*.json"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":{}},{},null,["日本語のテキスト",":","{name} has {count} itemsünïcödé"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[0,{"a":"b"},{"$undefined":true},["é"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":[]},true,{"$undefined":true},["HELLO","日本語のテキスト"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":[]},"x",null],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":[]},[],0,[]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":[]},["a",1],"x"],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[true,null,null,[]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":true},{},[],{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":[]},[],{"a":{"b":"c"}},[":","key_name-1",".leading"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":{"a":"b"}},{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":{"a":{"b":"c"}}},null,null,["line1\nline2tab\tseparated","é","emoji 👍🏽 mixtrailing."]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{},["a",1],true,[]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":null},{"a":"b"},[],["{name} has {count} items😀","a😀b😀c"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[["a",1],["a",1],true,{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":["a",1]},null,["a",1],[":",".leading"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{},{},{"$undefined":true},["a😀b😀c"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":true},true,["a",1],{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":[]},{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6},true,["line1\nline2"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":[]},{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7},true,["line1\nline2"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":[]},[3,1,2],true,["line1\nline2"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":[]},{},true,["line1\nline2"]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":[]},["a",1],true,{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":[]},["a",1],true,[]],"ok":{"$undefined":true}}
+{"fn":"hardenElectronUpdater","args":[{"BaseUpdater":[]},["a",1],true,["b","a","B","é","10","9","a"]],"ok":{"$undefined":true}}

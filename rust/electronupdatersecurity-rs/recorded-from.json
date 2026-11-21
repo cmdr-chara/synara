@@ -1,0 +1,17 @@
+{
+  "unit": "apps/desktop/src/electronUpdaterSecurity.ts",
+  "files": 1,
+  "fingerprint": "b4f52a20938a6532",
+  "coverage": {
+    "lines": 287,
+    "reached": 93,
+    "files": [
+      {
+        "file": "apps/desktop/src/electronUpdaterSecurity.ts",
+        "lines": 287,
+        "reached": 93,
+        "missed": "83-92, 94-132, 134-138, 140-150, 152-153, 155-165, 168-174, 176-193, 195-201, 203-210, 212-221, 223-230, 232-242, 266-268, 271-296, 298, 300-316"
+      }
+    ]
+  }
+}

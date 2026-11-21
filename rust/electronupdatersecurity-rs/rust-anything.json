@@ -1,0 +1,115 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/desktop/src/electronUpdaterSecurity.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "electronupdatersecurity-rs",
+  "exports": [
+    {
+      "name": "buildPowerShellExecutablePath",
+      "file": "apps/desktop/src/electronUpdaterSecurity.ts",
+      "line": 65,
+      "params": [
+        {
+          "name": "env",
+          "ts_type": "NodeJS.ProcessEnv",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "buildPowerShellExecArgs",
+      "file": "apps/desktop/src/electronUpdaterSecurity.ts",
+      "line": 69,
+      "params": [
+        {
+          "name": "command",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveWindowsUpdatePublisherNames",
+      "file": "apps/desktop/src/electronUpdaterSecurity.ts",
+      "line": 244,
+      "params": [
+        {
+          "name": "feedPublisherNames",
+          "ts_type": "ReadonlyArray<string>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "embeddedPublisherSubjects",
+          "ts_type": "ReadonlyArray<string> | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "hardenElectronUpdater",
+      "file": "apps/desktop/src/electronUpdaterSecurity.ts",
+      "line": 316,
+      "params": [
+        {
+          "name": "updaterModule",
+          "ts_type": "{\n  BaseUpdater?: unknown;\n}",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "updater",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "platform",
+          "ts_type": "NodeJS.Platform",
+          "optional": true,
+          "rest": false
+        },
+        {
+          "name": "embeddedPublisherSubjects",
+          "ts_type": "ReadonlyArray<string> | null",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "verifyWindowsUpdateCodeSignature",
+      "file": "apps/desktop/src/electronUpdaterSecurity.ts",
+      "line": 167,
+      "reason": "checks `instanceof`: class identity does not survive the bridge"
+    }
+  ]
+}

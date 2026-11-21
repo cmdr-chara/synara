@@ -1,0 +1,79 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/desktop/src/keepAwake.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "keepawake-rs",
+  "exports": [
+    {
+      "name": "parseKeepAwakePreference",
+      "file": "apps/desktop/src/keepAwake.ts",
+      "line": 28,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "PersistedKeepAwakePreference | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "readKeepAwakePreference",
+      "file": "apps/desktop/src/keepAwake.ts",
+      "line": 44,
+      "params": [
+        {
+          "name": "filePath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "PersistedKeepAwakePreference",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "writeKeepAwakePreference",
+      "file": "apps/desktop/src/keepAwake.ts",
+      "line": 54,
+      "params": [
+        {
+          "name": "filePath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "preference",
+          "ts_type": "PersistedKeepAwakePreference",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "createKeepAwakeController",
+      "file": "apps/desktop/src/keepAwake.ts",
+      "line": 82,
+      "reason": "takes or returns a function"
+    }
+  ]
+}

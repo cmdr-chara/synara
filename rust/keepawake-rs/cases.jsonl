@@ -1,0 +1,434 @@
+{"fn":"parseKeepAwakePreference","args":[null],"ok":null}
+{"fn":"parseKeepAwakePreference","args":[{"a":"b"}],"ok":null}
+{"fn":"parseKeepAwakePreference","args":[0],"ok":null}
+{"fn":"parseKeepAwakePreference","args":[{}],"ok":null}
+{"fn":"parseKeepAwakePreference","args":[true],"ok":null}
+{"fn":"parseKeepAwakePreference","args":[[]],"ok":null}
+{"fn":"parseKeepAwakePreference","args":[{"a":{"b":"c"}}],"ok":null}
+{"fn":"parseKeepAwakePreference","args":[["a",1]],"ok":null}
+{"fn":"parseKeepAwakePreference","args":["x"],"ok":null}
+{"fn":"parseKeepAwakePreference","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6}],"ok":null}
+{"fn":"parseKeepAwakePreference","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7}],"ok":null}
+{"fn":"parseKeepAwakePreference","args":[[3,1,2]],"ok":null}
+{"fn":"readKeepAwakePreference","args":["  padded  "],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["line1\nline2a:b:c"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["ünïcödé"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["trailing."],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["é"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["a..b"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["Hello Worldab"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["line1\nline2"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":[".leading"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["日本語のテキスト"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["./x/**/*.json"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["{name} has {count} items"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["straßeİstanbul"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["a"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["hello worldünïcödé"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["a:b:c"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["emoji 👍🏽 mixtrailing."],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["ns:key.path"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["ünïcödéHELLO"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["a.b.c"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["src/a/b.ts"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["hello"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":[":"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["hello world"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["a..bstraße"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["src/a/b.ts﻿bom"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["a.b.chello"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["./x/**/*.jsonsrc/a/b.ts"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["emoji 👍🏽 mix"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":[""],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["ab"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["a😀b😀ca😀b😀c"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["key_name-1"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["﻿bom"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["ΣΊΣΥΦΟΣ"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["a😀b😀c日本語のテキスト"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["İstanbula:b:c"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["ünïcödéünïcödé"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["key_name-1hello world"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["İstanbultab\tseparated"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["src/a/b.ts😀"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["ns:key.path日本語のテキスト"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["Hello World"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["HELLO"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["a..b日本語のテキスト"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["😀"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["straßehello world"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["tab\tseparated"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["é{name} has {count} items"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["hello worldé"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["﻿bom  padded  "],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["a😀b😀c"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["abé"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["abc"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["helloa.b.c"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["./x/**/*.json.leading"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["straße"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["tab\tseparatedabc"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["aHELLO"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["hello worldstraße"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["İstanbulns:key.path"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["😀trailing."],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["a./x/**/*.json"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["İstanbul"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["aabc"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":[".leadinga..b"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["😀İstanbul"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["./x/**/*.jsona.b.c"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["ns:key.pathİstanbul"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":[":日本語のテキスト"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["abc{name} has {count} items"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["straßea"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["straßehello"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["helloa..b"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["😀a:b:c"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["a:b:ca.b.c"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["{name} has {count} itemsé"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["ΣΊΣΥΦΟΣa:b:c"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":[":src/a/b.ts"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["日本語のテキストa.b.c"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["HELLOΣΊΣΥΦΟΣ"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["a..b:"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["İstanbul:"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["Hello Worldtrailing."],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["straße{name} has {count} items"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["emoji 👍🏽 mixns:key.path"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["emoji 👍🏽 mixtab\tseparated"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["a😀b😀cstraße"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["straßeünïcödé"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["HELLOa😀b😀c"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":[".leading.leading"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["abc﻿bom"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["HELLOé"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["a.b.cns:key.path"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["  padded  ΣΊΣΥΦΟΣ"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["Hello World日本語のテキスト"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["﻿bomkey_name-1"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["a😀b😀cline1\nline2"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["﻿bomab"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["hello world.leading"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["a..bé"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["helloHello World"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["ΣΊΣΥΦΟΣ{name} has {count} items"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["abünïcödé"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["﻿bomhello world"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["a..bhello world"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["a😀b😀cHello World"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["key_name-1a😀b😀c"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["./x/**/*.jsonkey_name-1"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["line1\nline2ab"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["trailing.a..b"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["HELLO./x/**/*.json"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["a.b.c😀"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["src/a/b.ts日本語のテキスト"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["src/a/b.ts.leading"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["ΣΊΣΥΦΟΣhello"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["ünïcödéline1\nline2"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["./x/**/*.jsonİstanbul"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["key_name-1  padded  "],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["emoji 👍🏽 mix日本語のテキスト"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["日本語のテキスト:"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":[":é"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["a..bİstanbul"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["abca..b"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["./x/**/*.jsona😀b😀c"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["{name} has {count} itemsab"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["ns:key.path😀"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["./x/**/*.json./x/**/*.json"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["日本語のテキストabc"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["src/a/b.tstrailing."],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["line1\nline2a.b.c"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["a..bab"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["a😀b😀c./x/**/*.json"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["a.b.c./x/**/*.json"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["trailing.trailing."],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["a😀b😀cab"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["hello worlda😀b😀c"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["日本語のテキストsrc/a/b.ts"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["tab\tseparateda:b:c"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["ab日本語のテキスト"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["日本語のテキストemoji 👍🏽 mix"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":[".leadingstraße"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["Hello Worlda..b"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["{name} has {count} itemsstraße"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["😀tab\tseparated"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["a😀b😀cé"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["line1\nline2ünïcödé"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["tab\tseparatedtrailing."],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["a.b.ca..b"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["{name} has {count} itemsa.b.c"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":[":./x/**/*.json"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["hello{name} has {count} items"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["emoji 👍🏽 mixemoji 👍🏽 mix"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":[":ΣΊΣΥΦΟΣ"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["a..b😀"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["ns:key.path./x/**/*.json"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["a😀"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["line1\nline2Hello World"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["a.leading"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["é.leading"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["éΣΊΣΥΦΟΣ"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["Hello Worldline1\nline2"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["a..btab\tseparated"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["HELLOabc"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["a:"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["a.b.ctab\tseparated"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["ésrc/a/b.ts"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["  padded  ./x/**/*.json"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["  padded  😀"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["src/a/b.tskey_name-1"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["{name} has {count} items:"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["a:b:cab"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["ns:key.pathΣΊΣΥΦΟΣ"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["ΣΊΣΥΦΟΣ﻿bom"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["line1\nline2a😀b😀c"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["tab\tseparated./x/**/*.json"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":[":key_name-1"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["HELLO  padded  "],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":[".leading😀"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["İstanbulΣΊΣΥΦΟΣ"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["😀hello"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["ns:key.pathkey_name-1"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["{name} has {count} itemsİstanbul"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["aba:b:c"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["straßens:key.path"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["﻿bom﻿bom"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["aba.b.c"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["./x/**/*.jsonünïcödé"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["ünïcödéns:key.path"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["ns:key.pathab"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["hello worlda..b"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["HELLOhello world"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["a:b:chello"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["İstanbulab"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["helloa😀b😀c"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":[".leadingline1\nline2"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["İstanbulhello world"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["{name} has {count} itemsline1\nline2"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["abca.b.c"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["src/a/b.ts./x/**/*.json"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["héllo wörld"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["👍🏽 thumbs"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["日本語"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["ılık ırmak"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["👨‍👩‍👧 family"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["a b"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["a😀b"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["a²b x½ y①"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["aⅠb Ⅻ"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["a𐐀b 𝐀bc"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"readKeepAwakePreference","args":["कि ٣٤"],"ok":{"version":1,"enabled":false,"remoteAccessAllowed":false}}
+{"fn":"writeKeepAwakePreference","args":["a.b.ca:b:c",{"version":1,"enabled":true,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["HELLOhello",0],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["straße",{"version":1,"enabled":false,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["İstanbul",{"version":1,"enabled":false,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["Hello World",{"version":1,"enabled":true,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["",{"version":1,"enabled":false,"remoteAccessAllowed":false}],"error":"ENOENT: no such file or directory, open ''"}
+{"fn":"writeKeepAwakePreference","args":["a..ba.b.c",{"version":1,"enabled":false,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["line1\nline2",{"version":1,"enabled":false,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["😀",{"version":1,"enabled":true,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["trailing.",{"version":1,"enabled":false,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["key_name-1",{"version":1,"enabled":true,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["日本語のテキスト",{"version":1,"enabled":false,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["a.b.c","x"],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["{name} has {count} items",{"version":1,"enabled":false,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["  padded  ",{"version":1,"enabled":true,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["ünïcödétrailing.",{"version":1,"enabled":false,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["trailing.",true],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["a:b:cab",{"version":1,"enabled":true,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["aba",{"version":1,"enabled":true,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":[":",{"version":1,"enabled":true,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["abc",{"version":1,"enabled":true,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["line1\nline2",{"version":1,"enabled":true,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["key_name-1",{"version":1,"enabled":true,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["ΣΊΣΥΦΟΣ",{"version":1,"enabled":false,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["é",{"version":1,"enabled":false,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["emoji 👍🏽 mixHELLO",{"version":1,"enabled":false,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["",{"version":1,"enabled":true,"remoteAccessAllowed":true}],"error":"ENOENT: no such file or directory, open ''"}
+{"fn":"writeKeepAwakePreference","args":["HELLO",{"version":1,"enabled":false,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["emoji 👍🏽 mixns:key.path",{"version":1,"enabled":false,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["ns:key.path.leading",{"version":1,"enabled":true,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["key_name-1",{"version":1,"enabled":false,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["key_name-1{name} has {count} items",null],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["a..b",null],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["﻿bom",{"version":1,"enabled":false,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["hellohello",{"version":1,"enabled":false,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["ns:key.path",{"version":1,"enabled":false,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["src/a/b.tstrailing.",{"version":1,"enabled":false,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["emoji 👍🏽 mix",["a",1]],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":[".leading",{"version":1,"enabled":false,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["a:b:c",[]],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["é",["a",1]],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["ns:key.path",{"version":1,"enabled":false,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["日本語のテキスト",{"version":1,"enabled":false,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["a.b.c",{"version":1,"enabled":true,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["日本語のテキスト",{"version":1,"enabled":true,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["key_name-1",{"version":1,"enabled":false,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["日本語のテキスト",{}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":[".leading",{"version":1,"enabled":true,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["ab",{"version":1,"enabled":false,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["tab\tseparated",{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["hello",{"version":1,"enabled":false,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["a",{"version":1,"enabled":true,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["  padded  ",{"version":1,"enabled":false,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["trailing.ünïcödé",{"version":1,"enabled":true,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["./x/**/*.jsona..b",{}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["a😀b😀c",{"version":1,"enabled":true,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["HELLO",{"version":1,"enabled":false,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["key_name-1",{}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["é",{"version":1,"enabled":true,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["hello",{}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["﻿bom",{}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["abünïcödé",{"version":1,"enabled":true,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["straße{name} has {count} items","x"],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["trailing.ab",{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["src/a/b.ts",{"version":1,"enabled":true,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":[".leading",null],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["line1\nline2",{"version":1,"enabled":true,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["  padded  ",{"version":1,"enabled":true,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["﻿bom.leading",{"version":1,"enabled":true,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["a.b.c",[]],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["ünïcödé",{}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["emoji 👍🏽 mix",{"version":1,"enabled":true,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["abc",{"version":1,"enabled":true,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["line1\nline2key_name-1",{"version":1,"enabled":true,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":[":a..b",{"version":1,"enabled":false,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["tab\tseparated",{"version":1,"enabled":false,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["a😀b😀c",[]],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["ab",{"version":1,"enabled":false,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["src/a/b.ts",{"version":1,"enabled":true,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["straße",true],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["HELLO",{"version":1,"enabled":true,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["﻿bom",{"version":1,"enabled":true,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["ünïcödéünïcödé",{"version":1,"enabled":false,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["emoji 👍🏽 mix",{"version":1,"enabled":false,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["straße",{"version":1,"enabled":true,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["  padded  :",{"version":1,"enabled":true,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["abc",{"version":1,"enabled":false,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["日本語のテキスト",{"version":1,"enabled":true,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["Hello World",{"version":1,"enabled":false,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["line1\nline2",{"version":1,"enabled":false,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["trailing.hello",{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["tab\tseparated",{"version":1,"enabled":false,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["helloa:b:c",{"version":1,"enabled":false,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["a..b",{"version":1,"enabled":true,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["{name} has {count} itemshello world",{"version":1,"enabled":true,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["a",{"version":1,"enabled":false,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["😀key_name-1",{"version":1,"enabled":false,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":[".leading日本語のテキスト",0],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["a😀b😀c",{"version":1,"enabled":false,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["ünïcödé",{"version":1,"enabled":true,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["İstanbul",{"version":1,"enabled":true,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":[":",{"version":1,"enabled":true,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["abHELLO",{"version":1,"enabled":false,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["straßeİstanbul",null],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["ΣΊΣΥΦΟΣ",{"version":1,"enabled":false,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["﻿bom","x"],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["hello worldstraße",{"version":1,"enabled":true,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["😀straße",{"version":1,"enabled":true,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["a",{"version":1,"enabled":true,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["ünïcödéHELLO",{"version":1,"enabled":true,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["İstanbulab",{"version":1,"enabled":false,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["İstanbul",{"version":1,"enabled":true,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["﻿bom  padded  ",{"version":1,"enabled":true,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["{name} has {count} items",{"version":1,"enabled":true,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["hello world",{"version":1,"enabled":false,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["é",{"version":1,"enabled":false,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["./x/**/*.jsonns:key.path",{"version":1,"enabled":true,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["a😀b😀c",{"version":1,"enabled":false,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["src/a/b.ts",{"version":1,"enabled":false,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["aba",{"version":1,"enabled":false,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["日本語のテキストünïcödé",{"version":1,"enabled":true,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["straße",{"version":1,"enabled":false,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["a..bhello",{"version":1,"enabled":false,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["abc",{"version":1,"enabled":false,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["hello",{"version":1,"enabled":false,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["{name} has {count} items",{}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["﻿bom",{"version":1,"enabled":true,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["ünïcödétab\tseparated","x"],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["./x/**/*.json",{"version":1,"enabled":false,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["{name} has {count} items",{"version":1,"enabled":false,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["emoji 👍🏽 mix",{"version":1,"enabled":true,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["key_name-1",null],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["{name} has {count} itemsa.b.c",{"version":1,"enabled":false,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["line1\nline2","x"],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["  padded  a:b:c",{"version":1,"enabled":false,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["a😀b😀c",{"version":1,"enabled":true,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["ns:key.pathΣΊΣΥΦΟΣ",{"version":1,"enabled":true,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["a.b.c",{"version":1,"enabled":false,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["  padded  tab\tseparated",{"version":1,"enabled":true,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["emoji 👍🏽 mix",{"version":1,"enabled":false,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["abtrailing.",{"version":1,"enabled":true,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["a",{"version":1,"enabled":false,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["a😀b😀c",{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["Hello World",null],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["{name} has {count} items",{"version":1,"enabled":true,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["a:b:c",{"version":1,"enabled":true,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["tab\tseparatedline1\nline2",{"version":1,"enabled":false,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["hello world﻿bom",{"version":1,"enabled":false,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["straße",null],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["a..b  padded  ",{"version":1,"enabled":true,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["é",{"version":1,"enabled":true,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["tab\tseparated",{"version":1,"enabled":true,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["tab\tseparated",[]],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["a..b",0],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":[":a😀b😀c",null],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["é./x/**/*.json",{"version":1,"enabled":true,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":[":src/a/b.ts",{"version":1,"enabled":false,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["😀",{"version":1,"enabled":true,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["İstanbul",{"version":1,"enabled":false,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["{name} has {count} items","x"],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["line1\nline2😀",{"version":1,"enabled":true,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["ünïcödé./x/**/*.json",{"version":1,"enabled":true,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["ünïcödé",{"version":1,"enabled":true,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["ΣΊΣΥΦΟΣ",{"version":1,"enabled":true,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["tab\tseparateda.b.c",{"version":1,"enabled":true,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["trailing../x/**/*.json",{"version":1,"enabled":true,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["﻿bomΣΊΣΥΦΟΣ",{"version":1,"enabled":true,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["{name} has {count} items",{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["{name} has {count} items",["a",1]],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["ab",{"version":1,"enabled":true,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["straße",{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["ünïcödéa..b",{"version":1,"enabled":true,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["a",true],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["helloé",{"version":1,"enabled":true,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["./x/**/*.json",{"version":1,"enabled":false,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["tab\tseparatedemoji 👍🏽 mix",{"version":1,"enabled":true,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["a.b.cab",true],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["straße",{"version":1,"enabled":true,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["./x/**/*.json",{"version":1,"enabled":true,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["a😀b😀c./x/**/*.json",{"version":1,"enabled":true,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["ΣΊΣΥΦΟΣ",{"version":1,"enabled":true,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["./x/**/*.json",{"version":1,"enabled":true,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["a:b:c",{"version":1,"enabled":true,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":[".leading",{"version":1,"enabled":false,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["src/a/b.ts😀",{"version":1,"enabled":false,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["é",0],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":[".leading",{}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["a..b",{"version":1,"enabled":false,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["ab",{"version":1,"enabled":true,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["ns:key.pathabc",{"version":1,"enabled":true,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["straßeünïcödé",{"version":1,"enabled":true,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["é",{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["a.b.cHello World",{"version":1,"enabled":true,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["hello world",[]],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["😀",{"version":1,"enabled":false,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["hello",{"version":1,"enabled":true,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["ünïcödé",{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["a",{}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["hello worldhello world","x"],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["a.b.c",{"version":1,"enabled":false,"remoteAccessAllowed":false}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["héllo wörld",{"version":1,"enabled":true,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["👍🏽 thumbs",{"version":1,"enabled":true,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["日本語",{"version":1,"enabled":true,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["ılık ırmak",{"version":1,"enabled":true,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["👨‍👩‍👧 family",{"version":1,"enabled":true,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["a b",{"version":1,"enabled":true,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["a😀b",{"version":1,"enabled":true,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["a²b x½ y①",{"version":1,"enabled":true,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["aⅠb Ⅻ",{"version":1,"enabled":true,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["a𐐀b 𝐀bc",{"version":1,"enabled":true,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}
+{"fn":"writeKeepAwakePreference","args":["कि ٣٤",{"version":1,"enabled":true,"remoteAccessAllowed":true}],"ok":{"$undefined":true}}

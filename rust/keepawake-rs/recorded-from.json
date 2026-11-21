@@ -1,0 +1,17 @@
+{
+  "unit": "apps/desktop/src/keepAwake.ts",
+  "files": 1,
+  "fingerprint": "f00ef2b37f787fd8",
+  "coverage": {
+    "lines": 133,
+    "reached": 64,
+    "files": [
+      {
+        "file": "apps/desktop/src/keepAwake.ts",
+        "lines": 133,
+        "reached": 64,
+        "missed": "33-34, 37-41, 83-90, 92-99, 101-109, 111-115, 117-133, 135-137, 139-150"
+      }
+    ]
+  }
+}

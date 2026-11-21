@@ -1,0 +1,17 @@
+{
+  "unit": "packages/shared/src/computerInvocation.ts",
+  "files": 1,
+  "fingerprint": "99a558c5b2138384",
+  "coverage": {
+    "lines": 22,
+    "reached": 22,
+    "files": [
+      {
+        "file": "packages/shared/src/computerInvocation.ts",
+        "lines": 22,
+        "reached": 22,
+        "missed": ""
+      }
+    ]
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/computerInvocation.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "computerinvocation-rs",
+  "exports": [
+    {
+      "name": "parseComputerInvocation",
+      "file": "packages/shared/src/computerInvocation.ts",
+      "line": 6,
+      "params": [
+        {
+          "name": "text",
+          "ts_type": "string | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "{ prompt: string } | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveComputerInvocationMode",
+      "file": "packages/shared/src/computerInvocation.ts",
+      "line": 15,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly messageText?: string | undefined;\n  readonly dispatchOrigin?: string | undefined;\n  readonly enableComputerControl?: boolean | undefined;\n  readonly computerControlMode?: typeof typeof typeof typeof ComputerControlMode.Type.Type.Type.Type | undefined;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ComputerControlMode.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

@@ -1,0 +1,220 @@
+{"fn":"parseComputerInvocation","args":["abline1\nline2"],"ok":null}
+{"fn":"parseComputerInvocation","args":[{"$undefined":true}],"ok":null}
+{"fn":"parseComputerInvocation","args":["😀"],"ok":null}
+{"fn":"parseComputerInvocation","args":["{name} has {count} items"],"ok":null}
+{"fn":"parseComputerInvocation","args":[":"],"ok":null}
+{"fn":"parseComputerInvocation","args":["ns:key.patha.b.c"],"ok":null}
+{"fn":"parseComputerInvocation","args":["ns:key.path"],"ok":null}
+{"fn":"parseComputerInvocation","args":["İstanbul"],"ok":null}
+{"fn":"parseComputerInvocation","args":["HELLO"],"ok":null}
+{"fn":"parseComputerInvocation","args":["key_name-1a..b"],"ok":null}
+{"fn":"parseComputerInvocation","args":[":ΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"parseComputerInvocation","args":["a:b:c"],"ok":null}
+{"fn":"parseComputerInvocation","args":["trailing."],"ok":null}
+{"fn":"parseComputerInvocation","args":["./x/**/*.json"],"ok":null}
+{"fn":"parseComputerInvocation","args":["src/a/b.ts"],"ok":null}
+{"fn":"parseComputerInvocation","args":["é"],"ok":null}
+{"fn":"parseComputerInvocation","args":["﻿bom"],"ok":null}
+{"fn":"parseComputerInvocation","args":["hello world"],"ok":null}
+{"fn":"parseComputerInvocation","args":["a"],"ok":null}
+{"fn":"parseComputerInvocation","args":["hello日本語のテキスト"],"ok":null}
+{"fn":"parseComputerInvocation","args":["Hello World"],"ok":null}
+{"fn":"parseComputerInvocation","args":["emoji 👍🏽 mix"],"ok":null}
+{"fn":"parseComputerInvocation","args":["hello"],"ok":null}
+{"fn":"parseComputerInvocation","args":["tab\tseparated"],"ok":null}
+{"fn":"parseComputerInvocation","args":["  padded  "],"ok":null}
+{"fn":"parseComputerInvocation","args":[],"ok":null}
+{"fn":"parseComputerInvocation","args":["ab"],"ok":null}
+{"fn":"parseComputerInvocation","args":["a😀b😀c"],"ok":null}
+{"fn":"parseComputerInvocation","args":[".leading"],"ok":null}
+{"fn":"parseComputerInvocation","args":[""],"ok":null}
+{"fn":"parseComputerInvocation","args":["abünïcödé"],"ok":null}
+{"fn":"parseComputerInvocation","args":["key_name-1"],"ok":null}
+{"fn":"parseComputerInvocation","args":["ünïcödéΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"parseComputerInvocation","args":["ünïcödé"],"ok":null}
+{"fn":"parseComputerInvocation","args":["日本語のテキスト"],"ok":null}
+{"fn":"parseComputerInvocation","args":["a..b"],"ok":null}
+{"fn":"parseComputerInvocation","args":["key_name-1straße"],"ok":null}
+{"fn":"parseComputerInvocation","args":["a😀b😀cabc"],"ok":null}
+{"fn":"parseComputerInvocation","args":["ΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"parseComputerInvocation","args":["./x/**/*.jsonab"],"ok":null}
+{"fn":"parseComputerInvocation","args":["HELLOkey_name-1"],"ok":null}
+{"fn":"parseComputerInvocation","args":["line1\nline2"],"ok":null}
+{"fn":"parseComputerInvocation","args":["helloünïcödé"],"ok":null}
+{"fn":"parseComputerInvocation","args":["abc"],"ok":null}
+{"fn":"parseComputerInvocation","args":["straße"],"ok":null}
+{"fn":"parseComputerInvocation","args":["hello worldns:key.path"],"ok":null}
+{"fn":"parseComputerInvocation","args":["emoji 👍🏽 mixtab\tseparated"],"ok":null}
+{"fn":"parseComputerInvocation","args":["a😀b😀c  padded  "],"ok":null}
+{"fn":"parseComputerInvocation","args":["ünïcödéünïcödé"],"ok":null}
+{"fn":"parseComputerInvocation","args":["src/a/b.tsabc"],"ok":null}
+{"fn":"parseComputerInvocation","args":["a.b.c"],"ok":null}
+{"fn":"parseComputerInvocation","args":["ns:key.pathline1\nline2"],"ok":null}
+{"fn":"parseComputerInvocation","args":["line1\nline2tab\tseparated"],"ok":null}
+{"fn":"parseComputerInvocation","args":["straße.leading"],"ok":null}
+{"fn":"parseComputerInvocation","args":["{name} has {count} items😀"],"ok":null}
+{"fn":"parseComputerInvocation","args":["ab.leading"],"ok":null}
+{"fn":"parseComputerInvocation","args":["İstanbulHello World"],"ok":null}
+{"fn":"parseComputerInvocation","args":["Hello Worlda..b"],"ok":null}
+{"fn":"parseComputerInvocation","args":["HELLO😀"],"ok":null}
+{"fn":"parseComputerInvocation","args":[".leadingHELLO"],"ok":null}
+{"fn":"parseComputerInvocation","args":["a:b:cHELLO"],"ok":null}
+{"fn":"parseComputerInvocation","args":["a.b.ctab\tseparated"],"ok":null}
+{"fn":"parseComputerInvocation","args":["a😀b😀cİstanbul"],"ok":null}
+{"fn":"parseComputerInvocation","args":["straße  padded  "],"ok":null}
+{"fn":"parseComputerInvocation","args":["tab\tseparatedé"],"ok":null}
+{"fn":"parseComputerInvocation","args":["ΣΊΣΥΦΟΣhello"],"ok":null}
+{"fn":"parseComputerInvocation","args":["  padded  é"],"ok":null}
+{"fn":"parseComputerInvocation","args":["aab"],"ok":null}
+{"fn":"parseComputerInvocation","args":["aa"],"ok":null}
+{"fn":"parseComputerInvocation","args":["line1\nline2日本語のテキスト"],"ok":null}
+{"fn":"parseComputerInvocation","args":["abchello"],"ok":null}
+{"fn":"parseComputerInvocation","args":["😀a:b:c"],"ok":null}
+{"fn":"parseComputerInvocation","args":["日本語のテキスト😀"],"ok":null}
+{"fn":"parseComputerInvocation","args":["./x/**/*.jsona.b.c"],"ok":null}
+{"fn":"parseComputerInvocation","args":["straßea"],"ok":null}
+{"fn":"parseComputerInvocation","args":["hello worldab"],"ok":null}
+{"fn":"parseComputerInvocation","args":["a😀b😀cemoji 👍🏽 mix"],"ok":null}
+{"fn":"parseComputerInvocation","args":[":ns:key.path"],"ok":null}
+{"fn":"parseComputerInvocation","args":["trailing.{name} has {count} items"],"ok":null}
+{"fn":"parseComputerInvocation","args":["ünïcödéa"],"ok":null}
+{"fn":"parseComputerInvocation","args":["akey_name-1"],"ok":null}
+{"fn":"parseComputerInvocation","args":["a😀b😀chello"],"ok":null}
+{"fn":"parseComputerInvocation","args":["日本語のテキストhello"],"ok":null}
+{"fn":"parseComputerInvocation","args":["emoji 👍🏽 mix  padded  "],"ok":null}
+{"fn":"parseComputerInvocation","args":["é﻿bom"],"ok":null}
+{"fn":"parseComputerInvocation","args":["a.b.cline1\nline2"],"ok":null}
+{"fn":"parseComputerInvocation","args":["tab\tseparated﻿bom"],"ok":null}
+{"fn":"parseComputerInvocation","args":["straßeab"],"ok":null}
+{"fn":"parseComputerInvocation","args":["ΣΊΣΥΦΟΣa😀b😀c"],"ok":null}
+{"fn":"parseComputerInvocation","args":["﻿bomab"],"ok":null}
+{"fn":"parseComputerInvocation","args":["ünïcödéstraße"],"ok":null}
+{"fn":"parseComputerInvocation","args":["tab\tseparatedsrc/a/b.ts"],"ok":null}
+{"fn":"parseComputerInvocation","args":["{name} has {count} itemsünïcödé"],"ok":null}
+{"fn":"parseComputerInvocation","args":["src/a/b.tshello world"],"ok":null}
+{"fn":"parseComputerInvocation","args":["ΣΊΣΥΦΟΣns:key.path"],"ok":null}
+{"fn":"parseComputerInvocation","args":[".leadingİstanbul"],"ok":null}
+{"fn":"parseComputerInvocation","args":["a..bhello"],"ok":null}
+{"fn":"parseComputerInvocation","args":["key_name-1ns:key.path"],"ok":null}
+{"fn":"parseComputerInvocation","args":["tab\tseparated:"],"ok":null}
+{"fn":"parseComputerInvocation","args":["key_name-1Hello World"],"ok":null}
+{"fn":"parseComputerInvocation","args":["./x/**/*.jsonabc"],"ok":null}
+{"fn":"parseComputerInvocation","args":["trailing.ΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"parseComputerInvocation","args":[":key_name-1"],"ok":null}
+{"fn":"parseComputerInvocation","args":["aünïcödé"],"ok":null}
+{"fn":"parseComputerInvocation","args":["ΣΊΣΥΦΟΣHELLO"],"ok":null}
+{"fn":"parseComputerInvocation","args":["ünïcödétrailing."],"ok":null}
+{"fn":"parseComputerInvocation","args":["a:b:c﻿bom"],"ok":null}
+{"fn":"parseComputerInvocation","args":["a😀b😀ctrailing."],"ok":null}
+{"fn":"parseComputerInvocation","args":["éab"],"ok":null}
+{"fn":"parseComputerInvocation","args":["./x/**/*.jsontrailing."],"ok":null}
+{"fn":"parseComputerInvocation","args":["tab\tseparatedHELLO"],"ok":null}
+{"fn":"parseComputerInvocation","args":["İstanbul{name} has {count} items"],"ok":null}
+{"fn":"parseComputerInvocation","args":["😀ünïcödé"],"ok":null}
+{"fn":"parseComputerInvocation","args":["😀straße"],"ok":null}
+{"fn":"parseComputerInvocation","args":["tab\tseparatedemoji 👍🏽 mix"],"ok":null}
+{"fn":"parseComputerInvocation","args":["abhello world"],"ok":null}
+{"fn":"parseComputerInvocation","args":["abca"],"ok":null}
+{"fn":"parseComputerInvocation","args":["./x/**/*.json😀"],"ok":null}
+{"fn":"parseComputerInvocation","args":["abcab"],"ok":null}
+{"fn":"parseComputerInvocation","args":["line1\nline2src/a/b.ts"],"ok":null}
+{"fn":"parseComputerInvocation","args":["abc﻿bom"],"ok":null}
+{"fn":"parseComputerInvocation","args":["abcemoji 👍🏽 mix"],"ok":null}
+{"fn":"parseComputerInvocation","args":["src/a/b.tsa..b"],"ok":null}
+{"fn":"parseComputerInvocation","args":["straßeİstanbul"],"ok":null}
+{"fn":"parseComputerInvocation","args":["a..bünïcödé"],"ok":null}
+{"fn":"parseComputerInvocation","args":["﻿bomtab\tseparated"],"ok":null}
+{"fn":"parseComputerInvocation","args":["a😀b😀ca..b"],"ok":null}
+{"fn":"parseComputerInvocation","args":["a😀b😀ca😀b😀c"],"ok":null}
+{"fn":"parseComputerInvocation","args":["a..bkey_name-1"],"ok":null}
+{"fn":"parseComputerInvocation","args":["{name} has {count} itemsns:key.path"],"ok":null}
+{"fn":"parseComputerInvocation","args":["hello world.leading"],"ok":null}
+{"fn":"parseComputerInvocation","args":["a:b:c{name} has {count} items"],"ok":null}
+{"fn":"parseComputerInvocation","args":["tab\tseparatedhello world"],"ok":null}
+{"fn":"parseComputerInvocation","args":["﻿bom{name} has {count} items"],"ok":null}
+{"fn":"parseComputerInvocation","args":["HELLOtrailing."],"ok":null}
+{"fn":"parseComputerInvocation","args":["ünïcödéhello"],"ok":null}
+{"fn":"parseComputerInvocation","args":["line1\nline2./x/**/*.json"],"ok":null}
+{"fn":"parseComputerInvocation","args":["HELLO:"],"ok":null}
+{"fn":"parseComputerInvocation","args":["  padded  hello world"],"ok":null}
+{"fn":"parseComputerInvocation","args":["{name} has {count} itemsline1\nline2"],"ok":null}
+{"fn":"parseComputerInvocation","args":[".leadinga..b"],"ok":null}
+{"fn":"parseComputerInvocation","args":["hello world😀"],"ok":null}
+{"fn":"parseComputerInvocation","args":["ΣΊΣΥΦΟΣa.b.c"],"ok":null}
+{"fn":"parseComputerInvocation","args":["trailing.é"],"ok":null}
+{"fn":"parseComputerInvocation","args":["trailing.a.b.c"],"ok":null}
+{"fn":"parseComputerInvocation","args":["HELLOa:b:c"],"ok":null}
+{"fn":"parseComputerInvocation","args":["  padded  HELLO"],"ok":null}
+{"fn":"parseComputerInvocation","args":["  padded  ﻿bom"],"ok":null}
+{"fn":"parseComputerInvocation","args":["straßea😀b😀c"],"ok":null}
+{"fn":"parseComputerInvocation","args":["a  padded  "],"ok":null}
+{"fn":"parseComputerInvocation","args":["line1\nline2HELLO"],"ok":null}
+{"fn":"parseComputerInvocation","args":["aline1\nline2"],"ok":null}
+{"fn":"parseComputerInvocation","args":["éHELLO"],"ok":null}
+{"fn":"parseComputerInvocation","args":["﻿bomstraße"],"ok":null}
+{"fn":"parseComputerInvocation","args":["trailing.  padded  "],"ok":null}
+{"fn":"parseComputerInvocation","args":["./x/**/*.jsona:b:c"],"ok":null}
+{"fn":"parseComputerInvocation","args":["Hello Worldstraße"],"ok":null}
+{"fn":"parseComputerInvocation","args":["ünïcödéabc"],"ok":null}
+{"fn":"parseComputerInvocation","args":["./x/**/*.jsonsrc/a/b.ts"],"ok":null}
+{"fn":"parseComputerInvocation","args":["﻿bom😀"],"ok":null}
+{"fn":"parseComputerInvocation","args":[".leadingsrc/a/b.ts"],"ok":null}
+{"fn":"parseComputerInvocation","args":["src/a/b.tsHello World"],"ok":null}
+{"fn":"parseComputerInvocation","args":["straßeHello World"],"ok":null}
+{"fn":"parseComputerInvocation","args":["😀ab"],"ok":null}
+{"fn":"parseComputerInvocation","args":["ΣΊΣΥΦΟΣé"],"ok":null}
+{"fn":"parseComputerInvocation","args":["aba😀b😀c"],"ok":null}
+{"fn":"parseComputerInvocation","args":["HELLOHello World"],"ok":null}
+{"fn":"parseComputerInvocation","args":["a:b:cHello World"],"ok":null}
+{"fn":"parseComputerInvocation","args":["key_name-1é"],"ok":null}
+{"fn":"parseComputerInvocation","args":["trailing.straße"],"ok":null}
+{"fn":"parseComputerInvocation","args":[":ünïcödé"],"ok":null}
+{"fn":"parseComputerInvocation","args":["tab\tseparatedns:key.path"],"ok":null}
+{"fn":"parseComputerInvocation","args":[":hello world"],"ok":null}
+{"fn":"parseComputerInvocation","args":["straßehello world"],"ok":null}
+{"fn":"parseComputerInvocation","args":["abHello World"],"ok":null}
+{"fn":"parseComputerInvocation","args":["﻿bomtrailing."],"ok":null}
+{"fn":"parseComputerInvocation","args":["Hello Worlda"],"ok":null}
+{"fn":"parseComputerInvocation","args":["./x/**/*.json日本語のテキスト"],"ok":null}
+{"fn":"parseComputerInvocation","args":["a.b.c.leading"],"ok":null}
+{"fn":"parseComputerInvocation","args":["line1\nline2{name} has {count} items"],"ok":null}
+{"fn":"parseComputerInvocation","args":["a😀b😀cab"],"ok":null}
+{"fn":"parseComputerInvocation","args":["ns:key.path.leading"],"ok":null}
+{"fn":"parseComputerInvocation","args":["a.b.c😀"],"ok":null}
+{"fn":"parseComputerInvocation","args":["ns:key.patha😀b😀c"],"ok":null}
+{"fn":"parseComputerInvocation","args":["étrailing."],"ok":null}
+{"fn":"parseComputerInvocation","args":["Hello Worlda😀b😀c"],"ok":null}
+{"fn":"parseComputerInvocation","args":["😀HELLO"],"ok":null}
+{"fn":"parseComputerInvocation","args":["😀hello"],"ok":null}
+{"fn":"parseComputerInvocation","args":["a.b.cHello World"],"ok":null}
+{"fn":"parseComputerInvocation","args":["a..bstraße"],"ok":null}
+{"fn":"parseComputerInvocation","args":["tab\tseparatedtrailing."],"ok":null}
+{"fn":"parseComputerInvocation","args":["  padded  a😀b😀c"],"ok":null}
+{"fn":"parseComputerInvocation","args":["ns:key.pathkey_name-1"],"ok":null}
+{"fn":"parseComputerInvocation","args":["hello worldHello World"],"ok":null}
+{"fn":"parseComputerInvocation","args":["éİstanbul"],"ok":null}
+{"fn":"parseComputerInvocation","args":["key_name-1key_name-1"],"ok":null}
+{"fn":"parseComputerInvocation","args":["a😀b😀cstraße"],"ok":null}
+{"fn":"parseComputerInvocation","args":["hello worlda"],"ok":null}
+{"fn":"parseComputerInvocation","args":["ΣΊΣΥΦΟΣa..b"],"ok":null}
+{"fn":"parseComputerInvocation","args":["./x/**/*.jsonstraße"],"ok":null}
+{"fn":"parseComputerInvocation","args":["héllo wörld"],"ok":null}
+{"fn":"parseComputerInvocation","args":["👍🏽 thumbs"],"ok":null}
+{"fn":"parseComputerInvocation","args":["日本語"],"ok":null}
+{"fn":"parseComputerInvocation","args":["ılık ırmak"],"ok":null}
+{"fn":"parseComputerInvocation","args":["👨‍👩‍👧 family"],"ok":null}
+{"fn":"parseComputerInvocation","args":["a b"],"ok":null}
+{"fn":"parseComputerInvocation","args":["a😀b"],"ok":null}
+{"fn":"parseComputerInvocation","args":["a²b x½ y①"],"ok":null}
+{"fn":"parseComputerInvocation","args":["aⅠb Ⅻ"],"ok":null}
+{"fn":"parseComputerInvocation","args":["a𐐀b 𝐀bc"],"ok":null}
+{"fn":"parseComputerInvocation","args":["कि ٣٤"],"ok":null}
+{"fn":"resolveComputerInvocationMode","args":[{"a":{"b":"c"}}],"ok":"off"}
+{"fn":"resolveComputerInvocationMode","args":[{}],"ok":"off"}
+{"fn":"resolveComputerInvocationMode","args":[[]],"ok":"off"}
+{"fn":"resolveComputerInvocationMode","args":[true],"ok":"off"}
+{"fn":"resolveComputerInvocationMode","args":[{"a":"b"}],"ok":"off"}
+{"fn":"resolveComputerInvocationMode","args":[["a",1]],"ok":"off"}
+{"fn":"resolveComputerInvocationMode","args":[0],"ok":"off"}
+{"fn":"resolveComputerInvocationMode","args":[null],"error":"Cannot read properties of null (reading 'computerControlMode')"}
+{"fn":"resolveComputerInvocationMode","args":["x"],"ok":"off"}

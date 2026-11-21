@@ -117,10 +117,11 @@ pub fn provider_accounts_section_id(provider: String) -> Result<String, String> 
 
 /// Port of `normalizeSettingsSection` (`apps/web/src/settingsNavigation.ts:327`).
 pub fn normalize_settings_section(value: serde_json::Value) -> Result<serde_json::Value, String> {
-    if let Value::String(s) = &value {
-        if SETTINGS_SECTION_IDS.contains(&s.as_str()) && is_settings_section_available(s) {
-            return Ok(value);
-        }
+    if let Value::String(s) = &value
+        && SETTINGS_SECTION_IDS.contains(&s.as_str())
+        && is_settings_section_available(s)
+    {
+        return Ok(value);
     }
     Ok(Value::String("general".to_string()))
 }

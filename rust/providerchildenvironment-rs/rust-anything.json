@@ -1,0 +1,120 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/providerChildEnvironment.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "providerchildenvironment-rs",
+  "exports": [
+    {
+      "name": "registerProviderCredentialKey",
+      "file": "apps/server/src/providerChildEnvironment.ts",
+      "line": 38,
+      "params": [
+        {
+          "name": "key",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isProviderCredentialKey",
+      "file": "apps/server/src/providerChildEnvironment.ts",
+      "line": 45,
+      "params": [
+        {
+          "name": "key",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "withoutProviderCredentialEnvironment",
+      "file": "apps/server/src/providerChildEnvironment.ts",
+      "line": 50,
+      "params": [
+        {
+          "name": "env",
+          "ts_type": "NodeJS.ProcessEnv",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "NodeJS.ProcessEnv",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "providerCredentialKeysFor",
+      "file": "apps/server/src/providerChildEnvironment.ts",
+      "line": 77,
+      "params": [
+        {
+          "name": "provider",
+          "ts_type": "(| \"acp\"\n  | \"antigravity\"\n  | \"claude\"\n  | \"codex\"\n  | \"cursor\"\n  | \"devin\"\n  | \"droid\"\n  | \"grok\"\n  | \"opencode\"\n  | \"pi\"\n  | \"omp\")",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "readonly string[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "stripSynaraControlPlaneEnvironment",
+      "file": "apps/server/src/providerChildEnvironment.ts",
+      "line": 96,
+      "params": [
+        {
+          "name": "env",
+          "ts_type": "NodeJS.ProcessEnv",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "NodeJS.ProcessEnv",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "buildProviderChildEnvironment",
+      "file": "apps/server/src/providerChildEnvironment.ts",
+      "line": 108,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly provider: (| \"acp\"\n  | \"antigravity\"\n  | \"claude\"\n  | \"codex\"\n  | \"cursor\"\n  | \"devin\"\n  | \"droid\"\n  | \"grok\"\n  | \"opencode\"\n  | \"pi\"\n  | \"omp\");\n  readonly baseEnv?: NodeJS.ProcessEnv;\n  readonly inheritedSynaraKeys?: ReadonlyArray<string>;\n  readonly inheritedNativeCapabilityKeys?: ReadonlyArray<string>;\n  readonly overrides?: NodeJS.ProcessEnv;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "NodeJS.ProcessEnv",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

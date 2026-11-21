@@ -1,0 +1,17 @@
+{
+  "unit": "apps/server/src/providerChildEnvironment.ts",
+  "files": 1,
+  "fingerprint": "d6d757a09f6c2228",
+  "coverage": {
+    "lines": 133,
+    "reached": 127,
+    "files": [
+      {
+        "file": "apps/server/src/providerChildEnvironment.ts",
+        "lines": 133,
+        "reached": 127,
+        "missed": "127-128, 130-131, 133-134"
+      }
+    ]
+  }
+}

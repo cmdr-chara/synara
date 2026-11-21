@@ -1,0 +1,36 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/sidebarNavOrdering.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "sidebarnavordering-rs",
+  "exports": [
+    {
+      "name": "resolveTasksSurfaceSlot",
+      "file": "apps/web/src/sidebarNavOrdering.ts",
+      "line": 23,
+      "params": [
+        {
+          "name": "order",
+          "ts_type": "readonly (string)[]",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "tasksEnabled",
+          "ts_type": "boolean",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(string)[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

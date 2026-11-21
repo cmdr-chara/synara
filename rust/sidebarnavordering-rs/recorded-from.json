@@ -1,0 +1,17 @@
+{
+  "unit": "apps/web/src/sidebarNavOrdering.ts",
+  "files": 1,
+  "fingerprint": "452206d8837f4ec5",
+  "coverage": {
+    "lines": 36,
+    "reached": 33,
+    "files": [
+      {
+        "file": "apps/web/src/sidebarNavOrdering.ts",
+        "lines": 36,
+        "reached": 33,
+        "missed": "34-36"
+      }
+    ]
+  }
+}

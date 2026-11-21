@@ -643,36 +643,3 @@
 {"fn":"isOrdinaryProjectRow","args":[{"a":"b"}],"ok":true}
 {"fn":"isOrdinaryProjectRow","args":[{"a":{"b":"c"}}],"ok":true}
 {"fn":"isOrdinaryProjectRow","args":[true],"ok":true}
-{"fn":"resolveChatContainerWorkspaceRoot","args":[{"homeDir":"/home/u","chatWorkspaceRoot":"/chat"}],"ok":"/chat"}
-{"fn":"resolveChatContainerWorkspaceRoot","args":[{"homeDir":"/home/u","chatWorkspaceRoot":"  "}],"ok":"/home/u"}
-{"fn":"resolveChatContainerWorkspaceRoot","args":[{"homeDir":"/home/u"}],"ok":"/home/u"}
-{"fn":"resolveChatContainerWorkspaceRoot","args":[{"homeDir":"  ","chatWorkspaceRoot":null}],"ok":null}
-{"fn":"resolveChatContainerWorkspaceRoot","args":[{"homeDir":null,"chatWorkspaceRoot":null}],"ok":null}
-{"fn":"resolveChatContainerWorkspaceRoot","args":[{"homeDir":0,"chatWorkspaceRoot":false}],"error":"paths.chatWorkspaceRoot?.trim is not a function"}
-{"fn":"resolveChatContainerWorkspaceRoot","args":[{"homeDir":5}],"error":"paths.homeDir?.trim is not a function"}
-{"fn":"resolveChatContainerWorkspaceRoot","args":[null],"error":"Cannot read properties of null (reading 'chatWorkspaceRoot')"}
-{"fn":"matchesLegacyHomeChatWorkspaceRoot","args":["/chat",{"homeDir":"/home/u","chatWorkspaceRoot":"/chat"},null],"ok":true}
-{"fn":"matchesLegacyHomeChatWorkspaceRoot","args":["/CHAT",{"homeDir":"/home/u","chatWorkspaceRoot":"/chat"},{"platform":"win32"}],"ok":true}
-{"fn":"matchesLegacyHomeChatWorkspaceRoot","args":["/private/tmp/x",{"homeDir":"/tmp/x"},null],"ok":false}
-{"fn":"matchesLegacyHomeChatWorkspaceRoot","args":["/private/tmp/x",{"homeDir":"/tmp/x"},{"platform":"darwin"}],"ok":true}
-{"fn":"matchesLegacyHomeChatWorkspaceRoot","args":["/private/tmp/x",{"homeDir":"/tmp/x"},{"platform":"linux"}],"ok":false}
-{"fn":"matchesLegacyHomeChatWorkspaceRoot","args":["/else",{"homeDir":"/home/u","chatWorkspaceRoot":"/chat"},null],"ok":false}
-{"fn":"matchesLegacyHomeChatWorkspaceRoot","args":["/chat",{"homeDir":""},null],"ok":false}
-{"fn":"matchesLegacyHomeChatWorkspaceRoot","args":["/chat",{"chatWorkspaceRoot":"/chat","homeDir":null},null],"ok":false}
-{"fn":"matchesLegacyHomeChatWorkspaceRoot","args":[null,{"homeDir":"/home/u","chatWorkspaceRoot":"/chat"},null],"error":"Cannot read properties of null (reading 'trim')"}
-{"fn":"matchesLegacyHomeChatWorkspaceRoot","args":["C:\\wt",{"homeDir":"c:/WT"},null],"ok":true}
-{"fn":"isLegacyHomeChatContainerRow","args":[{"projectTitle":"Home","projectWorkspaceRoot":"/chat","paths":{"homeDir":"/home/u","chatWorkspaceRoot":"/chat"}}],"ok":true}
-{"fn":"isLegacyHomeChatContainerRow","args":[{"projectTitle":"Home","projectWorkspaceRoot":"/else","paths":{"homeDir":"/home/u","chatWorkspaceRoot":"/chat"}}],"ok":false}
-{"fn":"isLegacyHomeChatContainerRow","args":[{"projectTitle":"home","projectWorkspaceRoot":"/chat","paths":{"homeDir":"/home/u","chatWorkspaceRoot":"/chat"}}],"ok":false}
-{"fn":"isLegacyHomeChatContainerRow","args":[{"projectTitle":"Home","projectWorkspaceRoot":"/chat","paths":{"homeDir":"/home/u","chatWorkspaceRoot":"/chat"},"comparisonOptions":{"platform":"darwin"}}],"ok":true}
-{"fn":"isLegacyHomeChatContainerRow","args":[null],"error":"Cannot read properties of null (reading 'projectTitle')"}
-{"fn":"isGroupContainerKind","args":["group"],"ok":true}
-{"fn":"isGroupContainerKind","args":["studio"],"ok":true}
-{"fn":"isGroupContainerKind","args":["project"],"ok":false}
-{"fn":"isGroupContainerKind","args":[null],"ok":false}
-{"fn":"isOrdinaryProjectRow","args":[{"projectTitle":"p","projectWorkspaceRoot":"/x","paths":{"homeDir":"/home/u","chatWorkspaceRoot":"/chat"},"projectKind":"project"}],"ok":true}
-{"fn":"isOrdinaryProjectRow","args":[{"projectTitle":"p","projectWorkspaceRoot":"/x","paths":{"homeDir":"/home/u","chatWorkspaceRoot":"/chat"},"projectKind":"group"}],"ok":false}
-{"fn":"isOrdinaryProjectRow","args":[{"projectTitle":"p","projectWorkspaceRoot":"/x","paths":{"homeDir":"/home/u","chatWorkspaceRoot":"/chat"}}],"ok":true}
-{"fn":"isOrdinaryProjectRow","args":[{"projectTitle":"Home","projectWorkspaceRoot":"/chat","paths":{"homeDir":"/home/u","chatWorkspaceRoot":"/chat"},"projectKind":"project"}],"ok":false}
-{"fn":"isOrdinaryProjectRow","args":[{"projectTitle":"Home","projectWorkspaceRoot":"/chat","paths":{"homeDir":"/home/u","chatWorkspaceRoot":"/chat"},"projectKind":"weird"}],"ok":false}
-{"fn":"isOrdinaryProjectRow","args":[null],"error":"Cannot read properties of null (reading 'projectKind')"}

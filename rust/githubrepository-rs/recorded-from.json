@@ -4,13 +4,13 @@
   "fingerprint": "1f38c29cdcab5da1",
   "coverage": {
     "lines": 210,
-    "reached": 98,
+    "reached": 91,
     "files": [
       {
         "file": "packages/shared/src/githubRepository.ts",
         "lines": 72,
-        "reached": 72,
-        "missed": ""
+        "reached": 65,
+        "missed": "7-8, 11-12, 27, 44, 67"
       },
       {
         "file": "packages/shared/src/pullRequestList.ts",

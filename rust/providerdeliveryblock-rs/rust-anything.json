@@ -1,0 +1,48 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/providerDeliveryBlock.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "providerdeliveryblock-rs",
+  "exports": [
+    {
+      "name": "formatProviderDeliveryBlockDetail",
+      "file": "packages/shared/src/providerDeliveryBlock.ts",
+      "line": 15,
+      "params": [
+        {
+          "name": "blockerDetail",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isProviderDeliveryBlockDetail",
+      "file": "packages/shared/src/providerDeliveryBlock.ts",
+      "line": 23,
+      "params": [
+        {
+          "name": "detail",
+          "ts_type": "string | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

@@ -1,0 +1,17 @@
+{
+  "unit": "packages/shared/src/providerDeliveryBlock.ts",
+  "files": 1,
+  "fingerprint": "5fde4ccaa44d1505",
+  "coverage": {
+    "lines": 27,
+    "reached": 27,
+    "files": [
+      {
+        "file": "packages/shared/src/providerDeliveryBlock.ts",
+        "lines": 27,
+        "reached": 27,
+        "missed": ""
+      }
+    ]
+  }
+}

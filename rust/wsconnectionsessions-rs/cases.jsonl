@@ -1,0 +1,9 @@
+{"fn":"withoutWsConnectionSessionHeaders","args":[true],"ok":{"makeUnsafe":{"$function":"makeUnsafe"}}}
+{"fn":"withoutWsConnectionSessionHeaders","args":[{}],"ok":{"makeUnsafe":{"$function":"makeUnsafe"}}}
+{"fn":"withoutWsConnectionSessionHeaders","args":[[]],"ok":{"makeUnsafe":{"$function":"makeUnsafe"}}}
+{"fn":"withoutWsConnectionSessionHeaders","args":[null],"ok":{"makeUnsafe":{"$function":"makeUnsafe"}}}
+{"fn":"withoutWsConnectionSessionHeaders","args":[{"a":"b"}],"ok":{"a":"b","makeUnsafe":{"$function":"makeUnsafe"}}}
+{"fn":"withoutWsConnectionSessionHeaders","args":[{"a":{"b":"c"}}],"ok":{"a":{"b":"c"},"makeUnsafe":{"$function":"makeUnsafe"}}}
+{"fn":"withoutWsConnectionSessionHeaders","args":[0],"ok":{"makeUnsafe":{"$function":"makeUnsafe"}}}
+{"fn":"withoutWsConnectionSessionHeaders","args":[["a",1]],"ok":{"0":"a","1":1,"makeUnsafe":{"$function":"makeUnsafe"}}}
+{"fn":"withoutWsConnectionSessionHeaders","args":["x"],"ok":{"0":"x","makeUnsafe":{"$function":"makeUnsafe"}}}

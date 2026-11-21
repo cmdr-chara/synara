@@ -1,0 +1,43 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/wsConnectionSessions.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "wsconnectionsessions-rs",
+  "exports": [
+    {
+      "name": "withoutWsConnectionSessionHeaders",
+      "file": "apps/server/src/wsConnectionSessions.ts",
+      "line": 44,
+      "params": [
+        {
+          "name": "serialization",
+          "ts_type": "RpcSerialization.RpcSerialization[\"Service\"]",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "RpcSerialization.RpcSerialization[\"Service\"]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "WsConnectionSessions",
+      "file": "apps/server/src/wsConnectionSessions.ts",
+      "line": 90,
+      "reason": "class: extends another class"
+    },
+    {
+      "name": "provideWsConnectionSession",
+      "file": "apps/server/src/wsConnectionSessions.ts",
+      "line": 136,
+      "reason": "generic over `A`: values of any shape, functions included"
+    }
+  ]
+}

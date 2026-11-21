@@ -1,0 +1,79 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/desktop/src/appSnapManager.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "appsnapmanager-rs",
+  "exports": [
+    {
+      "name": "desktopAppSnapPlatform",
+      "file": "apps/desktop/src/appSnapManager.ts",
+      "line": 305,
+      "params": [
+        {
+          "name": "platform",
+          "ts_type": "NodeJS.Platform",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(\"macos\" | \"windows\" | \"linux\" | \"other\")",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "parseAppSnapHelperMessage",
+      "file": "apps/desktop/src/appSnapManager.ts",
+      "line": 312,
+      "params": [
+        {
+          "name": "line",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(| {\n      type: \"permissions\";\n      accessibility?: \"granted\" | \"denied\";\n      inputMonitoring?: \"granted\" | \"denied\";\n      screenRecording?: \"granted\" | \"denied\";\n    }\n  | { type: \"ready\" }\n  | { type: \"triggered\"; id: string; capturedAt?: string }\n  | { type: \"escape\"; capturedAt?: string }\n  | {\n      type: \"physical-input\";\n      kind: \"keyboard\" | \"pointer\";\n      pid?: number;\n      windowId?: number;\n      /** Bounded origin metadata only; no keycode, text, coordinates or flags. */\n      eventType?: number;\n      sourcePid?: number;\n      sourceStateId?: number;\n      sourceTagged?: boolean;\n      modifierKey?: boolean;\n      capturedAt?: string;\n    }\n  | { type: \"escape-monitor-state\"; armed: boolean; capturedAt?: string }\n  | {\n      type: \"captured\";\n      id: string;\n      capturedAt?: string;\n      path: string;\n      name: string;\n      sourceAppName?: string | null;\n      sourceBundleIdentifier?: string | null;\n      sourceAppIconDataUrl?: string | null;\n      sourceWindowTitle?: string | null;\n    }\n  | { type: \"windows\"; requestId: string; windows: DesktopAppSnapWindowEntry[] }\n  | { type: \"permission-guide\"; state: (\"closed\" | \"granted\") }\n  | {\n      type: \"release-held-input\";\n      released?: boolean;\n      reason?: string;\n      details?: string[];\n    }\n  | {\n      type: \"error\";\n      id?: string;\n      code: string;\n      message: string;\n      capturedAt?: string;\n      requestId?: string;\n    }) | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isPathInsideDirectory",
+      "file": "apps/desktop/src/appSnapManager.ts",
+      "line": 480,
+      "params": [
+        {
+          "name": "directory",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "candidate",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "DesktopAppSnapManager",
+      "file": "apps/desktop/src/appSnapManager.ts",
+      "line": 551,
+      "reason": "class: async or generator method `refreshState`, async or generator method `setEnabled`, async or generator method `setShortcut`, async or generator method `requestPermissions`, async or generator method `startPermissionSetup`, async or generator method `listPendingCaptures`, async or generator method `acknowledgeCapture`, async or generator method `listWindows`, async or generator method `captureWindow`, async or generator method `captureCurrentApp`, async or generator method `releaseHeldInput`"
+    }
+  ]
+}

@@ -1,0 +1,107 @@
+{"fn":"migratePersistedComposerDraftStoreState","args":[[]],"ok":{"draftsByThreadId":{},"draftThreadsByThreadId":{},"projectDraftThreadIdByProjectId":{},"stickyModelSelectionByProvider":{},"stickyActiveProvider":null,"stickyRuntimeMode":null}}
+{"fn":"migratePersistedComposerDraftStoreState","args":[["a",1]],"ok":{"draftsByThreadId":{},"draftThreadsByThreadId":{},"projectDraftThreadIdByProjectId":{},"stickyModelSelectionByProvider":{},"stickyActiveProvider":null,"stickyRuntimeMode":null}}
+{"fn":"migratePersistedComposerDraftStoreState","args":[true],"ok":{"draftsByThreadId":{},"draftThreadsByThreadId":{},"projectDraftThreadIdByProjectId":{},"stickyModelSelectionByProvider":{},"stickyActiveProvider":null,"stickyRuntimeMode":null}}
+{"fn":"migratePersistedComposerDraftStoreState","args":[0],"ok":{"draftsByThreadId":{},"draftThreadsByThreadId":{},"projectDraftThreadIdByProjectId":{},"stickyModelSelectionByProvider":{},"stickyActiveProvider":null,"stickyRuntimeMode":null}}
+{"fn":"migratePersistedComposerDraftStoreState","args":[{}],"ok":{"draftsByThreadId":{},"draftThreadsByThreadId":{},"projectDraftThreadIdByProjectId":{},"stickyModelSelectionByProvider":{},"stickyActiveProvider":null,"stickyRuntimeMode":null}}
+{"fn":"migratePersistedComposerDraftStoreState","args":[null],"ok":{"draftsByThreadId":{},"draftThreadsByThreadId":{},"projectDraftThreadIdByProjectId":{},"stickyModelSelectionByProvider":{},"stickyActiveProvider":null,"stickyRuntimeMode":null}}
+{"fn":"migratePersistedComposerDraftStoreState","args":[{"a":{"b":"c"}}],"ok":{"draftsByThreadId":{},"draftThreadsByThreadId":{},"projectDraftThreadIdByProjectId":{},"stickyModelSelectionByProvider":{},"stickyActiveProvider":null,"stickyRuntimeMode":null}}
+{"fn":"migratePersistedComposerDraftStoreState","args":["x"],"ok":{"draftsByThreadId":{},"draftThreadsByThreadId":{},"projectDraftThreadIdByProjectId":{},"stickyModelSelectionByProvider":{},"stickyActiveProvider":null,"stickyRuntimeMode":null}}
+{"fn":"migratePersistedComposerDraftStoreState","args":[{"a":"b"}],"ok":{"draftsByThreadId":{},"draftThreadsByThreadId":{},"projectDraftThreadIdByProjectId":{},"stickyModelSelectionByProvider":{},"stickyActiveProvider":null,"stickyRuntimeMode":null}}
+{"fn":"migratePersistedComposerDraftStoreState","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6}],"ok":{"draftsByThreadId":{},"draftThreadsByThreadId":{},"projectDraftThreadIdByProjectId":{},"stickyModelSelectionByProvider":{},"stickyActiveProvider":null,"stickyRuntimeMode":null}}
+{"fn":"migratePersistedComposerDraftStoreState","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7}],"ok":{"draftsByThreadId":{},"draftThreadsByThreadId":{},"projectDraftThreadIdByProjectId":{},"stickyModelSelectionByProvider":{},"stickyActiveProvider":null,"stickyRuntimeMode":null}}
+{"fn":"migratePersistedComposerDraftStoreState","args":[[3,1,2]],"ok":{"draftsByThreadId":{},"draftThreadsByThreadId":{},"projectDraftThreadIdByProjectId":{},"stickyModelSelectionByProvider":{},"stickyActiveProvider":null,"stickyRuntimeMode":null}}
+{"fn":"normalizeCurrentPersistedComposerDraftStoreState","args":[true],"ok":{"draftsByThreadId":{},"draftThreadsByThreadId":{},"projectDraftThreadIdByProjectId":{},"stickyModelSelectionByProvider":{},"stickyActiveProvider":null,"stickyRuntimeMode":null}}
+{"fn":"normalizeCurrentPersistedComposerDraftStoreState","args":[["a",1]],"ok":{"draftsByThreadId":{},"draftThreadsByThreadId":{},"projectDraftThreadIdByProjectId":{},"stickyModelSelectionByProvider":{},"stickyActiveProvider":null,"stickyRuntimeMode":null}}
+{"fn":"normalizeCurrentPersistedComposerDraftStoreState","args":[0],"ok":{"draftsByThreadId":{},"draftThreadsByThreadId":{},"projectDraftThreadIdByProjectId":{},"stickyModelSelectionByProvider":{},"stickyActiveProvider":null,"stickyRuntimeMode":null}}
+{"fn":"normalizeCurrentPersistedComposerDraftStoreState","args":[{"a":{"b":"c"}}],"ok":{"draftsByThreadId":{},"draftThreadsByThreadId":{},"projectDraftThreadIdByProjectId":{},"stickyModelSelectionByProvider":{},"stickyActiveProvider":null,"stickyRuntimeMode":null}}
+{"fn":"normalizeCurrentPersistedComposerDraftStoreState","args":[[]],"ok":{"draftsByThreadId":{},"draftThreadsByThreadId":{},"projectDraftThreadIdByProjectId":{},"stickyModelSelectionByProvider":{},"stickyActiveProvider":null,"stickyRuntimeMode":null}}
+{"fn":"normalizeCurrentPersistedComposerDraftStoreState","args":["x"],"ok":{"draftsByThreadId":{},"draftThreadsByThreadId":{},"projectDraftThreadIdByProjectId":{},"stickyModelSelectionByProvider":{},"stickyActiveProvider":null,"stickyRuntimeMode":null}}
+{"fn":"normalizeCurrentPersistedComposerDraftStoreState","args":[{"a":"b"}],"ok":{"draftsByThreadId":{},"draftThreadsByThreadId":{},"projectDraftThreadIdByProjectId":{},"stickyModelSelectionByProvider":{},"stickyActiveProvider":null,"stickyRuntimeMode":null}}
+{"fn":"normalizeCurrentPersistedComposerDraftStoreState","args":[{}],"ok":{"draftsByThreadId":{},"draftThreadsByThreadId":{},"projectDraftThreadIdByProjectId":{},"stickyModelSelectionByProvider":{},"stickyActiveProvider":null,"stickyRuntimeMode":null}}
+{"fn":"normalizeCurrentPersistedComposerDraftStoreState","args":[null],"ok":{"draftsByThreadId":{},"draftThreadsByThreadId":{},"projectDraftThreadIdByProjectId":{},"stickyModelSelectionByProvider":{},"stickyActiveProvider":null,"stickyRuntimeMode":null}}
+{"fn":"normalizeCurrentPersistedComposerDraftStoreState","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6}],"ok":{"draftsByThreadId":{},"draftThreadsByThreadId":{},"projectDraftThreadIdByProjectId":{},"stickyModelSelectionByProvider":{},"stickyActiveProvider":null,"stickyRuntimeMode":null}}
+{"fn":"normalizeCurrentPersistedComposerDraftStoreState","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7}],"ok":{"draftsByThreadId":{},"draftThreadsByThreadId":{},"projectDraftThreadIdByProjectId":{},"stickyModelSelectionByProvider":{},"stickyActiveProvider":null,"stickyRuntimeMode":null}}
+{"fn":"normalizeCurrentPersistedComposerDraftStoreState","args":[[3,1,2]],"ok":{"draftsByThreadId":{},"draftThreadsByThreadId":{},"projectDraftThreadIdByProjectId":{},"stickyModelSelectionByProvider":{},"stickyActiveProvider":null,"stickyRuntimeMode":null}}
+{"fn":"toHydratedThreadDraft","args":[["a",1],["a",1]],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":[["a",1],true],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":[{"a":{"b":"c"}},true],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":[null,["a",1]],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":[true,true],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":[["a",1],{}],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":[{"a":"b"},["a",1]],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":["x",{"a":{"b":"c"}}],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":[0,[]],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":[true,null],"error":"null is not an object (evaluating 'persistedDraft.modelSelectionByProvider')"}
+{"fn":"toHydratedThreadDraft","args":[{"a":{"b":"c"}},{}],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":[["a",1],0],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":[[],0],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":[{"a":"b"},0],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":[true,["a",1]],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":["x",["a",1]],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":[null,null],"error":"null is not an object (evaluating 'persistedDraft.modelSelectionByProvider')"}
+{"fn":"toHydratedThreadDraft","args":["x","x"],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":["x",true],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":[true,{"a":{"b":"c"}}],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":[["a",1],[]],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":[{},"x"],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":[0,["a",1]],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":[{"a":"b"},{"a":{"b":"c"}}],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":[true,{"a":"b"}],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":[["a",1],"x"],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":[0,0],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":[{"a":"b"},{}],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":[null,{"a":{"b":"c"}}],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":["x",{"a":"b"}],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":[{"a":{"b":"c"}},"x"],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":[{},{"a":"b"}],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":[[],null],"error":"null is not an object (evaluating 'persistedDraft.modelSelectionByProvider')"}
+{"fn":"toHydratedThreadDraft","args":[{"a":"b"},true],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":[[],[]],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":[{},null],"error":"null is not an object (evaluating 'persistedDraft.modelSelectionByProvider')"}
+{"fn":"toHydratedThreadDraft","args":["x",{}],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":[null,{}],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":[{"a":{"b":"c"}},["a",1]],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":[{},0],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":["x",0],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":[true,0],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":[true,{}],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":[{"a":"b"},null],"error":"null is not an object (evaluating 'persistedDraft.modelSelectionByProvider')"}
+{"fn":"toHydratedThreadDraft","args":[[],["a",1]],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":[null,"x"],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":[{},true],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":[null,0],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":[{"a":"b"},[]],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":[["a",1],{"a":{"b":"c"}}],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":[[],{"a":"b"}],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":[{"a":{"b":"c"}},{"a":"b"}],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":[{},{}],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":[null,{"a":"b"}],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":["x",null],"error":"null is not an object (evaluating 'persistedDraft.modelSelectionByProvider')"}
+{"fn":"toHydratedThreadDraft","args":[["a",1],null],"error":"null is not an object (evaluating 'persistedDraft.modelSelectionByProvider')"}
+{"fn":"toHydratedThreadDraft","args":[0,null],"error":"null is not an object (evaluating 'persistedDraft.modelSelectionByProvider')"}
+{"fn":"toHydratedThreadDraft","args":[0,{"a":"b"}],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":[{},["a",1]],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":[{"a":"b"},"x"],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":[{"a":{"b":"c"}},{"a":{"b":"c"}}],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":[{"a":{"b":"c"}},0],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":[[],{}],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":[{"a":"b"},{"a":"b"}],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":[0,"x"],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":[["a",1],{"a":"b"}],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":[0,{"a":{"b":"c"}}],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":[{"a":{"b":"c"}},null],"error":"null is not an object (evaluating 'persistedDraft.modelSelectionByProvider')"}
+{"fn":"toHydratedThreadDraft","args":[[],"x"],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":[[],{"a":{"b":"c"}}],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":[true,[]],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":[0,true],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":["X","x"],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":[0,{}],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":[{"a":{"b":"c"}},[]],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":[{},[]],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":[{},{"a":{"b":"c"}}],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":[[],true],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":["x",[]],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":[null,true],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":[true,"x"],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":[null,[]],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}
+{"fn":"toHydratedThreadDraft","args":["x","X"],"error":"undefined is not an object (evaluating 'attachments.flatMap')"}

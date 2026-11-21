@@ -1,0 +1,79 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/composerDraftPersistence.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "composerdraftpersistence-rs",
+  "exports": [
+    {
+      "name": "migratePersistedComposerDraftStoreState",
+      "file": "apps/web/src/composerDraftPersistence.ts",
+      "line": 1198,
+      "params": [
+        {
+          "name": "persistedState",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof PersistedComposerDraftStoreState.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "normalizeCurrentPersistedComposerDraftStoreState",
+      "file": "apps/web/src/composerDraftPersistence.ts",
+      "line": 1548,
+      "params": [
+        {
+          "name": "persistedState",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof PersistedComposerDraftStoreState.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "toHydratedThreadDraft",
+      "file": "apps/web/src/composerDraftPersistence.ts",
+      "line": 1688,
+      "params": [
+        {
+          "name": "threadId",
+          "ts_type": "typeof typeof typeof typeof ThreadId.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "persistedDraft",
+          "ts_type": "typeof typeof typeof typeof PersistedComposerThreadDraftState.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ComposerThreadDraftState",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "partializeComposerDraftStoreState",
+      "file": "apps/web/src/composerDraftPersistence.ts",
+      "line": 1206,
+      "reason": "uses `ComposerDraftStoreState`, which has function members"
+    }
+  ]
+}

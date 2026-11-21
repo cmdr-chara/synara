@@ -230,3 +230,40 @@
 {"fn":"isPathInside","args":["日本語のテキスト","aⅠb Ⅻ"],"ok":false}
 {"fn":"isPathInside","args":["日本語のテキスト","a𐐀b 𝐀bc"],"ok":false}
 {"fn":"isPathInside","args":["日本語のテキスト","कि ٣٤"],"ok":false}
+{"fn":"isPathInside","args":["/a","/a/..foo"],"ok":true}
+{"fn":"isPathInside","args":["/a","/a/..foo/b"],"ok":true}
+{"fn":"isPathInside","args":["a","a/..b"],"ok":true}
+{"fn":"isPathInside","args":["/a","/a/../x"],"ok":false}
+{"fn":"isPathInside","args":["/a","/a/.."],"ok":false}
+{"fn":"isPathInside","args":["/a/b","/a"],"ok":false}
+{"fn":"isPathInside","args":["a","a\\b"],"ok":false}
+{"fn":"isPathInside","args":["a\\b","a\\b\\c"],"ok":false}
+{"fn":"isPathInside","args":["a","a/b/../c"],"ok":true}
+{"fn":"isPathInside","args":["/a","/a/b/../c"],"ok":true}
+{"fn":"isPathInside","args":["/a/b","/a/../b"],"ok":false}
+{"fn":"isPathInside","args":["/a","/a/./b"],"ok":true}
+{"fn":"isPathInside","args":["/a","/a/b/./c"],"ok":true}
+{"fn":"isPathInside","args":["a","a//b"],"ok":true}
+{"fn":"isPathInside","args":["/a","a/b"],"ok":false}
+{"fn":"isPathInside","args":["a/b","/a/b"],"ok":false}
+{"fn":"isPathInside","args":["/a/","/a"],"ok":true}
+{"fn":"isPathInside","args":["/a","/a/"],"ok":true}
+{"fn":"isPathInside","args":["a","a"],"ok":true}
+{"fn":"isPathInside","args":["a","a/"],"ok":true}
+{"fn":"isPathInside","args":["a/","a"],"ok":true}
+{"fn":"isPathInside","args":["/",""],"ok":true}
+{"fn":"isPathInside","args":["","/"],"ok":false}
+{"fn":"isPathInside","args":[".",""],"ok":true}
+{"fn":"isPathInside","args":["..","."],"ok":true}
+{"fn":"isPathInside","args":[".",".."],"ok":false}
+{"fn":"isPathInside","args":["..",".."],"ok":true}
+{"fn":"isPathInside","args":["/a","/a/..x"],"ok":true}
+{"fn":"isPathInside","args":["x","x/y/..z"],"ok":true}
+{"fn":"isPathInside","args":["/a","/a/b/../../c"],"ok":false}
+{"fn":"isPathInside","args":["/a/b","/a/c"],"ok":false}
+{"fn":"isPathInside","args":["/","/.."],"ok":true}
+{"fn":"isPathInside","args":["/","/..x"],"ok":true}
+{"fn":"isPathInside","args":["C:\\a","C:\\a\\b"],"ok":false}
+{"fn":"isPathInside","args":["\\\\server","\\\\server\\x"],"ok":false}
+{"fn":"isPathInside","args":["/tmp/syn","/tmp/synara"],"ok":false}
+{"fn":"isPathInside","args":["/a","/a\u0000b"],"ok":false}

@@ -1,0 +1,48 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/analytics/diagnosticsPrivacySql.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "diagnosticsprivacysql-rs",
+  "exports": [
+    {
+      "name": "diagnosticMetadataSql",
+      "file": "apps/analytics/diagnosticsPrivacySql.ts",
+      "line": 49,
+      "params": [
+        {
+          "name": "events",
+          "ts_type": "ReadonlySet<string>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Record<string, string>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "diagnosticReadCteSql",
+      "file": "apps/analytics/diagnosticsPrivacySql.ts",
+      "line": 72,
+      "params": [
+        {
+          "name": "metadata",
+          "ts_type": "Record<string, string>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

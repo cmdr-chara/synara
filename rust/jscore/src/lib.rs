@@ -34,6 +34,47 @@ pub fn synara_desktop_flavor() -> &'static str {
     })
 }
 
+/// JS `String(v)` / template-literal interpolation of a JSON value:
+/// `undefined`→`"undefined"`, `null`→`"null"`, arrays join by `,`,
+/// plain objects become `"[object Object]"`, numbers use `number_to_string`.
+pub fn js_to_string(v: &Value) -> String {
+    match v {
+        Value::Null => "null".to_string(),
+        Value::Bool(b) => b.to_string(),
+        Value::Number(n) => number_to_string(n.as_f64().unwrap_or(f64::NAN)),
+        Value::String(s) => s.clone(),
+        Value::Array(a) => {
+            // Array.prototype.join: null/undefined elements become "".
+            a.iter()
+                .map(|e| match e {
+                    Value::Null => String::new(),
+                    Value::Object(m) if m.get("$undefined").is_some() => String::new(),
+                    _ => js_to_string(e),
+                })
+                .collect::<Vec<_>>()
+                .join(",")
+        }
+        Value::Object(m) => {
+            if m.get("$undefined").is_some() {
+                return "undefined".to_string();
+            }
+            if let Some(n) = m.get("$num").and_then(Value::as_str) {
+                return match n {
+                    "NaN" => "NaN".to_string(),
+                    "Infinity" => "Infinity".to_string(),
+                    "-Infinity" => "-Infinity".to_string(),
+                    "-0" => "0".to_string(),
+                    _ => n.parse().map(|x: f64| number_to_string(x)).unwrap_or_default(),
+                };
+            }
+            if m.get("$utf16").is_some() {
+                return String::new();
+            }
+            "[object Object]".to_string()
+        }
+    }
+}
+
 /// `Number::toString` (ECMA-262): `NaN`/`Infinity` keep their JS spellings,
 /// `-0` is `"0"`, integral values print without a fraction, and the fixed/
 /// exponential cutovers are at `1e21` and `1e-6`.

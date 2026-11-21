@@ -1,0 +1,49 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/backoff.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "backoff-rs",
+  "exports": [
+    {
+      "name": "exponentialBackoffMs",
+      "file": "apps/server/src/backoff.ts",
+      "line": 7,
+      "params": [
+        {
+          "name": "failures",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "baseMs",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "maxMs",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "number",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "jitterMs",
+      "file": "apps/server/src/backoff.ts",
+      "line": 16,
+      "reason": "takes or returns a function"
+    }
+  ]
+}

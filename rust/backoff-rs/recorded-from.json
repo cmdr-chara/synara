@@ -1,0 +1,17 @@
+{
+  "unit": "apps/server/src/backoff.ts",
+  "files": 1,
+  "fingerprint": "6a80e7b174faeae8",
+  "coverage": {
+    "lines": 23,
+    "reached": 14,
+    "files": [
+      {
+        "file": "apps/server/src/backoff.ts",
+        "lines": 23,
+        "reached": 14,
+        "missed": "17-25"
+      }
+    ]
+  }
+}

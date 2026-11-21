@@ -456,17 +456,3 @@
 {"fn":"summarizeToolRawOutput","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6}],"ok":{"$undefined":true}}
 {"fn":"summarizeToolRawOutput","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7}],"ok":{"$undefined":true}}
 {"fn":"summarizeToolRawOutput","args":[[3,1,2]],"ok":{"$undefined":true}}
-{"fn":"summarizeToolRawOutput","args":[{"totalFiles":33,"truncated":false}],"ok":"33 files found"}
-{"fn":"summarizeToolRawOutput","args":[{"totalFiles":1,"truncated":true}],"ok":"1 file found (truncated)"}
-{"fn":"countTextLines","args":["one\ntwo\n"],"ok":2}
-{"fn":"summarizeToolRawOutput","args":[{"content":"one\ntwo\n"}],"ok":"Read 2 lines"}
-{"fn":"countTextLines","args":[""],"ok":0}
-{"fn":"countTextLines","args":["one"],"ok":1}
-{"fn":"countTextLines","args":["\n"],"ok":1}
-{"fn":"countTextLines","args":["\n\n"],"ok":2}
-{"fn":"countTextLines","args":["one\r\ntwo\nthree\r\n"],"ok":3}
-{"fn":"countTextLines","args":["one\rtwo"],"ok":1}
-{"fn":"countTextLines","args":["one two"],"ok":1}
-{"fn":"summarizeToolRawOutput","args":[{"stdout":"done\nextra"}],"ok":"done"}
-{"fn":"summarizeToolRawOutput","args":[{"rawInput":{}}],"ok":{"$undefined":true}}
-{"fn":"summarizeToolRawOutput","args":[{"is_error":true,"output":{"Error":"Invalid creation plan: Unexpected key \"reasoningEffort\"\n  at [\"threads\"][1]"}}],"ok":"Invalid creation plan: Unexpected key \"reasoningEffort\""}

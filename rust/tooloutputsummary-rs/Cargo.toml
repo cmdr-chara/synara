@@ -12,6 +12,7 @@ crate-type = ["cdylib", "rlib"]
 [dependencies]
 napi = "3"
 napi-derive = "3"
+regex = "1"
 serde = "1"
 serde_json = { version = "1", features = ["preserve_order", "float_roundtrip", "unbounded_depth"] }
 

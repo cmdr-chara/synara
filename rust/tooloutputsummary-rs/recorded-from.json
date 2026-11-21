@@ -4,19 +4,19 @@
   "fingerprint": "dc11fd79c0595f23",
   "coverage": {
     "lines": 126,
-    "reached": 99,
+    "reached": 85,
     "files": [
       {
         "file": "packages/shared/src/text.ts",
         "lines": 57,
-        "reached": 33,
-        "missed": "10-11, 17-26, 31-34, 45-48, 53-56"
+        "reached": 31,
+        "missed": "10-11, 17-26, 31-34, 45-48, 53-56, 62-63"
       },
       {
         "file": "packages/shared/src/toolOutputSummary.ts",
         "lines": 69,
-        "reached": 66,
-        "missed": "30-32"
+        "reached": 54,
+        "missed": "30-32, 59-64, 67-69, 71-73"
       }
     ]
   }

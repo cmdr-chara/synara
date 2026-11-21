@@ -1,0 +1,235 @@
+{"fn":"makeLiveUiStreamLagState","args":[],"ok":{"ingressCount":0,"egressCount":0,"reportedDroppedAtLeast":0}}
+{"fn":"normalizeLiveUiStreamBufferCapacity","args":[1],"ok":1}
+{"fn":"normalizeLiveUiStreamBufferCapacity","args":[0.5],"ok":1}
+{"fn":"normalizeLiveUiStreamBufferCapacity","args":[{"$num":"Infinity"}],"ok":1024}
+{"fn":"normalizeLiveUiStreamBufferCapacity","args":[-1],"ok":1}
+{"fn":"normalizeLiveUiStreamBufferCapacity","args":[3],"ok":3}
+{"fn":"normalizeLiveUiStreamBufferCapacity","args":[1000],"ok":1000}
+{"fn":"normalizeLiveUiStreamBufferCapacity","args":[10],"ok":10}
+{"fn":"normalizeLiveUiStreamBufferCapacity","args":[0],"ok":1}
+{"fn":"normalizeLiveUiStreamBufferCapacity","args":[42],"ok":42}
+{"fn":"normalizeLiveUiStreamBufferCapacity","args":[2147483648],"ok":2147483648}
+{"fn":"normalizeLiveUiStreamBufferCapacity","args":[2],"ok":2}
+{"fn":"normalizeLiveUiStreamBufferCapacity","args":[{"$num":"NaN"}],"ok":1024}
+{"fn":"normalizeLiveUiStreamBufferCapacity","args":[1000000],"ok":1000000}
+{"fn":"normalizeLiveUiStreamBufferCapacity","args":[100],"ok":100}
+{"fn":"normalizeLiveUiStreamBufferCapacity","args":[-2.5],"ok":1}
+{"fn":"normalizeLiveUiStreamBufferCapacity","args":[{"$num":"-Infinity"}],"ok":1024}
+{"fn":"normalizeLiveUiStreamBufferCapacity","args":[{"$num":"-0"}],"ok":1}
+{"fn":"normalizeLiveUiStreamBufferCapacity","args":[9007199254740992],"ok":9007199254740992}
+{"fn":"normalizeLiveUiStreamBufferCapacity","args":[-7.5],"ok":1}
+{"fn":"normalizeLiveUiStreamBufferCapacity","args":[0.1],"ok":1}
+{"fn":"normalizeLiveUiStreamBufferCapacity","args":[0.30000000000000004],"ok":1}
+{"fn":"normalizeLiveUiStreamBufferCapacity","args":[1e+21],"ok":1e+21}
+{"fn":"normalizeLiveUiStreamBufferCapacity","args":[1e-7],"ok":1}
+{"fn":"normalizeLiveUiStreamBufferCapacity","args":[5e-324],"ok":1}
+{"fn":"normalizeLiveUiStreamBufferCapacity","args":[1.7976931348623157e+308],"ok":1.7976931348623157e+308}
+{"fn":"recordLiveUiStreamIngress","args":[0,1000000,"x"],"error":"Cannot create property 'ingressCount' on number '0'"}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":-1,"egressCount":-2.5,"reportedDroppedAtLeast":1000},{"$num":"-0"},0],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":3,"egressCount":10,"reportedDroppedAtLeast":10},1000,0],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":2147483648,"egressCount":{"$num":"-Infinity"},"reportedDroppedAtLeast":-1},9007199254740992,true],"ok":{"$num":"Infinity"}}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":1,"egressCount":2,"reportedDroppedAtLeast":{"$num":"Infinity"}},42,null],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":9007199254740992,"egressCount":42,"reportedDroppedAtLeast":0},3,{}],"ok":9007199254740947}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":{"$num":"NaN"},"egressCount":2147483648,"reportedDroppedAtLeast":0},2,{"$undefined":true}],"ok":{"$num":"NaN"}}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":0,"egressCount":42,"reportedDroppedAtLeast":100},9007199254740992,{"a":{"b":"c"}}],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":1,"egressCount":9007199254740992,"reportedDroppedAtLeast":-1},1000000,{"a":{"b":"c"}}],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":{"$num":"NaN"},"egressCount":{"$num":"-0"},"reportedDroppedAtLeast":2147483648},100,[]],"ok":{"$num":"NaN"}}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":0.5,"egressCount":0.5,"reportedDroppedAtLeast":-1},2,[]],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":2,"egressCount":100,"reportedDroppedAtLeast":{"$num":"-Infinity"}},-1,{}],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":3,"egressCount":3,"reportedDroppedAtLeast":-2.5},0.5,null],"ok":0.5}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":{"$num":"-Infinity"},"egressCount":{"$num":"-0"},"reportedDroppedAtLeast":1000000},1000,{"$undefined":true}],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":100,"egressCount":{"$num":"-0"},"reportedDroppedAtLeast":1000},1000000,null],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[[],1000000,"x"],"ok":{"$num":"NaN"}}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":1000000,"egressCount":3,"reportedDroppedAtLeast":-1},1,null],"ok":999997}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":{"$num":"Infinity"},"egressCount":-1,"reportedDroppedAtLeast":2147483648},{"$num":"NaN"},"x"],"ok":{"$num":"NaN"}}
+{"fn":"recordLiveUiStreamIngress","args":[null,1000000,{"$undefined":true}],"error":"Cannot read properties of null (reading 'ingressCount')"}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":1000,"egressCount":{"$num":"-Infinity"},"reportedDroppedAtLeast":{"$num":"Infinity"}},1000000,true],"ok":{"$num":"Infinity"}}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":42,"egressCount":{"$num":"-Infinity"},"reportedDroppedAtLeast":3},42,{"$undefined":true}],"ok":{"$num":"Infinity"}}
+{"fn":"recordLiveUiStreamIngress","args":[{"a":{"b":"c"}},42,["a",1]],"ok":{"$num":"NaN"}}
+{"fn":"recordLiveUiStreamIngress","args":[true,1000000,"x"],"error":"Cannot create property 'ingressCount' on boolean 'true'"}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":2,"egressCount":{"$num":"Infinity"},"reportedDroppedAtLeast":{"$num":"-Infinity"}},42,["a",1]],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":9007199254740992,"egressCount":{"$num":"-Infinity"},"reportedDroppedAtLeast":100},3,[]],"ok":{"$num":"Infinity"}}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":{"$num":"Infinity"},"egressCount":2,"reportedDroppedAtLeast":{"$num":"Infinity"}},{"$num":"-Infinity"},null],"ok":{"$num":"Infinity"}}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":-1,"egressCount":2147483648,"reportedDroppedAtLeast":-1},{"$num":"-0"},"x"],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":1,"egressCount":100,"reportedDroppedAtLeast":{"$num":"Infinity"}},0,{}],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":1,"egressCount":{"$num":"Infinity"},"reportedDroppedAtLeast":{"$num":"-0"}},0,true],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":2,"egressCount":1000,"reportedDroppedAtLeast":42},{"$num":"Infinity"},{"a":{"b":"c"}}],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":{"$num":"-Infinity"},"egressCount":{"$num":"Infinity"},"reportedDroppedAtLeast":2},42,{"a":{"b":"c"}}],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":9007199254740992,"egressCount":0,"reportedDroppedAtLeast":-2.5},{"$num":"NaN"}],"ok":{"$num":"NaN"}}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":{"$num":"Infinity"},"egressCount":1000,"reportedDroppedAtLeast":1000000},0.5,{}],"ok":{"$num":"Infinity"}}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":{"$num":"Infinity"},"egressCount":100,"reportedDroppedAtLeast":-2.5},10,true],"ok":{"$num":"Infinity"}}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":1000000,"egressCount":-1,"reportedDroppedAtLeast":3},0,{"a":{"b":"c"}}],"ok":1000002}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":3,"egressCount":42,"reportedDroppedAtLeast":1},100,null],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":-2.5,"egressCount":0.5,"reportedDroppedAtLeast":100},1000000],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":{"$num":"NaN"},"egressCount":{"$num":"Infinity"},"reportedDroppedAtLeast":3},2147483648,{"a":"b"}],"ok":{"$num":"NaN"}}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":{"$num":"Infinity"},"egressCount":{"$num":"-Infinity"},"reportedDroppedAtLeast":9007199254740992},3,null],"ok":{"$num":"Infinity"}}
+{"fn":"recordLiveUiStreamIngress","args":[[],1000,{}],"ok":{"$num":"NaN"}}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":100,"egressCount":2147483648,"reportedDroppedAtLeast":2147483648},10,{}],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":0.5,"egressCount":0.5,"reportedDroppedAtLeast":{"$num":"-Infinity"}},3,"x"],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"a":{"b":"c"}},1,{"a":{"b":"c"}}],"ok":{"$num":"NaN"}}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":10,"egressCount":1,"reportedDroppedAtLeast":9007199254740992},1000,{"$undefined":true}],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":-1,"egressCount":{"$num":"-Infinity"},"reportedDroppedAtLeast":{"$num":"-0"}},{"$num":"NaN"},{}],"ok":{"$num":"NaN"}}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":1,"egressCount":{"$num":"NaN"},"reportedDroppedAtLeast":{"$num":"Infinity"}},{"$num":"Infinity"},{"a":{"b":"c"}}],"ok":{"$num":"NaN"}}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":{"$num":"NaN"},"egressCount":9007199254740992,"reportedDroppedAtLeast":2},{"$num":"-0"},{"$undefined":true}],"ok":{"$num":"NaN"}}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":0.5,"egressCount":{"$num":"-Infinity"},"reportedDroppedAtLeast":2},0.5,{"a":{"b":"c"}}],"ok":{"$num":"Infinity"}}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":0.5,"egressCount":100,"reportedDroppedAtLeast":1000},{"$num":"-Infinity"},{"a":"b"}],"ok":{"$num":"Infinity"}}
+{"fn":"recordLiveUiStreamIngress","args":[{"a":"b"},1000000],"ok":{"$num":"NaN"}}
+{"fn":"recordLiveUiStreamIngress","args":[{},1000000,"x"],"ok":{"$num":"NaN"}}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":{"$num":"-Infinity"},"egressCount":{"$num":"Infinity"},"reportedDroppedAtLeast":9007199254740992},{"$num":"Infinity"}],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":{"$num":"NaN"},"egressCount":9007199254740992,"reportedDroppedAtLeast":2147483648},100,["a",1]],"ok":{"$num":"NaN"}}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":2147483648,"egressCount":100,"reportedDroppedAtLeast":0},0.5,true],"ok":2147483548.5}
+{"fn":"recordLiveUiStreamIngress","args":[0,1000000,0],"error":"Cannot create property 'ingressCount' on number '0'"}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":-2.5,"egressCount":1000000,"reportedDroppedAtLeast":1000000},1000000,{"$undefined":true}],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"a":{"b":"c"}},100,true],"ok":{"$num":"NaN"}}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":{"$num":"-Infinity"},"egressCount":10,"reportedDroppedAtLeast":{"$num":"-0"}},100,{"$undefined":true}],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":2,"egressCount":0.5,"reportedDroppedAtLeast":1000},{"$num":"-0"},true],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":2147483648,"egressCount":{"$num":"NaN"},"reportedDroppedAtLeast":100},{"$num":"Infinity"},null],"ok":{"$num":"NaN"}}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":{"$num":"-Infinity"},"egressCount":1000000,"reportedDroppedAtLeast":{"$num":"-Infinity"}},10,{"$undefined":true}],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":100,"egressCount":0,"reportedDroppedAtLeast":-1},9007199254740992,null],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":{"$num":"NaN"},"egressCount":{"$num":"Infinity"},"reportedDroppedAtLeast":-2.5},1000,[]],"ok":{"$num":"NaN"}}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":0,"egressCount":0.5,"reportedDroppedAtLeast":2},10,{}],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":0,"egressCount":{"$num":"NaN"},"reportedDroppedAtLeast":10},{"$num":"NaN"},true],"ok":{"$num":"NaN"}}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":3,"egressCount":{"$num":"-0"},"reportedDroppedAtLeast":{"$num":"NaN"}},{"$num":"NaN"},{"a":{"b":"c"}}],"ok":{"$num":"NaN"}}
+{"fn":"recordLiveUiStreamIngress","args":[{},{"$num":"-Infinity"},true],"ok":{"$num":"NaN"}}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":10,"egressCount":-1,"reportedDroppedAtLeast":2147483648},2147483648,{"a":"b"}],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"a":"b"},0.5,0],"ok":{"$num":"NaN"}}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":-2.5,"egressCount":{"$num":"NaN"},"reportedDroppedAtLeast":100},2147483648,["a",1]],"ok":{"$num":"NaN"}}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":-2.5,"egressCount":0,"reportedDroppedAtLeast":100},42,{"$undefined":true}],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[true,-2.5,"x"],"error":"Cannot create property 'ingressCount' on boolean 'true'"}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":1000000,"egressCount":1000000,"reportedDroppedAtLeast":{"$num":"Infinity"}},100,{"a":{"b":"c"}}],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{},100,"x"],"ok":{"$num":"NaN"}}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":-1,"egressCount":-2.5,"reportedDroppedAtLeast":10},{"$num":"-0"},0],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":{"$num":"NaN"},"egressCount":3,"reportedDroppedAtLeast":9007199254740992},9007199254740992,0],"ok":{"$num":"NaN"}}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":{"$num":"-0"},"egressCount":42,"reportedDroppedAtLeast":1000},-1,["a",1]],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":-1,"egressCount":9007199254740992,"reportedDroppedAtLeast":1000},100,{"a":"b"}],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[0,10,0],"error":"Cannot create property 'ingressCount' on number '0'"}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":9007199254740992,"egressCount":9007199254740992,"reportedDroppedAtLeast":100},0.5,0],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":-2.5,"egressCount":1000000,"reportedDroppedAtLeast":2},-2.5,{"a":{"b":"c"}}],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":0.5,"egressCount":2147483648,"reportedDroppedAtLeast":-2.5},2147483648,[]],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":1000000,"egressCount":1000000,"reportedDroppedAtLeast":100},1,0],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":1,"egressCount":1,"reportedDroppedAtLeast":1000000},1000000,{"a":"b"}],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":1000000,"egressCount":2,"reportedDroppedAtLeast":{"$num":"-Infinity"}},1,true],"ok":999998}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":0,"egressCount":-1,"reportedDroppedAtLeast":2},{"$num":"Infinity"},0],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":3,"egressCount":{"$num":"NaN"},"reportedDroppedAtLeast":2},2147483648,{"$undefined":true}],"ok":{"$num":"NaN"}}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":{"$num":"Infinity"},"egressCount":0,"reportedDroppedAtLeast":2147483648},{"$num":"Infinity"},"x"],"ok":{"$num":"NaN"}}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":10,"egressCount":-2.5,"reportedDroppedAtLeast":3},{"$num":"NaN"},true],"ok":{"$num":"NaN"}}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":{"$num":"-0"},"egressCount":{"$num":"-Infinity"},"reportedDroppedAtLeast":{"$num":"-0"}},-1],"ok":{"$num":"Infinity"}}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":{"$num":"-0"},"egressCount":2147483648,"reportedDroppedAtLeast":1000000},{"$num":"Infinity"},0],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":0,"egressCount":9007199254740992,"reportedDroppedAtLeast":1},{"$num":"-Infinity"},0],"ok":{"$num":"Infinity"}}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":0,"egressCount":1000000,"reportedDroppedAtLeast":{"$num":"-Infinity"}},1000,{"a":"b"}],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":1000000,"egressCount":0.5,"reportedDroppedAtLeast":42},0,{}],"ok":1000000.5}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":-2.5,"egressCount":1000000,"reportedDroppedAtLeast":2147483648},100,null],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":-2.5,"egressCount":0.5,"reportedDroppedAtLeast":1},2147483648,{"a":{"b":"c"}}],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":1000,"egressCount":{"$num":"-0"},"reportedDroppedAtLeast":1},0,[]],"ok":1001}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":{"$num":"-0"},"egressCount":{"$num":"Infinity"},"reportedDroppedAtLeast":1000000},{"$num":"-0"},["a",1]],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{},-1,["a",1]],"ok":{"$num":"NaN"}}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":10,"egressCount":1,"reportedDroppedAtLeast":1000},3],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":0,"egressCount":{"$num":"Infinity"},"reportedDroppedAtLeast":1000000},2147483648,{"a":"b"}],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":1000000,"egressCount":1,"reportedDroppedAtLeast":10},1000000,{}],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":-2.5,"egressCount":10,"reportedDroppedAtLeast":{"$num":"NaN"}},0],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":{"$num":"NaN"},"egressCount":2147483648,"reportedDroppedAtLeast":{"$num":"NaN"}},0,{}],"ok":{"$num":"NaN"}}
+{"fn":"recordLiveUiStreamIngress","args":[true,0.5,{"$undefined":true}],"error":"Cannot create property 'ingressCount' on boolean 'true'"}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":1000000,"egressCount":{"$num":"NaN"},"reportedDroppedAtLeast":{"$num":"-Infinity"}},-2.5,{"a":"b"}],"ok":{"$num":"NaN"}}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":100,"egressCount":2147483648,"reportedDroppedAtLeast":0.5},0.5,{"$undefined":true}],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":100,"egressCount":{"$num":"Infinity"},"reportedDroppedAtLeast":1000},-2.5],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":{"$num":"-Infinity"},"egressCount":0.5,"reportedDroppedAtLeast":{"$num":"NaN"}},9007199254740992,null],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":{"$num":"Infinity"},"egressCount":1000000,"reportedDroppedAtLeast":0},{"$num":"Infinity"},{"$undefined":true}],"ok":{"$num":"NaN"}}
+{"fn":"recordLiveUiStreamIngress","args":[["a",1],10,0],"ok":{"$num":"NaN"}}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":1000,"egressCount":100,"reportedDroppedAtLeast":{"$num":"Infinity"}},42],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":1,"egressCount":1000000,"reportedDroppedAtLeast":2147483648},0.5,["a",1]],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":9007199254740992,"egressCount":0.5,"reportedDroppedAtLeast":0},9007199254740992,["a",1]],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":3,"egressCount":0,"reportedDroppedAtLeast":3},1,true],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":3,"egressCount":0.5,"reportedDroppedAtLeast":{"$num":"-0"}},{"$num":"NaN"}],"ok":{"$num":"NaN"}}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":1,"egressCount":3,"reportedDroppedAtLeast":1000},{"$num":"NaN"}],"ok":{"$num":"NaN"}}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":2,"egressCount":{"$num":"-Infinity"},"reportedDroppedAtLeast":-1},10,0],"ok":{"$num":"Infinity"}}
+{"fn":"recordLiveUiStreamIngress","args":["x",{"$num":"-0"},0],"error":"Cannot create property 'ingressCount' on string 'x'"}
+{"fn":"recordLiveUiStreamIngress","args":[{},3],"ok":{"$num":"NaN"}}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":9007199254740992,"egressCount":{"$num":"NaN"},"reportedDroppedAtLeast":3},{"$num":"Infinity"},0],"ok":{"$num":"NaN"}}
+{"fn":"recordLiveUiStreamIngress","args":[{"a":"b"},{"$num":"-0"},{}],"ok":{"$num":"NaN"}}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":1,"egressCount":-2.5,"reportedDroppedAtLeast":2147483648},42,{"$undefined":true}],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"a":{"b":"c"}},{"$num":"-0"},{"$undefined":true}],"ok":{"$num":"NaN"}}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":0,"egressCount":0,"reportedDroppedAtLeast":3},3,{"$undefined":true}],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":1000000,"egressCount":{"$num":"-0"},"reportedDroppedAtLeast":10},{"$num":"NaN"},{"a":"b"}],"ok":{"$num":"NaN"}}
+{"fn":"recordLiveUiStreamIngress","args":[true,10,{"a":"b"}],"error":"Cannot create property 'ingressCount' on boolean 'true'"}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":9007199254740992,"egressCount":0,"reportedDroppedAtLeast":-1},1000,"x"],"ok":9007199254739992}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":0.5,"egressCount":100,"reportedDroppedAtLeast":{"$num":"-0"}},1000,{"a":{"b":"c"}}],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":-1,"egressCount":1,"reportedDroppedAtLeast":3},1000000,null],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":2,"egressCount":10,"reportedDroppedAtLeast":{"$num":"-0"}},0.5,{"a":"b"}],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":10,"egressCount":1000,"reportedDroppedAtLeast":42},0.5,[]],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":3,"egressCount":9007199254740992,"reportedDroppedAtLeast":42},{"$num":"-Infinity"},{"$undefined":true}],"ok":{"$num":"Infinity"}}
+{"fn":"recordLiveUiStreamIngress","args":[0,10,{"a":{"b":"c"}}],"error":"Cannot create property 'ingressCount' on number '0'"}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":10,"egressCount":100,"reportedDroppedAtLeast":0},{"$num":"-0"},[]],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":1000000,"egressCount":-1,"reportedDroppedAtLeast":{"$num":"Infinity"}},1,{"$undefined":true}],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":0.5,"egressCount":100,"reportedDroppedAtLeast":1000},0.5,{"a":"b"}],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":0.5,"egressCount":1000000,"reportedDroppedAtLeast":1},{"$num":"-0"},null],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":-1,"egressCount":-2.5,"reportedDroppedAtLeast":100},1000,"x"],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":{"$num":"-0"},"egressCount":1000000,"reportedDroppedAtLeast":0},0,["a",1]],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":{"$num":"-0"},"egressCount":{"$num":"Infinity"},"reportedDroppedAtLeast":42},-2.5,{"a":"b"}],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":1000000,"egressCount":{"$num":"-Infinity"},"reportedDroppedAtLeast":0},42,"x"],"ok":{"$num":"Infinity"}}
+{"fn":"recordLiveUiStreamIngress","args":[{"a":{"b":"c"}},{"$num":"-Infinity"}],"ok":{"$num":"NaN"}}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":-2.5,"egressCount":{"$num":"-0"},"reportedDroppedAtLeast":9007199254740992},{"$num":"Infinity"}],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":42,"egressCount":0.5,"reportedDroppedAtLeast":9007199254740992},1,[]],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":1000000,"egressCount":{"$num":"Infinity"},"reportedDroppedAtLeast":{"$num":"-0"}},2147483648,true],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":2147483648,"egressCount":1000000,"reportedDroppedAtLeast":1},1000000,[]],"ok":2145483649}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":{"$num":"-Infinity"},"egressCount":1000,"reportedDroppedAtLeast":1},1000000,{"a":"b"}],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":0,"egressCount":9007199254740992,"reportedDroppedAtLeast":3},{"$num":"Infinity"},null],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":{"$num":"-0"},"egressCount":1000000,"reportedDroppedAtLeast":3},100,null],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":-1,"egressCount":0,"reportedDroppedAtLeast":42},2147483648,true],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":0,"egressCount":-1,"reportedDroppedAtLeast":-1},42,0],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":100,"egressCount":0,"reportedDroppedAtLeast":9007199254740992},1,{"a":"b"}],"ok":100}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":-1,"egressCount":0.5,"reportedDroppedAtLeast":2},{"$num":"NaN"},["a",1]],"ok":{"$num":"NaN"}}
+{"fn":"recordLiveUiStreamIngress","args":[[],1000,["a",1]],"ok":{"$num":"NaN"}}
+{"fn":"recordLiveUiStreamIngress","args":[{"a":"b"},100,{"$undefined":true}],"ok":{"$num":"NaN"}}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":-2.5,"egressCount":100,"reportedDroppedAtLeast":{"$num":"-Infinity"}},{"$num":"-0"},true],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":100,"egressCount":3,"reportedDroppedAtLeast":-2.5},2,true],"ok":96}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":2147483648,"egressCount":2147483648,"reportedDroppedAtLeast":10},1000,["a",1]],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":{"$num":"NaN"},"egressCount":{"$num":"-Infinity"},"reportedDroppedAtLeast":1},9007199254740992,"x"],"ok":{"$num":"NaN"}}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":0,"egressCount":1000,"reportedDroppedAtLeast":9007199254740992},2147483648,0],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[0,42,[]],"error":"Cannot create property 'ingressCount' on number '0'"}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":{"$num":"Infinity"},"egressCount":2,"reportedDroppedAtLeast":{"$num":"-Infinity"}},1000000,[]],"ok":{"$num":"Infinity"}}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":{"$num":"-0"},"egressCount":{"$num":"-Infinity"},"reportedDroppedAtLeast":9007199254740992},2147483648,0],"ok":{"$num":"Infinity"}}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":2,"egressCount":1000000,"reportedDroppedAtLeast":{"$num":"NaN"}},{"$num":"Infinity"},null],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":2,"egressCount":1000000,"reportedDroppedAtLeast":2},-2.5,{"a":"b"}],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":2,"egressCount":-1,"reportedDroppedAtLeast":100},1,0],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":1000,"egressCount":{"$num":"-0"},"reportedDroppedAtLeast":10},1,{"$undefined":true}],"ok":1000}
+{"fn":"recordLiveUiStreamIngress","args":[true,10,{}],"error":"Cannot create property 'ingressCount' on boolean 'true'"}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":2,"egressCount":{"$num":"Infinity"},"reportedDroppedAtLeast":{"$num":"NaN"}},2147483648,{"$undefined":true}],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":1000000,"egressCount":{"$num":"-0"},"reportedDroppedAtLeast":2147483648},{"$num":"NaN"},{"$undefined":true}],"ok":{"$num":"NaN"}}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":{"$num":"NaN"},"egressCount":1,"reportedDroppedAtLeast":{"$num":"NaN"}},100,{"a":"b"}],"ok":{"$num":"NaN"}}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":2,"egressCount":1000,"reportedDroppedAtLeast":-2.5},9007199254740992,{"a":"b"}],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":0,"egressCount":0.5,"reportedDroppedAtLeast":{"$num":"-0"}},42,null],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":1000000,"egressCount":0.5,"reportedDroppedAtLeast":2},1000,{"a":{"b":"c"}}],"ok":999000.5}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":-1,"egressCount":9007199254740992,"reportedDroppedAtLeast":{"$num":"-0"}},1000,["a",1]],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":3,"egressCount":-1,"reportedDroppedAtLeast":1},0,{"a":"b"}],"ok":5}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":10,"egressCount":{"$num":"-0"},"reportedDroppedAtLeast":1000},-2.5,null],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":42,"egressCount":{"$num":"-Infinity"},"reportedDroppedAtLeast":1000000},1000000,{"a":"b"}],"ok":{"$num":"Infinity"}}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":3,"egressCount":42,"reportedDroppedAtLeast":1000000},0,"x"],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[null,2,["a",1]],"error":"Cannot read properties of null (reading 'ingressCount')"}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":42,"egressCount":1000000,"reportedDroppedAtLeast":3},{"$num":"Infinity"},{"a":"b"}],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":2,"egressCount":1,"reportedDroppedAtLeast":{"$num":"-Infinity"}},0,{"$undefined":true}],"ok":2}
+{"fn":"recordLiveUiStreamIngress","args":[null,1000000],"error":"Cannot read properties of null (reading 'ingressCount')"}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":{"$num":"-Infinity"},"egressCount":1000,"reportedDroppedAtLeast":{"$num":"-Infinity"}},42,null],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":42,"egressCount":2147483648,"reportedDroppedAtLeast":10},-2.5,[]],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":{"$num":"NaN"},"egressCount":9007199254740992,"reportedDroppedAtLeast":3},0,{"$undefined":true}],"ok":{"$num":"NaN"}}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":{"$num":"Infinity"},"egressCount":{"$num":"-Infinity"},"reportedDroppedAtLeast":{"$num":"NaN"}},0.5,{}],"ok":{"$num":"Infinity"}}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":10,"egressCount":10,"reportedDroppedAtLeast":9007199254740992},10,true],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":2,"egressCount":{"$num":"Infinity"},"reportedDroppedAtLeast":-1},-1,{"a":"b"}],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":100,"egressCount":-1,"reportedDroppedAtLeast":1000000},-1,{"a":{"b":"c"}}],"ok":103}
+{"fn":"recordLiveUiStreamIngress","args":[0,-2.5,{"$undefined":true}],"error":"Cannot create property 'ingressCount' on number '0'"}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":0.5,"egressCount":9007199254740992,"reportedDroppedAtLeast":1000},2,{"a":{"b":"c"}}],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":2147483648,"egressCount":{"$num":"Infinity"},"reportedDroppedAtLeast":10},100,{"a":{"b":"c"}}],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":100,"egressCount":9007199254740992,"reportedDroppedAtLeast":1000},{"$num":"NaN"},null],"ok":{"$num":"NaN"}}
+{"fn":"recordLiveUiStreamIngress","args":[{"a":{"b":"c"}},0],"ok":{"$num":"NaN"}}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":42,"egressCount":0,"reportedDroppedAtLeast":0},3,{}],"ok":40}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":1000000,"egressCount":1,"reportedDroppedAtLeast":1},100,{"a":{"b":"c"}}],"ok":999900}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":{"$num":"-0"},"egressCount":42,"reportedDroppedAtLeast":{"$num":"-0"}},-2.5,{}],"ok":null}
+{"fn":"recordLiveUiStreamIngress","args":[{"ingressCount":100,"egressCount":10,"reportedDroppedAtLeast":{"$num":"-0"}},2,0],"ok":89}
+{"fn":"recordLiveUiStreamIngress","args":[0,-7.5,"x"],"error":"Cannot create property 'ingressCount' on number '0'"}
+{"fn":"recordLiveUiStreamIngress","args":[0,0.1,"x"],"error":"Cannot create property 'ingressCount' on number '0'"}
+{"fn":"recordLiveUiStreamIngress","args":[0,0.30000000000000004,"x"],"error":"Cannot create property 'ingressCount' on number '0'"}
+{"fn":"recordLiveUiStreamIngress","args":[0,1e+21,"x"],"error":"Cannot create property 'ingressCount' on number '0'"}
+{"fn":"recordLiveUiStreamIngress","args":[0,1e-7,"x"],"error":"Cannot create property 'ingressCount' on number '0'"}
+{"fn":"recordLiveUiStreamIngress","args":[0,5e-324,"x"],"error":"Cannot create property 'ingressCount' on number '0'"}
+{"fn":"recordLiveUiStreamIngress","args":[0,1.7976931348623157e+308,"x"],"error":"Cannot create property 'ingressCount' on number '0'"}
+{"fn":"recordLiveUiStreamIngress","args":[0,9007199254740992,"x"],"error":"Cannot create property 'ingressCount' on number '0'"}
+{"fn":"recordLiveUiStreamIngress","args":[0,{"$num":"-0"},"x"],"error":"Cannot create property 'ingressCount' on number '0'"}

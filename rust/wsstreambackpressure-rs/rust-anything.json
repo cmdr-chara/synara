@@ -1,0 +1,90 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/wsStreamBackpressure.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "wsstreambackpressure-rs",
+  "exports": [
+    {
+      "name": "makeLiveUiStreamLagState",
+      "file": "apps/server/src/wsStreamBackpressure.ts",
+      "line": 30,
+      "params": [],
+      "returns": "LiveUiStreamLagState",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "normalizeLiveUiStreamBufferCapacity",
+      "file": "apps/server/src/wsStreamBackpressure.ts",
+      "line": 34,
+      "params": [
+        {
+          "name": "capacity",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "number",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "recordLiveUiStreamIngress",
+      "file": "apps/server/src/wsStreamBackpressure.ts",
+      "line": 48,
+      "params": [
+        {
+          "name": "state",
+          "ts_type": "LiveUiStreamLagState",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "capacity",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "reportGrowthStep",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "number | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "bufferLiveUiStream",
+      "file": "apps/server/src/wsStreamBackpressure.ts",
+      "line": 84,
+      "reason": "generic over `A`: values of any shape, functions included"
+    },
+    {
+      "name": "makeLiveUiStreamBudget",
+      "file": "apps/server/src/wsStreamBackpressure.ts",
+      "line": 157,
+      "reason": "uses `BufferLiveUiStreamOptions`, which has function members"
+    },
+    {
+      "name": "makeFailingLiveUiStream",
+      "file": "apps/server/src/wsStreamBackpressure.ts",
+      "line": 267,
+      "reason": "takes or returns a function"
+    }
+  ]
+}

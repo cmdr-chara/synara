@@ -1,0 +1,49 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/relaySocket.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "relaysocket-rs",
+  "exports": [
+    {
+      "name": "normalizeRelayFrame",
+      "file": "apps/server/src/relaySocket.ts",
+      "line": 22,
+      "params": [
+        {
+          "name": "data",
+          "ts_type": "RawData",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "binary",
+          "ts_type": "boolean",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | Buffer",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "sendBoundedRelayFrame",
+      "file": "apps/server/src/relaySocket.ts",
+      "line": 37,
+      "reason": "checks `instanceof`: class identity does not survive the bridge"
+    },
+    {
+      "name": "forwardBoundedRelayResponses",
+      "file": "apps/server/src/relaySocket.ts",
+      "line": 49,
+      "reason": "checks `instanceof`: class identity does not survive the bridge"
+    }
+  ]
+}

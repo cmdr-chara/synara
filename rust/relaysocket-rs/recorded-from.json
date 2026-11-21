@@ -1,0 +1,17 @@
+{
+  "unit": "apps/server/src/relaySocket.ts",
+  "files": 1,
+  "fingerprint": "0721a7bce36a743d",
+  "coverage": {
+    "lines": 143,
+    "reached": 28,
+    "files": [
+      {
+        "file": "apps/server/src/relaySocket.ts",
+        "lines": 143,
+        "reached": 28,
+        "missed": "29-34, 38-46, 50-149"
+      }
+    ]
+  }
+}

@@ -1,0 +1,18 @@
+{"fn":"normalizeRelayFrame","args":[["a",1],true],"error":"The \"list[0]\" argument must be an instance of Buffer or Uint8Array. Received type string ('a')"}
+{"fn":"normalizeRelayFrame","args":[{},true],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"normalizeRelayFrame","args":[{},false],"ok":"[object Object]"}
+{"fn":"normalizeRelayFrame","args":[0,false],"ok":"0"}
+{"fn":"normalizeRelayFrame","args":["x",false],"ok":"x"}
+{"fn":"normalizeRelayFrame","args":["x",true],"ok":{"$buffer":[120]}}
+{"fn":"normalizeRelayFrame","args":[{"a":"b"},false],"ok":"[object Object]"}
+{"fn":"normalizeRelayFrame","args":[["a",1],false],"ok":"a,1"}
+{"fn":"normalizeRelayFrame","args":[null,false],"error":"Cannot read properties of null (reading 'toString')"}
+{"fn":"normalizeRelayFrame","args":[[],false],"ok":""}
+{"fn":"normalizeRelayFrame","args":[{"a":{"b":"c"}},true],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"normalizeRelayFrame","args":[true,true],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received type boolean (true)"}
+{"fn":"normalizeRelayFrame","args":[null,true],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received null"}
+{"fn":"normalizeRelayFrame","args":[{"a":{"b":"c"}},false],"ok":"[object Object]"}
+{"fn":"normalizeRelayFrame","args":[{"a":"b"},true],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"normalizeRelayFrame","args":[0,true],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received type number (0)"}
+{"fn":"normalizeRelayFrame","args":[[],true],"ok":{"$buffer":[]}}
+{"fn":"normalizeRelayFrame","args":[true,false],"ok":"true"}

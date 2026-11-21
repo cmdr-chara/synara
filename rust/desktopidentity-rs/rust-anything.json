@@ -1,0 +1,120 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/desktopIdentity.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "desktopidentity-rs",
+  "exports": [
+    {
+      "name": "desktopUpdateChannel",
+      "file": "packages/shared/src/desktopIdentity.ts",
+      "line": 57,
+      "params": [
+        {
+          "name": "flavor",
+          "ts_type": "(| \"production\"\n  | \"development\"\n  | \"canary\"\n  | \"cua\"\n  | \"beta\"\n  | \"remote\")",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveSynaraDesktopFlavor",
+      "file": "packages/shared/src/desktopIdentity.ts",
+      "line": 75,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly isDevelopment: boolean;\n  readonly requestedFlavor?: string | undefined;\n  readonly allowDevelopmentOverride?: boolean | undefined;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(| \"production\"\n  | \"development\"\n  | \"canary\"\n  | \"cua\"\n  | \"beta\"\n  | \"remote\")",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveSynaraDesktopRuntimeFlavor",
+      "file": "packages/shared/src/desktopIdentity.ts",
+      "line": 100,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly isPackaged: boolean;\n  readonly isDevelopment: boolean;\n  readonly packagedFlavor?: unknown;\n  readonly requestedFlavor?: string | undefined;\n  readonly allowDevelopmentOverride?: boolean | undefined;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(| \"production\"\n  | \"development\"\n  | \"canary\"\n  | \"cua\"\n  | \"beta\"\n  | \"remote\")",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "canOverrideDesktopSmokeUserData",
+      "file": "packages/shared/src/desktopIdentity.ts",
+      "line": 129,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly packagedFlavor?: unknown;\n  readonly sourceBuildMarker?: string | undefined;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "synaraDesktopIdentity",
+      "file": "packages/shared/src/desktopIdentity.ts",
+      "line": 142,
+      "params": [
+        {
+          "name": "flavor",
+          "ts_type": "(| \"production\"\n  | \"development\"\n  | \"canary\"\n  | \"cua\"\n  | \"beta\"\n  | \"remote\")",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "SynaraDesktopIdentity",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "synaraSourceDesktopIdentity",
+      "file": "packages/shared/src/desktopIdentity.ts",
+      "line": 228,
+      "params": [
+        {
+          "name": "identity",
+          "ts_type": "SynaraDesktopIdentity",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "SynaraDesktopIdentity",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

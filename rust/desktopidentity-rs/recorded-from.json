@@ -1,0 +1,17 @@
+{
+  "unit": "packages/shared/src/desktopIdentity.ts",
+  "files": 1,
+  "fingerprint": "129dd7c6d152d211",
+  "coverage": {
+    "lines": 228,
+    "reached": 228,
+    "files": [
+      {
+        "file": "packages/shared/src/desktopIdentity.ts",
+        "lines": 228,
+        "reached": 228,
+        "missed": ""
+      }
+    ]
+  }
+}

@@ -1,0 +1,50 @@
+{"fn":"synaraDesktopIdentity","args":["production"]}
+{"fn":"synaraDesktopIdentity","args":["development"]}
+{"fn":"synaraDesktopIdentity","args":["remote"]}
+{"fn":"synaraSourceDesktopIdentity","args":[{"flavor":"remote","displayName":"Synara Remote","bundleId":"com.emanueledipietro.synara.remote","scheme":"synara-remote","origin":"synara-remote://app","entryUrl":"synara-remote://app/index.html","userDataDirectoryName":"synara-remote","defaultHomeDirectoryName":".synara-remote","defaultAccountUrl":"https://synara-account-api-trial.synara-orgs.workers.dev","usesScriptedUpdates":false}]}
+{"fn":"synaraDesktopIdentity","args":["beta"]}
+{"fn":"synaraSourceDesktopIdentity","args":[{"flavor":"beta","displayName":"Synara Beta","bundleId":"com.emanueledipietro.synara.beta","scheme":"synara-beta","origin":"synara-beta://app","entryUrl":"synara-beta://app/index.html","userDataDirectoryName":"synara-beta","defaultHomeDirectoryName":".synara-beta","usesScriptedUpdates":false}]}
+{"fn":"synaraSourceDesktopIdentity","args":[{"flavor":"development","displayName":"Synara (Dev)","bundleId":"com.emanueledipietro.synara.dev","scheme":"synara","origin":"synara://app","entryUrl":"synara://app/index.html","userDataDirectoryName":"synara-dev","defaultHomeDirectoryName":".synara-dev","usesScriptedUpdates":false}]}
+{"fn":"synaraDesktopIdentity","args":["canary"]}
+{"fn":"synaraSourceDesktopIdentity","args":[{"flavor":"canary","displayName":"Synara Canary","bundleId":"com.emanueledipietro.synara.canary","scheme":"synara-canary","origin":"synara-canary://app","entryUrl":"synara-canary://app/index.html","userDataDirectoryName":"synara-canary","defaultHomeDirectoryName":".synara-canary","usesScriptedUpdates":true}]}
+{"fn":"synaraDesktopIdentity","args":["cua"]}
+{"fn":"synaraSourceDesktopIdentity","args":[{"flavor":"cua","displayName":"Synara Cua","bundleId":"com.emanueledipietro.synara.cua","scheme":"synara-cua","origin":"synara-cua://app","entryUrl":"synara-cua://app/index.html","userDataDirectoryName":"synara-cua","defaultHomeDirectoryName":".synara-cua","usesScriptedUpdates":true}]}
+{"fn":"desktopUpdateChannel","args":["beta"]}
+{"fn":"desktopUpdateChannel","args":["remote"]}
+{"fn":"desktopUpdateChannel","args":["production"]}
+{"fn":"desktopUpdateChannel","args":["canary"]}
+{"fn":"desktopUpdateChannel","args":["development"]}
+{"fn":"resolveSynaraDesktopFlavor","args":[{"isDevelopment":false,"requestedFlavor":"remote"}]}
+{"fn":"resolveSynaraDesktopFlavor","args":[{"isDevelopment":false}]}
+{"fn":"resolveSynaraDesktopFlavor","args":[{"isDevelopment":true}]}
+{"fn":"resolveSynaraDesktopFlavor","args":[{"isDevelopment":false,"requestedFlavor":"development"}]}
+{"fn":"resolveSynaraDesktopFlavor","args":[{"isDevelopment":false,"requestedFlavor":"development","allowDevelopmentOverride":true}]}
+{"fn":"resolveSynaraDesktopFlavor","args":[{"isDevelopment":false,"requestedFlavor":" canary "}]}
+{"fn":"resolveSynaraDesktopFlavor","args":[{"isDevelopment":true,"requestedFlavor":"canary"}]}
+{"fn":"resolveSynaraDesktopFlavor","args":[{"isDevelopment":false,"requestedFlavor":"cua"}]}
+{"fn":"resolveSynaraDesktopFlavor","args":[{"isDevelopment":true,"requestedFlavor":"CUA"}]}
+{"fn":"resolveSynaraDesktopFlavor","args":[{"isDevelopment":false,"requestedFlavor":"beta"}]}
+{"fn":"resolveSynaraDesktopFlavor","args":[{"isDevelopment":false,"requestedFlavor":" beta "}]}
+{"fn":"resolveSynaraDesktopFlavor","args":[{"isDevelopment":true,"requestedFlavor":"beta"}]}
+{"fn":"resolveSynaraDesktopRuntimeFlavor","args":[{"isPackaged":true,"isDevelopment":true,"packagedFlavor":"production","requestedFlavor":"development","allowDevelopmentOverride":true}]}
+{"fn":"resolveSynaraDesktopRuntimeFlavor","args":[{"isPackaged":true,"isDevelopment":true,"packagedFlavor":"canary","requestedFlavor":"development","allowDevelopmentOverride":true}]}
+{"fn":"resolveSynaraDesktopRuntimeFlavor","args":[{"isPackaged":true,"isDevelopment":true,"packagedFlavor":"cua","requestedFlavor":"development","allowDevelopmentOverride":true}]}
+{"fn":"resolveSynaraDesktopRuntimeFlavor","args":[{"isPackaged":true,"isDevelopment":true,"packagedFlavor":"beta","requestedFlavor":"development","allowDevelopmentOverride":true}]}
+{"fn":"resolveSynaraDesktopRuntimeFlavor","args":[{"isPackaged":true,"isDevelopment":true,"packagedFlavor":"remote","requestedFlavor":"development","allowDevelopmentOverride":true}]}
+{"fn":"resolveSynaraDesktopRuntimeFlavor","args":[{"isPackaged":true,"isDevelopment":false,"requestedFlavor":"cua"}]}
+{"fn":"resolveSynaraDesktopRuntimeFlavor","args":[{"isPackaged":true,"isDevelopment":false,"requestedFlavor":"development","allowDevelopmentOverride":true}]}
+{"fn":"resolveSynaraDesktopFlavor","args":[{"isPackaged":true,"isDevelopment":false,"requestedFlavor":"development","allowDevelopmentOverride":true}]}
+{"fn":"resolveSynaraDesktopRuntimeFlavor","args":[{"isPackaged":false,"isDevelopment":true,"requestedFlavor":"canary"}]}
+{"fn":"resolveSynaraDesktopFlavor","args":[{"isPackaged":false,"isDevelopment":true,"requestedFlavor":"canary"}]}
+{"fn":"resolveSynaraDesktopRuntimeFlavor","args":[{"isPackaged":true,"isDevelopment":false,"packagedFlavor":"development"}]}
+{"fn":"resolveSynaraDesktopRuntimeFlavor","args":[{"isPackaged":true,"isDevelopment":false,"packagedFlavor":"CUA"}]}
+{"fn":"resolveSynaraDesktopRuntimeFlavor","args":[{"isPackaged":true,"isDevelopment":false,"packagedFlavor":null}]}
+{"fn":"canOverrideDesktopSmokeUserData","args":[{"packagedFlavor":"cua"}]}
+{"fn":"canOverrideDesktopSmokeUserData","args":[{"packagedFlavor":"beta"}]}
+{"fn":"canOverrideDesktopSmokeUserData","args":[{"packagedFlavor":"remote"}]}
+{"fn":"canOverrideDesktopSmokeUserData","args":[{"sourceBuildMarker":"synara-source-desktop-build-v2"}]}
+{"fn":"canOverrideDesktopSmokeUserData","args":[{"packagedFlavor":"production","sourceBuildMarker":"synara-source-desktop-build-v2"}]}
+{"fn":"canOverrideDesktopSmokeUserData","args":[{"packagedFlavor":"canary","sourceBuildMarker":"synara-source-desktop-build-v2"}]}
+{"fn":"canOverrideDesktopSmokeUserData","args":[{"packagedFlavor":"development","sourceBuildMarker":"synara-source-desktop-build-v2"}]}
+{"fn":"canOverrideDesktopSmokeUserData","args":[{"packagedFlavor":null,"sourceBuildMarker":"synara-source-desktop-build-v2"}]}
+{"fn":"canOverrideDesktopSmokeUserData","args":[{}]}

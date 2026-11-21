@@ -1,0 +1,139 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/privatePathPermissions.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "privatepathpermissions-rs",
+  "exports": [
+    {
+      "name": "ensurePrivateDirectorySync",
+      "file": "apps/server/src/privatePathPermissions.ts",
+      "line": 37,
+      "params": [
+        {
+          "name": "directoryPath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "platform",
+          "ts_type": "NodeJS.Platform",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "repairPrivateFileSync",
+      "file": "apps/server/src/privatePathPermissions.ts",
+      "line": 64,
+      "params": [
+        {
+          "name": "filePath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "options",
+          "ts_type": "{\n    readonly executable?: boolean;\n    readonly platform?: NodeJS.Platform;\n  }",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "ensurePrivateFileSync",
+      "file": "apps/server/src/privatePathPermissions.ts",
+      "line": 88,
+      "params": [
+        {
+          "name": "filePath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "options",
+          "ts_type": "{\n    readonly executable?: boolean;\n    readonly platform?: NodeJS.Platform;\n  }",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "repairPrivateFile",
+      "file": "apps/server/src/privatePathPermissions.ts",
+      "line": 121,
+      "params": [
+        {
+          "name": "filePath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "options",
+          "ts_type": "{\n    readonly executable?: boolean;\n    readonly platform?: NodeJS.Platform;\n  }",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<void>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "repairPrivateTreeSync",
+      "file": "apps/server/src/privatePathPermissions.ts",
+      "line": 154,
+      "params": [
+        {
+          "name": "rootPath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "platform",
+          "ts_type": "NodeJS.Platform",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "PrivatePathPermissionError",
+      "file": "apps/server/src/privatePathPermissions.ts",
+      "line": 16,
+      "reason": "class: extends another class, public field `path`, public field `operation`"
+    }
+  ]
+}

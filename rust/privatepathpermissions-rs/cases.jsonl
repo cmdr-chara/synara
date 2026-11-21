@@ -1,0 +1,1063 @@
+{"fn":"ensurePrivateDirectorySync","args":["hello world",null],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["İstanbul",{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["hello world",{}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["日本語のテキスト",{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["a.b.cünïcödé",true],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["İstanbul",{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["./x/**/*.jsonab",{}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["emoji 👍🏽 mix",[]],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["src/a/b.ts",{}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["{name} has {count} items",{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["ΣΊΣΥΦΟΣ",{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["line1\nline2",{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":[".leading﻿bom"],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["a😀b😀c",{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":[".leading",[]],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["😀",{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["line1\nline2",null],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["abc",null],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":[""],"error":"Failed to create private path "}
+{"fn":"ensurePrivateDirectorySync","args":["HELLO",{}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["emoji 👍🏽 mix﻿bom",null],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":[":",true],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["hello",{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["  padded  ",null],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["",null],"error":"Failed to create private path "}
+{"fn":"ensurePrivateDirectorySync","args":["日本語のテキストHello World",{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["trailing.",true],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["a..b",{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["src/a/b.tsline1\nline2",{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["😀",{}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["a.b.c"],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["key_name-1",0],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["hello world",[]],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["./x/**/*.jsona😀b😀c",{}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["emoji 👍🏽 mix",true],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["  padded  trailing.",null],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["a:b:c",0],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["trailing.",{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["﻿bomhello",[]],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["a😀b😀c",{}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["key_name-1",["a",1]],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["a:b:c",{}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["straßea😀b😀c",{}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":[".leading",{}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["HELLO",null],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["aHELLO",null],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["key_name-1",{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["hello world","x"],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["line1\nline2",[]],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["HELLO",0],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["emoji 👍🏽 mix",{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["éİstanbul",true],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["tab\tseparatedtab\tseparated",{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["HELLO",{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["a  padded  ",{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["  padded  ",{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["abc",{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["a.b.c",{}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":[":",{}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["HELLO"],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["hello world",{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["./x/**/*.json",null],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":[":","x"],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["ns:key.path",null],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["﻿bom",{}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["tab\tseparated","x"],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["",[]],"error":"Failed to create private path "}
+{"fn":"ensurePrivateDirectorySync","args":["trailing.src/a/b.ts",true],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["./x/**/*.json",0],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["a日本語のテキスト",{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["HELLO",["a",1]],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":[":",{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["a","x"],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["straße"],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["X","x"],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["line1\nline2","x"],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["src/a/b.ts",null],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["x","x"],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["日本語のテキスト",["a",1]],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["  padded  ",{}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["tab\tseparated:",["a",1]],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["a😀b😀c",{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["tab\tseparateda",{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["a:b:c",{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["src/a/b.ts",["a",1]],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["a..bstraße",{}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["tab\tseparated",true],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["é",null],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["日本語のテキストkey_name-1",[]],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["hello world",{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["straßea.b.c",{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["ab",{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["abc.leading",true],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["./x/**/*.json",{}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["a:b:c",null],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["Hello World","x"],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["ünïcödé",{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":[".leadingHELLO",true],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["line1\nline2HELLO",["a",1]],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["absrc/a/b.ts",true],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["a..ba😀b😀c",true],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["ΣΊΣΥΦΟΣ",{}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["  padded  ",{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["a:b:c",["a",1]],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["",["a",1]],"error":"Failed to create private path "}
+{"fn":"ensurePrivateDirectorySync","args":["line1\nline2",true],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["line1\nline2日本語のテキスト","x"],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":[".leading",{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["{name} has {count} itemsa😀b😀c","x"],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["trailing.","x"],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["line1\nline2",{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["HELLOline1\nline2",0],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["straße",[]],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["é",{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["hellokey_name-1",[]],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["",{"$undefined":true}],"error":"Failed to create private path "}
+{"fn":"ensurePrivateDirectorySync","args":["a:b:c"],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["﻿bom",true],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["ab",{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["",{"a":{"b":"c"}}],"error":"Failed to create private path "}
+{"fn":"ensurePrivateDirectorySync","args":[":",{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["./x/**/*.json",["a",1]],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["line1\nline2",0],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["a.b.c",[]],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["straße{name} has {count} items",{}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["ΣΊΣΥΦΟΣ",0],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["./x/**/*.jsonhello","x"],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["key_name-1",[]],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["a..b  padded  ",{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["a😀b😀c",{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["a.b.c",{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["key_name-1"],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["😀é",true],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["ünïcödé",null],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["src/a/b.ts",[]],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["  padded  ﻿bom"],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["ünïcödéa😀b😀c",0],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["a..b"],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["İstanbul",{}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["{name} has {count} items",{}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["straße","x"],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["hello",0],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["{name} has {count} items",["a",1]],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["ns:key.pathtrailing.",[]],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["a.b.c",0],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["tab\tseparated",null],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["{name} has {count} items",null],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["ns:key.path",["a",1]],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["straße",true],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["日本語のテキスト",true],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["tab\tseparated",{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["ns:key.path",{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["ns:key.path",[]],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":[".leading",["a",1]],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":[":",null],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["  padded  ","x"],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["日本語のテキスト",{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["key_name-1",{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["tab\tseparated./x/**/*.json",0],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["é",true],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["a",true],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["hello",null],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["日本語のテキスト",null],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["é",{}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["  padded  ",0],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["trailing.",[]],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["src/a/b.ts",{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["trailing.",null],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["日本語のテキスト",{}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["{name} has {count} items","x"],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["日本語のテキストa..b",{}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["src/a/b.ts","x"],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["HELLO",[]],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["a..b﻿bom",{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["hello world",true],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["﻿bom"],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["é",[]],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["{name} has {count} items",{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["trailing.",{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["","x"],"error":"Failed to create private path "}
+{"fn":"ensurePrivateDirectorySync","args":["a",0],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["key_name-1",{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["Hello World",true],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["key_name-1",{}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["hello world",{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["{name} has {count} items",[]],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["ΣΊΣΥΦΟΣ",{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["emoji 👍🏽 mix",{}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["",{"a":"b"}],"error":"Failed to create private path "}
+{"fn":"ensurePrivateDirectorySync","args":["ab",null],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["ΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["hello","x"],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["HELLOtrailing."],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["hello",{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["é",{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["﻿bom",null],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["{name} has {count} items",0],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":[":",[]],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["héllo wörld",null],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["👍🏽 thumbs",null],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["日本語",null],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["İstanbul",null],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["straße",null],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["ılık ırmak",null],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["👨‍👩‍👧 family",null],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["a b",null],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["ΣΊΣΥΦΟΣ",null],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["a😀b",null],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["a²b x½ y①",null],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["aⅠb Ⅻ",null],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["a𐐀b 𝐀bc",null],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateDirectorySync","args":["कि ٣٤",null],"ok":{"$undefined":true}}
+{"fn":"repairPrivateFileSync","args":["a😀b😀c",{"executable":false,"platform":0}],"error":"Failed to set mode on private path a😀b😀c"}
+{"fn":"repairPrivateFileSync","args":["Hello World",{"executable":false}],"error":"Failed to set mode on private path Hello World"}
+{"fn":"repairPrivateFileSync","args":["key_name-1",{"platform":{"a":{"b":"c"}}}],"error":"Failed to set mode on private path key_name-1"}
+{"fn":"repairPrivateFileSync","args":["a😀b😀c😀",{}],"error":"Failed to open without following symlinks private path a😀b😀c😀"}
+{"fn":"repairPrivateFileSync","args":["emoji 👍🏽 mix",{"executable":true}],"error":"Failed to set mode on private path emoji 👍🏽 mix"}
+{"fn":"repairPrivateFileSync","args":["日本語のテキスト"],"error":"Failed to set mode on private path 日本語のテキスト"}
+{"fn":"repairPrivateFileSync","args":["key_name-1",{"executable":false}],"error":"Failed to set mode on private path key_name-1"}
+{"fn":"repairPrivateFileSync","args":["a..b",{"executable":false,"platform":{"a":"b"}}],"error":"Failed to set mode on private path a..b"}
+{"fn":"repairPrivateFileSync","args":["hello worldhello world",{"executable":false,"platform":true}],"error":"Failed to open without following symlinks private path hello worldhello world"}
+{"fn":"repairPrivateFileSync","args":["abstraße"],"error":"Failed to open without following symlinks private path abstraße"}
+{"fn":"repairPrivateFileSync","args":["straße",{"$undefined":true}],"error":"Failed to set mode on private path straße"}
+{"fn":"repairPrivateFileSync","args":["日本語のテキスト",{"platform":{"a":"b"}}],"error":"Failed to set mode on private path 日本語のテキスト"}
+{"fn":"repairPrivateFileSync","args":["Hello World",{"$undefined":true}],"error":"Failed to set mode on private path Hello World"}
+{"fn":"repairPrivateFileSync","args":["﻿bom"],"error":"Failed to set mode on private path ﻿bom"}
+{"fn":"repairPrivateFileSync","args":["emoji 👍🏽 mix",{"executable":false,"platform":"x"}],"error":"Failed to set mode on private path emoji 👍🏽 mix"}
+{"fn":"repairPrivateFileSync","args":["hello world"],"error":"Failed to set mode on private path hello world"}
+{"fn":"repairPrivateFileSync","args":["İstanbul",{"executable":false,"platform":"x"}],"error":"Failed to set mode on private path İstanbul"}
+{"fn":"repairPrivateFileSync","args":["a.b.c",{"executable":false}],"error":"Failed to set mode on private path a.b.c"}
+{"fn":"repairPrivateFileSync","args":["a:b:c",{"executable":true,"platform":["a",1]}],"error":"Failed to set mode on private path a:b:c"}
+{"fn":"repairPrivateFileSync","args":["abc",{"$undefined":true}],"error":"Failed to set mode on private path abc"}
+{"fn":"repairPrivateFileSync","args":["tab\tseparated"],"error":"Failed to set mode on private path tab\tseparated"}
+{"fn":"repairPrivateFileSync","args":[""],"error":"Failed to open without following symlinks private path "}
+{"fn":"repairPrivateFileSync","args":["İstanbul",{"platform":true}],"error":"Failed to set mode on private path İstanbul"}
+{"fn":"repairPrivateFileSync","args":["key_name-1",{}],"error":"Failed to set mode on private path key_name-1"}
+{"fn":"repairPrivateFileSync","args":["{name} has {count} items"],"error":"Failed to set mode on private path {name} has {count} items"}
+{"fn":"repairPrivateFileSync","args":["ΣΊΣΥΦΟΣ",["a",1]],"error":"Failed to set mode on private path ΣΊΣΥΦΟΣ"}
+{"fn":"repairPrivateFileSync","args":["Hello World",{"executable":true,"platform":{}}],"error":"Failed to set mode on private path Hello World"}
+{"fn":"repairPrivateFileSync","args":["hello"],"error":"Failed to set mode on private path hello"}
+{"fn":"repairPrivateFileSync","args":["Hello World日本語のテキスト",{"executable":false,"platform":0}],"error":"Failed to open without following symlinks private path Hello World日本語のテキスト"}
+{"fn":"repairPrivateFileSync","args":["emoji 👍🏽 mixsrc/a/b.ts"],"error":"Failed to open without following symlinks private path emoji 👍🏽 mixsrc/a/b.ts"}
+{"fn":"repairPrivateFileSync","args":["ünïcödéhello",null],"error":"Cannot read properties of null (reading 'platform')"}
+{"fn":"repairPrivateFileSync","args":["emoji 👍🏽 mix",{"$undefined":true}],"error":"Failed to set mode on private path emoji 👍🏽 mix"}
+{"fn":"repairPrivateFileSync","args":["😀a.b.c",true],"error":"Failed to open without following symlinks private path 😀a.b.c"}
+{"fn":"repairPrivateFileSync","args":["ΣΊΣΥΦΟΣ",{"executable":false,"platform":{"a":"b"}}],"error":"Failed to set mode on private path ΣΊΣΥΦΟΣ"}
+{"fn":"repairPrivateFileSync","args":["HELLO",{}],"error":"Failed to set mode on private path HELLO"}
+{"fn":"repairPrivateFileSync","args":["src/a/b.ts",{"platform":{"a":"b"}}],"error":"Failed to set mode on private path src/a/b.ts"}
+{"fn":"repairPrivateFileSync","args":["helloHELLO",null],"error":"Cannot read properties of null (reading 'platform')"}
+{"fn":"repairPrivateFileSync","args":["ns:key.path",{"$undefined":true}],"error":"Failed to set mode on private path ns:key.path"}
+{"fn":"repairPrivateFileSync","args":["HELLO",{"a":"b"}],"error":"Failed to set mode on private path HELLO"}
+{"fn":"repairPrivateFileSync","args":["tab\tseparated",null],"error":"Cannot read properties of null (reading 'platform')"}
+{"fn":"repairPrivateFileSync","args":["src/a/b.ts",{"platform":{"a":{"b":"c"}}}],"error":"Failed to set mode on private path src/a/b.ts"}
+{"fn":"repairPrivateFileSync","args":["日本語のテキスト",null],"error":"Cannot read properties of null (reading 'platform')"}
+{"fn":"repairPrivateFileSync","args":["ünïcödé",null],"error":"Cannot read properties of null (reading 'platform')"}
+{"fn":"repairPrivateFileSync","args":["hello﻿bom",{"executable":false,"platform":{}}],"error":"Failed to open without following symlinks private path hello﻿bom"}
+{"fn":"repairPrivateFileSync","args":["Hello World",0],"error":"Failed to set mode on private path Hello World"}
+{"fn":"repairPrivateFileSync","args":["a",["a",1]],"error":"Failed to set mode on private path a"}
+{"fn":"repairPrivateFileSync","args":["😀",{"executable":false,"platform":"x"}],"error":"Failed to set mode on private path 😀"}
+{"fn":"repairPrivateFileSync","args":["src/a/b.ts",{"executable":true,"platform":{"a":"b"}}],"error":"Failed to set mode on private path src/a/b.ts"}
+{"fn":"repairPrivateFileSync","args":["hello",{"executable":false,"platform":{}}],"error":"Failed to set mode on private path hello"}
+{"fn":"repairPrivateFileSync","args":["ns:key.path😀",{"executable":true,"platform":null}],"error":"Failed to open without following symlinks private path ns:key.path😀"}
+{"fn":"repairPrivateFileSync","args":["a.b.c",{"executable":true,"platform":{"a":"b"}}],"error":"Failed to set mode on private path a.b.c"}
+{"fn":"repairPrivateFileSync","args":["{name} has {count} items",{"$undefined":true}],"error":"Failed to set mode on private path {name} has {count} items"}
+{"fn":"repairPrivateFileSync","args":["straße",{"platform":"x"}],"error":"Failed to set mode on private path straße"}
+{"fn":"repairPrivateFileSync","args":["trailing.",[]],"error":"Failed to set mode on private path trailing."}
+{"fn":"repairPrivateFileSync","args":["a..b",{"platform":["a",1]}],"error":"Failed to set mode on private path a..b"}
+{"fn":"repairPrivateFileSync","args":["a😀b😀c",{"executable":true,"platform":[]}],"error":"Failed to set mode on private path a😀b😀c"}
+{"fn":"repairPrivateFileSync","args":["abc",{"executable":true,"platform":[]}],"error":"Failed to set mode on private path abc"}
+{"fn":"repairPrivateFileSync","args":["ab",{"executable":true,"platform":{"a":"b"}}],"error":"Failed to set mode on private path ab"}
+{"fn":"repairPrivateFileSync","args":["trailing.",{"$undefined":true}],"error":"Failed to set mode on private path trailing."}
+{"fn":"repairPrivateFileSync","args":[".leading",{"executable":true,"platform":0}],"error":"Failed to set mode on private path .leading"}
+{"fn":"repairPrivateFileSync","args":["ünïcödéemoji 👍🏽 mix",{"$undefined":true}],"error":"Failed to open without following symlinks private path ünïcödéemoji 👍🏽 mix"}
+{"fn":"repairPrivateFileSync","args":["key_name-1src/a/b.ts",{"platform":0}],"error":"Failed to open without following symlinks private path key_name-1src/a/b.ts"}
+{"fn":"repairPrivateFileSync","args":["HELLO",{"executable":true,"platform":{"a":"b"}}],"error":"Failed to set mode on private path HELLO"}
+{"fn":"repairPrivateFileSync","args":["",{"executable":true,"platform":["a",1]}],"error":"Failed to open without following symlinks private path "}
+{"fn":"repairPrivateFileSync","args":["İstanbulé",{"platform":["a",1]}],"error":"Failed to open without following symlinks private path İstanbulé"}
+{"fn":"repairPrivateFileSync","args":["",{"executable":true}],"error":"Failed to open without following symlinks private path "}
+{"fn":"repairPrivateFileSync","args":[".leading",0],"error":"Failed to set mode on private path .leading"}
+{"fn":"repairPrivateFileSync","args":["a:b:c",{}],"error":"Failed to set mode on private path a:b:c"}
+{"fn":"repairPrivateFileSync","args":["HELLO"],"error":"Failed to set mode on private path HELLO"}
+{"fn":"repairPrivateFileSync","args":["src/a/b.ts",{"executable":true,"platform":[]}],"error":"Failed to set mode on private path src/a/b.ts"}
+{"fn":"repairPrivateFileSync","args":["  padded  ",{"executable":true,"platform":[]}],"error":"Failed to set mode on private path   padded  "}
+{"fn":"repairPrivateFileSync","args":["./x/**/*.json",{"platform":{"a":{"b":"c"}}}],"error":"Failed to set mode on private path ./x/**/*.json"}
+{"fn":"repairPrivateFileSync","args":["HELLO",{"executable":false,"platform":"x"}],"error":"Failed to set mode on private path HELLO"}
+{"fn":"repairPrivateFileSync","args":["Hello Worldabc",{"executable":true,"platform":"x"}],"error":"Failed to open without following symlinks private path Hello Worldabc"}
+{"fn":"repairPrivateFileSync","args":["hello",{"executable":true,"platform":{}}],"error":"Failed to set mode on private path hello"}
+{"fn":"repairPrivateFileSync","args":["a.b.chello",{"platform":"x"}],"error":"Failed to open without following symlinks private path a.b.chello"}
+{"fn":"repairPrivateFileSync","args":["😀",{"executable":false}],"error":"Failed to set mode on private path 😀"}
+{"fn":"repairPrivateFileSync","args":["trailing.",null],"error":"Cannot read properties of null (reading 'platform')"}
+{"fn":"repairPrivateFileSync","args":["a日本語のテキスト",{"executable":false,"platform":{"a":{"b":"c"}}}],"error":"Failed to set mode on private path a日本語のテキスト"}
+{"fn":"repairPrivateFileSync","args":["abckey_name-1",{"executable":false}],"error":"Failed to open without following symlinks private path abckey_name-1"}
+{"fn":"repairPrivateFileSync","args":["日本語のテキスト",{"platform":{"a":{"b":"c"}}}],"error":"Failed to set mode on private path 日本語のテキスト"}
+{"fn":"repairPrivateFileSync","args":["tab\tseparated",{"executable":false,"platform":["a",1]}],"error":"Failed to set mode on private path tab\tseparated"}
+{"fn":"repairPrivateFileSync","args":["",{"executable":true,"platform":"x"}],"error":"Failed to open without following symlinks private path "}
+{"fn":"repairPrivateFileSync","args":["é",{"platform":[]}],"error":"Failed to set mode on private path é"}
+{"fn":"repairPrivateFileSync","args":["日本語のテキスト",{}],"error":"Failed to set mode on private path 日本語のテキスト"}
+{"fn":"repairPrivateFileSync","args":["HELLO",{"executable":false,"platform":0}],"error":"Failed to set mode on private path HELLO"}
+{"fn":"repairPrivateFileSync","args":["ΣΊΣΥΦΟΣ",{"platform":[]}],"error":"Failed to set mode on private path ΣΊΣΥΦΟΣ"}
+{"fn":"repairPrivateFileSync","args":["src/a/b.ts  padded  ",{"executable":false}],"error":"Failed to open without following symlinks private path src/a/b.ts  padded  "}
+{"fn":"repairPrivateFileSync","args":["aa",{"executable":true,"platform":0}],"error":"Failed to open without following symlinks private path aa"}
+{"fn":"repairPrivateFileSync","args":["Hello World",{"executable":false,"platform":0}],"error":"Failed to set mode on private path Hello World"}
+{"fn":"repairPrivateFileSync","args":["",{"executable":true,"platform":true}],"error":"Failed to open without following symlinks private path "}
+{"fn":"repairPrivateFileSync","args":["a",{"$undefined":true}],"error":"Failed to set mode on private path a"}
+{"fn":"repairPrivateFileSync","args":["key_name-1",{"executable":true,"platform":{}}],"error":"Failed to set mode on private path key_name-1"}
+{"fn":"repairPrivateFileSync","args":["a😀b😀c",{"executable":true,"platform":{"a":{"b":"c"}}}],"error":"Failed to set mode on private path a😀b😀c"}
+{"fn":"repairPrivateFileSync","args":["ns:key.path",{"executable":true,"platform":{"a":{"b":"c"}}}],"error":"Failed to set mode on private path ns:key.path"}
+{"fn":"repairPrivateFileSync","args":["a.b.c",{"platform":{"a":{"b":"c"}}}],"error":"Failed to set mode on private path a.b.c"}
+{"fn":"repairPrivateFileSync","args":["key_name-1",{"executable":true}],"error":"Failed to set mode on private path key_name-1"}
+{"fn":"repairPrivateFileSync","args":["tab\tseparated",{"executable":true,"platform":[]}],"error":"Failed to set mode on private path tab\tseparated"}
+{"fn":"repairPrivateFileSync","args":["src/a/b.ts",{"$undefined":true}],"error":"Failed to set mode on private path src/a/b.ts"}
+{"fn":"repairPrivateFileSync","args":["straße",{"executable":false,"platform":true}],"error":"Failed to set mode on private path straße"}
+{"fn":"repairPrivateFileSync","args":["  padded  ",{}],"error":"Failed to set mode on private path   padded  "}
+{"fn":"repairPrivateFileSync","args":["﻿bom",{"executable":true,"platform":true}],"error":"Failed to set mode on private path ﻿bom"}
+{"fn":"repairPrivateFileSync","args":["Hello Worldab",{"executable":false}],"error":"Failed to open without following symlinks private path Hello Worldab"}
+{"fn":"repairPrivateFileSync","args":["",{"platform":[]}],"error":"Failed to open without following symlinks private path "}
+{"fn":"repairPrivateFileSync","args":["﻿bom.leading",{"a":"b"}],"error":"Failed to open without following symlinks private path ﻿bom.leading"}
+{"fn":"repairPrivateFileSync","args":["é",{"executable":true,"platform":true}],"error":"Failed to set mode on private path é"}
+{"fn":"repairPrivateFileSync","args":["  padded  ",{"executable":false,"platform":"x"}],"error":"Failed to set mode on private path   padded  "}
+{"fn":"repairPrivateFileSync","args":["",{"platform":{}}],"error":"Failed to open without following symlinks private path "}
+{"fn":"repairPrivateFileSync","args":["a:b:c",{"$undefined":true}],"error":"Failed to set mode on private path a:b:c"}
+{"fn":"repairPrivateFileSync","args":[".leading",{"executable":true,"platform":["a",1]}],"error":"Failed to set mode on private path .leading"}
+{"fn":"repairPrivateFileSync","args":["trailing.hello world"],"error":"Failed to open without following symlinks private path trailing.hello world"}
+{"fn":"repairPrivateFileSync","args":["😀hello world",[]],"error":"Failed to open without following symlinks private path 😀hello world"}
+{"fn":"repairPrivateFileSync","args":["straße",{"executable":true,"platform":["a",1]}],"error":"Failed to set mode on private path straße"}
+{"fn":"repairPrivateFileSync","args":["hello",{"executable":true,"platform":true}],"error":"Failed to set mode on private path hello"}
+{"fn":"repairPrivateFileSync","args":["key_name-1emoji 👍🏽 mix",{"platform":"x"}],"error":"Failed to open without following symlinks private path key_name-1emoji 👍🏽 mix"}
+{"fn":"repairPrivateFileSync","args":["hello world",{"$undefined":true}],"error":"Failed to set mode on private path hello world"}
+{"fn":"repairPrivateFileSync","args":["é",{"executable":true,"platform":["a",1]}],"error":"Failed to set mode on private path é"}
+{"fn":"repairPrivateFileSync","args":["ab",{"platform":{"a":"b"}}],"error":"Failed to set mode on private path ab"}
+{"fn":"repairPrivateFileSync","args":["😀",[]],"error":"Failed to set mode on private path 😀"}
+{"fn":"repairPrivateFileSync","args":["line1\nline2",{"executable":true,"platform":{}}],"error":"Failed to set mode on private path line1\nline2"}
+{"fn":"repairPrivateFileSync","args":["ns:key.path",{"executable":true,"platform":["a",1]}],"error":"Failed to set mode on private path ns:key.path"}
+{"fn":"repairPrivateFileSync","args":["line1\nline2src/a/b.ts",{"executable":true,"platform":"x"}],"error":"Failed to open without following symlinks private path line1\nline2src/a/b.ts"}
+{"fn":"repairPrivateFileSync","args":["trailing.",{"executable":true,"platform":{}}],"error":"Failed to set mode on private path trailing."}
+{"fn":"repairPrivateFileSync","args":["ΣΊΣΥΦΟΣ",null],"error":"Cannot read properties of null (reading 'platform')"}
+{"fn":"repairPrivateFileSync","args":["src/a/b.ts",{"platform":true}],"error":"Failed to set mode on private path src/a/b.ts"}
+{"fn":"repairPrivateFileSync","args":["./x/**/*.json"],"error":"Failed to set mode on private path ./x/**/*.json"}
+{"fn":"repairPrivateFileSync","args":["a.b.c"],"error":"Failed to set mode on private path a.b.c"}
+{"fn":"repairPrivateFileSync","args":["ab",{"executable":true,"platform":0}],"error":"Failed to set mode on private path ab"}
+{"fn":"repairPrivateFileSync","args":["﻿bomΣΊΣΥΦΟΣ",{"executable":false,"platform":{"a":{"b":"c"}}}],"error":"Failed to open without following symlinks private path ﻿bomΣΊΣΥΦΟΣ"}
+{"fn":"repairPrivateFileSync","args":["./x/**/*.json",{"platform":{}}],"error":"Failed to set mode on private path ./x/**/*.json"}
+{"fn":"repairPrivateFileSync","args":["a",{"executable":true}],"error":"Failed to set mode on private path a"}
+{"fn":"repairPrivateFileSync","args":[":",{"executable":true}],"error":"Failed to set mode on private path :"}
+{"fn":"repairPrivateFileSync","args":["﻿bom",{"executable":true,"platform":{}}],"error":"Failed to set mode on private path ﻿bom"}
+{"fn":"repairPrivateFileSync","args":["trailing.",{"executable":true}],"error":"Failed to set mode on private path trailing."}
+{"fn":"repairPrivateFileSync","args":[":"],"error":"Failed to set mode on private path :"}
+{"fn":"repairPrivateFileSync","args":["key_name-1",{"executable":true,"platform":"x"}],"error":"Failed to set mode on private path key_name-1"}
+{"fn":"repairPrivateFileSync","args":["é",{"executable":false,"platform":{"a":{"b":"c"}}}],"error":"Failed to set mode on private path é"}
+{"fn":"repairPrivateFileSync","args":["İstanbul",{"executable":false,"platform":null}],"error":"Failed to set mode on private path İstanbul"}
+{"fn":"repairPrivateFileSync","args":["ünïcödé",{"executable":true}],"error":"Failed to set mode on private path ünïcödé"}
+{"fn":"repairPrivateFileSync","args":["a:b:c",{"executable":true,"platform":null}],"error":"Failed to set mode on private path a:b:c"}
+{"fn":"repairPrivateFileSync","args":["ns:key.path",{"executable":false,"platform":null}],"error":"Failed to set mode on private path ns:key.path"}
+{"fn":"repairPrivateFileSync","args":["  padded  ",{"executable":false,"platform":null}],"error":"Failed to set mode on private path   padded  "}
+{"fn":"repairPrivateFileSync","args":["emoji 👍🏽 mix﻿bom",{"$undefined":true}],"error":"Failed to set mode on private path emoji 👍🏽 mix﻿bom"}
+{"fn":"repairPrivateFileSync","args":["",{"platform":null}],"error":"Failed to open without following symlinks private path "}
+{"fn":"repairPrivateFileSync","args":["{name} has {count} items",{"executable":false}],"error":"Failed to set mode on private path {name} has {count} items"}
+{"fn":"repairPrivateFileSync","args":["İstanbul",true],"error":"Failed to set mode on private path İstanbul"}
+{"fn":"repairPrivateFileSync","args":["straße",{"executable":true,"platform":[]}],"error":"Failed to set mode on private path straße"}
+{"fn":"repairPrivateFileSync","args":["ünïcödé",{"executable":true,"platform":null}],"error":"Failed to set mode on private path ünïcödé"}
+{"fn":"repairPrivateFileSync","args":["emoji 👍🏽 mix",["a",1]],"error":"Failed to set mode on private path emoji 👍🏽 mix"}
+{"fn":"repairPrivateFileSync","args":["src/a/b.ts",{"executable":true,"platform":["a",1]}],"error":"Failed to set mode on private path src/a/b.ts"}
+{"fn":"repairPrivateFileSync","args":["HELLO",{"executable":false,"platform":[]}],"error":"Failed to set mode on private path HELLO"}
+{"fn":"repairPrivateFileSync","args":["日本語のテキストHELLO",{"platform":0}],"error":"Failed to open without following symlinks private path 日本語のテキストHELLO"}
+{"fn":"repairPrivateFileSync","args":["😀",{"executable":true,"platform":"x"}],"error":"Failed to set mode on private path 😀"}
+{"fn":"repairPrivateFileSync","args":["ab",{"executable":false,"platform":[]}],"error":"Failed to set mode on private path ab"}
+{"fn":"repairPrivateFileSync","args":["﻿bom",{"executable":false,"platform":null}],"error":"Failed to set mode on private path ﻿bom"}
+{"fn":"repairPrivateFileSync","args":["tab\tseparated",{"$undefined":true}],"error":"Failed to set mode on private path tab\tseparated"}
+{"fn":"repairPrivateFileSync","args":["line1\nline2",{"executable":true}],"error":"Failed to set mode on private path line1\nline2"}
+{"fn":"repairPrivateFileSync","args":["a😀b😀c",{"platform":"x"}],"error":"Failed to set mode on private path a😀b😀c"}
+{"fn":"repairPrivateFileSync","args":["emoji 👍🏽 mix",{"executable":true,"platform":null}],"error":"Failed to set mode on private path emoji 👍🏽 mix"}
+{"fn":"repairPrivateFileSync","args":["ΣΊΣΥΦΟΣ",{"executable":true,"platform":0}],"error":"Failed to set mode on private path ΣΊΣΥΦΟΣ"}
+{"fn":"repairPrivateFileSync","args":["ab",{}],"error":"Failed to set mode on private path ab"}
+{"fn":"repairPrivateFileSync","args":["src/a/b.ts",{"platform":"x"}],"error":"Failed to set mode on private path src/a/b.ts"}
+{"fn":"repairPrivateFileSync","args":["HELLO",{"a":{"b":"c"}}],"error":"Failed to set mode on private path HELLO"}
+{"fn":"repairPrivateFileSync","args":["line1\nline2",{"executable":true,"platform":true}],"error":"Failed to set mode on private path line1\nline2"}
+{"fn":"repairPrivateFileSync","args":["a😀b😀c"],"error":"Failed to set mode on private path a😀b😀c"}
+{"fn":"repairPrivateFileSync","args":["emoji 👍🏽 mixa😀b😀c",{"executable":false,"platform":["a",1]}],"error":"Failed to open without following symlinks private path emoji 👍🏽 mixa😀b😀c"}
+{"fn":"repairPrivateFileSync","args":[":",{"executable":false}],"error":"Failed to set mode on private path :"}
+{"fn":"repairPrivateFileSync","args":[".leading",{"executable":false,"platform":{"a":"b"}}],"error":"Failed to set mode on private path .leading"}
+{"fn":"repairPrivateFileSync","args":["ab",{"$undefined":true}],"error":"Failed to set mode on private path ab"}
+{"fn":"repairPrivateFileSync","args":["ab",{"executable":true,"platform":["a",1]}],"error":"Failed to set mode on private path ab"}
+{"fn":"repairPrivateFileSync","args":["é",{"executable":false}],"error":"Failed to set mode on private path é"}
+{"fn":"repairPrivateFileSync","args":["  padded  a😀b😀c",{"executable":true}],"error":"Failed to open without following symlinks private path   padded  a😀b😀c"}
+{"fn":"repairPrivateFileSync","args":["line1\nline2",{"a":"b"}],"error":"Failed to set mode on private path line1\nline2"}
+{"fn":"repairPrivateFileSync","args":["src/a/b.ts",{"executable":false}],"error":"Failed to set mode on private path src/a/b.ts"}
+{"fn":"repairPrivateFileSync","args":["😀",{"$undefined":true}],"error":"Failed to set mode on private path 😀"}
+{"fn":"repairPrivateFileSync","args":["a..b",{"a":"b"}],"error":"Failed to set mode on private path a..b"}
+{"fn":"repairPrivateFileSync","args":["./x/**/*.json",{"executable":true}],"error":"Failed to set mode on private path ./x/**/*.json"}
+{"fn":"repairPrivateFileSync","args":["trailing.",{"executable":false}],"error":"Failed to set mode on private path trailing."}
+{"fn":"repairPrivateFileSync","args":["ünïcödé",{}],"error":"Failed to set mode on private path ünïcödé"}
+{"fn":"repairPrivateFileSync","args":["a",{"platform":[]}],"error":"Failed to set mode on private path a"}
+{"fn":"repairPrivateFileSync","args":[":","x"],"error":"Failed to set mode on private path :"}
+{"fn":"repairPrivateFileSync","args":["日本語のテキスト",{"executable":false}],"error":"Failed to set mode on private path 日本語のテキスト"}
+{"fn":"repairPrivateFileSync","args":["abcHello World",{"executable":true,"platform":true}],"error":"Failed to open without following symlinks private path abcHello World"}
+{"fn":"repairPrivateFileSync","args":["{name} has {count} items",{"executable":true,"platform":["a",1]}],"error":"Failed to set mode on private path {name} has {count} items"}
+{"fn":"repairPrivateFileSync","args":["",{"executable":false}],"error":"Failed to open without following symlinks private path "}
+{"fn":"repairPrivateFileSync","args":["😀",{"executable":false,"platform":0}],"error":"Failed to set mode on private path 😀"}
+{"fn":"repairPrivateFileSync","args":["😀",{"executable":false,"platform":{"a":{"b":"c"}}}],"error":"Failed to set mode on private path 😀"}
+{"fn":"repairPrivateFileSync","args":["İstanbul"],"error":"Failed to set mode on private path İstanbul"}
+{"fn":"repairPrivateFileSync","args":["HELLO",{"executable":true,"platform":[]}],"error":"Failed to set mode on private path HELLO"}
+{"fn":"repairPrivateFileSync","args":["line1\nline2"],"error":"Failed to set mode on private path line1\nline2"}
+{"fn":"repairPrivateFileSync","args":["İstanbul",{"executable":true}],"error":"Failed to set mode on private path İstanbul"}
+{"fn":"repairPrivateFileSync","args":["tab\tseparated",{"executable":false,"platform":true}],"error":"Failed to set mode on private path tab\tseparated"}
+{"fn":"repairPrivateFileSync","args":["a:b:c"],"error":"Failed to set mode on private path a:b:c"}
+{"fn":"repairPrivateFileSync","args":["a..b","x"],"error":"Failed to set mode on private path a..b"}
+{"fn":"repairPrivateFileSync","args":["abc",[]],"error":"Failed to set mode on private path abc"}
+{"fn":"repairPrivateFileSync","args":["emoji 👍🏽 mix",{"executable":false,"platform":{"a":"b"}}],"error":"Failed to set mode on private path emoji 👍🏽 mix"}
+{"fn":"repairPrivateFileSync","args":["trailing.",{"a":{"b":"c"}}],"error":"Failed to set mode on private path trailing."}
+{"fn":"repairPrivateFileSync","args":["  padded  ",{"platform":{"a":{"b":"c"}}}],"error":"Failed to set mode on private path   padded  "}
+{"fn":"repairPrivateFileSync","args":["Hello World",{"platform":{"a":"b"}}],"error":"Failed to set mode on private path Hello World"}
+{"fn":"repairPrivateFileSync","args":["hello",{"executable":false,"platform":[]}],"error":"Failed to set mode on private path hello"}
+{"fn":"repairPrivateFileSync","args":["héllo wörld",{"executable":false,"platform":0}],"error":"Failed to set mode on private path héllo wörld"}
+{"fn":"repairPrivateFileSync","args":["👍🏽 thumbs",{"executable":false,"platform":0}],"error":"Failed to set mode on private path 👍🏽 thumbs"}
+{"fn":"repairPrivateFileSync","args":["日本語",{"executable":false,"platform":0}],"error":"Failed to set mode on private path 日本語"}
+{"fn":"repairPrivateFileSync","args":["",{"executable":false,"platform":0}],"error":"Failed to open without following symlinks private path "}
+{"fn":"repairPrivateFileSync","args":["é",{"executable":false,"platform":0}],"error":"Failed to set mode on private path é"}
+{"fn":"repairPrivateFileSync","args":["İstanbul",{"executable":false,"platform":0}],"error":"Failed to set mode on private path İstanbul"}
+{"fn":"repairPrivateFileSync","args":["straße",{"executable":false,"platform":0}],"error":"Failed to set mode on private path straße"}
+{"fn":"repairPrivateFileSync","args":["ılık ırmak",{"executable":false,"platform":0}],"error":"Failed to set mode on private path ılık ırmak"}
+{"fn":"repairPrivateFileSync","args":["👨‍👩‍👧 family",{"executable":false,"platform":0}],"error":"Failed to set mode on private path 👨‍👩‍👧 family"}
+{"fn":"repairPrivateFileSync","args":["a b",{"executable":false,"platform":0}],"error":"Failed to set mode on private path a b"}
+{"fn":"repairPrivateFileSync","args":["ΣΊΣΥΦΟΣ",{"executable":false,"platform":0}],"error":"Failed to set mode on private path ΣΊΣΥΦΟΣ"}
+{"fn":"repairPrivateFileSync","args":["a😀b",{"executable":false,"platform":0}],"error":"Failed to set mode on private path a😀b"}
+{"fn":"repairPrivateFileSync","args":["﻿bom",{"executable":false,"platform":0}],"error":"Failed to set mode on private path ﻿bom"}
+{"fn":"repairPrivateFileSync","args":["a²b x½ y①",{"executable":false,"platform":0}],"error":"Failed to set mode on private path a²b x½ y①"}
+{"fn":"repairPrivateFileSync","args":["aⅠb Ⅻ",{"executable":false,"platform":0}],"error":"Failed to set mode on private path aⅠb Ⅻ"}
+{"fn":"repairPrivateFileSync","args":["a𐐀b 𝐀bc",{"executable":false,"platform":0}],"error":"Failed to set mode on private path a𐐀b 𝐀bc"}
+{"fn":"repairPrivateFileSync","args":["कि ٣٤",{"executable":false,"platform":0}],"error":"Failed to set mode on private path कि ٣٤"}
+{"fn":"ensurePrivateFileSync","args":["trailing.",{}],"error":"Failed to open without following symlinks private path trailing."}
+{"fn":"ensurePrivateFileSync","args":["a..b",{"executable":false,"platform":"x"}],"error":"Failed to open without following symlinks private path a..b"}
+{"fn":"ensurePrivateFileSync","args":["hello world",{"executable":false,"platform":0}],"error":"Failed to open without following symlinks private path hello world"}
+{"fn":"ensurePrivateFileSync","args":["abc",{"executable":false,"platform":{"a":"b"}}],"error":"Failed to open without following symlinks private path abc"}
+{"fn":"ensurePrivateFileSync","args":["akey_name-1",{"executable":true,"platform":0}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateFileSync","args":["ünïcödé"],"error":"Failed to open without following symlinks private path ünïcödé"}
+{"fn":"ensurePrivateFileSync","args":["HELLO",{"executable":true,"platform":"x"}],"error":"Failed to open without following symlinks private path HELLO"}
+{"fn":"ensurePrivateFileSync","args":["HELLO",{"executable":true,"platform":["a",1]}],"error":"Failed to open without following symlinks private path HELLO"}
+{"fn":"ensurePrivateFileSync","args":["Hello World",{"$undefined":true}],"error":"Failed to open without following symlinks private path Hello World"}
+{"fn":"ensurePrivateFileSync","args":["a😀b😀cline1\nline2",{"executable":true,"platform":{"a":{"b":"c"}}}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateFileSync","args":[".leading",{"a":"b"}],"error":"Failed to open without following symlinks private path .leading"}
+{"fn":"ensurePrivateFileSync","args":["tab\tseparatedstraße",{"platform":"x"}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateFileSync","args":["İstanbul",{"executable":true,"platform":"x"}],"error":"Failed to open without following symlinks private path İstanbul"}
+{"fn":"ensurePrivateFileSync","args":[":",{"executable":true,"platform":0}],"error":"Failed to open without following symlinks private path :"}
+{"fn":"ensurePrivateFileSync","args":["./x/**/*.json",{"executable":true,"platform":["a",1]}],"error":"Failed to open without following symlinks private path ./x/**/*.json"}
+{"fn":"ensurePrivateFileSync","args":["hello world",{"executable":true,"platform":0}],"error":"Failed to open without following symlinks private path hello world"}
+{"fn":"ensurePrivateFileSync","args":["emoji 👍🏽 mix"],"error":"Failed to open without following symlinks private path emoji 👍🏽 mix"}
+{"fn":"ensurePrivateFileSync","args":["﻿bom",{"executable":true}],"error":"Failed to open without following symlinks private path ﻿bom"}
+{"fn":"ensurePrivateFileSync","args":["hello",{"platform":"x"}],"error":"Failed to open without following symlinks private path hello"}
+{"fn":"ensurePrivateFileSync","args":["straßeİstanbul",0],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateFileSync","args":["emoji 👍🏽 mix",{"executable":false}],"error":"Failed to open without following symlinks private path emoji 👍🏽 mix"}
+{"fn":"ensurePrivateFileSync","args":[".leading"],"error":"Failed to open without following symlinks private path .leading"}
+{"fn":"ensurePrivateFileSync","args":["a:b:c",null],"error":"Cannot read properties of null (reading 'platform')"}
+{"fn":"ensurePrivateFileSync","args":["HELLO",0],"error":"Failed to open without following symlinks private path HELLO"}
+{"fn":"ensurePrivateFileSync","args":["trailing.",{"executable":true,"platform":["a",1]}],"error":"Failed to open without following symlinks private path trailing."}
+{"fn":"ensurePrivateFileSync","args":["İstanbul",{"executable":true,"platform":true}],"error":"Failed to open without following symlinks private path İstanbul"}
+{"fn":"ensurePrivateFileSync","args":["line1\nline2",{"$undefined":true}],"error":"Failed to open without following symlinks private path line1\nline2"}
+{"fn":"ensurePrivateFileSync","args":["abc﻿bom",{"executable":true}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateFileSync","args":["src/a/b.ts",{"executable":false,"platform":true}],"error":"Failed to open without following symlinks private path src/a/b.ts"}
+{"fn":"ensurePrivateFileSync","args":["  padded  ",{"executable":true,"platform":{"a":"b"}}],"error":"Failed to open without following symlinks private path   padded  "}
+{"fn":"ensurePrivateFileSync","args":["./x/**/*.json",{"platform":{"a":{"b":"c"}}}],"error":"Failed to open without following symlinks private path ./x/**/*.json"}
+{"fn":"ensurePrivateFileSync","args":["a:b:c",{"platform":"x"}],"error":"Failed to open without following symlinks private path a:b:c"}
+{"fn":"ensurePrivateFileSync","args":["HELLO",{"a":"b"}],"error":"Failed to open without following symlinks private path HELLO"}
+{"fn":"ensurePrivateFileSync","args":["a.leading",{"executable":false,"platform":["a",1]}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateFileSync","args":["{name} has {count} items",{"platform":true}],"error":"Failed to open without following symlinks private path {name} has {count} items"}
+{"fn":"ensurePrivateFileSync","args":["a😀b😀c",{"executable":true}],"error":"Failed to open without following symlinks private path a😀b😀c"}
+{"fn":"ensurePrivateFileSync","args":["a.b.c",{"platform":{}}],"error":"Failed to open without following symlinks private path a.b.c"}
+{"fn":"ensurePrivateFileSync","args":["tab\tseparated","x"],"error":"Failed to open without following symlinks private path tab\tseparated"}
+{"fn":"ensurePrivateFileSync","args":[":",{"executable":false}],"error":"Failed to open without following symlinks private path :"}
+{"fn":"ensurePrivateFileSync","args":["a:b:c日本語のテキスト",{}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateFileSync","args":["Hello World",{"executable":false,"platform":true}],"error":"Failed to open without following symlinks private path Hello World"}
+{"fn":"ensurePrivateFileSync","args":["a😀b😀cstraße",{"executable":false,"platform":true}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateFileSync","args":["a",{"executable":false,"platform":true}],"error":"Failed to open without following symlinks private path a"}
+{"fn":"ensurePrivateFileSync","args":["{name} has {count} items",{"executable":true,"platform":{"a":{"b":"c"}}}],"error":"Failed to open without following symlinks private path {name} has {count} items"}
+{"fn":"ensurePrivateFileSync","args":["Hello World",{"platform":[]}],"error":"Failed to open without following symlinks private path Hello World"}
+{"fn":"ensurePrivateFileSync","args":["a😀b😀c"],"error":"Failed to open without following symlinks private path a😀b😀c"}
+{"fn":"ensurePrivateFileSync","args":["﻿bomHello World",{"executable":false,"platform":"x"}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateFileSync","args":["trailing.","x"],"error":"Failed to open without following symlinks private path trailing."}
+{"fn":"ensurePrivateFileSync","args":["",{"platform":null}],"error":"Failed to open without following symlinks private path "}
+{"fn":"ensurePrivateFileSync","args":[":",{"platform":0}],"error":"Failed to open without following symlinks private path :"}
+{"fn":"ensurePrivateFileSync","args":["ab",{"executable":false,"platform":"x"}],"error":"Failed to open without following symlinks private path ab"}
+{"fn":"ensurePrivateFileSync","args":["hello world",{"executable":true}],"error":"Failed to open without following symlinks private path hello world"}
+{"fn":"ensurePrivateFileSync","args":["./x/**/*.json",["a",1]],"error":"Failed to open without following symlinks private path ./x/**/*.json"}
+{"fn":"ensurePrivateFileSync","args":["abc",{"executable":true,"platform":true}],"error":"Failed to open without following symlinks private path abc"}
+{"fn":"ensurePrivateFileSync","args":["a",{"executable":true,"platform":true}],"error":"Failed to open without following symlinks private path a"}
+{"fn":"ensurePrivateFileSync","args":["é",{"executable":true,"platform":0}],"error":"Failed to open without following symlinks private path é"}
+{"fn":"ensurePrivateFileSync","args":["{name} has {count} items",{"executable":false,"platform":{}}],"error":"Failed to open without following symlinks private path {name} has {count} items"}
+{"fn":"ensurePrivateFileSync","args":["",{"executable":true,"platform":{"a":{"b":"c"}}}],"error":"Failed to open without following symlinks private path "}
+{"fn":"ensurePrivateFileSync","args":["key_name-1"],"error":"Failed to open without following symlinks private path key_name-1"}
+{"fn":"ensurePrivateFileSync","args":["﻿bom",{"a":{"b":"c"}}],"error":"Failed to open without following symlinks private path ﻿bom"}
+{"fn":"ensurePrivateFileSync","args":["line1\nline2{name} has {count} items",{"platform":0}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateFileSync","args":["a.b.c",{"platform":"x"}],"error":"Failed to open without following symlinks private path a.b.c"}
+{"fn":"ensurePrivateFileSync","args":["ünïcödé",{"executable":false,"platform":{"a":"b"}}],"error":"Failed to open without following symlinks private path ünïcödé"}
+{"fn":"ensurePrivateFileSync","args":["ab",{"$undefined":true}],"error":"Failed to open without following symlinks private path ab"}
+{"fn":"ensurePrivateFileSync","args":["",{"executable":true,"platform":["a",1]}],"error":"Failed to open without following symlinks private path "}
+{"fn":"ensurePrivateFileSync","args":["ns:key.path",{"executable":true}],"error":"Failed to open without following symlinks private path ns:key.path"}
+{"fn":"ensurePrivateFileSync","args":["./x/**/*.json",{"executable":false}],"error":"Failed to open without following symlinks private path ./x/**/*.json"}
+{"fn":"ensurePrivateFileSync","args":["trailing.",{"executable":false}],"error":"Failed to open without following symlinks private path trailing."}
+{"fn":"ensurePrivateFileSync","args":["éΣΊΣΥΦΟΣ",{"platform":{"a":"b"}}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateFileSync","args":["hello world"],"error":"Failed to open without following symlinks private path hello world"}
+{"fn":"ensurePrivateFileSync","args":["a:b:c",{"platform":{"a":{"b":"c"}}}],"error":"Failed to open without following symlinks private path a:b:c"}
+{"fn":"ensurePrivateFileSync","args":["straße",{"executable":false,"platform":null}],"error":"Failed to open without following symlinks private path straße"}
+{"fn":"ensurePrivateFileSync","args":["straße"],"error":"Failed to open without following symlinks private path straße"}
+{"fn":"ensurePrivateFileSync","args":["abc",{"executable":false,"platform":[]}],"error":"Failed to open without following symlinks private path abc"}
+{"fn":"ensurePrivateFileSync","args":["Hello Worldsrc/a/b.ts",{"executable":false,"platform":true}],"error":"Failed to open without following symlinks private path Hello Worldsrc/a/b.ts"}
+{"fn":"ensurePrivateFileSync","args":["trailing.",{"$undefined":true}],"error":"Failed to open without following symlinks private path trailing."}
+{"fn":"ensurePrivateFileSync","args":["ns:key.path",{"executable":true,"platform":{"a":{"b":"c"}}}],"error":"Failed to open without following symlinks private path ns:key.path"}
+{"fn":"ensurePrivateFileSync","args":["日本語のテキスト",["a",1]],"error":"Failed to open without following symlinks private path 日本語のテキスト"}
+{"fn":"ensurePrivateFileSync","args":["ΣΊΣΥΦΟΣΣΊΣΥΦΟΣ",{"executable":true,"platform":null}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateFileSync","args":["a.b.c",{"platform":{"a":"b"}}],"error":"Failed to open without following symlinks private path a.b.c"}
+{"fn":"ensurePrivateFileSync","args":["a:b:c",{"executable":true,"platform":{}}],"error":"Failed to open without following symlinks private path a:b:c"}
+{"fn":"ensurePrivateFileSync","args":["abcabc",{"platform":0}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateFileSync","args":["hello",{"executable":true,"platform":{"a":"b"}}],"error":"Failed to open without following symlinks private path hello"}
+{"fn":"ensurePrivateFileSync","args":["line1\nline2",{"executable":true}],"error":"Failed to open without following symlinks private path line1\nline2"}
+{"fn":"ensurePrivateFileSync","args":["{name} has {count} itemstrailing.",{"executable":true,"platform":{"a":{"b":"c"}}}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateFileSync","args":["HELLO",{"executable":false,"platform":{}}],"error":"Failed to open without following symlinks private path HELLO"}
+{"fn":"ensurePrivateFileSync","args":["﻿bom😀",{"executable":true,"platform":{"a":{"b":"c"}}}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateFileSync","args":["éabc",{"executable":true,"platform":true}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateFileSync","args":["src/a/b.ts",{"platform":[]}],"error":"Failed to open without following symlinks private path src/a/b.ts"}
+{"fn":"ensurePrivateFileSync","args":["a﻿bom",{"executable":true,"platform":true}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateFileSync","args":["ab",{"platform":[]}],"error":"Failed to open without following symlinks private path ab"}
+{"fn":"ensurePrivateFileSync","args":["İstanbul",{"executable":true}],"error":"Failed to open without following symlinks private path İstanbul"}
+{"fn":"ensurePrivateFileSync","args":["src/a/b.ts",{"executable":true}],"error":"Failed to open without following symlinks private path src/a/b.ts"}
+{"fn":"ensurePrivateFileSync","args":["./x/**/*.json",{"$undefined":true}],"error":"Failed to open without following symlinks private path ./x/**/*.json"}
+{"fn":"ensurePrivateFileSync","args":["line1\nline2ab",{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateFileSync","args":["a..bns:key.path",{"platform":{}}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateFileSync","args":["ab",{"executable":true}],"error":"Failed to open without following symlinks private path ab"}
+{"fn":"ensurePrivateFileSync","args":["hello"],"error":"Failed to open without following symlinks private path hello"}
+{"fn":"ensurePrivateFileSync","args":["hello world",{"executable":true,"platform":[]}],"error":"Failed to open without following symlinks private path hello world"}
+{"fn":"ensurePrivateFileSync","args":["a",{"executable":true,"platform":{"a":{"b":"c"}}}],"error":"Failed to open without following symlinks private path a"}
+{"fn":"ensurePrivateFileSync","args":["emoji 👍🏽 mix",{}],"error":"Failed to open without following symlinks private path emoji 👍🏽 mix"}
+{"fn":"ensurePrivateFileSync","args":["{name} has {count} itemsa.b.c",{"executable":true,"platform":{"a":{"b":"c"}}}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateFileSync","args":["😀",{"platform":["a",1]}],"error":"Failed to open without following symlinks private path 😀"}
+{"fn":"ensurePrivateFileSync","args":["HELLO","x"],"error":"Failed to open without following symlinks private path HELLO"}
+{"fn":"ensurePrivateFileSync","args":["HELLO",{"$undefined":true}],"error":"Failed to open without following symlinks private path HELLO"}
+{"fn":"ensurePrivateFileSync","args":[":",{"executable":true,"platform":"x"}],"error":"Failed to open without following symlinks private path :"}
+{"fn":"ensurePrivateFileSync","args":["ns:key.pathline1\nline2",{"executable":false,"platform":"x"}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateFileSync","args":["a.b.c",[]],"error":"Failed to open without following symlinks private path a.b.c"}
+{"fn":"ensurePrivateFileSync","args":["😀",{"executable":false}],"error":"Failed to open without following symlinks private path 😀"}
+{"fn":"ensurePrivateFileSync","args":["日本語のテキスト",{"executable":true,"platform":null}],"error":"Failed to open without following symlinks private path 日本語のテキスト"}
+{"fn":"ensurePrivateFileSync","args":["a:b:c",{"$undefined":true}],"error":"Failed to open without following symlinks private path a:b:c"}
+{"fn":"ensurePrivateFileSync","args":["ab",{"platform":"x"}],"error":"Failed to open without following symlinks private path ab"}
+{"fn":"ensurePrivateFileSync","args":["trailing.",{"platform":["a",1]}],"error":"Failed to open without following symlinks private path trailing."}
+{"fn":"ensurePrivateFileSync","args":["trailing.",["a",1]],"error":"Failed to open without following symlinks private path trailing."}
+{"fn":"ensurePrivateFileSync","args":["﻿bomns:key.path"],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateFileSync","args":["é","x"],"error":"Failed to open without following symlinks private path é"}
+{"fn":"ensurePrivateFileSync","args":["a",{"executable":true,"platform":[]}],"error":"Failed to open without following symlinks private path a"}
+{"fn":"ensurePrivateFileSync","args":["abc",{"executable":false}],"error":"Failed to open without following symlinks private path abc"}
+{"fn":"ensurePrivateFileSync","args":["{name} has {count} items",{"platform":0}],"error":"Failed to open without following symlinks private path {name} has {count} items"}
+{"fn":"ensurePrivateFileSync","args":["a.b.c",{"executable":true,"platform":"x"}],"error":"Failed to open without following symlinks private path a.b.c"}
+{"fn":"ensurePrivateFileSync","args":["hello:",{"executable":false}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateFileSync","args":["a./x/**/*.json",{"platform":true}],"error":"Failed to open without following symlinks private path a./x/**/*.json"}
+{"fn":"ensurePrivateFileSync","args":["a:b:c",{"executable":false,"platform":["a",1]}],"error":"Failed to open without following symlinks private path a:b:c"}
+{"fn":"ensurePrivateFileSync","args":["ab"],"error":"Failed to open without following symlinks private path ab"}
+{"fn":"ensurePrivateFileSync","args":["key_name-1",{"platform":{}}],"error":"Failed to open without following symlinks private path key_name-1"}
+{"fn":"ensurePrivateFileSync","args":["a.b.c",{"$undefined":true}],"error":"Failed to open without following symlinks private path a.b.c"}
+{"fn":"ensurePrivateFileSync","args":["İstanbul",{"$undefined":true}],"error":"Failed to open without following symlinks private path İstanbul"}
+{"fn":"ensurePrivateFileSync","args":["a",{"executable":false,"platform":[]}],"error":"Failed to open without following symlinks private path a"}
+{"fn":"ensurePrivateFileSync","args":["  padded  ",{"executable":false,"platform":["a",1]}],"error":"Failed to open without following symlinks private path   padded  "}
+{"fn":"ensurePrivateFileSync","args":["  padded  ",true],"error":"Failed to open without following symlinks private path   padded  "}
+{"fn":"ensurePrivateFileSync","args":["a:b:c",{"executable":true,"platform":[]}],"error":"Failed to open without following symlinks private path a:b:c"}
+{"fn":"ensurePrivateFileSync","args":["trailing.",{"executable":false,"platform":"x"}],"error":"Failed to open without following symlinks private path trailing."}
+{"fn":"ensurePrivateFileSync","args":["./x/**/*.json"],"error":"Failed to open without following symlinks private path ./x/**/*.json"}
+{"fn":"ensurePrivateFileSync","args":["a..b",{"executable":true,"platform":{}}],"error":"Failed to open without following symlinks private path a..b"}
+{"fn":"ensurePrivateFileSync","args":["src/a/b.ts",{"executable":true,"platform":{"a":"b"}}],"error":"Failed to open without following symlinks private path src/a/b.ts"}
+{"fn":"ensurePrivateFileSync","args":["a:b:c",{"platform":{}}],"error":"Failed to open without following symlinks private path a:b:c"}
+{"fn":"ensurePrivateFileSync","args":["HELLO"],"error":"Failed to open without following symlinks private path HELLO"}
+{"fn":"ensurePrivateFileSync","args":["tab\tseparated"],"error":"Failed to open without following symlinks private path tab\tseparated"}
+{"fn":"ensurePrivateFileSync","args":["a😀b😀c日本語のテキスト",{"platform":{"a":"b"}}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateFileSync","args":["hello world",{}],"error":"Failed to open without following symlinks private path hello world"}
+{"fn":"ensurePrivateFileSync","args":["src/a/b.ts",{"$undefined":true}],"error":"Failed to open without following symlinks private path src/a/b.ts"}
+{"fn":"ensurePrivateFileSync","args":["tab\tseparated",{"executable":true}],"error":"Failed to open without following symlinks private path tab\tseparated"}
+{"fn":"ensurePrivateFileSync","args":["日本語のテキスト"],"error":"Failed to open without following symlinks private path 日本語のテキスト"}
+{"fn":"ensurePrivateFileSync","args":[".leading",{"executable":false,"platform":{"a":"b"}}],"error":"Failed to open without following symlinks private path .leading"}
+{"fn":"ensurePrivateFileSync","args":["é",{"executable":true}],"error":"Failed to open without following symlinks private path é"}
+{"fn":"ensurePrivateFileSync","args":["a..b",{"executable":true,"platform":0}],"error":"Failed to open without following symlinks private path a..b"}
+{"fn":"ensurePrivateFileSync","args":["﻿bom",{"executable":true,"platform":{}}],"error":"Failed to open without following symlinks private path ﻿bom"}
+{"fn":"ensurePrivateFileSync","args":["trailing.😀",null],"error":"Cannot read properties of null (reading 'platform')"}
+{"fn":"ensurePrivateFileSync","args":["ünïcödé",{"executable":true,"platform":{"a":{"b":"c"}}}],"error":"Failed to open without following symlinks private path ünïcödé"}
+{"fn":"ensurePrivateFileSync","args":[".leading",{"platform":{"a":"b"}}],"error":"Failed to open without following symlinks private path .leading"}
+{"fn":"ensurePrivateFileSync","args":["ünïcödé",{"$undefined":true}],"error":"Failed to open without following symlinks private path ünïcödé"}
+{"fn":"ensurePrivateFileSync","args":["ünïcödé",{"executable":false}],"error":"Failed to open without following symlinks private path ünïcödé"}
+{"fn":"ensurePrivateFileSync","args":["a..b",{"$undefined":true}],"error":"Failed to open without following symlinks private path a..b"}
+{"fn":"ensurePrivateFileSync","args":["a..btrailing."],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateFileSync","args":["İstanbul",{"executable":false}],"error":"Failed to open without following symlinks private path İstanbul"}
+{"fn":"ensurePrivateFileSync","args":["İstanbul",{}],"error":"Failed to open without following symlinks private path İstanbul"}
+{"fn":"ensurePrivateFileSync","args":[":"],"error":"Failed to open without following symlinks private path :"}
+{"fn":"ensurePrivateFileSync","args":["HELLO",null],"error":"Cannot read properties of null (reading 'platform')"}
+{"fn":"ensurePrivateFileSync","args":["é",{"$undefined":true}],"error":"Failed to open without following symlinks private path é"}
+{"fn":"ensurePrivateFileSync","args":["ab",{"executable":false,"platform":0}],"error":"Failed to open without following symlinks private path ab"}
+{"fn":"ensurePrivateFileSync","args":[":",{"executable":true,"platform":{"a":"b"}}],"error":"Failed to open without following symlinks private path :"}
+{"fn":"ensurePrivateFileSync","args":["hello world",{"executable":false,"platform":"x"}],"error":"Failed to open without following symlinks private path hello world"}
+{"fn":"ensurePrivateFileSync","args":["a..b"],"error":"Failed to open without following symlinks private path a..b"}
+{"fn":"ensurePrivateFileSync","args":["日本語のテキストΣΊΣΥΦΟΣ",{"executable":false,"platform":{}}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateFileSync","args":["日本語のテキスト",{"platform":{"a":"b"}}],"error":"Failed to open without following symlinks private path 日本語のテキスト"}
+{"fn":"ensurePrivateFileSync","args":["emoji 👍🏽 mix",{"executable":true}],"error":"Failed to open without following symlinks private path emoji 👍🏽 mix"}
+{"fn":"ensurePrivateFileSync","args":["ns:key.pathHELLO",{"executable":false,"platform":"x"}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateFileSync","args":["ab",{"platform":{}}],"error":"Failed to open without following symlinks private path ab"}
+{"fn":"ensurePrivateFileSync","args":[":",{"$undefined":true}],"error":"Failed to open without following symlinks private path :"}
+{"fn":"ensurePrivateFileSync","args":["  padded  ",{"platform":{}}],"error":"Failed to open without following symlinks private path   padded  "}
+{"fn":"ensurePrivateFileSync","args":["﻿bom",{"platform":{}}],"error":"Failed to open without following symlinks private path ﻿bom"}
+{"fn":"ensurePrivateFileSync","args":["HELLOab",{}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateFileSync","args":["Hello World",{}],"error":"Failed to open without following symlinks private path Hello World"}
+{"fn":"ensurePrivateFileSync","args":["",{"executable":false}],"error":"Failed to open without following symlinks private path "}
+{"fn":"ensurePrivateFileSync","args":["key_name-1",{"$undefined":true}],"error":"Failed to open without following symlinks private path key_name-1"}
+{"fn":"ensurePrivateFileSync","args":["key_name-1",{"executable":true}],"error":"Failed to open without following symlinks private path key_name-1"}
+{"fn":"ensurePrivateFileSync","args":["./x/**/*.jsonΣΊΣΥΦΟΣ",{"executable":true,"platform":"x"}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateFileSync","args":["emoji 👍🏽 mix",{"executable":true,"platform":true}],"error":"Failed to open without following symlinks private path emoji 👍🏽 mix"}
+{"fn":"ensurePrivateFileSync","args":["line1\nline2  padded  ",{}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateFileSync","args":["hello",{"executable":false,"platform":{"a":"b"}}],"error":"Failed to open without following symlinks private path hello"}
+{"fn":"ensurePrivateFileSync","args":["line1\nline2emoji 👍🏽 mix",{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateFileSync","args":["trailing.",{"platform":0}],"error":"Failed to open without following symlinks private path trailing."}
+{"fn":"ensurePrivateFileSync","args":["ns:key.pathünïcödé",{"executable":true,"platform":0}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateFileSync","args":["é",{"platform":{}}],"error":"Failed to open without following symlinks private path é"}
+{"fn":"ensurePrivateFileSync","args":["a..b",{"platform":{"a":{"b":"c"}}}],"error":"Failed to open without following symlinks private path a..b"}
+{"fn":"ensurePrivateFileSync","args":["abünïcödé",{"executable":false,"platform":[]}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateFileSync","args":["trailing.",{"executable":true,"platform":{"a":{"b":"c"}}}],"error":"Failed to open without following symlinks private path trailing."}
+{"fn":"ensurePrivateFileSync","args":["ΣΊΣΥΦΟΣ",{"executable":false}],"error":"Failed to open without following symlinks private path ΣΊΣΥΦΟΣ"}
+{"fn":"ensurePrivateFileSync","args":["line1\nline2ab",{"executable":false,"platform":null}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateFileSync","args":["日本語のテキスト./x/**/*.json",{"executable":false,"platform":true}],"error":"Failed to open without following symlinks private path 日本語のテキスト./x/**/*.json"}
+{"fn":"ensurePrivateFileSync","args":["😀",{"executable":true,"platform":{"a":"b"}}],"error":"Failed to open without following symlinks private path 😀"}
+{"fn":"ensurePrivateFileSync","args":["a😀b😀c",{"platform":0}],"error":"Failed to open without following symlinks private path a😀b😀c"}
+{"fn":"ensurePrivateFileSync","args":["Hello World",{"executable":true,"platform":{"a":"b"}}],"error":"Failed to open without following symlinks private path Hello World"}
+{"fn":"ensurePrivateFileSync","args":["abc",{"executable":false,"platform":{}}],"error":"Failed to open without following symlinks private path abc"}
+{"fn":"ensurePrivateFileSync","args":["./x/**/*.json",{"executable":false,"platform":{}}],"error":"Failed to open without following symlinks private path ./x/**/*.json"}
+{"fn":"ensurePrivateFileSync","args":["abhello",{"executable":false,"platform":[]}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateFileSync","args":["src/a/b.tshello world",{"executable":true,"platform":[]}],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateFileSync","args":["ns:key.pathsrc/a/b.ts",{"executable":false,"platform":0}],"error":"Failed to open without following symlinks private path ns:key.pathsrc/a/b.ts"}
+{"fn":"ensurePrivateFileSync","args":["abc",{"executable":true,"platform":"x"}],"error":"Failed to open without following symlinks private path abc"}
+{"fn":"ensurePrivateFileSync","args":["hello worldemoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"ensurePrivateFileSync","args":["héllo wörld",{}],"error":"Failed to open without following symlinks private path héllo wörld"}
+{"fn":"ensurePrivateFileSync","args":["👍🏽 thumbs",{}],"error":"Failed to open without following symlinks private path 👍🏽 thumbs"}
+{"fn":"ensurePrivateFileSync","args":["日本語",{}],"error":"Failed to open without following symlinks private path 日本語"}
+{"fn":"ensurePrivateFileSync","args":["",{}],"error":"Failed to open without following symlinks private path "}
+{"fn":"ensurePrivateFileSync","args":["é",{}],"error":"Failed to open without following symlinks private path é"}
+{"fn":"ensurePrivateFileSync","args":["straße",{}],"error":"Failed to open without following symlinks private path straße"}
+{"fn":"ensurePrivateFileSync","args":["ılık ırmak",{}],"error":"Failed to open without following symlinks private path ılık ırmak"}
+{"fn":"ensurePrivateFileSync","args":["👨‍👩‍👧 family",{}],"error":"Failed to open without following symlinks private path 👨‍👩‍👧 family"}
+{"fn":"ensurePrivateFileSync","args":["a b",{}],"error":"Failed to open without following symlinks private path a b"}
+{"fn":"ensurePrivateFileSync","args":["ΣΊΣΥΦΟΣ",{}],"error":"Failed to open without following symlinks private path ΣΊΣΥΦΟΣ"}
+{"fn":"ensurePrivateFileSync","args":["a😀b",{}],"error":"Failed to open without following symlinks private path a😀b"}
+{"fn":"ensurePrivateFileSync","args":["﻿bom",{}],"error":"Failed to open without following symlinks private path ﻿bom"}
+{"fn":"ensurePrivateFileSync","args":["a²b x½ y①",{}],"error":"Failed to open without following symlinks private path a²b x½ y①"}
+{"fn":"ensurePrivateFileSync","args":["aⅠb Ⅻ",{}],"error":"Failed to open without following symlinks private path aⅠb Ⅻ"}
+{"fn":"ensurePrivateFileSync","args":["a𐐀b 𝐀bc",{}],"error":"Failed to open without following symlinks private path a𐐀b 𝐀bc"}
+{"fn":"ensurePrivateFileSync","args":["कि ٣٤",{}],"error":"Failed to open without following symlinks private path कि ٣٤"}
+{"fn":"repairPrivateFile","args":["ΣΊΣΥΦΟΣ",{"executable":false,"platform":{"a":{"b":"c"}}}],"error":"Failed to set mode on private path ΣΊΣΥΦΟΣ"}
+{"fn":"repairPrivateFile","args":["aa:b:c",{"executable":true,"platform":"x"}],"error":"Failed to open without following symlinks private path aa:b:c"}
+{"fn":"repairPrivateFile","args":["ünïcödé",{"executable":true,"platform":{"a":"b"}}],"error":"Failed to set mode on private path ünïcödé"}
+{"fn":"repairPrivateFile","args":["straße",{"executable":true,"platform":{}}],"error":"Failed to set mode on private path straße"}
+{"fn":"repairPrivateFile","args":["ΣΊΣΥΦΟΣ",{"executable":true,"platform":["a",1]}],"error":"Failed to set mode on private path ΣΊΣΥΦΟΣ"}
+{"fn":"repairPrivateFile","args":["é",{"executable":false}],"error":"Failed to set mode on private path é"}
+{"fn":"repairPrivateFile","args":["hello world",[]],"error":"Failed to set mode on private path hello world"}
+{"fn":"repairPrivateFile","args":["src/a/b.ts"],"error":"Failed to set mode on private path src/a/b.ts"}
+{"fn":"repairPrivateFile","args":["ΣΊΣΥΦΟΣ",{"platform":null}],"error":"Failed to set mode on private path ΣΊΣΥΦΟΣ"}
+{"fn":"repairPrivateFile","args":["{name} has {count} items",{"executable":true,"platform":{}}],"error":"Failed to set mode on private path {name} has {count} items"}
+{"fn":"repairPrivateFile","args":["abc{name} has {count} items",{"executable":false}],"error":"Failed to open without following symlinks private path abc{name} has {count} items"}
+{"fn":"repairPrivateFile","args":["line1\nline2😀",{"executable":false}],"error":"Failed to open without following symlinks private path line1\nline2😀"}
+{"fn":"repairPrivateFile","args":["{name} has {count} items",{"$undefined":true}],"error":"Failed to set mode on private path {name} has {count} items"}
+{"fn":"repairPrivateFile","args":["ab",{"executable":true,"platform":0}],"error":"Failed to set mode on private path ab"}
+{"fn":"repairPrivateFile","args":["a"],"error":"Failed to set mode on private path a"}
+{"fn":"repairPrivateFile","args":[":",{"$undefined":true}],"error":"Failed to set mode on private path :"}
+{"fn":"repairPrivateFile","args":["{name} has {count} itemstrailing.",["a",1]],"ok":{"$undefined":true}}
+{"fn":"repairPrivateFile","args":["abc"],"error":"Failed to set mode on private path abc"}
+{"fn":"repairPrivateFile","args":["日本語のテキスト",{"executable":false,"platform":0}],"error":"Failed to set mode on private path 日本語のテキスト"}
+{"fn":"repairPrivateFile","args":["ünïcödé",{"executable":false}],"error":"Failed to set mode on private path ünïcödé"}
+{"fn":"repairPrivateFile","args":["abns:key.path",{"executable":false,"platform":["a",1]}],"error":"Failed to open without following symlinks private path abns:key.path"}
+{"fn":"repairPrivateFile","args":["Hello World",{"executable":true,"platform":null}],"error":"Failed to set mode on private path Hello World"}
+{"fn":"repairPrivateFile","args":["a",{"executable":true,"platform":["a",1]}],"error":"Failed to set mode on private path a"}
+{"fn":"repairPrivateFile","args":["a",{"executable":false,"platform":{"a":"b"}}],"error":"Failed to set mode on private path a"}
+{"fn":"repairPrivateFile","args":["  padded  "],"error":"Failed to set mode on private path   padded  "}
+{"fn":"repairPrivateFile","args":["abc",{"platform":["a",1]}],"error":"Failed to set mode on private path abc"}
+{"fn":"repairPrivateFile","args":["hello world"],"error":"Failed to set mode on private path hello world"}
+{"fn":"repairPrivateFile","args":["ΣΊΣΥΦΟΣ",null],"error":"Cannot read properties of null (reading 'platform')"}
+{"fn":"repairPrivateFile","args":["./x/**/*.json",{}],"error":"Failed to set mode on private path ./x/**/*.json"}
+{"fn":"repairPrivateFile","args":["a..bemoji 👍🏽 mix",{"executable":true,"platform":{"a":{"b":"c"}}}],"error":"Failed to open without following symlinks private path a..bemoji 👍🏽 mix"}
+{"fn":"repairPrivateFile","args":["a.b.c",{"platform":{"a":"b"}}],"error":"Failed to set mode on private path a.b.c"}
+{"fn":"repairPrivateFile","args":["a..b",{"platform":{"a":{"b":"c"}}}],"error":"Failed to set mode on private path a..b"}
+{"fn":"repairPrivateFile","args":["a.b.c",{"$undefined":true}],"error":"Failed to set mode on private path a.b.c"}
+{"fn":"repairPrivateFile","args":["./x/**/*.json",{"platform":null}],"error":"Failed to set mode on private path ./x/**/*.json"}
+{"fn":"repairPrivateFile","args":["a.leading",{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"repairPrivateFile","args":[".leading",{"executable":false,"platform":{"a":{"b":"c"}}}],"error":"Failed to set mode on private path .leading"}
+{"fn":"repairPrivateFile","args":["  padded  ",{"executable":true}],"error":"Failed to set mode on private path   padded  "}
+{"fn":"repairPrivateFile","args":["日本語のテキスト",{"executable":true,"platform":["a",1]}],"error":"Failed to set mode on private path 日本語のテキスト"}
+{"fn":"repairPrivateFile","args":["a..b"],"error":"Failed to set mode on private path a..b"}
+{"fn":"repairPrivateFile","args":["ns:key.path",{"$undefined":true}],"error":"Failed to set mode on private path ns:key.path"}
+{"fn":"repairPrivateFile","args":["a",{"executable":false}],"error":"Failed to set mode on private path a"}
+{"fn":"repairPrivateFile","args":["﻿bom",{"$undefined":true}],"error":"Failed to set mode on private path ﻿bom"}
+{"fn":"repairPrivateFile","args":["ab",{"executable":false,"platform":{"a":{"b":"c"}}}],"error":"Failed to set mode on private path ab"}
+{"fn":"repairPrivateFile","args":["ns:key.path","s:key"],"error":"Failed to set mode on private path ns:key.path"}
+{"fn":"repairPrivateFile","args":["",{"$undefined":true}],"error":"Failed to open without following symlinks private path "}
+{"fn":"repairPrivateFile","args":["  padded  ",{"executable":true,"platform":{"a":{"b":"c"}}}],"error":"Failed to set mode on private path   padded  "}
+{"fn":"repairPrivateFile","args":["abc",{"platform":true}],"error":"Failed to set mode on private path abc"}
+{"fn":"repairPrivateFile","args":["abc",[]],"error":"Failed to set mode on private path abc"}
+{"fn":"repairPrivateFile","args":["",{"executable":true,"platform":true}],"error":"Failed to open without following symlinks private path "}
+{"fn":"repairPrivateFile","args":["a:b:ca..b",{"executable":true}],"error":"Failed to open without following symlinks private path a:b:ca..b"}
+{"fn":"repairPrivateFile","args":["abstraße",{"executable":true,"platform":{"a":{"b":"c"}}}],"error":"Failed to open without following symlinks private path abstraße"}
+{"fn":"repairPrivateFile","args":["ns:key.pathünïcödé",{"platform":{}}],"ok":{"$undefined":true}}
+{"fn":"repairPrivateFile","args":["trailing.",{"executable":true,"platform":[]}],"error":"Failed to set mode on private path trailing."}
+{"fn":"repairPrivateFile","args":["  padded  ",{"executable":true,"platform":null}],"error":"Failed to set mode on private path   padded  "}
+{"fn":"repairPrivateFile","args":["tab\tseparated",{"executable":false}],"error":"Failed to set mode on private path tab\tseparated"}
+{"fn":"repairPrivateFile","args":["key_name-1",{"executable":false,"platform":{"a":"b"}}],"error":"Failed to set mode on private path key_name-1"}
+{"fn":"repairPrivateFile","args":["line1\nline2",{"executable":false,"platform":{"a":{"b":"c"}}}],"error":"Failed to set mode on private path line1\nline2"}
+{"fn":"repairPrivateFile","args":["a.b.c",{"executable":true,"platform":"x"}],"error":"Failed to set mode on private path a.b.c"}
+{"fn":"repairPrivateFile","args":["İstanbul",{"executable":true,"platform":true}],"error":"Failed to set mode on private path İstanbul"}
+{"fn":"repairPrivateFile","args":[":",{"executable":true,"platform":[]}],"error":"Failed to set mode on private path :"}
+{"fn":"repairPrivateFile","args":["abcünïcödé",{"executable":true,"platform":["a",1]}],"error":"Failed to open without following symlinks private path abcünïcödé"}
+{"fn":"repairPrivateFile","args":["a:b:c",{"executable":false}],"error":"Failed to set mode on private path a:b:c"}
+{"fn":"repairPrivateFile","args":["",{"executable":true}],"error":"Failed to open without following symlinks private path "}
+{"fn":"repairPrivateFile","args":[""],"error":"Failed to open without following symlinks private path "}
+{"fn":"repairPrivateFile","args":["a",{"executable":true,"platform":null}],"error":"Failed to set mode on private path a"}
+{"fn":"repairPrivateFile","args":["HELLO",{"executable":true,"platform":{"a":"b"}}],"error":"Failed to set mode on private path HELLO"}
+{"fn":"repairPrivateFile","args":["İstanbul",{"$undefined":true}],"error":"Failed to set mode on private path İstanbul"}
+{"fn":"repairPrivateFile","args":["",{"platform":0}],"error":"Failed to open without following symlinks private path "}
+{"fn":"repairPrivateFile","args":["X","x"],"error":"Failed to set mode on private path X"}
+{"fn":"repairPrivateFile","args":["é"],"error":"Failed to set mode on private path é"}
+{"fn":"repairPrivateFile","args":["tab\tseparated",{"executable":true,"platform":true}],"error":"Failed to set mode on private path tab\tseparated"}
+{"fn":"repairPrivateFile","args":["ab",{"platform":null}],"error":"Failed to set mode on private path ab"}
+{"fn":"repairPrivateFile","args":["ns:key.path",{"executable":true,"platform":[]}],"error":"Failed to set mode on private path ns:key.path"}
+{"fn":"repairPrivateFile","args":["hello world.leading",{"executable":false,"platform":{"a":{"b":"c"}}}],"error":"Failed to open without following symlinks private path hello world.leading"}
+{"fn":"repairPrivateFile","args":["a😀b😀c",{"$undefined":true}],"error":"Failed to set mode on private path a😀b😀c"}
+{"fn":"repairPrivateFile","args":["日本語のテキスト./x/**/*.json",{"$undefined":true}],"error":"Failed to open without following symlinks private path 日本語のテキスト./x/**/*.json"}
+{"fn":"repairPrivateFile","args":["hello",{"$undefined":true}],"error":"Failed to set mode on private path hello"}
+{"fn":"repairPrivateFile","args":["straße"],"error":"Failed to set mode on private path straße"}
+{"fn":"repairPrivateFile","args":["ab{name} has {count} items",{"executable":true,"platform":null}],"error":"Failed to open without following symlinks private path ab{name} has {count} items"}
+{"fn":"repairPrivateFile","args":["tab\tseparated"],"error":"Failed to set mode on private path tab\tseparated"}
+{"fn":"repairPrivateFile","args":["﻿bom",{"executable":true,"platform":null}],"error":"Failed to set mode on private path ﻿bom"}
+{"fn":"repairPrivateFile","args":[".leading",{"executable":true,"platform":{"a":"b"}}],"error":"Failed to set mode on private path .leading"}
+{"fn":"repairPrivateFile","args":["ΣΊΣΥΦΟΣ😀",["a",1]],"error":"Failed to open without following symlinks private path ΣΊΣΥΦΟΣ😀"}
+{"fn":"repairPrivateFile","args":["abc",{"executable":false}],"error":"Failed to set mode on private path abc"}
+{"fn":"repairPrivateFile","args":["a😀b😀cé",{"executable":true,"platform":{}}],"error":"Failed to open without following symlinks private path a😀b😀cé"}
+{"fn":"repairPrivateFile","args":["hello",{"executable":true,"platform":0}],"error":"Failed to set mode on private path hello"}
+{"fn":"repairPrivateFile","args":["trailing.",{"executable":false,"platform":["a",1]}],"error":"Failed to set mode on private path trailing."}
+{"fn":"repairPrivateFile","args":["line1\nline2é",{"executable":true,"platform":["a",1]}],"error":"Failed to open without following symlinks private path line1\nline2é"}
+{"fn":"repairPrivateFile","args":["straße{name} has {count} items",{"executable":false,"platform":"x"}],"error":"Failed to set mode on private path straße{name} has {count} items"}
+{"fn":"repairPrivateFile","args":["key_name-1",{"platform":[]}],"error":"Failed to set mode on private path key_name-1"}
+{"fn":"repairPrivateFile","args":["straße",{"executable":false,"platform":true}],"error":"Failed to set mode on private path straße"}
+{"fn":"repairPrivateFile","args":["İstanbul",{"executable":true,"platform":["a",1]}],"error":"Failed to set mode on private path İstanbul"}
+{"fn":"repairPrivateFile","args":["key_name-1"],"error":"Failed to set mode on private path key_name-1"}
+{"fn":"repairPrivateFile","args":["{name} has {count} itemsa😀b😀c"],"error":"Failed to set mode on private path {name} has {count} itemsa😀b😀c"}
+{"fn":"repairPrivateFile","args":["日本語のテキストhello world",null],"error":"Cannot read properties of null (reading 'platform')"}
+{"fn":"repairPrivateFile","args":["{name} has {count} items.leading",{"platform":0}],"error":"Failed to open without following symlinks private path {name} has {count} items.leading"}
+{"fn":"repairPrivateFile","args":["ΣΊΣΥΦΟΣ",{"executable":false}],"error":"Failed to set mode on private path ΣΊΣΥΦΟΣ"}
+{"fn":"repairPrivateFile","args":["a😀b😀c",{"executable":true,"platform":{"a":{"b":"c"}}}],"error":"Failed to set mode on private path a😀b😀c"}
+{"fn":"repairPrivateFile","args":["a..b",{"executable":false,"platform":true}],"error":"Failed to set mode on private path a..b"}
+{"fn":"repairPrivateFile","args":["trailing.a😀b😀c",{}],"error":"Failed to open without following symlinks private path trailing.a😀b😀c"}
+{"fn":"repairPrivateFile","args":["straßeHELLO",{"platform":{}}],"error":"Failed to open without following symlinks private path straßeHELLO"}
+{"fn":"repairPrivateFile","args":["a..b",{"executable":true,"platform":[]}],"error":"Failed to set mode on private path a..b"}
+{"fn":"repairPrivateFile","args":["ΣΊΣΥΦΟΣ",{"$undefined":true}],"error":"Failed to set mode on private path ΣΊΣΥΦΟΣ"}
+{"fn":"repairPrivateFile","args":["a",{"executable":false,"platform":null}],"error":"Failed to set mode on private path a"}
+{"fn":"repairPrivateFile","args":["éHELLO",{"executable":false,"platform":{"a":{"b":"c"}}}],"error":"Failed to open without following symlinks private path éHELLO"}
+{"fn":"repairPrivateFile","args":["Hello World"],"error":"Failed to set mode on private path Hello World"}
+{"fn":"repairPrivateFile","args":["key_name-1",{"executable":false,"platform":0}],"error":"Failed to set mode on private path key_name-1"}
+{"fn":"repairPrivateFile","args":["straßeHello World",{"$undefined":true}],"error":"Failed to open without following symlinks private path straßeHello World"}
+{"fn":"repairPrivateFile","args":["abc",{"$undefined":true}],"error":"Failed to set mode on private path abc"}
+{"fn":"repairPrivateFile","args":[":",{}],"error":"Failed to set mode on private path :"}
+{"fn":"repairPrivateFile","args":["trailing.",{"executable":false,"platform":0}],"error":"Failed to set mode on private path trailing."}
+{"fn":"repairPrivateFile","args":["{name} has {count} items",{"executable":false,"platform":"x"}],"error":"Failed to set mode on private path {name} has {count} items"}
+{"fn":"repairPrivateFile","args":["helloa:b:c",{"executable":true,"platform":["a",1]}],"error":"Failed to open without following symlinks private path helloa:b:c"}
+{"fn":"repairPrivateFile","args":["a..b",{"a":"b"}],"error":"Failed to set mode on private path a..b"}
+{"fn":"repairPrivateFile","args":["line1\nline2",{"$undefined":true}],"error":"Failed to set mode on private path line1\nline2"}
+{"fn":"repairPrivateFile","args":["trailing.HELLO",{"executable":false,"platform":["a",1]}],"error":"Failed to open without following symlinks private path trailing.HELLO"}
+{"fn":"repairPrivateFile","args":["ns:key.path"],"error":"Failed to set mode on private path ns:key.path"}
+{"fn":"repairPrivateFile","args":[".leading",{"executable":true,"platform":"x"}],"error":"Failed to set mode on private path .leading"}
+{"fn":"repairPrivateFile","args":["﻿bom",{"platform":{"a":{"b":"c"}}}],"error":"Failed to set mode on private path ﻿bom"}
+{"fn":"repairPrivateFile","args":["tab\tseparated",{"executable":true,"platform":["a",1]}],"error":"Failed to set mode on private path tab\tseparated"}
+{"fn":"repairPrivateFile","args":["hello",{"executable":true}],"error":"Failed to set mode on private path hello"}
+{"fn":"repairPrivateFile","args":["ab",{"$undefined":true}],"error":"Failed to set mode on private path ab"}
+{"fn":"repairPrivateFile","args":["İstanbulsrc/a/b.ts"],"error":"Failed to open without following symlinks private path İstanbulsrc/a/b.ts"}
+{"fn":"repairPrivateFile","args":["./x/**/*.json",["a",1]],"error":"Failed to set mode on private path ./x/**/*.json"}
+{"fn":"repairPrivateFile","args":["日本語のテキスト",{"executable":true,"platform":{}}],"error":"Failed to set mode on private path 日本語のテキスト"}
+{"fn":"repairPrivateFile","args":["hello",{"executable":true,"platform":[]}],"error":"Failed to set mode on private path hello"}
+{"fn":"repairPrivateFile","args":["﻿bom",null],"error":"Cannot read properties of null (reading 'platform')"}
+{"fn":"repairPrivateFile","args":[":",{"executable":true,"platform":0}],"error":"Failed to set mode on private path :"}
+{"fn":"repairPrivateFile","args":["Hello World日本語のテキスト",{"platform":[]}],"error":"Failed to open without following symlinks private path Hello World日本語のテキスト"}
+{"fn":"repairPrivateFile","args":["ΣΊΣΥΦΟΣ",{"executable":true,"platform":[]}],"error":"Failed to set mode on private path ΣΊΣΥΦΟΣ"}
+{"fn":"repairPrivateFile","args":["emoji 👍🏽 mix",{}],"error":"Failed to set mode on private path emoji 👍🏽 mix"}
+{"fn":"repairPrivateFile","args":["./x/**/*.json"],"error":"Failed to set mode on private path ./x/**/*.json"}
+{"fn":"repairPrivateFile","args":["a.b.c"],"error":"Failed to set mode on private path a.b.c"}
+{"fn":"repairPrivateFile","args":["{name} has {count} items"],"error":"Failed to set mode on private path {name} has {count} items"}
+{"fn":"repairPrivateFile","args":["😀",{"executable":false}],"error":"Failed to set mode on private path 😀"}
+{"fn":"repairPrivateFile","args":["a..b",{"executable":true,"platform":{"a":{"b":"c"}}}],"error":"Failed to set mode on private path a..b"}
+{"fn":"repairPrivateFile","args":["é",{"$undefined":true}],"error":"Failed to set mode on private path é"}
+{"fn":"repairPrivateFile","args":["line1\nline2HELLO",[]],"error":"Failed to set mode on private path line1\nline2HELLO"}
+{"fn":"repairPrivateFile","args":["HELLO",{"platform":["a",1]}],"error":"Failed to set mode on private path HELLO"}
+{"fn":"repairPrivateFile","args":[".leading",{"executable":true,"platform":["a",1]}],"error":"Failed to set mode on private path .leading"}
+{"fn":"repairPrivateFile","args":["HELLO",{"executable":false,"platform":[]}],"error":"Failed to set mode on private path HELLO"}
+{"fn":"repairPrivateFile","args":["a:b:c",{"executable":true}],"error":"Failed to set mode on private path a:b:c"}
+{"fn":"repairPrivateFile","args":["src/a/b.ts",{"executable":true,"platform":0}],"error":"Failed to set mode on private path src/a/b.ts"}
+{"fn":"repairPrivateFile","args":["tab\tseparated",{"$undefined":true}],"error":"Failed to set mode on private path tab\tseparated"}
+{"fn":"repairPrivateFile","args":["abünïcödé",{"platform":0}],"ok":{"$undefined":true}}
+{"fn":"repairPrivateFile","args":["😀",{"executable":true,"platform":0}],"error":"Failed to set mode on private path 😀"}
+{"fn":"repairPrivateFile","args":["ünïcödétab\tseparated"],"error":"Failed to open without following symlinks private path ünïcödétab\tseparated"}
+{"fn":"repairPrivateFile","args":["hello./x/**/*.json",{}],"error":"Failed to open without following symlinks private path hello./x/**/*.json"}
+{"fn":"repairPrivateFile","args":[":",{"executable":false,"platform":"x"}],"error":"Failed to set mode on private path :"}
+{"fn":"repairPrivateFile","args":["ns:key.path",{"executable":true,"platform":null}],"error":"Failed to set mode on private path ns:key.path"}
+{"fn":"repairPrivateFile","args":["ab",0],"error":"Failed to set mode on private path ab"}
+{"fn":"repairPrivateFile","args":["src/a/b.ts",{}],"error":"Failed to set mode on private path src/a/b.ts"}
+{"fn":"repairPrivateFile","args":["a😀b😀c",{"executable":true,"platform":"x"}],"error":"Failed to set mode on private path a😀b😀c"}
+{"fn":"repairPrivateFile","args":["a:b:cline1\nline2",{"executable":true}],"error":"Failed to open without following symlinks private path a:b:cline1\nline2"}
+{"fn":"repairPrivateFile","args":[":",{"platform":"x"}],"error":"Failed to set mode on private path :"}
+{"fn":"repairPrivateFile","args":["line1\nline2",{"platform":[]}],"error":"Failed to set mode on private path line1\nline2"}
+{"fn":"repairPrivateFile","args":["ΣΊΣΥΦΟΣ",{"executable":true}],"error":"Failed to set mode on private path ΣΊΣΥΦΟΣ"}
+{"fn":"repairPrivateFile","args":["x","x"],"error":"Failed to set mode on private path x"}
+{"fn":"repairPrivateFile","args":["é",{"executable":false,"platform":0}],"error":"Failed to set mode on private path é"}
+{"fn":"repairPrivateFile","args":["",{"executable":false}],"error":"Failed to open without following symlinks private path "}
+{"fn":"repairPrivateFile","args":["HELLO",{"executable":true,"platform":{"a":{"b":"c"}}}],"error":"Failed to set mode on private path HELLO"}
+{"fn":"repairPrivateFile","args":["Hello World",{"executable":false,"platform":{"a":"b"}}],"error":"Failed to set mode on private path Hello World"}
+{"fn":"repairPrivateFile","args":["a..b",{"$undefined":true}],"error":"Failed to set mode on private path a..b"}
+{"fn":"repairPrivateFile","args":["hello world",{"$undefined":true}],"error":"Failed to set mode on private path hello world"}
+{"fn":"repairPrivateFile","args":[":",{"executable":true}],"error":"Failed to set mode on private path :"}
+{"fn":"repairPrivateFile","args":["key_name-1",{"platform":{}}],"error":"Failed to set mode on private path key_name-1"}
+{"fn":"repairPrivateFile","args":[".leading",null],"error":"Cannot read properties of null (reading 'platform')"}
+{"fn":"repairPrivateFile","args":["a😀b😀c"],"error":"Failed to set mode on private path a😀b😀c"}
+{"fn":"repairPrivateFile","args":["İstanbula..b"],"error":"Failed to open without following symlinks private path İstanbula..b"}
+{"fn":"repairPrivateFile","args":["ns:key.path",{}],"error":"Failed to set mode on private path ns:key.path"}
+{"fn":"repairPrivateFile","args":["ΣΊΣΥΦΟΣ",{"executable":false,"platform":["a",1]}],"error":"Failed to set mode on private path ΣΊΣΥΦΟΣ"}
+{"fn":"repairPrivateFile","args":["hello",{"executable":true,"platform":null}],"error":"Failed to set mode on private path hello"}
+{"fn":"repairPrivateFile","args":["{name} has {count} itemstrailing.",{"executable":false,"platform":{"a":{"b":"c"}}}],"ok":{"$undefined":true}}
+{"fn":"repairPrivateFile","args":["trailing.",null],"error":"Cannot read properties of null (reading 'platform')"}
+{"fn":"repairPrivateFile","args":["ns:key.path",{"a":{"b":"c"}}],"error":"Failed to set mode on private path ns:key.path"}
+{"fn":"repairPrivateFile","args":["emoji 👍🏽 mix",{"executable":false}],"error":"Failed to set mode on private path emoji 👍🏽 mix"}
+{"fn":"repairPrivateFile","args":["Hello World",{}],"error":"Failed to set mode on private path Hello World"}
+{"fn":"repairPrivateFile","args":["HELLO",{"a":{"b":"c"}}],"error":"Failed to set mode on private path HELLO"}
+{"fn":"repairPrivateFile","args":["./x/**/*.json",{"executable":false,"platform":["a",1]}],"error":"Failed to set mode on private path ./x/**/*.json"}
+{"fn":"repairPrivateFile","args":["trailing.",{"$undefined":true}],"error":"Failed to set mode on private path trailing."}
+{"fn":"repairPrivateFile","args":["日本語のテキストabc",{"executable":true,"platform":{}}],"error":"Failed to open without following symlinks private path 日本語のテキストabc"}
+{"fn":"repairPrivateFile","args":["a..bHello World",{}],"error":"Failed to open without following symlinks private path a..bHello World"}
+{"fn":"repairPrivateFile","args":["ΣΊΣΥΦΟΣ{name} has {count} items",{"executable":true,"platform":true}],"error":"Failed to open without following symlinks private path ΣΊΣΥΦΟΣ{name} has {count} items"}
+{"fn":"repairPrivateFile","args":["./x/**/*.json",{"executable":true,"platform":null}],"error":"Failed to set mode on private path ./x/**/*.json"}
+{"fn":"repairPrivateFile","args":["İstanbul",{"executable":false,"platform":0}],"error":"Failed to set mode on private path İstanbul"}
+{"fn":"repairPrivateFile","args":["hello world",{"executable":false,"platform":{"a":{"b":"c"}}}],"error":"Failed to set mode on private path hello world"}
+{"fn":"repairPrivateFile","args":["HELLO",{"executable":false}],"error":"Failed to set mode on private path HELLO"}
+{"fn":"repairPrivateFile","args":["abc",{"executable":false,"platform":{"a":{"b":"c"}}}],"error":"Failed to set mode on private path abc"}
+{"fn":"repairPrivateFile","args":["ab",{"executable":true,"platform":{}}],"error":"Failed to set mode on private path ab"}
+{"fn":"repairPrivateFile","args":["é",true],"error":"Failed to set mode on private path é"}
+{"fn":"repairPrivateFile","args":["helloHello World",{"platform":{"a":"b"}}],"error":"Failed to open without following symlinks private path helloHello World"}
+{"fn":"repairPrivateFile","args":[":",{"executable":true,"platform":{"a":"b"}}],"error":"Failed to set mode on private path :"}
+{"fn":"repairPrivateFile","args":["hellokey_name-1",{"executable":true,"platform":null}],"error":"Failed to set mode on private path hellokey_name-1"}
+{"fn":"repairPrivateFile","args":["straße",{"executable":true,"platform":true}],"error":"Failed to set mode on private path straße"}
+{"fn":"repairPrivateFile","args":["  padded  ΣΊΣΥΦΟΣ",{"executable":false,"platform":null}],"error":"Failed to open without following symlinks private path   padded  ΣΊΣΥΦΟΣ"}
+{"fn":"repairPrivateFile","args":["straße",{"platform":{"a":"b"}}],"error":"Failed to set mode on private path straße"}
+{"fn":"repairPrivateFile","args":["ns:key.path",{"platform":"x"}],"error":"Failed to set mode on private path ns:key.path"}
+{"fn":"repairPrivateFile","args":["hello",{"executable":false,"platform":{"a":"b"}}],"error":"Failed to set mode on private path hello"}
+{"fn":"repairPrivateFile","args":["日本語のテキスト",{"executable":true}],"error":"Failed to set mode on private path 日本語のテキスト"}
+{"fn":"repairPrivateFile","args":["tab\tseparated",{}],"error":"Failed to set mode on private path tab\tseparated"}
+{"fn":"repairPrivateFile","args":["héllo wörld",{"executable":false,"platform":{"a":{"b":"c"}}}],"error":"Failed to set mode on private path héllo wörld"}
+{"fn":"repairPrivateFile","args":["👍🏽 thumbs",{"executable":false,"platform":{"a":{"b":"c"}}}],"error":"Failed to set mode on private path 👍🏽 thumbs"}
+{"fn":"repairPrivateFile","args":["日本語",{"executable":false,"platform":{"a":{"b":"c"}}}],"error":"Failed to set mode on private path 日本語"}
+{"fn":"repairPrivateFile","args":["",{"executable":false,"platform":{"a":{"b":"c"}}}],"error":"Failed to open without following symlinks private path "}
+{"fn":"repairPrivateFile","args":["é",{"executable":false,"platform":{"a":{"b":"c"}}}],"error":"Failed to set mode on private path é"}
+{"fn":"repairPrivateFile","args":["İstanbul",{"executable":false,"platform":{"a":{"b":"c"}}}],"error":"Failed to set mode on private path İstanbul"}
+{"fn":"repairPrivateFile","args":["straße",{"executable":false,"platform":{"a":{"b":"c"}}}],"error":"Failed to set mode on private path straße"}
+{"fn":"repairPrivateFile","args":["ılık ırmak",{"executable":false,"platform":{"a":{"b":"c"}}}],"error":"Failed to set mode on private path ılık ırmak"}
+{"fn":"repairPrivateFile","args":["👨‍👩‍👧 family",{"executable":false,"platform":{"a":{"b":"c"}}}],"error":"Failed to set mode on private path 👨‍👩‍👧 family"}
+{"fn":"repairPrivateFile","args":["a b",{"executable":false,"platform":{"a":{"b":"c"}}}],"error":"Failed to set mode on private path a b"}
+{"fn":"repairPrivateFile","args":["a😀b",{"executable":false,"platform":{"a":{"b":"c"}}}],"error":"Failed to set mode on private path a😀b"}
+{"fn":"repairPrivateFile","args":["﻿bom",{"executable":false,"platform":{"a":{"b":"c"}}}],"error":"Failed to set mode on private path ﻿bom"}
+{"fn":"repairPrivateFile","args":["a²b x½ y①",{"executable":false,"platform":{"a":{"b":"c"}}}],"error":"Failed to set mode on private path a²b x½ y①"}
+{"fn":"repairPrivateFile","args":["aⅠb Ⅻ",{"executable":false,"platform":{"a":{"b":"c"}}}],"error":"Failed to set mode on private path aⅠb Ⅻ"}
+{"fn":"repairPrivateFile","args":["a𐐀b 𝐀bc",{"executable":false,"platform":{"a":{"b":"c"}}}],"error":"Failed to set mode on private path a𐐀b 𝐀bc"}
+{"fn":"repairPrivateFile","args":["कि ٣٤",{"executable":false,"platform":{"a":{"b":"c"}}}],"error":"Failed to set mode on private path कि ٣٤"}
+{"fn":"repairPrivateTreeSync","args":["﻿bom"],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["İstanbul日本語のテキスト",{"a":"b"}],"error":"Failed to inspect private path İstanbul日本語のテキスト"}
+{"fn":"repairPrivateTreeSync","args":["ns:key.path"],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":[".leading",{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["a:b:c",{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["a😀b😀c","x"],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["hello﻿bom",0],"error":"Failed to inspect private path hello﻿bom"}
+{"fn":"repairPrivateTreeSync","args":["line1\nline2",{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["a.b.c",{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["a..b"],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["hello worldΣΊΣΥΦΟΣ"],"error":"Failed to inspect private path hello worldΣΊΣΥΦΟΣ"}
+{"fn":"repairPrivateTreeSync","args":["ΣΊΣΥΦΟΣ",null],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["日本語のテキストabc","x"],"error":"Failed to inspect private path 日本語のテキストabc"}
+{"fn":"repairPrivateTreeSync","args":["hello world",true],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["é",{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["a",{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["ΣΊΣΥΦΟΣ",["a",1]],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["tab\tseparated",{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["a.b.c",["a",1]],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["é",{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["key_name-1",{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["hello",true],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["{name} has {count} items",[]],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["line1\nline2",true],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":[":",{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["tab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["emoji 👍🏽 mix",{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["ab",[]],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["ab",{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["HELLOa.b.c",null],"error":"Failed to inspect private path HELLOa.b.c"}
+{"fn":"repairPrivateTreeSync","args":["😀",0],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["key_name-1",true],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["Hello World"],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["a.b.c:",{"a":{"b":"c"}}],"error":"Failed to inspect private path a.b.c:"}
+{"fn":"repairPrivateTreeSync","args":["  padded  ","x"],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["hello",{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["src/a/b.ts"],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":[":",["a",1]],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["é",null],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["😀"],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["hello world",null],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["straße",true],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["  padded  ",["a",1]],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["line1\nline2",[]],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["tab\tseparated",["a",1]],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["HELLO",{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["a😀b😀cİstanbul",[]],"error":"Failed to inspect private path a😀b😀cİstanbul"}
+{"fn":"repairPrivateTreeSync","args":["hello world","x"],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["trailing.",null],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["a:b:c😀",{"a":"b"}],"error":"Failed to inspect private path a:b:c😀"}
+{"fn":"repairPrivateTreeSync","args":["{name} has {count} items  padded  ",null],"error":"Failed to inspect private path {name} has {count} items  padded  "}
+{"fn":"repairPrivateTreeSync","args":["src/a/b.ts",null],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["key_name-1Hello World",0],"error":"Failed to inspect private path key_name-1Hello World"}
+{"fn":"repairPrivateTreeSync","args":["",0],"error":"Failed to inspect private path "}
+{"fn":"repairPrivateTreeSync","args":["abctab\tseparated",true],"error":"Failed to inspect private path abctab\tseparated"}
+{"fn":"repairPrivateTreeSync","args":["{name} has {count} items日本語のテキスト",{}],"error":"Failed to inspect private path {name} has {count} items日本語のテキスト"}
+{"fn":"repairPrivateTreeSync","args":["Hello World",{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["😀",[]],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["﻿bomabc","x"],"error":"Failed to inspect private path ﻿bomabc"}
+{"fn":"repairPrivateTreeSync","args":["﻿bom",[]],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":[":",0],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["a:b:c",0],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["src/a/b.ts",{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["İstanbul","BUL"],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["src/a/b.tsHello World",["a",1]],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["ab"],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["abc",null],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["a😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":[".leading"],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["Hello WorldHello World"],"error":"Failed to inspect private path Hello WorldHello World"}
+{"fn":"repairPrivateTreeSync","args":["Hello World",{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["Hello World",["a",1]],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["ns:key.path",["a",1]],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["a😀b😀c",[]],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["😀",{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["é",true],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["hello world",0],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["a:b:c",{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":[".leading",{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["Hello Worlda:b:c",{}],"error":"Failed to inspect private path Hello Worlda:b:c"}
+{"fn":"repairPrivateTreeSync","args":["straße",null],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["line1\nline2",0],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["a..b",null],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["ns:key.path",{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["a:b:c",{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["😀a.b.c",0],"error":"Failed to inspect private path 😀a.b.c"}
+{"fn":"repairPrivateTreeSync","args":["",true],"error":"Failed to inspect private path "}
+{"fn":"repairPrivateTreeSync","args":["Hello World",null],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["ünïcödé",{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["a",true],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["a",0],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["ΣΊΣΥΦΟΣ.leading",{}],"error":"Failed to inspect private path ΣΊΣΥΦΟΣ.leading"}
+{"fn":"repairPrivateTreeSync","args":["abc"],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["straßeΣΊΣΥΦΟΣ",[]],"error":"Failed to inspect private path straßeΣΊΣΥΦΟΣ"}
+{"fn":"repairPrivateTreeSync","args":["ns:key.path",true],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["line1\nline2hello",["a",1]],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["Hello World","x"],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["a:b:chello world",["a",1]],"error":"Failed to inspect private path a:b:chello world"}
+{"fn":"repairPrivateTreeSync","args":["a😀b😀c",{}],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["key_name-1",["a",1]],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["x","x"],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["ΣΊΣΥΦΟΣ","ΥΦ"],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["😀a😀b😀c",true],"error":"Failed to inspect private path 😀a😀b😀c"}
+{"fn":"repairPrivateTreeSync","args":["abc",true],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["{name} has {count} items",{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["﻿bom",true],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["日本語のテキスト",null],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["hello"],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["HELLO",{}],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["straße",{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["line1\nline2trailing.",true],"error":"Failed to inspect private path line1\nline2trailing."}
+{"fn":"repairPrivateTreeSync","args":[".leading",[]],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["a..btrailing.","x"],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["a😀b😀c",true],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["trailing.",0],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["a.b.c",{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["😀",{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["日本語のテキスト",["a",1]],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["ünïcödé",{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["key_name-1",{}],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["a..b",{}],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["line1\nline2","x"],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["./x/**/*.jsonstraße"],"error":"Failed to inspect private path ./x/**/*.jsonstraße"}
+{"fn":"repairPrivateTreeSync","args":["日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["key_name-1ab",{}],"error":"Failed to inspect private path key_name-1ab"}
+{"fn":"repairPrivateTreeSync","args":["İstanbul","x"],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["ns:key.path","x"],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":[":",true],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["hello worldns:key.path",true],"error":"Failed to inspect private path hello worldns:key.path"}
+{"fn":"repairPrivateTreeSync","args":["é"],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["trailing.",{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["a:b:chello",null],"error":"Failed to inspect private path a:b:chello"}
+{"fn":"repairPrivateTreeSync","args":["a","x"],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["😀","x"],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["src/a/b.tsΣΊΣΥΦΟΣ",0],"error":"Failed to inspect private path src/a/b.tsΣΊΣΥΦΟΣ"}
+{"fn":"repairPrivateTreeSync","args":["é",["a",1]],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["a:b:c"],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["😀",["a",1]],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["HELLO"],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["abc",{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["tab\tseparated",null],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["abc",0],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["hello",{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["ünïcödé"],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["abc",["a",1]],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["ΣΊΣΥΦΟΣ",{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["ab",{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["straße",["a",1]],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["a.b.c","x"],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["trailing.",{}],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["tab\tseparated","x"],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["./x/**/*.json",{}],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["a😀b😀chello",{"a":"b"}],"error":"Failed to inspect private path a😀b😀chello"}
+{"fn":"repairPrivateTreeSync","args":["ünïcödé",{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["emoji 👍🏽 mix",["a",1]],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["trailing.",[]],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["日本語のテキストhello world",{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["straße",{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["İstanbul"],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["abchello world",["a",1]],"error":"Failed to inspect private path abchello world"}
+{"fn":"repairPrivateTreeSync","args":["ünïcödé",0],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["./x/**/*.jsona",[]],"error":"Failed to inspect private path ./x/**/*.jsona"}
+{"fn":"repairPrivateTreeSync","args":["😀",null],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["key_name-1tab\tseparated",{"$undefined":true}],"error":"Failed to inspect private path key_name-1tab\tseparated"}
+{"fn":"repairPrivateTreeSync","args":["line1\nline2Hello World","x"],"error":"Failed to inspect private path line1\nline2Hello World"}
+{"fn":"repairPrivateTreeSync","args":["HELLO😀","x"],"error":"Failed to inspect private path HELLO😀"}
+{"fn":"repairPrivateTreeSync","args":["😀",true],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["straße",{}],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["a.b.c",{}],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["src/a/b.ts日本語のテキスト",true],"error":"Failed to inspect private path src/a/b.ts日本語のテキスト"}
+{"fn":"repairPrivateTreeSync","args":[".leading",{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["ns:key.path{name} has {count} items",{"a":"b"}],"error":"Failed to inspect private path ns:key.path{name} has {count} items"}
+{"fn":"repairPrivateTreeSync","args":["line1\nline2a😀b😀c",true],"error":"Failed to inspect private path line1\nline2a😀b😀c"}
+{"fn":"repairPrivateTreeSync","args":["İstanbul",0],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["  padded  abc",null],"error":"Failed to inspect private path   padded  abc"}
+{"fn":"repairPrivateTreeSync","args":["a:b:cline1\nline2",0],"error":"Failed to inspect private path a:b:cline1\nline2"}
+{"fn":"repairPrivateTreeSync","args":["İstanbul",true],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["ns:key.path",{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["HELLOa😀b😀c",["a",1]],"error":"Failed to inspect private path HELLOa😀b😀c"}
+{"fn":"repairPrivateTreeSync","args":["line1\nline2",null],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":[".leading",".lea"],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["日本語のテキスト",{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["ab",null],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":[":",{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["",null],"error":"Failed to inspect private path "}
+{"fn":"repairPrivateTreeSync","args":["a.b.c",{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["src/a/b.ts",true],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["a..b",0],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["HELLO","x"],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["straße﻿bom",{"$undefined":true}],"error":"Failed to inspect private path straße﻿bom"}
+{"fn":"repairPrivateTreeSync","args":["src/a/b.ts",[]],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["HELLOHELLO",null],"error":"Failed to inspect private path HELLOHELLO"}
+{"fn":"repairPrivateTreeSync","args":["a..bkey_name-1",true],"error":"Failed to inspect private path a..bkey_name-1"}
+{"fn":"repairPrivateTreeSync","args":["hello worldİstanbul",0],"error":"Failed to inspect private path hello worldİstanbul"}
+{"fn":"repairPrivateTreeSync","args":["İstanbul",{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["{name} has {count} items","x"],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["src/a/b.ts",0],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["ΣΊΣΥΦΟΣ",0],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["src/a/b.ts",{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"repairPrivateTreeSync","args":["😀.leading",{"a":"b"}],"error":"Failed to inspect private path 😀.leading"}

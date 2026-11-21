@@ -1,0 +1,17 @@
+{
+  "unit": "apps/server/src/privatePathPermissions.ts",
+  "files": 1,
+  "fingerprint": "66e59da90e5b240f",
+  "coverage": {
+    "lines": 177,
+    "reached": 158,
+    "files": [
+      {
+        "file": "apps/server/src/privatePathPermissions.ts",
+        "lines": 177,
+        "reached": 158,
+        "missed": "55-56, 96-101, 112-113, 163-171"
+      }
+    ]
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "unit": "apps/web/src/pullRequestReference.ts",
+  "files": 1,
+  "fingerprint": "bb556e9b8ace22dd",
+  "coverage": {
+    "lines": 18,
+    "reached": 18,
+    "files": [
+      {
+        "file": "apps/web/src/pullRequestReference.ts",
+        "lines": 18,
+        "reached": 18,
+        "missed": ""
+      }
+    ]
+  }
+}

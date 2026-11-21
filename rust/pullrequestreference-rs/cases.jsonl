@@ -1,0 +1,241 @@
+{"fn":"parsePullRequestReference","args":["emoji 👍🏽 mix"],"ok":null}
+{"fn":"parsePullRequestReference","args":["a"],"ok":null}
+{"fn":"parsePullRequestReference","args":["src/a/b.ts"],"ok":null}
+{"fn":"parsePullRequestReference","args":["a..b"],"ok":null}
+{"fn":"parsePullRequestReference","args":["hello worldtab\tseparated"],"ok":null}
+{"fn":"parsePullRequestReference","args":["日本語のテキストsrc/a/b.ts"],"ok":null}
+{"fn":"parsePullRequestReference","args":["a..ba..b"],"ok":null}
+{"fn":"parsePullRequestReference","args":["tab\tseparateda😀b😀c"],"ok":null}
+{"fn":"parsePullRequestReference","args":["straßeHello World"],"ok":null}
+{"fn":"parsePullRequestReference","args":["a:b:c"],"ok":null}
+{"fn":"parsePullRequestReference","args":["ünïcödé日本語のテキスト"],"ok":null}
+{"fn":"parsePullRequestReference","args":["{name} has {count} items"],"ok":null}
+{"fn":"parsePullRequestReference","args":["abc:"],"ok":null}
+{"fn":"parsePullRequestReference","args":["straße"],"ok":null}
+{"fn":"parsePullRequestReference","args":["é"],"ok":null}
+{"fn":"parsePullRequestReference","args":["a😀b😀c"],"ok":null}
+{"fn":"parsePullRequestReference","args":["ünïcödé"],"ok":null}
+{"fn":"parsePullRequestReference","args":["a.b.c{name} has {count} items"],"ok":null}
+{"fn":"parsePullRequestReference","args":["key_name-1"],"ok":null}
+{"fn":"parsePullRequestReference","args":["tab\tseparated"],"ok":null}
+{"fn":"parsePullRequestReference","args":["./x/**/*.json"],"ok":null}
+{"fn":"parsePullRequestReference","args":["İstanbul"],"ok":null}
+{"fn":"parsePullRequestReference","args":["hello world"],"ok":null}
+{"fn":"parsePullRequestReference","args":["hello"],"ok":null}
+{"fn":"parsePullRequestReference","args":["﻿bom"],"ok":null}
+{"fn":"parsePullRequestReference","args":["😀"],"ok":null}
+{"fn":"parsePullRequestReference","args":["tab\tseparatedΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"parsePullRequestReference","args":["./x/**/*.jsonkey_name-1"],"ok":null}
+{"fn":"parsePullRequestReference","args":[".leading"],"ok":null}
+{"fn":"parsePullRequestReference","args":[":"],"ok":null}
+{"fn":"parsePullRequestReference","args":["a.b.ckey_name-1"],"ok":null}
+{"fn":"parsePullRequestReference","args":["src/a/b.ts{name} has {count} items"],"ok":null}
+{"fn":"parsePullRequestReference","args":["ΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"parsePullRequestReference","args":["line1\nline2./x/**/*.json"],"ok":null}
+{"fn":"parsePullRequestReference","args":["trailing."],"ok":null}
+{"fn":"parsePullRequestReference","args":["abc"],"ok":null}
+{"fn":"parsePullRequestReference","args":["Hello World"],"ok":null}
+{"fn":"parsePullRequestReference","args":["a:b:cİstanbul"],"ok":null}
+{"fn":"parsePullRequestReference","args":[""],"ok":null}
+{"fn":"parsePullRequestReference","args":["ns:key.path"],"ok":null}
+{"fn":"parsePullRequestReference","args":["tab\tseparated﻿bom"],"ok":null}
+{"fn":"parsePullRequestReference","args":["  padded  "],"ok":null}
+{"fn":"parsePullRequestReference","args":["HELLO"],"ok":null}
+{"fn":"parsePullRequestReference","args":["emoji 👍🏽 mixHello World"],"ok":null}
+{"fn":"parsePullRequestReference","args":["./x/**/*.jsonstraße"],"ok":null}
+{"fn":"parsePullRequestReference","args":["aHELLO"],"ok":null}
+{"fn":"parsePullRequestReference","args":["a.b.ca"],"ok":null}
+{"fn":"parsePullRequestReference","args":["ab"],"ok":null}
+{"fn":"parsePullRequestReference","args":["line1\nline2"],"ok":null}
+{"fn":"parsePullRequestReference","args":[".leading:"],"ok":null}
+{"fn":"parsePullRequestReference","args":["a.b.ca.b.c"],"ok":null}
+{"fn":"parsePullRequestReference","args":["a..babc"],"ok":null}
+{"fn":"parsePullRequestReference","args":["helloünïcödé"],"ok":null}
+{"fn":"parsePullRequestReference","args":["Hello WorldΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"parsePullRequestReference","args":["ΣΊΣΥΦΟΣé"],"ok":null}
+{"fn":"parsePullRequestReference","args":["abcns:key.path"],"ok":null}
+{"fn":"parsePullRequestReference","args":["a.b.cé"],"ok":null}
+{"fn":"parsePullRequestReference","args":["日本語のテキスト"],"ok":null}
+{"fn":"parsePullRequestReference","args":["line1\nline2hello world"],"ok":null}
+{"fn":"parsePullRequestReference","args":["abhello world"],"ok":null}
+{"fn":"parsePullRequestReference","args":["😀a😀b😀c"],"ok":null}
+{"fn":"parsePullRequestReference","args":["Hello WorldHello World"],"ok":null}
+{"fn":"parsePullRequestReference","args":["  padded  trailing."],"ok":null}
+{"fn":"parsePullRequestReference","args":["line1\nline2ab"],"ok":null}
+{"fn":"parsePullRequestReference","args":["éhello world"],"ok":null}
+{"fn":"parsePullRequestReference","args":["a.b.c"],"ok":null}
+{"fn":"parsePullRequestReference","args":[":a..b"],"ok":null}
+{"fn":"parsePullRequestReference","args":[".leadingemoji 👍🏽 mix"],"ok":null}
+{"fn":"parsePullRequestReference","args":["emoji 👍🏽 mixstraße"],"ok":null}
+{"fn":"parsePullRequestReference","args":["tab\tseparatedns:key.path"],"ok":null}
+{"fn":"parsePullRequestReference","args":["./x/**/*.json﻿bom"],"ok":null}
+{"fn":"parsePullRequestReference","args":["a😀b😀cHello World"],"ok":null}
+{"fn":"parsePullRequestReference","args":["﻿bomabc"],"ok":null}
+{"fn":"parsePullRequestReference","args":["{name} has {count} itemshello world"],"ok":null}
+{"fn":"parsePullRequestReference","args":["trailing.  padded  "],"ok":null}
+{"fn":"parsePullRequestReference","args":["straßea:b:c"],"ok":null}
+{"fn":"parsePullRequestReference","args":["a..bHELLO"],"ok":null}
+{"fn":"parsePullRequestReference","args":["hello﻿bom"],"ok":null}
+{"fn":"parsePullRequestReference","args":["src/a/b.tsé"],"ok":null}
+{"fn":"parsePullRequestReference","args":["tab\tseparated{name} has {count} items"],"ok":null}
+{"fn":"parsePullRequestReference","args":["aa😀b😀c"],"ok":null}
+{"fn":"parsePullRequestReference","args":["HELLO﻿bom"],"ok":null}
+{"fn":"parsePullRequestReference","args":["key_name-1a:b:c"],"ok":null}
+{"fn":"parsePullRequestReference","args":["İstanbulab"],"ok":null}
+{"fn":"parsePullRequestReference","args":["line1\nline2Hello World"],"ok":null}
+{"fn":"parsePullRequestReference","args":["a:b:cΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"parsePullRequestReference","args":["a..b./x/**/*.json"],"ok":null}
+{"fn":"parsePullRequestReference","args":["tab\tseparated  padded  "],"ok":null}
+{"fn":"parsePullRequestReference","args":["ésrc/a/b.ts"],"ok":null}
+{"fn":"parsePullRequestReference","args":["tab\tseparatedtab\tseparated"],"ok":null}
+{"fn":"parsePullRequestReference","args":["straßea..b"],"ok":null}
+{"fn":"parsePullRequestReference","args":["aba😀b😀c"],"ok":null}
+{"fn":"parsePullRequestReference","args":["trailing.😀"],"ok":null}
+{"fn":"parsePullRequestReference","args":["src/a/b.ts.leading"],"ok":null}
+{"fn":"parsePullRequestReference","args":["trailing.a..b"],"ok":null}
+{"fn":"parsePullRequestReference","args":["straße日本語のテキスト"],"ok":null}
+{"fn":"parsePullRequestReference","args":["Hello Worldline1\nline2"],"ok":null}
+{"fn":"parsePullRequestReference","args":["straßeline1\nline2"],"ok":null}
+{"fn":"parsePullRequestReference","args":["asrc/a/b.ts"],"ok":null}
+{"fn":"parsePullRequestReference","args":["﻿bomtrailing."],"ok":null}
+{"fn":"parsePullRequestReference","args":[".leadingabc"],"ok":null}
+{"fn":"parsePullRequestReference","args":["line1\nline2﻿bom"],"ok":null}
+{"fn":"parsePullRequestReference","args":["éünïcödé"],"ok":null}
+{"fn":"parsePullRequestReference","args":["straßetab\tseparated"],"ok":null}
+{"fn":"parsePullRequestReference","args":["  padded  line1\nline2"],"ok":null}
+{"fn":"parsePullRequestReference","args":["  padded  {name} has {count} items"],"ok":null}
+{"fn":"parsePullRequestReference","args":["src/a/b.ts😀"],"ok":null}
+{"fn":"parsePullRequestReference","args":["a..bab"],"ok":null}
+{"fn":"parsePullRequestReference","args":["abstraße"],"ok":null}
+{"fn":"parsePullRequestReference","args":["trailing.a.b.c"],"ok":null}
+{"fn":"parsePullRequestReference","args":["ans:key.path"],"ok":null}
+{"fn":"parsePullRequestReference","args":["./x/**/*.jsona..b"],"ok":null}
+{"fn":"parsePullRequestReference","args":["HELLO日本語のテキスト"],"ok":null}
+{"fn":"parsePullRequestReference","args":["emoji 👍🏽 mixsrc/a/b.ts"],"ok":null}
+{"fn":"parsePullRequestReference","args":["İstanbulns:key.path"],"ok":null}
+{"fn":"parsePullRequestReference","args":["helloİstanbul"],"ok":null}
+{"fn":"parsePullRequestReference","args":[":İstanbul"],"ok":null}
+{"fn":"parsePullRequestReference","args":["tab\tseparatedemoji 👍🏽 mix"],"ok":null}
+{"fn":"parsePullRequestReference","args":["a:b:ca..b"],"ok":null}
+{"fn":"parsePullRequestReference","args":["😀a"],"ok":null}
+{"fn":"parsePullRequestReference","args":["key_name-1ünïcödé"],"ok":null}
+{"fn":"parsePullRequestReference","args":["ns:key.patha..b"],"ok":null}
+{"fn":"parsePullRequestReference","args":["./x/**/*.json  padded  "],"ok":null}
+{"fn":"parsePullRequestReference","args":[".leadingline1\nline2"],"ok":null}
+{"fn":"parsePullRequestReference","args":["ünïcödéhello world"],"ok":null}
+{"fn":"parsePullRequestReference","args":["./x/**/*.jsonab"],"ok":null}
+{"fn":"parsePullRequestReference","args":["Hello Worldab"],"ok":null}
+{"fn":"parsePullRequestReference","args":["tab\tseparated.leading"],"ok":null}
+{"fn":"parsePullRequestReference","args":["é{name} has {count} items"],"ok":null}
+{"fn":"parsePullRequestReference","args":[":{name} has {count} items"],"ok":null}
+{"fn":"parsePullRequestReference","args":[":hello"],"ok":null}
+{"fn":"parsePullRequestReference","args":["a.b.cns:key.path"],"ok":null}
+{"fn":"parsePullRequestReference","args":["trailing.:"],"ok":null}
+{"fn":"parsePullRequestReference","args":["tab\tseparated日本語のテキスト"],"ok":null}
+{"fn":"parsePullRequestReference","args":["./x/**/*.json😀"],"ok":null}
+{"fn":"parsePullRequestReference","args":["hello worldabc"],"ok":null}
+{"fn":"parsePullRequestReference","args":[":a.b.c"],"ok":null}
+{"fn":"parsePullRequestReference","args":["日本語のテキストa😀b😀c"],"ok":null}
+{"fn":"parsePullRequestReference","args":["日本語のテキストemoji 👍🏽 mix"],"ok":null}
+{"fn":"parsePullRequestReference","args":["﻿bomé"],"ok":null}
+{"fn":"parsePullRequestReference","args":["{name} has {count} itemsa.b.c"],"ok":null}
+{"fn":"parsePullRequestReference","args":["line1\nline2src/a/b.ts"],"ok":null}
+{"fn":"parsePullRequestReference","args":["ünïcödéstraße"],"ok":null}
+{"fn":"parsePullRequestReference","args":["ünïcödéab"],"ok":null}
+{"fn":"parsePullRequestReference","args":["./x/**/*.json./x/**/*.json"],"ok":null}
+{"fn":"parsePullRequestReference","args":["straße:"],"ok":null}
+{"fn":"parsePullRequestReference","args":["Hello World😀"],"ok":null}
+{"fn":"parsePullRequestReference","args":["İstanbultrailing."],"ok":null}
+{"fn":"parsePullRequestReference","args":["hello world😀"],"ok":null}
+{"fn":"parsePullRequestReference","args":["abns:key.path"],"ok":null}
+{"fn":"parsePullRequestReference","args":[".leadingkey_name-1"],"ok":null}
+{"fn":"parsePullRequestReference","args":["😀.leading"],"ok":null}
+{"fn":"parsePullRequestReference","args":["😀straße"],"ok":null}
+{"fn":"parsePullRequestReference","args":["Hello World﻿bom"],"ok":null}
+{"fn":"parsePullRequestReference","args":["abca..b"],"ok":null}
+{"fn":"parsePullRequestReference","args":["İstanbulkey_name-1"],"ok":null}
+{"fn":"parsePullRequestReference","args":["tab\tseparated:"],"ok":null}
+{"fn":"parsePullRequestReference","args":["key_name-1a.b.c"],"ok":null}
+{"fn":"parsePullRequestReference","args":["ünïcödésrc/a/b.ts"],"ok":null}
+{"fn":"parsePullRequestReference","args":["src/a/b.tsa..b"],"ok":null}
+{"fn":"parsePullRequestReference","args":[".leading😀"],"ok":null}
+{"fn":"parsePullRequestReference","args":["İstanbulsrc/a/b.ts"],"ok":null}
+{"fn":"parsePullRequestReference","args":["abünïcödé"],"ok":null}
+{"fn":"parsePullRequestReference","args":["ns:key.path./x/**/*.json"],"ok":null}
+{"fn":"parsePullRequestReference","args":["src/a/b.tsHELLO"],"ok":null}
+{"fn":"parsePullRequestReference","args":["Hello World  padded  "],"ok":null}
+{"fn":"parsePullRequestReference","args":["😀ΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"parsePullRequestReference","args":["abab"],"ok":null}
+{"fn":"parsePullRequestReference","args":["﻿bomhello"],"ok":null}
+{"fn":"parsePullRequestReference","args":["ns:key.pathhello world"],"ok":null}
+{"fn":"parsePullRequestReference","args":["İstanbula..b"],"ok":null}
+{"fn":"parsePullRequestReference","args":["trailing.abc"],"ok":null}
+{"fn":"parsePullRequestReference","args":["ns:key.path日本語のテキスト"],"ok":null}
+{"fn":"parsePullRequestReference","args":[":line1\nline2"],"ok":null}
+{"fn":"parsePullRequestReference","args":["hello worldhello"],"ok":null}
+{"fn":"parsePullRequestReference","args":["ahello world"],"ok":null}
+{"fn":"parsePullRequestReference","args":["abcabc"],"ok":null}
+{"fn":"parsePullRequestReference","args":["😀trailing."],"ok":null}
+{"fn":"parsePullRequestReference","args":["key_name-1HELLO"],"ok":null}
+{"fn":"parsePullRequestReference","args":["İstanbultab\tseparated"],"ok":null}
+{"fn":"parsePullRequestReference","args":["{name} has {count} itemsline1\nline2"],"ok":null}
+{"fn":"parsePullRequestReference","args":["日本語のテキストline1\nline2"],"ok":null}
+{"fn":"parsePullRequestReference","args":["Hello World{name} has {count} items"],"ok":null}
+{"fn":"parsePullRequestReference","args":[".leadingstraße"],"ok":null}
+{"fn":"parsePullRequestReference","args":["Hello Worldns:key.path"],"ok":null}
+{"fn":"parsePullRequestReference","args":["日本語のテキストΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"parsePullRequestReference","args":["ns:key.patha"],"ok":null}
+{"fn":"parsePullRequestReference","args":["😀ünïcödé"],"ok":null}
+{"fn":"parsePullRequestReference","args":["a😀b😀cHELLO"],"ok":null}
+{"fn":"parsePullRequestReference","args":["İstanbul:"],"ok":null}
+{"fn":"parsePullRequestReference","args":["  padded  straße"],"ok":null}
+{"fn":"parsePullRequestReference","args":["./x/**/*.jsonİstanbul"],"ok":null}
+{"fn":"parsePullRequestReference","args":["HELLOa"],"ok":null}
+{"fn":"parsePullRequestReference","args":["line1\nline2:"],"ok":null}
+{"fn":"parsePullRequestReference","args":["Hello Worldtrailing."],"ok":null}
+{"fn":"parsePullRequestReference","args":["﻿bomstraße"],"ok":null}
+{"fn":"parsePullRequestReference","args":["src/a/b.ts./x/**/*.json"],"ok":null}
+{"fn":"parsePullRequestReference","args":["HELLO😀"],"ok":null}
+{"fn":"parsePullRequestReference","args":[".leading./x/**/*.json"],"ok":null}
+{"fn":"parsePullRequestReference","args":["aba.b.c"],"ok":null}
+{"fn":"parsePullRequestReference","args":["héllo wörld"],"ok":null}
+{"fn":"parsePullRequestReference","args":["👍🏽 thumbs"],"ok":null}
+{"fn":"parsePullRequestReference","args":["日本語"],"ok":null}
+{"fn":"parsePullRequestReference","args":["ılık ırmak"],"ok":null}
+{"fn":"parsePullRequestReference","args":["👨‍👩‍👧 family"],"ok":null}
+{"fn":"parsePullRequestReference","args":["a b"],"ok":null}
+{"fn":"parsePullRequestReference","args":["a😀b"],"ok":null}
+{"fn":"parsePullRequestReference","args":["a²b x½ y①"],"ok":null}
+{"fn":"parsePullRequestReference","args":["aⅠb Ⅻ"],"ok":null}
+{"fn":"parsePullRequestReference","args":["a𐐀b 𝐀bc"],"ok":null}
+{"fn":"parsePullRequestReference","args":["कि ٣٤"],"ok":null}
+{"fn":"parsePullRequestReference","args":["Iı İi"],"ok":null}
+{"fn":"parsePullRequestReference","args":["K K k"],"ok":null}
+{"fn":"parsePullRequestReference","args":["ſ s S"],"ok":null}
+{"fn":"parsePullRequestReference","args":["x‍y 👨‍👩‍👧"],"ok":null}
+{"fn":"parsePullRequestReference","args":["a b c　d"],"ok":null}
+{"fn":"parsePullRequestReference","args":["١٢٣ ٤٥"],"ok":null}
+{"fn":"parsePullRequestReference","args":["𝟘𝟙 ²³"],"ok":null}
+{"fn":"parsePullRequestReference","args":["snake_case foo-bar o'neil"],"ok":null}
+{"fn":"parsePullRequestReference","args":["ǅungla Ǆ"],"ok":null}
+{"fn":"parsePullRequestReference","args":["one\r\ntwo threefour"],"ok":null}
+{"fn":"parsePullRequestReference","args":["café café"],"ok":null}
+{"fn":"parsePullRequestReference","args":["ΣΑΣ σας ς"],"ok":null}
+{"fn":"parsePullRequestReference","args":["https://github.com/owner/repo/pull/123"],"ok":"https://github.com/owner/repo/pull/123"}
+{"fn":"parsePullRequestReference","args":["https://github.com/owner/repo/pull/123/files"],"ok":"https://github.com/owner/repo/pull/123/files"}
+{"fn":"parsePullRequestReference","args":["https://github.com/owner/repo/pull/123?diff=split#comment"],"ok":"https://github.com/owner/repo/pull/123?diff=split#comment"}
+{"fn":"parsePullRequestReference","args":["https://GITHUB.COM/o/r/pull/1"],"ok":"https://GITHUB.COM/o/r/pull/1"}
+{"fn":"parsePullRequestReference","args":["  https://github.com/o/r/pull/42  "],"ok":"https://github.com/o/r/pull/42"}
+{"fn":"parsePullRequestReference","args":["https://github.com/o/r/pull/"],"ok":null}
+{"fn":"parsePullRequestReference","args":["https://github.com/o/r/pull/abc"],"ok":null}
+{"fn":"parsePullRequestReference","args":["http://github.com/o/r/pull/12"],"ok":null}
+{"fn":"parsePullRequestReference","args":["https://gitlab.com/o/r/pull/12"],"ok":null}
+{"fn":"parsePullRequestReference","args":["123"],"ok":"123"}
+{"fn":"parsePullRequestReference","args":["#123"],"ok":"#123"}
+{"fn":"parsePullRequestReference","args":["  #7  "],"ok":"#7"}
+{"fn":"parsePullRequestReference","args":["#"],"ok":null}
+{"fn":"parsePullRequestReference","args":["12a"],"ok":null}
+{"fn":"parsePullRequestReference","args":["#12a"],"ok":null}
+{"fn":"parsePullRequestReference","args":["0012"],"ok":"0012"}
+{"fn":"parsePullRequestReference","args":["https://github.com/o/r/pull/12","extra"],"ok":"https://github.com/o/r/pull/12"}
+{"fn":"parsePullRequestReference","args":["https://github.com/o-r.g/r_e/pull/9007199254740992"],"ok":"https://github.com/o-r.g/r_e/pull/9007199254740992"}

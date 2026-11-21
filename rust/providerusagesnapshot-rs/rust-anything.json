@@ -1,0 +1,143 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/providerUsageSnapshot.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "providerusagesnapshot-rs",
+  "exports": [
+    {
+      "name": "stopProviderUsageScans",
+      "file": "apps/server/src/providerUsageSnapshot.ts",
+      "line": 110,
+      "params": [],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resumeProviderUsageScans",
+      "file": "apps/server/src/providerUsageSnapshot.ts",
+      "line": 115,
+      "params": [],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "readCodexSessionSummary",
+      "file": "apps/server/src/providerUsageSnapshot.ts",
+      "line": 406,
+      "params": [
+        {
+          "name": "path",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<CodexSessionSummary | null>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveClaudeProjectsRoot",
+      "file": "apps/server/src/providerUsageSnapshot.ts",
+      "line": 558,
+      "params": [
+        {
+          "name": "homeDir",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "readClaudeUsageSamples",
+      "file": "apps/server/src/providerUsageSnapshot.ts",
+      "line": 845,
+      "params": [
+        {
+          "name": "path",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<ReadonlyArray<ClaudeUsageSample>>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "readRecentClaudeUsageSamples",
+      "file": "apps/server/src/providerUsageSnapshot.ts",
+      "line": 979,
+      "params": [
+        {
+          "name": "projectsRoot",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "nowMs",
+          "ts_type": "number",
+          "optional": true,
+          "rest": false
+        },
+        {
+          "name": "signal",
+          "ts_type": "AbortSignal",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<ReadonlyArray<ClaudeUsageSample>>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "loadLocalProviderUsageLines",
+      "file": "apps/server/src/providerUsageSnapshot.ts",
+      "line": 1183,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  provider: typeof typeof typeof typeof ProviderKind.Type.Type.Type.Type;\n  homeDir: string;\n  homePath?: string;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<ReadonlyArray<typeof typeof typeof typeof ServerProviderUsageLine.Type.Type.Type.Type>>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "mapWithConcurrency",
+      "file": "apps/server/src/providerUsageSnapshot.ts",
+      "line": 190,
+      "reason": "takes or returns a function"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "unit": "packages/shared/src/pathContainment.ts",
+  "files": 1,
+  "fingerprint": "b79ca9a561a0261a",
+  "coverage": {
+    "lines": 16,
+    "reached": 16,
+    "files": [
+      {
+        "file": "packages/shared/src/pathContainment.ts",
+        "lines": 16,
+        "reached": 16,
+        "missed": ""
+      }
+    ]
+  }
+}

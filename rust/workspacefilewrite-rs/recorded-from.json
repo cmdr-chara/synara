@@ -1,0 +1,17 @@
+{
+  "unit": "packages/shared/src/workspaceFileWrite.ts",
+  "files": 1,
+  "fingerprint": "0c3747502f896f10",
+  "coverage": {
+    "lines": 10,
+    "reached": 10,
+    "files": [
+      {
+        "file": "packages/shared/src/workspaceFileWrite.ts",
+        "lines": 10,
+        "reached": 10,
+        "missed": ""
+      }
+    ]
+  }
+}

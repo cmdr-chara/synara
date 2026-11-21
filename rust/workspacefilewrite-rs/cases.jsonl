@@ -1,0 +1,39 @@
+{"fn":"isWorkspaceFileWriteConflictError","args":[{"a":{"b":"c"}}],"ok":false}
+{"fn":"isWorkspaceFileWriteConflictError","args":["x"],"ok":false}
+{"fn":"isWorkspaceFileWriteConflictError","args":[null],"ok":false}
+{"fn":"isWorkspaceFileWriteConflictError","args":[{"a":"b"}],"ok":false}
+{"fn":"isWorkspaceFileWriteConflictError","args":[{}],"ok":false}
+{"fn":"isWorkspaceFileWriteConflictError","args":[true],"ok":false}
+{"fn":"isWorkspaceFileWriteConflictError","args":[[]],"ok":false}
+{"fn":"isWorkspaceFileWriteConflictError","args":[0],"ok":false}
+{"fn":"isWorkspaceFileWriteConflictError","args":[["a",1]],"ok":false}
+{"fn":"isWorkspaceFileWriteConflictError","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6}],"ok":false}
+{"fn":"isWorkspaceFileWriteConflictError","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7}],"ok":false}
+{"fn":"isWorkspaceFileWriteConflictError","args":[[3,1,2]],"ok":false}
+{"fn":"isWorkspaceFileWriteConflictError","args":[{"message":"EEXIST: file already exists"}],"ok":false}
+{"fn":"isWorkspaceFileWriteConflictError","args":[{"code":"EEXIST"}],"ok":false}
+{"fn":"isWorkspaceFileWriteConflictError","args":[{"code":"ENOENT","message":"no such"}],"ok":false}
+{"fn":"isWorkspaceFileWriteConflictError","args":["EEXIST: file already exists"],"ok":false}
+{"fn":"isWorkspaceFileWriteConflictError","args":[null],"ok":false}
+{"fn":"isWorkspaceFileWriteConflictError","args":[{}],"ok":false}
+{"fn":"isWorkspaceFileWriteConflictError","args":[{"message":"conflict"}],"ok":false}
+{"fn":"isWorkspaceFileWriteConflictError","args":[5],"ok":false}
+{"fn":"isWorkspaceFileWriteConflictError","args":[{"code":5}],"ok":false}
+{"fn":"isWorkspaceFileWriteConflictError","args":[{"code":"eexist"}],"ok":false}
+{"fn":"isWorkspaceFileWriteConflictError","args":[{"code":"EEXIST","message":"x"}],"ok":false}
+{"fn":"isWorkspaceFileWriteConflictError","args":[{"a":{"b":"c"}}],"ok":false}
+{"fn":"isWorkspaceFileWriteConflictError","args":["x"],"ok":false}
+{"fn":"isWorkspaceFileWriteConflictError","args":[null],"ok":false}
+{"fn":"isWorkspaceFileWriteConflictError","args":[{"a":"b"}],"ok":false}
+{"fn":"isWorkspaceFileWriteConflictError","args":[{}],"ok":false}
+{"fn":"isWorkspaceFileWriteConflictError","args":[true],"ok":false}
+{"fn":"isWorkspaceFileWriteConflictError","args":[[]],"ok":false}
+{"fn":"isWorkspaceFileWriteConflictError","args":[0],"ok":false}
+{"fn":"isWorkspaceFileWriteConflictError","args":[["a",1]],"ok":false}
+{"fn":"isWorkspaceFileWriteConflictError","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6}],"ok":false}
+{"fn":"isWorkspaceFileWriteConflictError","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7}],"ok":false}
+{"fn":"isWorkspaceFileWriteConflictError","args":[[3,1,2]],"ok":false}
+{"fn":"isWorkspaceFileWriteConflictError","args":[{"code":"WORKSPACE_FILE_CONFLICT"}],"ok":true}
+{"fn":"isWorkspaceFileWriteConflictError","args":[{}],"ok":false}
+{"fn":"isWorkspaceFileWriteConflictError","args":[{"code":"WORKSPACE_FILE_DELETED"}],"ok":false}
+{"fn":"isWorkspaceFileWriteConflictError","args":[null],"ok":false}

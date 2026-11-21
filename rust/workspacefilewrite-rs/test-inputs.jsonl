@@ -1,0 +1,4 @@
+{"fn":"isWorkspaceFileWriteConflictError","args":[{"code":"WORKSPACE_FILE_CONFLICT"}]}
+{"fn":"isWorkspaceFileWriteConflictError","args":[{}]}
+{"fn":"isWorkspaceFileWriteConflictError","args":[{"code":"WORKSPACE_FILE_DELETED"}]}
+{"fn":"isWorkspaceFileWriteConflictError","args":[null]}

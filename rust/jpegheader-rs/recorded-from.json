@@ -1,0 +1,17 @@
+{
+  "unit": "apps/server/src/jpegHeader.ts",
+  "files": 1,
+  "fingerprint": "d995332b91bfc35e",
+  "coverage": {
+    "lines": 65,
+    "reached": 33,
+    "files": [
+      {
+        "file": "apps/server/src/jpegHeader.ts",
+        "lines": 65,
+        "reached": 33,
+        "missed": "25-27, 39-67"
+      }
+    ]
+  }
+}

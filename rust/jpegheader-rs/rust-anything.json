@@ -1,0 +1,30 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/jpegHeader.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "jpegheader-rs",
+  "exports": [
+    {
+      "name": "jpegDimensions",
+      "file": "apps/server/src/jpegHeader.ts",
+      "line": 36,
+      "params": [
+        {
+          "name": "bytes",
+          "ts_type": "Uint8Array",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "JpegDimensions | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

@@ -1,0 +1,9 @@
+{"fn":"jpegDimensions","args":[{"a":"b"}],"ok":null}
+{"fn":"jpegDimensions","args":[null],"error":"Cannot read properties of null (reading 'byteLength')"}
+{"fn":"jpegDimensions","args":[true],"ok":null}
+{"fn":"jpegDimensions","args":[{}],"ok":null}
+{"fn":"jpegDimensions","args":["x"],"ok":null}
+{"fn":"jpegDimensions","args":[0],"ok":null}
+{"fn":"jpegDimensions","args":[{"a":{"b":"c"}}],"ok":null}
+{"fn":"jpegDimensions","args":[["a",1]],"ok":null}
+{"fn":"jpegDimensions","args":[[]],"ok":null}

@@ -1,0 +1,90 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/startupAccess.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "startupaccess-rs",
+  "exports": [
+    {
+      "name": "isWildcardHost",
+      "file": "apps/server/src/startupAccess.ts",
+      "line": 1,
+      "params": [
+        {
+          "name": "host",
+          "ts_type": "string | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isLoopbackHost",
+      "file": "apps/server/src/startupAccess.ts",
+      "line": 4,
+      "params": [
+        {
+          "name": "host",
+          "ts_type": "string | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "formatHostForUrl",
+      "file": "apps/server/src/startupAccess.ts",
+      "line": 10,
+      "params": [
+        {
+          "name": "host",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveListeningPort",
+      "file": "apps/server/src/startupAccess.ts",
+      "line": 13,
+      "params": [
+        {
+          "name": "address",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "fallbackPort",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "number",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

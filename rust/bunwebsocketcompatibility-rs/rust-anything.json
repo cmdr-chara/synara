@@ -1,0 +1,30 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/bunWebSocketCompatibility.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "bunwebsocketcompatibility-rs",
+  "exports": [
+    {
+      "name": "patchBunWebSocketCloseEventCompatibility",
+      "file": "apps/server/src/bunWebSocketCompatibility.ts",
+      "line": 38,
+      "params": [],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "patchCloseEventTarget",
+      "file": "apps/server/src/bunWebSocketCompatibility.ts",
+      "line": 68,
+      "reason": "takes or returns a function"
+    }
+  ]
+}

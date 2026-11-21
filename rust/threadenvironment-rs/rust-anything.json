@@ -1,0 +1,102 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/threadEnvironment.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "threadenvironment-rs",
+  "exports": [
+    {
+      "name": "resolveThreadEnvironmentMode",
+      "file": "packages/shared/src/threadEnvironment.ts",
+      "line": 6,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  envMode?: typeof typeof typeof typeof ThreadEnvironmentMode.Type.Type.Type.Type | null | undefined;\n  worktreePath?: string | null | undefined;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ThreadEnvironmentMode.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveThreadWorkspaceState",
+      "file": "packages/shared/src/threadEnvironment.ts",
+      "line": 16,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  envMode?: typeof typeof typeof typeof ThreadEnvironmentMode.Type.Type.Type.Type | null | undefined;\n  worktreePath?: string | null | undefined;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(\"local\" | \"worktree-pending\" | \"worktree-ready\")",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isPendingThreadWorktree",
+      "file": "packages/shared/src/threadEnvironment.ts",
+      "line": 27,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  envMode?: typeof typeof typeof typeof ThreadEnvironmentMode.Type.Type.Type.Type | null | undefined;\n  worktreePath?: string | null | undefined;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveThreadWorkspaceCwd",
+      "file": "packages/shared/src/threadEnvironment.ts",
+      "line": 35,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  projectCwd?: string | null | undefined;\n  envMode?: typeof typeof typeof typeof ThreadEnvironmentMode.Type.Type.Type.Type | null | undefined;\n  worktreePath?: string | null | undefined;\n  workingDirectory?: string | null | undefined;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveThreadBranchSourceCwd",
+      "file": "packages/shared/src/threadEnvironment.ts",
+      "line": 59,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  projectCwd?: string | null | undefined;\n  worktreePath?: string | null | undefined;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

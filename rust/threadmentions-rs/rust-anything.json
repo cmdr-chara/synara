@@ -1,0 +1,66 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/threadMentions.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "threadmentions-rs",
+  "exports": [
+    {
+      "name": "isThreadMentionPath",
+      "file": "packages/shared/src/threadMentions.ts",
+      "line": 8,
+      "params": [
+        {
+          "name": "path",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "threadMentionPathForThreadId",
+      "file": "packages/shared/src/threadMentions.ts",
+      "line": 12,
+      "params": [
+        {
+          "name": "threadId",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "threadIdFromThreadMentionPath",
+      "file": "packages/shared/src/threadMentions.ts",
+      "line": 16,
+      "params": [
+        {
+          "name": "path",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

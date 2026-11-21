@@ -84,14 +84,14 @@ fn collect_activity_path_values(value: &Value, paths: &mut Vec<String>, depth: u
     }
     if let Value::Object(map) = value {
         for (key, child) in map {
-            if ACTIVITY_PATH_KEYS.contains(&key.as_str()) {
-                if let Value::String(s) = child {
-                    let trimmed = s.trim();
-                    if !trimmed.is_empty() {
-                        paths.push(trimmed.to_string());
-                    }
-                    continue;
+            if ACTIVITY_PATH_KEYS.contains(&key.as_str())
+                && let Value::String(s) = child
+            {
+                let trimmed = s.trim();
+                if !trimmed.is_empty() {
+                    paths.push(trimmed.to_string());
                 }
+                continue;
             }
             collect_activity_path_values(child, paths, depth + 1);
         }
@@ -118,10 +118,10 @@ pub fn collect_file_change_activity_path_candidates(
         if !is_record(payload) {
             continue;
         }
-        if let Value::String(status) = member(payload, "status") {
-            if FAILED_FILE_CHANGE_STATUSES.contains(&status.to_lowercase().as_str()) {
-                continue;
-            }
+        if let Value::String(status) = member(payload, "status")
+            && FAILED_FILE_CHANGE_STATUSES.contains(&status.to_lowercase().as_str())
+        {
+            continue;
         }
         let mut candidates = Vec::new();
         collect_activity_path_values(member(payload, "data"), &mut candidates, 0);

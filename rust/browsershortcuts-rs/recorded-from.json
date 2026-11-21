@@ -1,0 +1,17 @@
+{
+  "unit": "packages/shared/src/browserShortcuts.ts",
+  "files": 1,
+  "fingerprint": "6788254f940262ef",
+  "coverage": {
+    "lines": 57,
+    "reached": 55,
+    "files": [
+      {
+        "file": "packages/shared/src/browserShortcuts.ts",
+        "lines": 57,
+        "reached": 55,
+        "missed": "56-57"
+      }
+    ]
+  }
+}

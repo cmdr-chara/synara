@@ -1,0 +1,540 @@
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":true,"key":"😀  padded  ","code":"a😀b😀c","type":"line1\nline2","repeat":true},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":true,"shift":true,"alt":false,"key":"Hello World","repeat":false},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":false,"key":"ΣΊΣΥΦΟΣ","code":"{name} has {count} items","type":"HELLO","repeat":false},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":false,"shift":true,"alt":true,"key":"./x/**/*.json:","repeat":false},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":false,"shift":true,"alt":true,"key":".leading","code":"emoji 👍🏽 mix","type":"İstanbul","repeat":true},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":true,"key":"a..b","code":"a"},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":true,"shift":true,"alt":true,"key":"Hello Worlda..b","type":"src/a/b.ts","repeat":true},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":true,"shift":true,"alt":true,"key":"ns:key.path","code":"emoji 👍🏽 mix","type":":"},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":false,"shift":true,"alt":true,"key":"ns:key.path","code":":","type":":","repeat":true},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":true,"shift":true,"alt":true,"key":"a:b:c","code":"ΣΊΣΥΦΟΣ","type":"trailing.","repeat":false},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":true,"shift":true,"alt":false,"key":"é","code":"ΣΊΣΥΦΟΣ","type":"a😀b😀c","repeat":true},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":true,"key":"a","code":"key_name-1","type":"a😀b😀c{name} has {count} items","repeat":false},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":true,"shift":false,"alt":false,"key":"trailing.HELLO","code":".leading","type":"./x/**/*.json","repeat":false},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":false,"shift":false,"alt":true,"key":".leading","type":"src/a/b.ts","repeat":false},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":true,"shift":true,"alt":true,"key":"﻿bom","code":"tab\tseparated","type":"😀","repeat":true},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":true,"shift":false,"alt":false,"key":"HELLO","code":".leading","type":"ünïcödé","repeat":false},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":false,"shift":true,"alt":true,"key":"key_name-1","code":"hello","type":":"},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":true,"shift":true,"alt":false,"key":"line1\nline2","code":"Hello World","type":"abc","repeat":true},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[null,true],"error":"Cannot read properties of null (reading 'key')"}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":false,"key":"ns:key.path","type":"./x/**/*.json","repeat":true},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":true,"shift":false,"alt":false,"key":"hello world","code":"hello","type":"a:b:c"},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":false,"shift":false,"alt":true,"key":"😀","code":".leading","type":"key_name-1","repeat":false},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":true,"shift":true,"alt":false,"key":"a:b:c","code":"HELLOhello","repeat":false},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":false,"shift":false,"alt":true,"key":"straße","code":"ab","type":"hello world"},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":false,"shift":true,"alt":false,"key":"a😀b😀c","code":"./x/**/*.json","type":"Hello Worlda:b:c"},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":false,"shift":true,"alt":false,"key":"HELLO😀","code":"ab","type":"ns:key.path","repeat":true},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":true,"shift":true,"alt":false,"key":"{name} has {count} items","code":"ünïcödé","type":"😀","repeat":false},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":true,"key":"a.b.c","code":"hello world","type":"ünïcödé","repeat":false},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":false,"shift":true,"alt":false,"key":"trailing.a..b","code":"Hello World","type":"ab","repeat":false},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":false,"shift":true,"alt":false,"key":"HELLO","code":"﻿bom","type":"hello world","repeat":false},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":false,"shift":true,"alt":false,"key":"Hello World","code":"Hello World","type":"a😀b😀c"},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[true,true],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":true,"shift":false,"alt":false,"key":":","code":"abc","type":".leading","repeat":false},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":true,"shift":true,"alt":false,"key":":","type":"😀","repeat":false},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":false,"shift":true,"alt":true,"key":"./x/**/*.json","code":"key_name-1","type":"é","repeat":false},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":false,"shift":true,"alt":false,"key":"Hello World","code":"ΣΊΣΥΦΟΣ","type":"a{name} has {count} items","repeat":true},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":false,"shift":true,"alt":true,"key":"straße","code":"Hello World"},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":true,"shift":true,"alt":true,"key":".leading","code":"hello world","type":"./x/**/*.json./x/**/*.json","repeat":true},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[["a",1],false],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":true,"shift":true,"alt":false,"key":"{name} has {count} items","code":"straße","type":"  padded  "},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":true,"key":"日本語のテキスト","repeat":false},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":false,"shift":false,"alt":true,"key":":","code":"﻿bomtrailing.","type":"tab\tseparated","repeat":true},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":true,"shift":false,"alt":false,"key":"src/a/b.ts","code":"helloab","type":"é"},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":false,"shift":true,"alt":false,"key":"a😀b😀c","repeat":false},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":false,"shift":true,"alt":true,"key":".leading","code":"a.b.c","type":"src/a/b.ts","repeat":false},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":true,"shift":true,"alt":false,"key":"Hello World","code":"./x/**/*.json","type":"HELLO"},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[0,true],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":true,"shift":false,"alt":false,"key":":","code":"ékey_name-1","type":"é","repeat":true},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":true,"shift":false,"alt":true,"key":"a..b","code":"é","type":"src/a/b.ts","repeat":false},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{},true],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":true,"shift":true,"alt":true,"key":"hello","code":"  padded  ","type":"HELLO"},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":true,"shift":true,"alt":false,"key":"😀日本語のテキスト","code":"ΣΊΣΥΦΟΣ","type":"﻿bom","repeat":true},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":true,"shift":true,"alt":true,"key":"ΣΊΣΥΦΟΣ","type":"HELLO","repeat":false},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{},false],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":false,"shift":true,"alt":true,"key":"😀","code":"😀","type":"abc","repeat":false},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":false,"shift":true,"alt":false,"key":"ünïcödé","code":"ab","repeat":false},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":true,"shift":true,"alt":false,"key":"abc😀","code":"  padded  .leading","type":"src/a/b.ts"},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":["x",false],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":true,"shift":true,"alt":false,"key":"emoji 👍🏽 mix","type":"İstanbul","repeat":false},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":true,"shift":false,"alt":true,"key":"aa😀b😀c","code":"./x/**/*.json","type":"{name} has {count} items","repeat":false},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":["x",true],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":true,"shift":false,"alt":true,"key":"src/a/b.ts","code":"﻿bom","repeat":false},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":true,"key":":","code":"","repeat":false},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":false,"shift":false,"alt":true,"key":"a..b","code":"﻿bom","type":"trailing.","repeat":false},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":true,"key":"HELLO","repeat":false},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":true,"shift":false,"alt":true,"key":"line1\nline2","code":"é","type":"﻿bomhello","repeat":false},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":true,"shift":false,"alt":true,"key":"straße","code":"a..b","type":"a","repeat":false},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":false,"shift":true,"alt":true,"key":"HELLO","type":"ab😀","repeat":false},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":false,"shift":false,"alt":false,"key":":","code":".leading","repeat":true},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":true,"shift":false,"alt":true,"key":"ns:key.path","code":"a😀b😀c","type":"{name} has {count} items","repeat":false},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":false,"key":"日本語のテキスト","type":"{name} has {count} itemssrc/a/b.ts","repeat":false},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":true,"shift":false,"alt":true,"key":"./x/**/*.json","code":"İstanbul😀","type":"ns:key.path","repeat":true},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":true,"shift":true,"alt":true,"key":"a:b:c","code":"ΣΊΣΥΦΟΣHello World","repeat":true},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":false,"shift":true,"alt":false,"key":"helloHello World","code":"hello world","type":"emoji 👍🏽 mixline1\nline2","repeat":false},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":false,"shift":true,"alt":false,"key":"ns:key.path","type":"a"},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":true,"shift":true,"alt":false,"key":"{name} has {count} items","code":"😀","type":"﻿bom"},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":false,"shift":true,"alt":false,"key":".leading","code":"./x/**/*.jsonstraße","type":"aa😀b😀c","repeat":false},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":true,"shift":true,"alt":true,"key":"ab","code":".leading","type":"tab\tseparated","repeat":true},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":true,"shift":false,"alt":false,"key":"{name} has {count} items","code":"straße","type":"ab","repeat":false},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":true,"key":"abhello world","code":"key_name-1","type":"a..b","repeat":false},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":true,"shift":false,"alt":false,"key":".leading","code":"abc","type":"emoji 👍🏽 mix","repeat":false},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":false,"shift":false,"alt":true,"key":"ab","code":"tab\tseparated","type":"é","repeat":true},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":false,"shift":false,"alt":true,"key":"ns:key.path","code":"key_name-1","type":"{name} has {count} items","repeat":false},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":true,"shift":true,"alt":false,"key":"{name} has {count} items","code":"😀","type":"ΣΊΣΥΦΟΣ","repeat":true},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":true,"shift":true,"alt":true,"key":"src/a/b.ts","code":"hello worldkey_name-1","type":"日本語のテキストkey_name-1","repeat":false},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":true,"shift":false,"alt":true,"key":"abc","code":"Hello World","type":"ΣΊΣΥΦΟΣ:","repeat":true},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":true,"shift":false,"alt":false,"key":"line1\nline2","code":"tab\tseparated","type":"a:b:c","repeat":false},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":false,"shift":true,"alt":true,"key":"emoji 👍🏽 mix","type":"a..bHello World","repeat":false},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":false,"shift":false,"alt":false,"key":"ab","code":"emoji 👍🏽 mix","type":"  padded  ","repeat":false},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":true,"shift":false,"alt":true,"key":"😀","type":"trailing.İstanbul","repeat":false},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":false,"shift":true,"alt":true,"key":"ΣΊΣΥΦΟΣ","code":"hello world","type":"İstanbulünïcödé","repeat":true},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":false,"shift":true,"alt":true,"key":"abc","code":"src/a/b.ts","type":"straße"},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":false,"shift":true,"alt":false,"key":"straße","code":"hello","type":"straße"},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":true,"shift":false,"alt":false,"key":"a","code":"src/a/b.ts","type":"./x/**/*.json","repeat":false},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":false,"shift":true,"alt":true,"key":"emoji 👍🏽 mix","type":"日本語のテキスト","repeat":false},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":false,"shift":true,"alt":true,"key":"Hello World","code":"helloline1\nline2","type":"a..bünïcödé","repeat":false},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":true,"key":"a:b:c","code":"  padded  ","type":"straße","repeat":true},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":false,"shift":true,"alt":true,"key":"ns:key.path","code":"key_name-1"},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":false,"shift":false,"alt":false,"key":"key_name-1","type":"emoji 👍🏽 mixstraße","repeat":true},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":false,"shift":false,"alt":false,"key":"é","repeat":true},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":true,"shift":true,"alt":false,"key":"﻿bom","repeat":true},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":false,"shift":false,"alt":true,"key":":","code":"straße","type":"line1\nline2a.b.c","repeat":true},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":true,"shift":true,"alt":true,"key":"a..b","type":"  padded  ","repeat":false},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":true,"shift":true,"alt":true,"key":"{name} has {count} items","code":"ΣΊΣΥΦΟΣ","type":"😀"},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":true,"shift":true,"alt":false,"key":"ΣΊΣΥΦΟΣ","type":"ab","repeat":true},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":true,"shift":false,"alt":false,"key":"  padded  ","type":".leadinghello","repeat":true},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":true,"shift":false,"alt":true,"key":"absrc/a/b.ts","repeat":true},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":false,"shift":true,"alt":false,"key":"HELLO","repeat":false},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":true,"shift":true,"alt":true,"key":"ΣΊΣΥΦΟΣ","repeat":true},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"a":"b"},false],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":true,"shift":false,"alt":false,"key":"é","code":"Hello World.leading","type":":","repeat":true},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":true,"shift":true,"alt":true,"key":"straße","type":"😀","repeat":true},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":true,"shift":true,"alt":true,"key":"a","code":"a","type":"a.b.cΣΊΣΥΦΟΣ","repeat":false},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":true,"shift":false,"alt":false,"key":"é","code":"ns:key.path","type":"a:b:cns:key.path","repeat":false},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":true,"shift":true,"alt":false,"key":"é","code":"./x/**/*.json","type":"Hello World"},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":true,"shift":false,"alt":true,"key":"","code":"ünïcödé","repeat":false},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":false,"shift":false,"alt":true,"key":"😀","code":"./x/**/*.json","type":"a..b"},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":false,"key":"HELLO","code":"{name} has {count} items","repeat":true},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":false,"shift":true,"alt":true,"key":":","code":":","repeat":true},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":true,"shift":false,"alt":true,"key":"","code":"﻿bom","repeat":false},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[0,false],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":true,"shift":false,"alt":true,"key":"ns:key.path","code":"ns:key.path","type":"Hello World","repeat":true},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":false,"shift":true,"alt":false,"key":"a.b.c","code":":","type":"tab\tseparated"},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":true,"shift":false,"alt":false,"key":"trailing.","type":".leading","repeat":false},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":true,"shift":false,"alt":true,"key":"a:b:c","repeat":false},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":true,"shift":true,"alt":false,"key":"line1\nline2","code":"{name} has {count} items","type":"key_name-1日本語のテキスト"},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":false,"shift":true,"alt":false,"key":".leading","code":"﻿bom"},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":true,"shift":true,"alt":true,"key":"a:b:c","code":"Hello World","type":"trailing.ns:key.path","repeat":false},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":false,"shift":false,"alt":false,"key":"日本語のテキスト{name} has {count} items","code":":","type":"a.b.c","repeat":true},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":true,"shift":true,"alt":true,"key":"  padded  {name} has {count} items","code":"İstanbul","type":"./x/**/*.json"},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":false,"shift":true,"alt":true,"key":"{name} has {count} items","type":"aab","repeat":false},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":true,"shift":false,"alt":false,"key":"","code":"日本語のテキスト","type":"","repeat":true},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":true,"shift":false,"alt":false,"key":"ünïcödé","type":"ns:key.path"},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":true,"shift":false,"alt":false,"key":"Hello World","type":"ünïcödé","repeat":true},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":false,"shift":true,"alt":true,"key":"{name} has {count} items"},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[true,false],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":true,"shift":true,"alt":false,"key":"a😀b😀c","type":"a.b.c","repeat":true},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":true,"shift":false,"alt":false,"key":"emoji 👍🏽 mix","code":"  padded  ","repeat":false},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":true,"shift":true,"alt":true,"key":"a.b.cΣΊΣΥΦΟΣ","code":".leading","repeat":false},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":false,"shift":true,"alt":false,"key":"a😀b😀cline1\nline2","type":"emoji 👍🏽 mix","repeat":true},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":false,"shift":true,"alt":true,"key":"日本語のテキスト","code":"a😀b😀c","repeat":true},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":false,"shift":true,"alt":true,"key":"a😀b😀c","code":"Hello World","type":".leadingsrc/a/b.ts","repeat":true},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":true,"shift":true,"alt":false,"key":"a.b.c","code":"key_name-1","type":".leadingab","repeat":true},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":false,"shift":false,"alt":false,"key":"a:b:c","code":"src/a/b.ts","type":"HELLO","repeat":true},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":true,"shift":false,"alt":true,"key":"emoji 👍🏽 mix","code":"ns:key.path./x/**/*.json","type":"straße","repeat":true},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[null,false],"error":"Cannot read properties of null (reading 'key')"}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":false,"shift":true,"alt":true,"key":"  padded  ","type":"é","repeat":true},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":false,"shift":false,"alt":true,"key":"a","code":"straße./x/**/*.json","type":"日本語のテキスト","repeat":true},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":true,"shift":true,"alt":true,"key":"key_name-1","code":"﻿bom","type":"straßea:b:c","repeat":true},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":true,"shift":false,"alt":true,"key":"Hello World","code":"ns:key.path","type":"a..b","repeat":false},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":true,"key":"😀","code":"ünïcödé","type":"HELLO"},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":false,"key":"straße","code":"src/a/b.ts","repeat":false},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":false,"shift":true,"alt":false,"key":"HELLO","code":"日本語のテキストünïcödé","type":"a..b","repeat":false},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":true,"shift":true,"alt":false,"key":"hello world","type":"ns:key.path","repeat":false},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":true,"shift":false,"alt":true,"key":"a","repeat":false},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":false,"shift":true,"alt":true,"key":"  padded  ","code":"日本語のテキストHELLO","type":"line1\nline2","repeat":true},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":false,"shift":true,"alt":false,"key":"a.b.c","type":"./x/**/*.json","repeat":false},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":false,"shift":true,"alt":true,"key":"a..b","code":"a.b.c","repeat":false},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":true,"shift":true,"alt":true,"key":"a..b","code":"ünïcödé","type":"{name} has {count} items"},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":false,"shift":false,"alt":true,"key":"ünïcödé{name} has {count} items","code":"emoji 👍🏽 mix","type":"emoji 👍🏽 mix","repeat":false},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":true,"shift":false,"alt":true,"key":"abc","type":"﻿bom","repeat":true},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":false,"shift":true,"alt":false,"key":"﻿bomhello world"},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[[],true],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":true,"shift":true,"alt":true,"key":"tab\tseparated﻿bom","code":"a😀b😀c:","type":"key_name-1","repeat":true},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":true,"shift":false,"alt":true,"key":"😀","code":".leading","repeat":false},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":true,"shift":true,"alt":false,"key":"😀","type":".leading","repeat":true},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":false,"shift":false,"alt":false,"key":"line1\nline2","type":"a..b","repeat":false},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[["a",1],true],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":true,"shift":false,"alt":false,"key":"emoji 👍🏽 mix","code":"line1\nline2İstanbul","type":"  padded  ","repeat":true},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":false,"shift":true,"alt":true,"key":"a.b.c","code":"日本語のテキスト","type":"emoji 👍🏽 mix","repeat":false},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":true,"shift":false,"alt":true,"key":"a:b:c","code":"HELLO","type":"src/a/b.ts"},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":false,"shift":true,"alt":true,"key":"😀","code":"😀a.b.c","type":"tab\tseparated"},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":false,"shift":true,"alt":false,"key":"emoji 👍🏽 mix","code":"line1\nline2İstanbul","type":"src/a/b.ts","repeat":false},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":false,"shift":true,"alt":true,"key":"é./x/**/*.json","code":"a😀b😀c"},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":false,"shift":false,"alt":false,"key":"İstanbul./x/**/*.json","repeat":false},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":false,"shift":true,"alt":true,"key":"a.b.c","type":"ΣΊΣΥΦΟΣ"},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":true,"shift":false,"alt":false,"key":"hello world","code":"HELLO","type":"a..b"},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":true,"shift":true,"alt":false,"key":"a😀b😀c","code":"straßeHello World","repeat":false},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":false,"shift":true,"alt":false,"key":"a:b:c","type":"hello world","repeat":false},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":true,"shift":true,"alt":true,"key":"a.b.c","code":"  padded  a","type":":"},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":false,"shift":true,"alt":true,"key":"İstanbul","code":"","type":"key_name-1","repeat":false},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"a":"b"},true],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":false,"shift":true,"alt":false,"key":"é","code":"hello{name} has {count} items","repeat":true},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":false,"shift":false,"alt":false,"key":"Hello World","code":"hello world","type":"trailing.","repeat":true},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"a":{"b":"c"}},true],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":false,"shift":false,"alt":false,"key":":","code":"abc","type":"straße","repeat":true},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":false,"shift":true,"alt":true,"key":"hello world","code":"日本語のテキスト","type":"﻿bomtrailing.","repeat":false},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":false,"key":"emoji 👍🏽 mix","type":"ns:key.path","repeat":false},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":false,"shift":true,"alt":false,"key":"./x/**/*.json","code":"a","type":"straße","repeat":false},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":false,"shift":true,"alt":false,"key":"ns:key.path","code":"straße"},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":false,"key":"a.b.c","code":"ΣΊΣΥΦΟΣ","type":"hello world","repeat":false},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":false,"shift":false,"alt":true,"key":"İstanbul","code":".leading{name} has {count} items","type":"﻿bom","repeat":true},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":false,"shift":true,"alt":false,"key":"a:b:cHello World","code":"straße  padded  ","repeat":false},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":true,"shift":true,"alt":false,"key":"é","code":"aline1\nline2"},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":true,"key":"tab\tseparated﻿bom","code":"  padded  ","type":"straße","repeat":false},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":false,"key":"hello","code":"ünïcödé","repeat":true},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":false,"key":"","type":"a..b","repeat":true},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":false,"shift":false,"alt":false,"key":"İstanbul","code":"İstanbul","type":"","repeat":true},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":true,"shift":true,"alt":true,"key":"emoji 👍🏽 mix","code":"a.b.c日本語のテキスト","type":"ns:key.path","repeat":true},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":true,"shift":false,"alt":false,"key":"ab","code":"straße","type":"ΣΊΣΥΦΟΣ./x/**/*.json","repeat":false},false],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"a":"b"},{"isMac":false,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":true,"shift":false,"alt":false,"key":"trailing.","code":"","type":"HELLO","repeat":true},[]],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":true,"shift":false,"alt":false,"key":"","type":"tab\tseparated"},{"isMac":false,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":false,"key":"a:b:c","type":"Hello World  padded  "},{"isMac":true,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":false,"shift":false,"alt":true,"key":"straße","code":"ns:key.patha.b.c","type":"emoji 👍🏽 mixsrc/a/b.ts","repeat":true},{"isMac":true,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":true,"shift":false,"alt":false,"key":"a","code":"a..ba😀b😀c","type":"./x/**/*.json","repeat":false},{"isMac":true,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":true,"shift":true,"alt":false,"key":"./x/**/*.json","code":"HELLO﻿bom","type":"a:b:c"},{"isMac":false,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":true,"alt":false,"key":"trailing.","code":"key_name-1","type":"./x/**/*.json","repeat":true},{"isMac":true,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":true,"shift":false,"alt":false,"key":"HELLOhello","code":"ns:key.path","type":"abc","repeat":false},{"isMac":true,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":true,"shift":true,"alt":false,"key":"ab","type":"key_name-1","repeat":true},{"isMac":true,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":false,"shift":false,"alt":true,"key":"hello","code":"ΣΊΣΥΦΟΣ","repeat":false},{"isMac":true,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":false,"shift":true,"alt":false,"key":"straßesrc/a/b.ts","code":"ab","type":"a.b.c","repeat":false},{"isMac":false,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":false,"key":"a😀b😀c","code":"emoji 👍🏽 mix","type":"straße"},{"isMac":true,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":false,"shift":true,"alt":true,"key":"a.b.c","code":"straße","type":"ünïcödé","repeat":false},{"isMac":false,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":true,"alt":true,"key":"HELLOΣΊΣΥΦΟΣ","repeat":false},{"isMac":true,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":true,"shift":false,"alt":true,"key":"emoji 👍🏽 mix","code":"a:b:c","type":"a😀b😀c","repeat":false},{"isMac":false,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":true,"shift":false,"alt":true,"key":"Hello World","code":"ΣΊΣΥΦΟΣ"},{"isMac":true,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":true,"shift":false,"alt":true,"key":"a.b.c","code":"Hello World"},{"isMac":false,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":false,"key":"  padded  ","code":"é","type":"a:b:c","repeat":false},{"isMac":true,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":true,"shift":false,"alt":false,"key":"é","code":"a..b","type":"😀","repeat":true},null],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":true,"alt":true,"key":"./x/**/*.json","code":"line1\nline2","type":"./x/**/*.jsonabc","repeat":true},{"a":{"b":"c"}}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":false,"shift":true,"alt":true,"key":"straße","code":"key_name-1a","repeat":true},{"isMac":true,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":false,"shift":true,"alt":false,"key":"日本語のテキスト","code":"abc","type":":","repeat":true},{"isMac":false,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":true,"key":"hello world","code":"{name} has {count} items","type":"a:b:c","repeat":true},{"isMac":true,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":true,"shift":true,"alt":true,"key":"ns:key.path","code":"a.b.c","repeat":true},{"isMac":true,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":false,"shift":true,"alt":false,"key":"straße","code":":a..b","type":"emoji 👍🏽 mix","repeat":true},{"isMac":false,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":true,"shift":false,"alt":false,"key":"trailing.é","code":"a😀b😀c","type":"tab\tseparated"},{"isMac":true,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[null,{"isMac":true,"isWindows":false}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":false,"shift":true,"alt":false,"key":"src/a/b.ts","code":"日本語のテキスト","type":"src/a/b.ts😀"},{"isMac":false,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":false,"shift":true,"alt":false,"key":"a:b:c","code":"  padded  ","type":"trailing."},{"isMac":true,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":true,"shift":false,"alt":false,"key":"hello world","code":"﻿bom","repeat":false},{"isMac":false,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":true,"shift":true,"alt":false,"key":".leading","code":"{name} has {count} items","type":"Hello World"},{"isMac":true,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":true,"shift":true,"alt":false,"key":"  padded  ","type":"ns:key.path","repeat":true},{"isMac":false,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":true,"shift":true,"alt":false,"key":"tab\tseparatedns:key.path","repeat":false},{"a":{"b":"c"}}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":true,"shift":true,"alt":false,"key":"abc","code":"trailing.","type":"{name} has {count} items","repeat":true},{"isMac":true,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":true,"shift":true,"alt":true,"key":"ΣΊΣΥΦΟΣ","type":"﻿bom","repeat":false},{"isMac":false,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":true,"shift":false,"alt":true,"key":"ns:key.pathab","code":"tab\tseparated"},{"isMac":false,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":true,"shift":true,"alt":false,"key":"HELLO","type":"emoji 👍🏽 mix"},{"isMac":false,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":false,"key":"Hello World","code":"日本語のテキスト","type":"","repeat":true},{"isMac":false,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":true,"shift":true,"alt":false,"key":"a..b","type":"emoji 👍🏽 mix"},[]],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[["a",1],{"isMac":false,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":true,"shift":true,"alt":true,"key":"key_name-1","type":"emoji 👍🏽 mix","repeat":true},{"isMac":false,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":true,"alt":false,"key":"HELLO","code":"  padded  ","type":"straßetrailing.","repeat":true},{"isMac":true,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":true,"alt":true,"key":"key_name-1","type":"İstanbul","repeat":false},{"isMac":true,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":["x",{"isMac":true,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":true,"shift":true,"alt":false,"key":".leading","repeat":true},{"isMac":false,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":true,"shift":true,"alt":true,"key":"straße","code":"abc"},"x"],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":true,"alt":true,"key":"ab","type":"./x/**/*.json","repeat":true},{"isMac":true,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":true,"shift":false,"alt":true,"key":"./x/**/*.json","code":"src/a/b.ts","type":"HELLO","repeat":false},{"isMac":true,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":false,"shift":true,"alt":true,"key":"trailing.","code":"😀","repeat":false},{"isMac":false,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":true,"shift":true,"alt":false,"key":".leadingHello World","code":"a..b","type":"{name} has {count} itemsa😀b😀c","repeat":true},{"isMac":true,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":true,"shift":true,"alt":true,"key":".leading","code":"日本語のテキスト{name} has {count} items","repeat":true},{"isMac":false,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":true,"shift":false,"alt":false,"key":"line1\nline2","code":"emoji 👍🏽 mix","type":"{name} has {count} items😀","repeat":false},{"isMac":true,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":true,"shift":false,"alt":true,"key":"hello world","repeat":false},{"isMac":true,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":true,"shift":true,"alt":false,"key":"key_name-1","repeat":false},{"isMac":true,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":true,"shift":false,"alt":false,"key":"{name} has {count} items","type":"ünïcödé.leading","repeat":false},{"a":"b"}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":true,"shift":true,"alt":true,"key":"a..b","type":"src/a/b.ts","repeat":true},{"isMac":false,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[null,{"isMac":false,"isWindows":true}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":true,"shift":false,"alt":false,"key":"key_name-1","code":"ab","type":"straße","repeat":false},{"isMac":false,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":true,"shift":true,"alt":false,"key":"","code":"Hello World","type":"a:b:c"},"x"],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":true,"shift":false,"alt":false,"key":"a.b.chello world","type":"ΣΊΣΥΦΟΣa.b.c"},{"a":{"b":"c"}}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":true,"shift":false,"alt":true,"key":"emoji 👍🏽 mixHELLO","code":"  padded  ","repeat":false},{"isMac":true,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[0,{"isMac":false,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":true,"shift":true,"alt":false,"key":"﻿bom","code":"a..b","type":"abckey_name-1","repeat":true},{"isMac":false,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":true,"shift":false,"alt":true,"key":"straße","repeat":false},{"isMac":true,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":false,"shift":false,"alt":false,"key":"a:b:c","code":"a.b.c","repeat":false},{"a":{"b":"c"}}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":true,"shift":false,"alt":true,"key":"hello world","code":"  padded  ","type":"  padded  ","repeat":false},{"isMac":true,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":true,"shift":false,"alt":true,"key":"line1\nline2","code":"İstanbul","type":"a..b"},{"isMac":false,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":false,"shift":false,"alt":true,"key":"hello","code":"","type":"a.b.c"},{"isMac":true,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[true,{"isMac":false,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":false,"shift":false,"alt":false,"key":"ΣΊΣΥΦΟΣ日本語のテキスト","code":"😀ns:key.path","type":"tab\tseparated","repeat":false},{"isMac":false,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":false,"shift":true,"alt":true,"key":"{name} has {count} items","code":"trailing.","type":"ΣΊΣΥΦΟΣ","repeat":false},{"isMac":false,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":true,"key":"ab","code":"ünïcödé","repeat":false},{"isMac":false,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":true,"key":"trailing.","code":"trailing.","type":"line1\nline2","repeat":true},{"isMac":true,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"a":{"b":"c"}},{"isMac":false,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[["a",1],{"isMac":true,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":true,"alt":false,"key":"hello world","code":"{name} has {count} items","type":"src/a/b.ts{name} has {count} items"},{"isMac":true,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":false,"key":"a","code":":a😀b😀c","type":"hello"},{"isMac":true,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":false,"shift":false,"alt":false,"key":"Hello World","code":"İstanbul","type":"ünïcödéΣΊΣΥΦΟΣ","repeat":false},{"isMac":true,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":true,"key":"ΣΊΣΥΦΟΣ","code":"ns:key.path","type":"日本語のテキストa","repeat":true},{"isMac":false,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":true,"shift":true,"alt":false,"key":"tab\tseparated","code":"a😀b😀c","type":"HELLOns:key.path","repeat":false},["a",1]],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":true,"shift":true,"alt":false,"key":"a","code":"a..b","type":"ns:key.path","repeat":true},{"isMac":true,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":true,"shift":false,"alt":true,"key":"line1\nline2","code":"{name} has {count} itemsa","repeat":true},{"isMac":false,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":true,"shift":false,"alt":false,"key":"emoji 👍🏽 mix","code":"abc","type":"Hello Worldİstanbul","repeat":true},{"isMac":false,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":true,"shift":false,"alt":false,"key":"a","repeat":false},{"isMac":false,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":false,"shift":false,"alt":true,"key":"日本語のテキスト","code":"ab","type":"aİstanbul","repeat":true},{"isMac":false,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":true,"shift":true,"alt":false,"key":"ns:key.path","code":":","type":"hello world","repeat":false},{"isMac":false,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":false,"shift":false,"alt":true,"key":":","type":"abc","repeat":true},{"isMac":true,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":true,"shift":true,"alt":false,"key":":","code":"trailing.","type":"ünïcödé","repeat":true},{"isMac":false,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":true,"key":"é","repeat":true},{"isMac":false,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":true,"shift":true,"alt":false,"key":"","code":"src/a/b.ts","repeat":false},{"isMac":false,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":true,"shift":false,"alt":true,"key":"İstanbul","type":"line1\nline2","repeat":true},{"isMac":false,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":true,"alt":true,"key":"hello world","code":"emoji 👍🏽 mix","repeat":true},{"isMac":false,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":true,"shift":true,"alt":false,"key":"a","repeat":true},[]],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":true,"shift":true,"alt":false,"key":"key_name-1","code":":","type":"é","repeat":true},{"isMac":false,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":true,"key":"straße","code":"a😀b😀c","repeat":false},{"a":{"b":"c"}}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":true,"shift":false,"alt":false,"key":"﻿boma:b:c","code":"a..b","type":"abemoji 👍🏽 mix","repeat":false},{"isMac":false,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":true,"shift":true,"alt":false,"key":"key_name-1","code":"straße","type":"  padded  ","repeat":false},{"isMac":false,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":false,"shift":true,"alt":true,"key":"trailing.","type":"./x/**/*.json","repeat":true},{"isMac":true,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":true,"alt":false,"key":".leading","code":"İstanbul","type":"src/a/b.tshello","repeat":true},{"isMac":false,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":true,"alt":true,"key":"a😀b😀c","code":":","type":"a:b:c","repeat":false},{"isMac":false,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":true,"shift":true,"alt":false,"key":"Hello World","code":"{name} has {count} items","type":"hello","repeat":false},{}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":true,"shift":false,"alt":false,"key":"abc","code":"  padded  ","type":"a","repeat":false},{"a":"b"}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":true,"shift":false,"alt":true,"key":":","type":"hello","repeat":false},{"isMac":false,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":false,"shift":false,"alt":true,"key":"emoji 👍🏽 mix","code":"ns:key.path","type":"﻿bom","repeat":true},{"isMac":false,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":true,"shift":false,"alt":false,"key":"﻿bom","code":"a","type":"ns:key.path","repeat":true},{"isMac":true,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":true,"shift":true,"alt":false,"key":":straße","code":"{name} has {count} items","type":"ΣΊΣΥΦΟΣ","repeat":true},{"isMac":false,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":true,"shift":true,"alt":true,"key":"{name} has {count} items","code":"ΣΊΣΥΦΟΣ","type":"﻿bom","repeat":true},"x"],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":true,"shift":false,"alt":false,"key":"hello world","code":"trailing.","type":"a..b","repeat":false},{"isMac":true,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":true,"shift":true,"alt":false,"key":"﻿bom","code":"line1\nline2./x/**/*.json","type":"a..b","repeat":true},"x"],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":false,"shift":false,"alt":true,"key":"a:b:c","code":"hello world","type":"日本語のテキスト","repeat":true},"x"],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":false,"shift":false,"alt":false,"key":"./x/**/*.json﻿bom","code":"a:b:c","type":"tab\tseparated","repeat":false},{"isMac":true,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":true,"alt":true,"key":".leading","code":":","type":"😀","repeat":true},{"isMac":false,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":true,"shift":true,"alt":true,"key":"{name} has {count} items","code":"😀hello","type":"","repeat":false},{"isMac":false,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":false,"shift":true,"alt":false,"key":"Hello World","code":"hellotrailing.","type":"a😀b😀c","repeat":true},{"isMac":false,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":false,"shift":true,"alt":true,"key":"abc","code":"a..ba😀b😀c","type":"ns:key.path","repeat":true},{}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":true,"shift":false,"alt":true,"key":"a:b:c","code":"ünïcödé","type":"a..b","repeat":false},{"isMac":true,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":true,"shift":false,"alt":false,"key":"emoji 👍🏽 mix","code":"abHello World","type":"tab\tseparated","repeat":true},{"isMac":false,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":true,"shift":true,"alt":false,"key":"./x/**/*.json","code":"İstanbula","type":"tab\tseparatedhello world","repeat":true},{"isMac":false,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":true,"shift":true,"alt":true,"key":"ns:key.path","type":"tab\tseparated","repeat":false},{"isMac":false,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":true,"shift":false,"alt":false,"key":"","code":"trailing.","repeat":true},{"isMac":true,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":false,"shift":false,"alt":true,"key":"ns:key.path","code":"line1\nline2ns:key.path","repeat":false},{"isMac":true,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":true,"shift":true,"alt":true,"key":"ΣΊΣΥΦΟΣ","repeat":false},{"isMac":false,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":true,"key":"﻿bom","type":"","repeat":true},{"isMac":true,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":true,"shift":false,"alt":false,"key":"key_name-1"},{"isMac":false,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":true,"shift":false,"alt":true,"key":"ünïcödé","repeat":true},{"a":"b"}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":true,"shift":true,"alt":false,"key":"ünïcödé","repeat":true},{"isMac":false,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":false,"shift":true,"alt":false,"key":"helloΣΊΣΥΦΟΣ","code":"﻿bom","type":"straße","repeat":false},{"isMac":false,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":true,"alt":false,"key":"hello world","code":"line1\nline2","type":"ab","repeat":true},{"isMac":true,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":false,"shift":true,"alt":false,"key":":","code":"a😀b😀cemoji 👍🏽 mix","type":"Hello World"},{"isMac":false,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":true,"shift":true,"alt":true,"key":"emoji 👍🏽 mix","code":"a..bé","type":"ns:key.path  padded  ","repeat":false},{"isMac":true,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":false,"key":"trailing.straße","code":"a:b:c","type":"a.b.chello","repeat":false},{"isMac":true,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":true,"shift":false,"alt":false,"key":"😀","code":"hello","type":"hello"},{"isMac":false,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":true,"shift":true,"alt":false,"key":"İstanbul","code":"hello worldhello","type":"key_name-1","repeat":false},{"isMac":true,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":true,"shift":true,"alt":false,"key":"key_name-1","code":"trailing.","type":"src/a/b.ts","repeat":false},{"isMac":false,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":true,"shift":false,"alt":true,"key":"line1\nline2","code":"abc","type":"tab\tseparated","repeat":true},{"isMac":false,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":true,"key":":","code":"é"},{"a":"b"}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":true,"alt":false,"key":"日本語のテキストHELLO","code":"日本語のテキスト","repeat":false},{"isMac":false,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[null,{"isMac":false,"isWindows":false}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":true,"shift":false,"alt":false,"key":"tab\tseparatedline1\nline2","code":"trailing.a:b:c","type":"hello","repeat":false},{"isMac":true,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":false,"shift":true,"alt":false,"key":"emoji 👍🏽 mix","code":"key_name-1","type":"😀","repeat":false},{"isMac":false,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":false,"shift":false,"alt":false,"key":"ΣΊΣΥΦΟΣ","code":"straße"},{"isMac":true,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":false,"shift":false,"alt":false,"key":"日本語のテキスト","code":"hello","repeat":false},{"isMac":false,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":true,"shift":true,"alt":false,"key":":","code":"hello world","type":"hello"},{"isMac":false,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":true,"shift":true,"alt":false,"key":"😀","code":":","repeat":true},{"isMac":false,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":false,"shift":false,"alt":true,"key":"Hello World","code":"hello","type":"","repeat":false},{"isMac":true,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":false,"shift":true,"alt":false,"key":"key_name-1","code":"a..ba..b","repeat":false},{"isMac":true,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":true,"shift":true,"alt":false,"key":"ünïcödé","code":"key_name-1","type":"src/a/b.ts","repeat":true},{"isMac":true,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":false,"shift":true,"alt":false,"key":"é","code":".leading","type":"ΣΊΣΥΦΟΣ  padded  ","repeat":true},{"a":{"b":"c"}}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":true,"shift":false,"alt":false,"key":"a:b:c","code":"İstanbul","type":".leading","repeat":false},{"isMac":false,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":false,"shift":false,"alt":true,"key":"é","code":"😀","type":"é😀"},{"isMac":false,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":true,"shift":false,"alt":false,"key":"😀","type":"emoji 👍🏽 mix","repeat":true},{"isMac":true,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"a":{"b":"c"}},{"isMac":false,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":true,"alt":true,"key":"trailing.","code":".leading","repeat":false},["a",1]],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":true,"shift":true,"alt":true,"key":"é","code":"a😀b😀c","type":"straße","repeat":true},{"isMac":false,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":true,"alt":false,"key":"a.b.c","code":"emoji 👍🏽 mixa.b.c","type":".leading","repeat":false},{"isMac":true,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":false,"shift":true,"alt":true,"key":":line1\nline2","code":"./x/**/*.json","type":"﻿bom","repeat":true},{"isMac":false,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":true,"shift":false,"alt":false,"key":"ΣΊΣΥΦΟΣ","code":"ünïcödé","type":"ΣΊΣΥΦΟΣ","repeat":true},{"isMac":true,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":true,"alt":false,"key":"src/a/b.ts","type":"  padded  ","repeat":true},{"isMac":false,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":true,"shift":true,"alt":false,"key":"hello","code":"  padded  ","repeat":false},{"a":{"b":"c"}}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":false,"shift":true,"alt":true,"key":"é","repeat":true},{}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":true,"shift":false,"alt":false,"key":"{name} has {count} items﻿bom","code":"hello","type":"é","repeat":true},{"isMac":true,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[true,{"isMac":true,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[["a",1],"x"],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[null,true],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"isKeyboardShortcutsHelpChord","args":[0,{"isMac":false,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":true,"shift":false,"alt":true,"key":"Hello World","code":"./x/**/*.json"},{"isMac":false,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":false,"shift":false,"alt":true,"key":"abc","code":"a..b","type":"abc","repeat":false},{"isMac":true,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":true,"shift":false,"alt":true,"key":"a:b:c{name} has {count} items","code":"","type":"src/a/b.ts"},{"isMac":false,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":true,"alt":true,"key":"src/a/b.ts","code":"a😀b😀c","type":"line1\nline2ünïcödé","repeat":false},{"isMac":false,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":true,"shift":false,"alt":true,"key":"😀","type":":"},{"isMac":false,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":false,"key":"src/a/b.tssrc/a/b.ts","repeat":false},{"isMac":true,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":true,"shift":false,"alt":false,"key":"a..b","type":"😀","repeat":false},{"isMac":true,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":true,"shift":true,"alt":false,"key":"straße","code":"ünïcödé","type":"😀","repeat":true},{"isMac":true,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":true,"shift":true,"alt":false,"key":"İstanbul","type":"HELLO"},{"isMac":true,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":true,"shift":false,"alt":false,"key":":a😀b😀c","code":"é","repeat":true},{"isMac":false,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":false,"shift":true,"alt":false,"key":"straße","code":".leading","type":"éstraße","repeat":false},{"isMac":false,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[0,true],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":false,"shift":false,"alt":true,"key":"a😀b😀c","code":"İstanbul"},{"isMac":true,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":true,"shift":true,"alt":true,"key":"emoji 👍🏽 mix","code":"Hello World","type":"  padded  "},{"isMac":true,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":true,"shift":false,"alt":false,"key":"straße","code":"{name} has {count} items","type":"ünïcödé","repeat":false},{"isMac":false,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"a":{"b":"c"}},{"isMac":true,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":false,"shift":false,"alt":false,"key":"key_name-1a:b:c","code":":a😀b😀c","type":"ünïcödé","repeat":true},{"isMac":false,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":false,"shift":true,"alt":false,"key":"﻿boma:b:c","code":"HELLOΣΊΣΥΦΟΣ","repeat":false},{"isMac":false,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":true,"shift":true,"alt":true,"key":"日本語のテキスト","code":"straßea😀b😀c","type":"line1\nline2","repeat":false},{"isMac":false,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":true,"alt":false,"key":"{name} has {count} items","code":"hello world","type":"straßeemoji 👍🏽 mix"},{"isMac":false,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":true,"alt":true,"key":"key_name-1","code":"trailing.","type":"key_name-1a..b","repeat":false},{}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[true,{"isMac":false,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":true,"shift":false,"alt":true,"key":"HELLO","code":"emoji 👍🏽 mix","type":"a.b.c","repeat":true},{"isMac":false,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":false,"shift":true,"alt":true,"key":"{name} has {count} items","type":"HELLO","repeat":false},{"isMac":false,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":true,"shift":true,"alt":false,"key":"a:b:c","code":"key_name-1","type":"./x/**/*.json"},{"isMac":true,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":true,"shift":true,"alt":false,"key":"ΣΊΣΥΦΟΣ","type":".leading","repeat":true},{"isMac":false,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":false,"shift":true,"alt":true,"key":"src/a/b.ts{name} has {count} items","type":"emoji 👍🏽 mix"},{"isMac":false,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":false,"key":"abcΣΊΣΥΦΟΣ","code":"日本語のテキストa.b.c","type":"HELLO","repeat":true},{"isMac":true,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":false,"shift":false,"alt":false,"key":"emoji 👍🏽 mix","code":"./x/**/*.json","type":"","repeat":true},{"isMac":true,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":true,"alt":false,"key":"İstanbultab\tseparated","code":"a😀b😀c","type":"İstanbul","repeat":false},{"isMac":true,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[["a",1],{"isMac":true,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":true,"shift":true,"alt":false,"key":"日本語のテキスト","code":"a:b:c","type":"HELLO","repeat":false},{"isMac":false,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":true,"alt":true,"key":":","code":"  padded  ","type":"trailing.","repeat":true},{"isMac":true,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":true,"shift":false,"alt":true,"key":"a..b","code":"./x/**/*.json","repeat":true},{"isMac":true,"isWindows":false}],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":true,"shift":true,"alt":true,"key":"c"},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":true,"shift":true,"alt":false,"key":"c"},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":true,"shift":false,"alt":true,"key":"c"},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":true,"shift":false,"alt":false,"key":"c"},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":false,"shift":true,"alt":true,"key":"c"},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":false,"shift":true,"alt":false,"key":"c"},true],"ok":true}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":true,"key":"c"},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":false,"key":"c"},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":true,"shift":true,"alt":true,"key":"c"},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":true,"shift":true,"alt":false,"key":"c"},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":true,"shift":false,"alt":true,"key":"c"},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":true,"shift":false,"alt":false,"key":"c"},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":false,"shift":true,"alt":true,"key":"c"},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":false,"shift":true,"alt":false,"key":"c"},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":false,"shift":false,"alt":true,"key":"c"},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":false,"shift":false,"alt":false,"key":"c"},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":true,"shift":true,"alt":true,"key":"c"},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":true,"shift":true,"alt":false,"key":"c"},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":true,"shift":false,"alt":true,"key":"c"},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":true,"shift":false,"alt":false,"key":"c"},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":false,"shift":true,"alt":true,"key":"c"},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":false,"shift":true,"alt":false,"key":"c"},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":true,"key":"c"},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":false,"key":"c"},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":true,"shift":true,"alt":true,"key":"c"},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":true,"shift":true,"alt":false,"key":"c"},false],"ok":true}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":true,"shift":false,"alt":true,"key":"c"},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":true,"shift":false,"alt":false,"key":"c"},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":false,"shift":true,"alt":true,"key":"c"},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":false,"shift":true,"alt":false,"key":"c"},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":false,"shift":false,"alt":true,"key":"c"},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":false,"ctrl":false,"shift":false,"alt":false,"key":"c"},false],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":false,"shift":true,"alt":false,"key":"C"},true],"ok":true}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":false,"shift":true,"alt":false,"key":"c"},true],"ok":true}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":false,"shift":true,"alt":false,"key":"cc"},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":false,"shift":true,"alt":false,"key":""},true],"ok":false}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":false,"shift":true,"alt":false,"key":0},true],"error":"chord.key.toLowerCase is not a function"}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":false,"shift":true,"alt":false,"key":null},true],"error":"Cannot read properties of null (reading 'toLowerCase')"}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":false,"shift":true,"alt":false,"key":true},true],"error":"chord.key.toLowerCase is not a function"}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":false,"shift":true,"alt":false,"key":"c","repeat":true},true],"ok":true}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":false,"shift":true,"alt":false,"key":"c","type":"keydown"},true],"ok":true}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"shift":true,"key":"c"},true],"ok":true}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"shift":true},true],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"isBrowserCopyLinkChord","args":[null,true],"error":"Cannot read properties of null (reading 'key')"}
+{"fn":"isBrowserCopyLinkChord","args":[true,false],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"isBrowserCopyLinkChord","args":[{"a":1},true],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":false,"repeat":false,"key":"/"},{"isMac":true,"isWindows":false}],"ok":true}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":true,"shift":false,"alt":false,"repeat":false,"key":"/"},{"isMac":true,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":false,"repeat":true,"key":"/"},{"isMac":true,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":true,"alt":false,"repeat":false,"key":"/"},{"isMac":true,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":true,"repeat":false,"key":"/"},{"isMac":true,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":true,"shift":false,"alt":false,"repeat":false,"key":"/"},{"isMac":true,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":false,"repeat":false,"key":"?"},{"isMac":true,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":false,"repeat":false,"key":"Slash"},{"isMac":true,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":false,"repeat":false,"key":"/"},{"isMac":true,"isWindows":false}],"ok":true}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":false,"repeat":false,"key":"/"},{"isMac":false,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":true,"shift":false,"alt":false,"repeat":false,"key":"/"},{"isMac":false,"isWindows":true}],"ok":true}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":false,"repeat":true,"key":"/"},{"isMac":false,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":true,"alt":false,"repeat":false,"key":"/"},{"isMac":false,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":true,"repeat":false,"key":"/"},{"isMac":false,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":true,"shift":false,"alt":false,"repeat":false,"key":"/"},{"isMac":false,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":false,"repeat":false,"key":"?"},{"isMac":false,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":false,"repeat":false,"key":"Slash"},{"isMac":false,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":false,"repeat":false,"key":"/"},{"isMac":false,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":false,"repeat":false,"key":"/"},{"isMac":false,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":true,"shift":false,"alt":false,"repeat":false,"key":"/"},{"isMac":false,"isWindows":false}],"ok":true}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":false,"repeat":true,"key":"/"},{"isMac":false,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":true,"alt":false,"repeat":false,"key":"/"},{"isMac":false,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":true,"repeat":false,"key":"/"},{"isMac":false,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":true,"shift":false,"alt":false,"repeat":false,"key":"/"},{"isMac":false,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":false,"repeat":false,"key":"?"},{"isMac":false,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":false,"repeat":false,"key":"Slash"},{"isMac":false,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":false,"repeat":false,"key":"/"},{"isMac":false,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":false,"repeat":false,"key":"/"},{"isMac":true,"isWindows":true}],"ok":true}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":true,"shift":false,"alt":false,"repeat":false,"key":"/"},{"isMac":true,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":false,"repeat":true,"key":"/"},{"isMac":true,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":true,"alt":false,"repeat":false,"key":"/"},{"isMac":true,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":true,"repeat":false,"key":"/"},{"isMac":true,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":true,"shift":false,"alt":false,"repeat":false,"key":"/"},{"isMac":true,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":false,"repeat":false,"key":"?"},{"isMac":true,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":false,"repeat":false,"key":"Slash"},{"isMac":true,"isWindows":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":false,"repeat":false,"key":"/"},{"isMac":true,"isWindows":true}],"ok":true}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":false,"repeat":false,"key":"/"},{}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":true,"shift":false,"alt":false,"repeat":false,"key":"/"},{}],"ok":true}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":false,"repeat":true,"key":"/"},{}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":true,"alt":false,"repeat":false,"key":"/"},{}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":true,"repeat":false,"key":"/"},{}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":true,"shift":false,"alt":false,"repeat":false,"key":"/"},{}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":false,"repeat":false,"key":"?"},{}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":false,"repeat":false,"key":"Slash"},{}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":false,"repeat":false,"key":"/"},{}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":false,"repeat":false,"key":"/"},"x"],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":true,"shift":false,"alt":false,"repeat":false,"key":"/"},"x"],"ok":true}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":false,"repeat":true,"key":"/"},"x"],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":true,"alt":false,"repeat":false,"key":"/"},"x"],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":true,"repeat":false,"key":"/"},"x"],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":true,"shift":false,"alt":false,"repeat":false,"key":"/"},"x"],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":false,"repeat":false,"key":"?"},"x"],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":false,"repeat":false,"key":"Slash"},"x"],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":false,"repeat":false,"key":"/"},"x"],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":false,"repeat":false,"key":"/"},null],"error":"Cannot read properties of null (reading 'isWindows')"}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":true,"shift":false,"alt":false,"repeat":false,"key":"/"},null],"error":"Cannot read properties of null (reading 'isWindows')"}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":false,"repeat":true,"key":"/"},null],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":true,"alt":false,"repeat":false,"key":"/"},null],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":true,"repeat":false,"key":"/"},null],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":true,"shift":false,"alt":false,"repeat":false,"key":"/"},null],"error":"Cannot read properties of null (reading 'isWindows')"}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":false,"repeat":false,"key":"?"},null],"error":"Cannot read properties of null (reading 'isWindows')"}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":false,"repeat":false,"key":"Slash"},null],"error":"Cannot read properties of null (reading 'isWindows')"}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":false,"repeat":false,"key":"/"},null],"error":"Cannot read properties of null (reading 'isWindows')"}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":false,"key":"/","repeat":false},{"isMac":true,"isWindows":false}],"ok":true}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":false,"key":"/","code":"Slash"},{"isMac":true,"isWindows":false}],"ok":true}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"key":"/"},{"isMac":true}],"ok":true}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":false},{"isMac":true,"isWindows":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[null,{"isMac":true}],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"isKeyboardShortcutsHelpChord","args":[true,{"isMac":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[0,{"isMac":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"a":1},{"isMac":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[["a"],{"isMac":false}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":false,"key":"/"},{"isMac":true}],"ok":true}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":false,"key":"/","type":"keydown"},{"isMac":true}],"ok":true}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":false,"key":"/","type":"keyup"},{"isMac":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":false,"key":"/","type":"keypress"},{"isMac":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":false,"key":"/","type":""},{"isMac":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":false,"key":"/","type":0},{"isMac":true}],"error":"chord.type.toLowerCase is not a function"}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":false,"key":"/","type":false},{"isMac":true}],"error":"chord.type.toLowerCase is not a function"}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":false,"code":"Slash"},{"isMac":true}],"ok":true}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":true,"alt":false,"code":"Slash"},{"isMac":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":true,"shift":false,"alt":false,"code":"Slash"},{"isMac":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":true,"shift":false,"alt":false,"code":"Slash"},{"isMac":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":false,"key":"x","code":"Slash"},{"isMac":true}],"ok":true}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":false,"key":"/","code":"x"},{"isMac":true}],"ok":true}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":false,"repeat":true,"code":"Slash"},{"isMac":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":false,"key":"/","type":"keypress"},{"isMac":true}],"ok":false}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":false,"ctrl":true,"shift":false,"alt":false,"key":"/"},null],"error":"Cannot read properties of null (reading 'isWindows')"}
+{"fn":"isKeyboardShortcutsHelpChord","args":[null,null],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":false,"key":"/","type":0},null],"error":"chord.type.toLowerCase is not a function"}
+{"fn":"isKeyboardShortcutsHelpChord","args":[{"meta":true,"ctrl":false,"shift":false,"alt":false,"key":"/","type":0},{"isMac":true}],"error":"chord.type.toLowerCase is not a function"}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":false,"shift":true,"alt":false,"key":"c","type":"keydown"},true],"ok":true}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":false,"shift":true,"alt":false,"key":"c","type":"keyup"},true],"ok":true}
+{"fn":"isBrowserCopyLinkChord","args":[{"meta":true,"ctrl":false,"shift":true,"alt":false,"key":"c","type":"keypress"},true],"ok":true}

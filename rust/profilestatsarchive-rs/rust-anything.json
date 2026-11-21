@@ -1,0 +1,67 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/profileStatsArchive.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "profilestatsarchive-rs",
+  "exports": [
+    {
+      "name": "aggregateThreadTurnSnapshotRows",
+      "file": "apps/server/src/profileStatsArchive.ts",
+      "line": 244,
+      "params": [
+        {
+          "name": "events",
+          "ts_type": "ReadonlyArray<TurnEventRow>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "threadModelSelectionJson",
+          "ts_type": "string | null",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ThreadTurnSnapshotRow[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "aggregateThreadTokenRows",
+      "file": "apps/server/src/profileStatsArchive.ts",
+      "line": 362,
+      "params": [
+        {
+          "name": "rows",
+          "ts_type": "ReadonlyArray<TokenActivityRow>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "fallbackSelection",
+          "ts_type": "{\n    readonly provider: string | null;\n    readonly instanceId?: string | null;\n    readonly model: string | null;\n  }",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "ThreadTokenSnapshotRow[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "ProfileStatsArchive",
+      "file": "apps/server/src/profileStatsArchive.ts",
+      "line": 487,
+      "reason": "class: extends another class"
+    }
+  ]
+}

@@ -1,0 +1,443 @@
+{"fn":"linuxBrowserCallIsReadOnly","args":["a😀b😀c",{"a":"b"}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["HELLO",{"a":{"b":"c"}}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["İstanbul",[]],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["ünïcödéa..b",{"a":{"b":"c"}}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["trailing.",["a",1]],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["İstanbulstraße",null],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["a",0],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["Hello World",{}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["key_name-1",true],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["{name} has {count} items",["a",1]],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["a..b",{}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["é",[]],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["trailing.hello",["a",1]],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":[":",{"a":"b"}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["emoji 👍🏽 mix",{"a":{"b":"c"}}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["a..b",["a",1]],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["emoji 👍🏽 mixhello world",{"a":{"b":"c"}}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["src/a/b.ts",true],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":[".leading",true],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["./x/**/*.json",[]],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["{name} has {count} items",true],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["a.b.cHELLO",true],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":[":","x"],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["Hello World","x"],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["a😀b😀cé",{"a":"b"}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["",{"a":"b"}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["a..b",true],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["x","x"],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["ns:key.path",{}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["日本語のテキスト😀",[]],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["line1\nline2",{"a":"b"}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["  padded  ",{"a":"b"}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["ns:key.path",0],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["😀",["a",1]],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["straßeline1\nline2","x"],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["straße",{"a":"b"}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["éemoji 👍🏽 mix",null],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["line1\nline2:",[]],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["ns:key.path",true],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["ünïcödé",true],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["日本語のテキスト",{}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["﻿bom",["a",1]],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["ΣΊΣΥΦΟΣ","Σ"],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["İstanbul",["a",1]],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["ab",[]],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["a..b","x"],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["ab",{"a":"b"}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["😀",[]],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["hello world",[]],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["  padded  ",{"a":{"b":"c"}}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":[":{name} has {count} items",true],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["a.b.c",[]],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["tab\tseparated",{"a":{"b":"c"}}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["😀",true],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["hello",["a",1]],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["hello world",0],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":[".leading﻿bom",{}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["ünïcödé",[]],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["./x/**/*.json",{"a":{"b":"c"}}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["aba..b",true],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["hello","x"],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["",["a",1]],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["日本語のテキスト",["a",1]],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["é",0],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["hello world",true],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["tab\tseparated",true],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["{name} has {count} items",{}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["key_name-1",null],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["hello",{}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":[":",[]],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["key_name-1",{"a":"b"}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["a..b",0],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["日本語のテキストtrailing.",true],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["src/a/b.ts",[]],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["line1\nline2a..b",{"a":{"b":"c"}}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["line1\nline2","x"],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["emoji 👍🏽 mix",[]],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["ünïcödé",{"a":"b"}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":[".leading",null],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["a:b:ctrailing.",{"a":{"b":"c"}}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["abc﻿bom",0],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["src/a/b.tsa..b",{"a":{"b":"c"}}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["a😀b😀c",[]],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["é",["a",1]],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["line1\nline2src/a/b.ts",["a",1]],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["key_name-1",{}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["./x/**/*.json",null],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":[":",{"a":{"b":"c"}}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["tab\tseparated",{}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["hello",{"a":{"b":"c"}}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["emoji 👍🏽 mix",true],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["ΣΊΣΥΦΟΣ","ΣΊ"],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["key_name-1","x"],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["a",["a",1]],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["Hello World",{"a":{"b":"c"}}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["Hello World😀",["a",1]],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["ab",0],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["a","a"],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":[":",null],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["ünïcödé",["a",1]],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["日本語のテキストΣΊΣΥΦΟΣ",{}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["ünïcödéa:b:c",{"a":"b"}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["a😀b😀c",0],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["İstanbul","x"],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["é.leading",[]],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["HELLO",true],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["a",true],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["ab",["a",1]],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["ünïcödé",{}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["emoji 👍🏽 mix",{}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":[".leading",{"a":"b"}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["line1\nline2a",0],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["HELLO",0],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["{name} has {count} items",null],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["tab\tseparated","x"],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["  padded  ",true],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["line1\nline2",true],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["straße",null],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["hello world",["a",1]],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["src/a/b.ts",{"a":{"b":"c"}}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["abc",{}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["éab","x"],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["é",{}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["key_name-1",0],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["﻿bom{name} has {count} items",["a",1]],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["a.b.c","."],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["﻿bom",[]],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["﻿bom",{"a":{"b":"c"}}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["日本語のテキスト",0],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["﻿bom","x"],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["ab",{}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["ΣΊΣΥΦΟΣünïcödé","x"],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["a:b:c",true],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["emoji 👍🏽 mixa:b:c","x"],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["",true],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["trailing.",[]],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["a😀b😀c",["a",1]],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["ns:key.path",["a",1]],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["İstanbul",{"a":{"b":"c"}}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["emoji 👍🏽 mix","x"],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["hello",{"a":"b"}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["abc",null],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["a",{}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["emoji 👍🏽 mixns:key.path",true],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["",null],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":[":",true],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["line1\nline2é","x"],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["﻿bom😀",[]],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":[".leadingkey_name-1",{}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["ab",true],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["a.b.c",{}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["{name} has {count} items",[]],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["😀.leading",true],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["ab","x"],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["a:b:c",{"a":"b"}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["straßehello world",["a",1]],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["./x/**/*.jsonHELLO",{"a":{"b":"c"}}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["a:b:c",[]],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["日本語のテキスト","x"],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["﻿bom",{"a":"b"}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["straßeİstanbul",0],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["a:b:c",["a",1]],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["emoji 👍🏽 mix",{"a":"b"}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["HELLO",[]],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":[".leading",0],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["  padded  a..b",["a",1]],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["trailing.",{}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["Hello World","llo"],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["ünïcödéHello World",{"a":"b"}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["Hello World",{"a":"b"}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["straße",{}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["ΣΊΣΥΦΟΣé",0],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["日本語のテキストtab\tseparated","x"],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["tab\tseparated",["a",1]],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["hello",[]],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["abc",{"a":"b"}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["HELLO😀",true],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["hello world",{}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["Hello World",["a",1]],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["a:b:ca.b.c",{"a":"b"}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["src/a/b.ts",0],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["😀hello world",["a",1]],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["abc",{"a":{"b":"c"}}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["src/a/b.ts",{}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["hello😀",0],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["ünïcödé",{"a":{"b":"c"}}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["a:b:cİstanbul",true],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["ΣΊΣΥΦΟΣ",[]],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["é","x"],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["ünïcödé",null],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["straßeİstanbul","x"],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["{name} has {count} itemsa:b:c",{}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["line1\nline2",["a",1]],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["İstanbulabc",{}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["aa😀b😀c",[]],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["abc.leading",{"a":"b"}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["line1\nline2",null],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["",[]],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["é",null],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["ns:key.path","x"],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["héllo wörld",{"a":"b"}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["👍🏽 thumbs",{"a":"b"}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["日本語",{"a":"b"}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["é",{"a":"b"}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["İstanbul",{"a":"b"}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["ılık ırmak",{"a":"b"}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["👨‍👩‍👧 family",{"a":"b"}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["a b",{"a":"b"}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["ΣΊΣΥΦΟΣ",{"a":"b"}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["a😀b",{"a":"b"}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["a²b x½ y①",{"a":"b"}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["aⅠb Ⅻ",{"a":"b"}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["a𐐀b 𝐀bc",{"a":"b"}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["कि ٣٤",{"a":"b"}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["a😀b😀c",{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["a😀b😀c",{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7}],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["a😀b😀c",[3,1,2]],"ok":false}
+{"fn":"linuxBrowserCallIsReadOnly","args":["a😀b😀c",{}],"ok":false}
+{"fn":"linuxCuaAdmissionRefusal","args":["a😀b😀c",null,0,{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["",true,{"a":{"b":"c"}},true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["hellotab\tseparated","x",{"a":{"b":"c"}},false],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["tab\tseparateda..b","x",true,true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":[".leading","ing",true,true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["hello",0,{"a":"b"},false],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["src/a/b.ts",{},true,true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["hello world.leading",{},0,false],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["  padded  ",true,{},{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["é",[],true,false],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["a😀b😀ckey_name-1",["a",1],0,false],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["ns:key.pathstraße",{"a":"b"},{"a":"b"},false],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["line1\nline2",[],true,true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["﻿bom",["a",1],[],{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["日本語のテキスト",[],{},{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["﻿bom",null,0,false],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["  padded  ",0,null,{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["a..bns:key.path",[],[],false],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["tab\tseparated",["a",1],0,true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["hello world﻿bom",0,{},true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["ünïcödé",{},["a",1],true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["ΣΊΣΥΦΟΣ",null,{"a":"b"},false],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["",0,{"a":"b"},true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["ΣΊΣΥΦΟΣ",{},0,true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["日本語のテキスト",0,{"a":{"b":"c"}},true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["line1\nline2",null,[],true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["src/a/b.ts",["a",1],[],false],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["",{},["a",1],false],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["straße",["a",1],[],false],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["ns:key.path",0,true,false],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["a😀b😀c",null,0,false],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["a",null,[],false],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["é",["a",1],[],true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["abc",null,"c",true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":[":",null,{"a":{"b":"c"}},true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["  padded  a..b",{"a":{"b":"c"}},["a",1],{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["hello world","x",0,false],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["  padded  ",["a",1],{"a":"b"},{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["","x","x",true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["X","x",{},false],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["Hello World",{"a":{"b":"c"}},{}],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["emoji 👍🏽 mix","x",["a",1],true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["key_name-1",null,true,false],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["abc",{"a":{"b":"c"}},true,false],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["﻿bomHELLO",0,{"a":{"b":"c"}},true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["a..b","x",true,{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["😀",{"a":"b"},true,false],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":[":",["a",1],null,{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["",{"a":"b"},"x",false],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["HELLO",[],["a",1],true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["ünïcödé",{"a":{"b":"c"}},true,{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["a",{"a":"b"},{},false],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["abcab",true,{},false],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":[".leading",{},["a",1],false],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["x",0,"x",{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["a😀b😀c",[],"x",true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["abc",{"a":"b"},{"a":"b"},{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["hello",0,{}],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["  padded  ",["a",1],true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["İstanbul",["a",1],null,true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["日本語のテキスト",true,true,true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["src/a/b.ts",null,true,false],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["a:b:c﻿bom",{},null,true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["ΣΊΣΥΦΟΣ  padded  ",{"a":"b"},{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["ünïcödéa",{"a":{"b":"c"}},["a",1],true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["Hello World",{},{"a":{"b":"c"}},true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["tab\tseparated",["a",1],null],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["{name} has {count} items",true,[],true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["😀",["a",1],{},false],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["a:b:c",0,["a",1],true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["é",null,0,false],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["line1\nline2",{},"x",true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["emoji 👍🏽 mix","ix",{"a":"b"},true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["a..b",[],{"a":{"b":"c"}},true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["ns:key.path",[],["a",1],false],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["  padded  ",true,{"a":{"b":"c"}},true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["trailing.",[],{"a":"b"},false],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["ünïcödé","x",["a",1],false],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["  padded  ab",["a",1],{"a":{"b":"c"}},true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["a..b",{"a":"b"},{"a":"b"},false],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["HELLO",{"a":{"b":"c"}},{"a":"b"},{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["İstanbul",["a",1],0,true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["日本語のテキスト",{},null,false],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["a.b.c",[],[],true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":[":",{},{},true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["a.b.cemoji 👍🏽 mix",true,null,true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["abc",["a",1],null,false],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["HELLO",true,0],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["a:b:c",true,{"a":{"b":"c"}},{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["ns:key.path",{},null,true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["x","x",null,true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["Hello World",{"a":"b"},0,{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["a..b",{"a":{"b":"c"}},[]],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["a..b",true,[],false],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["src/a/b.ts",["a",1],["a",1],{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["src/a/b.ts",[],[],true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["HELLO",["a",1],0,false],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["İstanbul",{"a":"b"},0,false],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["HELLO",{},[],{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["",{},{},true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["a",0,{"a":"b"},true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["a.b.c",{},[],false],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["日本語のテキスト",{},[],false],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["a日本語のテキスト",[],"x",false],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["a😀b😀c",{"a":{"b":"c"}},[],false],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["a.b.c",0,{"a":"b"},false],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["😀","😀",{"a":"b"},true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["a:b:c",["a",1],{"a":{"b":"c"}},true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["",0,true,false],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["HELLO",{},true,true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["line1\nline2",["a",1],{"a":"b"},{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["hello",{},true,true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["﻿bomhello world",["a",1],{},true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["line1\nline2İstanbul",{},0,true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["﻿bom",["a",1],{"a":{"b":"c"}},false],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["src/a/b.ts.leading",{"a":"b"},"x",false],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["./x/**/*.json",null,{"a":{"b":"c"}},true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["line1\nline2a:b:c",{"a":"b"},{"a":{"b":"c"}},true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["a😀b😀c",0,["a",1],true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["./x/**/*.json",null,0,true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["key_name-1",null,["a",1],false],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["Hello World",{"a":{"b":"c"}},[],false],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["abc",{"a":"b"},"x",{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["é",true,{"a":"b"},true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["",true,{}],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["{name} has {count} items",{},[],true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["trailing.",{"a":"b"},0,false],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["a:b:c",{},{"a":"b"},true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["a.b.c",{"a":"b"},0,false],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["tab\tseparated",["a",1],"SEP"],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["hello world","x",true,true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["ünïcödé",{"a":{"b":"c"}},"x"],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["﻿bom",[],true,false],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["﻿bom",null,null,true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["ΣΊΣΥΦΟΣ",["a",1],0,false],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["﻿bom",0,{"a":"b"},false],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["HELLO",true,0,true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["éa",{"a":{"b":"c"}},{},{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["a:b:cİstanbul",0,null,{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["key_name-1",{"a":{"b":"c"}},0,true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["trailing.","x",["a",1],true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["ns:key.path",[],"x",false],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["  padded  ",0,true,false],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["﻿bom",["a",1],{"a":"b"},true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["trailing.",null,0,false],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["key_name-1","x",{}],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["./x/**/*.json",{},[]],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["Hello World",{},["a",1]],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["İstanbul",{"a":{"b":"c"}},["a",1]],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":[":",null,{"a":{"b":"c"}},false],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["aa.b.c",{},"x",true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["﻿bomHELLO",true,["a",1]],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["a..b",null,null,true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["a.b.c",{},{"a":"b"},true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["x",null,"x",{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["é",[],[],true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["line1\nline2",true,[],true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["😀hello world",["a",1],null,true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":[".leading",null,[],false],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["İstanbul",["a",1],{},false],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["İstanbul",["a",1],{"a":{"b":"c"}},{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["straße",{"a":{"b":"c"}},"x",false],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["hello",null,{}],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":[".leading",{"a":{"b":"c"}},null],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["aba😀b😀c",{"a":{"b":"c"}},"x",false],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["ab",{"a":"b"},true,true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["ΣΊΣΥΦΟΣHELLO",["a",1],[],{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["İstanbultrailing.",{"a":{"b":"c"}},[],true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["abc",["a",1],0,false],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["trailing.:",true,{"a":"b"},true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["hello","x",null,true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["x",0,"x"],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["a..b",["a",1],{"a":"b"},false],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["hello world",{},{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["src/a/b.tsline1\nline2",{"a":"b"},[],{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["a😀b😀c","x",{"a":"b"},true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["a.b.c",true,{},true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":[":",null,[],true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["abctrailing.",true,{"a":{"b":"c"}},true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["日本語のテキスト",{"a":{"b":"c"}},true,{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["a:b:c",{"a":"b"},0,true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["HELLO","x",{"a":{"b":"c"}},true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["ΣΊΣΥΦΟΣ",true,{},true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["a..b﻿bom",["a",1],["a",1]],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["é",0,[],false],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["tab\tseparated",null,{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["ΣΊΣΥΦΟΣ",["a",1],[],true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["abc",null,{"a":{"b":"c"}},false],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["trailing../x/**/*.json",{"a":"b"},"x",true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["a..b",null,true,false],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["hello worldstraße",["a",1],true,true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["İstanbul",null,0,false],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["line1\nline2",{"a":{"b":"c"}},{"a":{"b":"c"}},true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["é",null,{"a":"b"},false],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["a:b:c",null,[],true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["src/a/b.ts",true,null,true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["  padded  ","x",["a",1],false],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["hello",["a",1],["a",1]],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["Hello World",null,["a",1],{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["a.b.c",0,true],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["héllo wörld",null,0,{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["👍🏽 thumbs",null,0,{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["日本語",null,0,{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["",null,0,{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["é",null,0,{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["İstanbul",null,0,{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["straße",null,0,{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["ılık ırmak",null,0,{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["👨‍👩‍👧 family",null,0,{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["a b",null,0,{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["ΣΊΣΥΦΟΣ",null,0,{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["a😀b",null,0,{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["﻿bom",null,0,{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["a²b x½ y①",null,0,{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["aⅠb Ⅻ",null,0,{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["a𐐀b 𝐀bc",null,0,{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["कि ٣٤",null,0,{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["a😀b😀c",{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6},0,{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["a😀b😀c",{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7},0,{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["a😀b😀c",[3,1,2],0,{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["a😀b😀c",{},0,{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["a😀b😀c",null,{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6},{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["a😀b😀c",null,{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7},{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["a😀b😀c",null,[3,1,2],{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"linuxCuaAdmissionRefusal","args":["a😀b😀c",null,{},{"$undefined":true}],"ok":{"$undefined":true}}

@@ -1,0 +1,23 @@
+{
+  "unit": "apps/server/src/scratchWorkspaces.ts",
+  "files": 1,
+  "fingerprint": "94bb38463c9cd308",
+  "coverage": {
+    "lines": 384,
+    "reached": 228,
+    "files": [
+      {
+        "file": "apps/server/src/privatePathPermissions.ts",
+        "lines": 177,
+        "reached": 61,
+        "missed": "55-56, 65-86, 89-101, 103-119, 122-148, 155-158, 160-188, 190-191"
+      },
+      {
+        "file": "apps/server/src/scratchWorkspaces.ts",
+        "lines": 207,
+        "reached": 167,
+        "missed": "27-28, 56-67, 81-82, 88-90, 117-118, 121-124, 139-142, 151-154, 213-214, 218-222"
+      }
+    ]
+  }
+}

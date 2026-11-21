@@ -1,0 +1,90 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/scratchWorkspaces.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "scratchworkspaces-rs",
+  "exports": [
+    {
+      "name": "resolveScratchWorkspacesRoot",
+      "file": "apps/server/src/scratchWorkspaces.ts",
+      "line": 32,
+      "params": [
+        {
+          "name": "options",
+          "ts_type": "{\n    readonly homeDirectory?: string;\n    readonly platform?: NodeJS.Platform;\n  }",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "ensureIsolatedScratchWorkspace",
+      "file": "apps/server/src/scratchWorkspaces.ts",
+      "line": 176,
+      "params": [
+        {
+          "name": "threadId",
+          "ts_type": "typeof typeof typeof typeof ThreadId.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "workspaceRoot",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        },
+        {
+          "name": "legacyWorkspaceRoot",
+          "ts_type": "string",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveScratchWorkspaceCwd",
+      "file": "apps/server/src/scratchWorkspaces.ts",
+      "line": 195,
+      "params": [
+        {
+          "name": "threadId",
+          "ts_type": "typeof typeof typeof typeof ThreadId.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "persistedCwd",
+          "ts_type": "string",
+          "optional": true,
+          "rest": false
+        },
+        {
+          "name": "roots",
+          "ts_type": "{\n    readonly workspaceRoot?: string;\n    readonly legacyWorkspaceRoot?: string;\n  }",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

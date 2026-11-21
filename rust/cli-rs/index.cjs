@@ -47,10 +47,10 @@ const fromUnits = (units) => {
 
 module.exports = { ...native }
 const specs = {
-  optionalBooleanEnvironmentConfig: [[0], 'json', false],
-  optionalBooleanFlag: [[0, 1], 'json', false],
-  getBooleanFlagValue: [[1], 'raw', false],
-  resolveBooleanConfig: [[1, 0, 0], 'raw', false],
+  optionalBooleanEnvironmentConfig: [[1], 'json', false],
+  optionalBooleanFlag: [[1, 1], 'json', false],
+  getBooleanFlagValue: [[1], 'json', false],
+  resolveBooleanConfig: [[1, 1, 1], 'json', false],
 }
 const classes = {
 
@@ -182,8 +182,7 @@ const json = module.exports.optionalBooleanEnvironmentConfig
 const call = native.optionalBooleanEnvironmentConfigWire
 const encode = (a0) => {
 at = 0
-if (typeof a0 !== 'string') return false
-wStr(a0)
+if (!wDyn(a0)) return false
 return true
 }
 const decode = () => {
@@ -192,7 +191,6 @@ t = rDyn()
 return t
 }
 module.exports.optionalBooleanEnvironmentConfig = function optionalBooleanEnvironmentConfig (a0) {
-  if (illFormed(a0)) throw new TypeError('argument 1 of optionalBooleanEnvironmentConfig has a lone surrogate, which a Rust String cannot hold')
   try {
     if (arguments.length <= 1 && encode(a0) && wireCall(call)) return decode()
     return json(...arguments)
@@ -208,8 +206,7 @@ const json = module.exports.optionalBooleanFlag
 const call = native.optionalBooleanFlagWire
 const encode = (a0, a1) => {
 at = 0
-if (typeof a0 !== 'string') return false
-wStr(a0)
+if (!wDyn(a0)) return false
 if (!wDyn(a1)) return false
 return true
 }
@@ -243,7 +240,6 @@ t = o0
 return t
 }
 module.exports.optionalBooleanFlag = function optionalBooleanFlag (a0, a1) {
-  if (illFormed(a0)) throw new TypeError('argument 1 of optionalBooleanFlag has a lone surrogate, which a Rust String cannot hold')
   try {
     if (arguments.length <= 2 && encode(a0, a1) && wireCall(call)) return decode()
     return json(...arguments)
@@ -291,18 +287,8 @@ const call = native.resolveBooleanConfigWire
 const encode = (a0, a1, a2) => {
 at = 0
 if (!wDyn(a0)) return false
-if (a1 === undefined) {
-wU8(0)
-} else if (a1 === null) {
-return false
-wU8(2)
-} else {
-wU8(1)
-if (typeof a1 !== 'boolean') return false
-wU8(a1 ? 1 : 0)
-}
-if (typeof a2 !== 'boolean') return false
-wU8(a2 ? 1 : 0)
+if (!wDyn(a1)) return false
+if (!wDyn(a2)) return false
 return true
 }
 const decode = () => {

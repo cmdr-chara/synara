@@ -33,6 +33,7 @@ fn run<T>(f: impl FnOnce() -> Result<T, String>) -> napi::Result<T> {
 #[napi(js_name = "optionalBooleanEnvironmentConfig")]
 pub fn optional_boolean_environment_config(name: String) -> napi::Result<String> {
     run(move || {
+        let name = crate::js::from_json(&name)?;
         let out = port::optional_boolean_environment_config(name)?;
         crate::js::to_json(&out)
     })
@@ -42,6 +43,7 @@ pub fn optional_boolean_environment_config(name: String) -> napi::Result<String>
 #[napi(js_name = "optionalBooleanFlag")]
 pub fn optional_boolean_flag(name: String, options: String) -> napi::Result<String> {
     run(move || {
+        let name = crate::js::from_json(&name)?;
         let options = crate::js::from_json(&options)?;
         let out = port::optional_boolean_flag(name, options)?;
         crate::js::to_json(&out)
@@ -50,16 +52,11 @@ pub fn optional_boolean_flag(name: String, options: String) -> napi::Result<Stri
 
 /// `getBooleanFlagValue`.
 #[napi(js_name = "getBooleanFlagValue")]
-pub fn get_boolean_flag_value(
-    input: String,
-) -> napi::Result<napi::bindgen_prelude::Either<bool, ()>> {
+pub fn get_boolean_flag_value(input: String) -> napi::Result<String> {
     run(move || {
         let input = crate::js::from_json(&input)?;
         let out = port::get_boolean_flag_value(input)?;
-        Ok(out.map_or(
-            napi::bindgen_prelude::Either::B(()),
-            napi::bindgen_prelude::Either::A,
-        ))
+        crate::js::to_json(&out)
     })
 }
 
@@ -67,13 +64,15 @@ pub fn get_boolean_flag_value(
 #[napi(js_name = "resolveBooleanConfig")]
 pub fn resolve_boolean_config(
     cli_input: String,
-    environment_value: Option<bool>,
-    fallback: bool,
-) -> napi::Result<bool> {
+    environment_value: String,
+    fallback: String,
+) -> napi::Result<String> {
     run(move || {
         let cli_input = crate::js::from_json(&cli_input)?;
+        let environment_value = crate::js::from_json(&environment_value)?;
+        let fallback = crate::js::from_json(&fallback)?;
         let out = port::resolve_boolean_config(cli_input, environment_value, fallback)?;
-        Ok(out)
+        crate::js::to_json(&out)
     })
 }
 
@@ -168,19 +167,23 @@ fn wire_io(
     })
 }
 
+static S_OPTIONAL_BOOLEAN_ENVIRONMENT_CONFIG_0: wire::Schema = wire::Schema::Dyn;
 static S_OPTIONAL_BOOLEAN_ENVIRONMENT_CONFIG_OUT: wire::Schema = wire::Schema::Dyn;
 
 /// `optionalBooleanEnvironmentConfig` over the binary wire.
 #[napi(js_name = "optionalBooleanEnvironmentConfigWire")]
 pub fn optional_boolean_environment_config_wire() -> napi::Result<f64> {
     wire_io(|r, w| {
-        let name: String = r.string16()?;
+        let name: serde_json::Value =
+            wire::read_value(r, &S_OPTIONAL_BOOLEAN_ENVIRONMENT_CONFIG_0)?;
         let out = &port::optional_boolean_environment_config(name)?;
         wire::write_value(w, out, &S_OPTIONAL_BOOLEAN_ENVIRONMENT_CONFIG_OUT)?;
         Ok(())
     })
 }
 
+static S_OPTIONAL_BOOLEAN_FLAG_0: wire::Schema = wire::Schema::Dyn;
+static S_OPTIONAL_BOOLEAN_FLAG_1: wire::Schema = wire::Schema::Dyn;
 static S_OPTIONAL_BOOLEAN_FLAG_OUT: wire::Schema = wire::Schema::Obj(&[
     ("positive", wire::Schema::Dyn),
     ("negative", wire::Schema::Dyn),
@@ -190,8 +193,8 @@ static S_OPTIONAL_BOOLEAN_FLAG_OUT: wire::Schema = wire::Schema::Obj(&[
 #[napi(js_name = "optionalBooleanFlagWire")]
 pub fn optional_boolean_flag_wire() -> napi::Result<f64> {
     wire_io(|r, w| {
-        let name: String = r.string16()?;
-        let options: Option<serde_json::Value> = wire::read_dyn_opt(r)?;
+        let name: serde_json::Value = wire::read_value(r, &S_OPTIONAL_BOOLEAN_FLAG_0)?;
+        let options: serde_json::Value = wire::read_value(r, &S_OPTIONAL_BOOLEAN_FLAG_1)?;
         let out = &port::optional_boolean_flag(name, options)?;
         wire::write_value(w, out, &S_OPTIONAL_BOOLEAN_FLAG_OUT)?;
         Ok(())
@@ -199,6 +202,7 @@ pub fn optional_boolean_flag_wire() -> napi::Result<f64> {
 }
 
 static S_GET_BOOLEAN_FLAG_VALUE_0: wire::Schema = wire::Schema::Dyn;
+static S_GET_BOOLEAN_FLAG_VALUE_OUT: wire::Schema = wire::Schema::OptJs(&wire::Schema::Bool);
 
 /// `getBooleanFlagValue` over the binary wire.
 #[napi(js_name = "getBooleanFlagValueWire")]
@@ -206,28 +210,26 @@ pub fn get_boolean_flag_value_wire() -> napi::Result<f64> {
     wire_io(|r, w| {
         let input: serde_json::Value = wire::read_value(r, &S_GET_BOOLEAN_FLAG_VALUE_0)?;
         let out = &port::get_boolean_flag_value(input)?;
-        match out {
-            Some(x0) => {
-                w.tag(1);
-                w.bool(*x0);
-            }
-            None => w.tag(0),
-        }
+        wire::write_value(w, out, &S_GET_BOOLEAN_FLAG_VALUE_OUT)?;
         Ok(())
     })
 }
 
 static S_RESOLVE_BOOLEAN_CONFIG_0: wire::Schema = wire::Schema::Dyn;
+static S_RESOLVE_BOOLEAN_CONFIG_1: wire::Schema = wire::Schema::Dyn;
+static S_RESOLVE_BOOLEAN_CONFIG_2: wire::Schema = wire::Schema::Dyn;
+static S_RESOLVE_BOOLEAN_CONFIG_OUT: wire::Schema = wire::Schema::Bool;
 
 /// `resolveBooleanConfig` over the binary wire.
 #[napi(js_name = "resolveBooleanConfigWire")]
 pub fn resolve_boolean_config_wire() -> napi::Result<f64> {
     wire_io(|r, w| {
         let cli_input: serde_json::Value = wire::read_value(r, &S_RESOLVE_BOOLEAN_CONFIG_0)?;
-        let environment_value: Option<bool> = r.opt_js(|r| r.bool())?;
-        let fallback: bool = r.bool()?;
+        let environment_value: serde_json::Value =
+            wire::read_value(r, &S_RESOLVE_BOOLEAN_CONFIG_1)?;
+        let fallback: serde_json::Value = wire::read_value(r, &S_RESOLVE_BOOLEAN_CONFIG_2)?;
         let out = &port::resolve_boolean_config(cli_input, environment_value, fallback)?;
-        w.bool(*out);
+        wire::write_value(w, out, &S_RESOLVE_BOOLEAN_CONFIG_OUT)?;
         Ok(())
     })
 }

@@ -1,0 +1,17 @@
+{
+  "unit": "apps/web/src/messageTextSegments.ts",
+  "files": 1,
+  "fingerprint": "4218302ebd400c49",
+  "coverage": {
+    "lines": 72,
+    "reached": 69,
+    "files": [
+      {
+        "file": "apps/web/src/messageTextSegments.ts",
+        "lines": 72,
+        "reached": 69,
+        "missed": "54-56"
+      }
+    ]
+  }
+}

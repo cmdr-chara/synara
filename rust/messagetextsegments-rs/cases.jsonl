@@ -1,0 +1,414 @@
+{"fn":"textSegmentsCoverText","args":[{"a":"b"},":"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[true,"İstanbul"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[{"a":"b"},"﻿bom"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[0,"{name} has {count} items"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[true,"trailing."],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[null,"ab"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[null,"﻿bom"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[{},""],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[["a",1],"İstanbulabc"],"ok":false}
+{"fn":"textSegmentsCoverText","args":[["a",1],"HELLO"],"ok":false}
+{"fn":"textSegmentsCoverText","args":[["a",1],"aa..b"],"ok":false}
+{"fn":"textSegmentsCoverText","args":[{"a":{"b":"c"}},"./x/**/*.json"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[null,"src/a/b.ts"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[null,"tab\tseparated"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":["x","a.b.c"],"ok":false}
+{"fn":"textSegmentsCoverText","args":[null,"é"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[{"a":"b"},"  padded  "],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[null,".leading😀"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[{"a":"b"},":ΣΊΣΥΦΟΣ"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[["a",1],"İstanbul"],"ok":false}
+{"fn":"textSegmentsCoverText","args":[{"a":{"b":"c"}},"İstanbul"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[0,"src/a/b.ts"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[{"a":"b"},"a"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[{"a":{"b":"c"}},"Hello World"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[[],"ab"],"ok":false}
+{"fn":"textSegmentsCoverText","args":["x","﻿bom"],"ok":false}
+{"fn":"textSegmentsCoverText","args":[{},"./x/**/*.json﻿bom"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[[],"HELLO"],"ok":false}
+{"fn":"textSegmentsCoverText","args":[{"a":{"b":"c"}},"Hello World:"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[0,"a..b"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[{"a":"b"},"src/a/b.tsabc"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[["a",1],"a..b"],"ok":false}
+{"fn":"textSegmentsCoverText","args":[true,"ünïcödé"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[0,"ΣΊΣΥΦΟΣ"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[0,"tab\tseparated"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[{},"﻿bom"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[true,".leading"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[[],":"],"ok":false}
+{"fn":"textSegmentsCoverText","args":[["a",1],"  padded  😀"],"ok":false}
+{"fn":"textSegmentsCoverText","args":[0,"a😀b😀c"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[{},"trailing.a:b:c"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[true,"ab"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[[],"ünïcödé"],"ok":false}
+{"fn":"textSegmentsCoverText","args":[{},"a..b﻿bom"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[["a",1],"😀"],"ok":false}
+{"fn":"textSegmentsCoverText","args":[null,"hello world"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[[],"﻿bom"],"ok":false}
+{"fn":"textSegmentsCoverText","args":[{},"abc"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":["x","line1\nline2"],"ok":false}
+{"fn":"textSegmentsCoverText","args":[{"a":{"b":"c"}},"ünïcödétrailing."],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[{"a":{"b":"c"}},"hello world"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[0,".leading"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[[],"src/a/b.ts"],"ok":false}
+{"fn":"textSegmentsCoverText","args":[null,"trailing."],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[{"a":{"b":"c"}},"﻿bom"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[null,"{name} has {count} items"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[{"a":{"b":"c"}},"{name} has {count} items"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[["a",1],"atab\tseparated"],"ok":false}
+{"fn":"textSegmentsCoverText","args":[{},"ΣΊΣΥΦΟΣ"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[{},"İstanbul"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[true,"日本語のテキストa😀b😀c"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[0,"line1\nline2"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[null,"trailing.  padded  "],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[[],"a😀b😀cΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"textSegmentsCoverText","args":[{},"line1\nline2trailing."],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[0,"hello world"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":["x",""],"ok":false}
+{"fn":"textSegmentsCoverText","args":[{"a":"b"},"ab"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[true,"Hello World"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[{"a":"b"},"src/a/b.ts"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":["x","tab\tseparateda😀b😀c"],"ok":false}
+{"fn":"textSegmentsCoverText","args":[null,":"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[{"a":"b"},"ns:key.path"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[{"a":"b"},"é"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[{"a":{"b":"c"}},"  padded  "],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[[],"hello world"],"ok":false}
+{"fn":"textSegmentsCoverText","args":[0,"trailing."],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[true,"straße"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[{"a":"b"},".leading"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[null,"a"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[{"a":"b"},"hello"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[{"a":{"b":"c"}},"tab\tseparatedHello World"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[{},"HELLO"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[{},"./x/**/*.json"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[[],"  padded  "],"ok":false}
+{"fn":"textSegmentsCoverText","args":[0,"a😀b😀chello"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":["x","tab\tseparated"],"ok":false}
+{"fn":"textSegmentsCoverText","args":[["a",1],"key_name-1"],"ok":false}
+{"fn":"textSegmentsCoverText","args":[{"a":"b"},"key_name-1"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[true,"Hello Worldtrailing."],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[{},"emoji 👍🏽 mixab"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":["x","é"],"ok":false}
+{"fn":"textSegmentsCoverText","args":[{"a":"b"},"日本語のテキスト"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[0,"ünïcödé"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[["a",1],"HELLO{name} has {count} items"],"ok":false}
+{"fn":"textSegmentsCoverText","args":[[],"😀"],"ok":false}
+{"fn":"textSegmentsCoverText","args":[null,"ünïcödé"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[["a",1],"  padded  "],"ok":false}
+{"fn":"textSegmentsCoverText","args":[null,"ΣΊΣΥΦΟΣ"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":["x","ab😀"],"ok":false}
+{"fn":"textSegmentsCoverText","args":[["a",1],"trailing."],"ok":false}
+{"fn":"textSegmentsCoverText","args":[[],"hello"],"ok":false}
+{"fn":"textSegmentsCoverText","args":[[],"tab\tseparated"],"ok":false}
+{"fn":"textSegmentsCoverText","args":[true,"a"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":["x","hello world"],"ok":false}
+{"fn":"textSegmentsCoverText","args":[{"a":{"b":"c"}},"😀"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[["a",1],"a:b:c"],"ok":false}
+{"fn":"textSegmentsCoverText","args":[0,"ab"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[[],"hello./x/**/*.json"],"ok":false}
+{"fn":"textSegmentsCoverText","args":[[],"./x/**/*.json"],"ok":false}
+{"fn":"textSegmentsCoverText","args":[true,"日本語のテキスト"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[[],"é"],"ok":false}
+{"fn":"textSegmentsCoverText","args":[0,"hello"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[0,"a"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[0,"日本語のテキスト"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[["a",1],"abc"],"ok":false}
+{"fn":"textSegmentsCoverText","args":[true,"./x/**/*.json"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[null,"abc"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[[],"a.b.ca.b.c"],"ok":false}
+{"fn":"textSegmentsCoverText","args":[0,"a:b:cé"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":["x","  padded  "],"ok":false}
+{"fn":"textSegmentsCoverText","args":[["a",1],"hello"],"ok":false}
+{"fn":"textSegmentsCoverText","args":["x","x"],"ok":false}
+{"fn":"textSegmentsCoverText","args":[{"a":{"b":"c"}},"😀﻿bom"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[{},"key_name-1"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[{"a":"b"},"{name} has {count} itemskey_name-1"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[{"a":"b"},"tab\tseparated"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[["a",1],"a😀b😀c"],"ok":false}
+{"fn":"textSegmentsCoverText","args":["x","a:b:c﻿bom"],"ok":false}
+{"fn":"textSegmentsCoverText","args":[{},"ab"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[{},"hello world"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":["x","./x/**/*.jsona😀b😀c"],"ok":false}
+{"fn":"textSegmentsCoverText","args":[[],"日本語のテキスト"],"ok":false}
+{"fn":"textSegmentsCoverText","args":[[],"line1\nline2a.b.c"],"ok":false}
+{"fn":"textSegmentsCoverText","args":[null,"./x/**/*.json"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[{"a":{"b":"c"}},"é"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[{"a":{"b":"c"}},"a"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[{},"ns:key.path"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[true,"a..b"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[null,""],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[true,"ns:key.path"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":["x","straße"],"ok":false}
+{"fn":"textSegmentsCoverText","args":["orld","Hello World"],"ok":false}
+{"fn":"textSegmentsCoverText","args":[{},"src/a/b.ts"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[true,"ΣΊΣΥΦΟΣ"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":["x","a:b:c.leading"],"ok":false}
+{"fn":"textSegmentsCoverText","args":["x","İstanbulabc"],"ok":false}
+{"fn":"textSegmentsCoverText","args":["-1","key_name-1"],"ok":false}
+{"fn":"textSegmentsCoverText","args":[{"a":{"b":"c"}},":"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[{},"ünïcödé"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":["x","{name} has {count} items"],"ok":false}
+{"fn":"textSegmentsCoverText","args":[true,"é"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[["a",1],"src/a/b.ts"],"ok":false}
+{"fn":"textSegmentsCoverText","args":[[],"emoji 👍🏽 mix"],"ok":false}
+{"fn":"textSegmentsCoverText","args":[["a",1],"line1\nline2"],"ok":false}
+{"fn":"textSegmentsCoverText","args":[null,"emoji 👍🏽 mix"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[true,"src/a/b.ts"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[0,"./x/**/*.jsonHELLO"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[{"a":{"b":"c"}},"straße"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[["a",1],":"],"ok":false}
+{"fn":"textSegmentsCoverText","args":["x","İstanbul"],"ok":false}
+{"fn":"textSegmentsCoverText","args":[true,"😀tab\tseparated"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[true,"a.b.c"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[true,"abcHELLO"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[{"a":{"b":"c"}},"ns:key.path"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[["a",1],"ab"],"ok":false}
+{"fn":"textSegmentsCoverText","args":[{"a":"b"},"./x/**/*.json"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[0,"  padded  "],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[["a",1],"src/a/b.tsa..b"],"ok":false}
+{"fn":"textSegmentsCoverText","args":[0,"emoji 👍🏽 mix"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[{},"éab"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[{},"{name} has {count} items"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":["d ","  padded  "],"ok":false}
+{"fn":"textSegmentsCoverText","args":[{},"a"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[["a",1],"ns:key.path"],"ok":false}
+{"fn":"textSegmentsCoverText","args":[[],"a.b.c"],"ok":false}
+{"fn":"textSegmentsCoverText","args":[{},"tab\tseparated"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[{"a":"b"},":src/a/b.ts"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":["x","a.b.c﻿bom"],"ok":false}
+{"fn":"textSegmentsCoverText","args":[["a",1],"a.b.c"],"ok":false}
+{"fn":"textSegmentsCoverText","args":[{"a":"b"},""],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[null,"a:b:cé"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[[],"a"],"ok":false}
+{"fn":"textSegmentsCoverText","args":["x","HELLO"],"ok":false}
+{"fn":"textSegmentsCoverText","args":[["a",1],""],"ok":false}
+{"fn":"textSegmentsCoverText","args":[null,"ns:key.path﻿bom"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[true,"a😀b😀c"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[{"a":"b"},"a:b:c"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[0,"trailing.HELLO"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[0,"﻿bom"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":["x","X"],"ok":false}
+{"fn":"textSegmentsCoverText","args":[{"a":{"b":"c"}},"line1\nline2"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[null,"ünïcödéa.b.c"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[{},"emoji 👍🏽 mix"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[null,"ns:key.path"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[null,"key_name-1"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[0,"﻿bom{name} has {count} items"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[{},"日本語のテキスト"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":["x","src/a/b.ts"],"ok":false}
+{"fn":"textSegmentsCoverText","args":["x",":emoji 👍🏽 mix"],"ok":false}
+{"fn":"textSegmentsCoverText","args":[{"a":"b"},"héllo wörld"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[{"a":"b"},"👍🏽 thumbs"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[{"a":"b"},"日本語"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[{"a":"b"},"İstanbul"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[{"a":"b"},"straße"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[{"a":"b"},"ılık ırmak"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[{"a":"b"},"👨‍👩‍👧 family"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[{"a":"b"},"a b"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[{"a":"b"},"ΣΊΣΥΦΟΣ"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[{"a":"b"},"a😀b"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[{"a":"b"},"a²b x½ y①"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[{"a":"b"},"aⅠb Ⅻ"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[{"a":"b"},"a𐐀b 𝐀bc"],"error":"segments is not iterable"}
+{"fn":"textSegmentsCoverText","args":[{"a":"b"},"कि ٣٤"],"error":"segments is not iterable"}
+{"fn":"advanceMessageTextSegments","args":[null,{"streaming":false,"deltaText":"İstanbul","nextText":"straßeab","segmentStartedAt":"line1\nline2line1\nline2","segmentSequence":-2.5,"updatedAt":"./x/**/*.json"}],"error":"Cannot read properties of null (reading 'length')"}
+{"fn":"advanceMessageTextSegments","args":[0,{"streaming":false,"deltaText":"HELLO","nextText":"trailing.line1\nline2","segmentStartedAt":{"$undefined":true},"segmentSequence":10,"updatedAt":"a.b.c😀"}],"error":"segments is not iterable"}
+{"fn":"advanceMessageTextSegments","args":[["a",1],null],"error":"Cannot read properties of null (reading 'streaming')"}
+{"fn":"advanceMessageTextSegments","args":[true,{"streaming":true,"deltaText":"emoji 👍🏽 mix","nextText":"trailing.","segmentStartedAt":"a:b:cstraße","segmentSequence":{"$num":"-Infinity"},"updatedAt":"Hello World"}],"error":"previous.findIndex is not a function"}
+{"fn":"advanceMessageTextSegments","args":[{"a":"b"},{"streaming":false,"deltaText":"straße","nextText":"line1\nline2","segmentStartedAt":"aa","segmentSequence":0.5,"updatedAt":"é"}],"error":"segments is not iterable"}
+{"fn":"advanceMessageTextSegments","args":[0,{"streaming":true,"deltaText":"abc","nextText":"a","segmentStartedAt":{"$undefined":true},"segmentSequence":{"$num":"-0"},"updatedAt":"{name} has {count} items"}],"error":"previous.at is not a function"}
+{"fn":"advanceMessageTextSegments","args":[{},{"streaming":false,"deltaText":"HELLO","nextText":"line1\nline2","segmentStartedAt":"a😀b😀c","segmentSequence":10,"updatedAt":"{name} has {count} items"}],"error":"segments is not iterable"}
+{"fn":"advanceMessageTextSegments","args":[{},{"streaming":false,"deltaText":"trailing.","nextText":"abc","segmentStartedAt":{"$undefined":true},"segmentSequence":1000000,"updatedAt":"  padded  "}],"error":"segments is not iterable"}
+{"fn":"advanceMessageTextSegments","args":[null,{"streaming":true,"deltaText":"{name} has {count} items","nextText":"a.b.c日本語のテキスト","segmentStartedAt":{"$undefined":true},"segmentSequence":3,"updatedAt":"hello world"}],"error":"Cannot read properties of null (reading 'length')"}
+{"fn":"advanceMessageTextSegments","args":[{"a":{"b":"c"}},{"streaming":false,"deltaText":"a","nextText":"","segmentStartedAt":"﻿bom﻿bom","segmentSequence":1000000,"updatedAt":"a"}],"error":"segments is not iterable"}
+{"fn":"advanceMessageTextSegments","args":[null,{"streaming":false,"deltaText":"  padded    padded  ","nextText":"line1\nline2","segmentStartedAt":{"$undefined":true},"segmentSequence":100,"updatedAt":"./x/**/*.json"}],"error":"Cannot read properties of null (reading 'length')"}
+{"fn":"advanceMessageTextSegments","args":["x",{"streaming":true,"deltaText":"emoji 👍🏽 mixΣΊΣΥΦΟΣ","nextText":"😀","segmentStartedAt":{"$undefined":true},"segmentSequence":-1,"updatedAt":"key_name-1"}],"ok":[{"0":"x","text":"undefinedemoji 👍🏽 mixΣΊΣΥΦΟΣ","endedAt":"key_name-1"}]}
+{"fn":"advanceMessageTextSegments","args":[null,{"streaming":false,"deltaText":"straße{name} has {count} items","nextText":"ünïcödé","segmentStartedAt":"ab","segmentSequence":2,"updatedAt":"line1\nline2emoji 👍🏽 mix"}],"error":"Cannot read properties of null (reading 'length')"}
+{"fn":"advanceMessageTextSegments","args":[{},{"streaming":false,"deltaText":"ns:key.path","nextText":"a😀b😀c","segmentStartedAt":{"$undefined":true},"segmentSequence":1000000,"updatedAt":"ab"}],"error":"segments is not iterable"}
+{"fn":"advanceMessageTextSegments","args":[true,{}],"error":"segments is not iterable"}
+{"fn":"advanceMessageTextSegments","args":[[],{"streaming":false,"deltaText":"src/a/b.ts","nextText":"a.b.c","segmentStartedAt":{"$undefined":true},"segmentSequence":1,"updatedAt":"emoji 👍🏽 mix"}],"ok":{"$undefined":true}}
+{"fn":"advanceMessageTextSegments","args":[{"a":{"b":"c"}},{"streaming":false,"deltaText":"éİstanbul","nextText":"abc","segmentStartedAt":"","segmentSequence":{"$num":"-0"},"updatedAt":"line1\nline2"}],"error":"segments is not iterable"}
+{"fn":"advanceMessageTextSegments","args":[[],{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"advanceMessageTextSegments","args":[true,{"streaming":false,"deltaText":"abcline1\nline2","nextText":"abc","segmentStartedAt":{"$undefined":true},"segmentSequence":9007199254740992,"updatedAt":"İstanbula😀b😀c"}],"error":"segments is not iterable"}
+{"fn":"advanceMessageTextSegments","args":["x",{"streaming":true,"deltaText":"tab\tseparated.leading","nextText":"src/a/b.tsİstanbul","segmentStartedAt":"Hello World","segmentSequence":-1,"updatedAt":"./x/**/*.json"}],"error":"previous.findIndex is not a function"}
+{"fn":"advanceMessageTextSegments","args":["x",{}],"ok":{"$undefined":true}}
+{"fn":"advanceMessageTextSegments","args":[["a",1],{"streaming":false,"deltaText":"a:b:ctrailing.","nextText":"trailing.a:b:c","segmentStartedAt":"line1\nline2","segmentSequence":1000000,"updatedAt":"trailing."}],"ok":{"$undefined":true}}
+{"fn":"advanceMessageTextSegments","args":[[],{"streaming":false,"deltaText":"a..b","nextText":"ünïcödé","segmentStartedAt":{"$undefined":true},"segmentSequence":{"$num":"-0"},"updatedAt":"./x/**/*.json"}],"ok":{"$undefined":true}}
+{"fn":"advanceMessageTextSegments","args":[null,{"streaming":false,"deltaText":"HELLO","nextText":"ΣΊΣΥΦΟΣ","segmentStartedAt":"  padded  ","segmentSequence":10,"updatedAt":"a..b"}],"error":"Cannot read properties of null (reading 'length')"}
+{"fn":"advanceMessageTextSegments","args":["x",null],"error":"Cannot read properties of null (reading 'streaming')"}
+{"fn":"advanceMessageTextSegments","args":[{"a":"b"},{"streaming":false,"deltaText":"😀","nextText":"line1\nline2","segmentStartedAt":{"$undefined":true},"segmentSequence":0,"updatedAt":"😀"}],"error":"segments is not iterable"}
+{"fn":"advanceMessageTextSegments","args":[[],["a",1]],"ok":{"$undefined":true}}
+{"fn":"advanceMessageTextSegments","args":[["a",1],{"streaming":true,"deltaText":"line1\nline2","nextText":"😀","segmentStartedAt":":","segmentSequence":2,"updatedAt":"hello world﻿bom"}],"ok":["a",1,{"sequence":2,"startedAt":":","endedAt":"hello world﻿bom","text":"line1\nline2"}]}
+{"fn":"advanceMessageTextSegments","args":[true,{"streaming":false,"deltaText":"key_name-1","nextText":"  padded  İstanbul","segmentStartedAt":{"$undefined":true},"segmentSequence":-1,"updatedAt":"abc"}],"error":"segments is not iterable"}
+{"fn":"advanceMessageTextSegments","args":[[],{"streaming":true,"deltaText":"HELLO","nextText":"abc","segmentStartedAt":"emoji 👍🏽 mix","segmentSequence":{"$num":"-0"},"updatedAt":"é"}],"ok":{"$undefined":true}}
+{"fn":"advanceMessageTextSegments","args":[null,{"streaming":false,"deltaText":"{name} has {count} items","nextText":"a:b:c","segmentStartedAt":{"$undefined":true},"segmentSequence":0.5,"updatedAt":"a😀b😀c"}],"error":"Cannot read properties of null (reading 'length')"}
+{"fn":"advanceMessageTextSegments","args":[["a",1],{"streaming":true,"deltaText":"hello world","nextText":"straßekey_name-1","segmentStartedAt":{"$undefined":true},"segmentSequence":{"$num":"Infinity"},"updatedAt":"a😀b😀c"}],"ok":["a",{"text":"undefinedhello world","endedAt":"a😀b😀c"}]}
+{"fn":"advanceMessageTextSegments","args":[true,{"streaming":false,"deltaText":"﻿bomkey_name-1","nextText":"Hello World","segmentStartedAt":{"$undefined":true},"segmentSequence":2147483648,"updatedAt":""}],"error":"segments is not iterable"}
+{"fn":"advanceMessageTextSegments","args":[{},{"streaming":true,"deltaText":"trailing.","nextText":"ΣΊΣΥΦΟΣ","segmentStartedAt":"tab\tseparatedemoji 👍🏽 mix","segmentSequence":10,"updatedAt":"a"}],"error":"previous.findIndex is not a function"}
+{"fn":"advanceMessageTextSegments","args":[{},{"streaming":false,"deltaText":"hello worldé","nextText":"﻿bom","segmentStartedAt":"{name} has {count} items","segmentSequence":42,"updatedAt":""}],"error":"segments is not iterable"}
+{"fn":"advanceMessageTextSegments","args":[{},{"streaming":false,"deltaText":"é","nextText":"a😀b😀c","segmentStartedAt":{"$undefined":true},"segmentSequence":-1,"updatedAt":"  padded  "}],"error":"segments is not iterable"}
+{"fn":"advanceMessageTextSegments","args":[{},{"streaming":true,"deltaText":"a","nextText":"a.b.c","segmentStartedAt":{"$undefined":true},"segmentSequence":42,"updatedAt":"hello world"}],"error":"previous.at is not a function"}
+{"fn":"advanceMessageTextSegments","args":[["a",1],{"streaming":true,"deltaText":"a😀b😀c","nextText":"emoji 👍🏽 mix","segmentStartedAt":"😀a😀b😀c","segmentSequence":1,"updatedAt":":"}],"ok":["a",1,{"sequence":1,"startedAt":"😀a😀b😀c","endedAt":":","text":"a😀b😀c"}]}
+{"fn":"advanceMessageTextSegments","args":[{},{"streaming":true,"deltaText":"{name} has {count} items","nextText":"😀","segmentStartedAt":"ns:key.path","segmentSequence":10,"updatedAt":"src/a/b.ts"}],"error":"previous.findIndex is not a function"}
+{"fn":"advanceMessageTextSegments","args":["x",{"streaming":false,"deltaText":"  padded  ","nextText":"{name} has {count} items","segmentStartedAt":{"$undefined":true},"segmentSequence":{"$num":"-Infinity"},"updatedAt":":"}],"ok":{"$undefined":true}}
+{"fn":"advanceMessageTextSegments","args":[{"a":{"b":"c"}},{"streaming":false,"deltaText":"😀.leading","nextText":"key_name-1","segmentStartedAt":{"$undefined":true},"segmentSequence":-2.5,"updatedAt":"emoji 👍🏽 mix"}],"error":"segments is not iterable"}
+{"fn":"advanceMessageTextSegments","args":[["a",1],{"streaming":false,"deltaText":":","nextText":"﻿bom","segmentStartedAt":"Hello World","segmentSequence":2147483648,"updatedAt":"﻿bom"}],"ok":{"$undefined":true}}
+{"fn":"advanceMessageTextSegments","args":[[],{"streaming":true,"deltaText":"é","nextText":"  padded  ","segmentStartedAt":"é","segmentSequence":1000000,"updatedAt":"akey_name-1"}],"ok":{"$undefined":true}}
+{"fn":"advanceMessageTextSegments","args":[["a",1],{"streaming":false,"deltaText":"line1\nline2","nextText":"İstanbul","segmentStartedAt":{"$undefined":true},"segmentSequence":-2.5,"updatedAt":"a😀b😀c"}],"ok":{"$undefined":true}}
+{"fn":"advanceMessageTextSegments","args":[{},{"streaming":false,"deltaText":":","nextText":"İstanbul","segmentStartedAt":"src/a/b.ts","segmentSequence":42,"updatedAt":"a.b.c"}],"error":"segments is not iterable"}
+{"fn":"advanceMessageTextSegments","args":[true,{"streaming":true,"deltaText":".leading  padded  ","nextText":"./x/**/*.json","segmentStartedAt":"{name} has {count} items","segmentSequence":100,"updatedAt":"ns:key.path﻿bom"}],"error":"previous.findIndex is not a function"}
+{"fn":"advanceMessageTextSegments","args":["x",{"streaming":false,"deltaText":"trailing.","nextText":"HELLOa😀b😀c","segmentStartedAt":{"$undefined":true},"segmentSequence":2,"updatedAt":".leadingline1\nline2"}],"ok":{"$undefined":true}}
+{"fn":"advanceMessageTextSegments","args":[null,{"streaming":false,"deltaText":"a.b.c","nextText":"a","segmentStartedAt":{"$undefined":true},"segmentSequence":9007199254740992,"updatedAt":"😀"}],"error":"Cannot read properties of null (reading 'length')"}
+{"fn":"advanceMessageTextSegments","args":[["a",1],{"streaming":true,"deltaText":"Hello World","nextText":".leading","segmentStartedAt":"hello","segmentSequence":2,"updatedAt":"ΣΊΣΥΦΟΣ"}],"ok":["a",1,{"sequence":2,"startedAt":"hello","endedAt":"ΣΊΣΥΦΟΣ","text":"Hello World"}]}
+{"fn":"advanceMessageTextSegments","args":[null,{"streaming":true,"deltaText":"a:b:c","nextText":"﻿bom","segmentStartedAt":{"$undefined":true},"segmentSequence":{"$num":"-Infinity"},"updatedAt":"trailing."}],"error":"Cannot read properties of null (reading 'length')"}
+{"fn":"advanceMessageTextSegments","args":[["a",1],{"streaming":true,"deltaText":"HELLO","nextText":"straße","segmentStartedAt":"Hello Worldtab\tseparated","segmentSequence":1,"updatedAt":"ΣΊΣΥΦΟΣ"}],"ok":["a",1,{"sequence":1,"startedAt":"Hello Worldtab\tseparated","endedAt":"ΣΊΣΥΦΟΣ","text":"HELLO"}]}
+{"fn":"advanceMessageTextSegments","args":[{"a":{"b":"c"}},{"streaming":false,"deltaText":"hello","nextText":"ns:key.path","segmentStartedAt":{"$undefined":true},"segmentSequence":42,"updatedAt":"emoji 👍🏽 mix"}],"error":"segments is not iterable"}
+{"fn":"advanceMessageTextSegments","args":[{},{"streaming":true,"deltaText":"emoji 👍🏽 mix","nextText":"a","segmentStartedAt":{"$undefined":true},"segmentSequence":{"$num":"NaN"},"updatedAt":"./x/**/*.json"}],"error":"previous.at is not a function"}
+{"fn":"advanceMessageTextSegments","args":[{"a":"b"},{"streaming":false,"deltaText":"ab","nextText":"ns:key.path😀","segmentStartedAt":"İstanbul","segmentSequence":0.5,"updatedAt":"ab"}],"error":"segments is not iterable"}
+{"fn":"advanceMessageTextSegments","args":["x",{"streaming":true,"deltaText":"Hello World","nextText":"emoji 👍🏽 mix","segmentStartedAt":{"$undefined":true},"segmentSequence":-1,"updatedAt":"a.b.c"}],"ok":[{"0":"x","text":"undefinedHello World","endedAt":"a.b.c"}]}
+{"fn":"advanceMessageTextSegments","args":[{},{"streaming":true,"deltaText":"a:b:c.leading","nextText":"hello world日本語のテキスト","segmentStartedAt":{"$undefined":true},"segmentSequence":0,"updatedAt":"src/a/b.ts  padded  "}],"error":"previous.at is not a function"}
+{"fn":"advanceMessageTextSegments","args":[null,true],"error":"Cannot read properties of null (reading 'length')"}
+{"fn":"advanceMessageTextSegments","args":[0,{"streaming":true,"deltaText":"ns:key.path","nextText":"a.b.c","segmentStartedAt":"straße","segmentSequence":42,"updatedAt":"İstanbul"}],"error":"previous.findIndex is not a function"}
+{"fn":"advanceMessageTextSegments","args":[{"a":"b"},{"streaming":false,"deltaText":"hello","nextText":"Hello WorldHELLO","segmentStartedAt":"trailing.","segmentSequence":-2.5,"updatedAt":"😀line1\nline2"}],"error":"segments is not iterable"}
+{"fn":"advanceMessageTextSegments","args":[[],{"streaming":false,"deltaText":"line1\nline2","nextText":"a.b.cé","segmentStartedAt":{"$undefined":true},"segmentSequence":42,"updatedAt":"abctrailing."}],"ok":{"$undefined":true}}
+{"fn":"advanceMessageTextSegments","args":[0,{"streaming":false,"deltaText":":","nextText":"Hello Worldsrc/a/b.ts","segmentStartedAt":{"$undefined":true},"segmentSequence":-2.5,"updatedAt":"a"}],"error":"segments is not iterable"}
+{"fn":"advanceMessageTextSegments","args":[{},{"streaming":false,"deltaText":"é","nextText":"hello world","segmentStartedAt":"﻿bom","segmentSequence":1000,"updatedAt":"a..b"}],"error":"segments is not iterable"}
+{"fn":"advanceMessageTextSegments","args":[[],{"streaming":true,"deltaText":":","nextText":"ns:key.path.leading","segmentStartedAt":"src/a/b.ts","segmentSequence":42,"updatedAt":"trailing."}],"ok":{"$undefined":true}}
+{"fn":"advanceMessageTextSegments","args":[{},{"streaming":false,"deltaText":"a..b","nextText":"{name} has {count} items","segmentStartedAt":"﻿bom","segmentSequence":-2.5,"updatedAt":"é"}],"error":"segments is not iterable"}
+{"fn":"advanceMessageTextSegments","args":["x",{"streaming":false,"deltaText":"İstanbul","nextText":"é","segmentStartedAt":"abc","segmentSequence":{"$num":"-Infinity"},"updatedAt":"ΣΊΣΥΦΟΣkey_name-1"}],"ok":{"$undefined":true}}
+{"fn":"advanceMessageTextSegments","args":[[],{"streaming":true,"deltaText":"abc","nextText":"a.b.c","segmentStartedAt":"Hello World","segmentSequence":100,"updatedAt":"emoji 👍🏽 mix"}],"ok":{"$undefined":true}}
+{"fn":"advanceMessageTextSegments","args":[{"a":"b"},{"streaming":true,"deltaText":"é😀","nextText":".leading","segmentStartedAt":"ns:key.path日本語のテキスト","segmentSequence":1,"updatedAt":"Hello World"}],"error":"previous.findIndex is not a function"}
+{"fn":"advanceMessageTextSegments","args":[0,{"streaming":true,"deltaText":"a..b","nextText":"ns:key.path","segmentStartedAt":".leading","segmentSequence":10,"updatedAt":""}],"error":"previous.findIndex is not a function"}
+{"fn":"advanceMessageTextSegments","args":[0,{"streaming":false,"deltaText":"a","nextText":"ab","segmentStartedAt":"ab","segmentSequence":1000,"updatedAt":"ab"}],"error":"segments is not iterable"}
+{"fn":"advanceMessageTextSegments","args":[true,{"streaming":false,"deltaText":"a.b.c","nextText":"./x/**/*.json","segmentStartedAt":{"$undefined":true},"segmentSequence":-1,"updatedAt":"é"}],"error":"segments is not iterable"}
+{"fn":"advanceMessageTextSegments","args":[{"a":"b"},{"streaming":true,"deltaText":"﻿bom","nextText":"  padded  ","segmentStartedAt":"trailing.","segmentSequence":0.5,"updatedAt":""}],"error":"previous.findIndex is not a function"}
+{"fn":"advanceMessageTextSegments","args":[true,{"streaming":false,"deltaText":"  padded  ","nextText":"HELLO","segmentStartedAt":{"$undefined":true},"segmentSequence":100,"updatedAt":"straße"}],"error":"segments is not iterable"}
+{"fn":"advanceMessageTextSegments","args":[null,{"streaming":false,"deltaText":"a..b","nextText":"﻿bom","segmentStartedAt":"key_name-1","segmentSequence":{"$num":"Infinity"},"updatedAt":"ünïcödé"}],"error":"Cannot read properties of null (reading 'length')"}
+{"fn":"advanceMessageTextSegments","args":[["a",1],{"streaming":false,"deltaText":"hello world","nextText":"ΣΊΣΥΦΟΣ","segmentStartedAt":{"$undefined":true},"segmentSequence":2,"updatedAt":"﻿bom"}],"ok":{"$undefined":true}}
+{"fn":"advanceMessageTextSegments","args":[{},{"streaming":false,"deltaText":"ab","nextText":"  padded  HELLO","segmentStartedAt":"hello world","segmentSequence":0,"updatedAt":"tab\tseparated"}],"error":"segments is not iterable"}
+{"fn":"advanceMessageTextSegments","args":[{},{"streaming":true,"deltaText":"atab\tseparated","nextText":"İstanbul","segmentStartedAt":"abc","segmentSequence":2,"updatedAt":"emoji 👍🏽 mixline1\nline2"}],"error":"previous.findIndex is not a function"}
+{"fn":"advanceMessageTextSegments","args":[0,{"streaming":true,"deltaText":"😀","nextText":":","segmentStartedAt":{"$undefined":true},"segmentSequence":9007199254740992,"updatedAt":"ΣΊΣΥΦΟΣ"}],"error":"previous.at is not a function"}
+{"fn":"advanceMessageTextSegments","args":[{"a":"b"},{"a":"b"}],"error":"segments is not iterable"}
+{"fn":"advanceMessageTextSegments","args":[{},{"streaming":true,"deltaText":"straße","nextText":"{name} has {count} items","segmentStartedAt":{"$undefined":true},"segmentSequence":1,"updatedAt":"ab"}],"error":"previous.at is not a function"}
+{"fn":"advanceMessageTextSegments","args":[{"a":"b"},[]],"error":"segments is not iterable"}
+{"fn":"advanceMessageTextSegments","args":[[],{"streaming":false,"deltaText":"emoji 👍🏽 mix","nextText":"","segmentStartedAt":"😀","segmentSequence":{"$num":"-Infinity"},"updatedAt":"İstanbul"}],"ok":{"$undefined":true}}
+{"fn":"advanceMessageTextSegments","args":[null,{"streaming":false,"deltaText":"hello","nextText":"src/a/b.tsHELLO","segmentStartedAt":".leading","segmentSequence":0,"updatedAt":"straße"}],"error":"Cannot read properties of null (reading 'length')"}
+{"fn":"advanceMessageTextSegments","args":[{"a":"b"},{"streaming":true,"deltaText":"  padded  ","nextText":"a..b","segmentStartedAt":{"$undefined":true},"segmentSequence":0.5,"updatedAt":"  padded  "}],"error":"previous.at is not a function"}
+{"fn":"advanceMessageTextSegments","args":[{},{"streaming":true,"deltaText":".leading","nextText":"trailing.","segmentStartedAt":{"$undefined":true},"segmentSequence":10,"updatedAt":"hello"}],"error":"previous.at is not a function"}
+{"fn":"advanceMessageTextSegments","args":[true,{"streaming":true,"deltaText":"a","nextText":"trailing.","segmentStartedAt":{"$undefined":true},"segmentSequence":{"$num":"Infinity"},"updatedAt":"a"}],"error":"previous.at is not a function"}
+{"fn":"advanceMessageTextSegments","args":[["a",1],{"streaming":false,"deltaText":"./x/**/*.json","nextText":"line1\nline2","segmentStartedAt":{"$undefined":true},"segmentSequence":{"$num":"Infinity"},"updatedAt":"emoji 👍🏽 mix"}],"ok":{"$undefined":true}}
+{"fn":"advanceMessageTextSegments","args":[true,{"streaming":true,"deltaText":"trailing.","nextText":"abc","segmentStartedAt":":","segmentSequence":42,"updatedAt":"﻿bom"}],"error":"previous.findIndex is not a function"}
+{"fn":"advanceMessageTextSegments","args":[0,{"streaming":false,"deltaText":"./x/**/*.json","nextText":"ab","segmentStartedAt":"a.b.c","segmentSequence":3,"updatedAt":"İstanbul"}],"error":"segments is not iterable"}
+{"fn":"advanceMessageTextSegments","args":[true,{"streaming":true,"deltaText":"emoji 👍🏽 mix","nextText":"./x/**/*.json","segmentStartedAt":"./x/**/*.json","segmentSequence":9007199254740992,"updatedAt":"tab\tseparated"}],"error":"previous.findIndex is not a function"}
+{"fn":"advanceMessageTextSegments","args":[[],{"streaming":false,"deltaText":":","nextText":"trailing.","segmentStartedAt":"emoji 👍🏽 mix","segmentSequence":-2.5,"updatedAt":"İstanbulHello World"}],"ok":{"$undefined":true}}
+{"fn":"advanceMessageTextSegments","args":[0,null],"error":"Cannot read properties of null (reading 'streaming')"}
+{"fn":"advanceMessageTextSegments","args":[{"a":{"b":"c"}},{}],"error":"segments is not iterable"}
+{"fn":"advanceMessageTextSegments","args":[null,{"streaming":false,"deltaText":"./x/**/*.json","nextText":"ünïcödékey_name-1","segmentStartedAt":{"$undefined":true},"segmentSequence":1000000,"updatedAt":"a😀b😀c"}],"error":"Cannot read properties of null (reading 'length')"}
+{"fn":"advanceMessageTextSegments","args":[null,{"streaming":true,"deltaText":"{name} has {count} items","nextText":"ünïcödé","segmentStartedAt":{"$undefined":true},"segmentSequence":{"$num":"NaN"},"updatedAt":"abca"}],"error":"Cannot read properties of null (reading 'length')"}
+{"fn":"advanceMessageTextSegments","args":[[],{"streaming":true,"deltaText":"tab\tseparatedünïcödé","nextText":"ΣΊΣΥΦΟΣ","segmentStartedAt":{"$undefined":true},"segmentSequence":{"$num":"NaN"},"updatedAt":"ΣΊΣΥΦΟΣ"}],"ok":{"$undefined":true}}
+{"fn":"advanceMessageTextSegments","args":[true,{"streaming":false,"deltaText":"İstanbul","nextText":"hellotrailing.","segmentStartedAt":"a","segmentSequence":{"$num":"NaN"},"updatedAt":"İstanbul"}],"error":"segments is not iterable"}
+{"fn":"advanceMessageTextSegments","args":[[],{"streaming":false,"deltaText":"a","nextText":"İstanbul","segmentStartedAt":{"$undefined":true},"segmentSequence":2,"updatedAt":"  padded  "}],"ok":{"$undefined":true}}
+{"fn":"advanceMessageTextSegments","args":["x",{"streaming":true,"deltaText":"ΣΊΣΥΦΟΣ","nextText":"ns:key.path","segmentStartedAt":".leading","segmentSequence":2,"updatedAt":"src/a/b.ts"}],"error":"previous.findIndex is not a function"}
+{"fn":"advanceMessageTextSegments","args":[[],{"streaming":false,"deltaText":".leading","nextText":"line1\nline2","segmentStartedAt":"Hello World","segmentSequence":1000,"updatedAt":"Hello World"}],"ok":{"$undefined":true}}
+{"fn":"advanceMessageTextSegments","args":[["a",1],{"streaming":true,"deltaText":"  padded  ","nextText":"line1\nline2trailing.","segmentStartedAt":"line1\nline2","segmentSequence":-1,"updatedAt":"{name} has {count} items"}],"ok":["a",1,{"sequence":-1,"startedAt":"line1\nline2","endedAt":"{name} has {count} items","text":"  padded  "}]}
+{"fn":"advanceMessageTextSegments","args":[[],true],"ok":{"$undefined":true}}
+{"fn":"advanceMessageTextSegments","args":[{"a":"b"},{"streaming":true,"deltaText":"emoji 👍🏽 mix","nextText":"line1\nline2","segmentStartedAt":"src/a/b.ts","segmentSequence":{"$num":"Infinity"},"updatedAt":"﻿bom"}],"error":"previous.findIndex is not a function"}
+{"fn":"advanceMessageTextSegments","args":[true,{"streaming":false,"deltaText":":","nextText":"日本語のテキスト","segmentStartedAt":"{name} has {count} itemsa","segmentSequence":1000000,"updatedAt":"HELLO"}],"error":"segments is not iterable"}
+{"fn":"advanceMessageTextSegments","args":[[],{"streaming":true,"deltaText":"abctrailing.","nextText":"","segmentStartedAt":"tab\tseparatedhello","segmentSequence":10,"updatedAt":"a😀b😀c"}],"ok":{"$undefined":true}}
+{"fn":"advanceMessageTextSegments","args":[["a",1],{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"advanceMessageTextSegments","args":[{},["a",1]],"error":"segments is not iterable"}
+{"fn":"advanceMessageTextSegments","args":[0,{"streaming":true,"deltaText":"é","nextText":"HELLO","segmentStartedAt":"ünïcödé","segmentSequence":1000000,"updatedAt":"a..b  padded  "}],"error":"previous.findIndex is not a function"}
+{"fn":"advanceMessageTextSegments","args":[{},{"streaming":false,"deltaText":"","nextText":"Hello World","segmentStartedAt":{"$undefined":true},"segmentSequence":0,"updatedAt":"trailing.日本語のテキスト"}],"error":"segments is not iterable"}
+{"fn":"advanceMessageTextSegments","args":[true,{"streaming":true,"deltaText":"  padded  ","nextText":"日本語のテキスト日本語のテキスト","segmentStartedAt":{"$undefined":true},"segmentSequence":1000,"updatedAt":"a.b.c"}],"error":"previous.at is not a function"}
+{"fn":"advanceMessageTextSegments","args":[{},{"streaming":false,"deltaText":"éa.b.c","nextText":"src/a/b.ts","segmentStartedAt":"日本語のテキスト","segmentSequence":{"$num":"-Infinity"},"updatedAt":"a😀b😀c"}],"error":"segments is not iterable"}
+{"fn":"advanceMessageTextSegments","args":[null,{"streaming":false,"deltaText":"{name} has {count} items","nextText":"日本語のテキスト","segmentStartedAt":{"$undefined":true},"segmentSequence":2,"updatedAt":".leading"}],"error":"Cannot read properties of null (reading 'length')"}
+{"fn":"advanceMessageTextSegments","args":[{"a":"b"},"x"],"error":"segments is not iterable"}
+{"fn":"advanceMessageTextSegments","args":[{"a":{"b":"c"}},{"streaming":true,"deltaText":"hello world","nextText":"😀ΣΊΣΥΦΟΣ","segmentStartedAt":"ns:key.path","segmentSequence":-1,"updatedAt":"日本語のテキスト"}],"error":"previous.findIndex is not a function"}
+{"fn":"advanceMessageTextSegments","args":[["a",1],0],"ok":{"$undefined":true}}
+{"fn":"advanceMessageTextSegments","args":[[],{"streaming":false,"deltaText":"./x/**/*.json","nextText":"","segmentStartedAt":{"$undefined":true},"segmentSequence":1,"updatedAt":"😀src/a/b.ts"}],"ok":{"$undefined":true}}
+{"fn":"advanceMessageTextSegments","args":[0,{"streaming":true,"deltaText":"tab\tseparated","nextText":"Hello World","segmentStartedAt":"😀","segmentSequence":-2.5,"updatedAt":"ΣΊΣΥΦΟΣ"}],"error":"previous.findIndex is not a function"}
+{"fn":"advanceMessageTextSegments","args":[0,{"streaming":false,"deltaText":":","nextText":"line1\nline2hello world","segmentStartedAt":{"$undefined":true},"segmentSequence":1,"updatedAt":"a.b.c"}],"error":"segments is not iterable"}
+{"fn":"advanceMessageTextSegments","args":[{},{"streaming":true,"deltaText":"a..ba..b","nextText":":﻿bom","segmentStartedAt":{"$undefined":true},"segmentSequence":1000,"updatedAt":"tab\tseparated"}],"error":"previous.at is not a function"}
+{"fn":"advanceMessageTextSegments","args":[{"a":"b"},{"streaming":true,"deltaText":"İstanbul","nextText":"hello","segmentStartedAt":"emoji 👍🏽 mix","segmentSequence":1,"updatedAt":"ΣΊΣΥΦΟΣé"}],"error":"previous.findIndex is not a function"}
+{"fn":"advanceMessageTextSegments","args":["x",{"streaming":false,"deltaText":"ΣΊΣΥΦΟΣemoji 👍🏽 mix","nextText":"ünïcödé","segmentStartedAt":{"$undefined":true},"segmentSequence":0,"updatedAt":"日本語のテキスト"}],"ok":{"$undefined":true}}
+{"fn":"advanceMessageTextSegments","args":[{"a":{"b":"c"}},{"streaming":false,"deltaText":"src/a/b.ts","nextText":"a😀b😀ca:b:c","segmentStartedAt":{"$undefined":true},"segmentSequence":{"$num":"-0"},"updatedAt":"trailing."}],"error":"segments is not iterable"}
+{"fn":"advanceMessageTextSegments","args":[{"a":{"b":"c"}},{"streaming":false,"deltaText":"a😀b😀c","nextText":"abc","segmentStartedAt":{"$undefined":true},"segmentSequence":0.5,"updatedAt":"ünïcödé"}],"error":"segments is not iterable"}
+{"fn":"advanceMessageTextSegments","args":[[],{"streaming":true,"deltaText":"emoji 👍🏽 mix","nextText":"a.b.c","segmentStartedAt":{"$undefined":true},"segmentSequence":{"$num":"-Infinity"},"updatedAt":""}],"ok":{"$undefined":true}}
+{"fn":"advanceMessageTextSegments","args":["x",["a",1]],"ok":{"$undefined":true}}
+{"fn":"advanceMessageTextSegments","args":[null,{"streaming":true,"deltaText":"trailing.","nextText":"  padded  ","segmentStartedAt":"  padded  ","segmentSequence":2147483648,"updatedAt":"ünïcödé"}],"error":"Cannot read properties of null (reading 'length')"}
+{"fn":"advanceMessageTextSegments","args":[{"a":"b"},{"streaming":false,"deltaText":"a😀b😀c","nextText":":hello world","segmentStartedAt":{"$undefined":true},"segmentSequence":2,"updatedAt":"HELLO{name} has {count} items"}],"error":"segments is not iterable"}
+{"fn":"advanceMessageTextSegments","args":[["a",1],{"streaming":false,"deltaText":"ünïcödé","nextText":"./x/**/*.json","segmentStartedAt":"src/a/b.ts","segmentSequence":1000,"updatedAt":"😀src/a/b.ts"}],"ok":{"$undefined":true}}
+{"fn":"advanceMessageTextSegments","args":["x",{"streaming":false,"deltaText":"tab\tseparated","nextText":"  padded  straße","segmentStartedAt":{"$undefined":true},"segmentSequence":0,"updatedAt":"key_name-1a😀b😀c"}],"ok":{"$undefined":true}}
+{"fn":"advanceMessageTextSegments","args":[[],{"streaming":false,"deltaText":"abc","nextText":"abc","segmentStartedAt":{"$undefined":true},"segmentSequence":0.5,"updatedAt":"line1\nline2"}],"ok":{"$undefined":true}}
+{"fn":"advanceMessageTextSegments","args":[true,{"streaming":true,"deltaText":"./x/**/*.json","nextText":".leading","segmentStartedAt":"😀","segmentSequence":0.5,"updatedAt":"straße"}],"error":"previous.findIndex is not a function"}
+{"fn":"advanceMessageTextSegments","args":[[],{"streaming":false,"deltaText":":","nextText":"a.b.c","segmentStartedAt":"","segmentSequence":3,"updatedAt":"a"}],"ok":{"$undefined":true}}
+{"fn":"advanceMessageTextSegments","args":[{"a":"b"},{"streaming":true,"deltaText":"﻿bomHELLO","nextText":".leading","segmentStartedAt":"a:b:c","segmentSequence":9007199254740992,"updatedAt":"ab"}],"error":"previous.findIndex is not a function"}
+{"fn":"advanceMessageTextSegments","args":[true,{"streaming":true,"deltaText":"abc","nextText":"a😀b😀c","segmentStartedAt":{"$undefined":true},"segmentSequence":{"$num":"-Infinity"},"updatedAt":"line1\nline2"}],"error":"previous.at is not a function"}
+{"fn":"advanceMessageTextSegments","args":[["a",1],{"streaming":true,"deltaText":"trailing.","nextText":"日本語のテキスト","segmentStartedAt":{"$undefined":true},"segmentSequence":9007199254740992,"updatedAt":"日本語のテキスト"}],"ok":["a",{"text":"undefinedtrailing.","endedAt":"日本語のテキスト"}]}
+{"fn":"advanceMessageTextSegments","args":[[],{"streaming":true,"deltaText":"😀","nextText":"tab\tseparated","segmentStartedAt":{"$undefined":true},"segmentSequence":{"$num":"-Infinity"},"updatedAt":"ΣΊΣΥΦΟΣemoji 👍🏽 mix"}],"ok":{"$undefined":true}}
+{"fn":"advanceMessageTextSegments","args":[{},{"streaming":true,"deltaText":"trailing.hello world","nextText":"src/a/b.ts","segmentStartedAt":"😀","segmentSequence":9007199254740992,"updatedAt":"./x/**/*.json"}],"error":"previous.findIndex is not a function"}
+{"fn":"advanceMessageTextSegments","args":[null,{"streaming":false,"deltaText":"trailing.","nextText":"a😀b😀c﻿bom","segmentStartedAt":{"$undefined":true},"segmentSequence":3,"updatedAt":"key_name-1"}],"error":"Cannot read properties of null (reading 'length')"}
+{"fn":"advanceMessageTextSegments","args":[{},{"streaming":false,"deltaText":"key_name-1","nextText":"a:b:c","segmentStartedAt":"tab\tseparated","segmentSequence":{"$num":"-0"},"updatedAt":"İstanbul"}],"error":"segments is not iterable"}
+{"fn":"advanceMessageTextSegments","args":[{},0],"error":"segments is not iterable"}
+{"fn":"advanceMessageTextSegments","args":[null,{"streaming":false,"deltaText":"Hello World","nextText":"src/a/b.ts","segmentStartedAt":{"$undefined":true},"segmentSequence":1000000,"updatedAt":"é{name} has {count} items"}],"error":"Cannot read properties of null (reading 'length')"}
+{"fn":"advanceMessageTextSegments","args":[0,{"streaming":true,"deltaText":".leading","nextText":"emoji 👍🏽 mixa..b","segmentStartedAt":{"$undefined":true},"segmentSequence":2,"updatedAt":"hello world"}],"error":"previous.at is not a function"}
+{"fn":"advanceMessageTextSegments","args":[true,{"streaming":true,"deltaText":"ΣΊΣΥΦΟΣé","nextText":"a:b:c","segmentStartedAt":"a😀b😀c","segmentSequence":9007199254740992,"updatedAt":"a.b.c"}],"error":"previous.findIndex is not a function"}
+{"fn":"advanceMessageTextSegments","args":[0,true],"error":"segments is not iterable"}
+{"fn":"advanceMessageTextSegments","args":["x",{"streaming":false,"deltaText":"a:b:cünïcödé","nextText":"src/a/b.ts","segmentStartedAt":"日本語のテキストa","segmentSequence":1000,"updatedAt":"straße.leading"}],"ok":{"$undefined":true}}
+{"fn":"advanceMessageTextSegments","args":[["a",1],{"streaming":true,"deltaText":"aba😀b😀c","nextText":"ab","segmentStartedAt":{"$undefined":true},"segmentSequence":{"$num":"Infinity"},"updatedAt":"src/a/b.ts"}],"ok":["a",{"text":"undefinedaba😀b😀c","endedAt":"src/a/b.ts"}]}
+{"fn":"advanceMessageTextSegments","args":["x",true],"ok":{"$undefined":true}}
+{"fn":"advanceMessageTextSegments","args":[[],{"streaming":false,"deltaText":"﻿bom﻿bom","nextText":"﻿bom{name} has {count} items","segmentStartedAt":{"$undefined":true},"segmentSequence":10,"updatedAt":"ab"}],"ok":{"$undefined":true}}
+{"fn":"advanceMessageTextSegments","args":[{},{"streaming":true,"deltaText":"./x/**/*.json","nextText":"tab\tseparatedsrc/a/b.ts","segmentStartedAt":{"$undefined":true},"segmentSequence":{"$num":"-Infinity"},"updatedAt":"ünïcödé"}],"error":"previous.at is not a function"}
+{"fn":"advanceMessageTextSegments","args":[0,{"streaming":false,"deltaText":"line1\nline2","nextText":"trailing.","segmentStartedAt":":","segmentSequence":3,"updatedAt":"é"}],"error":"segments is not iterable"}
+{"fn":"advanceMessageTextSegments","args":[true,{"streaming":false,"deltaText":"﻿bomHELLO","nextText":"src/a/b.ts","segmentStartedAt":{"$undefined":true},"segmentSequence":2147483648,"updatedAt":"ab"}],"error":"segments is not iterable"}
+{"fn":"advanceMessageTextSegments","args":[true,{"streaming":true,"deltaText":"a😀b😀c","nextText":"hello world","segmentStartedAt":{"$undefined":true},"segmentSequence":1000,"updatedAt":"日本語のテキストHELLO"}],"error":"previous.at is not a function"}
+{"fn":"advanceMessageTextSegments","args":[{"a":{"b":"c"}},{"streaming":true,"deltaText":"emoji 👍🏽 mix","nextText":"key_name-1key_name-1","segmentStartedAt":"line1\nline2","segmentSequence":-2.5,"updatedAt":"ΣΊΣΥΦΟΣ"}],"error":"previous.findIndex is not a function"}
+{"fn":"advanceMessageTextSegments","args":[{"a":{"b":"c"}},{"a":"b"}],"error":"segments is not iterable"}
+{"fn":"advanceMessageTextSegments","args":[{},{"streaming":false,"deltaText":"hello worldabc","nextText":"abc","segmentStartedAt":"trailing.a..b","segmentSequence":0.5,"updatedAt":"İstanbul"}],"error":"segments is not iterable"}
+{"fn":"advanceMessageTextSegments","args":[null,{"streaming":true,"deltaText":"﻿boma😀b😀c","nextText":"emoji 👍🏽 mix","segmentStartedAt":{"$undefined":true},"segmentSequence":1000,"updatedAt":"HELLO"}],"error":"Cannot read properties of null (reading 'length')"}
+{"fn":"advanceMessageTextSegments","args":[{"a":"b"},{"streaming":true,"deltaText":"HELLO","nextText":"ünïcödé","segmentStartedAt":{"$undefined":true},"segmentSequence":9007199254740992,"updatedAt":"﻿bom"}],"error":"previous.at is not a function"}
+{"fn":"advanceMessageTextSegments","args":[{"a":"b"},{"streaming":true,"deltaText":"src/a/b.ts","nextText":"hello","segmentStartedAt":"Hello Worldabc","segmentSequence":1000000,"updatedAt":".leading"}],"error":"previous.findIndex is not a function"}
+{"fn":"advanceMessageTextSegments","args":[true,{"streaming":true,"deltaText":"src/a/b.ts","nextText":"hello","segmentStartedAt":{"$undefined":true},"segmentSequence":0,"updatedAt":"{name} has {count} items"}],"error":"previous.at is not a function"}
+{"fn":"advanceMessageTextSegments","args":[0,{"streaming":true,"deltaText":"a.b.cünïcödé","nextText":"src/a/b.ts","segmentStartedAt":"ab","segmentSequence":1,"updatedAt":"ΣΊΣΥΦΟΣ"}],"error":"previous.findIndex is not a function"}
+{"fn":"advanceMessageTextSegments","args":[["a",1],{"streaming":true,"deltaText":"line1\nline2","nextText":"","segmentStartedAt":"tab\tseparatedabc","segmentSequence":{"$num":"-0"},"updatedAt":"src/a/b.ts"}],"ok":["a",1,{"sequence":{"$num":"-0"},"startedAt":"tab\tseparatedabc","endedAt":"src/a/b.ts","text":"line1\nline2"}]}
+{"fn":"advanceMessageTextSegments","args":[true,{"streaming":false,"deltaText":"trailing.","nextText":"hello","segmentStartedAt":{"$undefined":true},"segmentSequence":0,"updatedAt":"﻿bom"}],"error":"segments is not iterable"}
+{"fn":"advanceMessageTextSegments","args":[true,{"streaming":true,"deltaText":"straße","nextText":"{name} has {count} items","segmentStartedAt":{"$undefined":true},"segmentSequence":-2.5,"updatedAt":"trailing."}],"error":"previous.at is not a function"}
+{"fn":"advanceMessageTextSegments","args":[[],{"streaming":false,"deltaText":":","nextText":"tab\tseparated","segmentStartedAt":{"$undefined":true},"segmentSequence":100,"updatedAt":"日本語のテキスト"}],"ok":{"$undefined":true}}
+{"fn":"advanceMessageTextSegments","args":[null,{"streaming":false,"deltaText":"ünïcödé","nextText":"ns:key.path","segmentStartedAt":"ab","segmentSequence":1000000,"updatedAt":"hello"}],"error":"Cannot read properties of null (reading 'length')"}
+{"fn":"advanceMessageTextSegments","args":["x",{"streaming":true,"deltaText":"ns:key.patha..b","nextText":"a","segmentStartedAt":{"$undefined":true},"segmentSequence":-2.5,"updatedAt":"ünïcödé"}],"ok":[{"0":"x","text":"undefinedns:key.patha..b","endedAt":"ünïcödé"}]}
+{"fn":"advanceMessageTextSegments","args":[{"a":"b"},{"streaming":false,"deltaText":"line1\nline2","nextText":"key_name-1a.b.c","segmentStartedAt":{"$undefined":true},"segmentSequence":0,"updatedAt":"a"}],"error":"segments is not iterable"}
+{"fn":"advanceMessageTextSegments","args":[0,{"a":{"b":"c"}}],"error":"segments is not iterable"}
+{"fn":"advanceMessageTextSegments","args":["x",{"streaming":false,"deltaText":"","nextText":"emoji 👍🏽 mix","segmentStartedAt":"trailing.","segmentSequence":1000,"updatedAt":"ΣΊΣΥΦΟΣ"}],"ok":{"$undefined":true}}
+{"fn":"advanceMessageTextSegments","args":[{"a":{"b":"c"}},{"streaming":true,"deltaText":":ns:key.path","nextText":"hello world","segmentStartedAt":{"$undefined":true},"segmentSequence":{"$num":"-Infinity"},"updatedAt":"a"}],"error":"previous.at is not a function"}
+{"fn":"advanceMessageTextSegments","args":[{},{"streaming":true,"deltaText":"a:b:c.leading","nextText":"a:b:c","segmentStartedAt":{"$undefined":true},"segmentSequence":{"$num":"-Infinity"},"updatedAt":"{name} has {count} items"}],"error":"previous.at is not a function"}
+{"fn":"advanceMessageTextSegments","args":[["a",1],{"streaming":true,"deltaText":"src/a/b.tstrailing.","nextText":"﻿bom","segmentStartedAt":{"$undefined":true},"segmentSequence":100,"updatedAt":"a..ba.b.c"}],"ok":["a",{"text":"undefinedsrc/a/b.tstrailing.","endedAt":"a..ba.b.c"}]}
+{"fn":"advanceMessageTextSegments","args":[true,{"streaming":false,"deltaText":"日本語のテキスト","nextText":"a..b","segmentStartedAt":{"$undefined":true},"segmentSequence":10,"updatedAt":"é"}],"error":"segments is not iterable"}
+{"fn":"advanceMessageTextSegments","args":[true,{"streaming":false,"deltaText":":","nextText":"  padded  line1\nline2","segmentStartedAt":"atab\tseparated","segmentSequence":-2.5,"updatedAt":"a"}],"error":"segments is not iterable"}
+{"fn":"advanceMessageTextSegments","args":[0,{"streaming":true,"deltaText":"  padded  ","nextText":"a:b:c","segmentStartedAt":{"$undefined":true},"segmentSequence":-2.5,"updatedAt":"./x/**/*.json"}],"error":"previous.at is not a function"}
+{"fn":"advanceMessageTextSegments","args":[["a",1],{}],"ok":{"$undefined":true}}
+{"fn":"advanceMessageTextSegments","args":["x",{"streaming":true,"deltaText":"ΣΊΣΥΦΟΣ","nextText":"src/a/b.ts","segmentStartedAt":"line1\nline2line1\nline2","segmentSequence":3,"updatedAt":"tab\tseparated"}],"error":"previous.findIndex is not a function"}
+{"fn":"advanceMessageTextSegments","args":[["a",1],{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"advanceMessageTextSegments","args":["x",{"streaming":false,"deltaText":"hello","nextText":"ab日本語のテキスト","segmentStartedAt":{"$undefined":true},"segmentSequence":9007199254740992,"updatedAt":"İstanbul"}],"ok":{"$undefined":true}}
+{"fn":"advanceMessageTextSegments","args":[null,{"streaming":false,"deltaText":"./x/**/*.json","nextText":"a.b.c","segmentStartedAt":"ünïcödé","segmentSequence":{"$num":"NaN"},"updatedAt":"a..b"}],"error":"Cannot read properties of null (reading 'length')"}
+{"fn":"advanceMessageTextSegments","args":[{"a":{"b":"c"}},{"streaming":true,"deltaText":"line1\nline2","nextText":"ab{name} has {count} items","segmentStartedAt":{"$undefined":true},"segmentSequence":1,"updatedAt":"HELLO"}],"error":"previous.at is not a function"}
+{"fn":"advanceMessageTextSegments","args":[{"a":{"b":"c"}},{"streaming":false,"deltaText":"line1\nline2","nextText":"abc﻿bom","segmentStartedAt":"İstanbul","segmentSequence":9007199254740992,"updatedAt":"trailing."}],"error":"segments is not iterable"}
+{"fn":"advanceMessageTextSegments","args":[true,{"streaming":true,"deltaText":"line1\nline2a😀b😀c","nextText":"tab\tseparated","segmentStartedAt":{"$undefined":true},"segmentSequence":2147483648,"updatedAt":"emoji 👍🏽 mix"}],"error":"previous.at is not a function"}
+{"fn":"advanceMessageTextSegments","args":["x",{"streaming":true,"deltaText":"{name} has {count} items","nextText":"a","segmentStartedAt":{"$undefined":true},"segmentSequence":3,"updatedAt":"abc"}],"ok":[{"0":"x","text":"undefined{name} has {count} items","endedAt":"abc"}]}
+{"fn":"advanceMessageTextSegments","args":["x",{"streaming":true,"deltaText":":ünïcödé","nextText":"key_name-1","segmentStartedAt":{"$undefined":true},"segmentSequence":1,"updatedAt":"HELLO"}],"ok":[{"0":"x","text":"undefined:ünïcödé","endedAt":"HELLO"}]}
+{"fn":"advanceMessageTextSegments","args":[true,{"streaming":false,"deltaText":"é","nextText":"İstanbul","segmentStartedAt":{"$undefined":true},"segmentSequence":100,"updatedAt":"a😀b😀c"}],"error":"segments is not iterable"}
+{"fn":"advanceMessageTextSegments","args":[[],{"streaming":true,"deltaText":"日本語のテキストns:key.path","nextText":":","segmentStartedAt":{"$undefined":true},"segmentSequence":0,"updatedAt":"a..b"}],"ok":{"$undefined":true}}
+{"fn":"advanceMessageTextSegments","args":[{"a":{"b":"c"}},{"streaming":true,"deltaText":"hello","nextText":"  padded  trailing.","segmentStartedAt":"a..btab\tseparated","segmentSequence":1000000,"updatedAt":"a.b.cünïcödé"}],"error":"previous.findIndex is not a function"}
+{"fn":"advanceMessageTextSegments","args":[["a",1],{"streaming":false,"deltaText":"﻿bom","nextText":"abhello","segmentStartedAt":{"$undefined":true},"segmentSequence":2,"updatedAt":"ab"}],"ok":{"$undefined":true}}
+{"fn":"advanceMessageTextSegments","args":[0,{"streaming":true,"deltaText":"ab","nextText":"abc","segmentStartedAt":"straße","segmentSequence":{"$num":"-Infinity"},"updatedAt":"straße"}],"error":"previous.findIndex is not a function"}
+{"fn":"advanceMessageTextSegments","args":[{"a":"b"},{"streaming":false,"deltaText":"😀ns:key.path","nextText":"﻿bom","segmentStartedAt":"emoji 👍🏽 mix","segmentSequence":1000,"updatedAt":"a😀b😀c"}],"error":"segments is not iterable"}
+{"fn":"advanceMessageTextSegments","args":[[],{"streaming":true,"deltaText":"Hello World","nextText":"😀","segmentStartedAt":{"$undefined":true},"segmentSequence":42,"updatedAt":"ünïcödéé"}],"ok":{"$undefined":true}}
+{"fn":"advanceMessageTextSegments","args":[{},{"a":{"b":"c"}}],"error":"segments is not iterable"}
+{"fn":"advanceMessageTextSegments","args":[true,{"streaming":false,"deltaText":"straße","nextText":"  padded  ","segmentStartedAt":"{name} has {count} items","segmentSequence":10,"updatedAt":"abc"}],"error":"segments is not iterable"}
+{"fn":"advanceMessageTextSegments","args":[["a",1],{"streaming":true,"deltaText":"hello worlda..b","nextText":"line1\nline2","segmentStartedAt":{"$undefined":true},"segmentSequence":{"$num":"NaN"},"updatedAt":"a.b.c"}],"ok":["a",{"text":"undefinedhello worlda..b","endedAt":"a.b.c"}]}
+{"fn":"advanceMessageTextSegments","args":[null,{"streaming":true,"deltaText":"a😀b😀cİstanbul","nextText":"emoji 👍🏽 mix","segmentStartedAt":"aİstanbul","segmentSequence":{"$num":"-Infinity"},"updatedAt":":"}],"error":"Cannot read properties of null (reading 'length')"}
+{"fn":"advanceMessageTextSegments","args":[true,{"streaming":true,"deltaText":"HELLO","nextText":"﻿bom日本語のテキスト","segmentStartedAt":"ab","segmentSequence":0,"updatedAt":"ab"}],"error":"previous.findIndex is not a function"}
+{"fn":"advanceMessageTextSegments","args":["x",{"streaming":true,"deltaText":"trailing.","nextText":"key_name-1Hello World","segmentStartedAt":"straße","segmentSequence":1000000,"updatedAt":"日本語のテキスト"}],"error":"previous.findIndex is not a function"}
+{"fn":"advanceMessageTextSegments","args":[true,{"streaming":false,"deltaText":"﻿bomab","nextText":"src/a/b.ts","segmentStartedAt":"Hello World","segmentSequence":100,"updatedAt":"😀"}],"error":"segments is not iterable"}
+{"fn":"advanceMessageTextSegments","args":[["a",1],true],"ok":{"$undefined":true}}
+{"fn":"advanceMessageTextSegments","args":[0,{}],"error":"segments is not iterable"}

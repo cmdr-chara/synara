@@ -1,0 +1,60 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/messageTextSegments.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "messagetextsegments-rs",
+  "exports": [
+    {
+      "name": "textSegmentsCoverText",
+      "file": "apps/web/src/messageTextSegments.ts",
+      "line": 14,
+      "params": [
+        {
+          "name": "segments",
+          "ts_type": "ReadonlyArray<import(\"@synara/contracts\").import(\"@synara/contracts\").import(\"@synara/contracts\").import(\"@synara/contracts\").OrchestrationMessageTextSegment>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "text",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "advanceMessageTextSegments",
+      "file": "apps/web/src/messageTextSegments.ts",
+      "line": 34,
+      "params": [
+        {
+          "name": "previous",
+          "ts_type": "ReadonlyArray<import(\"@synara/contracts\").import(\"@synara/contracts\").import(\"@synara/contracts\").import(\"@synara/contracts\").OrchestrationMessageTextSegment> | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "input",
+          "ts_type": "{\n    readonly streaming: boolean;\n    /** The event's own text: the delta while streaming. */\n    readonly deltaText: string;\n    /** The message text after the event is applied. */\n    readonly nextText: string;\n    readonly segmentStartedAt: string | undefined;\n    readonly segmentSequence: number;\n    readonly updatedAt: string;\n  }",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "import(\"@synara/contracts\").import(\"@synara/contracts\").import(\"@synara/contracts\").import(\"@synara/contracts\").OrchestrationMessageTextSegment[] | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

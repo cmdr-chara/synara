@@ -1,0 +1,890 @@
+{"fn":"commandForProjectScript","args":["{name} has {count} items"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"{name} has {count} items\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["a.b.c"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"a.b.c\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["ns:key.path"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"ns:key.path\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["﻿bom"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"﻿bom\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["İstanbul"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"İstanbul\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["日本語のテキスト"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"日本語のテキスト\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["./x/**/*.jsonΣΊΣΥΦΟΣ"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"./x/**/*.jsonΣΊΣΥΦΟΣ\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":[""],"error":"Expected a value with a length of at least 1, got \"\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["é"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"é\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["abc"],"ok":"script.abc.run"}
+{"fn":"commandForProjectScript","args":["a"],"ok":"script.a.run"}
+{"fn":"commandForProjectScript","args":["hello"],"ok":"script.hello.run"}
+{"fn":"commandForProjectScript","args":["a:b:c"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"a:b:c\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["a..b"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"a..b\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["日本語のテキスト  padded  "],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"日本語のテキスト  padded  \"\n  at [1]"}
+{"fn":"commandForProjectScript","args":[".leading"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \".leading\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["ΣΊΣΥΦΟΣ😀"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"ΣΊΣΥΦΟΣ😀\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["./x/**/*.json"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"./x/**/*.json\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["😀"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"😀\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["hello world"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"hello world\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["  padded  "],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"  padded  \"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["ünïcödé"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"ünïcödé\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["ünïcödésrc/a/b.ts"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"ünïcödésrc/a/b.ts\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["HELLO"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"HELLO\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["line1\nline2"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"line1\\nline2\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["emoji 👍🏽 mix"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"emoji 👍🏽 mix\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["HELLOtab\tseparated"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"HELLOtab\\tseparated\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["key_name-1"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"key_name-1\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["ΣΊΣΥΦΟΣtrailing."],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"ΣΊΣΥΦΟΣtrailing.\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["key_name-1a:b:c"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"key_name-1a:b:c\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["ΣΊΣΥΦΟΣ"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"ΣΊΣΥΦΟΣ\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["src/a/b.ts"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"src/a/b.ts\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["ab"],"ok":"script.ab.run"}
+{"fn":"commandForProjectScript","args":["straße"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"straße\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["a😀b😀c:"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"a😀b😀c:\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["a.b.csrc/a/b.ts"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"a.b.csrc/a/b.ts\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["line1\nline2a:b:c"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"line1\\nline2a:b:c\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["trailing."],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"trailing.\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["a.b.ca..b"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"a.b.ca..b\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["abHello World"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"abHello World\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["trailing.a..b"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"trailing.a..b\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["Hello World"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"Hello World\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["trailing.a:b:c"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"trailing.a:b:c\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["a😀b😀c"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"a😀b😀c\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["hello worldtrailing."],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"hello worldtrailing.\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["😀key_name-1"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"😀key_name-1\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["a.b.cHELLO"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"a.b.cHELLO\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["ns:key.pathİstanbul"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"ns:key.pathİstanbul\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["a..bsrc/a/b.ts"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"a..bsrc/a/b.ts\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["tab\tseparated"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"tab\\tseparated\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["Hello WorldHELLO"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"Hello WorldHELLO\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["a:b:chello"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"a:b:chello\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["İstanbulhello world"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"İstanbulhello world\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["helloΣΊΣΥΦΟΣ"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"helloΣΊΣΥΦΟΣ\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["hellotrailing."],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"hellotrailing.\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["abchello"],"ok":"script.abchello.run"}
+{"fn":"commandForProjectScript","args":["key_name-1hello world"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"key_name-1hello world\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["asrc/a/b.ts"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"asrc/a/b.ts\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":[".leadingsrc/a/b.ts"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \".leadingsrc/a/b.ts\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["a.b.cünïcödé"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"a.b.cünïcödé\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["./x/**/*.jsona:b:c"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"./x/**/*.jsona:b:c\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["İstanbulİstanbul"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"İstanbulİstanbul\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["src/a/b.tsabc"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"src/a/b.tsabc\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["étab\tseparated"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"étab\\tseparated\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["a😀b😀cünïcödé"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"a😀b😀cünïcödé\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["😀src/a/b.ts"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"😀src/a/b.ts\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["ns:key.path日本語のテキスト"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"ns:key.path日本語のテキスト\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["{name} has {count} items😀"],"error":"Expected a value with a length of at most 24, got \"{name} has {count} items😀\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["日本語のテキスト.leading"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"日本語のテキスト.leading\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["./x/**/*.jsonİstanbul"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"./x/**/*.jsonİstanbul\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["straße😀"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"straße😀\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":[":"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \":\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["emoji 👍🏽 mix😀"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"emoji 👍🏽 mix😀\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["Hello World😀"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"Hello World😀\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["hello worlda:b:c"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"hello worlda:b:c\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["Hello Worldé"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"Hello Worldé\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["a./x/**/*.json"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"a./x/**/*.json\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["😀HELLO"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"😀HELLO\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["src/a/b.tstab\tseparated"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"src/a/b.tstab\\tseparated\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["hello worldHello World"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"hello worldHello World\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["HELLOabc"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"HELLOabc\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["key_name-1hello"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"key_name-1hello\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["helloab"],"ok":"script.helloab.run"}
+{"fn":"commandForProjectScript","args":["straßeab"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"straßeab\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["😀tab\tseparated"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"😀tab\\tseparated\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["{name} has {count} itemsé"],"error":"Expected a value with a length of at most 24, got \"{name} has {count} itemsé\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["{name} has {count} items./x/**/*.json"],"error":"Expected a value with a length of at most 24, got \"{name} has {count} items./x/**/*.json\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["tab\tseparated日本語のテキスト"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"tab\\tseparated日本語のテキスト\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["a日本語のテキスト"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"a日本語のテキスト\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["éa:b:c"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"éa:b:c\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["abcİstanbul"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"abcİstanbul\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["a.b.cé"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"a.b.cé\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":[":HELLO"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \":HELLO\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["İstanbulünïcödé"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"İstanbulünïcödé\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["abcünïcödé"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"abcünïcödé\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["emoji 👍🏽 mixİstanbul"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"emoji 👍🏽 mixİstanbul\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["straßeHello World"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"straßeHello World\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["HELLOa..b"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"HELLOa..b\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["  padded  straße"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"  padded  straße\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":[":ns:key.path"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \":ns:key.path\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["{name} has {count} itemsünïcödé"],"error":"Expected a value with a length of at most 24, got \"{name} has {count} itemsünïcödé\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["{name} has {count} items{name} has {count} items"],"error":"Expected a value with a length of at most 24, got \"{name} has {count} items{name} has {count} items\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["./x/**/*.jsona..b"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"./x/**/*.jsona..b\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["ünïcödéline1\nline2"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"ünïcödéline1\\nline2\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":[":trailing."],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \":trailing.\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["key_name-1  padded  "],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"key_name-1  padded  \"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["a:b:cemoji 👍🏽 mix"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"a:b:cemoji 👍🏽 mix\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["ans:key.path"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"ans:key.path\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["a..babc"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"a..babc\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["trailing.tab\tseparated"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"trailing.tab\\tseparated\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["a😀b😀ctab\tseparated"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"a😀b😀ctab\\tseparated\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["ünïcödéa.b.c"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"ünïcödéa.b.c\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["key_name-1😀"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"key_name-1😀\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["./x/**/*.json﻿bom"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"./x/**/*.json﻿bom\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["HELLO:"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"HELLO:\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["tab\tseparatedé"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"tab\\tseparatedé\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["﻿bom.leading"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"﻿bom.leading\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["hello world{name} has {count} items"],"error":"Expected a value with a length of at most 24, got \"hello world{name} has {count} items\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["straßea😀b😀c"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"straßea😀b😀c\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["./x/**/*.jsonline1\nline2"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"./x/**/*.jsonline1\\nline2\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["hello./x/**/*.json"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"hello./x/**/*.json\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["a..ba😀b😀c"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"a..ba😀b😀c\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["src/a/b.ts.leading"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"src/a/b.ts.leading\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["日本語のテキストa😀b😀c"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"日本語のテキストa😀b😀c\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["﻿bomİstanbul"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"﻿bomİstanbul\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["日本語のテキストhello"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"日本語のテキストhello\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["日本語のテキストhello world"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"日本語のテキストhello world\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":[":é"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \":é\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["﻿bom日本語のテキスト"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"﻿bom日本語のテキスト\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["ünïcödéstraße"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"ünïcödéstraße\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["a:b:ca.b.c"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"a:b:ca.b.c\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["日本語のテキストabc"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"日本語のテキストabc\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["ΣΊΣΥΦΟΣ{name} has {count} items"],"error":"Expected a value with a length of at most 24, got \"ΣΊΣΥΦΟΣ{name} has {count} items\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["a.b.c  padded  "],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"a.b.c  padded  \"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["tab\tseparatedstraße"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"tab\\tseparatedstraße\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["﻿bomé"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"﻿bomé\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["./x/**/*.jsonstraße"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"./x/**/*.jsonstraße\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["  padded  tab\tseparated"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"  padded  tab\\tseparated\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["a..bHELLO"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"a..bHELLO\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["aa😀b😀c"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"aa😀b😀c\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["trailing..leading"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"trailing..leading\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["./x/**/*.jsonünïcödé"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"./x/**/*.jsonünïcödé\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["ns:key.pathtrailing."],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"ns:key.pathtrailing.\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["src/a/b.tsa..b"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"src/a/b.tsa..b\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["src/a/b.tsa😀b😀c"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"src/a/b.tsa😀b😀c\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["a..b日本語のテキスト"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"a..b日本語のテキスト\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["hello world日本語のテキスト"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"hello world日本語のテキスト\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["Hello WorldΣΊΣΥΦΟΣ"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"Hello WorldΣΊΣΥΦΟΣ\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["straßeİstanbul"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"straßeİstanbul\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["aba:b:c"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"aba:b:c\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["abchello world"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"abchello world\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["ünïcödé.leading"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"ünïcödé.leading\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["Hello Worldsrc/a/b.ts"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"Hello Worldsrc/a/b.ts\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["😀a..b"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"😀a..b\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["ΣΊΣΥΦΟΣemoji 👍🏽 mix"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"ΣΊΣΥΦΟΣemoji 👍🏽 mix\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["trailing.straße"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"trailing.straße\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["tab\tseparatedHELLO"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"tab\\tseparatedHELLO\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["hello worlda..b"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"hello worlda..b\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["a:"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"a:\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["ns:key.pathhello world"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"ns:key.pathhello world\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["tab\tseparatedab"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"tab\\tseparatedab\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["abünïcödé"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"abünïcödé\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["éa😀b😀c"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"éa😀b😀c\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["ΣΊΣΥΦΟΣline1\nline2"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"ΣΊΣΥΦΟΣline1\\nline2\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["  padded  hello world"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"  padded  hello world\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["helloabc"],"ok":"script.helloabc.run"}
+{"fn":"commandForProjectScript","args":["é.leading"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"é.leading\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["ΣΊΣΥΦΟΣΣΊΣΥΦΟΣ"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"ΣΊΣΥΦΟΣΣΊΣΥΦΟΣ\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["abcΣΊΣΥΦΟΣ"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"abcΣΊΣΥΦΟΣ\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":[".leading.leading"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \".leading.leading\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["trailing.ünïcödé"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"trailing.ünïcödé\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["a:b:cΣΊΣΥΦΟΣ"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"a:b:cΣΊΣΥΦΟΣ\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["a..ba"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"a..ba\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["😀Hello World"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"😀Hello World\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["ünïcödéé"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"ünïcödéé\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["ns:key.path{name} has {count} items"],"error":"Expected a value with a length of at most 24, got \"ns:key.path{name} has {count} items\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["a.b.ckey_name-1"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"a.b.ckey_name-1\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["  padded    padded  "],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"  padded    padded  \"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["a😀b😀cHELLO"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"a😀b😀cHELLO\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["ns:key.patha..b"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"ns:key.patha..b\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["tab\tseparatedünïcödé"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"tab\\tseparatedünïcödé\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["ns:key.pathé"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"ns:key.pathé\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["  padded  hello"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"  padded  hello\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["😀:"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"😀:\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["HELLO{name} has {count} items"],"error":"Expected a value with a length of at most 24, got \"HELLO{name} has {count} items\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["😀a😀b😀c"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"😀a😀b😀c\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["ΣΊΣΥΦΟΣ  padded  "],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"ΣΊΣΥΦΟΣ  padded  \"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["İstanbulHELLO"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"İstanbulHELLO\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["İstanbulab"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"İstanbulab\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["😀.leading"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"😀.leading\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["emoji 👍🏽 mixemoji 👍🏽 mix"],"error":"Expected a value with a length of at most 24, got \"emoji 👍🏽 mixemoji 👍🏽 mix\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["a:b:cns:key.path"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"a:b:cns:key.path\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":[":hello"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \":hello\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["abemoji 👍🏽 mix"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"abemoji 👍🏽 mix\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["trailing.HELLO"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"trailing.HELLO\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["key_name-1src/a/b.ts"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"key_name-1src/a/b.ts\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["ns:key.patha:b:c"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"ns:key.patha:b:c\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["emoji 👍🏽 mixkey_name-1"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"emoji 👍🏽 mixkey_name-1\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["ns:key.pathHello World"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"ns:key.pathHello World\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["ns:key.path.leading"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"ns:key.path.leading\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["héllo wörld"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"héllo wörld\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["👍🏽 thumbs"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"👍🏽 thumbs\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["日本語"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"日本語\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["ılık ırmak"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"ılık ırmak\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["👨‍👩‍👧 family"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"👨‍👩‍👧 family\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["a b"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"a b\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["a😀b"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"a😀b\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["a²b x½ y①"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"a²b x½ y①\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["aⅠb Ⅻ"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"aⅠb Ⅻ\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["a𐐀b 𝐀bc"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"a𐐀b 𝐀bc\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["कि ٣٤"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"कि ٣٤\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["Iı İi"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"Iı İi\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["K K k"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"K K k\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["ſ s S"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"ſ s S\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["x‍y 👨‍👩‍👧"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"x‍y 👨‍👩‍👧\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["a b c　d"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"a b c　d\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["١٢٣ ٤٥"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"١٢٣ ٤٥\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["𝟘𝟙 ²³"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"𝟘𝟙 ²³\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["snake_case foo-bar o'neil"],"error":"Expected a value with a length of at most 24, got \"snake_case foo-bar o'neil\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["ǅungla Ǆ"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"ǅungla Ǆ\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["one\r\ntwo threefour"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"one\\r\\ntwo threefour\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["café café"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"café café\"\n  at [1]"}
+{"fn":"commandForProjectScript","args":["ΣΑΣ σας ς"],"error":"Expected a string matching the RegExp ^[a-z0-9][a-z0-9-]*$, got \"ΣΑΣ σας ς\"\n  at [1]"}
+{"fn":"projectScriptIdFromCommand","args":["İstanbul"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["a"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["emoji 👍🏽 mix"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["a😀b😀cHELLO"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["Hello Worldab"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":[".leading"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["tab\tseparated"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["ΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["line1\nline2"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["ΣΊΣΥΦΟΣhello world"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["./x/**/*.json"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["src/a/b.ts"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["a.b.c"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["hello world"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["straße./x/**/*.json"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":[":"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["日本語のテキスト"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["﻿bom"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["é"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["abtrailing."],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["hello world  padded  "],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["ns:key.path"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["key_name-1"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":[""],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["Hello World"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["ΣΊΣΥΦΟΣab"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["a..b"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["abünïcödé"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["日本語のテキストa.b.c"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["a:b:cemoji 👍🏽 mix"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["HELLO"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["ünïcödé"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["abc.leading"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["ab"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["abcabc"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["{name} has {count} items"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["a..ba..b"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["line1\nline2:"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["a:b:c"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["src/a/b.tsabc"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["./x/**/*.jsonhello"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["日本語のテキストemoji 👍🏽 mix"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["./x/**/*.jsonΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["trailing.a😀b😀c"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["./x/**/*.jsonHELLO"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["straße"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["a😀b😀c"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["trailing.tab\tseparated"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["  padded  "],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":[":.leading"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["﻿bom  padded  "],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["😀"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["abcünïcödé"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["./x/**/*.jsonsrc/a/b.ts"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["tab\tseparated./x/**/*.json"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["﻿bom./x/**/*.json"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["line1\nline2./x/**/*.json"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["abc"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["trailing."],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["ns:key.pathİstanbul"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["straßeé"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["./x/**/*.jsona😀b😀c"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["a:b:cHello World"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["key_name-1abc"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":[":ünïcödé"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["hello"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["::"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["HELLOHello World"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["İstanbulline1\nline2"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["src/a/b.tsns:key.path"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["abc  padded  "],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["src/a/b.tsa..b"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["Hello Worldstraße"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["a😀b😀ctab\tseparated"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":[":HELLO"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["aa:b:c"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["trailing.HELLO"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["abcİstanbul"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["ünïcödé  padded  "],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["hello worldHELLO"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["straßekey_name-1"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["a:b:c  padded  "],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["İstanbul{name} has {count} items"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["éİstanbul"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["a.b.cHello World"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["abemoji 👍🏽 mix"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["trailing.src/a/b.ts"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["HELLOns:key.path"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["ab  padded  "],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["tab\tseparateda"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["emoji 👍🏽 mixİstanbul"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["trailing.ab"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["emoji 👍🏽 mix.leading"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["emoji 👍🏽 mix{name} has {count} items"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["a..bHELLO"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["a.b.cünïcödé"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":[":  padded  "],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["a:b:cline1\nline2"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["emoji 👍🏽 mixhello world"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["HELLO日本語のテキスト"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["tab\tseparatedstraße"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["HELLO😀"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["aba😀b😀c"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["  padded  straße"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["😀a..b"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["  padded  Hello World"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["a..b:"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["emoji 👍🏽 mixsrc/a/b.ts"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["ΣΊΣΥΦΟΣHello World"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["line1\nline2a😀b😀c"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["  padded  İstanbul"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["src/a/b.tsab"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["😀straße"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["aba:b:c"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["src/a/b.tskey_name-1"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["😀:"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["hellotab\tseparated"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["{name} has {count} itemsHELLO"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["line1\nline2﻿bom"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":[":line1\nline2"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["straße﻿bom"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["﻿bomemoji 👍🏽 mix"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["İstanbula"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["a😀"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["éa..b"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["Hello Worlda😀b😀c"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["HELLOa😀b😀c"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["日本語のテキストa:b:c"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["abc😀"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["./x/**/*.jsonab"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["  padded  ﻿bom"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["src/a/b.ts日本語のテキスト"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["😀a"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["Hello Worlda:b:c"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["Hello WorldHello World"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["ékey_name-1"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["aba..b"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["line1\nline2İstanbul"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":[".leadingİstanbul"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["  padded  trailing."],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["{name} has {count} itemsünïcödé"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["src/a/b.tsünïcödé"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["ns:key.path😀"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["İstanbulünïcödé"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["./x/**/*.jsonhello world"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["  padded  .leading"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["😀hello"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["abc:"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["ns:key.pathab"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["ababc"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":[".leadingab"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["tab\tseparatedline1\nline2"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["İstanbulİstanbul"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["{name} has {count} items😀"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["hello worldemoji 👍🏽 mix"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["a.b.cHELLO"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["Hello Worldünïcödé"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["日本語のテキストabc"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["a😀b😀csrc/a/b.ts"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["Hello Worldhello world"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["hellotrailing."],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":[":{name} has {count} items"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["line1\nline2😀"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["tab\tseparatedkey_name-1"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["  padded    padded  "],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["a..bline1\nline2"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["ΣΊΣΥΦΟΣ日本語のテキスト"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["HELLOé"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["éa.b.c"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["emoji 👍🏽 mix:"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["ns:key.pathkey_name-1"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["aa..b"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["emoji 👍🏽 mixkey_name-1"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["ns:key.path{name} has {count} items"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["src/a/b.tsa"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["a.b.c😀"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["{name} has {count} items:"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["./x/**/*.jsonns:key.path"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["a:b:ca"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["😀./x/**/*.json"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["key_name-1ab"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["ΣΊΣΥΦΟΣ.leading"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["hellokey_name-1"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["hello world:"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["a😀b😀cΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["a..bns:key.path"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["a.b.cΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["ahello"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["key_name-1a"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["straße  padded  "],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["a😀b😀ckey_name-1"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["a.b.ca"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["ünïcödéhello world"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["日本語のテキストtrailing."],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["  padded  emoji 👍🏽 mix"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["a😀b😀cabc"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["ns:key.pathtab\tseparated"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["a:b:cab"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["a:b:cİstanbul"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["src/a/b.ts  padded  "],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["héllo wörld"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["👍🏽 thumbs"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["日本語"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["ılık ırmak"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["👨‍👩‍👧 family"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["a b"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["a😀b"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["a²b x½ y①"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["aⅠb Ⅻ"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["a𐐀b 𝐀bc"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["कि ٣٤"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["Iı İi"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["K K k"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["ſ s S"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["x‍y 👨‍👩‍👧"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["a b c　d"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["١٢٣ ٤٥"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["𝟘𝟙 ²³"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["snake_case foo-bar o'neil"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["ǅungla Ǆ"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["one\r\ntwo threefour"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["café café"],"ok":null}
+{"fn":"projectScriptIdFromCommand","args":["ΣΑΣ σας ς"],"ok":null}
+{"fn":"nextProjectScriptId","args":["  padded  ",0],"ok":"padded"}
+{"fn":"nextProjectScriptId","args":["src/a/b.ts",{"a":"b"}],"ok":"src-a-b-ts"}
+{"fn":"nextProjectScriptId","args":["src/a/b.ts",[]],"ok":"src-a-b-ts"}
+{"fn":"nextProjectScriptId","args":["{name} has {count} items",{"a":{"b":"c"}}],"ok":"name-has-count-items"}
+{"fn":"nextProjectScriptId","args":["straße",0],"ok":"stra-e"}
+{"fn":"nextProjectScriptId","args":["./x/**/*.jsonkey_name-1",{"a":"b"}],"ok":"x-jsonkey-name-1"}
+{"fn":"nextProjectScriptId","args":["trailing.",["a",1]],"ok":"trailing"}
+{"fn":"nextProjectScriptId","args":["./x/**/*.json",null],"error":"object null is not iterable (cannot read property Symbol(Symbol.iterator))"}
+{"fn":"nextProjectScriptId","args":["ns:key.path",[]],"ok":"ns-key-path"}
+{"fn":"nextProjectScriptId","args":["ünïcödé",null],"error":"object null is not iterable (cannot read property Symbol(Symbol.iterator))"}
+{"fn":"nextProjectScriptId","args":["tab\tseparated",{}],"ok":"tab-separated"}
+{"fn":"nextProjectScriptId","args":["a:b:c",{"a":{"b":"c"}}],"ok":"a-b-c"}
+{"fn":"nextProjectScriptId","args":["{name} has {count} items",{}],"ok":"name-has-count-items"}
+{"fn":"nextProjectScriptId","args":["abc",{"a":"b"}],"ok":"abc"}
+{"fn":"nextProjectScriptId","args":["a.b.c",{}],"ok":"a-b-c"}
+{"fn":"nextProjectScriptId","args":["  padded  ",{"a":"b"}],"ok":"padded"}
+{"fn":"nextProjectScriptId","args":[".leading",[]],"ok":"leading"}
+{"fn":"nextProjectScriptId","args":["tab\tseparated",null],"error":"object null is not iterable (cannot read property Symbol(Symbol.iterator))"}
+{"fn":"nextProjectScriptId","args":["line1\nline2",[]],"ok":"line1-line2"}
+{"fn":"nextProjectScriptId","args":["straßeΣΊΣΥΦΟΣ",{}],"ok":"stra-e"}
+{"fn":"nextProjectScriptId","args":["line1\nline2",{}],"ok":"line1-line2"}
+{"fn":"nextProjectScriptId","args":["hello world",{"a":{"b":"c"}}],"ok":"hello-world"}
+{"fn":"nextProjectScriptId","args":["helloa",[]],"ok":"helloa"}
+{"fn":"nextProjectScriptId","args":["é",[]],"ok":"e"}
+{"fn":"nextProjectScriptId","args":["emoji 👍🏽 mix",{"a":{"b":"c"}}],"ok":"emoji-mix"}
+{"fn":"nextProjectScriptId","args":[":",["a",1]],"ok":"script"}
+{"fn":"nextProjectScriptId","args":["a",{}],"ok":"a"}
+{"fn":"nextProjectScriptId","args":["{name} has {count} itemsabc",{}],"ok":"name-has-count-itemsabc"}
+{"fn":"nextProjectScriptId","args":["emoji 👍🏽 mix",[]],"ok":"emoji-mix"}
+{"fn":"nextProjectScriptId","args":[".leading",{}],"ok":"leading"}
+{"fn":"nextProjectScriptId","args":["X","x"],"ok":"x-2"}
+{"fn":"nextProjectScriptId","args":["日本語のテキスト",{}],"ok":"script"}
+{"fn":"nextProjectScriptId","args":["line1\nline2",true],"ok":"line1-line2"}
+{"fn":"nextProjectScriptId","args":[":",{"a":"b"}],"ok":"script"}
+{"fn":"nextProjectScriptId","args":["./x/**/*.json",0],"ok":"x-json"}
+{"fn":"nextProjectScriptId","args":["İstanbul",{"a":{"b":"c"}}],"ok":"i-stanbul"}
+{"fn":"nextProjectScriptId","args":["straße",{"a":{"b":"c"}}],"ok":"stra-e"}
+{"fn":"nextProjectScriptId","args":["ΣΊΣΥΦΟΣ",{"a":"b"}],"ok":"script"}
+{"fn":"nextProjectScriptId","args":["a😀b😀c",true],"ok":"a-b-c"}
+{"fn":"nextProjectScriptId","args":["trailing.",[]],"ok":"trailing"}
+{"fn":"nextProjectScriptId","args":["./x/**/*.jsonemoji 👍🏽 mix",["a",1]],"ok":"x-jsonemoji-mix"}
+{"fn":"nextProjectScriptId","args":["key_name-1",{"a":"b"}],"ok":"key-name-1"}
+{"fn":"nextProjectScriptId","args":["Hello World",["a",1]],"ok":"hello-world"}
+{"fn":"nextProjectScriptId","args":["a:b:c",true],"ok":"a-b-c"}
+{"fn":"nextProjectScriptId","args":["key_name-1",{"a":{"b":"c"}}],"ok":"key-name-1"}
+{"fn":"nextProjectScriptId","args":["ab",["a",1]],"ok":"ab"}
+{"fn":"nextProjectScriptId","args":[":é",{"a":{"b":"c"}}],"ok":"e"}
+{"fn":"nextProjectScriptId","args":["ab",[]],"ok":"ab"}
+{"fn":"nextProjectScriptId","args":["a..b",[]],"ok":"a-b"}
+{"fn":"nextProjectScriptId","args":["",{"a":"b"}],"ok":"script"}
+{"fn":"nextProjectScriptId","args":["line1\nline2tab\tseparated","x"],"ok":"line1-line2tab-separated"}
+{"fn":"nextProjectScriptId","args":["a😀b😀c",0],"ok":"a-b-c"}
+{"fn":"nextProjectScriptId","args":["😀",null],"error":"object null is not iterable (cannot read property Symbol(Symbol.iterator))"}
+{"fn":"nextProjectScriptId","args":["﻿bomé",{"a":"b"}],"ok":"bome"}
+{"fn":"nextProjectScriptId","args":["日本語のテキスト",0],"ok":"script"}
+{"fn":"nextProjectScriptId","args":["﻿bom",true],"ok":"bom"}
+{"fn":"nextProjectScriptId","args":["key_name-1",{}],"ok":"key-name-1"}
+{"fn":"nextProjectScriptId","args":["trailing.",{}],"ok":"trailing"}
+{"fn":"nextProjectScriptId","args":["İstanbul",0],"ok":"i-stanbul"}
+{"fn":"nextProjectScriptId","args":["a:b:c",null],"error":"object null is not iterable (cannot read property Symbol(Symbol.iterator))"}
+{"fn":"nextProjectScriptId","args":["😀","x"],"ok":"script"}
+{"fn":"nextProjectScriptId","args":["ns:key.path",true],"ok":"ns-key-path"}
+{"fn":"nextProjectScriptId","args":["hello world",{}],"ok":"hello-world"}
+{"fn":"nextProjectScriptId","args":["﻿bomemoji 👍🏽 mix",["a",1]],"ok":"bomemoji-mix"}
+{"fn":"nextProjectScriptId","args":["a..b",["a",1]],"ok":"a-b"}
+{"fn":"nextProjectScriptId","args":["HELLOa.b.c",{}],"ok":"helloa-b-c"}
+{"fn":"nextProjectScriptId","args":["straße",null],"error":"object null is not iterable (cannot read property Symbol(Symbol.iterator))"}
+{"fn":"nextProjectScriptId","args":["ünïcödéstraße",{"a":"b"}],"ok":"n-c-d-stra-e"}
+{"fn":"nextProjectScriptId","args":["﻿bom",[]],"ok":"bom"}
+{"fn":"nextProjectScriptId","args":["straße","x"],"ok":"stra-e"}
+{"fn":"nextProjectScriptId","args":["  padded  ",["a",1]],"ok":"padded"}
+{"fn":"nextProjectScriptId","args":["a:b:c","b:"],"ok":"a-b-c"}
+{"fn":"nextProjectScriptId","args":["😀",["a",1]],"ok":"script"}
+{"fn":"nextProjectScriptId","args":["é",true],"ok":"e"}
+{"fn":"nextProjectScriptId","args":["emoji 👍🏽 mix",true],"ok":"emoji-mix"}
+{"fn":"nextProjectScriptId","args":["ΣΊΣΥΦΟΣ",{}],"ok":"script"}
+{"fn":"nextProjectScriptId","args":["İstanbula:b:c",[]],"ok":"i-stanbula-b-c"}
+{"fn":"nextProjectScriptId","args":["line1\nline2",{"a":"b"}],"ok":"line1-line2"}
+{"fn":"nextProjectScriptId","args":["./x/**/*.json","x"],"ok":"x-json"}
+{"fn":"nextProjectScriptId","args":["a:b:cünïcödé",{"a":"b"}],"ok":"a-b-c-n-c-d"}
+{"fn":"nextProjectScriptId","args":["hello world",null],"error":"object null is not iterable (cannot read property Symbol(Symbol.iterator))"}
+{"fn":"nextProjectScriptId","args":["key_name-1","x"],"ok":"key-name-1"}
+{"fn":"nextProjectScriptId","args":["hello",{}],"ok":"hello"}
+{"fn":"nextProjectScriptId","args":["😀",true],"ok":"script"}
+{"fn":"nextProjectScriptId","args":["İstanbul",["a",1]],"ok":"i-stanbul"}
+{"fn":"nextProjectScriptId","args":["a.b.c  padded  ",{"a":{"b":"c"}}],"ok":"a-b-c-padded"}
+{"fn":"nextProjectScriptId","args":["Hello World  padded  ",{"a":"b"}],"ok":"hello-world-padded"}
+{"fn":"nextProjectScriptId","args":["a.b.ca..b",["a",1]],"ok":"a-b-ca-b"}
+{"fn":"nextProjectScriptId","args":["src/a/b.ts",0],"ok":"src-a-b-ts"}
+{"fn":"nextProjectScriptId","args":["ab",{}],"ok":"ab"}
+{"fn":"nextProjectScriptId","args":["a😀b😀cab",["a",1]],"ok":"a-b-cab"}
+{"fn":"nextProjectScriptId","args":["key_name-1",[]],"ok":"key-name-1"}
+{"fn":"nextProjectScriptId","args":["hello",null],"error":"object null is not iterable (cannot read property Symbol(Symbol.iterator))"}
+{"fn":"nextProjectScriptId","args":["日本語のテキストns:key.path",{}],"ok":"ns-key-path"}
+{"fn":"nextProjectScriptId","args":["Hello World",{}],"ok":"hello-world"}
+{"fn":"nextProjectScriptId","args":["hello worlda😀b😀c",{"a":"b"}],"ok":"hello-worlda-b-c"}
+{"fn":"nextProjectScriptId","args":[".leading",0],"ok":"leading"}
+{"fn":"nextProjectScriptId","args":["abc",{"a":{"b":"c"}}],"ok":"abc"}
+{"fn":"nextProjectScriptId","args":["line1\nline2é",true],"ok":"line1-line2e"}
+{"fn":"nextProjectScriptId","args":["trailing.",{"a":"b"}],"ok":"trailing"}
+{"fn":"nextProjectScriptId","args":["src/a/b.tshello",null],"error":"object null is not iterable (cannot read property Symbol(Symbol.iterator))"}
+{"fn":"nextProjectScriptId","args":["src/a/b.ts",{"a":{"b":"c"}}],"ok":"src-a-b-ts"}
+{"fn":"nextProjectScriptId","args":[".leading",null],"error":"object null is not iterable (cannot read property Symbol(Symbol.iterator))"}
+{"fn":"nextProjectScriptId","args":["é",["a",1]],"ok":"e"}
+{"fn":"nextProjectScriptId","args":["hello world",0],"ok":"hello-world"}
+{"fn":"nextProjectScriptId","args":["hello",{"a":{"b":"c"}}],"ok":"hello"}
+{"fn":"nextProjectScriptId","args":["",{}],"ok":"script"}
+{"fn":"nextProjectScriptId","args":["src/a/b.ts",{}],"ok":"src-a-b-ts"}
+{"fn":"nextProjectScriptId","args":["straße",{}],"ok":"stra-e"}
+{"fn":"nextProjectScriptId","args":["a.b.c",true],"ok":"a-b-c"}
+{"fn":"nextProjectScriptId","args":["a😀b😀c",[]],"ok":"a-b-c"}
+{"fn":"nextProjectScriptId","args":["./x/**/*.jsontrailing.",["a",1]],"ok":"x-jsontrailing"}
+{"fn":"nextProjectScriptId","args":["","x"],"ok":"script"}
+{"fn":"nextProjectScriptId","args":[":a..b",[]],"ok":"a-b"}
+{"fn":"nextProjectScriptId","args":["key_name-1",0],"ok":"key-name-1"}
+{"fn":"nextProjectScriptId","args":["é","x"],"ok":"e"}
+{"fn":"nextProjectScriptId","args":[":",{}],"ok":"script"}
+{"fn":"nextProjectScriptId","args":["tab\tseparated","x"],"ok":"tab-separated"}
+{"fn":"nextProjectScriptId","args":["HELLOab",true],"ok":"helloab"}
+{"fn":"nextProjectScriptId","args":["a:b:c  padded  ",["a",1]],"ok":"a-b-c-padded"}
+{"fn":"nextProjectScriptId","args":["hello",true],"ok":"hello"}
+{"fn":"nextProjectScriptId","args":["ab",{"a":"b"}],"ok":"ab"}
+{"fn":"nextProjectScriptId","args":["key_name-1",["a",1]],"ok":"key-name-1"}
+{"fn":"nextProjectScriptId","args":["a",0],"ok":"a"}
+{"fn":"nextProjectScriptId","args":[".leading",true],"ok":"leading"}
+{"fn":"nextProjectScriptId","args":["a..b",null],"error":"object null is not iterable (cannot read property Symbol(Symbol.iterator))"}
+{"fn":"nextProjectScriptId","args":["tab\tseparated",{"a":"b"}],"ok":"tab-separated"}
+{"fn":"nextProjectScriptId","args":["a..b",true],"ok":"a-b"}
+{"fn":"nextProjectScriptId","args":["HELLO",[]],"ok":"hello"}
+{"fn":"nextProjectScriptId","args":["Hello World",{"a":"b"}],"ok":"hello-world"}
+{"fn":"nextProjectScriptId","args":["hello",[]],"ok":"hello"}
+{"fn":"nextProjectScriptId","args":["a:b:c",{}],"ok":"a-b-c"}
+{"fn":"nextProjectScriptId","args":["src/a/b.tshello",[]],"ok":"src-a-b-tshello"}
+{"fn":"nextProjectScriptId","args":["line1\nline2",null],"error":"object null is not iterable (cannot read property Symbol(Symbol.iterator))"}
+{"fn":"nextProjectScriptId","args":["src/a/b.ts","x"],"ok":"src-a-b-ts"}
+{"fn":"nextProjectScriptId","args":["trailing.",0],"ok":"trailing"}
+{"fn":"nextProjectScriptId","args":["a.b.cab",[]],"ok":"a-b-cab"}
+{"fn":"nextProjectScriptId","args":["İstanbul",{}],"ok":"i-stanbul"}
+{"fn":"nextProjectScriptId","args":["  padded  ",true],"ok":"padded"}
+{"fn":"nextProjectScriptId","args":["ab{name} has {count} items",null],"error":"object null is not iterable (cannot read property Symbol(Symbol.iterator))"}
+{"fn":"nextProjectScriptId","args":["日本語のテキスト",null],"error":"object null is not iterable (cannot read property Symbol(Symbol.iterator))"}
+{"fn":"nextProjectScriptId","args":["a.b.c",{"a":"b"}],"ok":"a-b-c"}
+{"fn":"nextProjectScriptId","args":["ünïcödé",{"a":{"b":"c"}}],"ok":"n-c-d"}
+{"fn":"nextProjectScriptId","args":["a",[]],"ok":"a"}
+{"fn":"nextProjectScriptId","args":["trailing..leading",{}],"ok":"trailing-leading"}
+{"fn":"nextProjectScriptId","args":["é",0],"ok":"e"}
+{"fn":"nextProjectScriptId","args":["ns:key.path",{}],"ok":"ns-key-path"}
+{"fn":"nextProjectScriptId","args":["{name} has {count} itemsHELLO",["a",1]],"ok":"name-has-count-itemshell"}
+{"fn":"nextProjectScriptId","args":["a..b","x"],"ok":"a-b"}
+{"fn":"nextProjectScriptId","args":["a.b.c.leading",{}],"ok":"a-b-c-leading"}
+{"fn":"nextProjectScriptId","args":["ünïcödé","x"],"ok":"n-c-d"}
+{"fn":"nextProjectScriptId","args":["{name} has {count} items",["a",1]],"ok":"name-has-count-items"}
+{"fn":"nextProjectScriptId","args":["a..b",0],"ok":"a-b"}
+{"fn":"nextProjectScriptId","args":["trailing.",true],"ok":"trailing"}
+{"fn":"nextProjectScriptId","args":["ns:key.path",{"a":{"b":"c"}}],"ok":"ns-key-path"}
+{"fn":"nextProjectScriptId","args":["ns:key.path:",{"a":{"b":"c"}}],"ok":"ns-key-path"}
+{"fn":"nextProjectScriptId","args":["日本語のテキスト",{"a":"b"}],"ok":"script"}
+{"fn":"nextProjectScriptId","args":["HELLO",{}],"ok":"hello"}
+{"fn":"nextProjectScriptId","args":["ns:key.path",{"a":"b"}],"ok":"ns-key-path"}
+{"fn":"nextProjectScriptId","args":["abchello",{"a":"b"}],"ok":"abchello"}
+{"fn":"nextProjectScriptId","args":["ΣΊΣΥΦΟΣ:",true],"ok":"script"}
+{"fn":"nextProjectScriptId","args":["﻿bom😀","x"],"ok":"bom"}
+{"fn":"nextProjectScriptId","args":["Hello World日本語のテキスト",{"a":{"b":"c"}}],"ok":"hello-world"}
+{"fn":"nextProjectScriptId","args":["src/a/b.ts:",["a",1]],"ok":"src-a-b-ts"}
+{"fn":"nextProjectScriptId","args":["Hello World",[]],"ok":"hello-world"}
+{"fn":"nextProjectScriptId","args":["a.b.c",0],"ok":"a-b-c"}
+{"fn":"nextProjectScriptId","args":["😀",0],"ok":"script"}
+{"fn":"nextProjectScriptId","args":["  padded  key_name-1",[]],"ok":"padded-key-name-1"}
+{"fn":"nextProjectScriptId","args":["ab",0],"ok":"ab"}
+{"fn":"nextProjectScriptId","args":["Hello World",null],"error":"object null is not iterable (cannot read property Symbol(Symbol.iterator))"}
+{"fn":"nextProjectScriptId","args":["😀",{"a":"b"}],"ok":"script"}
+{"fn":"nextProjectScriptId","args":["tab\tseparated",0],"ok":"tab-separated"}
+{"fn":"nextProjectScriptId","args":[":src/a/b.ts",0],"ok":"src-a-b-ts"}
+{"fn":"nextProjectScriptId","args":["./x/**/*.jsonabc",{"a":{"b":"c"}}],"ok":"x-jsonabc"}
+{"fn":"nextProjectScriptId","args":["tab\tseparated",["a",1]],"ok":"tab-separated"}
+{"fn":"nextProjectScriptId","args":["é日本語のテキスト",null],"error":"object null is not iterable (cannot read property Symbol(Symbol.iterator))"}
+{"fn":"nextProjectScriptId","args":["emoji 👍🏽 mix",["a",1]],"ok":"emoji-mix"}
+{"fn":"nextProjectScriptId","args":["a😀b😀c","x"],"ok":"a-b-c"}
+{"fn":"nextProjectScriptId","args":[".leadingHELLO",["a",1]],"ok":"leadinghello"}
+{"fn":"nextProjectScriptId","args":["a:b:c",[]],"ok":"a-b-c"}
+{"fn":"nextProjectScriptId","args":["ünïcödé",{"a":"b"}],"ok":"n-c-d"}
+{"fn":"nextProjectScriptId","args":["./x/**/*.json",{}],"ok":"x-json"}
+{"fn":"nextProjectScriptId","args":["ünïcödé",["a",1]],"ok":"n-c-d"}
+{"fn":"nextProjectScriptId","args":["line1\nline2",["a",1]],"ok":"line1-line2"}
+{"fn":"nextProjectScriptId","args":["tab\tseparated",true],"ok":"tab-separated"}
+{"fn":"nextProjectScriptId","args":["./x/**/*.json",["a",1]],"ok":"x-json"}
+{"fn":"nextProjectScriptId","args":["ns:key.path",["a",1]],"ok":"ns-key-path"}
+{"fn":"nextProjectScriptId","args":["  padded  ./x/**/*.json",null],"error":"object null is not iterable (cannot read property Symbol(Symbol.iterator))"}
+{"fn":"nextProjectScriptId","args":["HELLOHello World",["a",1]],"ok":"hellohello-world"}
+{"fn":"nextProjectScriptId","args":["  padded  ünïcödé",{}],"ok":"padded-n-c-d"}
+{"fn":"nextProjectScriptId","args":["./x/**/*.json",{"a":"b"}],"ok":"x-json"}
+{"fn":"nextProjectScriptId","args":["é",null],"error":"object null is not iterable (cannot read property Symbol(Symbol.iterator))"}
+{"fn":"nextProjectScriptId","args":["abc",null],"error":"object null is not iterable (cannot read property Symbol(Symbol.iterator))"}
+{"fn":"nextProjectScriptId","args":["  padded  ",null],"error":"object null is not iterable (cannot read property Symbol(Symbol.iterator))"}
+{"fn":"nextProjectScriptId","args":[".leading:",true],"ok":"leading"}
+{"fn":"nextProjectScriptId","args":["{name} has {count} items",[]],"ok":"name-has-count-items"}
+{"fn":"nextProjectScriptId","args":["hello","x"],"ok":"hello"}
+{"fn":"nextProjectScriptId","args":["a",null],"error":"object null is not iterable (cannot read property Symbol(Symbol.iterator))"}
+{"fn":"nextProjectScriptId","args":["İstanbul",true],"ok":"i-stanbul"}
+{"fn":"nextProjectScriptId","args":["ünïcödé",[]],"ok":"n-c-d"}
+{"fn":"nextProjectScriptId","args":["héllo wörld",0],"ok":"h-llo-w-rld"}
+{"fn":"nextProjectScriptId","args":["👍🏽 thumbs",0],"ok":"thumbs"}
+{"fn":"nextProjectScriptId","args":["日本語",0],"ok":"script"}
+{"fn":"nextProjectScriptId","args":["",0],"ok":"script"}
+{"fn":"nextProjectScriptId","args":["ılık ırmak",0],"ok":"l-k-rmak"}
+{"fn":"nextProjectScriptId","args":["👨‍👩‍👧 family",0],"ok":"family"}
+{"fn":"nextProjectScriptId","args":["a b",0],"ok":"a-b"}
+{"fn":"nextProjectScriptId","args":["ΣΊΣΥΦΟΣ",0],"ok":"script"}
+{"fn":"nextProjectScriptId","args":["a😀b",0],"ok":"a-b"}
+{"fn":"nextProjectScriptId","args":["﻿bom",0],"ok":"bom"}
+{"fn":"nextProjectScriptId","args":["a²b x½ y①",0],"ok":"a-b-x-y"}
+{"fn":"nextProjectScriptId","args":["aⅠb Ⅻ",0],"ok":"a-b"}
+{"fn":"nextProjectScriptId","args":["a𐐀b 𝐀bc",0],"ok":"a-b-bc"}
+{"fn":"nextProjectScriptId","args":["कि ٣٤",0],"ok":"script"}
+{"fn":"nextProjectScriptId","args":["Iı İi",0],"ok":"i-i-i"}
+{"fn":"nextProjectScriptId","args":["K K k",0],"ok":"k-k-k"}
+{"fn":"nextProjectScriptId","args":["ſ s S",0],"ok":"s-s"}
+{"fn":"nextProjectScriptId","args":["x‍y 👨‍👩‍👧",0],"ok":"x-y"}
+{"fn":"nextProjectScriptId","args":["a b c　d",0],"ok":"a-b-c-d"}
+{"fn":"nextProjectScriptId","args":["١٢٣ ٤٥",0],"ok":"script"}
+{"fn":"nextProjectScriptId","args":["𝟘𝟙 ²³",0],"ok":"script"}
+{"fn":"nextProjectScriptId","args":["snake_case foo-bar o'neil",0],"ok":"snake-case-foo-bar-o-nei"}
+{"fn":"nextProjectScriptId","args":["ǅungla Ǆ",0],"ok":"ungla"}
+{"fn":"nextProjectScriptId","args":["one\r\ntwo threefour",0],"ok":"one-two-three-four"}
+{"fn":"nextProjectScriptId","args":["café café",0],"ok":"cafe-caf"}
+{"fn":"nextProjectScriptId","args":["ΣΑΣ σας ς",0],"ok":"script"}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"hello world"},"worktreePath":"😀","extraEnv":{"a":"./x/**/*.jsonsrc/a/b.ts","title":"emoji 👍🏽 mix"}}],"ok":{"SYNARA_PROJECT_ROOT":"hello world","SYNARA_WORKTREE_PATH":"😀","a":"./x/**/*.jsonsrc/a/b.ts","title":"emoji 👍🏽 mix"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"a..b"},"worktreePath":null}],"ok":{"SYNARA_PROJECT_ROOT":"a..b"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"﻿bom:"},"worktreePath":"😀","extraEnv":{}}],"ok":{"SYNARA_PROJECT_ROOT":"﻿bom:","SYNARA_WORKTREE_PATH":"😀"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"a😀b😀cHello World"},"worktreePath":null,"extraEnv":{"😀":".leadingstraße","b":"日本語のテキスト./x/**/*.json","nav":"hello world"}}],"ok":{"SYNARA_PROJECT_ROOT":"a😀b😀cHello World","😀":".leadingstraße","b":"日本語のテキスト./x/**/*.json","nav":"hello world"}}
+{"fn":"projectScriptRuntimeEnv","args":[{}],"error":"Cannot read properties of undefined (reading 'cwd')"}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"src/a/b.ts"},"worktreePath":null}],"ok":{"SYNARA_PROJECT_ROOT":"src/a/b.ts"}}
+{"fn":"projectScriptRuntimeEnv","args":[true],"error":"Cannot read properties of undefined (reading 'cwd')"}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"{name} has {count} items"},"extraEnv":{"😀":"a.b.c  padded  ","title":"./x/**/*.jsona.b.c"}}],"ok":{"SYNARA_PROJECT_ROOT":"{name} has {count} items","😀":"a.b.c  padded  ","title":"./x/**/*.jsona.b.c"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"a"},"worktreePath":null}],"ok":{"SYNARA_PROJECT_ROOT":"a"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"abc"},"worktreePath":".leading","extraEnv":{"10":"HELLO","home":""}}],"ok":{"10":"HELLO","SYNARA_PROJECT_ROOT":"abc","SYNARA_WORKTREE_PATH":".leading","home":""}}
+{"fn":"projectScriptRuntimeEnv","args":[{"a":"b"}],"error":"Cannot read properties of undefined (reading 'cwd')"}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"İstanbul"},"worktreePath":null}],"ok":{"SYNARA_PROJECT_ROOT":"İstanbul"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"😀"},"worktreePath":"Hello World","extraEnv":{}}],"ok":{"SYNARA_PROJECT_ROOT":"😀","SYNARA_WORKTREE_PATH":"Hello World"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"a.b.c"},"worktreePath":"straße","extraEnv":{"2":"hello","title":"😀﻿bom","😀":"😀Hello World"}}],"ok":{"2":"hello","SYNARA_PROJECT_ROOT":"a.b.c","SYNARA_WORKTREE_PATH":"straße","title":"😀﻿bom","😀":"😀Hello World"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"日本語のテキスト"},"worktreePath":"Hello World","extraEnv":{"a":"  padded  "}}],"ok":{"SYNARA_PROJECT_ROOT":"日本語のテキスト","SYNARA_WORKTREE_PATH":"Hello World","a":"  padded  "}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"./x/**/*.jsonΣΊΣΥΦΟΣ"},"extraEnv":{"😀":"abcemoji 👍🏽 mix","home":"a:b:c"}}],"ok":{"SYNARA_PROJECT_ROOT":"./x/**/*.jsonΣΊΣΥΦΟΣ","😀":"abcemoji 👍🏽 mix","home":"a:b:c"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"ns:key.path"},"extraEnv":{}}],"ok":{"SYNARA_PROJECT_ROOT":"ns:key.path"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"hello world"},"worktreePath":null,"extraEnv":{"10":"a😀b😀c"}}],"ok":{"10":"a😀b😀c","SYNARA_PROJECT_ROOT":"hello world"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"./x/**/*.json"},"extraEnv":{"home":"İstanbul"}}],"ok":{"SYNARA_PROJECT_ROOT":"./x/**/*.json","home":"İstanbul"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"Hello World"},"extraEnv":{"2":"a:b:c"}}],"ok":{"2":"a:b:c","SYNARA_PROJECT_ROOT":"Hello World"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"ns:key.path"},"worktreePath":null,"extraEnv":{"ünï":"hello"}}],"ok":{"SYNARA_PROJECT_ROOT":"ns:key.path","ünï":"hello"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"trailing."},"worktreePath":null}],"ok":{"SYNARA_PROJECT_ROOT":"trailing."}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"trailing."},"worktreePath":null,"extraEnv":{"nav":"HELLO"}}],"ok":{"SYNARA_PROJECT_ROOT":"trailing.","nav":"HELLO"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"a😀b😀c"},"worktreePath":".leading"}],"ok":{"SYNARA_PROJECT_ROOT":"a😀b😀c","SYNARA_WORKTREE_PATH":".leading"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"é"}}],"ok":{"SYNARA_PROJECT_ROOT":"é"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"é😀"},"worktreePath":null,"extraEnv":{"2":"ΣΊΣΥΦΟΣ","nav":"straße./x/**/*.json"}}],"ok":{"2":"ΣΊΣΥΦΟΣ","SYNARA_PROJECT_ROOT":"é😀","nav":"straße./x/**/*.json"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"  padded  😀"},"worktreePath":null,"extraEnv":{}}],"ok":{"SYNARA_PROJECT_ROOT":"  padded  😀"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":""},"worktreePath":"HELLOline1\nline2"}],"ok":{"SYNARA_PROJECT_ROOT":"","SYNARA_WORKTREE_PATH":"HELLOline1\nline2"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"é"},"worktreePath":"tab\tseparated","extraEnv":{}}],"ok":{"SYNARA_PROJECT_ROOT":"é","SYNARA_WORKTREE_PATH":"tab\tseparated"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"hello world"},"extraEnv":{"10":"line1\nline2"}}],"ok":{"10":"line1\nline2","SYNARA_PROJECT_ROOT":"hello world"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"é"},"worktreePath":"ΣΊΣΥΦΟΣ","extraEnv":{"nav":"a.b.c","a":"./x/**/*.json","a.b":"abc"}}],"ok":{"SYNARA_PROJECT_ROOT":"é","SYNARA_WORKTREE_PATH":"ΣΊΣΥΦΟΣ","nav":"a.b.c","a":"./x/**/*.json","a.b":"abc"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"Hello World"},"worktreePath":"emoji 👍🏽 mix./x/**/*.json"}],"ok":{"SYNARA_PROJECT_ROOT":"Hello World","SYNARA_WORKTREE_PATH":"emoji 👍🏽 mix./x/**/*.json"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"ünïcödé"},"extraEnv":{}}],"ok":{"SYNARA_PROJECT_ROOT":"ünïcödé"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"a😀b😀c"},"worktreePath":"straße","extraEnv":{"2":"key_name-1","ünï":"emoji 👍🏽 mix"}}],"ok":{"2":"key_name-1","SYNARA_PROJECT_ROOT":"a😀b😀c","SYNARA_WORKTREE_PATH":"straße","ünï":"emoji 👍🏽 mix"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"tab\tseparated"},"worktreePath":null,"extraEnv":{"10":"HELLO","title":":"}}],"ok":{"10":"HELLO","SYNARA_PROJECT_ROOT":"tab\tseparated","title":":"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"éé"},"worktreePath":null,"extraEnv":{}}],"ok":{"SYNARA_PROJECT_ROOT":"éé"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"Hello World"}}],"ok":{"SYNARA_PROJECT_ROOT":"Hello World"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"tab\tseparated"},"extraEnv":{"b":"{name} has {count} itemskey_name-1"}}],"ok":{"SYNARA_PROJECT_ROOT":"tab\tseparated","b":"{name} has {count} itemskey_name-1"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":""},"worktreePath":"﻿bom","extraEnv":{"a":"./x/**/*.json﻿bom"}}],"ok":{"SYNARA_PROJECT_ROOT":"","SYNARA_WORKTREE_PATH":"﻿bom","a":"./x/**/*.json﻿bom"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"ΣΊΣΥΦΟΣab"},"worktreePath":null,"extraEnv":{}}],"ok":{"SYNARA_PROJECT_ROOT":"ΣΊΣΥΦΟΣab"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"key_name-1"},"extraEnv":{}}],"ok":{"SYNARA_PROJECT_ROOT":"key_name-1"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"hello world"},"extraEnv":{"10":"straße"}}],"ok":{"10":"straße","SYNARA_PROJECT_ROOT":"hello world"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"line1\nline2"},"worktreePath":"  padded  ","extraEnv":{"😀":"a","a":"ab","home":"hello world"}}],"ok":{"SYNARA_PROJECT_ROOT":"line1\nline2","SYNARA_WORKTREE_PATH":"  padded  ","😀":"a","a":"ab","home":"hello world"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"ünïcödé"},"worktreePath":null}],"ok":{"SYNARA_PROJECT_ROOT":"ünïcödé"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"src/a/b.ts"},"worktreePath":null,"extraEnv":{"nav":"a😀b😀c"}}],"ok":{"SYNARA_PROJECT_ROOT":"src/a/b.ts","nav":"a😀b😀c"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"  padded  "},"worktreePath":"tab\tseparated","extraEnv":{"😀":"a..b","nav":"straße"}}],"ok":{"SYNARA_PROJECT_ROOT":"  padded  ","SYNARA_WORKTREE_PATH":"tab\tseparated","😀":"a..b","nav":"straße"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"straße./x/**/*.json"},"extraEnv":{"b":"😀","a.b":"hello worldhello world","title":"./x/**/*.jsonhello world"}}],"ok":{"SYNARA_PROJECT_ROOT":"straße./x/**/*.json","b":"😀","a.b":"hello worldhello world","title":"./x/**/*.jsonhello world"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"a"},"worktreePath":null,"extraEnv":{}}],"ok":{"SYNARA_PROJECT_ROOT":"a"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"ab"},"worktreePath":null,"extraEnv":{"a.b":"ns:key.path","title":"{name} has {count} items"}}],"ok":{"SYNARA_PROJECT_ROOT":"ab","a.b":"ns:key.path","title":"{name} has {count} items"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"trailing."}}],"ok":{"SYNARA_PROJECT_ROOT":"trailing."}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":".leadingHello World"},"worktreePath":null}],"ok":{"SYNARA_PROJECT_ROOT":".leadingHello World"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"日本語のテキスト"},"worktreePath":"a","extraEnv":{"a.b":"straße"}}],"ok":{"SYNARA_PROJECT_ROOT":"日本語のテキスト","SYNARA_WORKTREE_PATH":"a","a.b":"straße"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"Hello World"},"extraEnv":{"10":"﻿bom","b":"İstanbul","ünï":""}}],"ok":{"10":"﻿bom","SYNARA_PROJECT_ROOT":"Hello World","b":"İstanbul","ünï":""}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"﻿bom"},"extraEnv":{"2":"a😀b😀c","10":"a..b","a.b":"./x/**/*.json"}}],"ok":{"2":"a😀b😀c","10":"a..b","SYNARA_PROJECT_ROOT":"﻿bom","a.b":"./x/**/*.json"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"hello"},"worktreePath":null,"extraEnv":{"ünï":"a😀b😀c"}}],"ok":{"SYNARA_PROJECT_ROOT":"hello","ünï":"a😀b😀c"}}
+{"fn":"projectScriptRuntimeEnv","args":[["a",1]],"error":"Cannot read properties of undefined (reading 'cwd')"}
+{"fn":"projectScriptRuntimeEnv","args":[{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'cwd')"}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"ns:key.pathHello World"},"worktreePath":null,"extraEnv":{"2":"ünïcödé"}}],"ok":{"2":"ünïcödé","SYNARA_PROJECT_ROOT":"ns:key.pathHello World"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"é"},"worktreePath":null,"extraEnv":{"2":"ünïcödé"}}],"ok":{"2":"ünïcödé","SYNARA_PROJECT_ROOT":"é"}}
+{"fn":"projectScriptRuntimeEnv","args":["x"],"error":"Cannot read properties of undefined (reading 'cwd')"}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"straße"},"worktreePath":null,"extraEnv":{"ünï":"tab\tseparated","nav":"😀"}}],"ok":{"SYNARA_PROJECT_ROOT":"straße","ünï":"tab\tseparated","nav":"😀"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"Hello World"},"extraEnv":{"b":"ns:key.path"}}],"ok":{"SYNARA_PROJECT_ROOT":"Hello World","b":"ns:key.path"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"hello world"},"worktreePath":null}],"ok":{"SYNARA_PROJECT_ROOT":"hello world"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"😀"},"extraEnv":{"😀":"a","a":"./x/**/*.jsona:b:c"}}],"ok":{"SYNARA_PROJECT_ROOT":"😀","😀":"a","a":"./x/**/*.jsona:b:c"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"key_name-1é"},"worktreePath":"﻿bom","extraEnv":{"2":"emoji 👍🏽 mix","😀":"hello world"}}],"ok":{"2":"emoji 👍🏽 mix","SYNARA_PROJECT_ROOT":"key_name-1é","SYNARA_WORKTREE_PATH":"﻿bom","😀":"hello world"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":".leading"},"worktreePath":"日本語のテキスト"}],"ok":{"SYNARA_PROJECT_ROOT":".leading","SYNARA_WORKTREE_PATH":"日本語のテキスト"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"ΣΊΣΥΦΟΣ"},"worktreePath":"a","extraEnv":{"😀":"  padded  "}}],"ok":{"SYNARA_PROJECT_ROOT":"ΣΊΣΥΦΟΣ","SYNARA_WORKTREE_PATH":"a","😀":"  padded  "}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"HELLO"},"worktreePath":null,"extraEnv":{"😀":"ΣΊΣΥΦΟΣ","home":"﻿bom"}}],"ok":{"SYNARA_PROJECT_ROOT":"HELLO","😀":"ΣΊΣΥΦΟΣ","home":"﻿bom"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"aba:b:c"},"worktreePath":null}],"ok":{"SYNARA_PROJECT_ROOT":"aba:b:c"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"😀trailing."},"worktreePath":null,"extraEnv":{"home":"a😀b😀c"}}],"ok":{"SYNARA_PROJECT_ROOT":"😀trailing.","home":"a😀b😀c"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":":"},"worktreePath":"hello world","extraEnv":{"b":"key_name-1"}}],"ok":{"SYNARA_PROJECT_ROOT":":","SYNARA_WORKTREE_PATH":"hello world","b":"key_name-1"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"straße"},"worktreePath":"a😀b😀c","extraEnv":{}}],"ok":{"SYNARA_PROJECT_ROOT":"straße","SYNARA_WORKTREE_PATH":"a😀b😀c"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":""},"worktreePath":null}],"ok":{"SYNARA_PROJECT_ROOT":""}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"İstanbul"},"extraEnv":{"home":"é","a.b":"日本語のテキスト"}}],"ok":{"SYNARA_PROJECT_ROOT":"İstanbul","home":"é","a.b":"日本語のテキスト"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"ünïcödéHELLO"},"worktreePath":null}],"ok":{"SYNARA_PROJECT_ROOT":"ünïcödéHELLO"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":":﻿bom"},"worktreePath":null,"extraEnv":{"2":"key_name-1","home":"a..b"}}],"ok":{"2":"key_name-1","SYNARA_PROJECT_ROOT":":﻿bom","home":"a..b"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":".leading"},"extraEnv":{"a":"{name} has {count} items","home":"ab","ünï":"abc"}}],"ok":{"SYNARA_PROJECT_ROOT":".leading","a":"{name} has {count} items","home":"ab","ünï":"abc"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"ab"},"extraEnv":{"10":"ΣΊΣΥΦΟΣ","ünï":"é"}}],"ok":{"10":"ΣΊΣΥΦΟΣ","SYNARA_PROJECT_ROOT":"ab","ünï":"é"}}
+{"fn":"projectScriptRuntimeEnv","args":[[]],"error":"Cannot read properties of undefined (reading 'cwd')"}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"日本語のテキスト"},"worktreePath":null,"extraEnv":{}}],"ok":{"SYNARA_PROJECT_ROOT":"日本語のテキスト"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"é"},"extraEnv":{}}],"ok":{"SYNARA_PROJECT_ROOT":"é"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"./x/**/*.json"},"extraEnv":{"ünï":"﻿bom"}}],"ok":{"SYNARA_PROJECT_ROOT":"./x/**/*.json","ünï":"﻿bom"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"key_name-1"},"worktreePath":"a","extraEnv":{"a":"line1\nline2"}}],"ok":{"SYNARA_PROJECT_ROOT":"key_name-1","SYNARA_WORKTREE_PATH":"a","a":"line1\nline2"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"ns:key.path"},"worktreePath":"Hello World","extraEnv":{"10":"﻿bom"}}],"ok":{"10":"﻿bom","SYNARA_PROJECT_ROOT":"ns:key.path","SYNARA_WORKTREE_PATH":"Hello World"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"ns:key.path  padded  "},"worktreePath":"./x/**/*.json","extraEnv":{"a.b":"ΣΊΣΥΦΟΣ"}}],"ok":{"SYNARA_PROJECT_ROOT":"ns:key.path  padded  ","SYNARA_WORKTREE_PATH":"./x/**/*.json","a.b":"ΣΊΣΥΦΟΣ"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"a"}}],"ok":{"SYNARA_PROJECT_ROOT":"a"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"tab\tseparated"},"worktreePath":null,"extraEnv":{"nav":"straße","😀":"ab"}}],"ok":{"SYNARA_PROJECT_ROOT":"tab\tseparated","nav":"straße","😀":"ab"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"hello"},"worktreePath":null,"extraEnv":{"a":"😀","nav":"İstanbul  padded  ","a.b":"emoji 👍🏽 mix  padded  "}}],"ok":{"SYNARA_PROJECT_ROOT":"hello","a":"😀","nav":"İstanbul  padded  ","a.b":"emoji 👍🏽 mix  padded  "}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"ünïcödé"}}],"ok":{"SYNARA_PROJECT_ROOT":"ünïcödé"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"é"},"worktreePath":"a:b:c","extraEnv":{"nav":"tab\tseparated"}}],"ok":{"SYNARA_PROJECT_ROOT":"é","SYNARA_WORKTREE_PATH":"a:b:c","nav":"tab\tseparated"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"./x/**/*.json"},"worktreePath":"é","extraEnv":{"10":"a.b.c","ünï":"İstanbul","title":"hello world"}}],"ok":{"10":"a.b.c","SYNARA_PROJECT_ROOT":"./x/**/*.json","SYNARA_WORKTREE_PATH":"é","ünï":"İstanbul","title":"hello world"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"Hello World"},"extraEnv":{"2":"a:b:c","title":"éhello","a.b":"hello world"}}],"ok":{"2":"a:b:c","SYNARA_PROJECT_ROOT":"Hello World","title":"éhello","a.b":"hello world"}}
+{"fn":"projectScriptRuntimeEnv","args":[0],"error":"Cannot read properties of undefined (reading 'cwd')"}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"😀"},"worktreePath":null,"extraEnv":{"2":"İstanbul","title":"src/a/b.ts"}}],"ok":{"2":"İstanbul","SYNARA_PROJECT_ROOT":"😀","title":"src/a/b.ts"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"  padded  "},"worktreePath":"Hello World","extraEnv":{}}],"ok":{"SYNARA_PROJECT_ROOT":"  padded  ","SYNARA_WORKTREE_PATH":"Hello World"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":":"},"worktreePath":null,"extraEnv":{"a.b":"ünïcödé"}}],"ok":{"SYNARA_PROJECT_ROOT":":","a.b":"ünïcödé"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"key_name-1key_name-1"},"extraEnv":{}}],"ok":{"SYNARA_PROJECT_ROOT":"key_name-1key_name-1"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":":hello world"},"worktreePath":null,"extraEnv":{"nav":"trailing.","a":"abc"}}],"ok":{"SYNARA_PROJECT_ROOT":":hello world","nav":"trailing.","a":"abc"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"ns:key.path"},"extraEnv":{"10":"abc","nav":"tab\tseparated.leading","home":"ünïcödé"}}],"ok":{"10":"abc","SYNARA_PROJECT_ROOT":"ns:key.path","nav":"tab\tseparated.leading","home":"ünïcödé"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"abkey_name-1"},"extraEnv":{}}],"ok":{"SYNARA_PROJECT_ROOT":"abkey_name-1"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"ΣΊΣΥΦΟΣ"},"worktreePath":null,"extraEnv":{"😀":"hellotrailing."}}],"ok":{"SYNARA_PROJECT_ROOT":"ΣΊΣΥΦΟΣ","😀":"hellotrailing."}}
+{"fn":"projectScriptRuntimeEnv","args":[null],"error":"Cannot read properties of null (reading 'project')"}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":".leading"},"worktreePath":"éa:b:c"}],"ok":{"SYNARA_PROJECT_ROOT":".leading","SYNARA_WORKTREE_PATH":"éa:b:c"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"src/a/b.ts"},"worktreePath":"a😀b😀c","extraEnv":{}}],"ok":{"SYNARA_PROJECT_ROOT":"src/a/b.ts","SYNARA_WORKTREE_PATH":"a😀b😀c"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"emoji 👍🏽 mix"},"extraEnv":{"home":"İstanbul"}}],"ok":{"SYNARA_PROJECT_ROOT":"emoji 👍🏽 mix","home":"İstanbul"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"hello worldtrailing."},"worktreePath":"ΣΊΣΥΦΟΣ"}],"ok":{"SYNARA_PROJECT_ROOT":"hello worldtrailing.","SYNARA_WORKTREE_PATH":"ΣΊΣΥΦΟΣ"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"hello"},"worktreePath":"tab\tseparatedünïcödé","extraEnv":{}}],"ok":{"SYNARA_PROJECT_ROOT":"hello","SYNARA_WORKTREE_PATH":"tab\tseparatedünïcödé"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"tab\tseparated"},"worktreePath":"HELLO","extraEnv":{"2":"src/a/b.ts","a":"ns:key.path"}}],"ok":{"2":"src/a/b.ts","SYNARA_PROJECT_ROOT":"tab\tseparated","SYNARA_WORKTREE_PATH":"HELLO","a":"ns:key.path"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"emoji 👍🏽 mix"},"worktreePath":null,"extraEnv":{"10":"a:b:ca..b","b":"trailing."}}],"ok":{"10":"a:b:ca..b","SYNARA_PROJECT_ROOT":"emoji 👍🏽 mix","b":"trailing."}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"abHELLO"},"worktreePath":null,"extraEnv":{"😀":"HELLO","ünï":"hellotrailing.","a":"a😀b😀c"}}],"ok":{"SYNARA_PROJECT_ROOT":"abHELLO","😀":"HELLO","ünï":"hellotrailing.","a":"a😀b😀c"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"ΣΊΣΥΦΟΣ{name} has {count} items"},"worktreePath":"é","extraEnv":{"ünï":"  padded  ","a.b":"tab\tseparated"}}],"ok":{"SYNARA_PROJECT_ROOT":"ΣΊΣΥΦΟΣ{name} has {count} items","SYNARA_WORKTREE_PATH":"é","ünï":"  padded  ","a.b":"tab\tseparated"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"日本語のテキスト"},"worktreePath":null,"extraEnv":{"10":"key_name-1","a":"﻿bom","😀":"key_name-1"}}],"ok":{"10":"key_name-1","SYNARA_PROJECT_ROOT":"日本語のテキスト","a":"﻿bom","😀":"key_name-1"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"src/a/b.ts{name} has {count} items"},"worktreePath":"İstanbulünïcödé","extraEnv":{"a":"😀"}}],"ok":{"SYNARA_PROJECT_ROOT":"src/a/b.ts{name} has {count} items","SYNARA_WORKTREE_PATH":"İstanbulünïcödé","a":"😀"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"ns:key.path"},"worktreePath":"tab\tseparated","extraEnv":{}}],"ok":{"SYNARA_PROJECT_ROOT":"ns:key.path","SYNARA_WORKTREE_PATH":"tab\tseparated"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"abca:b:c"}}],"ok":{"SYNARA_PROJECT_ROOT":"abca:b:c"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"a😀b😀ca"},"worktreePath":null,"extraEnv":{"nav":"abcns:key.path","😀":"straße","ünï":"hello world"}}],"ok":{"SYNARA_PROJECT_ROOT":"a😀b😀ca","nav":"abcns:key.path","😀":"straße","ünï":"hello world"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"é"},"worktreePath":null,"extraEnv":{"😀":"straße","b":"ΣΊΣΥΦΟΣ","home":""}}],"ok":{"SYNARA_PROJECT_ROOT":"é","😀":"straße","b":"ΣΊΣΥΦΟΣ","home":""}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"  padded  "},"extraEnv":{"😀":"hello world","b":"Hello World"}}],"ok":{"SYNARA_PROJECT_ROOT":"  padded  ","😀":"hello world","b":"Hello World"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"./x/**/*.json"},"extraEnv":{"ünï":"tab\tseparated﻿bom","😀":"emoji 👍🏽 mixHELLO","nav":".leadingtrailing."}}],"ok":{"SYNARA_PROJECT_ROOT":"./x/**/*.json","ünï":"tab\tseparated﻿bom","😀":"emoji 👍🏽 mixHELLO","nav":".leadingtrailing."}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"  padded  "},"worktreePath":"abc"}],"ok":{"SYNARA_PROJECT_ROOT":"  padded  ","SYNARA_WORKTREE_PATH":"abc"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"日本語のテキスト"},"worktreePath":"😀"}],"ok":{"SYNARA_PROJECT_ROOT":"日本語のテキスト","SYNARA_WORKTREE_PATH":"😀"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"key_name-1"},"worktreePath":null,"extraEnv":{"nav":"hellons:key.path","a.b":"hello world"}}],"ok":{"SYNARA_PROJECT_ROOT":"key_name-1","nav":"hellons:key.path","a.b":"hello world"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"ünïcödé"},"worktreePath":"ΣΊΣΥΦΟΣ","extraEnv":{"b":"  padded  "}}],"ok":{"SYNARA_PROJECT_ROOT":"ünïcödé","SYNARA_WORKTREE_PATH":"ΣΊΣΥΦΟΣ","b":"  padded  "}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"hello world"},"worktreePath":"key_name-1","extraEnv":{"b":"HELLO"}}],"ok":{"SYNARA_PROJECT_ROOT":"hello world","SYNARA_WORKTREE_PATH":"key_name-1","b":"HELLO"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"﻿bom"},"worktreePath":"key_name-1src/a/b.ts","extraEnv":{"10":"key_name-1İstanbul","home":"HELLO"}}],"ok":{"10":"key_name-1İstanbul","SYNARA_PROJECT_ROOT":"﻿bom","SYNARA_WORKTREE_PATH":"key_name-1src/a/b.ts","home":"HELLO"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"ΣΊΣΥΦΟΣ"},"worktreePath":"ünïcödé{name} has {count} items"}],"ok":{"SYNARA_PROJECT_ROOT":"ΣΊΣΥΦΟΣ","SYNARA_WORKTREE_PATH":"ünïcödé{name} has {count} items"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"src/a/b.tsHELLO"},"worktreePath":null}],"ok":{"SYNARA_PROJECT_ROOT":"src/a/b.tsHELLO"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"﻿bom"}}],"ok":{"SYNARA_PROJECT_ROOT":"﻿bom"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"./x/**/*.json"},"extraEnv":{"title":"HELLO","home":"straße"}}],"ok":{"SYNARA_PROJECT_ROOT":"./x/**/*.json","title":"HELLO","home":"straße"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"😀"},"worktreePath":"line1\nline2","extraEnv":{}}],"ok":{"SYNARA_PROJECT_ROOT":"😀","SYNARA_WORKTREE_PATH":"line1\nline2"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"é"},"worktreePath":null,"extraEnv":{"title":"  padded  "}}],"ok":{"SYNARA_PROJECT_ROOT":"é","title":"  padded  "}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"key_name-1"},"worktreePath":"a😀b😀c","extraEnv":{}}],"ok":{"SYNARA_PROJECT_ROOT":"key_name-1","SYNARA_WORKTREE_PATH":"a😀b😀c"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"a..b"},"extraEnv":{}}],"ok":{"SYNARA_PROJECT_ROOT":"a..b"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"日本語のテキスト"},"worktreePath":"./x/**/*.json","extraEnv":{"a.b":"abc"}}],"ok":{"SYNARA_PROJECT_ROOT":"日本語のテキスト","SYNARA_WORKTREE_PATH":"./x/**/*.json","a.b":"abc"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"  padded  "},"worktreePath":"ns:key.path","extraEnv":{}}],"ok":{"SYNARA_PROJECT_ROOT":"  padded  ","SYNARA_WORKTREE_PATH":"ns:key.path"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"ab"},"worktreePath":null,"extraEnv":{"2":"trailing.","title":"ünïcödé"}}],"ok":{"2":"trailing.","SYNARA_PROJECT_ROOT":"ab","title":"ünïcödé"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"{name} has {count} items"},"worktreePath":null}],"ok":{"SYNARA_PROJECT_ROOT":"{name} has {count} items"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"src/a/b.ts"},"extraEnv":{"a":"😀ünïcödé"}}],"ok":{"SYNARA_PROJECT_ROOT":"src/a/b.ts","a":"😀ünïcödé"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"a:b:c"},"extraEnv":{"10":"ΣΊΣΥΦΟΣ","nav":"a","a.b":"./x/**/*.json"}}],"ok":{"10":"ΣΊΣΥΦΟΣ","SYNARA_PROJECT_ROOT":"a:b:c","nav":"a","a.b":"./x/**/*.json"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"a..b"},"extraEnv":{"2":""}}],"ok":{"2":"","SYNARA_PROJECT_ROOT":"a..b"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"İstanbul"},"worktreePath":"  padded  ","extraEnv":{"2":"a:b:c","😀":"key_name-1","title":"hello world"}}],"ok":{"2":"a:b:c","SYNARA_PROJECT_ROOT":"İstanbul","SYNARA_WORKTREE_PATH":"  padded  ","😀":"key_name-1","title":"hello world"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"İstanbul"}}],"ok":{"SYNARA_PROJECT_ROOT":"İstanbul"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"  padded  "}}],"ok":{"SYNARA_PROJECT_ROOT":"  padded  "}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"ΣΊΣΥΦΟΣns:key.path"},"worktreePath":null,"extraEnv":{"home":"straße"}}],"ok":{"SYNARA_PROJECT_ROOT":"ΣΊΣΥΦΟΣns:key.path","home":"straße"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"  padded  "},"worktreePath":null,"extraEnv":{"a.b":"日本語のテキストİstanbul"}}],"ok":{"SYNARA_PROJECT_ROOT":"  padded  ","a.b":"日本語のテキストİstanbul"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"key_name-1"},"worktreePath":"{name} has {count} items","extraEnv":{}}],"ok":{"SYNARA_PROJECT_ROOT":"key_name-1","SYNARA_WORKTREE_PATH":"{name} has {count} items"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"İstanbul"},"extraEnv":{"2":"日本語のテキスト"}}],"ok":{"2":"日本語のテキスト","SYNARA_PROJECT_ROOT":"İstanbul"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"abc"},"worktreePath":null,"extraEnv":{}}],"ok":{"SYNARA_PROJECT_ROOT":"abc"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"a"},"worktreePath":"😀abc","extraEnv":{}}],"ok":{"SYNARA_PROJECT_ROOT":"a","SYNARA_WORKTREE_PATH":"😀abc"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":".leading"},"worktreePath":null,"extraEnv":{}}],"ok":{"SYNARA_PROJECT_ROOT":".leading"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"a😀b😀c"},"extraEnv":{"nav":"HELLO{name} has {count} items","😀":".leading"}}],"ok":{"SYNARA_PROJECT_ROOT":"a😀b😀c","nav":"HELLO{name} has {count} items","😀":".leading"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"ns:key.path"},"worktreePath":"hello","extraEnv":{"10":"ünïcödé","home":"hello world"}}],"ok":{"10":"ünïcödé","SYNARA_PROJECT_ROOT":"ns:key.path","SYNARA_WORKTREE_PATH":"hello","home":"hello world"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"{name} has {count} items﻿bom"}}],"ok":{"SYNARA_PROJECT_ROOT":"{name} has {count} items﻿bom"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":":"},"worktreePath":null,"extraEnv":{"2":":"}}],"ok":{"2":":","SYNARA_PROJECT_ROOT":":"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"日本語のテキスト"},"worktreePath":null,"extraEnv":{"2":"Hello World"}}],"ok":{"2":"Hello World","SYNARA_PROJECT_ROOT":"日本語のテキスト"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"aa.b.c"},"worktreePath":null}],"ok":{"SYNARA_PROJECT_ROOT":"aa.b.c"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"trailing.ab"},"worktreePath":null,"extraEnv":{"title":"a:b:c","nav":"hello world","a.b":"src/a/b.ts"}}],"ok":{"SYNARA_PROJECT_ROOT":"trailing.ab","title":"a:b:c","nav":"hello world","a.b":"src/a/b.ts"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"﻿bom"},"worktreePath":"ns:key.path","extraEnv":{}}],"ok":{"SYNARA_PROJECT_ROOT":"﻿bom","SYNARA_WORKTREE_PATH":"ns:key.path"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"emoji 👍🏽 mix"},"extraEnv":{"a":"ns:key.pathtab\tseparated"}}],"ok":{"SYNARA_PROJECT_ROOT":"emoji 👍🏽 mix","a":"ns:key.pathtab\tseparated"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"src/a/b.ts"},"worktreePath":"Hello World","extraEnv":{"b":"hello world"}}],"ok":{"SYNARA_PROJECT_ROOT":"src/a/b.ts","SYNARA_WORKTREE_PATH":"Hello World","b":"hello world"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"ΣΊΣΥΦΟΣ"}}],"ok":{"SYNARA_PROJECT_ROOT":"ΣΊΣΥΦΟΣ"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":":"},"worktreePath":"İstanbul","extraEnv":{"2":"ΣΊΣΥΦΟΣhello world","10":"emoji 👍🏽 mix","title":"Hello World"}}],"ok":{"2":"ΣΊΣΥΦΟΣhello world","10":"emoji 👍🏽 mix","SYNARA_PROJECT_ROOT":":","SYNARA_WORKTREE_PATH":"İstanbul","title":"Hello World"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"a..b"},"worktreePath":"hello"}],"ok":{"SYNARA_PROJECT_ROOT":"a..b","SYNARA_WORKTREE_PATH":"hello"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"emoji 👍🏽 mixemoji 👍🏽 mix"},"worktreePath":"ns:key.path","extraEnv":{"home":"ΣΊΣΥΦΟΣ"}}],"ok":{"SYNARA_PROJECT_ROOT":"emoji 👍🏽 mixemoji 👍🏽 mix","SYNARA_WORKTREE_PATH":"ns:key.path","home":"ΣΊΣΥΦΟΣ"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"a:b:c"}}],"ok":{"SYNARA_PROJECT_ROOT":"a:b:c"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"emoji 👍🏽 mixkey_name-1"},"worktreePath":"a.b.c"}],"ok":{"SYNARA_PROJECT_ROOT":"emoji 👍🏽 mixkey_name-1","SYNARA_WORKTREE_PATH":"a.b.c"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"a..b"},"extraEnv":{"a.b":"日本語のテキスト","ünï":"ns:key.path","home":"straße😀"}}],"ok":{"SYNARA_PROJECT_ROOT":"a..b","a.b":"日本語のテキスト","ünï":"ns:key.path","home":"straße😀"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":".leading"},"worktreePath":null}],"ok":{"SYNARA_PROJECT_ROOT":".leading"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"trailing."},"worktreePath":"  padded  ","extraEnv":{"2":"","😀":"  padded  "}}],"ok":{"2":"","SYNARA_PROJECT_ROOT":"trailing.","SYNARA_WORKTREE_PATH":"  padded  ","😀":"  padded  "}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"abc"},"worktreePath":"trailing.","extraEnv":{"2":":","a.b":"HELLO"}}],"ok":{"2":":","SYNARA_PROJECT_ROOT":"abc","SYNARA_WORKTREE_PATH":"trailing.","a.b":"HELLO"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"a:b:c"},"worktreePath":"abcns:key.path"}],"ok":{"SYNARA_PROJECT_ROOT":"a:b:c","SYNARA_WORKTREE_PATH":"abcns:key.path"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":":"},"worktreePath":null}],"ok":{"SYNARA_PROJECT_ROOT":":"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"emoji 👍🏽 mix"}}],"ok":{"SYNARA_PROJECT_ROOT":"emoji 👍🏽 mix"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"ünïcödéns:key.path"},"worktreePath":"ab","extraEnv":{}}],"ok":{"SYNARA_PROJECT_ROOT":"ünïcödéns:key.path","SYNARA_WORKTREE_PATH":"ab"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"abc"},"worktreePath":null,"extraEnv":{"2":"tab\tseparated","ünï":"key_name-1"}}],"ok":{"2":"tab\tseparated","SYNARA_PROJECT_ROOT":"abc","ünï":"key_name-1"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"﻿bom"},"worktreePath":"ünïcödé","extraEnv":{}}],"ok":{"SYNARA_PROJECT_ROOT":"﻿bom","SYNARA_WORKTREE_PATH":"ünïcödé"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":":"},"worktreePath":null,"extraEnv":{"10":"İstanbul","😀":"a:b:c","a":"tab\tseparated"}}],"ok":{"10":"İstanbul","SYNARA_PROJECT_ROOT":":","😀":"a:b:c","a":"tab\tseparated"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":".leading"},"worktreePath":null,"extraEnv":{"title":"ab","a.b":"trailing.","home":"  padded  "}}],"ok":{"SYNARA_PROJECT_ROOT":".leading","title":"ab","a.b":"trailing.","home":"  padded  "}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"abc"},"worktreePath":"line1\nline2{name} has {count} items","extraEnv":{}}],"ok":{"SYNARA_PROJECT_ROOT":"abc","SYNARA_WORKTREE_PATH":"line1\nline2{name} has {count} items"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"İstanbulab"}}],"ok":{"SYNARA_PROJECT_ROOT":"İstanbulab"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"😀"},"worktreePath":null}],"ok":{"SYNARA_PROJECT_ROOT":"😀"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":""},"extraEnv":{"10":"a.b.c","a.b":"  padded  :"}}],"ok":{"10":"a.b.c","SYNARA_PROJECT_ROOT":"","a.b":"  padded  :"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"é"},"worktreePath":null,"extraEnv":{"2":":","nav":"hello world"}}],"ok":{"2":":","SYNARA_PROJECT_ROOT":"é","nav":"hello world"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"./x/**/*.json"},"worktreePath":"tab\tseparatedns:key.path"}],"ok":{"SYNARA_PROJECT_ROOT":"./x/**/*.json","SYNARA_WORKTREE_PATH":"tab\tseparatedns:key.path"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"ab"},"worktreePath":null,"extraEnv":{"ünï":"a"}}],"ok":{"SYNARA_PROJECT_ROOT":"ab","ünï":"a"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"日本語のテキスト"},"worktreePath":null}],"ok":{"SYNARA_PROJECT_ROOT":"日本語のテキスト"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"a:b:c"},"worktreePath":"abc"}],"ok":{"SYNARA_PROJECT_ROOT":"a:b:c","SYNARA_WORKTREE_PATH":"abc"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"a😀b😀c"},"worktreePath":null}],"ok":{"SYNARA_PROJECT_ROOT":"a😀b😀c"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"ns:key.path"},"worktreePath":"Hello World","extraEnv":{"😀":"","ünï":"asrc/a/b.ts"}}],"ok":{"SYNARA_PROJECT_ROOT":"ns:key.path","SYNARA_WORKTREE_PATH":"Hello World","😀":"","ünï":"asrc/a/b.ts"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"hello"},"extraEnv":{"2":"hello world"}}],"ok":{"2":"hello world","SYNARA_PROJECT_ROOT":"hello"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"tab\tseparated"},"worktreePath":":","extraEnv":{"😀":"a😀b😀c","ünï":"  padded  ","nav":"line1\nline2  padded  "}}],"ok":{"SYNARA_PROJECT_ROOT":"tab\tseparated","SYNARA_WORKTREE_PATH":":","😀":"a😀b😀c","ünï":"  padded  ","nav":"line1\nline2  padded  "}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"a"},"worktreePath":"ΣΊΣΥΦΟΣ","extraEnv":{"a":"ns:key.path"}}],"ok":{"SYNARA_PROJECT_ROOT":"a","SYNARA_WORKTREE_PATH":"ΣΊΣΥΦΟΣ","a":"ns:key.path"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"hello world"},"extraEnv":{"a.b":"{name} has {count} items"}}],"ok":{"SYNARA_PROJECT_ROOT":"hello world","a.b":"{name} has {count} items"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"﻿bom"},"worktreePath":"tab\tseparated","extraEnv":{"b":"./x/**/*.json","a":"日本語のテキスト"}}],"ok":{"SYNARA_PROJECT_ROOT":"﻿bom","SYNARA_WORKTREE_PATH":"tab\tseparated","b":"./x/**/*.json","a":"日本語のテキスト"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"ab"},"extraEnv":{"2":"a:b:c{name} has {count} items","title":":"}}],"ok":{"2":"a:b:c{name} has {count} items","SYNARA_PROJECT_ROOT":"ab","title":":"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":".leadingsrc/a/b.ts"},"extraEnv":{}}],"ok":{"SYNARA_PROJECT_ROOT":".leadingsrc/a/b.ts"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"a..b"},"extraEnv":{"ünï":"HELLO","home":"ünïcödé"}}],"ok":{"SYNARA_PROJECT_ROOT":"a..b","ünï":"HELLO","home":"ünïcödé"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":".leading"},"worktreePath":null,"extraEnv":{"2":"key_name-1","10":"hello","😀":"a.b.c"}}],"ok":{"2":"key_name-1","10":"hello","SYNARA_PROJECT_ROOT":".leading","😀":"a.b.c"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"abc"},"worktreePath":"tab\tseparatedns:key.path","extraEnv":{"a.b":"aa..b","title":"straße"}}],"ok":{"SYNARA_PROJECT_ROOT":"abc","SYNARA_WORKTREE_PATH":"tab\tseparatedns:key.path","a.b":"aa..b","title":"straße"}}
+{"fn":"projectScriptRuntimeEnv","args":[{"project":{"cwd":"ΣΊΣΥΦΟΣa😀b😀c"},"worktreePath":null}],"ok":{"SYNARA_PROJECT_ROOT":"ΣΊΣΥΦΟΣa😀b😀c"}}
+{"fn":"primaryProjectScript","args":[0],"error":"scripts.find is not a function"}
+{"fn":"primaryProjectScript","args":[null],"error":"Cannot read properties of null (reading 'find')"}
+{"fn":"primaryProjectScript","args":[[]],"ok":null}
+{"fn":"primaryProjectScript","args":[true],"error":"scripts.find is not a function"}
+{"fn":"primaryProjectScript","args":[{}],"error":"scripts.find is not a function"}
+{"fn":"primaryProjectScript","args":["x"],"error":"scripts.find is not a function"}
+{"fn":"primaryProjectScript","args":[{"a":{"b":"c"}}],"error":"scripts.find is not a function"}
+{"fn":"primaryProjectScript","args":[{"a":"b"}],"error":"scripts.find is not a function"}
+{"fn":"primaryProjectScript","args":[["a",1]],"ok":"a"}
+{"fn":"setupProjectScript","args":[true],"error":"scripts.find is not a function"}
+{"fn":"setupProjectScript","args":[0],"error":"scripts.find is not a function"}
+{"fn":"setupProjectScript","args":[{"a":{"b":"c"}}],"error":"scripts.find is not a function"}
+{"fn":"setupProjectScript","args":[["a",1]],"ok":null}
+{"fn":"setupProjectScript","args":[{}],"error":"scripts.find is not a function"}
+{"fn":"setupProjectScript","args":["x"],"error":"scripts.find is not a function"}
+{"fn":"setupProjectScript","args":[{"a":"b"}],"error":"scripts.find is not a function"}
+{"fn":"setupProjectScript","args":[null],"error":"Cannot read properties of null (reading 'find')"}
+{"fn":"setupProjectScript","args":[[]],"ok":null}

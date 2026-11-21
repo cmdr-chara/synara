@@ -1,0 +1,126 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/projectScripts.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "projectscripts-rs",
+  "exports": [
+    {
+      "name": "commandForProjectScript",
+      "file": "apps/web/src/projectScripts.ts",
+      "line": 25,
+      "params": [
+        {
+          "name": "scriptId",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof KeybindingCommand.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "projectScriptIdFromCommand",
+      "file": "apps/web/src/projectScripts.ts",
+      "line": 28,
+      "params": [
+        {
+          "name": "command",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "nextProjectScriptId",
+      "file": "apps/web/src/projectScripts.ts",
+      "line": 37,
+      "params": [
+        {
+          "name": "name",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "existingIds",
+          "ts_type": "Iterable<string>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "projectScriptRuntimeEnv",
+      "file": "apps/web/src/projectScripts.ts",
+      "line": 81,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "ProjectScriptRuntimeEnvInput",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Record<string, string>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "primaryProjectScript",
+      "file": "apps/web/src/projectScripts.ts",
+      "line": 96,
+      "params": [
+        {
+          "name": "scripts",
+          "ts_type": "typeof typeof typeof typeof ProjectScript.Type.Type.Type.Type[]",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ProjectScript.Type.Type.Type.Type | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "setupProjectScript",
+      "file": "apps/web/src/projectScripts.ts",
+      "line": 101,
+      "params": [
+        {
+          "name": "scripts",
+          "ts_type": "typeof typeof typeof typeof ProjectScript.Type.Type.Type.Type[]",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ProjectScript.Type.Type.Type.Type | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

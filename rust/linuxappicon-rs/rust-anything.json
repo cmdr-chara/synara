@@ -1,0 +1,79 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/desktop/src/linuxAppIcon.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "linuxappicon-rs",
+  "exports": [
+    {
+      "name": "desktopEntryIconName",
+      "file": "apps/desktop/src/linuxAppIcon.ts",
+      "line": 27,
+      "params": [
+        {
+          "name": "contents",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveLinuxDesktopIconName",
+      "file": "apps/desktop/src/linuxAppIcon.ts",
+      "line": 47,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly env: NodeJS.ProcessEnv;\n  readonly homeDir: string;\n  readonly flavor: (| \"production\"\n  | \"development\"\n  | \"canary\"\n  | \"cua\"\n  | \"beta\"\n  | \"remote\");\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "linuxDataHome",
+      "file": "apps/desktop/src/linuxAppIcon.ts",
+      "line": 72,
+      "params": [
+        {
+          "name": "env",
+          "ts_type": "NodeJS.ProcessEnv",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "homeDir",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "persistLinuxAppIcon",
+      "file": "apps/desktop/src/linuxAppIcon.ts",
+      "line": 84,
+      "reason": "takes or returns a function"
+    }
+  ]
+}

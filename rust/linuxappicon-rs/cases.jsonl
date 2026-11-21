@@ -1,0 +1,650 @@
+{"fn":"desktopEntryIconName","args":["trailing."],"ok":null}
+{"fn":"desktopEntryIconName","args":["key_name-1"],"ok":null}
+{"fn":"desktopEntryIconName","args":["a:b:c"],"ok":null}
+{"fn":"desktopEntryIconName","args":["é"],"ok":null}
+{"fn":"desktopEntryIconName","args":[":"],"ok":null}
+{"fn":"desktopEntryIconName","args":["line1\nline2"],"ok":null}
+{"fn":"desktopEntryIconName","args":["./x/**/*.jsonünïcödé"],"ok":null}
+{"fn":"desktopEntryIconName","args":["key_name-1HELLO"],"ok":null}
+{"fn":"desktopEntryIconName","args":["a😀b😀c"],"ok":null}
+{"fn":"desktopEntryIconName","args":["tab\tseparated"],"ok":null}
+{"fn":"desktopEntryIconName","args":["src/a/b.ts"],"ok":null}
+{"fn":"desktopEntryIconName","args":["abc"],"ok":null}
+{"fn":"desktopEntryIconName","args":[".leadingline1\nline2"],"ok":null}
+{"fn":"desktopEntryIconName","args":["a.b.cünïcödé"],"ok":null}
+{"fn":"desktopEntryIconName","args":[""],"ok":null}
+{"fn":"desktopEntryIconName","args":["ΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"desktopEntryIconName","args":["./x/**/*.jsonline1\nline2"],"ok":null}
+{"fn":"desktopEntryIconName","args":["{name} has {count} items"],"ok":null}
+{"fn":"desktopEntryIconName","args":["./x/**/*.json"],"ok":null}
+{"fn":"desktopEntryIconName","args":["ünïcödé"],"ok":null}
+{"fn":"desktopEntryIconName","args":["İstanbul"],"ok":null}
+{"fn":"desktopEntryIconName","args":["﻿bom"],"ok":null}
+{"fn":"desktopEntryIconName","args":["HELLO"],"ok":null}
+{"fn":"desktopEntryIconName","args":["hello world"],"ok":null}
+{"fn":"desktopEntryIconName","args":["emoji 👍🏽 mix"],"ok":null}
+{"fn":"desktopEntryIconName","args":[".leading"],"ok":null}
+{"fn":"desktopEntryIconName","args":["日本語のテキスト"],"ok":null}
+{"fn":"desktopEntryIconName","args":["ns:key.path"],"ok":null}
+{"fn":"desktopEntryIconName","args":["😀"],"ok":null}
+{"fn":"desktopEntryIconName","args":["ΣΊΣΥΦΟΣhello world"],"ok":null}
+{"fn":"desktopEntryIconName","args":["😀:"],"ok":null}
+{"fn":"desktopEntryIconName","args":["😀日本語のテキスト"],"ok":null}
+{"fn":"desktopEntryIconName","args":["src/a/b.tsstraße"],"ok":null}
+{"fn":"desktopEntryIconName","args":["a"],"ok":null}
+{"fn":"desktopEntryIconName","args":["hello"],"ok":null}
+{"fn":"desktopEntryIconName","args":["a.b.c"],"ok":null}
+{"fn":"desktopEntryIconName","args":["Hello World"],"ok":null}
+{"fn":"desktopEntryIconName","args":["  padded  "],"ok":null}
+{"fn":"desktopEntryIconName","args":["trailing.ns:key.path"],"ok":null}
+{"fn":"desktopEntryIconName","args":["a..b"],"ok":null}
+{"fn":"desktopEntryIconName","args":["a😀b😀c:"],"ok":null}
+{"fn":"desktopEntryIconName","args":["日本語のテキストemoji 👍🏽 mix"],"ok":null}
+{"fn":"desktopEntryIconName","args":["straße"],"ok":null}
+{"fn":"desktopEntryIconName","args":["ab"],"ok":null}
+{"fn":"desktopEntryIconName","args":["helloa"],"ok":null}
+{"fn":"desktopEntryIconName","args":["﻿bomkey_name-1"],"ok":null}
+{"fn":"desktopEntryIconName","args":["HELLO﻿bom"],"ok":null}
+{"fn":"desktopEntryIconName","args":["😀{name} has {count} items"],"ok":null}
+{"fn":"desktopEntryIconName","args":["straße﻿bom"],"ok":null}
+{"fn":"desktopEntryIconName","args":["straßea..b"],"ok":null}
+{"fn":"desktopEntryIconName","args":["a.b.ca"],"ok":null}
+{"fn":"desktopEntryIconName","args":["a.b.c:"],"ok":null}
+{"fn":"desktopEntryIconName","args":["line1\nline2ns:key.path"],"ok":null}
+{"fn":"desktopEntryIconName","args":["tab\tseparated{name} has {count} items"],"ok":null}
+{"fn":"desktopEntryIconName","args":["emoji 👍🏽 mixabc"],"ok":null}
+{"fn":"desktopEntryIconName","args":["  padded  ab"],"ok":null}
+{"fn":"desktopEntryIconName","args":["tab\tseparateda😀b😀c"],"ok":null}
+{"fn":"desktopEntryIconName","args":["﻿bomHELLO"],"ok":null}
+{"fn":"desktopEntryIconName","args":["tab\tseparatedHello World"],"ok":null}
+{"fn":"desktopEntryIconName","args":["tab\tseparatedabc"],"ok":null}
+{"fn":"desktopEntryIconName","args":["helloİstanbul"],"ok":null}
+{"fn":"desktopEntryIconName","args":[".leadinga😀b😀c"],"ok":null}
+{"fn":"desktopEntryIconName","args":["abcstraße"],"ok":null}
+{"fn":"desktopEntryIconName","args":["trailing.ΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"desktopEntryIconName","args":["étab\tseparated"],"ok":null}
+{"fn":"desktopEntryIconName","args":["ns:key.pathns:key.path"],"ok":null}
+{"fn":"desktopEntryIconName","args":["hello worldtab\tseparated"],"ok":null}
+{"fn":"desktopEntryIconName","args":["Hello World.leading"],"ok":null}
+{"fn":"desktopEntryIconName","args":["key_name-1key_name-1"],"ok":null}
+{"fn":"desktopEntryIconName","args":["İstanbulstraße"],"ok":null}
+{"fn":"desktopEntryIconName","args":["ns:key.pathtrailing."],"ok":null}
+{"fn":"desktopEntryIconName","args":["HELLOabc"],"ok":null}
+{"fn":"desktopEntryIconName","args":["{name} has {count} itemsHELLO"],"ok":null}
+{"fn":"desktopEntryIconName","args":["abHello World"],"ok":null}
+{"fn":"desktopEntryIconName","args":["HELLOab"],"ok":null}
+{"fn":"desktopEntryIconName","args":["tab\tseparated日本語のテキスト"],"ok":null}
+{"fn":"desktopEntryIconName","args":["İstanbulab"],"ok":null}
+{"fn":"desktopEntryIconName","args":["{name} has {count} itemshello world"],"ok":null}
+{"fn":"desktopEntryIconName","args":[":hello"],"ok":null}
+{"fn":"desktopEntryIconName","args":["a.b.chello world"],"ok":null}
+{"fn":"desktopEntryIconName","args":["ünïcödéstraße"],"ok":null}
+{"fn":"desktopEntryIconName","args":["hello worlda"],"ok":null}
+{"fn":"desktopEntryIconName","args":["./x/**/*.json./x/**/*.json"],"ok":null}
+{"fn":"desktopEntryIconName","args":["emoji 👍🏽 mix:"],"ok":null}
+{"fn":"desktopEntryIconName","args":["src/a/b.tsa.b.c"],"ok":null}
+{"fn":"desktopEntryIconName","args":["line1\nline2trailing."],"ok":null}
+{"fn":"desktopEntryIconName","args":["key_name-1straße"],"ok":null}
+{"fn":"desktopEntryIconName","args":["a😀b😀ca.b.c"],"ok":null}
+{"fn":"desktopEntryIconName","args":[":{name} has {count} items"],"ok":null}
+{"fn":"desktopEntryIconName","args":["ns:key.pathünïcödé"],"ok":null}
+{"fn":"desktopEntryIconName","args":["key_name-1a"],"ok":null}
+{"fn":"desktopEntryIconName","args":["tab\tseparated😀"],"ok":null}
+{"fn":"desktopEntryIconName","args":["日本語のテキストhello"],"ok":null}
+{"fn":"desktopEntryIconName","args":["éhello world"],"ok":null}
+{"fn":"desktopEntryIconName","args":["a:b:ctrailing."],"ok":null}
+{"fn":"desktopEntryIconName","args":["a..b日本語のテキスト"],"ok":null}
+{"fn":"desktopEntryIconName","args":["ünïcödé﻿bom"],"ok":null}
+{"fn":"desktopEntryIconName","args":["😀Hello World"],"ok":null}
+{"fn":"desktopEntryIconName","args":["a.leading"],"ok":null}
+{"fn":"desktopEntryIconName","args":["😀﻿bom"],"ok":null}
+{"fn":"desktopEntryIconName","args":["a.b.ca:b:c"],"ok":null}
+{"fn":"desktopEntryIconName","args":["ab.leading"],"ok":null}
+{"fn":"desktopEntryIconName","args":["a😀b😀chello world"],"ok":null}
+{"fn":"desktopEntryIconName","args":["trailing.a😀b😀c"],"ok":null}
+{"fn":"desktopEntryIconName","args":["﻿bom  padded  "],"ok":null}
+{"fn":"desktopEntryIconName","args":["a:b:c﻿bom"],"ok":null}
+{"fn":"desktopEntryIconName","args":["straßeline1\nline2"],"ok":null}
+{"fn":"desktopEntryIconName","args":["trailing.日本語のテキスト"],"ok":null}
+{"fn":"desktopEntryIconName","args":["日本語のテキストa:b:c"],"ok":null}
+{"fn":"desktopEntryIconName","args":["hello world日本語のテキスト"],"ok":null}
+{"fn":"desktopEntryIconName","args":["  padded  ﻿bom"],"ok":null}
+{"fn":"desktopEntryIconName","args":["tab\tseparatedline1\nline2"],"ok":null}
+{"fn":"desktopEntryIconName","args":["  padded  a.b.c"],"ok":null}
+{"fn":"desktopEntryIconName","args":["helloΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"desktopEntryIconName","args":["trailing.a.b.c"],"ok":null}
+{"fn":"desktopEntryIconName","args":[".leadingΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"desktopEntryIconName","args":["HELLOemoji 👍🏽 mix"],"ok":null}
+{"fn":"desktopEntryIconName","args":["abcΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"desktopEntryIconName","args":["éa.b.c"],"ok":null}
+{"fn":"desktopEntryIconName","args":["trailing.{name} has {count} items"],"ok":null}
+{"fn":"desktopEntryIconName","args":["hello worldünïcödé"],"ok":null}
+{"fn":"desktopEntryIconName","args":["日本語のテキストé"],"ok":null}
+{"fn":"desktopEntryIconName","args":["é./x/**/*.json"],"ok":null}
+{"fn":"desktopEntryIconName","args":["src/a/b.tsİstanbul"],"ok":null}
+{"fn":"desktopEntryIconName","args":["emoji 👍🏽 mixünïcödé"],"ok":null}
+{"fn":"desktopEntryIconName","args":["{name} has {count} itemssrc/a/b.ts"],"ok":null}
+{"fn":"desktopEntryIconName","args":["hello./x/**/*.json"],"ok":null}
+{"fn":"desktopEntryIconName","args":["line1\nline2HELLO"],"ok":null}
+{"fn":"desktopEntryIconName","args":["Hello Worldkey_name-1"],"ok":null}
+{"fn":"desktopEntryIconName","args":["tab\tseparatedhello world"],"ok":null}
+{"fn":"desktopEntryIconName","args":["HELLOkey_name-1"],"ok":null}
+{"fn":"desktopEntryIconName","args":[".leadingtrailing."],"ok":null}
+{"fn":"desktopEntryIconName","args":[".leadinga:b:c"],"ok":null}
+{"fn":"desktopEntryIconName","args":["Hello Worlda.b.c"],"ok":null}
+{"fn":"desktopEntryIconName","args":["a..bstraße"],"ok":null}
+{"fn":"desktopEntryIconName","args":["a:b:c.leading"],"ok":null}
+{"fn":"desktopEntryIconName","args":["hello worldhello"],"ok":null}
+{"fn":"desktopEntryIconName","args":["hello world﻿bom"],"ok":null}
+{"fn":"desktopEntryIconName","args":["a😀b😀c{name} has {count} items"],"ok":null}
+{"fn":"desktopEntryIconName","args":["a😀b😀c😀"],"ok":null}
+{"fn":"desktopEntryIconName","args":["aabc"],"ok":null}
+{"fn":"desktopEntryIconName","args":["İstanbulHELLO"],"ok":null}
+{"fn":"desktopEntryIconName","args":["﻿bomemoji 👍🏽 mix"],"ok":null}
+{"fn":"desktopEntryIconName","args":["ΣΊΣΥΦΟΣkey_name-1"],"ok":null}
+{"fn":"desktopEntryIconName","args":["😀straße"],"ok":null}
+{"fn":"desktopEntryIconName","args":["a.b.ca..b"],"ok":null}
+{"fn":"desktopEntryIconName","args":["ékey_name-1"],"ok":null}
+{"fn":"desktopEntryIconName","args":["hello worlda..b"],"ok":null}
+{"fn":"desktopEntryIconName","args":["ΣΊΣΥΦΟΣstraße"],"ok":null}
+{"fn":"desktopEntryIconName","args":[":a"],"ok":null}
+{"fn":"desktopEntryIconName","args":["a..b  padded  "],"ok":null}
+{"fn":"desktopEntryIconName","args":["ns:key.pathkey_name-1"],"ok":null}
+{"fn":"desktopEntryIconName","args":["a..bab"],"ok":null}
+{"fn":"desktopEntryIconName","args":["./x/**/*.jsonHello World"],"ok":null}
+{"fn":"desktopEntryIconName","args":["日本語のテキスト:"],"ok":null}
+{"fn":"desktopEntryIconName","args":["./x/**/*.jsona.b.c"],"ok":null}
+{"fn":"desktopEntryIconName","args":["😀.leading"],"ok":null}
+{"fn":"desktopEntryIconName","args":["ab日本語のテキスト"],"ok":null}
+{"fn":"desktopEntryIconName","args":["line1\nline2ΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"desktopEntryIconName","args":[":src/a/b.ts"],"ok":null}
+{"fn":"desktopEntryIconName","args":[".leading﻿bom"],"ok":null}
+{"fn":"desktopEntryIconName","args":["  padded  line1\nline2"],"ok":null}
+{"fn":"desktopEntryIconName","args":["é  padded  "],"ok":null}
+{"fn":"desktopEntryIconName","args":["éa"],"ok":null}
+{"fn":"desktopEntryIconName","args":["  padded  straße"],"ok":null}
+{"fn":"desktopEntryIconName","args":["a😀b😀ctrailing."],"ok":null}
+{"fn":"desktopEntryIconName","args":["emoji 👍🏽 mix./x/**/*.json"],"ok":null}
+{"fn":"desktopEntryIconName","args":["astraße"],"ok":null}
+{"fn":"desktopEntryIconName","args":["aa:b:c"],"ok":null}
+{"fn":"desktopEntryIconName","args":["a😀b😀cHELLO"],"ok":null}
+{"fn":"desktopEntryIconName","args":["a:b:cHELLO"],"ok":null}
+{"fn":"desktopEntryIconName","args":["  padded  hello"],"ok":null}
+{"fn":"desktopEntryIconName","args":["hellotab\tseparated"],"ok":null}
+{"fn":"desktopEntryIconName","args":["a..bns:key.path"],"ok":null}
+{"fn":"desktopEntryIconName","args":["a日本語のテキスト"],"ok":null}
+{"fn":"desktopEntryIconName","args":["﻿boma.b.c"],"ok":null}
+{"fn":"desktopEntryIconName","args":["ünïcödéabc"],"ok":null}
+{"fn":"desktopEntryIconName","args":["line1\nline2ünïcödé"],"ok":null}
+{"fn":"desktopEntryIconName","args":["line1\nline2abc"],"ok":null}
+{"fn":"desktopEntryIconName","args":["tab\tseparatedhello"],"ok":null}
+{"fn":"desktopEntryIconName","args":["abtab\tseparated"],"ok":null}
+{"fn":"desktopEntryIconName","args":["éab"],"ok":null}
+{"fn":"desktopEntryIconName","args":["a:b:csrc/a/b.ts"],"ok":null}
+{"fn":"desktopEntryIconName","args":["straße日本語のテキスト"],"ok":null}
+{"fn":"desktopEntryIconName","args":["﻿bom﻿bom"],"ok":null}
+{"fn":"desktopEntryIconName","args":["İstanbula.b.c"],"ok":null}
+{"fn":"desktopEntryIconName","args":["trailing.  padded  "],"ok":null}
+{"fn":"desktopEntryIconName","args":["ns:key.path﻿bom"],"ok":null}
+{"fn":"desktopEntryIconName","args":["key_name-1ΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"desktopEntryIconName","args":["éa:b:c"],"ok":null}
+{"fn":"desktopEntryIconName","args":["hello worldline1\nline2"],"ok":null}
+{"fn":"desktopEntryIconName","args":["HELLO:"],"ok":null}
+{"fn":"desktopEntryIconName","args":["  padded  a"],"ok":null}
+{"fn":"desktopEntryIconName","args":["abc.leading"],"ok":null}
+{"fn":"desktopEntryIconName","args":["a😀b😀ckey_name-1"],"ok":null}
+{"fn":"desktopEntryIconName","args":["emoji 👍🏽 mix😀"],"ok":null}
+{"fn":"desktopEntryIconName","args":["trailing.key_name-1"],"ok":null}
+{"fn":"desktopEntryIconName","args":["  padded  HELLO"],"ok":null}
+{"fn":"desktopEntryIconName","args":["aba:b:c"],"ok":null}
+{"fn":"desktopEntryIconName","args":["key_name-1hello world"],"ok":null}
+{"fn":"desktopEntryIconName","args":["héllo wörld"],"ok":null}
+{"fn":"desktopEntryIconName","args":["👍🏽 thumbs"],"ok":null}
+{"fn":"desktopEntryIconName","args":["日本語"],"ok":null}
+{"fn":"desktopEntryIconName","args":["ılık ırmak"],"ok":null}
+{"fn":"desktopEntryIconName","args":["👨‍👩‍👧 family"],"ok":null}
+{"fn":"desktopEntryIconName","args":["a b"],"ok":null}
+{"fn":"desktopEntryIconName","args":["a😀b"],"ok":null}
+{"fn":"desktopEntryIconName","args":["a²b x½ y①"],"ok":null}
+{"fn":"desktopEntryIconName","args":["aⅠb Ⅻ"],"ok":null}
+{"fn":"desktopEntryIconName","args":["a𐐀b 𝐀bc"],"ok":null}
+{"fn":"desktopEntryIconName","args":["कि ٣٤"],"ok":null}
+{"fn":"desktopEntryIconName","args":["Iı İi"],"ok":null}
+{"fn":"desktopEntryIconName","args":["K K k"],"ok":null}
+{"fn":"desktopEntryIconName","args":["ſ s S"],"ok":null}
+{"fn":"desktopEntryIconName","args":["x‍y 👨‍👩‍👧"],"ok":null}
+{"fn":"desktopEntryIconName","args":["a b c　d"],"ok":null}
+{"fn":"desktopEntryIconName","args":["١٢٣ ٤٥"],"ok":null}
+{"fn":"desktopEntryIconName","args":["𝟘𝟙 ²³"],"ok":null}
+{"fn":"desktopEntryIconName","args":["snake_case foo-bar o'neil"],"ok":null}
+{"fn":"desktopEntryIconName","args":["ǅungla Ǆ"],"ok":null}
+{"fn":"desktopEntryIconName","args":["one\r\ntwo threefour"],"ok":null}
+{"fn":"desktopEntryIconName","args":["café café"],"ok":null}
+{"fn":"desktopEntryIconName","args":["ΣΑΣ σας ς"],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":{},"homeDir":"key_name-1","flavor":"canary"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":{},"homeDir":"hellosrc/a/b.ts","flavor":"remote"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":["a",1],"homeDir":"{name} has {count} items","flavor":"development"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'XDG_DATA_HOME')"}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":["a",1],"homeDir":"é","flavor":"canary"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":true,"homeDir":"Hello World","flavor":"remote"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":true,"homeDir":"key_name-1","flavor":"canary"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":true,"homeDir":"src/a/b.ts","flavor":"production"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":{"a":{"b":"c"}},"homeDir":"Hello World","flavor":"beta"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"a":"b"}],"error":"Cannot read properties of undefined (reading 'XDG_DATA_HOME')"}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":"x","homeDir":"a😀b😀c","flavor":"canary"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{}],"error":"Cannot read properties of undefined (reading 'XDG_DATA_HOME')"}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":{"a":"b"},"homeDir":"hello world","flavor":"cua"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":{},"homeDir":"a.b.c","flavor":"beta"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":0,"homeDir":"hello","flavor":"cua"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":[],"homeDir":"﻿bom","flavor":"development"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":{"a":{"b":"c"}},"homeDir":"abline1\nline2","flavor":"canary"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":[],"homeDir":"a😀b😀c","flavor":"production"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":0,"homeDir":".leading","flavor":"canary"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":{},"homeDir":"日本語のテキストsrc/a/b.ts","flavor":"remote"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":null,"homeDir":"HELLO","flavor":"production"}],"error":"Cannot read properties of null (reading 'XDG_DATA_HOME')"}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":0,"homeDir":"abc","flavor":"remote"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":{},"homeDir":"İstanbul","flavor":"production"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":0,"homeDir":"ns:key.pathHello World","flavor":"production"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":null,"homeDir":"a.b.cİstanbul","flavor":"production"}],"error":"Cannot read properties of null (reading 'XDG_DATA_HOME')"}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":[],"homeDir":"HELLO","flavor":"development"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":true,"homeDir":"﻿bom","flavor":"remote"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":[],"homeDir":"HELLO","flavor":"beta"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":null,"homeDir":"é","flavor":"production"}],"error":"Cannot read properties of null (reading 'XDG_DATA_HOME')"}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":[],"homeDir":"abc","flavor":"cua"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":0,"homeDir":"{name} has {count} items","flavor":"cua"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":{"a":{"b":"c"}},"homeDir":"  padded  ","flavor":"canary"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":{},"homeDir":"ünïcödétab\tseparated","flavor":"remote"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":{"a":{"b":"c"}},"homeDir":"aa😀b😀c","flavor":"canary"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[[]],"error":"Cannot read properties of undefined (reading 'XDG_DATA_HOME')"}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":true,"homeDir":"./x/**/*.json","flavor":"canary"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":["a",1],"homeDir":"ab","flavor":"beta"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[true],"error":"Cannot read properties of undefined (reading 'XDG_DATA_HOME')"}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":["a",1],"homeDir":"tab\tseparatedünïcödé","flavor":"cua"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":{"a":"b"},"homeDir":"","flavor":"beta"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":["a",1],"homeDir":"a","flavor":"remote"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":"x","homeDir":".leading","flavor":"remote"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":"x","homeDir":".leading","flavor":"canary"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":{"a":"b"},"homeDir":"a.b.c","flavor":"development"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":true,"homeDir":":","flavor":"development"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":["a",1],"homeDir":"","flavor":"development"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":"x","homeDir":"é","flavor":"production"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":{},"homeDir":"日本語のテキスト","flavor":"cua"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":true,"homeDir":"é","flavor":"development"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":{"a":{"b":"c"}},"homeDir":"😀","flavor":"production"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[0],"error":"Cannot read properties of undefined (reading 'XDG_DATA_HOME')"}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":true,"homeDir":"😀","flavor":"remote"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":[],"homeDir":"a.b.c","flavor":"production"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":["a",1],"homeDir":"İstanbulİstanbul","flavor":"development"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":0,"homeDir":"a..bİstanbul","flavor":"canary"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":"x","homeDir":"key_name-1","flavor":"beta"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":"x","homeDir":"hello","flavor":"canary"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":0,"homeDir":"a.b.c","flavor":"canary"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":[],"homeDir":"a😀b😀c","flavor":"development"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":[],"homeDir":"key_name-1","flavor":"beta"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":{"a":"b"},"homeDir":"  padded  ","flavor":"cua"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[null],"error":"Cannot read properties of null (reading 'env')"}
+{"fn":"resolveLinuxDesktopIconName","args":["x"],"error":"Cannot read properties of undefined (reading 'XDG_DATA_HOME')"}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":{"a":{"b":"c"}},"homeDir":"helloΣΊΣΥΦΟΣ","flavor":"canary"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":["a",1],"homeDir":"emoji 👍🏽 mix","flavor":"production"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":0,"homeDir":"straße","flavor":"beta"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":{"a":{"b":"c"}},"homeDir":"src/a/b.ts","flavor":"beta"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":true,"homeDir":"./x/**/*.json","flavor":"beta"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":{"a":"b"},"homeDir":"abc","flavor":"cua"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":true,"homeDir":"日本語のテキストa😀b😀c","flavor":"development"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":{"a":"b"},"homeDir":"a:b:c","flavor":"production"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":["a",1],"homeDir":"","flavor":"cua"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":[],"homeDir":":","flavor":"development"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":["a",1],"homeDir":"{name} has {count} items","flavor":"canary"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":[],"homeDir":"日本語のテキスト","flavor":"cua"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":{},"homeDir":"tab\tseparated","flavor":"development"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":{"a":"b"},"homeDir":"  padded  ","flavor":"remote"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":null,"homeDir":"trailing.","flavor":"remote"}],"error":"Cannot read properties of null (reading 'XDG_DATA_HOME')"}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":{},"homeDir":"{name} has {count} items","flavor":"cua"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":0,"homeDir":"{name} has {count} itemshello world","flavor":"beta"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[["a",1]],"error":"Cannot read properties of undefined (reading 'XDG_DATA_HOME')"}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":{},"homeDir":"straße","flavor":"cua"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":0,"homeDir":"a","flavor":"canary"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":true,"homeDir":"hello","flavor":"remote"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":{"a":{"b":"c"}},"homeDir":"a😀b😀c","flavor":"production"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":["a",1],"homeDir":"line1\nline2","flavor":"production"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":0,"homeDir":"a😀b😀cabc","flavor":"canary"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":null,"homeDir":"😀hello","flavor":"canary"}],"error":"Cannot read properties of null (reading 'XDG_DATA_HOME')"}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":[],"homeDir":"src/a/b.ts","flavor":"canary"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":{"a":{"b":"c"}},"homeDir":"tab\tseparated","flavor":"production"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":null,"homeDir":"﻿bom","flavor":"cua"}],"error":"Cannot read properties of null (reading 'XDG_DATA_HOME')"}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":[],"homeDir":"HELLOline1\nline2","flavor":"remote"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":"x","homeDir":"  padded  ./x/**/*.json","flavor":"remote"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":{},"homeDir":"line1\nline2","flavor":"beta"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":{"a":"b"},"homeDir":".leading","flavor":"beta"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":["a",1],"homeDir":"  padded  ","flavor":"beta"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":{},"homeDir":"hello worldabc","flavor":"cua"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":["a",1],"homeDir":"hello world","flavor":"remote"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":"x","homeDir":"abc","flavor":"cua"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":{"a":{"b":"c"}},"homeDir":".leading","flavor":"remote"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":["a",1],"homeDir":"a.b.c","flavor":"canary"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":{"a":"b"},"homeDir":"hello worldsrc/a/b.ts","flavor":"cua"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":{},"homeDir":"İstanbul","flavor":"beta"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":true,"homeDir":"éünïcödé","flavor":"beta"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":[],"homeDir":"hello","flavor":"cua"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":{},"homeDir":"é","flavor":"remote"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":["a",1],"homeDir":"trailing.","flavor":"development"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":{},"homeDir":"ab","flavor":"production"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":{},"homeDir":"hello","flavor":"development"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":{"a":"b"},"homeDir":"Hello World","flavor":"remote"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":{"a":{"b":"c"}},"homeDir":"{name} has {count} items","flavor":"canary"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":"x","homeDir":"a:b:c","flavor":"development"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":true,"homeDir":"ΣΊΣΥΦΟΣ","flavor":"production"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":"x","homeDir":"İstanbul","flavor":"beta"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":{"a":"b"},"homeDir":"ΣΊΣΥΦΟΣ","flavor":"canary"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":{"a":"b"},"homeDir":"abc","flavor":"canary"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":{"a":{"b":"c"}},"homeDir":"./x/**/*.json","flavor":"production"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":{"a":"b"},"homeDir":"Hello Worldkey_name-1","flavor":"beta"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":{"a":"b"},"homeDir":".leadinga😀b😀c","flavor":"development"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":true,"homeDir":"a","flavor":"cua"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":["a",1],"homeDir":"./x/**/*.json","flavor":"remote"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":null,"homeDir":"a:b:c","flavor":"development"}],"error":"Cannot read properties of null (reading 'XDG_DATA_HOME')"}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":{"a":"b"},"homeDir":"HELLO","flavor":"cua"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":[],"homeDir":"ab","flavor":"cua"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":true,"homeDir":"","flavor":"development"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":null,"homeDir":"hello:","flavor":"beta"}],"error":"Cannot read properties of null (reading 'XDG_DATA_HOME')"}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":{},"homeDir":"a:b:cab","flavor":"canary"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":{},"homeDir":"HELLO","flavor":"beta"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":{},"homeDir":"a..b","flavor":"remote"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":"x","homeDir":"ünïcödéünïcödé","flavor":"production"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":{"a":{"b":"c"}},"homeDir":"é","flavor":"development"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":{},"homeDir":"ünïcödé","flavor":"remote"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":{},"homeDir":".leading","flavor":"cua"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":{"a":{"b":"c"}},"homeDir":"😀","flavor":"development"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":"x","homeDir":"é","flavor":"canary"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":["a",1],"homeDir":"  padded  :","flavor":"beta"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":null,"homeDir":"a.b.c","flavor":"cua"}],"error":"Cannot read properties of null (reading 'XDG_DATA_HOME')"}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":{},"homeDir":"a.b.c","flavor":"production"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":{"a":{"b":"c"}},"homeDir":"﻿bomHello World","flavor":"beta"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":null,"homeDir":"a😀b😀ca","flavor":"cua"}],"error":"Cannot read properties of null (reading 'XDG_DATA_HOME')"}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":{},"homeDir":"line1\nline2","flavor":"production"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":{"a":{"b":"c"}},"homeDir":"","flavor":"remote"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":{},"homeDir":"key_name-1","flavor":"remote"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":true,"homeDir":"a😀b😀c","flavor":"cua"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":true,"homeDir":"./x/**/*.json","flavor":"production"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":true,"homeDir":".leading","flavor":"beta"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":{"a":{"b":"c"}},"homeDir":"😀é","flavor":"development"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":{},"homeDir":"😀Hello World","flavor":"remote"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":true,"homeDir":"  padded  ","flavor":"production"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":0,"homeDir":"a","flavor":"beta"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":"x","homeDir":"ünïcödé","flavor":"canary"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":null,"homeDir":"ΣΊΣΥΦΟΣ  padded  ","flavor":"beta"}],"error":"Cannot read properties of null (reading 'XDG_DATA_HOME')"}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":[],"homeDir":"  padded  ","flavor":"canary"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":true,"homeDir":"a:b:c","flavor":"canary"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":["a",1],"homeDir":"😀","flavor":"cua"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":["a",1],"homeDir":"a.b.c{name} has {count} items","flavor":"beta"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":null,"homeDir":"hello","flavor":"cua"}],"error":"Cannot read properties of null (reading 'XDG_DATA_HOME')"}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":0,"homeDir":"İstanbulΣΊΣΥΦΟΣ","flavor":"cua"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":true,"homeDir":"{name} has {count} items","flavor":"development"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":true,"homeDir":"a","flavor":"remote"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":null,"homeDir":"akey_name-1","flavor":"production"}],"error":"Cannot read properties of null (reading 'XDG_DATA_HOME')"}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":0,"homeDir":"key_name-1","flavor":"remote"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":true,"homeDir":"{name} has {count} itemsline1\nline2","flavor":"remote"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":{},"homeDir":"./x/**/*.json","flavor":"beta"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":null,"homeDir":"ab","flavor":"remote"}],"error":"Cannot read properties of null (reading 'XDG_DATA_HOME')"}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":{},"homeDir":"trailing.","flavor":"development"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":{"a":{"b":"c"}},"homeDir":"a:b:c","flavor":"cua"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":0,"homeDir":"hello worldkey_name-1","flavor":"beta"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":{"a":{"b":"c"}},"homeDir":"line1\nline2","flavor":"canary"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":null,"homeDir":":","flavor":"production"}],"error":"Cannot read properties of null (reading 'XDG_DATA_HOME')"}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":0,"homeDir":"  padded  ","flavor":"remote"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":"x","homeDir":"ns:key.pathline1\nline2","flavor":"remote"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":true,"homeDir":"abc","flavor":"development"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":{},"homeDir":"ΣΊΣΥΦΟΣ","flavor":"remote"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":["a",1],"homeDir":"a.b.c","flavor":"production"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":{"a":{"b":"c"}},"homeDir":"emoji 👍🏽 mix","flavor":"beta"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":["a",1],"homeDir":"a.b.c","flavor":"development"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":true,"homeDir":"straße","flavor":"cua"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":{"a":{"b":"c"}},"homeDir":"日本語のテキスト","flavor":"canary"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":true,"homeDir":"a","flavor":"development"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":{},"homeDir":"ns:key.path","flavor":"canary"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":{"a":"b"},"homeDir":"ΣΊΣΥΦΟΣ","flavor":"development"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":[],"homeDir":"ns:key.path","flavor":"beta"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":{"a":{"b":"c"}},"homeDir":"a:b:c","flavor":"beta"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":null,"homeDir":"😀","flavor":"cua"}],"error":"Cannot read properties of null (reading 'XDG_DATA_HOME')"}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":"x","homeDir":"Hello World","flavor":"beta"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":null,"homeDir":"a:b:c日本語のテキスト","flavor":"canary"}],"error":"Cannot read properties of null (reading 'XDG_DATA_HOME')"}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":"x","homeDir":"tab\tseparated","flavor":"development"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":null,"homeDir":".leadingtab\tseparated","flavor":"development"}],"error":"Cannot read properties of null (reading 'XDG_DATA_HOME')"}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":{"a":"b"},"homeDir":"HELLO","flavor":"canary"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":true,"homeDir":"😀abc","flavor":"development"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":true,"homeDir":"éa","flavor":"beta"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":{},"homeDir":"  padded  hello","flavor":"production"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":"x","homeDir":"a:b:c","flavor":"remote"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":0,"homeDir":"ΣΊΣΥΦΟΣ","flavor":"production"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":null,"homeDir":"é./x/**/*.json","flavor":"production"}],"error":"Cannot read properties of null (reading 'XDG_DATA_HOME')"}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":true,"homeDir":"key_name-1ab","flavor":"remote"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":{},"homeDir":"a","flavor":"remote"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":[],"homeDir":"İstanbul","flavor":"canary"}],"ok":null}
+{"fn":"resolveLinuxDesktopIconName","args":[{"env":{"a":{"b":"c"}},"homeDir":"﻿bom","flavor":"development"}],"ok":null}
+{"fn":"linuxDataHome","args":[{"a":{"b":"c"}},"HELLO"],"ok":"HELLO/.local/share"}
+{"fn":"linuxDataHome","args":[0,"line1\nline2"],"ok":"line1\nline2/.local/share"}
+{"fn":"linuxDataHome","args":[[],"{name} has {count} items"],"ok":"{name} has {count} items/.local/share"}
+{"fn":"linuxDataHome","args":[true,"ΣΊΣΥΦΟΣ"],"ok":"ΣΊΣΥΦΟΣ/.local/share"}
+{"fn":"linuxDataHome","args":["x","line1\nline2abc"],"ok":"line1\nline2abc/.local/share"}
+{"fn":"linuxDataHome","args":[{},"src/a/b.ts"],"ok":"src/a/b.ts/.local/share"}
+{"fn":"linuxDataHome","args":[[],"a..b"],"ok":"a..b/.local/share"}
+{"fn":"linuxDataHome","args":[true,"line1\nline2"],"ok":"line1\nline2/.local/share"}
+{"fn":"linuxDataHome","args":["x","a.b.cΣΊΣΥΦΟΣ"],"ok":"a.b.cΣΊΣΥΦΟΣ/.local/share"}
+{"fn":"linuxDataHome","args":[[],"emoji 👍🏽 mix"],"ok":"emoji 👍🏽 mix/.local/share"}
+{"fn":"linuxDataHome","args":[{"a":"b"},"a:b:c"],"ok":"a:b:c/.local/share"}
+{"fn":"linuxDataHome","args":[{"a":"b"},"日本語のテキスト"],"ok":"日本語のテキスト/.local/share"}
+{"fn":"linuxDataHome","args":[[],"日本語のテキスト"],"ok":"日本語のテキスト/.local/share"}
+{"fn":"linuxDataHome","args":["É","é"],"ok":"é/.local/share"}
+{"fn":"linuxDataHome","args":[null,"ΣΊΣΥΦΟΣ"],"error":"Cannot read properties of null (reading 'XDG_DATA_HOME')"}
+{"fn":"linuxDataHome","args":[0,"emoji 👍🏽 mix"],"ok":"emoji 👍🏽 mix/.local/share"}
+{"fn":"linuxDataHome","args":[0,"ünïcödé"],"ok":"ünïcödé/.local/share"}
+{"fn":"linuxDataHome","args":["x","HELLO"],"ok":"HELLO/.local/share"}
+{"fn":"linuxDataHome","args":[0,"a..b"],"ok":"a..b/.local/share"}
+{"fn":"linuxDataHome","args":[null,"./x/**/*.json"],"error":"Cannot read properties of null (reading 'XDG_DATA_HOME')"}
+{"fn":"linuxDataHome","args":[null,":"],"error":"Cannot read properties of null (reading 'XDG_DATA_HOME')"}
+{"fn":"linuxDataHome","args":[[],"src/a/b.ts"],"ok":"src/a/b.ts/.local/share"}
+{"fn":"linuxDataHome","args":[0,"😀"],"ok":"😀/.local/share"}
+{"fn":"linuxDataHome","args":[null,"tab\tseparated"],"error":"Cannot read properties of null (reading 'XDG_DATA_HOME')"}
+{"fn":"linuxDataHome","args":[null,""],"error":"Cannot read properties of null (reading 'XDG_DATA_HOME')"}
+{"fn":"linuxDataHome","args":[[],"ünïcödé"],"ok":"ünïcödé/.local/share"}
+{"fn":"linuxDataHome","args":[["a",1],"a.b.c"],"ok":"a.b.c/.local/share"}
+{"fn":"linuxDataHome","args":[{"a":"b"},"İstanbul"],"ok":"İstanbul/.local/share"}
+{"fn":"linuxDataHome","args":[[],"İstanbulabc"],"ok":"İstanbulabc/.local/share"}
+{"fn":"linuxDataHome","args":["x","é"],"ok":"é/.local/share"}
+{"fn":"linuxDataHome","args":["x","﻿bom"],"ok":"﻿bom/.local/share"}
+{"fn":"linuxDataHome","args":["x","x"],"ok":"x/.local/share"}
+{"fn":"linuxDataHome","args":[[],"line1\nline2"],"ok":"line1\nline2/.local/share"}
+{"fn":"linuxDataHome","args":[{"a":{"b":"c"}},"ns:key.path"],"ok":"ns:key.path/.local/share"}
+{"fn":"linuxDataHome","args":[[],"😀"],"ok":"😀/.local/share"}
+{"fn":"linuxDataHome","args":[true,":"],"ok":":/.local/share"}
+{"fn":"linuxDataHome","args":[{},"{name} has {count} items"],"ok":"{name} has {count} items/.local/share"}
+{"fn":"linuxDataHome","args":[true,"Hello World"],"ok":"Hello World/.local/share"}
+{"fn":"linuxDataHome","args":[{"a":{"b":"c"}},"﻿bom"],"ok":"﻿bom/.local/share"}
+{"fn":"linuxDataHome","args":["a","İstanbul"],"ok":"İstanbul/.local/share"}
+{"fn":"linuxDataHome","args":[["a",1],"İstanbul"],"ok":"İstanbul/.local/share"}
+{"fn":"linuxDataHome","args":["x","  padded  "],"ok":"  padded  /.local/share"}
+{"fn":"linuxDataHome","args":[null,"trailing."],"error":"Cannot read properties of null (reading 'XDG_DATA_HOME')"}
+{"fn":"linuxDataHome","args":[true,"a.b.c"],"ok":"a.b.c/.local/share"}
+{"fn":"linuxDataHome","args":["x","tab\tseparated"],"ok":"tab\tseparated/.local/share"}
+{"fn":"linuxDataHome","args":[[],"aba"],"ok":"aba/.local/share"}
+{"fn":"linuxDataHome","args":[{},"Hello World"],"ok":"Hello World/.local/share"}
+{"fn":"linuxDataHome","args":[{"a":"b"},"emoji 👍🏽 mix"],"ok":"emoji 👍🏽 mix/.local/share"}
+{"fn":"linuxDataHome","args":[["a",1],"ünïcödé"],"ok":"ünïcödé/.local/share"}
+{"fn":"linuxDataHome","args":[["a",1],"a..b"],"ok":"a..b/.local/share"}
+{"fn":"linuxDataHome","args":[null,"a:b:c"],"error":"Cannot read properties of null (reading 'XDG_DATA_HOME')"}
+{"fn":"linuxDataHome","args":[{},"﻿bom"],"ok":"﻿bom/.local/share"}
+{"fn":"linuxDataHome","args":[0,"hello"],"ok":"hello/.local/share"}
+{"fn":"linuxDataHome","args":[["a",1],"😀﻿bom"],"ok":"😀﻿bom/.local/share"}
+{"fn":"linuxDataHome","args":[["a",1],"HELLO"],"ok":"HELLO/.local/share"}
+{"fn":"linuxDataHome","args":[null,"hello"],"error":"Cannot read properties of null (reading 'XDG_DATA_HOME')"}
+{"fn":"linuxDataHome","args":[{},"😀emoji 👍🏽 mix"],"ok":"😀emoji 👍🏽 mix/.local/share"}
+{"fn":"linuxDataHome","args":[[],"hello"],"ok":"hello/.local/share"}
+{"fn":"linuxDataHome","args":[0,"tab\tseparated"],"ok":"tab\tseparated/.local/share"}
+{"fn":"linuxDataHome","args":[{"a":{"b":"c"}},":"],"ok":":/.local/share"}
+{"fn":"linuxDataHome","args":[{"a":"b"},"line1\nline2"],"ok":"line1\nline2/.local/share"}
+{"fn":"linuxDataHome","args":[["a",1],"./x/**/*.json"],"ok":"x/**/*.json/.local/share"}
+{"fn":"linuxDataHome","args":[{"a":"b"},"straße"],"ok":"straße/.local/share"}
+{"fn":"linuxDataHome","args":[[],"./x/**/*.json"],"ok":"x/**/*.json/.local/share"}
+{"fn":"linuxDataHome","args":[{"a":{"b":"c"}},"İstanbul"],"ok":"İstanbul/.local/share"}
+{"fn":"linuxDataHome","args":[{"a":{"b":"c"}},"  padded  "],"ok":"  padded  /.local/share"}
+{"fn":"linuxDataHome","args":[null,"a..b"],"error":"Cannot read properties of null (reading 'XDG_DATA_HOME')"}
+{"fn":"linuxDataHome","args":[[],"é"],"ok":"é/.local/share"}
+{"fn":"linuxDataHome","args":[{},"a..b:"],"ok":"a..b:/.local/share"}
+{"fn":"linuxDataHome","args":[null,"Hello World"],"error":"Cannot read properties of null (reading 'XDG_DATA_HOME')"}
+{"fn":"linuxDataHome","args":["x","ΣΊΣΥΦΟΣa..b"],"ok":"ΣΊΣΥΦΟΣa..b/.local/share"}
+{"fn":"linuxDataHome","args":[0,""],"ok":".local/share"}
+{"fn":"linuxDataHome","args":[[],"ns:key.path"],"ok":"ns:key.path/.local/share"}
+{"fn":"linuxDataHome","args":[null,"İstanbul"],"error":"Cannot read properties of null (reading 'XDG_DATA_HOME')"}
+{"fn":"linuxDataHome","args":[true,"a.b.ca"],"ok":"a.b.ca/.local/share"}
+{"fn":"linuxDataHome","args":[0,"straße"],"ok":"straße/.local/share"}
+{"fn":"linuxDataHome","args":[{"a":"b"},"hello world"],"ok":"hello world/.local/share"}
+{"fn":"linuxDataHome","args":[0,".leading"],"ok":".leading/.local/share"}
+{"fn":"linuxDataHome","args":["x","abcabc"],"ok":"abcabc/.local/share"}
+{"fn":"linuxDataHome","args":[null,"HELLO"],"error":"Cannot read properties of null (reading 'XDG_DATA_HOME')"}
+{"fn":"linuxDataHome","args":["_n","key_name-1"],"ok":"key_name-1/.local/share"}
+{"fn":"linuxDataHome","args":[{},"HELLO:"],"ok":"HELLO:/.local/share"}
+{"fn":"linuxDataHome","args":[{"a":"b"},"hello"],"ok":"hello/.local/share"}
+{"fn":"linuxDataHome","args":["x","X"],"ok":"X/.local/share"}
+{"fn":"linuxDataHome","args":[{},"日本語のテキスト"],"ok":"日本語のテキスト/.local/share"}
+{"fn":"linuxDataHome","args":[0,"日本語のテキスト"],"ok":"日本語のテキスト/.local/share"}
+{"fn":"linuxDataHome","args":[[],"ΣΊΣΥΦΟΣ"],"ok":"ΣΊΣΥΦΟΣ/.local/share"}
+{"fn":"linuxDataHome","args":[{"a":{"b":"c"}},".leading"],"ok":".leading/.local/share"}
+{"fn":"linuxDataHome","args":[null,"😀"],"error":"Cannot read properties of null (reading 'XDG_DATA_HOME')"}
+{"fn":"linuxDataHome","args":[["a",1],"key_name-1"],"ok":"key_name-1/.local/share"}
+{"fn":"linuxDataHome","args":[["a",1],":"],"ok":":/.local/share"}
+{"fn":"linuxDataHome","args":[[],"Hello WorldHELLO"],"ok":"Hello WorldHELLO/.local/share"}
+{"fn":"linuxDataHome","args":[[],"hello world"],"ok":"hello world/.local/share"}
+{"fn":"linuxDataHome","args":[null,"ünïcödéİstanbul"],"error":"Cannot read properties of null (reading 'XDG_DATA_HOME')"}
+{"fn":"linuxDataHome","args":[0,"ΣΊΣΥΦΟΣ"],"ok":"ΣΊΣΥΦΟΣ/.local/share"}
+{"fn":"linuxDataHome","args":[["a",1],"{name} has {count} items"],"ok":"{name} has {count} items/.local/share"}
+{"fn":"linuxDataHome","args":[{"a":"b"},":"],"ok":":/.local/share"}
+{"fn":"linuxDataHome","args":[0,"a.b.c"],"ok":"a.b.c/.local/share"}
+{"fn":"linuxDataHome","args":["x","ünïcödé"],"ok":"ünïcödé/.local/share"}
+{"fn":"linuxDataHome","args":[{"a":"b"},".leadingabc"],"ok":".leadingabc/.local/share"}
+{"fn":"linuxDataHome","args":[{"a":"b"},"./x/**/*.json"],"ok":"x/**/*.json/.local/share"}
+{"fn":"linuxDataHome","args":[{"a":{"b":"c"}},"src/a/b.ts"],"ok":"src/a/b.ts/.local/share"}
+{"fn":"linuxDataHome","args":[".","abctrailing."],"ok":"abctrailing./.local/share"}
+{"fn":"linuxDataHome","args":[true,"straße"],"ok":"straße/.local/share"}
+{"fn":"linuxDataHome","args":[{"a":{"b":"c"}},"{name} has {count} items"],"ok":"{name} has {count} items/.local/share"}
+{"fn":"linuxDataHome","args":[{},"abc"],"ok":"abc/.local/share"}
+{"fn":"linuxDataHome","args":[["a",1],"src/a/b.ts"],"ok":"src/a/b.ts/.local/share"}
+{"fn":"linuxDataHome","args":[{},"hello"],"ok":"hello/.local/share"}
+{"fn":"linuxDataHome","args":[[],"tab\tseparated"],"ok":"tab\tseparated/.local/share"}
+{"fn":"linuxDataHome","args":[{"a":{"b":"c"}},"abc"],"ok":"abc/.local/share"}
+{"fn":"linuxDataHome","args":[true,"a😀b😀c"],"ok":"a😀b😀c/.local/share"}
+{"fn":"linuxDataHome","args":["x","abc"],"ok":"abc/.local/share"}
+{"fn":"linuxDataHome","args":[["a",1],"ns:key.path"],"ok":"ns:key.path/.local/share"}
+{"fn":"linuxDataHome","args":[{},".leading😀"],"ok":".leading😀/.local/share"}
+{"fn":"linuxDataHome","args":[["a",1],"emoji 👍🏽 mixİstanbul"],"ok":"emoji 👍🏽 mixİstanbul/.local/share"}
+{"fn":"linuxDataHome","args":[0,"HELLO"],"ok":"HELLO/.local/share"}
+{"fn":"linuxDataHome","args":[{"a":"b"},"src/a/b.tsa.b.c"],"ok":"src/a/b.tsa.b.c/.local/share"}
+{"fn":"linuxDataHome","args":[{"a":"b"},"a..bhello world"],"ok":"a..bhello world/.local/share"}
+{"fn":"linuxDataHome","args":[0,"a..bab"],"ok":"a..bab/.local/share"}
+{"fn":"linuxDataHome","args":[true,".leading"],"ok":".leading/.local/share"}
+{"fn":"linuxDataHome","args":[{},"ünïcödé"],"ok":"ünïcödé/.local/share"}
+{"fn":"linuxDataHome","args":[null,"{name} has {count} items"],"error":"Cannot read properties of null (reading 'XDG_DATA_HOME')"}
+{"fn":"linuxDataHome","args":["x","ns:key.path"],"ok":"ns:key.path/.local/share"}
+{"fn":"linuxDataHome","args":[{"a":{"b":"c"}},"﻿bom{name} has {count} items"],"ok":"﻿bom{name} has {count} items/.local/share"}
+{"fn":"linuxDataHome","args":[[],"﻿bom"],"ok":"﻿bom/.local/share"}
+{"fn":"linuxDataHome","args":[null,":straße"],"error":"Cannot read properties of null (reading 'XDG_DATA_HOME')"}
+{"fn":"linuxDataHome","args":[{},"straße"],"ok":"straße/.local/share"}
+{"fn":"linuxDataHome","args":["x","ΣΊΣΥΦΟΣline1\nline2"],"ok":"ΣΊΣΥΦΟΣline1\nline2/.local/share"}
+{"fn":"linuxDataHome","args":["x","日本語のテキスト"],"ok":"日本語のテキスト/.local/share"}
+{"fn":"linuxDataHome","args":[null,"a😀b😀c"],"error":"Cannot read properties of null (reading 'XDG_DATA_HOME')"}
+{"fn":"linuxDataHome","args":[{"a":"b"},"ΣΊΣΥΦΟΣ"],"ok":"ΣΊΣΥΦΟΣ/.local/share"}
+{"fn":"linuxDataHome","args":[["a",1],"日本語のテキスト"],"ok":"日本語のテキスト/.local/share"}
+{"fn":"linuxDataHome","args":[{"a":{"b":"c"}},"a..b"],"ok":"a..b/.local/share"}
+{"fn":"linuxDataHome","args":[{"a":"b"},"ünïcödésrc/a/b.ts"],"ok":"ünïcödésrc/a/b.ts/.local/share"}
+{"fn":"linuxDataHome","args":[[],"trailing."],"ok":"trailing./.local/share"}
+{"fn":"linuxDataHome","args":["x","Hello Worlda.b.c"],"ok":"Hello Worlda.b.c/.local/share"}
+{"fn":"linuxDataHome","args":[{"a":"b"},"{name} has {count} items"],"ok":"{name} has {count} items/.local/share"}
+{"fn":"linuxDataHome","args":[["a",1],"line1\nline2"],"ok":"line1\nline2/.local/share"}
+{"fn":"linuxDataHome","args":[{"a":{"b":"c"}},"trailing."],"ok":"trailing./.local/share"}
+{"fn":"linuxDataHome","args":[0,"a😀b😀c"],"ok":"a😀b😀c/.local/share"}
+{"fn":"linuxDataHome","args":[{"a":{"b":"c"}},"line1\nline2"],"ok":"line1\nline2/.local/share"}
+{"fn":"linuxDataHome","args":[["a",1],"﻿bomkey_name-1"],"ok":"﻿bomkey_name-1/.local/share"}
+{"fn":"linuxDataHome","args":[{"a":"b"},"a.b.c  padded  "],"ok":"a.b.c  padded  /.local/share"}
+{"fn":"linuxDataHome","args":[true,"{name} has {count} items"],"ok":"{name} has {count} items/.local/share"}
+{"fn":"linuxDataHome","args":[{"a":{"b":"c"}},"ab"],"ok":"ab/.local/share"}
+{"fn":"linuxDataHome","args":[[],"ΣΊΣΥΦΟΣa..b"],"ok":"ΣΊΣΥΦΟΣa..b/.local/share"}
+{"fn":"linuxDataHome","args":[null,".leadinga..b"],"error":"Cannot read properties of null (reading 'XDG_DATA_HOME')"}
+{"fn":"linuxDataHome","args":["x","ab"],"ok":"ab/.local/share"}
+{"fn":"linuxDataHome","args":[{"a":"b"},"trailing."],"ok":"trailing./.local/share"}
+{"fn":"linuxDataHome","args":[["a",1],"straße"],"ok":"straße/.local/share"}
+{"fn":"linuxDataHome","args":[[],""],"ok":".local/share"}
+{"fn":"linuxDataHome","args":[true,"key_name-1😀"],"ok":"key_name-1😀/.local/share"}
+{"fn":"linuxDataHome","args":[["a",1],"abcns:key.path"],"ok":"abcns:key.path/.local/share"}
+{"fn":"linuxDataHome","args":[{},":"],"ok":":/.local/share"}
+{"fn":"linuxDataHome","args":[{"a":"b"},"é"],"ok":"é/.local/share"}
+{"fn":"linuxDataHome","args":[{"a":"b"},"﻿bom"],"ok":"﻿bom/.local/share"}
+{"fn":"linuxDataHome","args":["HEL","ΣΊΣΥΦΟΣHELLO"],"ok":"ΣΊΣΥΦΟΣHELLO/.local/share"}
+{"fn":"linuxDataHome","args":[{},"a..b"],"ok":"a..b/.local/share"}
+{"fn":"linuxDataHome","args":[{},"ΣΊΣΥΦΟΣ"],"ok":"ΣΊΣΥΦΟΣ/.local/share"}
+{"fn":"linuxDataHome","args":[[],"{name} has {count} itemskey_name-1"],"ok":"{name} has {count} itemskey_name-1/.local/share"}
+{"fn":"linuxDataHome","args":[null,"line1\nline2"],"error":"Cannot read properties of null (reading 'XDG_DATA_HOME')"}
+{"fn":"linuxDataHome","args":[["a",1],"é"],"ok":"é/.local/share"}
+{"fn":"linuxDataHome","args":[[],"ab"],"ok":"ab/.local/share"}
+{"fn":"linuxDataHome","args":["x","a"],"ok":"a/.local/share"}
+{"fn":"linuxDataHome","args":[{"a":"b"},"ünïcödé"],"ok":"ünïcödé/.local/share"}
+{"fn":"linuxDataHome","args":[true,"hello"],"ok":"hello/.local/share"}
+{"fn":"linuxDataHome","args":[null,"key_name-1"],"error":"Cannot read properties of null (reading 'XDG_DATA_HOME')"}
+{"fn":"linuxDataHome","args":[null,"日本語のテキスト"],"error":"Cannot read properties of null (reading 'XDG_DATA_HOME')"}
+{"fn":"linuxDataHome","args":[[],":"],"ok":":/.local/share"}
+{"fn":"linuxDataHome","args":["x","a.b.c"],"ok":"a.b.c/.local/share"}
+{"fn":"linuxDataHome","args":[true,"a"],"ok":"a/.local/share"}
+{"fn":"linuxDataHome","args":[true,"ünïcödé"],"ok":"ünïcödé/.local/share"}
+{"fn":"linuxDataHome","args":[{"a":{"b":"c"}},"emoji 👍🏽 mixé"],"ok":"emoji 👍🏽 mixé/.local/share"}
+{"fn":"linuxDataHome","args":[0,"hello world"],"ok":"hello world/.local/share"}
+{"fn":"linuxDataHome","args":[["a",1],"abc"],"ok":"abc/.local/share"}
+{"fn":"linuxDataHome","args":[0,"﻿bom"],"ok":"﻿bom/.local/share"}
+{"fn":"linuxDataHome","args":[null,"emoji 👍🏽 mixa:b:c"],"error":"Cannot read properties of null (reading 'XDG_DATA_HOME')"}
+{"fn":"linuxDataHome","args":[null,"ünïcödé"],"error":"Cannot read properties of null (reading 'XDG_DATA_HOME')"}
+{"fn":"linuxDataHome","args":[["a",1],"hello world:"],"ok":"hello world:/.local/share"}
+{"fn":"linuxDataHome","args":[0,"ns:key.path"],"ok":"ns:key.path/.local/share"}
+{"fn":"linuxDataHome","args":[{},"a.b.c"],"ok":"a.b.c/.local/share"}
+{"fn":"linuxDataHome","args":[{},"a:b:c"],"ok":"a:b:c/.local/share"}
+{"fn":"linuxDataHome","args":["x","HELLO  padded  "],"ok":"HELLO  padded  /.local/share"}
+{"fn":"linuxDataHome","args":[[],"hello world{name} has {count} items"],"ok":"hello world{name} has {count} items/.local/share"}
+{"fn":"linuxDataHome","args":[{"a":"b"},".leading"],"ok":".leading/.local/share"}
+{"fn":"linuxDataHome","args":[{"a":"b"},"  padded  "],"ok":"  padded  /.local/share"}
+{"fn":"linuxDataHome","args":[[],"HELLO"],"ok":"HELLO/.local/share"}
+{"fn":"linuxDataHome","args":[["a",1],"ΣΊΣΥΦΟΣ"],"ok":"ΣΊΣΥΦΟΣ/.local/share"}
+{"fn":"linuxDataHome","args":[true,"﻿bom"],"ok":"﻿bom/.local/share"}
+{"fn":"linuxDataHome","args":["x","İstanbul"],"ok":"İstanbul/.local/share"}
+{"fn":"linuxDataHome","args":["x","😀"],"ok":"😀/.local/share"}
+{"fn":"linuxDataHome","args":[{},"a😀b😀c"],"ok":"a😀b😀c/.local/share"}
+{"fn":"linuxDataHome","args":[{"a":{"b":"c"}},"a.b.c"],"ok":"a.b.c/.local/share"}
+{"fn":"linuxDataHome","args":[{"a":{"b":"c"}},"tab\tseparated"],"ok":"tab\tseparated/.local/share"}
+{"fn":"linuxDataHome","args":[{"a":"b"},"src/a/b.ts"],"ok":"src/a/b.ts/.local/share"}
+{"fn":"linuxDataHome","args":[{"a":{"b":"c"}},"emoji 👍🏽 mix"],"ok":"emoji 👍🏽 mix/.local/share"}
+{"fn":"linuxDataHome","args":[[],"  padded  "],"ok":"  padded  /.local/share"}
+{"fn":"linuxDataHome","args":[{"a":"b"},"trailing.ns:key.path"],"ok":"trailing.ns:key.path/.local/share"}
+{"fn":"linuxDataHome","args":[{"a":{"b":"c"}},"{name} has {count} itemsab"],"ok":"{name} has {count} itemsab/.local/share"}
+{"fn":"linuxDataHome","args":[[],"ns:key.patha:b:c"],"ok":"ns:key.patha:b:c/.local/share"}
+{"fn":"linuxDataHome","args":[{"a":{"b":"c"}},"héllo wörld"],"ok":"héllo wörld/.local/share"}
+{"fn":"linuxDataHome","args":[{"a":{"b":"c"}},"👍🏽 thumbs"],"ok":"👍🏽 thumbs/.local/share"}
+{"fn":"linuxDataHome","args":[{"a":{"b":"c"}},"日本語"],"ok":"日本語/.local/share"}
+{"fn":"linuxDataHome","args":[{"a":{"b":"c"}},""],"ok":".local/share"}
+{"fn":"linuxDataHome","args":[{"a":{"b":"c"}},"é"],"ok":"é/.local/share"}
+{"fn":"linuxDataHome","args":[{"a":{"b":"c"}},"straße"],"ok":"straße/.local/share"}
+{"fn":"linuxDataHome","args":[{"a":{"b":"c"}},"ılık ırmak"],"ok":"ılık ırmak/.local/share"}
+{"fn":"linuxDataHome","args":[{"a":{"b":"c"}},"👨‍👩‍👧 family"],"ok":"👨‍👩‍👧 family/.local/share"}
+{"fn":"linuxDataHome","args":[{"a":{"b":"c"}},"a b"],"ok":"a b/.local/share"}
+{"fn":"linuxDataHome","args":[{"a":{"b":"c"}},"ΣΊΣΥΦΟΣ"],"ok":"ΣΊΣΥΦΟΣ/.local/share"}
+{"fn":"linuxDataHome","args":[{"a":{"b":"c"}},"a😀b"],"ok":"a😀b/.local/share"}
+{"fn":"linuxDataHome","args":[{"a":{"b":"c"}},"a²b x½ y①"],"ok":"a²b x½ y①/.local/share"}
+{"fn":"linuxDataHome","args":[{"a":{"b":"c"}},"aⅠb Ⅻ"],"ok":"aⅠb Ⅻ/.local/share"}
+{"fn":"linuxDataHome","args":[{"a":{"b":"c"}},"a𐐀b 𝐀bc"],"ok":"a𐐀b 𝐀bc/.local/share"}
+{"fn":"linuxDataHome","args":[{"a":{"b":"c"}},"कि ٣٤"],"ok":"कि ٣٤/.local/share"}
+{"fn":"linuxDataHome","args":[{"a":{"b":"c"}},"Iı İi"],"ok":"Iı İi/.local/share"}
+{"fn":"linuxDataHome","args":[{"a":{"b":"c"}},"K K k"],"ok":"K K k/.local/share"}
+{"fn":"linuxDataHome","args":[{"a":{"b":"c"}},"ſ s S"],"ok":"ſ s S/.local/share"}
+{"fn":"linuxDataHome","args":[{"a":{"b":"c"}},"x‍y 👨‍👩‍👧"],"ok":"x‍y 👨‍👩‍👧/.local/share"}
+{"fn":"linuxDataHome","args":[{"a":{"b":"c"}},"a b c　d"],"ok":"a b c　d/.local/share"}
+{"fn":"linuxDataHome","args":[{"a":{"b":"c"}},"١٢٣ ٤٥"],"ok":"١٢٣ ٤٥/.local/share"}
+{"fn":"linuxDataHome","args":[{"a":{"b":"c"}},"𝟘𝟙 ²³"],"ok":"𝟘𝟙 ²³/.local/share"}
+{"fn":"linuxDataHome","args":[{"a":{"b":"c"}},"snake_case foo-bar o'neil"],"ok":"snake_case foo-bar o'neil/.local/share"}
+{"fn":"linuxDataHome","args":[{"a":{"b":"c"}},"ǅungla Ǆ"],"ok":"ǅungla Ǆ/.local/share"}
+{"fn":"linuxDataHome","args":[{"a":{"b":"c"}},"one\r\ntwo threefour"],"ok":"one\r\ntwo threefour/.local/share"}
+{"fn":"linuxDataHome","args":[{"a":{"b":"c"}},"café café"],"ok":"café café/.local/share"}
+{"fn":"linuxDataHome","args":[{"a":{"b":"c"}},"ΣΑΣ σας ς"],"ok":"ΣΑΣ σας ς/.local/share"}

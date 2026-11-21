@@ -1,0 +1,17 @@
+{
+  "unit": "apps/desktop/src/linuxAppIcon.ts",
+  "files": 1,
+  "fingerprint": "c753d3992a6a11eb",
+  "coverage": {
+    "lines": 102,
+    "reached": 71,
+    "files": [
+      {
+        "file": "apps/desktop/src/linuxAppIcon.ts",
+        "lines": 102,
+        "reached": 71,
+        "missed": "32-34, 36, 75, 85-110"
+      }
+    ]
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/claudeCache.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "claudecache-rs",
+  "exports": [
+    {
+      "name": "assessClaudeCache",
+      "file": "packages/shared/src/claudeCache.ts",
+      "line": 10,
+      "params": [
+        {
+          "name": "observation",
+          "ts_type": "typeof typeof typeof typeof ClaudeCacheObservation.Type.Type.Type.Type | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "nowMs",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "{\n  readonly state: typeof typeof typeof typeof ClaudeCacheObservation.Type.Type.Type.Type[\"state\"];\n  readonly idleSeconds?: number;\n  readonly requiresConfirmation: boolean;\n}",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

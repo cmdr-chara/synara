@@ -1,0 +1,17 @@
+{
+  "unit": "packages/shared/src/claudeCache.ts",
+  "files": 1,
+  "fingerprint": "822d7615d78ae45d",
+  "coverage": {
+    "lines": 62,
+    "reached": 61,
+    "files": [
+      {
+        "file": "packages/shared/src/claudeCache.ts",
+        "lines": 62,
+        "reached": 61,
+        "missed": "53"
+      }
+    ]
+  }
+}

@@ -1,0 +1,643 @@
+{"fn":"resolveWslWorkspace","args":[".leading"],"ok":null}
+{"fn":"resolveWslWorkspace","args":["ünïcödéns:key.path","ns:key"],"ok":null}
+{"fn":"resolveWslWorkspace","args":["key_name-1",{"$undefined":true}],"ok":null}
+{"fn":"resolveWslWorkspace","args":[":",{"$undefined":true}],"ok":null}
+{"fn":"resolveWslWorkspace","args":["{name} has {count} items",{"a":"b"}],"ok":null}
+{"fn":"resolveWslWorkspace","args":["line1\nline2",{"a":{"b":"c"}}],"ok":null}
+{"fn":"resolveWslWorkspace","args":["{name} has {count} items",null],"ok":null}
+{"fn":"resolveWslWorkspace","args":["😀ünïcödé",{"a":"b"}],"ok":null}
+{"fn":"resolveWslWorkspace","args":["./x/**/*.json",{"a":"b"}],"ok":null}
+{"fn":"resolveWslWorkspace","args":["a:b:c",{"a":{"b":"c"}}],"ok":null}
+{"fn":"resolveWslWorkspace","args":["src/a/b.ts{name} has {count} items","x"],"ok":null}
+{"fn":"resolveWslWorkspace","args":["ünïcödé",["a",1]],"ok":null}
+{"fn":"resolveWslWorkspace","args":["tab\tseparated",{"$undefined":true}],"ok":null}
+{"fn":"resolveWslWorkspace","args":["é",[]],"ok":null}
+{"fn":"resolveWslWorkspace","args":[".leading",{"a":{"b":"c"}}],"ok":null}
+{"fn":"resolveWslWorkspace","args":["ΣΊΣΥΦΟΣ",["a",1]],"ok":null}
+{"fn":"resolveWslWorkspace","args":["日本語のテキスト",{}],"ok":null}
+{"fn":"resolveWslWorkspace","args":["{name} has {count} items",true],"ok":null}
+{"fn":"resolveWslWorkspace","args":["a😀b😀c",0],"ok":null}
+{"fn":"resolveWslWorkspace","args":["İstanbul","x"],"ok":null}
+{"fn":"resolveWslWorkspace","args":["a",true],"ok":null}
+{"fn":"resolveWslWorkspace","args":["a.leading",{"a":"b"}],"ok":null}
+{"fn":"resolveWslWorkspace","args":["  padded  ","  p"],"ok":null}
+{"fn":"resolveWslWorkspace","args":["é",null],"ok":null}
+{"fn":"resolveWslWorkspace","args":[".leading",[]],"ok":null}
+{"fn":"resolveWslWorkspace","args":[""],"ok":null}
+{"fn":"resolveWslWorkspace","args":["hello","x"],"ok":null}
+{"fn":"resolveWslWorkspace","args":["a..ba:b:c",{"a":"b"}],"ok":null}
+{"fn":"resolveWslWorkspace","args":["a:b:c",0],"ok":null}
+{"fn":"resolveWslWorkspace","args":["ΣΊΣΥΦΟΣ",{"a":"b"}],"ok":null}
+{"fn":"resolveWslWorkspace","args":["a..b",true],"ok":null}
+{"fn":"resolveWslWorkspace","args":["abcsrc/a/b.ts",0],"ok":null}
+{"fn":"resolveWslWorkspace","args":["é",{"$undefined":true}],"ok":null}
+{"fn":"resolveWslWorkspace","args":["é","x"],"ok":null}
+{"fn":"resolveWslWorkspace","args":["﻿bomkey_name-1",["a",1]],"ok":null}
+{"fn":"resolveWslWorkspace","args":["HELLO",{}],"ok":null}
+{"fn":"resolveWslWorkspace","args":["src/a/b.ts",null],"ok":null}
+{"fn":"resolveWslWorkspace","args":["ab",[]],"ok":null}
+{"fn":"resolveWslWorkspace","args":["ab",{"$undefined":true}],"ok":null}
+{"fn":"resolveWslWorkspace","args":["ns:key.path",{"a":{"b":"c"}}],"ok":null}
+{"fn":"resolveWslWorkspace","args":["a😀b😀c",[]],"ok":null}
+{"fn":"resolveWslWorkspace","args":["tab\tseparated","x"],"ok":null}
+{"fn":"resolveWslWorkspace","args":["Hello World",true],"ok":null}
+{"fn":"resolveWslWorkspace","args":["line1\nline2"],"ok":null}
+{"fn":"resolveWslWorkspace","args":["😀",0],"ok":null}
+{"fn":"resolveWslWorkspace","args":["line1\nline2a.b.c",{"a":"b"}],"ok":null}
+{"fn":"resolveWslWorkspace","args":["emoji 👍🏽 mixa:b:c",0],"ok":null}
+{"fn":"resolveWslWorkspace","args":["",null],"ok":null}
+{"fn":"resolveWslWorkspace","args":["abc",null],"ok":null}
+{"fn":"resolveWslWorkspace","args":["hellons:key.path"],"ok":null}
+{"fn":"resolveWslWorkspace","args":["HELLO",{"a":"b"}],"ok":null}
+{"fn":"resolveWslWorkspace","args":["Hello World./x/**/*.json"],"ok":null}
+{"fn":"resolveWslWorkspace","args":["hello world",{}],"ok":null}
+{"fn":"resolveWslWorkspace","args":["HELLOa..b",[]],"ok":null}
+{"fn":"resolveWslWorkspace","args":["{name} has {count} items"],"ok":null}
+{"fn":"resolveWslWorkspace","args":["src/a/b.ts",{"$undefined":true}],"ok":null}
+{"fn":"resolveWslWorkspace","args":["straße","x"],"ok":null}
+{"fn":"resolveWslWorkspace","args":["﻿bom",{"$undefined":true}],"ok":null}
+{"fn":"resolveWslWorkspace","args":[".leading",{"a":"b"}],"ok":null}
+{"fn":"resolveWslWorkspace","args":["日本語のテキスト",null],"ok":null}
+{"fn":"resolveWslWorkspace","args":["abc",0],"ok":null}
+{"fn":"resolveWslWorkspace","args":["{name} has {count} items",0],"ok":null}
+{"fn":"resolveWslWorkspace","args":["HELLO",["a",1]],"ok":null}
+{"fn":"resolveWslWorkspace","args":["",true],"ok":null}
+{"fn":"resolveWslWorkspace","args":["straße",["a",1]],"ok":null}
+{"fn":"resolveWslWorkspace","args":["key_name-1"],"ok":null}
+{"fn":"resolveWslWorkspace","args":["a:b:c",true],"ok":null}
+{"fn":"resolveWslWorkspace","args":["日本語のテキスト",{"$undefined":true}],"ok":null}
+{"fn":"resolveWslWorkspace","args":["line1\nline2",{"$undefined":true}],"ok":null}
+{"fn":"resolveWslWorkspace","args":["emoji 👍🏽 mix",null],"ok":null}
+{"fn":"resolveWslWorkspace","args":[".leading",{"$undefined":true}],"ok":null}
+{"fn":"resolveWslWorkspace","args":["",["a",1]],"ok":null}
+{"fn":"resolveWslWorkspace","args":["",{}],"ok":null}
+{"fn":"resolveWslWorkspace","args":["a..b",null],"ok":null}
+{"fn":"resolveWslWorkspace","args":["  padded  "],"ok":null}
+{"fn":"resolveWslWorkspace","args":["helloé",[]],"ok":null}
+{"fn":"resolveWslWorkspace","args":["tab\tseparated",[]],"ok":null}
+{"fn":"resolveWslWorkspace","args":["ns:key.path",null],"ok":null}
+{"fn":"resolveWslWorkspace","args":["Hello World",{}],"ok":null}
+{"fn":"resolveWslWorkspace","args":["é",{"a":{"b":"c"}}],"ok":null}
+{"fn":"resolveWslWorkspace","args":["emoji 👍🏽 mix",true],"ok":null}
+{"fn":"resolveWslWorkspace","args":["line1\nline2",null],"ok":null}
+{"fn":"resolveWslWorkspace","args":["İstanbul",true],"ok":null}
+{"fn":"resolveWslWorkspace","args":["HELLOstraße",true],"ok":null}
+{"fn":"resolveWslWorkspace","args":["abc"],"ok":null}
+{"fn":"resolveWslWorkspace","args":["hello world"],"ok":null}
+{"fn":"resolveWslWorkspace","args":["a..b",{}],"ok":null}
+{"fn":"resolveWslWorkspace","args":["emoji 👍🏽 mixstraße",true],"ok":null}
+{"fn":"resolveWslWorkspace","args":["﻿bom",[]],"ok":null}
+{"fn":"resolveWslWorkspace","args":[".leading",null],"ok":null}
+{"fn":"resolveWslWorkspace","args":["日本語のテキスト","x"],"ok":null}
+{"fn":"resolveWslWorkspace","args":["a😀b😀c","x"],"ok":null}
+{"fn":"resolveWslWorkspace","args":["Hello Worldns:key.path",{"$undefined":true}],"ok":null}
+{"fn":"resolveWslWorkspace","args":["Hello World",["a",1]],"ok":null}
+{"fn":"resolveWslWorkspace","args":["{name} has {count} items",{}],"ok":null}
+{"fn":"resolveWslWorkspace","args":["  padded  ",{"a":"b"}],"ok":null}
+{"fn":"resolveWslWorkspace","args":["hello world",null],"ok":null}
+{"fn":"resolveWslWorkspace","args":["a..b",["a",1]],"ok":null}
+{"fn":"resolveWslWorkspace","args":["key_name-1:",{"$undefined":true}],"ok":null}
+{"fn":"resolveWslWorkspace","args":[".leading","x"],"ok":null}
+{"fn":"resolveWslWorkspace","args":["hello",null],"ok":null}
+{"fn":"resolveWslWorkspace","args":["emoji 👍🏽 mix",[]],"ok":null}
+{"fn":"resolveWslWorkspace","args":["é",{}],"ok":null}
+{"fn":"resolveWslWorkspace","args":["﻿bom",null],"ok":null}
+{"fn":"resolveWslWorkspace","args":["{name} has {count} items",{"$undefined":true}],"ok":null}
+{"fn":"resolveWslWorkspace","args":["ab"],"ok":null}
+{"fn":"resolveWslWorkspace","args":["HELLOhello",[]],"ok":null}
+{"fn":"resolveWslWorkspace","args":["a😀b😀c",null],"ok":null}
+{"fn":"resolveWslWorkspace","args":["./x/**/*.json  padded  ",{"a":"b"}],"ok":null}
+{"fn":"resolveWslWorkspace","args":["src/a/b.ts"],"ok":null}
+{"fn":"resolveWslWorkspace","args":["tab\tseparateda",{"a":"b"}],"ok":null}
+{"fn":"resolveWslWorkspace","args":["İstanbul"],"ok":null}
+{"fn":"resolveWslWorkspace","args":["Hello World",[]],"ok":null}
+{"fn":"resolveWslWorkspace","args":["trailing.",[]],"ok":null}
+{"fn":"resolveWslWorkspace","args":["src/a/b.ts",[]],"ok":null}
+{"fn":"resolveWslWorkspace","args":["./x/**/*.json",{"a":{"b":"c"}}],"ok":null}
+{"fn":"resolveWslWorkspace","args":["  padded  ",null],"ok":null}
+{"fn":"resolveWslWorkspace","args":["HELLO",{"a":{"b":"c"}}],"ok":null}
+{"fn":"resolveWslWorkspace","args":["ns:key.path./x/**/*.json"],"ok":null}
+{"fn":"resolveWslWorkspace","args":["😀",["a",1]],"ok":null}
+{"fn":"resolveWslWorkspace","args":["a.b.c",true],"ok":null}
+{"fn":"resolveWslWorkspace","args":[":",{}],"ok":null}
+{"fn":"resolveWslWorkspace","args":["emoji 👍🏽 mix",{"a":"b"}],"ok":null}
+{"fn":"resolveWslWorkspace","args":["a..b","x"],"ok":null}
+{"fn":"resolveWslWorkspace","args":[":",[]],"ok":null}
+{"fn":"resolveWslWorkspace","args":["key_name-1",null],"ok":null}
+{"fn":"resolveWslWorkspace","args":["line1\nline2",[]],"ok":null}
+{"fn":"resolveWslWorkspace","args":["./x/**/*.json",true],"ok":null}
+{"fn":"resolveWslWorkspace","args":["key_name-1",[]],"ok":null}
+{"fn":"resolveWslWorkspace","args":["straße",true],"ok":null}
+{"fn":"resolveWslWorkspace","args":["日本語のテキスト",true],"ok":null}
+{"fn":"resolveWslWorkspace","args":[".leadingé",0],"ok":null}
+{"fn":"resolveWslWorkspace","args":["a","x"],"ok":null}
+{"fn":"resolveWslWorkspace","args":["{name} has {count} items",{"a":{"b":"c"}}],"ok":null}
+{"fn":"resolveWslWorkspace","args":["😀",{"a":{"b":"c"}}],"ok":null}
+{"fn":"resolveWslWorkspace","args":["./x/**/*.json",[]],"ok":null}
+{"fn":"resolveWslWorkspace","args":["tab\tseparated",true],"ok":null}
+{"fn":"resolveWslWorkspace","args":["ns:key.path",0],"ok":null}
+{"fn":"resolveWslWorkspace","args":["é",["a",1]],"ok":null}
+{"fn":"resolveWslWorkspace","args":["trailing.",{}],"ok":null}
+{"fn":"resolveWslWorkspace","args":["😀",{"$undefined":true}],"ok":null}
+{"fn":"resolveWslWorkspace","args":["a:b:c"],"ok":null}
+{"fn":"resolveWslWorkspace","args":["src/a/b.ts","x"],"ok":null}
+{"fn":"resolveWslWorkspace","args":["emoji 👍🏽 mix",{"$undefined":true}],"ok":null}
+{"fn":"resolveWslWorkspace","args":["日本語のテキスト"],"ok":null}
+{"fn":"resolveWslWorkspace","args":["straße",{"$undefined":true}],"ok":null}
+{"fn":"resolveWslWorkspace","args":[".leadingHELLO",[]],"ok":null}
+{"fn":"resolveWslWorkspace","args":["emoji 👍🏽 mix",["a",1]],"ok":null}
+{"fn":"resolveWslWorkspace","args":["a..bns:key.path",0],"ok":null}
+{"fn":"resolveWslWorkspace","args":["hello",{}],"ok":null}
+{"fn":"resolveWslWorkspace","args":["日本語のテキストab",{"a":{"b":"c"}}],"ok":null}
+{"fn":"resolveWslWorkspace","args":["é",0],"ok":null}
+{"fn":"resolveWslWorkspace","args":["HELLOé",0],"ok":null}
+{"fn":"resolveWslWorkspace","args":["﻿bom",true],"ok":null}
+{"fn":"resolveWslWorkspace","args":[":"],"ok":null}
+{"fn":"resolveWslWorkspace","args":["ünïcödé",{"a":{"b":"c"}}],"ok":null}
+{"fn":"resolveWslWorkspace","args":["hello",["a",1]],"ok":null}
+{"fn":"resolveWslWorkspace","args":["ab:",{"a":{"b":"c"}}],"ok":null}
+{"fn":"resolveWslWorkspace","args":["emoji 👍🏽 mix",{"a":{"b":"c"}}],"ok":null}
+{"fn":"resolveWslWorkspace","args":["😀",{}],"ok":null}
+{"fn":"resolveWslWorkspace","args":["line1\nline2","x"],"ok":null}
+{"fn":"resolveWslWorkspace","args":["Hello World"],"ok":null}
+{"fn":"resolveWslWorkspace","args":["a",null],"ok":null}
+{"fn":"resolveWslWorkspace","args":[".leading",0],"ok":null}
+{"fn":"resolveWslWorkspace","args":["key_name-1",{"a":"b"}],"ok":null}
+{"fn":"resolveWslWorkspace","args":["src/a/b.tssrc/a/b.ts",true],"ok":null}
+{"fn":"resolveWslWorkspace","args":[":",["a",1]],"ok":null}
+{"fn":"resolveWslWorkspace","args":["src/a/b.ts",{}],"ok":null}
+{"fn":"resolveWslWorkspace","args":["key_name-1",{}],"ok":null}
+{"fn":"resolveWslWorkspace","args":["İstanbula😀b😀c",{"a":"b"}],"ok":null}
+{"fn":"resolveWslWorkspace","args":["emoji 👍🏽 mix"],"ok":null}
+{"fn":"resolveWslWorkspace","args":["trailing.straße",{}],"ok":null}
+{"fn":"resolveWslWorkspace","args":["ΣΊΣΥΦΟΣ",{}],"ok":null}
+{"fn":"resolveWslWorkspace","args":["😀",true],"ok":null}
+{"fn":"resolveWslWorkspace","args":["{name} has {count} itemsa.b.c",true],"ok":null}
+{"fn":"resolveWslWorkspace","args":["﻿bom",["a",1]],"ok":null}
+{"fn":"resolveWslWorkspace","args":["hello world",0],"ok":null}
+{"fn":"resolveWslWorkspace","args":["Hello World",{"a":"b"}],"ok":null}
+{"fn":"resolveWslWorkspace","args":["a.b.c",[]],"ok":null}
+{"fn":"resolveWslWorkspace","args":["straße",[]],"ok":null}
+{"fn":"resolveWslWorkspace","args":["abc",[]],"ok":null}
+{"fn":"resolveWslWorkspace","args":["hello worldHELLO",{"a":"b"}],"ok":null}
+{"fn":"resolveWslWorkspace","args":["src/a/b.tsé",[]],"ok":null}
+{"fn":"resolveWslWorkspace","args":["a:b:ctrailing.",true],"ok":null}
+{"fn":"resolveWslWorkspace","args":["src/a/b.ts",0],"ok":null}
+{"fn":"resolveWslWorkspace","args":["ünïcödé"],"ok":null}
+{"fn":"resolveWslWorkspace","args":["a:b:cabc"],"ok":null}
+{"fn":"resolveWslWorkspace","args":["😀hello world",{"a":"b"}],"ok":null}
+{"fn":"resolveWslWorkspace","args":["a.b.c",0],"ok":null}
+{"fn":"resolveWslWorkspace","args":["trailing."],"ok":null}
+{"fn":"resolveWslWorkspace","args":["helloa:b:c",{}],"ok":null}
+{"fn":"resolveWslWorkspace","args":["日本語のテキスト:"],"ok":null}
+{"fn":"resolveWslWorkspace","args":["tab\tseparated",{}],"ok":null}
+{"fn":"resolveWslWorkspace","args":["hello world",{"$undefined":true}],"ok":null}
+{"fn":"resolveWslWorkspace","args":["",{"a":"b"}],"ok":null}
+{"fn":"resolveWslWorkspace","args":["İstanbulns:key.path",{"a":"b"}],"ok":null}
+{"fn":"resolveWslWorkspace","args":["😀İstanbul",0],"ok":null}
+{"fn":"resolveWslWorkspace","args":[":",{"a":{"b":"c"}}],"ok":null}
+{"fn":"resolveWslWorkspace","args":["﻿bom.leading",true],"ok":null}
+{"fn":"resolveWslWorkspace","args":["  padded  ","ADDED  "],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["trailing.",{"a":"b"}],"ok":"trailing."}
+{"fn":"resolveExecutionWorkingDirectory","args":["ΣΊΣΥΦΟΣ",["a",1]],"ok":"ΣΊΣΥΦΟΣ"}
+{"fn":"resolveExecutionWorkingDirectory","args":["emoji 👍🏽 mix",0],"ok":"emoji 👍🏽 mix"}
+{"fn":"resolveExecutionWorkingDirectory","args":["emoji 👍🏽 mix",[]],"ok":"emoji 👍🏽 mix"}
+{"fn":"resolveExecutionWorkingDirectory","args":["a:b:c",0],"ok":"a:b:c"}
+{"fn":"resolveExecutionWorkingDirectory","args":["straße"],"ok":"straße"}
+{"fn":"resolveExecutionWorkingDirectory","args":["abc",["a",1]],"ok":"abc"}
+{"fn":"resolveExecutionWorkingDirectory","args":["{name} has {count} items",{"a":"b"}],"ok":"{name} has {count} items"}
+{"fn":"resolveExecutionWorkingDirectory","args":["Hello World",[]],"ok":"Hello World"}
+{"fn":"resolveExecutionWorkingDirectory","args":["trailing.","ng"],"ok":"trailing."}
+{"fn":"resolveExecutionWorkingDirectory","args":["line1\nline2",["a",1]],"ok":"line1\nline2"}
+{"fn":"resolveExecutionWorkingDirectory","args":["hello worldemoji 👍🏽 mix","x"],"ok":"hello worldemoji 👍🏽 mix"}
+{"fn":"resolveExecutionWorkingDirectory","args":["ns:key.path",true],"ok":"ns:key.path"}
+{"fn":"resolveExecutionWorkingDirectory","args":["HELLO"],"ok":"HELLO"}
+{"fn":"resolveExecutionWorkingDirectory","args":["hello world",[]],"ok":"hello world"}
+{"fn":"resolveExecutionWorkingDirectory","args":["key_name-1",null],"ok":"key_name-1"}
+{"fn":"resolveExecutionWorkingDirectory","args":["key_name-1"],"ok":"key_name-1"}
+{"fn":"resolveExecutionWorkingDirectory","args":["hellostraße",{}],"ok":"hellostraße"}
+{"fn":"resolveExecutionWorkingDirectory","args":["é",{"a":{"b":"c"}}],"ok":"é"}
+{"fn":"resolveExecutionWorkingDirectory","args":["tab\tseparated",0],"ok":"tab\tseparated"}
+{"fn":"resolveExecutionWorkingDirectory","args":["tab\tseparated",{"a":"b"}],"ok":"tab\tseparated"}
+{"fn":"resolveExecutionWorkingDirectory","args":["src/a/b.tsΣΊΣΥΦΟΣ",[]],"ok":"src/a/b.tsΣΊΣΥΦΟΣ"}
+{"fn":"resolveExecutionWorkingDirectory","args":["tab\tseparated",{}],"ok":"tab\tseparated"}
+{"fn":"resolveExecutionWorkingDirectory","args":["ΣΊΣΥΦΟΣhello",{}],"ok":"ΣΊΣΥΦΟΣhello"}
+{"fn":"resolveExecutionWorkingDirectory","args":["a😀b😀c",{"$undefined":true}],"ok":"a😀b😀c"}
+{"fn":"resolveExecutionWorkingDirectory","args":["line1\nline2",{"$undefined":true}],"ok":"line1\nline2"}
+{"fn":"resolveExecutionWorkingDirectory","args":["hello world"],"ok":"hello world"}
+{"fn":"resolveExecutionWorkingDirectory","args":["abc",null],"ok":"abc"}
+{"fn":"resolveExecutionWorkingDirectory","args":["trailing.",0],"ok":"trailing."}
+{"fn":"resolveExecutionWorkingDirectory","args":["日本語のテキスト",true],"ok":"日本語のテキスト"}
+{"fn":"resolveExecutionWorkingDirectory","args":["İstanbul",0],"ok":"İstanbul"}
+{"fn":"resolveExecutionWorkingDirectory","args":["x","x"],"ok":"x"}
+{"fn":"resolveExecutionWorkingDirectory","args":["emoji 👍🏽 mix",{"a":{"b":"c"}}],"ok":"emoji 👍🏽 mix"}
+{"fn":"resolveExecutionWorkingDirectory","args":["a","A"],"ok":"a"}
+{"fn":"resolveExecutionWorkingDirectory","args":["a:b:c",[]],"ok":"a:b:c"}
+{"fn":"resolveExecutionWorkingDirectory","args":[""],"ok":""}
+{"fn":"resolveExecutionWorkingDirectory","args":["{name} has {count} items",0],"ok":"{name} has {count} items"}
+{"fn":"resolveExecutionWorkingDirectory","args":["./x/**/*.json"],"ok":"./x/**/*.json"}
+{"fn":"resolveExecutionWorkingDirectory","args":["HELLOns:key.path",{"a":{"b":"c"}}],"ok":"HELLOns:key.path"}
+{"fn":"resolveExecutionWorkingDirectory","args":["ΣΊΣΥΦΟΣ﻿bom"],"ok":"ΣΊΣΥΦΟΣ﻿bom"}
+{"fn":"resolveExecutionWorkingDirectory","args":[":",[]],"ok":":"}
+{"fn":"resolveExecutionWorkingDirectory","args":["a.b.chello",true],"ok":"a.b.chello"}
+{"fn":"resolveExecutionWorkingDirectory","args":["a.b.c",{}],"ok":"a.b.c"}
+{"fn":"resolveExecutionWorkingDirectory","args":["hello",{"$undefined":true}],"ok":"hello"}
+{"fn":"resolveExecutionWorkingDirectory","args":["日本語のテキスト",null],"ok":"日本語のテキスト"}
+{"fn":"resolveExecutionWorkingDirectory","args":["İstanbul",["a",1]],"ok":"İstanbul"}
+{"fn":"resolveExecutionWorkingDirectory","args":["a..b",null],"ok":"a..b"}
+{"fn":"resolveExecutionWorkingDirectory","args":["./x/**/*.json",null],"ok":"./x/**/*.json"}
+{"fn":"resolveExecutionWorkingDirectory","args":["straße",[]],"ok":"straße"}
+{"fn":"resolveExecutionWorkingDirectory","args":["é",{}],"ok":"é"}
+{"fn":"resolveExecutionWorkingDirectory","args":["ns:key.path",{"$undefined":true}],"ok":"ns:key.path"}
+{"fn":"resolveExecutionWorkingDirectory","args":["hello world",0],"ok":"hello world"}
+{"fn":"resolveExecutionWorkingDirectory","args":["﻿bom",[]],"ok":"﻿bom"}
+{"fn":"resolveExecutionWorkingDirectory","args":["éünïcödé",[]],"ok":"éünïcödé"}
+{"fn":"resolveExecutionWorkingDirectory","args":["a😀b😀c",{}],"ok":"a😀b😀c"}
+{"fn":"resolveExecutionWorkingDirectory","args":["HELLO",null],"ok":"HELLO"}
+{"fn":"resolveExecutionWorkingDirectory","args":[":﻿bom",true],"ok":":﻿bom"}
+{"fn":"resolveExecutionWorkingDirectory","args":["hello",{}],"ok":"hello"}
+{"fn":"resolveExecutionWorkingDirectory","args":["trailing.",{"a":{"b":"c"}}],"ok":"trailing."}
+{"fn":"resolveExecutionWorkingDirectory","args":["Hello World"],"ok":"Hello World"}
+{"fn":"resolveExecutionWorkingDirectory","args":["﻿bom",{"$undefined":true}],"ok":"﻿bom"}
+{"fn":"resolveExecutionWorkingDirectory","args":["tab\tseparated",{"a":{"b":"c"}}],"ok":"tab\tseparated"}
+{"fn":"resolveExecutionWorkingDirectory","args":["a😀b😀c",0],"ok":"a😀b😀c"}
+{"fn":"resolveExecutionWorkingDirectory","args":["ΣΊΣΥΦΟΣ",{"a":"b"}],"ok":"ΣΊΣΥΦΟΣ"}
+{"fn":"resolveExecutionWorkingDirectory","args":["abc",[]],"ok":"abc"}
+{"fn":"resolveExecutionWorkingDirectory","args":["Hello World",{"a":{"b":"c"}}],"ok":"Hello World"}
+{"fn":"resolveExecutionWorkingDirectory","args":["abkey_name-1",null],"ok":"abkey_name-1"}
+{"fn":"resolveExecutionWorkingDirectory","args":["a.b.c",null],"ok":"a.b.c"}
+{"fn":"resolveExecutionWorkingDirectory","args":["src/a/b.ts",null],"ok":"src/a/b.ts"}
+{"fn":"resolveExecutionWorkingDirectory","args":["a..b","x"],"ok":"a..b"}
+{"fn":"resolveExecutionWorkingDirectory","args":[":a:b:c",0],"ok":":a:b:c"}
+{"fn":"resolveExecutionWorkingDirectory","args":["trailing.a😀b😀c",{"a":"b"}],"ok":"trailing.a😀b😀c"}
+{"fn":"resolveExecutionWorkingDirectory","args":["","x"],"ok":""}
+{"fn":"resolveExecutionWorkingDirectory","args":["HELLO",{"a":"b"}],"ok":"HELLO"}
+{"fn":"resolveExecutionWorkingDirectory","args":["./x/**/*.json",{}],"ok":"./x/**/*.json"}
+{"fn":"resolveExecutionWorkingDirectory","args":["ab",0],"ok":"ab"}
+{"fn":"resolveExecutionWorkingDirectory","args":["a😀b😀c日本語のテキスト",{}],"ok":"a😀b😀c日本語のテキスト"}
+{"fn":"resolveExecutionWorkingDirectory","args":["{name} has {count} items",{}],"ok":"{name} has {count} items"}
+{"fn":"resolveExecutionWorkingDirectory","args":["ΣΊΣΥΦΟΣ"],"ok":"ΣΊΣΥΦΟΣ"}
+{"fn":"resolveExecutionWorkingDirectory","args":["src/a/b.ts",true],"ok":"src/a/b.ts"}
+{"fn":"resolveExecutionWorkingDirectory","args":["hello world",["a",1]],"ok":"hello world"}
+{"fn":"resolveExecutionWorkingDirectory","args":["a:b:c"],"ok":"a:b:c"}
+{"fn":"resolveExecutionWorkingDirectory","args":["line1\nline2"],"ok":"line1\nline2"}
+{"fn":"resolveExecutionWorkingDirectory","args":["abc",{"$undefined":true}],"ok":"abc"}
+{"fn":"resolveExecutionWorkingDirectory","args":["a..b",{}],"ok":"a..b"}
+{"fn":"resolveExecutionWorkingDirectory","args":["a.b.c",{"a":{"b":"c"}}],"ok":"a.b.c"}
+{"fn":"resolveExecutionWorkingDirectory","args":["a"],"ok":"a"}
+{"fn":"resolveExecutionWorkingDirectory","args":["key_name-1",[]],"ok":"key_name-1"}
+{"fn":"resolveExecutionWorkingDirectory","args":["ΣΊΣΥΦΟΣ😀","x"],"ok":"ΣΊΣΥΦΟΣ😀"}
+{"fn":"resolveExecutionWorkingDirectory","args":["src/a/b.ts",[]],"ok":"src/a/b.ts"}
+{"fn":"resolveExecutionWorkingDirectory","args":["a.b.c"],"ok":"a.b.c"}
+{"fn":"resolveExecutionWorkingDirectory","args":["{name} has {count} items"],"ok":"{name} has {count} items"}
+{"fn":"resolveExecutionWorkingDirectory","args":["abchello",{}],"ok":"abchello"}
+{"fn":"resolveExecutionWorkingDirectory","args":["./x/**/*.json",{"a":"b"}],"ok":"./x/**/*.json"}
+{"fn":"resolveExecutionWorkingDirectory","args":[".leading",null],"ok":".leading"}
+{"fn":"resolveExecutionWorkingDirectory","args":["é",0],"ok":"é"}
+{"fn":"resolveExecutionWorkingDirectory","args":["src/a/b.ts",{}],"ok":"src/a/b.ts"}
+{"fn":"resolveExecutionWorkingDirectory","args":["ab",{"$undefined":true}],"ok":"ab"}
+{"fn":"resolveExecutionWorkingDirectory","args":["a.b.c",["a",1]],"ok":"a.b.c"}
+{"fn":"resolveExecutionWorkingDirectory","args":["abc",{"a":{"b":"c"}}],"ok":"abc"}
+{"fn":"resolveExecutionWorkingDirectory","args":["日本語のテキスト",{"a":"b"}],"ok":"日本語のテキスト"}
+{"fn":"resolveExecutionWorkingDirectory","args":["😀",["a",1]],"ok":"😀"}
+{"fn":"resolveExecutionWorkingDirectory","args":["tab\tseparateda.b.c",{"$undefined":true}],"ok":"tab\tseparateda.b.c"}
+{"fn":"resolveExecutionWorkingDirectory","args":["﻿bom",{"a":{"b":"c"}}],"ok":"﻿bom"}
+{"fn":"resolveExecutionWorkingDirectory","args":["a😀b😀c"],"ok":"a😀b😀c"}
+{"fn":"resolveExecutionWorkingDirectory","args":["a..b",0],"ok":"a..b"}
+{"fn":"resolveExecutionWorkingDirectory","args":["a..b",["a",1]],"ok":"a..b"}
+{"fn":"resolveExecutionWorkingDirectory","args":["日本語のテキストhello"],"ok":"日本語のテキストhello"}
+{"fn":"resolveExecutionWorkingDirectory","args":["hello"],"ok":"hello"}
+{"fn":"resolveExecutionWorkingDirectory","args":["a:b:c",{}],"ok":"a:b:c"}
+{"fn":"resolveExecutionWorkingDirectory","args":["﻿bom"],"ok":"﻿bom"}
+{"fn":"resolveExecutionWorkingDirectory","args":["src/a/b.tsHello World",[]],"ok":"src/a/b.tsHello World"}
+{"fn":"resolveExecutionWorkingDirectory","args":["a😀b😀c",[]],"ok":"a😀b😀c"}
+{"fn":"resolveExecutionWorkingDirectory","args":["  padded  ",{"$undefined":true}],"ok":"  padded  "}
+{"fn":"resolveExecutionWorkingDirectory","args":["./x/**/*.json",{"a":{"b":"c"}}],"ok":"./x/**/*.json"}
+{"fn":"resolveExecutionWorkingDirectory","args":["日本語のテキストé",null],"ok":"日本語のテキストé"}
+{"fn":"resolveExecutionWorkingDirectory","args":["{name} has {count} itemshello world",["a",1]],"ok":"{name} has {count} itemshello world"}
+{"fn":"resolveExecutionWorkingDirectory","args":["Hello World",{"a":"b"}],"ok":"Hello World"}
+{"fn":"resolveExecutionWorkingDirectory","args":["hello worlda:b:c",{"a":{"b":"c"}}],"ok":"hello worlda:b:c"}
+{"fn":"resolveExecutionWorkingDirectory","args":[".leading",[]],"ok":".leading"}
+{"fn":"resolveExecutionWorkingDirectory","args":["abc",true],"ok":"abc"}
+{"fn":"resolveExecutionWorkingDirectory","args":["a..b",{"a":{"b":"c"}}],"ok":"a..b"}
+{"fn":"resolveExecutionWorkingDirectory","args":["a",0],"ok":"a"}
+{"fn":"resolveExecutionWorkingDirectory","args":["😀",[]],"ok":"😀"}
+{"fn":"resolveExecutionWorkingDirectory","args":["a.b.c",[]],"ok":"a.b.c"}
+{"fn":"resolveExecutionWorkingDirectory","args":[":"],"ok":":"}
+{"fn":"resolveExecutionWorkingDirectory","args":["emoji 👍🏽 mix",true],"ok":"emoji 👍🏽 mix"}
+{"fn":"resolveExecutionWorkingDirectory","args":["Hello Worlda"],"ok":"Hello Worlda"}
+{"fn":"resolveExecutionWorkingDirectory","args":["hello world﻿bom",{"$undefined":true}],"ok":"hello world﻿bom"}
+{"fn":"resolveExecutionWorkingDirectory","args":["a.b.c日本語のテキスト",true],"ok":"a.b.c日本語のテキスト"}
+{"fn":"resolveExecutionWorkingDirectory","args":["straßeHELLO",null],"ok":"straßeHELLO"}
+{"fn":"resolveExecutionWorkingDirectory","args":[":",true],"ok":":"}
+{"fn":"resolveExecutionWorkingDirectory","args":["  padded  ",{}],"ok":"  padded  "}
+{"fn":"resolveExecutionWorkingDirectory","args":["src/a/b.ts",0],"ok":"src/a/b.ts"}
+{"fn":"resolveExecutionWorkingDirectory","args":["hello",0],"ok":"hello"}
+{"fn":"resolveExecutionWorkingDirectory","args":["😀"],"ok":"😀"}
+{"fn":"resolveExecutionWorkingDirectory","args":["HELLOHello World",[]],"ok":"HELLOHello World"}
+{"fn":"resolveExecutionWorkingDirectory","args":["a:b:c","x"],"ok":"a:b:c"}
+{"fn":"resolveExecutionWorkingDirectory","args":["",{"a":"b"}],"ok":""}
+{"fn":"resolveExecutionWorkingDirectory","args":["a:b:c",{"a":{"b":"c"}}],"ok":"a:b:c"}
+{"fn":"resolveExecutionWorkingDirectory","args":["a..b",true],"ok":"a..b"}
+{"fn":"resolveExecutionWorkingDirectory","args":[".leading{name} has {count} items",{"$undefined":true}],"ok":".leading{name} has {count} items"}
+{"fn":"resolveExecutionWorkingDirectory","args":["{name} has {count} items",[]],"ok":"{name} has {count} items"}
+{"fn":"resolveExecutionWorkingDirectory","args":["key_name-1","x"],"ok":"key_name-1"}
+{"fn":"resolveExecutionWorkingDirectory","args":["ab","x"],"ok":"ab"}
+{"fn":"resolveExecutionWorkingDirectory","args":["a😀b😀c{name} has {count} items",[]],"ok":"a😀b😀c{name} has {count} items"}
+{"fn":"resolveExecutionWorkingDirectory","args":["tab\tseparatedé",true],"ok":"tab\tseparatedé"}
+{"fn":"resolveExecutionWorkingDirectory","args":["hello world",{"$undefined":true}],"ok":"hello world"}
+{"fn":"resolveExecutionWorkingDirectory","args":[".leading"],"ok":".leading"}
+{"fn":"resolveExecutionWorkingDirectory","args":["{name} has {count} items",["a",1]],"ok":"{name} has {count} items"}
+{"fn":"resolveExecutionWorkingDirectory","args":["straße",["a",1]],"ok":"straße"}
+{"fn":"resolveExecutionWorkingDirectory","args":["tab\tseparateda:b:c",{"a":{"b":"c"}}],"ok":"tab\tseparateda:b:c"}
+{"fn":"resolveExecutionWorkingDirectory","args":["a:b:c",{"$undefined":true}],"ok":"a:b:c"}
+{"fn":"resolveExecutionWorkingDirectory","args":["a..ba😀b😀c",0],"ok":"a..ba😀b😀c"}
+{"fn":"resolveExecutionWorkingDirectory","args":["a",[]],"ok":"a"}
+{"fn":"resolveExecutionWorkingDirectory","args":["é",[]],"ok":"é"}
+{"fn":"resolveExecutionWorkingDirectory","args":["Hello World.leading",{"$undefined":true}],"ok":"Hello World.leading"}
+{"fn":"resolveExecutionWorkingDirectory","args":["tab\tseparated",[]],"ok":"tab\tseparated"}
+{"fn":"resolveExecutionWorkingDirectory","args":["hello world",null],"ok":"hello world"}
+{"fn":"resolveExecutionWorkingDirectory","args":["ns:key.path",{}],"ok":"ns:key.path"}
+{"fn":"resolveExecutionWorkingDirectory","args":["ünïcödé日本語のテキスト"],"ok":"ünïcödé日本語のテキスト"}
+{"fn":"resolveExecutionWorkingDirectory","args":["HELLO",0],"ok":"HELLO"}
+{"fn":"resolveExecutionWorkingDirectory","args":["HELLO",[]],"ok":"HELLO"}
+{"fn":"resolveExecutionWorkingDirectory","args":["hello",["a",1]],"ok":"hello"}
+{"fn":"resolveExecutionWorkingDirectory","args":["a😀b😀c",{"a":"b"}],"ok":"a😀b😀c"}
+{"fn":"resolveExecutionWorkingDirectory","args":["Hello World",0],"ok":"Hello World"}
+{"fn":"resolveExecutionWorkingDirectory","args":["ünïcödé",null],"ok":"ünïcödé"}
+{"fn":"resolveExecutionWorkingDirectory","args":["İstanbulabc",{"a":"b"}],"ok":"İstanbulabc"}
+{"fn":"resolveExecutionWorkingDirectory","args":["a😀b😀c",["a",1]],"ok":"a😀b😀c"}
+{"fn":"resolveExecutionWorkingDirectory","args":["tab\tseparated",["a",1]],"ok":"tab\tseparated"}
+{"fn":"resolveExecutionWorkingDirectory","args":["a.b.c",0],"ok":"a.b.c"}
+{"fn":"resolveExecutionWorkingDirectory","args":["trailing."],"ok":"trailing."}
+{"fn":"resolveExecutionWorkingDirectory","args":["ΣΊΣΥΦΟΣ﻿bom",[]],"ok":"ΣΊΣΥΦΟΣ﻿bom"}
+{"fn":"resolveExecutionWorkingDirectory","args":["straße",{"a":{"b":"c"}}],"ok":"straße"}
+{"fn":"resolveExecutionWorkingDirectory","args":["a😀b😀c",{"a":{"b":"c"}}],"ok":"a😀b😀c"}
+{"fn":"resolveExecutionWorkingDirectory","args":["a..b"],"ok":"a..b"}
+{"fn":"resolveExecutionWorkingDirectory","args":["X","x"],"ok":"X"}
+{"fn":"resolveExecutionWorkingDirectory","args":["a.b.cé",{"a":"b"}],"ok":"a.b.cé"}
+{"fn":"resolveExecutionWorkingDirectory","args":["line1\nline2",{}],"ok":"line1\nline2"}
+{"fn":"resolveExecutionWorkingDirectory","args":["a😀b😀c",true],"ok":"a😀b😀c"}
+{"fn":"resolveExecutionWorkingDirectory","args":["é",null],"ok":"é"}
+{"fn":"resolveExecutionWorkingDirectory","args":["{name} has {count} items",{"$undefined":true}],"ok":"{name} has {count} items"}
+{"fn":"resolveExecutionWorkingDirectory","args":["日本語のテキスト",{"a":{"b":"c"}}],"ok":"日本語のテキスト"}
+{"fn":"resolveExecutionWorkingDirectory","args":["line1\nline2",{"a":{"b":"c"}}],"ok":"line1\nline2"}
+{"fn":"resolveExecutionWorkingDirectory","args":["😀",null],"ok":"😀"}
+{"fn":"resolveExecutionWorkingDirectory","args":["key_name-1",true],"ok":"key_name-1"}
+{"fn":"resolveExecutionWorkingDirectory","args":["a:b:c",true],"ok":"a:b:c"}
+{"fn":"resolveExecutionWorkingDirectory","args":["Hello World",{"$undefined":true}],"ok":"Hello World"}
+{"fn":"resolveExecutionWorkingDirectory","args":["hello world",{}],"ok":"hello world"}
+{"fn":"resolveExecutionWorkingDirectory","args":["  padded  ",true],"ok":"  padded  "}
+{"fn":"resolveExecutionWorkingDirectory","args":["İstanbul",null],"ok":"İstanbul"}
+{"fn":"resolveExecutionWorkingDirectory","args":["emoji 👍🏽 mix  padded  ",null],"ok":"emoji 👍🏽 mix  padded  "}
+{"fn":"resolveExecutionWorkingDirectory","args":["trailing.",[]],"ok":"trailing."}
+{"fn":"resolveExecutionWorkingDirectory","args":["straßeé",null],"ok":"straßeé"}
+{"fn":"resolveExecutionWorkingDirectory","args":["ΣΊΣΥΦΟΣ",{"$undefined":true}],"ok":"ΣΊΣΥΦΟΣ"}
+{"fn":"resolveExecutionWorkingDirectory","args":["key_name-1",{"$undefined":true}],"ok":"key_name-1"}
+{"fn":"resolveExecutionWorkingDirectory","args":["key_name-1",0],"ok":"key_name-1"}
+{"fn":"resolveExecutionWorkingDirectory","args":["a.b.c",{"a":"b"}],"ok":"a.b.c"}
+{"fn":"resolveExecutionWorkingDirectory","args":["ünïcödé",{"$undefined":true}],"ok":"ünïcödé"}
+{"fn":"resolveExecutionWorkingDirectory","args":["😀",{}],"ok":"😀"}
+{"fn":"resolveExecutionWorkingDirectory","args":["héllo wörld",{"a":"b"}],"ok":"héllo wörld"}
+{"fn":"resolveExecutionWorkingDirectory","args":["👍🏽 thumbs",{"a":"b"}],"ok":"👍🏽 thumbs"}
+{"fn":"resolveExecutionWorkingDirectory","args":["日本語",{"a":"b"}],"ok":"日本語"}
+{"fn":"resolveExecutionWorkingDirectory","args":["é",{"a":"b"}],"ok":"é"}
+{"fn":"resolveExecutionWorkingDirectory","args":["İstanbul",{"a":"b"}],"ok":"İstanbul"}
+{"fn":"resolveExecutionWorkingDirectory","args":["straße",{"a":"b"}],"ok":"straße"}
+{"fn":"resolveExecutionWorkingDirectory","args":["ılık ırmak",{"a":"b"}],"ok":"ılık ırmak"}
+{"fn":"resolveExecutionWorkingDirectory","args":["👨‍👩‍👧 family",{"a":"b"}],"ok":"👨‍👩‍👧 family"}
+{"fn":"resolveExecutionWorkingDirectory","args":["a b",{"a":"b"}],"ok":"a b"}
+{"fn":"resolveExecutionWorkingDirectory","args":["a😀b",{"a":"b"}],"ok":"a😀b"}
+{"fn":"resolveExecutionWorkingDirectory","args":["﻿bom",{"a":"b"}],"ok":"﻿bom"}
+{"fn":"resolveExecutionWorkingDirectory","args":["a²b x½ y①",{"a":"b"}],"ok":"a²b x½ y①"}
+{"fn":"resolveExecutionWorkingDirectory","args":["aⅠb Ⅻ",{"a":"b"}],"ok":"aⅠb Ⅻ"}
+{"fn":"resolveExecutionWorkingDirectory","args":["a𐐀b 𝐀bc",{"a":"b"}],"ok":"a𐐀b 𝐀bc"}
+{"fn":"resolveExecutionWorkingDirectory","args":["कि ٣٤",{"a":"b"}],"ok":"कि ٣٤"}
+{"fn":"resolveWslWorkspace","args":["\\\\wsl$\\Ubuntu\\home\\me","win32"],"ok":{"distribution":"Ubuntu","linuxPath":"/home/me"}}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\wsl$\\Ubuntu\\home\\me","win32"],"ok":"/home/me"}
+{"fn":"resolveWslWorkspace","args":["\\\\wsl$\\Ubuntu\\home\\me","linux"],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\wsl$\\Ubuntu\\home\\me","linux"],"ok":"\\\\wsl$\\Ubuntu\\home\\me"}
+{"fn":"resolveWslWorkspace","args":["\\\\wsl$\\Ubuntu\\home\\me",null],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\wsl$\\Ubuntu\\home\\me",null],"ok":"\\\\wsl$\\Ubuntu\\home\\me"}
+{"fn":"resolveWslWorkspace","args":["\\\\wsl$\\Ubuntu\\home\\me",{"$undefined":true}],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\wsl$\\Ubuntu\\home\\me",{"$undefined":true}],"ok":"\\\\wsl$\\Ubuntu\\home\\me"}
+{"fn":"resolveWslWorkspace","args":["\\\\wsl$\\Ubuntu\\home\\me",123],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\wsl$\\Ubuntu\\home\\me",123],"ok":"\\\\wsl$\\Ubuntu\\home\\me"}
+{"fn":"resolveWslWorkspace","args":["\\\\wsl$\\Ubuntu\\home\\me",["win32"]],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\wsl$\\Ubuntu\\home\\me",["win32"]],"ok":"\\\\wsl$\\Ubuntu\\home\\me"}
+{"fn":"resolveWslWorkspace","args":["\\\\wsl.localhost\\Debian\\a\\b","win32"],"ok":{"distribution":"Debian","linuxPath":"/a/b"}}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\wsl.localhost\\Debian\\a\\b","win32"],"ok":"/a/b"}
+{"fn":"resolveWslWorkspace","args":["\\\\wsl.localhost\\Debian\\a\\b","linux"],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\wsl.localhost\\Debian\\a\\b","linux"],"ok":"\\\\wsl.localhost\\Debian\\a\\b"}
+{"fn":"resolveWslWorkspace","args":["\\\\wsl.localhost\\Debian\\a\\b",null],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\wsl.localhost\\Debian\\a\\b",null],"ok":"\\\\wsl.localhost\\Debian\\a\\b"}
+{"fn":"resolveWslWorkspace","args":["\\\\wsl.localhost\\Debian\\a\\b",{"$undefined":true}],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\wsl.localhost\\Debian\\a\\b",{"$undefined":true}],"ok":"\\\\wsl.localhost\\Debian\\a\\b"}
+{"fn":"resolveWslWorkspace","args":["\\\\wsl.localhost\\Debian\\a\\b",123],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\wsl.localhost\\Debian\\a\\b",123],"ok":"\\\\wsl.localhost\\Debian\\a\\b"}
+{"fn":"resolveWslWorkspace","args":["\\\\wsl.localhost\\Debian\\a\\b",["win32"]],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\wsl.localhost\\Debian\\a\\b",["win32"]],"ok":"\\\\wsl.localhost\\Debian\\a\\b"}
+{"fn":"resolveWslWorkspace","args":["\\\\WSL$\\Ubuntu\\dir","win32"],"ok":{"distribution":"Ubuntu","linuxPath":"/dir"}}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\WSL$\\Ubuntu\\dir","win32"],"ok":"/dir"}
+{"fn":"resolveWslWorkspace","args":["\\\\WSL$\\Ubuntu\\dir","linux"],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\WSL$\\Ubuntu\\dir","linux"],"ok":"\\\\WSL$\\Ubuntu\\dir"}
+{"fn":"resolveWslWorkspace","args":["\\\\WSL$\\Ubuntu\\dir",null],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\WSL$\\Ubuntu\\dir",null],"ok":"\\\\WSL$\\Ubuntu\\dir"}
+{"fn":"resolveWslWorkspace","args":["\\\\WSL$\\Ubuntu\\dir",{"$undefined":true}],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\WSL$\\Ubuntu\\dir",{"$undefined":true}],"ok":"\\\\WSL$\\Ubuntu\\dir"}
+{"fn":"resolveWslWorkspace","args":["\\\\WSL$\\Ubuntu\\dir",123],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\WSL$\\Ubuntu\\dir",123],"ok":"\\\\WSL$\\Ubuntu\\dir"}
+{"fn":"resolveWslWorkspace","args":["\\\\WSL$\\Ubuntu\\dir",["win32"]],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\WSL$\\Ubuntu\\dir",["win32"]],"ok":"\\\\WSL$\\Ubuntu\\dir"}
+{"fn":"resolveWslWorkspace","args":["\\\\wsl$\\Ubuntu","win32"],"ok":{"distribution":"Ubuntu","linuxPath":"/"}}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\wsl$\\Ubuntu","win32"],"ok":"/"}
+{"fn":"resolveWslWorkspace","args":["\\\\wsl$\\Ubuntu","linux"],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\wsl$\\Ubuntu","linux"],"ok":"\\\\wsl$\\Ubuntu"}
+{"fn":"resolveWslWorkspace","args":["\\\\wsl$\\Ubuntu",null],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\wsl$\\Ubuntu",null],"ok":"\\\\wsl$\\Ubuntu"}
+{"fn":"resolveWslWorkspace","args":["\\\\wsl$\\Ubuntu",{"$undefined":true}],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\wsl$\\Ubuntu",{"$undefined":true}],"ok":"\\\\wsl$\\Ubuntu"}
+{"fn":"resolveWslWorkspace","args":["\\\\wsl$\\Ubuntu",123],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\wsl$\\Ubuntu",123],"ok":"\\\\wsl$\\Ubuntu"}
+{"fn":"resolveWslWorkspace","args":["\\\\wsl$\\Ubuntu",["win32"]],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\wsl$\\Ubuntu",["win32"]],"ok":"\\\\wsl$\\Ubuntu"}
+{"fn":"resolveWslWorkspace","args":["\\\\wsl$\\\\home","win32"],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\wsl$\\\\home","win32"],"ok":"\\\\wsl$\\\\home"}
+{"fn":"resolveWslWorkspace","args":["\\\\wsl$\\\\home","linux"],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\wsl$\\\\home","linux"],"ok":"\\\\wsl$\\\\home"}
+{"fn":"resolveWslWorkspace","args":["\\\\wsl$\\\\home",null],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\wsl$\\\\home",null],"ok":"\\\\wsl$\\\\home"}
+{"fn":"resolveWslWorkspace","args":["\\\\wsl$\\\\home",{"$undefined":true}],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\wsl$\\\\home",{"$undefined":true}],"ok":"\\\\wsl$\\\\home"}
+{"fn":"resolveWslWorkspace","args":["\\\\wsl$\\\\home",123],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\wsl$\\\\home",123],"ok":"\\\\wsl$\\\\home"}
+{"fn":"resolveWslWorkspace","args":["\\\\wsl$\\\\home",["win32"]],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\wsl$\\\\home",["win32"]],"ok":"\\\\wsl$\\\\home"}
+{"fn":"resolveWslWorkspace","args":["\\\\wsl$\\Ubuntu\\","win32"],"ok":{"distribution":"Ubuntu","linuxPath":"/"}}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\wsl$\\Ubuntu\\","win32"],"ok":"/"}
+{"fn":"resolveWslWorkspace","args":["\\\\wsl$\\Ubuntu\\","linux"],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\wsl$\\Ubuntu\\","linux"],"ok":"\\\\wsl$\\Ubuntu\\"}
+{"fn":"resolveWslWorkspace","args":["\\\\wsl$\\Ubuntu\\",null],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\wsl$\\Ubuntu\\",null],"ok":"\\\\wsl$\\Ubuntu\\"}
+{"fn":"resolveWslWorkspace","args":["\\\\wsl$\\Ubuntu\\",{"$undefined":true}],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\wsl$\\Ubuntu\\",{"$undefined":true}],"ok":"\\\\wsl$\\Ubuntu\\"}
+{"fn":"resolveWslWorkspace","args":["\\\\wsl$\\Ubuntu\\",123],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\wsl$\\Ubuntu\\",123],"ok":"\\\\wsl$\\Ubuntu\\"}
+{"fn":"resolveWslWorkspace","args":["\\\\wsl$\\Ubuntu\\",["win32"]],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\wsl$\\Ubuntu\\",["win32"]],"ok":"\\\\wsl$\\Ubuntu\\"}
+{"fn":"resolveWslWorkspace","args":["\\\\wsl.localhost\\distro name\\a\\b","win32"],"ok":{"distribution":"distro name","linuxPath":"/a/b"}}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\wsl.localhost\\distro name\\a\\b","win32"],"ok":"/a/b"}
+{"fn":"resolveWslWorkspace","args":["\\\\wsl.localhost\\distro name\\a\\b","linux"],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\wsl.localhost\\distro name\\a\\b","linux"],"ok":"\\\\wsl.localhost\\distro name\\a\\b"}
+{"fn":"resolveWslWorkspace","args":["\\\\wsl.localhost\\distro name\\a\\b",null],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\wsl.localhost\\distro name\\a\\b",null],"ok":"\\\\wsl.localhost\\distro name\\a\\b"}
+{"fn":"resolveWslWorkspace","args":["\\\\wsl.localhost\\distro name\\a\\b",{"$undefined":true}],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\wsl.localhost\\distro name\\a\\b",{"$undefined":true}],"ok":"\\\\wsl.localhost\\distro name\\a\\b"}
+{"fn":"resolveWslWorkspace","args":["\\\\wsl.localhost\\distro name\\a\\b",123],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\wsl.localhost\\distro name\\a\\b",123],"ok":"\\\\wsl.localhost\\distro name\\a\\b"}
+{"fn":"resolveWslWorkspace","args":["\\\\wsl.localhost\\distro name\\a\\b",["win32"]],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\wsl.localhost\\distro name\\a\\b",["win32"]],"ok":"\\\\wsl.localhost\\distro name\\a\\b"}
+{"fn":"resolveWslWorkspace","args":["\\\\wsl$\\Ubuntu\\a\\\\b","win32"],"ok":{"distribution":"Ubuntu","linuxPath":"/a/b"}}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\wsl$\\Ubuntu\\a\\\\b","win32"],"ok":"/a/b"}
+{"fn":"resolveWslWorkspace","args":["\\\\wsl$\\Ubuntu\\a\\\\b","linux"],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\wsl$\\Ubuntu\\a\\\\b","linux"],"ok":"\\\\wsl$\\Ubuntu\\a\\\\b"}
+{"fn":"resolveWslWorkspace","args":["\\\\wsl$\\Ubuntu\\a\\\\b",null],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\wsl$\\Ubuntu\\a\\\\b",null],"ok":"\\\\wsl$\\Ubuntu\\a\\\\b"}
+{"fn":"resolveWslWorkspace","args":["\\\\wsl$\\Ubuntu\\a\\\\b",{"$undefined":true}],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\wsl$\\Ubuntu\\a\\\\b",{"$undefined":true}],"ok":"\\\\wsl$\\Ubuntu\\a\\\\b"}
+{"fn":"resolveWslWorkspace","args":["\\\\wsl$\\Ubuntu\\a\\\\b",123],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\wsl$\\Ubuntu\\a\\\\b",123],"ok":"\\\\wsl$\\Ubuntu\\a\\\\b"}
+{"fn":"resolveWslWorkspace","args":["\\\\wsl$\\Ubuntu\\a\\\\b",["win32"]],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\wsl$\\Ubuntu\\a\\\\b",["win32"]],"ok":"\\\\wsl$\\Ubuntu\\a\\\\b"}
+{"fn":"resolveWslWorkspace","args":["\\\\wsl$\\  Ubuntu  \\x","win32"],"ok":{"distribution":"Ubuntu","linuxPath":"/x"}}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\wsl$\\  Ubuntu  \\x","win32"],"ok":"/x"}
+{"fn":"resolveWslWorkspace","args":["\\\\wsl$\\  Ubuntu  \\x","linux"],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\wsl$\\  Ubuntu  \\x","linux"],"ok":"\\\\wsl$\\  Ubuntu  \\x"}
+{"fn":"resolveWslWorkspace","args":["\\\\wsl$\\  Ubuntu  \\x",null],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\wsl$\\  Ubuntu  \\x",null],"ok":"\\\\wsl$\\  Ubuntu  \\x"}
+{"fn":"resolveWslWorkspace","args":["\\\\wsl$\\  Ubuntu  \\x",{"$undefined":true}],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\wsl$\\  Ubuntu  \\x",{"$undefined":true}],"ok":"\\\\wsl$\\  Ubuntu  \\x"}
+{"fn":"resolveWslWorkspace","args":["\\\\wsl$\\  Ubuntu  \\x",123],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\wsl$\\  Ubuntu  \\x",123],"ok":"\\\\wsl$\\  Ubuntu  \\x"}
+{"fn":"resolveWslWorkspace","args":["\\\\wsl$\\  Ubuntu  \\x",["win32"]],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\wsl$\\  Ubuntu  \\x",["win32"]],"ok":"\\\\wsl$\\  Ubuntu  \\x"}
+{"fn":"resolveWslWorkspace","args":[" \\\\wsl$\\Ubuntu\\p ","win32"],"ok":{"distribution":"Ubuntu","linuxPath":"/p"}}
+{"fn":"resolveExecutionWorkingDirectory","args":[" \\\\wsl$\\Ubuntu\\p ","win32"],"ok":"/p"}
+{"fn":"resolveWslWorkspace","args":[" \\\\wsl$\\Ubuntu\\p ","linux"],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":[" \\\\wsl$\\Ubuntu\\p ","linux"],"ok":" \\\\wsl$\\Ubuntu\\p "}
+{"fn":"resolveWslWorkspace","args":[" \\\\wsl$\\Ubuntu\\p ",null],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":[" \\\\wsl$\\Ubuntu\\p ",null],"ok":" \\\\wsl$\\Ubuntu\\p "}
+{"fn":"resolveWslWorkspace","args":[" \\\\wsl$\\Ubuntu\\p ",{"$undefined":true}],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":[" \\\\wsl$\\Ubuntu\\p ",{"$undefined":true}],"ok":" \\\\wsl$\\Ubuntu\\p "}
+{"fn":"resolveWslWorkspace","args":[" \\\\wsl$\\Ubuntu\\p ",123],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":[" \\\\wsl$\\Ubuntu\\p ",123],"ok":" \\\\wsl$\\Ubuntu\\p "}
+{"fn":"resolveWslWorkspace","args":[" \\\\wsl$\\Ubuntu\\p ",["win32"]],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":[" \\\\wsl$\\Ubuntu\\p ",["win32"]],"ok":" \\\\wsl$\\Ubuntu\\p "}
+{"fn":"resolveWslWorkspace","args":["\\\\wsl$\\Ubuntu\\a\\b\\","win32"],"ok":{"distribution":"Ubuntu","linuxPath":"/a/b"}}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\wsl$\\Ubuntu\\a\\b\\","win32"],"ok":"/a/b"}
+{"fn":"resolveWslWorkspace","args":["\\\\wsl$\\Ubuntu\\a\\b\\","linux"],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\wsl$\\Ubuntu\\a\\b\\","linux"],"ok":"\\\\wsl$\\Ubuntu\\a\\b\\"}
+{"fn":"resolveWslWorkspace","args":["\\\\wsl$\\Ubuntu\\a\\b\\",null],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\wsl$\\Ubuntu\\a\\b\\",null],"ok":"\\\\wsl$\\Ubuntu\\a\\b\\"}
+{"fn":"resolveWslWorkspace","args":["\\\\wsl$\\Ubuntu\\a\\b\\",{"$undefined":true}],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\wsl$\\Ubuntu\\a\\b\\",{"$undefined":true}],"ok":"\\\\wsl$\\Ubuntu\\a\\b\\"}
+{"fn":"resolveWslWorkspace","args":["\\\\wsl$\\Ubuntu\\a\\b\\",123],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\wsl$\\Ubuntu\\a\\b\\",123],"ok":"\\\\wsl$\\Ubuntu\\a\\b\\"}
+{"fn":"resolveWslWorkspace","args":["\\\\wsl$\\Ubuntu\\a\\b\\",["win32"]],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\wsl$\\Ubuntu\\a\\b\\",["win32"]],"ok":"\\\\wsl$\\Ubuntu\\a\\b\\"}
+{"fn":"resolveWslWorkspace","args":["\\\\wsl$\\Ubuntu..\\x","win32"],"ok":{"distribution":"Ubuntu..","linuxPath":"/x"}}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\wsl$\\Ubuntu..\\x","win32"],"ok":"/x"}
+{"fn":"resolveWslWorkspace","args":["\\\\wsl$\\Ubuntu..\\x","linux"],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\wsl$\\Ubuntu..\\x","linux"],"ok":"\\\\wsl$\\Ubuntu..\\x"}
+{"fn":"resolveWslWorkspace","args":["\\\\wsl$\\Ubuntu..\\x",null],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\wsl$\\Ubuntu..\\x",null],"ok":"\\\\wsl$\\Ubuntu..\\x"}
+{"fn":"resolveWslWorkspace","args":["\\\\wsl$\\Ubuntu..\\x",{"$undefined":true}],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\wsl$\\Ubuntu..\\x",{"$undefined":true}],"ok":"\\\\wsl$\\Ubuntu..\\x"}
+{"fn":"resolveWslWorkspace","args":["\\\\wsl$\\Ubuntu..\\x",123],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\wsl$\\Ubuntu..\\x",123],"ok":"\\\\wsl$\\Ubuntu..\\x"}
+{"fn":"resolveWslWorkspace","args":["\\\\wsl$\\Ubuntu..\\x",["win32"]],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\wsl$\\Ubuntu..\\x",["win32"]],"ok":"\\\\wsl$\\Ubuntu..\\x"}
+{"fn":"resolveWslWorkspace","args":["\\\\wsl$U\\buntu\\x","win32"],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\wsl$U\\buntu\\x","win32"],"ok":"\\\\wsl$U\\buntu\\x"}
+{"fn":"resolveWslWorkspace","args":["\\\\wsl$U\\buntu\\x","linux"],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\wsl$U\\buntu\\x","linux"],"ok":"\\\\wsl$U\\buntu\\x"}
+{"fn":"resolveWslWorkspace","args":["\\\\wsl$U\\buntu\\x",null],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\wsl$U\\buntu\\x",null],"ok":"\\\\wsl$U\\buntu\\x"}
+{"fn":"resolveWslWorkspace","args":["\\\\wsl$U\\buntu\\x",{"$undefined":true}],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\wsl$U\\buntu\\x",{"$undefined":true}],"ok":"\\\\wsl$U\\buntu\\x"}
+{"fn":"resolveWslWorkspace","args":["\\\\wsl$U\\buntu\\x",123],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\wsl$U\\buntu\\x",123],"ok":"\\\\wsl$U\\buntu\\x"}
+{"fn":"resolveWslWorkspace","args":["\\\\wsl$U\\buntu\\x",["win32"]],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\wsl$U\\buntu\\x",["win32"]],"ok":"\\\\wsl$U\\buntu\\x"}
+{"fn":"resolveWslWorkspace","args":["C:\\Users\\me","win32"],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["C:\\Users\\me","win32"],"ok":"C:\\Users\\me"}
+{"fn":"resolveWslWorkspace","args":["C:\\Users\\me","linux"],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["C:\\Users\\me","linux"],"ok":"C:\\Users\\me"}
+{"fn":"resolveWslWorkspace","args":["C:\\Users\\me",null],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["C:\\Users\\me",null],"ok":"C:\\Users\\me"}
+{"fn":"resolveWslWorkspace","args":["C:\\Users\\me",{"$undefined":true}],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["C:\\Users\\me",{"$undefined":true}],"ok":"C:\\Users\\me"}
+{"fn":"resolveWslWorkspace","args":["C:\\Users\\me",123],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["C:\\Users\\me",123],"ok":"C:\\Users\\me"}
+{"fn":"resolveWslWorkspace","args":["C:\\Users\\me",["win32"]],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["C:\\Users\\me",["win32"]],"ok":"C:\\Users\\me"}
+{"fn":"resolveWslWorkspace","args":["\\\\server\\share\\x","win32"],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\server\\share\\x","win32"],"ok":"\\\\server\\share\\x"}
+{"fn":"resolveWslWorkspace","args":["\\\\server\\share\\x","linux"],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\server\\share\\x","linux"],"ok":"\\\\server\\share\\x"}
+{"fn":"resolveWslWorkspace","args":["\\\\server\\share\\x",null],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\server\\share\\x",null],"ok":"\\\\server\\share\\x"}
+{"fn":"resolveWslWorkspace","args":["\\\\server\\share\\x",{"$undefined":true}],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\server\\share\\x",{"$undefined":true}],"ok":"\\\\server\\share\\x"}
+{"fn":"resolveWslWorkspace","args":["\\\\server\\share\\x",123],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\server\\share\\x",123],"ok":"\\\\server\\share\\x"}
+{"fn":"resolveWslWorkspace","args":["\\\\server\\share\\x",["win32"]],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\server\\share\\x",["win32"]],"ok":"\\\\server\\share\\x"}
+{"fn":"resolveWslWorkspace","args":["/home/me","win32"],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["/home/me","win32"],"ok":"/home/me"}
+{"fn":"resolveWslWorkspace","args":["/home/me","linux"],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["/home/me","linux"],"ok":"/home/me"}
+{"fn":"resolveWslWorkspace","args":["/home/me",null],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["/home/me",null],"ok":"/home/me"}
+{"fn":"resolveWslWorkspace","args":["/home/me",{"$undefined":true}],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["/home/me",{"$undefined":true}],"ok":"/home/me"}
+{"fn":"resolveWslWorkspace","args":["/home/me",123],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["/home/me",123],"ok":"/home/me"}
+{"fn":"resolveWslWorkspace","args":["/home/me",["win32"]],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["/home/me",["win32"]],"ok":"/home/me"}
+{"fn":"resolveWslWorkspace","args":["","win32"],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["","win32"],"ok":""}
+{"fn":"resolveWslWorkspace","args":["","linux"],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["","linux"],"ok":""}
+{"fn":"resolveWslWorkspace","args":["",null],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["",null],"ok":""}
+{"fn":"resolveWslWorkspace","args":["",{"$undefined":true}],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["",{"$undefined":true}],"ok":""}
+{"fn":"resolveWslWorkspace","args":["",123],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["",123],"ok":""}
+{"fn":"resolveWslWorkspace","args":["",["win32"]],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["",["win32"]],"ok":""}
+{"fn":"resolveWslWorkspace","args":["   ","win32"],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["   ","win32"],"ok":"   "}
+{"fn":"resolveWslWorkspace","args":["   ","linux"],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["   ","linux"],"ok":"   "}
+{"fn":"resolveWslWorkspace","args":["   ",null],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["   ",null],"ok":"   "}
+{"fn":"resolveWslWorkspace","args":["   ",{"$undefined":true}],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["   ",{"$undefined":true}],"ok":"   "}
+{"fn":"resolveWslWorkspace","args":["   ",123],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["   ",123],"ok":"   "}
+{"fn":"resolveWslWorkspace","args":["   ",["win32"]],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["   ",["win32"]],"ok":"   "}
+{"fn":"resolveWslWorkspace","args":["\\\\wsl$\\Ubuntu\\a/b/c","win32"],"ok":{"distribution":"Ubuntu","linuxPath":"/a/b/c"}}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\wsl$\\Ubuntu\\a/b/c","win32"],"ok":"/a/b/c"}
+{"fn":"resolveWslWorkspace","args":["\\\\wsl$\\Ubuntu\\a/b/c","linux"],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\wsl$\\Ubuntu\\a/b/c","linux"],"ok":"\\\\wsl$\\Ubuntu\\a/b/c"}
+{"fn":"resolveWslWorkspace","args":["\\\\wsl$\\Ubuntu\\a/b/c",null],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\wsl$\\Ubuntu\\a/b/c",null],"ok":"\\\\wsl$\\Ubuntu\\a/b/c"}
+{"fn":"resolveWslWorkspace","args":["\\\\wsl$\\Ubuntu\\a/b/c",{"$undefined":true}],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\wsl$\\Ubuntu\\a/b/c",{"$undefined":true}],"ok":"\\\\wsl$\\Ubuntu\\a/b/c"}
+{"fn":"resolveWslWorkspace","args":["\\\\wsl$\\Ubuntu\\a/b/c",123],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\wsl$\\Ubuntu\\a/b/c",123],"ok":"\\\\wsl$\\Ubuntu\\a/b/c"}
+{"fn":"resolveWslWorkspace","args":["\\\\wsl$\\Ubuntu\\a/b/c",["win32"]],"ok":null}
+{"fn":"resolveExecutionWorkingDirectory","args":["\\\\wsl$\\Ubuntu\\a/b/c",["win32"]],"ok":"\\\\wsl$\\Ubuntu\\a/b/c"}

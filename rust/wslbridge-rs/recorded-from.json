@@ -1,0 +1,35 @@
+{
+  "unit": "packages/shared/src/wslBridge.ts",
+  "files": 1,
+  "fingerprint": "230e306ac9a6242e",
+  "coverage": {
+    "lines": 498,
+    "reached": 166,
+    "files": [
+      {
+        "file": "packages/shared/src/executable.ts",
+        "lines": 299,
+        "reached": 81,
+        "missed": "42-53, 57-58, 61-62, 64-70, 74-83, 87-92, 94-96, 98-111, 113-118, 121-126, 135-144, 152-156, 158-166, 168-178, 180-185, 187-192, 196-204, 206-223, 226-227, 231-245, 251-258, 266-268, 278-291, 293-319, 323-329"
+      },
+      {
+        "file": "packages/shared/src/platformEnvironment.ts",
+        "lines": 33,
+        "reached": 9,
+        "missed": "7-10, 13-14, 17-21, 24-29, 32-33, 36-40"
+      },
+      {
+        "file": "packages/shared/src/windowsProcess.ts",
+        "lines": 144,
+        "reached": 54,
+        "missed": "50-51, 65-66, 68-75, 78-90, 92-94, 96-98, 101-107, 109-117, 120-127, 129-146, 148-156, 158-165"
+      },
+      {
+        "file": "packages/shared/src/wslBridge.ts",
+        "lines": 22,
+        "reached": 22,
+        "missed": ""
+      }
+    ]
+  }
+}

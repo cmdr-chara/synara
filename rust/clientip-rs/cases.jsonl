@@ -1,0 +1,823 @@
+{"fn":"clientIp","args":[{},{"$num":"NaN"}],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[{},100],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[["a",1],1000],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[{},1],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[0,10],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[true,2147483648],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[0,2147483648],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[null,{"$num":"-Infinity"}],"error":"Cannot read properties of null (reading 'req')"}
+{"fn":"clientIp","args":[["a",1],10],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[0,0.5],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[[],10],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[{"a":{"b":"c"}},42],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[true,{"$num":"-0"}],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[{"a":"b"},2147483648],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[null,1],"error":"Cannot read properties of null (reading 'req')"}
+{"fn":"clientIp","args":[0,{"$num":"-0"}],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[[],{"$num":"Infinity"}],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[{},{"$num":"-0"}],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[0,{"$num":"-Infinity"}],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[{},0.5],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[{},-1],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[null,-1],"error":"Cannot read properties of null (reading 'req')"}
+{"fn":"clientIp","args":[{"a":{"b":"c"}},0.5],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[{"a":"b"},{"$num":"NaN"}],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[["a",1],0],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[["a",1],{"$num":"NaN"}],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[["a",1],{"$num":"-0"}],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[["a",1],0.5],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[0,1000000],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[{"a":"b"},2],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[[],3],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[0,2],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[null,0],"error":"Cannot read properties of null (reading 'req')"}
+{"fn":"clientIp","args":[{"a":"b"},10],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[null,3],"error":"Cannot read properties of null (reading 'req')"}
+{"fn":"clientIp","args":[{"a":"b"},1000000],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[["a",1],2],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":["x",-2.5],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":["x",9007199254740992],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[{"a":"b"},0],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[true,0],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[{},{"$num":"-Infinity"}],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[true,{"$num":"-Infinity"}],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[0,{"$num":"NaN"}],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":["x",{"$num":"-Infinity"}],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":["x",1000],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[{"a":"b"},42],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[{"a":{"b":"c"}},2147483648],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[{"a":{"b":"c"}},1],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[[],-1],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[{"a":"b"},{"$num":"-0"}],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[[],0],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[null,2],"error":"Cannot read properties of null (reading 'req')"}
+{"fn":"clientIp","args":[0,3],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[["a",1],42],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[[],2147483648],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[true,1000000],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":["x",{"$num":"Infinity"}],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[true,-1],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[0,42],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[["a",1],1],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":["x",100],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[{},{"$num":"Infinity"}],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[0,1],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[null,-2.5],"error":"Cannot read properties of null (reading 'req')"}
+{"fn":"clientIp","args":[{"a":"b"},9007199254740992],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[[],100],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[0,0],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[[],-2.5],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[{"a":{"b":"c"}},9007199254740992],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[true,-2.5],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[true,2],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[null,0.5],"error":"Cannot read properties of null (reading 'req')"}
+{"fn":"clientIp","args":[[],0.5],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[[],{"$num":"-Infinity"}],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[{"a":"b"},-2.5],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[{"a":{"b":"c"}},2],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[true,3],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[0,100],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[null,2147483648],"error":"Cannot read properties of null (reading 'req')"}
+{"fn":"clientIp","args":[[],1000000],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[{"a":"b"},1],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":["x",0.5],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[[],{"$num":"-0"}],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[true,{"$num":"Infinity"}],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[0,1000],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":["x",1],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[{"a":{"b":"c"}},{"$num":"-0"}],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":["x",42],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":["x",0],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[0,-2.5],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[{"a":{"b":"c"}},-1],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[{},42],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[["a",1],{"$num":"Infinity"}],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[{},10],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[0,9007199254740992],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[true,100],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[["a",1],9007199254740992],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[{"a":{"b":"c"}},{"$num":"-Infinity"}],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[0,{"$num":"Infinity"}],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[{"a":{"b":"c"}},1000000],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[{"a":"b"},3],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[null,10],"error":"Cannot read properties of null (reading 'req')"}
+{"fn":"clientIp","args":[{"a":"b"},100],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[null,42],"error":"Cannot read properties of null (reading 'req')"}
+{"fn":"clientIp","args":[["a",1],1000000],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":["x",1000000],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[true,0.5],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[{},-2.5],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":["x",2147483648],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":["x",{"$num":"-0"}],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[true,42],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[{"a":"b"},1000],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[{"a":"b"},{"$num":"Infinity"}],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":["x",3],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[null,100],"error":"Cannot read properties of null (reading 'req')"}
+{"fn":"clientIp","args":[true,9007199254740992],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[["a",1],-1],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":["x",2],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[["a",1],-2.5],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[[],9007199254740992],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[{},2147483648],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":["x",10],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[{"a":{"b":"c"}},0],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[["a",1],100],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[{"a":{"b":"c"}},3],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":["x",{"$num":"NaN"}],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[null,1000],"error":"Cannot read properties of null (reading 'req')"}
+{"fn":"clientIp","args":[{},3],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[{},1000000],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[{},9007199254740992],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[null,{"$num":"Infinity"}],"error":"Cannot read properties of null (reading 'req')"}
+{"fn":"clientIp","args":[true,10],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[true,1],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[{"a":"b"},-1],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[null,1000000],"error":"Cannot read properties of null (reading 'req')"}
+{"fn":"clientIp","args":["x",-1],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[[],1],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[[],1000],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[0,-1],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[true,{"$num":"NaN"}],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[null,{"$num":"NaN"}],"error":"Cannot read properties of null (reading 'req')"}
+{"fn":"clientIp","args":[[],{"$num":"NaN"}],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[null,{"$num":"-0"}],"error":"Cannot read properties of null (reading 'req')"}
+{"fn":"clientIp","args":[{"a":{"b":"c"}},-2.5],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[{"a":"b"},0.5],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[{"a":"b"},{"$num":"-Infinity"}],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[{},1000],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[{"a":{"b":"c"}},{"$num":"Infinity"}],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[[],42],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[{"a":{"b":"c"}},{"$num":"NaN"}],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[["a",1],3],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[{"a":{"b":"c"}},1000],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[null,9007199254740992],"error":"Cannot read properties of null (reading 'req')"}
+{"fn":"clientIp","args":[{"a":{"b":"c"}},100],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[{},2],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[{},0],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[[],2],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[["a",1],2147483648],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[true,1000],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[["a",1],{"$num":"-Infinity"}],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[{"a":{"b":"c"}},10],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[{},-7.5],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[{},0.1],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[{},0.30000000000000004],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[{},1e+21],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[{},1e-7],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[{},5e-324],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"clientIp","args":[{},1.7976931348623157e+308],"error":"Cannot read properties of undefined (reading 'header')"}
+{"fn":"resolveTrustedProxyHops","args":["😀日本語のテキスト"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["{name} has {count} items.leading"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":[{"$undefined":true}],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":[".leading"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":[],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["key_name-1"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["{name} has {count} items"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["src/a/b.tshello world"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["a:b:c"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["hello worlda"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["a😀b😀ca😀b😀c"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["line1\nline2"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["hello"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["a"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["ΣΊΣΥΦΟΣ"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["tab\tseparated"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["ab"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["hello worldab"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["HELLO"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["abc"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["  padded  "],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["a😀"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["straße"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["  padded  ünïcödé"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["ns:key.path"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["﻿bom"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["src/a/b.tssrc/a/b.ts"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["HELLO😀"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":[":"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["a.b.c"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["a..b"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["src/a/b.ts"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":[""],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["日本語のテキストé"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["😀"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["😀a😀b😀c"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["a😀b😀c"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["./x/**/*.json"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["ünïcödé"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["日本語のテキスト"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["İstanbulline1\nline2"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["ünïcödé.leading"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["abcHello World"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["aba"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["ns:key.pathhello world"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["hello日本語のテキスト"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["HELLOa.b.c"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["key_name-1emoji 👍🏽 mix"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":[":hello"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["é"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["İstanbul"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["emoji 👍🏽 mix"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["日本語のテキストsrc/a/b.ts"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["Hello World"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["hello world"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":[".leadingHELLO"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["{name} has {count} itemsa:b:c"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["ΣΊΣΥΦΟΣa😀b😀c"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["a..b😀"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["HELLOa..b"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["ΣΊΣΥΦΟΣhello"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["helloa"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["akey_name-1"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["a😀b😀ca"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["absrc/a/b.ts"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["HELLOa"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["﻿bom  padded  "],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":[".leadinga😀b😀c"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["﻿bomHELLO"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["hello worldline1\nline2"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["trailing."],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["a😀b😀c  padded  "],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["trailing.é"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["Hello World﻿bom"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["./x/**/*.jsonsrc/a/b.ts"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["trailing.key_name-1"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["{name} has {count} itemsa"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["a.b.c:"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["ΣΊΣΥΦΟΣ😀"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["a😀b😀ctab\tseparated"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["a:b:cΣΊΣΥΦΟΣ"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["ünïcödéΣΊΣΥΦΟΣ"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["{name} has {count} itemshello"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["😀straße"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["hello worlda😀b😀c"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["hellosrc/a/b.ts"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["ns:key.pathline1\nline2"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["a😀b😀c日本語のテキスト"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["trailing.straße"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["straßeabc"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["trailing.a:b:c"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["ab😀"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["tab\tseparatedé"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["﻿bomns:key.path"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["a:b:ca:b:c"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["a😀b😀ctrailing."],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["abcstraße"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["😀ns:key.path"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["key_name-1  padded  "],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["abc:"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["a:b:c日本語のテキスト"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["日本語のテキスト:"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["ab./x/**/*.json"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["é  padded  "],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["a  padded  "],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["é﻿bom"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["a:b:cİstanbul"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["ΣΊΣΥΦΟΣsrc/a/b.ts"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["a..ba.b.c"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["😀abc"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["emoji 👍🏽 mixa"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["a.b.cHello World"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["HELLOHELLO"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["tab\tseparatedns:key.path"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["abcabc"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["src/a/b.ts{name} has {count} items"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["helloa.b.c"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["﻿bomé"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["Hello World  padded  "],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["hello world😀"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["line1\nline2Hello World"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["emoji 👍🏽 mix😀"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["😀ünïcödé"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["Hello Worldtab\tseparated"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":[".leadingkey_name-1"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["  padded  emoji 👍🏽 mix"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["ahello"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["﻿bomabc"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["ünïcödétrailing."],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["﻿bom.leading"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["HELLOemoji 👍🏽 mix"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["aa"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["a😀b😀cemoji 👍🏽 mix"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["a..bHELLO"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":[":straße"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["﻿boma:b:c"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["abctab\tseparated"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["ünïcödéa:b:c"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["  padded  key_name-1"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["ünïcödésrc/a/b.ts"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["./x/**/*.json日本語のテキスト"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["﻿bomtrailing."],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["straßeΣΊΣΥΦΟΣ"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["hello world﻿bom"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["Hello Worldline1\nline2"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["emoji 👍🏽 mixa..b"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["İstanbulns:key.path"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["key_name-1İstanbul"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["a..b{name} has {count} items"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":[".leadingemoji 👍🏽 mix"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["straße日本語のテキスト"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["abcemoji 👍🏽 mix"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["😀trailing."],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["key_name-1a😀b😀c"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["HELLOΣΊΣΥΦΟΣ"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["ΣΊΣΥΦΟΣİstanbul"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["trailing.abc"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["HELLOtab\tseparated"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["a:b:cab"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["a:b:ca.b.c"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["ΣΊΣΥΦΟΣab"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["İstanbulhello world"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["src/a/b.tsΣΊΣΥΦΟΣ"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["tab\tseparated日本語のテキスト"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["ΣΊΣΥΦΟΣtrailing."],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["  padded  a😀b😀c"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["a:b:cHELLO"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":[".leadinghello world"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["hello worldstraße"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["ünïcödéab"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["﻿bom﻿bom"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["src/a/b.ts﻿bom"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["Hello World😀"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["a..b./x/**/*.json"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["./x/**/*.jsona..b"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["a.b.cstraße"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["ünïcödé:"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["a..ba"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":[".leading日本語のテキスト"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["éHello World"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["ab{name} has {count} items"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["ab:"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["abtrailing."],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["ns:key.pathstraße"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["  padded  İstanbul"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["./x/**/*.jsona.b.c"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["ünïcödéa.b.c"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["abckey_name-1"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["  padded  a.b.c"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["﻿bomkey_name-1"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["éΣΊΣΥΦΟΣ"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["hello worldhello"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["İstanbula😀b😀c"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["trailing.😀"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["emoji 👍🏽 mixa:b:c"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["a😀b😀cİstanbul"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["hellostraße"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["HELLOa😀b😀c"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["abcİstanbul"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["ékey_name-1"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["héllo wörld"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["👍🏽 thumbs"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["日本語"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["ılık ırmak"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["👨‍👩‍👧 family"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["a b"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["a😀b"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["a²b x½ y①"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["aⅠb Ⅻ"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["a𐐀b 𝐀bc"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["कि ٣٤"],"ok":0}
+{"fn":"sanitizeForwardableIp","args":["hello world"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":[""],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["line1\nline2"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["src/a/b.ts"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["a😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["ns:key.path"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["a:b:c"],"ok":"a:b:c"}
+{"fn":"sanitizeForwardableIp","args":["  padded  "],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["éHello World"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":[".leading"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["é"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["😀"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["abc"],"ok":"abc"}
+{"fn":"sanitizeForwardableIp","args":["ünïcödé"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["key_name-1"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["trailing.hello"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":[":"],"ok":":"}
+{"fn":"sanitizeForwardableIp","args":["a..b"],"ok":"a..b"}
+{"fn":"sanitizeForwardableIp","args":["a.b.c"],"ok":"a.b.c"}
+{"fn":"sanitizeForwardableIp","args":["{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["Hello Worldtrailing."],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["trailing."],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["line1\nline2hello"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["İstanbul"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["HELLO"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["éns:key.path"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["日本語のテキストünïcödé"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["straße"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["ab"],"ok":"ab"}
+{"fn":"sanitizeForwardableIp","args":["Hello World"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["a😀b😀c./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["aba.b.c"],"ok":"aba.b.c"}
+{"fn":"sanitizeForwardableIp","args":["ΣΊΣΥΦΟΣhello"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["emoji 👍🏽 mixΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["a😀b😀c{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["./x/**/*.jsonΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":[".leading﻿bom"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":[":a"],"ok":":a"}
+{"fn":"sanitizeForwardableIp","args":["Hello Worlda"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["a./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["a"],"ok":"a"}
+{"fn":"sanitizeForwardableIp","args":["hello"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["﻿bom"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["tab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["line1\nline2﻿bom"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["ab./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["ΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["emoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["İstanbulhello"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["HELLOİstanbul"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["src/a/b.ts日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["abcHELLO"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["line1\nline2a.b.c"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["﻿bomΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["src/a/b.ts.leading"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["ns:key.pathhello world"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["a:b:ca"],"ok":"a:b:ca"}
+{"fn":"sanitizeForwardableIp","args":["aab"],"ok":"aab"}
+{"fn":"sanitizeForwardableIp","args":["./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["hello world  padded  "],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":[".leadingHello World"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["éabc"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["emoji 👍🏽 mixa..b"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":[":İstanbul"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["abé"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":[":tab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["tab\tseparated日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["﻿bom﻿bom"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["İstanbulünïcödé"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["  padded  hello"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["ns:key.pathstraße"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["{name} has {count} itemsa..b"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["ünïcödéemoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["a.b.chello world"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["Hello Worldtab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["abckey_name-1"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["😀abc"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["ΣΊΣΥΦΟΣa"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["::"],"ok":"::"}
+{"fn":"sanitizeForwardableIp","args":[":emoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["ünïcödé./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["a😀b😀cemoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["😀line1\nline2"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["  padded  İstanbul"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["a.b.csrc/a/b.ts"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["key_name-1日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["é./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":[".leadingtab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["{name} has {count} itemsHELLO"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["a..b😀"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["é  padded  "],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["astraße"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["abcünïcödé"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["ns:key.path{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["{name} has {count} items﻿bom"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["abc:"],"ok":"abc:"}
+{"fn":"sanitizeForwardableIp","args":[":ΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["aba..b"],"ok":"aba..b"}
+{"fn":"sanitizeForwardableIp","args":["a😀b😀cline1\nline2"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["ékey_name-1"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":[":😀"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["key_name-1HELLO"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["abctab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["Hello World.leading"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["trailing.😀"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["hello worlda😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["a:b:cünïcödé"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["a  padded  "],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["a😀"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["{name} has {count} items{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["trailing.ΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["﻿bom:"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["hello{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["{name} has {count} itemsns:key.path"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["a..ba.b.c"],"ok":"a..ba.b.c"}
+{"fn":"sanitizeForwardableIp","args":["aé"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["abHELLO"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["é日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["trailing.:"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["İstanbulkey_name-1"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["  padded  straße"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["HELLOa:b:c"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["helloİstanbul"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["﻿boma..b"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["a:b:ca:b:c"],"ok":"a:b:ca:b:c"}
+{"fn":"sanitizeForwardableIp","args":["hello worldab"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["abc﻿bom"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["tab\tseparatedemoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["a.b.cünïcödé"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["😀./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["trailing.ab"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["a..b./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["日本語のテキストΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["atab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["src/a/b.tsa😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["key_name-1Hello World"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["﻿bomhello world"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["key_name-1straße"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["a..b{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["aa..b"],"ok":"aa..b"}
+{"fn":"sanitizeForwardableIp","args":[":ab"],"ok":":ab"}
+{"fn":"sanitizeForwardableIp","args":["😀HELLO"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["a..btab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["./x/**/*.json﻿bom"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["ΣΊΣΥΦΟΣ.leading"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["ΣΊΣΥΦΟΣünïcödé"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["HELLO😀"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["emoji 👍🏽 mixİstanbul"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["emoji 👍🏽 mixünïcödé"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["éhello world"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["éemoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["key_name-1.leading"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["hellosrc/a/b.ts"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["😀.leading"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["ünïcödé:"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["İstanbultab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["key_name-1emoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["./x/**/*.jsonabc"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["tab\tseparatedünïcödé"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["line1\nline2abc"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["hello worldtrailing."],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["  padded  HELLO"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["line1\nline2  padded  "],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["a😀b😀ctab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["HELLOé"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["a..bstraße"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["😀trailing."],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["日本語のテキストHELLO"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["ns:key.patha..b"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["hello﻿bom"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["éΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["hellons:key.path"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":[":ünïcödé"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["Hello Worlda:b:c"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["a.b.cabc"],"ok":"a.b.cabc"}
+{"fn":"sanitizeForwardableIp","args":["Hello Worldİstanbul"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["Hello Worldline1\nline2"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["straßeline1\nline2"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["{name} has {count} itemsΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["tab\tseparated{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["😀ünïcödé"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["key_name-1  padded  "],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["İstanbultrailing."],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["Hello Worlda.b.c"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["日本語のテキスト{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["ab{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["ns:key.pathns:key.path"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["﻿boma"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["./x/**/*.jsona😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["a:b:c:"],"ok":"a:b:c:"}
+{"fn":"sanitizeForwardableIp","args":["abc.leading"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["helloab"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["İstanbulns:key.path"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["hello worldkey_name-1"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["日本語のテキストa..b"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["Hello World  padded  "],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["line1\nline2emoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["src/a/b.tstab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["tab\tseparateda:b:c"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["héllo wörld"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["👍🏽 thumbs"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["日本語"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["ılık ırmak"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["👨‍👩‍👧 family"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["a b"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["a😀b"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["a²b x½ y①"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["aⅠb Ⅻ"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["a𐐀b 𝐀bc"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["कि ٣٤"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["Iı İi"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["K K k"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["ſ s S"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["x‍y 👨‍👩‍👧"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["a b c　d"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["١٢٣ ٤٥"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["𝟘𝟙 ²³"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["snake_case foo-bar o'neil"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["ǅungla Ǆ"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["one\r\ntwo threefour"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["café café"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableIp","args":["ΣΑΣ σας ς"],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableUserAgent","args":["tab\tseparated"],"ok":"tab\tseparated"}
+{"fn":"sanitizeForwardableUserAgent","args":["src/a/b.tsa..b"],"ok":"src/a/b.tsa..b"}
+{"fn":"sanitizeForwardableUserAgent","args":["a"],"ok":"a"}
+{"fn":"sanitizeForwardableUserAgent","args":["trailing.HELLO"],"ok":"trailing.HELLO"}
+{"fn":"sanitizeForwardableUserAgent","args":["hello worldhello"],"ok":"hello worldhello"}
+{"fn":"sanitizeForwardableUserAgent","args":["./x/**/*.json"],"ok":"./x/**/*.json"}
+{"fn":"sanitizeForwardableUserAgent","args":["aİstanbul"],"ok":"aİstanbul"}
+{"fn":"sanitizeForwardableUserAgent","args":["src/a/b.ts"],"ok":"src/a/b.ts"}
+{"fn":"sanitizeForwardableUserAgent","args":["😀"],"ok":"😀"}
+{"fn":"sanitizeForwardableUserAgent","args":[""],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableUserAgent","args":["ΣΊΣΥΦΟΣ"],"ok":"ΣΊΣΥΦΟΣ"}
+{"fn":"sanitizeForwardableUserAgent","args":[":"],"ok":":"}
+{"fn":"sanitizeForwardableUserAgent","args":[],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableUserAgent","args":[{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"sanitizeForwardableUserAgent","args":["key_name-1"],"ok":"key_name-1"}
+{"fn":"sanitizeForwardableUserAgent","args":["ünïcödé"],"ok":"ünïcödé"}
+{"fn":"sanitizeForwardableUserAgent","args":["HELLO"],"ok":"HELLO"}
+{"fn":"sanitizeForwardableUserAgent","args":["{name} has {count} items"],"ok":"{name} has {count} items"}
+{"fn":"sanitizeForwardableUserAgent","args":["abc"],"ok":"abc"}
+{"fn":"sanitizeForwardableUserAgent","args":["a..b"],"ok":"a..b"}
+{"fn":"sanitizeForwardableUserAgent","args":["straße"],"ok":"straße"}
+{"fn":"sanitizeForwardableUserAgent","args":["ns:key.path"],"ok":"ns:key.path"}
+{"fn":"sanitizeForwardableUserAgent","args":["﻿bom"],"ok":"bom"}
+{"fn":"sanitizeForwardableUserAgent","args":["key_name-1.leading"],"ok":"key_name-1.leading"}
+{"fn":"sanitizeForwardableUserAgent","args":["ab"],"ok":"ab"}
+{"fn":"sanitizeForwardableUserAgent","args":["hello"],"ok":"hello"}
+{"fn":"sanitizeForwardableUserAgent","args":["é"],"ok":"é"}
+{"fn":"sanitizeForwardableUserAgent","args":["日本語のテキスト"],"ok":"日本語のテキスト"}
+{"fn":"sanitizeForwardableUserAgent","args":["helloünïcödé"],"ok":"helloünïcödé"}
+{"fn":"sanitizeForwardableUserAgent","args":[".leadinghello"],"ok":".leadinghello"}
+{"fn":"sanitizeForwardableUserAgent","args":["hellotab\tseparated"],"ok":"hellotab\tseparated"}
+{"fn":"sanitizeForwardableUserAgent","args":["key_name-1ab"],"ok":"key_name-1ab"}
+{"fn":"sanitizeForwardableUserAgent","args":["﻿boma"],"ok":"boma"}
+{"fn":"sanitizeForwardableUserAgent","args":["a:b:c"],"ok":"a:b:c"}
+{"fn":"sanitizeForwardableUserAgent","args":["Hello World"],"ok":"Hello World"}
+{"fn":"sanitizeForwardableUserAgent","args":["line1\nline2"],"ok":"line1\nline2"}
+{"fn":"sanitizeForwardableUserAgent","args":["HELLOHello World"],"ok":"HELLOHello World"}
+{"fn":"sanitizeForwardableUserAgent","args":["a😀b😀ca.b.c"],"ok":"a😀b😀ca.b.c"}
+{"fn":"sanitizeForwardableUserAgent","args":["hello world"],"ok":"hello world"}
+{"fn":"sanitizeForwardableUserAgent","args":[":HELLO"],"ok":":HELLO"}
+{"fn":"sanitizeForwardableUserAgent","args":["a.b.c"],"ok":"a.b.c"}
+{"fn":"sanitizeForwardableUserAgent","args":["./x/**/*.json😀"],"ok":"./x/**/*.json😀"}
+{"fn":"sanitizeForwardableUserAgent","args":["trailing."],"ok":"trailing."}
+{"fn":"sanitizeForwardableUserAgent","args":["😀  padded  "],"ok":"😀  padded"}
+{"fn":"sanitizeForwardableUserAgent","args":["trailing.﻿bom"],"ok":"trailing.﻿bom"}
+{"fn":"sanitizeForwardableUserAgent","args":["a..b日本語のテキスト"],"ok":"a..b日本語のテキスト"}
+{"fn":"sanitizeForwardableUserAgent","args":["trailing.hello world"],"ok":"trailing.hello world"}
+{"fn":"sanitizeForwardableUserAgent","args":["  padded  "],"ok":"padded"}
+{"fn":"sanitizeForwardableUserAgent","args":[".leading.leading"],"ok":".leading.leading"}
+{"fn":"sanitizeForwardableUserAgent","args":[".leading"],"ok":".leading"}
+{"fn":"sanitizeForwardableUserAgent","args":["a﻿bom"],"ok":"a﻿bom"}
+{"fn":"sanitizeForwardableUserAgent","args":["日本語のテキストstraße"],"ok":"日本語のテキストstraße"}
+{"fn":"sanitizeForwardableUserAgent","args":["HELLOé"],"ok":"HELLOé"}
+{"fn":"sanitizeForwardableUserAgent","args":["a😀b😀c"],"ok":"a😀b😀c"}
+{"fn":"sanitizeForwardableUserAgent","args":["Hello Worldline1\nline2"],"ok":"Hello Worldline1\nline2"}
+{"fn":"sanitizeForwardableUserAgent","args":["﻿bomns:key.path"],"ok":"bomns:key.path"}
+{"fn":"sanitizeForwardableUserAgent","args":["line1\nline2é"],"ok":"line1\nline2é"}
+{"fn":"sanitizeForwardableUserAgent","args":["hellohello world"],"ok":"hellohello world"}
+{"fn":"sanitizeForwardableUserAgent","args":["straßekey_name-1"],"ok":"straßekey_name-1"}
+{"fn":"sanitizeForwardableUserAgent","args":["src/a/b.tstab\tseparated"],"ok":"src/a/b.tstab\tseparated"}
+{"fn":"sanitizeForwardableUserAgent","args":["./x/**/*.jsonline1\nline2"],"ok":"./x/**/*.jsonline1\nline2"}
+{"fn":"sanitizeForwardableUserAgent","args":["{name} has {count} itemsa😀b😀c"],"ok":"{name} has {count} itemsa😀b😀c"}
+{"fn":"sanitizeForwardableUserAgent","args":["HELLOHELLO"],"ok":"HELLOHELLO"}
+{"fn":"sanitizeForwardableUserAgent","args":["Hello Worldkey_name-1"],"ok":"Hello Worldkey_name-1"}
+{"fn":"sanitizeForwardableUserAgent","args":["tab\tseparatedhello"],"ok":"tab\tseparatedhello"}
+{"fn":"sanitizeForwardableUserAgent","args":["﻿bomstraße"],"ok":"bomstraße"}
+{"fn":"sanitizeForwardableUserAgent","args":["hello  padded  "],"ok":"hello  padded"}
+{"fn":"sanitizeForwardableUserAgent","args":["./x/**/*.jsona..b"],"ok":"./x/**/*.jsona..b"}
+{"fn":"sanitizeForwardableUserAgent","args":["line1\nline2src/a/b.ts"],"ok":"line1\nline2src/a/b.ts"}
+{"fn":"sanitizeForwardableUserAgent","args":["emoji 👍🏽 mix"],"ok":"emoji 👍🏽 mix"}
+{"fn":"sanitizeForwardableUserAgent","args":["a..bHello World"],"ok":"a..bHello World"}
+{"fn":"sanitizeForwardableUserAgent","args":["ns:key.path  padded  "],"ok":"ns:key.path  padded"}
+{"fn":"sanitizeForwardableUserAgent","args":["éhello"],"ok":"éhello"}
+{"fn":"sanitizeForwardableUserAgent","args":["ünïcödé﻿bom"],"ok":"ünïcödé﻿bom"}
+{"fn":"sanitizeForwardableUserAgent","args":["ünïcödésrc/a/b.ts"],"ok":"ünïcödésrc/a/b.ts"}
+{"fn":"sanitizeForwardableUserAgent","args":["İstanbul"],"ok":"İstanbul"}
+{"fn":"sanitizeForwardableUserAgent","args":[":a"],"ok":":a"}
+{"fn":"sanitizeForwardableUserAgent","args":["İstanbulkey_name-1"],"ok":"İstanbulkey_name-1"}
+{"fn":"sanitizeForwardableUserAgent","args":["{name} has {count} itemsé"],"ok":"{name} has {count} itemsé"}
+{"fn":"sanitizeForwardableUserAgent","args":["a😀b😀ckey_name-1"],"ok":"a😀b😀ckey_name-1"}
+{"fn":"sanitizeForwardableUserAgent","args":["./x/**/*.json  padded  "],"ok":"./x/**/*.json  padded"}
+{"fn":"sanitizeForwardableUserAgent","args":["abca..b"],"ok":"abca..b"}
+{"fn":"sanitizeForwardableUserAgent","args":["{name} has {count} items{name} has {count} items"],"ok":"{name} has {count} items{name} has {count} items"}
+{"fn":"sanitizeForwardableUserAgent","args":["trailing.é"],"ok":"trailing.é"}
+{"fn":"sanitizeForwardableUserAgent","args":["hello worldabc"],"ok":"hello worldabc"}
+{"fn":"sanitizeForwardableUserAgent","args":["ΣΊΣΥΦΟΣa.b.c"],"ok":"ΣΊΣΥΦΟΣa.b.c"}
+{"fn":"sanitizeForwardableUserAgent","args":["  padded  ΣΊΣΥΦΟΣ"],"ok":"padded  ΣΊΣΥΦΟΣ"}
+{"fn":"sanitizeForwardableUserAgent","args":["a:b:c.leading"],"ok":"a:b:c.leading"}
+{"fn":"sanitizeForwardableUserAgent","args":["HELLOhello world"],"ok":"HELLOhello world"}
+{"fn":"sanitizeForwardableUserAgent","args":["HELLOns:key.path"],"ok":"HELLOns:key.path"}
+{"fn":"sanitizeForwardableUserAgent","args":["éline1\nline2"],"ok":"éline1\nline2"}
+{"fn":"sanitizeForwardableUserAgent","args":["éİstanbul"],"ok":"éİstanbul"}
+{"fn":"sanitizeForwardableUserAgent","args":["line1\nline2a"],"ok":"line1\nline2a"}
+{"fn":"sanitizeForwardableUserAgent","args":["tab\tseparatedab"],"ok":"tab\tseparatedab"}
+{"fn":"sanitizeForwardableUserAgent","args":["emoji 👍🏽 mixtrailing."],"ok":"emoji 👍🏽 mixtrailing."}
+{"fn":"sanitizeForwardableUserAgent","args":["a{name} has {count} items"],"ok":"a{name} has {count} items"}
+{"fn":"sanitizeForwardableUserAgent","args":["trailing.a"],"ok":"trailing.a"}
+{"fn":"sanitizeForwardableUserAgent","args":["a..b:"],"ok":"a..b:"}
+{"fn":"sanitizeForwardableUserAgent","args":["İstanbulé"],"ok":"İstanbulé"}
+{"fn":"sanitizeForwardableUserAgent","args":["emoji 👍🏽 mixab"],"ok":"emoji 👍🏽 mixab"}
+{"fn":"sanitizeForwardableUserAgent","args":["tab\tseparated  padded  "],"ok":"tab\tseparated  padded"}
+{"fn":"sanitizeForwardableUserAgent","args":["日本語のテキストline1\nline2"],"ok":"日本語のテキストline1\nline2"}
+{"fn":"sanitizeForwardableUserAgent","args":["hello worldemoji 👍🏽 mix"],"ok":"hello worldemoji 👍🏽 mix"}
+{"fn":"sanitizeForwardableUserAgent","args":["日本語のテキスト﻿bom"],"ok":"日本語のテキスト﻿bom"}
+{"fn":"sanitizeForwardableUserAgent","args":["straße😀"],"ok":"straße😀"}
+{"fn":"sanitizeForwardableUserAgent","args":["😀ΣΊΣΥΦΟΣ"],"ok":"😀ΣΊΣΥΦΟΣ"}
+{"fn":"sanitizeForwardableUserAgent","args":["hello worldΣΊΣΥΦΟΣ"],"ok":"hello worldΣΊΣΥΦΟΣ"}
+{"fn":"sanitizeForwardableUserAgent","args":["ΣΊΣΥΦΟΣΣΊΣΥΦΟΣ"],"ok":"ΣΊΣΥΦΟΣΣΊΣΥΦΟΣ"}
+{"fn":"sanitizeForwardableUserAgent","args":["trailing.a..b"],"ok":"trailing.a..b"}
+{"fn":"sanitizeForwardableUserAgent","args":["line1\nline2Hello World"],"ok":"line1\nline2Hello World"}
+{"fn":"sanitizeForwardableUserAgent","args":["ns:key.pathtab\tseparated"],"ok":"ns:key.pathtab\tseparated"}
+{"fn":"sanitizeForwardableUserAgent","args":["helloİstanbul"],"ok":"helloİstanbul"}
+{"fn":"sanitizeForwardableUserAgent","args":["trailing.Hello World"],"ok":"trailing.Hello World"}
+{"fn":"sanitizeForwardableUserAgent","args":["İstanbulstraße"],"ok":"İstanbulstraße"}
+{"fn":"sanitizeForwardableUserAgent","args":["ΣΊΣΥΦΟΣtrailing."],"ok":"ΣΊΣΥΦΟΣtrailing."}
+{"fn":"sanitizeForwardableUserAgent","args":["a:b:ca😀b😀c"],"ok":"a:b:ca😀b😀c"}
+{"fn":"sanitizeForwardableUserAgent","args":["ns:key.path{name} has {count} items"],"ok":"ns:key.path{name} has {count} items"}
+{"fn":"sanitizeForwardableUserAgent","args":[".leadingns:key.path"],"ok":".leadingns:key.path"}
+{"fn":"sanitizeForwardableUserAgent","args":["😀Hello World"],"ok":"😀Hello World"}
+{"fn":"sanitizeForwardableUserAgent","args":["aabc"],"ok":"aabc"}
+{"fn":"sanitizeForwardableUserAgent","args":["tab\tseparated.leading"],"ok":"tab\tseparated.leading"}
+{"fn":"sanitizeForwardableUserAgent","args":[".leadinga..b"],"ok":".leadinga..b"}
+{"fn":"sanitizeForwardableUserAgent","args":["Hello Worldtrailing."],"ok":"Hello Worldtrailing."}
+{"fn":"sanitizeForwardableUserAgent","args":["hello worldİstanbul"],"ok":"hello worldİstanbul"}
+{"fn":"sanitizeForwardableUserAgent","args":["helloHello World"],"ok":"helloHello World"}
+{"fn":"sanitizeForwardableUserAgent","args":["a😀b😀cİstanbul"],"ok":"a😀b😀cİstanbul"}
+{"fn":"sanitizeForwardableUserAgent","args":["hello world日本語のテキスト"],"ok":"hello world日本語のテキスト"}
+{"fn":"sanitizeForwardableUserAgent","args":["ΣΊΣΥΦΟΣkey_name-1"],"ok":"ΣΊΣΥΦΟΣkey_name-1"}
+{"fn":"sanitizeForwardableUserAgent","args":["a..ba..b"],"ok":"a..ba..b"}
+{"fn":"sanitizeForwardableUserAgent","args":["﻿bomsrc/a/b.ts"],"ok":"bomsrc/a/b.ts"}
+{"fn":"sanitizeForwardableUserAgent","args":["aba:b:c"],"ok":"aba:b:c"}
+{"fn":"sanitizeForwardableUserAgent","args":["İstanbul./x/**/*.json"],"ok":"İstanbul./x/**/*.json"}
+{"fn":"sanitizeForwardableUserAgent","args":["./x/**/*.jsona:b:c"],"ok":"./x/**/*.jsona:b:c"}
+{"fn":"sanitizeForwardableUserAgent","args":["a😀b😀ca..b"],"ok":"a😀b😀ca..b"}
+{"fn":"sanitizeForwardableUserAgent","args":["Hello Worldabc"],"ok":"Hello Worldabc"}
+{"fn":"sanitizeForwardableUserAgent","args":[".leadingab"],"ok":".leadingab"}
+{"fn":"sanitizeForwardableUserAgent","args":["./x/**/*.jsonemoji 👍🏽 mix"],"ok":"./x/**/*.jsonemoji 👍🏽 mix"}
+{"fn":"sanitizeForwardableUserAgent","args":[".leadingabc"],"ok":".leadingabc"}
+{"fn":"sanitizeForwardableUserAgent","args":[":{name} has {count} items"],"ok":":{name} has {count} items"}
+{"fn":"sanitizeForwardableUserAgent","args":["trailing.straße"],"ok":"trailing.straße"}
+{"fn":"sanitizeForwardableUserAgent","args":["emoji 👍🏽 mixtab\tseparated"],"ok":"emoji 👍🏽 mixtab\tseparated"}
+{"fn":"sanitizeForwardableUserAgent","args":[".leading:"],"ok":".leading:"}
+{"fn":"sanitizeForwardableUserAgent","args":["İstanbul😀"],"ok":"İstanbul😀"}
+{"fn":"sanitizeForwardableUserAgent","args":["key_name-1emoji 👍🏽 mix"],"ok":"key_name-1emoji 👍🏽 mix"}
+{"fn":"sanitizeForwardableUserAgent","args":["ünïcödé{name} has {count} items"],"ok":"ünïcödé{name} has {count} items"}
+{"fn":"sanitizeForwardableUserAgent","args":[":src/a/b.ts"],"ok":":src/a/b.ts"}
+{"fn":"sanitizeForwardableUserAgent","args":["src/a/b.tsa:b:c"],"ok":"src/a/b.tsa:b:c"}
+{"fn":"sanitizeForwardableUserAgent","args":["hello worldab"],"ok":"hello worldab"}
+{"fn":"sanitizeForwardableUserAgent","args":["trailing.ab"],"ok":"trailing.ab"}
+{"fn":"sanitizeForwardableUserAgent","args":["😀./x/**/*.json"],"ok":"😀./x/**/*.json"}
+{"fn":"sanitizeForwardableUserAgent","args":["HELLO.leading"],"ok":"HELLO.leading"}
+{"fn":"sanitizeForwardableUserAgent","args":["  padded  key_name-1"],"ok":"padded  key_name-1"}
+{"fn":"sanitizeForwardableUserAgent","args":["::"],"ok":"::"}
+{"fn":"sanitizeForwardableUserAgent","args":["İstanbulünïcödé"],"ok":"İstanbulünïcödé"}
+{"fn":"sanitizeForwardableUserAgent","args":["a./x/**/*.json"],"ok":"a./x/**/*.json"}
+{"fn":"sanitizeForwardableUserAgent","args":["{name} has {count} itemsHELLO"],"ok":"{name} has {count} itemsHELLO"}
+{"fn":"sanitizeForwardableUserAgent","args":["a:b:ca:b:c"],"ok":"a:b:ca:b:c"}
+{"fn":"sanitizeForwardableUserAgent","args":["helloa.b.c"],"ok":"helloa.b.c"}
+{"fn":"sanitizeForwardableUserAgent","args":["src/a/b.tsline1\nline2"],"ok":"src/a/b.tsline1\nline2"}
+{"fn":"sanitizeForwardableUserAgent","args":["src/a/b.tsns:key.path"],"ok":"src/a/b.tsns:key.path"}
+{"fn":"sanitizeForwardableUserAgent","args":["HELLOa..b"],"ok":"HELLOa..b"}
+{"fn":"sanitizeForwardableUserAgent","args":["a😀b😀c😀"],"ok":"a😀b😀c😀"}
+{"fn":"sanitizeForwardableUserAgent","args":["ΣΊΣΥΦΟΣns:key.path"],"ok":"ΣΊΣΥΦΟΣns:key.path"}
+{"fn":"sanitizeForwardableUserAgent","args":["ΣΊΣΥΦΟΣa..b"],"ok":"ΣΊΣΥΦΟΣa..b"}
+{"fn":"sanitizeForwardableUserAgent","args":["Hello Worldhello world"],"ok":"Hello Worldhello world"}
+{"fn":"sanitizeForwardableUserAgent","args":["abHello World"],"ok":"abHello World"}
+{"fn":"sanitizeForwardableUserAgent","args":["a😀b😀c  padded  "],"ok":"a😀b😀c  padded"}
+{"fn":"sanitizeForwardableUserAgent","args":["a:b:ckey_name-1"],"ok":"a:b:ckey_name-1"}
+{"fn":"sanitizeForwardableUserAgent","args":["é.leading"],"ok":"é.leading"}
+{"fn":"sanitizeForwardableUserAgent","args":["  padded  .leading"],"ok":"padded  .leading"}
+{"fn":"sanitizeForwardableUserAgent","args":["tab\tseparated😀"],"ok":"tab\tseparated😀"}
+{"fn":"sanitizeForwardableUserAgent","args":["﻿bomemoji 👍🏽 mix"],"ok":"bomemoji 👍🏽 mix"}
+{"fn":"sanitizeForwardableUserAgent","args":[":Hello World"],"ok":":Hello World"}
+{"fn":"sanitizeForwardableUserAgent","args":["Hello Worlda:b:c"],"ok":"Hello Worlda:b:c"}
+{"fn":"sanitizeForwardableUserAgent","args":["a.b.cİstanbul"],"ok":"a.b.cİstanbul"}
+{"fn":"sanitizeForwardableUserAgent","args":["emoji 👍🏽 mix./x/**/*.json"],"ok":"emoji 👍🏽 mix./x/**/*.json"}
+{"fn":"sanitizeForwardableUserAgent","args":["a..bkey_name-1"],"ok":"a..bkey_name-1"}
+{"fn":"sanitizeForwardableUserAgent","args":["HELLOline1\nline2"],"ok":"HELLOline1\nline2"}
+{"fn":"sanitizeForwardableUserAgent","args":["日本語のテキストab"],"ok":"日本語のテキストab"}
+{"fn":"sanitizeForwardableUserAgent","args":["abcİstanbul"],"ok":"abcİstanbul"}
+{"fn":"sanitizeForwardableUserAgent","args":["aba.b.c"],"ok":"aba.b.c"}
+{"fn":"sanitizeForwardableUserAgent","args":["straße:"],"ok":"straße:"}
+{"fn":"sanitizeForwardableUserAgent","args":[":./x/**/*.json"],"ok":":./x/**/*.json"}
+{"fn":"sanitizeForwardableUserAgent","args":["a.b.c./x/**/*.json"],"ok":"a.b.c./x/**/*.json"}
+{"fn":"sanitizeForwardableUserAgent","args":["ab./x/**/*.json"],"ok":"ab./x/**/*.json"}
+{"fn":"sanitizeForwardableUserAgent","args":[":hello world"],"ok":":hello world"}
+{"fn":"sanitizeForwardableUserAgent","args":["ΣΊΣΥΦΟΣ:"],"ok":"ΣΊΣΥΦΟΣ:"}
+{"fn":"sanitizeForwardableUserAgent","args":["src/a/b.tsİstanbul"],"ok":"src/a/b.tsİstanbul"}
+{"fn":"sanitizeForwardableUserAgent","args":["ΣΊΣΥΦΟΣİstanbul"],"ok":"ΣΊΣΥΦΟΣİstanbul"}
+{"fn":"sanitizeForwardableUserAgent","args":["ns:key.pathé"],"ok":"ns:key.pathé"}
+{"fn":"sanitizeForwardableUserAgent","args":["日本語のテキストa"],"ok":"日本語のテキストa"}
+{"fn":"sanitizeForwardableUserAgent","args":["﻿bomkey_name-1"],"ok":"bomkey_name-1"}
+{"fn":"sanitizeForwardableUserAgent","args":["ΣΊΣΥΦΟΣ﻿bom"],"ok":"ΣΊΣΥΦΟΣ﻿bom"}
+{"fn":"sanitizeForwardableUserAgent","args":["trailing.😀"],"ok":"trailing.😀"}
+{"fn":"sanitizeForwardableUserAgent","args":["key_name-1src/a/b.ts"],"ok":"key_name-1src/a/b.ts"}
+{"fn":"sanitizeForwardableUserAgent","args":["{name} has {count} itemsabc"],"ok":"{name} has {count} itemsabc"}
+{"fn":"sanitizeForwardableUserAgent","args":[".leadingHELLO"],"ok":".leadingHELLO"}
+{"fn":"sanitizeForwardableUserAgent","args":["a..ba.b.c"],"ok":"a..ba.b.c"}
+{"fn":"sanitizeForwardableUserAgent","args":["a:b:c  padded  "],"ok":"a:b:c  padded"}
+{"fn":"sanitizeForwardableUserAgent","args":["abctrailing."],"ok":"abctrailing."}
+{"fn":"sanitizeForwardableUserAgent","args":["héllo wörld"],"ok":"héllo wörld"}
+{"fn":"sanitizeForwardableUserAgent","args":["👍🏽 thumbs"],"ok":"👍🏽 thumbs"}
+{"fn":"sanitizeForwardableUserAgent","args":["日本語"],"ok":"日本語"}
+{"fn":"sanitizeForwardableUserAgent","args":["ılık ırmak"],"ok":"ılık ırmak"}
+{"fn":"sanitizeForwardableUserAgent","args":["👨‍👩‍👧 family"],"ok":"👨‍👩‍👧 family"}
+{"fn":"sanitizeForwardableUserAgent","args":["a b"],"ok":"a b"}
+{"fn":"sanitizeForwardableUserAgent","args":["a😀b"],"ok":"a😀b"}
+{"fn":"sanitizeForwardableUserAgent","args":["a²b x½ y①"],"ok":"a²b x½ y①"}
+{"fn":"sanitizeForwardableUserAgent","args":["aⅠb Ⅻ"],"ok":"aⅠb Ⅻ"}
+{"fn":"sanitizeForwardableUserAgent","args":["a𐐀b 𝐀bc"],"ok":"a𐐀b 𝐀bc"}
+{"fn":"sanitizeForwardableUserAgent","args":["कि ٣٤"],"ok":"कि ٣٤"}
+{"fn":"resolveTrustedProxyHops","args":["1"],"ok":1}
+{"fn":"resolveTrustedProxyHops","args":["42"],"ok":42}
+{"fn":"resolveTrustedProxyHops","args":["0"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":[" 2 "],"ok":2}
+{"fn":"resolveTrustedProxyHops","args":["-1"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["007"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":["1e3"],"ok":0}
+{"fn":"resolveTrustedProxyHops","args":[2],"error":"value.trim is not a function"}
+{"fn":"resolveTrustedProxyHops","args":["１２"],"ok":0}

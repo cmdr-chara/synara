@@ -1,0 +1,17 @@
+{
+  "unit": "apps/api/src/clientIp.ts",
+  "files": 1,
+  "fingerprint": "815a0ae950779bcd",
+  "coverage": {
+    "lines": 103,
+    "reached": 85,
+    "files": [
+      {
+        "file": "apps/api/src/clientIp.ts",
+        "lines": 103,
+        "reached": 85,
+        "missed": "44, 46-53, 55-56, 58-59, 68-72"
+      }
+    ]
+  }
+}

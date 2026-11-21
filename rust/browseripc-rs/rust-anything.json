@@ -1,0 +1,108 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/desktop/src/browserIpc.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "browseripc-rs",
+  "exports": [
+    {
+      "name": "sendBrowserState",
+      "file": "apps/desktop/src/browserIpc.ts",
+      "line": 30,
+      "params": [
+        {
+          "name": "webContents",
+          "ts_type": "WebContents | null | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "state",
+          "ts_type": "ThreadBrowserState",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "sendBrowserCopyLink",
+      "file": "apps/desktop/src/browserIpc.ts",
+      "line": 39,
+      "params": [
+        {
+          "name": "webContents",
+          "ts_type": "WebContents | null | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "event",
+          "ts_type": "BrowserCopyLinkEvent",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "sendBrowserAnnotationEvent",
+      "file": "apps/desktop/src/browserIpc.ts",
+      "line": 46,
+      "params": [
+        {
+          "name": "webContents",
+          "ts_type": "WebContents | null | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "event",
+          "ts_type": "(| (BrowserAnnotationEventBase & {\n      kind: \"started\";\n      sessionId: string;\n    })\n  | (BrowserAnnotationEventBase & {\n      kind: \"cancelled\";\n      sessionId: string | null;\n      reason: (| \"user\"\n  | \"submitted\"\n  | \"navigation\"\n  | \"detached\"\n  | \"destroyed\"\n  | \"replaced\");\n    })\n  | (BrowserAnnotationEventBase & {\n      kind: \"document-changed\";\n      sessionId: null;\n    })\n  | (BrowserAnnotationEventBase & {\n      kind: \"markers-synced\";\n      sessionId: null;\n      version: number;\n      projectedMarkerIds: readonly string[];\n    })\n  | (BrowserAnnotationEventBase & {\n      kind: \"committed\";\n      sessionId: string;\n      annotation: BrowserAnnotation;\n    }))",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "registerBrowserIpcHandlers",
+      "file": "apps/desktop/src/browserIpc.ts",
+      "line": 54,
+      "params": [
+        {
+          "name": "ipcMain",
+          "ts_type": "IpcMain",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "browserManager",
+          "ts_type": "DesktopBrowserManager",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

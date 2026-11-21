@@ -1,0 +1,23 @@
+{
+  "unit": "apps/desktop/src/browserIpc.ts",
+  "files": 1,
+  "fingerprint": "289bb57ffb580219",
+  "coverage": {
+    "lines": 335,
+    "reached": 309,
+    "files": [
+      {
+        "file": "apps/desktop/src/browserIpc.ts",
+        "lines": 174,
+        "reached": 148,
+        "missed": "59-61, 75, 86, 92, 99-100, 111, 118-119, 125, 165, 171-173, 180-182, 189-191, 197-200"
+      },
+      {
+        "file": "apps/desktop/src/ipcChannels.ts",
+        "lines": 161,
+        "reached": 161,
+        "missed": ""
+      }
+    ]
+  }
+}

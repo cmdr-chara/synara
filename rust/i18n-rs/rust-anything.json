@@ -1,0 +1,36 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/desktop/src/i18n.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "i18n-rs",
+  "exports": [
+    {
+      "name": "t",
+      "file": "apps/desktop/src/i18n.ts",
+      "line": 20,
+      "params": [
+        {
+          "name": "message",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "values",
+          "ts_type": "Record<string, unknown>",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

@@ -1,0 +1,221 @@
+{"fn":"t","args":["ünïcödé",{}],"ok":"ünïcödé"}
+{"fn":"t","args":["line1\nline2",{"a":null}],"ok":"line1\nline2"}
+{"fn":"t","args":["﻿bom",["a",1]],"ok":"﻿bom"}
+{"fn":"t","args":["  padded  ",{"nav":[]}],"ok":"  padded  "}
+{"fn":"t","args":["ΣΊΣΥΦΟΣ",{"10":true,"a":{}}],"ok":"ΣΊΣΥΦΟΣ"}
+{"fn":"t","args":["./x/**/*.jsoné",0],"ok":"./x/**/*.jsoné"}
+{"fn":"t","args":["  padded  ","x"],"ok":"  padded  "}
+{"fn":"t","args":["a:b:c",{"a":"b"}],"ok":"a:b:c"}
+{"fn":"t","args":["straße",true],"ok":"straße"}
+{"fn":"t","args":["hello",{"a":{"b":"c"}}],"ok":"hello"}
+{"fn":"t","args":["straße",{"2":0,"nav":0}],"ok":"straße"}
+{"fn":"t","args":[":",{"title":{},"😀":{"a":{"b":"c"}}}],"ok":":"}
+{"fn":"t","args":[".leading",{"10":null,"nav":{"a":"b"},"a.b":{"a":"b"}}],"ok":".leading"}
+{"fn":"t","args":["İstanbul",{"b":{}}],"ok":"İstanbul"}
+{"fn":"t","args":["ns:key.path",{"a":{"b":"c"}}],"ok":"ns:key.path"}
+{"fn":"t","args":["ünïcödé",["a",1]],"ok":"ünïcödé"}
+{"fn":"t","args":["ΣΊΣΥΦΟΣ",{"$undefined":true}],"ok":"ΣΊΣΥΦΟΣ"}
+{"fn":"t","args":["a",{"$undefined":true}],"ok":"a"}
+{"fn":"t","args":["a😀b😀c"],"ok":"a😀b😀c"}
+{"fn":"t","args":[":",{"home":{"a":{"b":"c"}}}],"ok":":"}
+{"fn":"t","args":["hello world",{}],"ok":"hello world"}
+{"fn":"t","args":[":",{"2":0,"a.b":{"a":{"b":"c"}},"😀":null}],"ok":":"}
+{"fn":"t","args":[":",{"$undefined":true}],"ok":":"}
+{"fn":"t","args":["ΣΊΣΥΦΟΣ",{"a":{"a":"b"}}],"ok":"ΣΊΣΥΦΟΣ"}
+{"fn":"t","args":["key_name-1",{"home":null,"nav":"x"}],"ok":"key_name-1"}
+{"fn":"t","args":["HELLO",{"a":"x","nav":null}],"ok":"HELLO"}
+{"fn":"t","args":["tab\tseparated",{"$undefined":true}],"ok":"tab\tseparated"}
+{"fn":"t","args":["abc",{"$undefined":true}],"ok":"abc"}
+{"fn":"t","args":["Hello World",{}],"ok":"Hello World"}
+{"fn":"t","args":["src/a/b.ts",{"$undefined":true}],"ok":"src/a/b.ts"}
+{"fn":"t","args":["a😀b😀c",{"2":0}],"ok":"a😀b😀c"}
+{"fn":"t","args":["ünïcödé"],"ok":"ünïcödé"}
+{"fn":"t","args":["trailing.İstanbul",{"b":"x"}],"ok":"trailing.İstanbul"}
+{"fn":"t","args":["hello world",{"nav":true,"a":null}],"ok":"hello world"}
+{"fn":"t","args":["trailing.",{}],"ok":"trailing."}
+{"fn":"t","args":["a.b.c",{"$undefined":true}],"ok":"a.b.c"}
+{"fn":"t","args":["a:b:c",{}],"ok":"a:b:c"}
+{"fn":"t","args":["a😀b😀c",{"ünï":null}],"ok":"a😀b😀c"}
+{"fn":"t","args":["ünïcödé",{"10":"x"}],"ok":"ünïcödé"}
+{"fn":"t","args":["a..b",{"b":[]}],"ok":"a..b"}
+{"fn":"t","args":["hello"],"ok":"hello"}
+{"fn":"t","args":["ab",{"$undefined":true}],"ok":"ab"}
+{"fn":"t","args":[".leading",{}],"ok":".leading"}
+{"fn":"t","args":["straße"],"ok":"straße"}
+{"fn":"t","args":["{name} has {count} items",{"10":{},"😀":true}],"ok":"{name} has {count} items"}
+{"fn":"t","args":["a😀b😀cline1\nline2",{"a.b":["a",1]}],"ok":"a😀b😀cline1\nline2"}
+{"fn":"t","args":["İstanbul"],"ok":"İstanbul"}
+{"fn":"t","args":["src/a/b.ts日本語のテキスト",{"a":"x","a.b":[]}],"ok":"src/a/b.ts日本語のテキスト"}
+{"fn":"t","args":["a",{"a":{}}],"ok":"a"}
+{"fn":"t","args":["Hello World"],"ok":"Hello World"}
+{"fn":"t","args":["﻿bom",{"😀":0,"nav":"x","ünï":[]}],"ok":"﻿bom"}
+{"fn":"t","args":["hello world",{"$undefined":true}],"ok":"hello world"}
+{"fn":"t","args":["日本語のテキスト",{}],"ok":"日本語のテキスト"}
+{"fn":"t","args":["./x/**/*.json",{}],"ok":"./x/**/*.json"}
+{"fn":"t","args":["hello:",{"$undefined":true}],"ok":"hello:"}
+{"fn":"t","args":["line1\nline2﻿bom",{"a":{"a":"b"},"ünï":0,"a.b":[]}],"ok":"line1\nline2﻿bom"}
+{"fn":"t","args":["日本語のテキストa.b.c",{"10":true,"home":{},"ünï":{}}],"ok":"日本語のテキストa.b.c"}
+{"fn":"t","args":["ab",{"😀":[]}],"ok":"ab"}
+{"fn":"t","args":["  padded  ",{"a.b":0,"nav":"x","a":true}],"ok":"  padded  "}
+{"fn":"t","args":["HELLOa😀b😀c",{}],"ok":"HELLOa😀b😀c"}
+{"fn":"t","args":["emoji 👍🏽 mix",{"ünï":["a",1],"title":"x","home":null}],"ok":"emoji 👍🏽 mix"}
+{"fn":"t","args":["ns:key.path",{}],"ok":"ns:key.path"}
+{"fn":"t","args":["a..b",{"$undefined":true}],"ok":"a..b"}
+{"fn":"t","args":["hello",{"2":0,"b":{"a":"b"},"title":true}],"ok":"hello"}
+{"fn":"t","args":["aHELLO",{"2":null}],"ok":"aHELLO"}
+{"fn":"t","args":["tab\tseparated﻿bom",{"nav":["a",1]}],"ok":"tab\tseparated﻿bom"}
+{"fn":"t","args":["HELLO",null],"ok":"HELLO"}
+{"fn":"t","args":["﻿bom","x"],"ok":"﻿bom"}
+{"fn":"t","args":["İstanbul",{"a":{"b":"c"}}],"ok":"İstanbul"}
+{"fn":"t","args":["emoji 👍🏽 mix",null],"ok":"emoji 👍🏽 mix"}
+{"fn":"t","args":["  padded  ΣΊΣΥΦΟΣ",{"a.b":["a",1],"😀":{},"nav":["a",1]}],"ok":"  padded  ΣΊΣΥΦΟΣ"}
+{"fn":"t","args":["straße",{"$undefined":true}],"ok":"straße"}
+{"fn":"t","args":["hello",0],"ok":"hello"}
+{"fn":"t","args":["{name} has {count} items",{"title":{"a":"b"},"ünï":["a",1]}],"ok":"{name} has {count} items"}
+{"fn":"t","args":["tab\tseparated",{"nav":true}],"ok":"tab\tseparated"}
+{"fn":"t","args":[""],"ok":""}
+{"fn":"t","args":["a:b:c",{"home":{},"😀":true}],"ok":"a:b:c"}
+{"fn":"t","args":["{name} has {count} items",{"home":[],"b":true,"a":{"a":"b"}}],"ok":"{name} has {count} items"}
+{"fn":"t","args":["",{"a":"b"}],"ok":""}
+{"fn":"t","args":["a😀b😀c",{"home":{"a":{"b":"c"}}}],"ok":"a😀b😀c"}
+{"fn":"t","args":["helloabc",{"2":"x","10":[],"title":{"a":"b"}}],"ok":"helloabc"}
+{"fn":"t","args":["﻿bomtrailing.",{}],"ok":"﻿bomtrailing."}
+{"fn":"t","args":["emoji 👍🏽 mix",{}],"ok":"emoji 👍🏽 mix"}
+{"fn":"t","args":["key_name-1"],"ok":"key_name-1"}
+{"fn":"t","args":["a",{"2":null,"10":null}],"ok":"a"}
+{"fn":"t","args":["./x/**/*.jsonHello World",{"a.b":[],"nav":{"a":"b"},"b":{"a":"b"}}],"ok":"./x/**/*.jsonHello World"}
+{"fn":"t","args":["😀",{"a.b":{},"ünï":null}],"ok":"😀"}
+{"fn":"t","args":["ΣΊΣΥΦΟΣ",{"nav":[]}],"ok":"ΣΊΣΥΦΟΣ"}
+{"fn":"t","args":["{name} has {count} items",{"2":0,"😀":{"a":{"b":"c"}}}],"ok":"{name} has {count} items"}
+{"fn":"t","args":["key_name-1",{"a":null,"😀":[],"b":{}}],"ok":"key_name-1"}
+{"fn":"t","args":["abhello world",{}],"ok":"abhello world"}
+{"fn":"t","args":["tab\tseparated"],"ok":"tab\tseparated"}
+{"fn":"t","args":["key_name-1a..b",{"10":{"a":{"b":"c"}}}],"ok":"key_name-1a..b"}
+{"fn":"t","args":["﻿bom",{"ünï":{"a":"b"}}],"ok":"﻿bom"}
+{"fn":"t","args":["ΣΊΣΥΦΟΣ",{}],"ok":"ΣΊΣΥΦΟΣ"}
+{"fn":"t","args":["a..ba..b",{"ünï":"x","a":"x","home":{"a":"b"}}],"ok":"a..ba..b"}
+{"fn":"t","args":["日本語のテキスト",{"home":"x"}],"ok":"日本語のテキスト"}
+{"fn":"t","args":["ΣΊΣΥΦΟΣ",{"10":null,"a":true}],"ok":"ΣΊΣΥΦΟΣ"}
+{"fn":"t","args":["src/a/b.ts",[]],"ok":"src/a/b.ts"}
+{"fn":"t","args":["﻿bom:"],"ok":"﻿bom:"}
+{"fn":"t","args":["straße",{"2":"x"}],"ok":"straße"}
+{"fn":"t","args":["İstanbulabc",{"home":null,"nav":"x"}],"ok":"İstanbulabc"}
+{"fn":"t","args":["HELLO","x"],"ok":"HELLO"}
+{"fn":"t","args":["日本語のテキストstraße","x"],"ok":"日本語のテキストstraße"}
+{"fn":"t","args":["ΣΊΣΥΦΟΣtab\tseparated",{"a.b":[]}],"ok":"ΣΊΣΥΦΟΣtab\tseparated"}
+{"fn":"t","args":["a:b:c",{"$undefined":true}],"ok":"a:b:c"}
+{"fn":"t","args":["a.b.c",{"2":"x","😀":[],"home":{"a":"b"}}],"ok":"a.b.c"}
+{"fn":"t","args":["line1\nline2",{"title":"x","a.b":true}],"ok":"line1\nline2"}
+{"fn":"t","args":["﻿bomhello",0],"ok":"﻿bomhello"}
+{"fn":"t","args":["./x/**/*.json"],"ok":"./x/**/*.json"}
+{"fn":"t","args":["line1\nline2"],"ok":"line1\nline2"}
+{"fn":"t","args":["hello",{"😀":[]}],"ok":"hello"}
+{"fn":"t","args":["é",0],"ok":"é"}
+{"fn":"t","args":["a..b",["a",1]],"ok":"a..b"}
+{"fn":"t","args":["hellosrc/a/b.ts",{"b":{}}],"ok":"hellosrc/a/b.ts"}
+{"fn":"t","args":["a😀b😀c",{"2":{"a":"b"},"10":{"a":{"b":"c"}},"home":[]}],"ok":"a😀b😀c"}
+{"fn":"t","args":["",{"$undefined":true}],"ok":""}
+{"fn":"t","args":["src/a/b.ts",{"10":{"a":{"b":"c"}},"b":{}}],"ok":"src/a/b.ts"}
+{"fn":"t","args":["a:b:c"],"ok":"a:b:c"}
+{"fn":"t","args":["{name} has {count} items",{"a":"x","b":0,"nav":{"a":"b"}}],"ok":"{name} has {count} items"}
+{"fn":"t","args":["﻿bom",{"10":"x","a.b":{"a":"b"},"nav":["a",1]}],"ok":"﻿bom"}
+{"fn":"t","args":["ab"],"ok":"ab"}
+{"fn":"t","args":["😀",{"title":{"a":{"b":"c"}}}],"ok":"😀"}
+{"fn":"t","args":["ünïcödé",{"title":[]}],"ok":"ünïcödé"}
+{"fn":"t","args":["{name} has {count} itemsHello World",{"ünï":{"a":"b"}}],"ok":"{name} has {count} itemsHello World"}
+{"fn":"t","args":["./x/**/*.jsoné",{"home":null}],"ok":"./x/**/*.jsoné"}
+{"fn":"t","args":["abtab\tseparated",{"2":null,"title":true}],"ok":"abtab\tseparated"}
+{"fn":"t","args":["  padded  ",{}],"ok":"  padded  "}
+{"fn":"t","args":["hello world",{"a.b":[],"ünï":null}],"ok":"hello world"}
+{"fn":"t","args":["HELLO",{"2":{"a":"b"}}],"ok":"HELLO"}
+{"fn":"t","args":["hello world",{"b":["a",1]}],"ok":"hello world"}
+{"fn":"t","args":["hello world",{"10":null,"😀":{}}],"ok":"hello world"}
+{"fn":"t","args":["",{}],"ok":""}
+{"fn":"t","args":["😀",{"2":true,"ünï":"x","home":0}],"ok":"😀"}
+{"fn":"t","args":["::",{"ünï":null,"title":{"a":{"b":"c"}}}],"ok":"::"}
+{"fn":"t","args":["src/a/b.ts",{"b":{"a":{"b":"c"}}}],"ok":"src/a/b.ts"}
+{"fn":"t","args":["éa",{"$undefined":true}],"ok":"éa"}
+{"fn":"t","args":["  padded  😀"],"ok":"  padded  😀"}
+{"fn":"t","args":["a.b.c:",{"title":{"a":"b"},"😀":["a",1]}],"ok":"a.b.c:"}
+{"fn":"t","args":["a..b",{"ünï":null}],"ok":"a..b"}
+{"fn":"t","args":["abc",{"10":{"a":{"b":"c"}},"title":["a",1],"home":"x"}],"ok":"abc"}
+{"fn":"t","args":["é",{"b":0,"ünï":{"a":{"b":"c"}}}],"ok":"é"}
+{"fn":"t","args":["  padded  ",{"a":"b"}],"ok":"  padded  "}
+{"fn":"t","args":["﻿bom",{}],"ok":"﻿bom"}
+{"fn":"t","args":["straße",{"a":{"b":"c"}}],"ok":"straße"}
+{"fn":"t","args":["abc",{}],"ok":"abc"}
+{"fn":"t","args":["key_name-1:",{"2":{"a":{"b":"c"}},"ünï":0}],"ok":"key_name-1:"}
+{"fn":"t","args":[":",{"2":{},"10":true}],"ok":":"}
+{"fn":"t","args":["日本語のテキスト",{"$undefined":true}],"ok":"日本語のテキスト"}
+{"fn":"t","args":["hello world",{"😀":{"a":{"b":"c"}}}],"ok":"hello world"}
+{"fn":"t","args":["key_name-1",{"b":true,"nav":["a",1]}],"ok":"key_name-1"}
+{"fn":"t","args":["ab",{"a.b":["a",1],"title":{"a":{"b":"c"}}}],"ok":"ab"}
+{"fn":"t","args":["﻿bom",{"a":"x","title":null}],"ok":"﻿bom"}
+{"fn":"t","args":["é"],"ok":"é"}
+{"fn":"t","args":["{name} has {count} items"],"ok":"{name} has {count} items"}
+{"fn":"t","args":["./x/**/*.json",{"title":{"a":"b"},"home":null,"😀":[]}],"ok":"./x/**/*.json"}
+{"fn":"t","args":["a",{"home":{"a":{"b":"c"}}}],"ok":"a"}
+{"fn":"t","args":["İstanbul",{}],"ok":"İstanbul"}
+{"fn":"t","args":["Hello World",{"10":"x","nav":{"a":"b"},"ünï":{}}],"ok":"Hello World"}
+{"fn":"t","args":["ns:key.path",{"$undefined":true}],"ok":"ns:key.path"}
+{"fn":"t","args":["Hello World",{"home":["a",1]}],"ok":"Hello World"}
+{"fn":"t","args":["a.b.c",{}],"ok":"a.b.c"}
+{"fn":"t","args":["straße",{"a":"b"}],"ok":"straße"}
+{"fn":"t","args":[".leading",true],"ok":".leading"}
+{"fn":"t","args":["ns:key.path",{"home":0}],"ok":"ns:key.path"}
+{"fn":"t","args":["trailing.",{"$undefined":true}],"ok":"trailing."}
+{"fn":"t","args":["a",{}],"ok":"a"}
+{"fn":"t","args":["./x/**/*.json",{"home":0,"😀":null}],"ok":"./x/**/*.json"}
+{"fn":"t","args":["a.b.c",{"a":[]}],"ok":"a.b.c"}
+{"fn":"t","args":["trailing.",{"a.b":["a",1],"😀":null,"ünï":{}}],"ok":"trailing."}
+{"fn":"t","args":["a.b.c",{"a":{"a":"b"}}],"ok":"a.b.c"}
+{"fn":"t","args":["{name} has {count} items",{"title":["a",1]}],"ok":"{name} has {count} items"}
+{"fn":"t","args":["hello",{"2":"x","title":null,"home":{}}],"ok":"hello"}
+{"fn":"t","args":["src/a/b.ts",{"a.b":{"a":"b"},"b":{"a":"b"}}],"ok":"src/a/b.ts"}
+{"fn":"t","args":["ab",{"a":{"b":"c"}}],"ok":"ab"}
+{"fn":"t","args":["ünïcödé",{"$undefined":true}],"ok":"ünïcödé"}
+{"fn":"t","args":["a..b"],"ok":"a..b"}
+{"fn":"t","args":["İstanbul😀",{"b":null,"a.b":"x"}],"ok":"İstanbul😀"}
+{"fn":"t","args":["ab",{}],"ok":"ab"}
+{"fn":"t","args":["tab\tseparatedstraße",{"😀":{"a":"b"}}],"ok":"tab\tseparatedstraße"}
+{"fn":"t","args":["./x/**/*.json",{"10":null,"b":["a",1]}],"ok":"./x/**/*.json"}
+{"fn":"t","args":["a..b./x/**/*.json",{"title":[]}],"ok":"a..b./x/**/*.json"}
+{"fn":"t","args":["emoji 👍🏽 mix",{"$undefined":true}],"ok":"emoji 👍🏽 mix"}
+{"fn":"t","args":["a"],"ok":"a"}
+{"fn":"t","args":["key_name-1",{"a":{"a":{"b":"c"}},"b":0}],"ok":"key_name-1"}
+{"fn":"t","args":["  padded  ",{"b":{"a":"b"}}],"ok":"  padded  "}
+{"fn":"t","args":["ünïcödéa",{"2":{"a":{"b":"c"}},"home":[]}],"ok":"ünïcödéa"}
+{"fn":"t","args":["  padded  ",{"2":[],"b":[],"a":{"a":{"b":"c"}}}],"ok":"  padded  "}
+{"fn":"t","args":["trailing.",{"title":null}],"ok":"trailing."}
+{"fn":"t","args":["./x/**/*.json",{"10":{"a":{"b":"c"}}}],"ok":"./x/**/*.json"}
+{"fn":"t","args":["HELLO",{}],"ok":"HELLO"}
+{"fn":"t","args":["ns:key.path",{"nav":{"a":{"b":"c"}}}],"ok":"ns:key.path"}
+{"fn":"t","args":["İstanbul",{"$undefined":true}],"ok":"İstanbul"}
+{"fn":"t","args":["  padded  ",0],"ok":"  padded  "}
+{"fn":"t","args":["x","x"],"ok":"x"}
+{"fn":"t","args":["tab\tseparated",{"10":{}}],"ok":"tab\tseparated"}
+{"fn":"t","args":["emoji 👍🏽 mixtab\tseparated",{"b":0,"ünï":{"a":"b"},"😀":{"a":{"b":"c"}}}],"ok":"emoji 👍🏽 mixtab\tseparated"}
+{"fn":"t","args":["a:b:cé",{}],"ok":"a:b:cé"}
+{"fn":"t","args":[".leading",{"a":null,"a.b":{"a":{"b":"c"}},"title":"x"}],"ok":".leading"}
+{"fn":"t","args":["  padded  ",["a",1]],"ok":"  padded  "}
+{"fn":"t","args":["héllo wörld",{}],"ok":"héllo wörld"}
+{"fn":"t","args":["👍🏽 thumbs",{}],"ok":"👍🏽 thumbs"}
+{"fn":"t","args":["日本語",{}],"ok":"日本語"}
+{"fn":"t","args":["é",{}],"ok":"é"}
+{"fn":"t","args":["straße",{}],"ok":"straße"}
+{"fn":"t","args":["ılık ırmak",{}],"ok":"ılık ırmak"}
+{"fn":"t","args":["👨‍👩‍👧 family",{}],"ok":"👨‍👩‍👧 family"}
+{"fn":"t","args":["a b",{}],"ok":"a b"}
+{"fn":"t","args":["a😀b",{}],"ok":"a😀b"}
+{"fn":"t","args":["a²b x½ y①",{}],"ok":"a²b x½ y①"}
+{"fn":"t","args":["aⅠb Ⅻ",{}],"ok":"aⅠb Ⅻ"}
+{"fn":"t","args":["a𐐀b 𝐀bc",{}],"ok":"a𐐀b 𝐀bc"}
+{"fn":"t","args":["कि ٣٤",{}],"ok":"कि ٣٤"}
+{"fn":"t","args":["desktop:quit",{"app":{"$undefined":true}}],"ok":"Quit ?"}
+{"fn":"t","args":["desktop:quit","ab"],"ok":"Quit {{app}}?"}
+{"fn":"t","args":["desktop:quit",[1,2]],"ok":"Quit {{app}}?"}
+{"fn":"t","args":["desktop:quit",5],"ok":"Quit {{app}}?"}
+{"fn":"t","args":["desktop:quit",null],"ok":"Quit {{app}}?"}
+{"fn":"t","args":["desktop:quit",{"app":{"$num":"NaN"}}],"ok":"Quit NaN?"}
+{"fn":"t","args":["desktop:quit",{"app":{"$num":"-0"}}],"ok":"Quit 0?"}
+{"fn":"t","args":["desktop:diagnosticID",{"id":4.5,"status":{"$undefined":true}}],"ok":"Diagnostic ID: 4.5 ()"}

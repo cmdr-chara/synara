@@ -1,0 +1,168 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/groupThreadState.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "groupthreadstate-rs",
+  "exports": [
+    {
+      "name": "groupThreadStateLabel",
+      "file": "packages/shared/src/groupThreadState.ts",
+      "line": 40,
+      "params": [
+        {
+          "name": "state",
+          "ts_type": "((\"waiting\" | \"working\" | \"review\" | \"idle\" | \"resolved\") | \"landing\")",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "canSessionAnswerPendingRequests",
+      "file": "packages/shared/src/groupThreadState.ts",
+      "line": 88,
+      "params": [
+        {
+          "name": "session",
+          "ts_type": "GroupThreadSessionView | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isLatestTurnSettled",
+      "file": "packages/shared/src/groupThreadState.ts",
+      "line": 104,
+      "params": [
+        {
+          "name": "latestTurn",
+          "ts_type": "GroupThreadLatestTurnView | null | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "session",
+          "ts_type": "GroupThreadSessionView | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "hasLiveLatestTurn",
+      "file": "packages/shared/src/groupThreadState.ts",
+      "line": 118,
+      "params": [
+        {
+          "name": "latestTurn",
+          "ts_type": "GroupThreadLatestTurnView | null | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "session",
+          "ts_type": "GroupThreadSessionView | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isThreadActivelyWorking",
+      "file": "packages/shared/src/groupThreadState.ts",
+      "line": 133,
+      "params": [
+        {
+          "name": "thread",
+          "ts_type": "{\n  readonly hasLiveTailWork?: boolean | undefined;\n  readonly session?: GroupThreadSessionView | null | undefined;\n  readonly latestTurn?: GroupThreadLatestTurnView | null | undefined;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "groupThreadNeedsAttention",
+      "file": "packages/shared/src/groupThreadState.ts",
+      "line": 163,
+      "params": [
+        {
+          "name": "thread",
+          "ts_type": "GroupThreadStateThread",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveGroupCoordinatorStatus",
+      "file": "packages/shared/src/groupThreadState.ts",
+      "line": 197,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly configured: boolean;\n  readonly goalStatus?: string | null | undefined;\n  readonly thread?: GroupThreadStateThread | null | undefined;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(\"unconfigured\" | \"idle\" | \"running\" | \"paused\" | \"stopped\")",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveGroupThreadState",
+      "file": "packages/shared/src/groupThreadState.ts",
+      "line": 242,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly thread: GroupThreadStateThread;\n  readonly task: {\n    readonly status: string;\n    readonly archivedAt?: string | null | undefined;\n  } | null;\n  readonly indexArchived: boolean;\n  readonly pullRequest: { readonly state: string; readonly isDraft?: boolean | undefined } | null;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(\"waiting\" | \"working\" | \"review\" | \"idle\" | \"resolved\")",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

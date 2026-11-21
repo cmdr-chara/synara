@@ -1,0 +1,66 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/browserAutomationErrors.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "browserautomationerrors-rs",
+  "exports": [
+    {
+      "name": "browserInputErrorCode",
+      "file": "packages/shared/src/browserAutomationErrors.ts",
+      "line": 12,
+      "params": [
+        {
+          "name": "argumentsValue",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "makeBrowserAutomationError",
+      "file": "packages/shared/src/browserAutomationErrors.ts",
+      "line": 34,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "(| BrowserAutomationErrorCorrelation & {\n  readonly code: keyof typeof BrowserFixedAutomationErrorInvariants;\n}\n  | Exclude<\n  (| BrowserAutomationErrorCorrelation & {\n  readonly code: BrowserFixedAutomationErrorCode;\n}\n  | Exclude<\n  BrowserAutomationErrorInput,\n  { readonly code: BrowserFixedAutomationErrorCode }\n>),\n  { readonly code: keyof typeof BrowserFixedAutomationErrorInvariants }\n>)",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof BrowserAutomationError.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "makeBrowserMcpToolErrorEnvelope",
+      "file": "packages/shared/src/browserAutomationErrors.ts",
+      "line": 57,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "(| BrowserAutomationErrorCorrelation & {\n  readonly code: keyof typeof BrowserFixedAutomationErrorInvariants;\n}\n  | Exclude<\n  (| BrowserAutomationErrorCorrelation & {\n  readonly code: BrowserFixedAutomationErrorCode;\n}\n  | Exclude<\n  BrowserAutomationErrorInput,\n  { readonly code: BrowserFixedAutomationErrorCode }\n>),\n  { readonly code: keyof typeof BrowserFixedAutomationErrorInvariants }\n>)",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof BrowserMcpToolErrorEnvelope.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

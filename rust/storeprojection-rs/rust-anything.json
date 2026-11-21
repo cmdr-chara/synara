@@ -1,0 +1,397 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/storeProjection.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "storeprojection-rs",
+  "exports": [
+    {
+      "name": "upsertProject",
+      "file": "apps/web/src/storeProjection.ts",
+      "line": 249,
+      "params": [
+        {
+          "name": "state",
+          "ts_type": "AppState",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "incoming",
+          "ts_type": "(Pick<\n  typeof typeof OrchestrationReadModel.Type.Type[\"projects\"][number],\n  | \"id\"\n  | \"kind\"\n  | \"title\"\n  | \"workspaceRoot\"\n  | \"defaultModelSelection\"\n  | \"scripts\"\n  | \"isPinned\"\n  | \"spaceId\"\n  | \"createdAt\"\n  | \"updatedAt\"\n> & { readonly additionalFolders?: ReadonlyArray<string> | undefined })",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "matchPolicy",
+          "ts_type": "(\"id-only\" | \"id-or-cwd\")",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "AppState",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "upsertSpace",
+      "file": "apps/web/src/storeProjection.ts",
+      "line": 284,
+      "params": [
+        {
+          "name": "state",
+          "ts_type": "AppState",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "incoming",
+          "ts_type": "typeof typeof typeof typeof OrchestrationReadModel.Type.Type.Type.Type[\"spaces\"][number] | typeof typeof typeof typeof OrchestrationSpaceShell.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "AppState",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "removeSpace",
+      "file": "apps/web/src/storeProjection.ts",
+      "line": 302,
+      "params": [
+        {
+          "name": "state",
+          "ts_type": "AppState",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "spaceId",
+          "ts_type": "Space[\"id\"]",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "assignmentUpdatedAt",
+          "ts_type": "string",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "AppState",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "applySpaceOrder",
+      "file": "apps/web/src/storeProjection.ts",
+      "line": 329,
+      "params": [
+        {
+          "name": "state",
+          "ts_type": "AppState",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "orderedSpaceIds",
+          "ts_type": "ReadonlyArray<Space[\"id\"]>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "updatedAt",
+          "ts_type": "string",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "AppState",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "markThreadDetailSyncFailedInClientState",
+      "file": "apps/web/src/storeProjection.ts",
+      "line": 721,
+      "params": [
+        {
+          "name": "state",
+          "ts_type": "AppState",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "threadId",
+          "ts_type": "typeof typeof typeof typeof ThreadId.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "AppState",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "clearThreadDetailSyncFailureInClientState",
+      "file": "apps/web/src/storeProjection.ts",
+      "line": 733,
+      "params": [
+        {
+          "name": "state",
+          "ts_type": "AppState",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "threadId",
+          "ts_type": "typeof typeof typeof typeof ThreadId.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "AppState",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "evictThreadDetailFromClientState",
+      "file": "apps/web/src/storeProjection.ts",
+      "line": 966,
+      "params": [
+        {
+          "name": "state",
+          "ts_type": "AppState",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "threadId",
+          "ts_type": "typeof typeof typeof typeof ThreadId.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "AppState",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "removeDeletedThreadFromClientState",
+      "file": "apps/web/src/storeProjection.ts",
+      "line": 1118,
+      "params": [
+        {
+          "name": "state",
+          "ts_type": "AppState",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "threadId",
+          "ts_type": "typeof typeof typeof typeof ThreadId.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "deletedAtSequence",
+          "ts_type": "number",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "AppState",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "removeDeletedProjectFromClientState",
+      "file": "apps/web/src/storeProjection.ts",
+      "line": 1177,
+      "params": [
+        {
+          "name": "state",
+          "ts_type": "AppState",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "projectId",
+          "ts_type": "Project[\"id\"]",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "deletedAtSequence",
+          "ts_type": "number",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "AppState",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "syncServerShellSnapshot",
+      "file": "apps/web/src/storeProjection.ts",
+      "line": 1319,
+      "params": [
+        {
+          "name": "state",
+          "ts_type": "AppState",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "snapshot",
+          "ts_type": "typeof typeof typeof typeof OrchestrationShellSnapshot.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "AppState",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "syncServerThreadDetail",
+      "file": "apps/web/src/storeProjection.ts",
+      "line": 1437,
+      "params": [
+        {
+          "name": "state",
+          "ts_type": "AppState",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "thread",
+          "ts_type": "typeof typeof typeof OrchestrationReadModel.Type.Type.Type[\"threads\"][number]",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "AppState",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "syncServerThreadDetailHotPath",
+      "file": "apps/web/src/storeProjection.ts",
+      "line": 1447,
+      "params": [
+        {
+          "name": "state",
+          "ts_type": "AppState",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "thread",
+          "ts_type": "typeof typeof typeof OrchestrationReadModel.Type.Type.Type[\"threads\"][number]",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "snapshotSequence",
+          "ts_type": "number",
+          "optional": true,
+          "rest": false
+        },
+        {
+          "name": "historyRevisionSequence",
+          "ts_type": "number",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "AppState",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "applyShellEvent",
+      "file": "apps/web/src/storeProjection.ts",
+      "line": 1484,
+      "params": [
+        {
+          "name": "state",
+          "ts_type": "AppState",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "event",
+          "ts_type": "typeof typeof typeof typeof OrchestrationShellStreamEvent.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "AppState",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "syncServerReadModel",
+      "file": "apps/web/src/storeProjection.ts",
+      "line": 1520,
+      "params": [
+        {
+          "name": "state",
+          "ts_type": "AppState",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "readModel",
+          "ts_type": "typeof typeof typeof typeof OrchestrationReadModel.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "AppState",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "applyThreadUpdate",
+      "file": "apps/web/src/storeProjection.ts",
+      "line": 1294,
+      "reason": "takes or returns a function"
+    }
+  ]
+}

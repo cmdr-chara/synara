@@ -1,0 +1,114 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/desktop/src/macIconCacheRefresh.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "maciconcacherefresh-rs",
+  "exports": [
+    {
+      "name": "resolveLaunchVersionRecordPath",
+      "file": "apps/desktop/src/macIconCacheRefresh.ts",
+      "line": 14,
+      "params": [
+        {
+          "name": "userDataPath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "parseLastLaunchVersion",
+      "file": "apps/desktop/src/macIconCacheRefresh.ts",
+      "line": 20,
+      "params": [
+        {
+          "name": "rawContents",
+          "ts_type": "string | null",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "serializeLaunchVersionRecord",
+      "file": "apps/desktop/src/macIconCacheRefresh.ts",
+      "line": 36,
+      "params": [
+        {
+          "name": "version",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "shouldRefreshIconCache",
+      "file": "apps/desktop/src/macIconCacheRefresh.ts",
+      "line": 43,
+      "params": [
+        {
+          "name": "previousVersion",
+          "ts_type": "string | null",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "currentVersion",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveMacAppBundlePath",
+      "file": "apps/desktop/src/macIconCacheRefresh.ts",
+      "line": 52,
+      "params": [
+        {
+          "name": "execPath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "platform",
+          "ts_type": "NodeJS.Platform",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

@@ -1,0 +1,17 @@
+{
+  "unit": "apps/desktop/src/macIconCacheRefresh.ts",
+  "files": 1,
+  "fingerprint": "39c8f68cb5330ad1",
+  "coverage": {
+    "lines": 53,
+    "reached": 47,
+    "files": [
+      {
+        "file": "apps/desktop/src/macIconCacheRefresh.ts",
+        "lines": 53,
+        "reached": 47,
+        "missed": "22-23, 27-29, 59"
+      }
+    ]
+  }
+}

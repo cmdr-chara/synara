@@ -1,0 +1,54 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/memoryDiagnostics.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "memorydiagnostics-rs",
+  "exports": [
+    {
+      "name": "readServerMemoryDiagnosticSnapshot",
+      "file": "apps/server/src/memoryDiagnostics.ts",
+      "line": 45,
+      "params": [],
+      "returns": "ServerMemoryDiagnosticSnapshot",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "shouldWarnServerMemory",
+      "file": "apps/server/src/memoryDiagnostics.ts",
+      "line": 74,
+      "params": [
+        {
+          "name": "snapshot",
+          "ts_type": "ServerMemoryDiagnosticSnapshot",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "warningHeapUsedRatio",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "startServerMemoryDiagnostics",
+      "file": "apps/server/src/memoryDiagnostics.ts",
+      "line": 89,
+      "reason": "takes or returns a function"
+    }
+  ]
+}

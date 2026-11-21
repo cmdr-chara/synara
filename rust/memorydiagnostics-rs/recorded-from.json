@@ -1,0 +1,17 @@
+{
+  "unit": "apps/server/src/memoryDiagnostics.ts",
+  "files": 1,
+  "fingerprint": "2a2eeb8e6958e242",
+  "coverage": {
+    "lines": 103,
+    "reached": 59,
+    "files": [
+      {
+        "file": "apps/server/src/memoryDiagnostics.ts",
+        "lines": 103,
+        "reached": 59,
+        "missed": "60-72, 81-86, 90-97, 99-101, 103-111, 113-117"
+      }
+    ]
+  }
+}

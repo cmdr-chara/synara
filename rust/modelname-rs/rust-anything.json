@@ -1,0 +1,48 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/modelName.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "modelname-rs",
+  "exports": [
+    {
+      "name": "humanizeModelSlug",
+      "file": "packages/shared/src/modelName.ts",
+      "line": 82,
+      "params": [
+        {
+          "name": "slug",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "normalizeModelDisplayName",
+      "file": "packages/shared/src/modelName.ts",
+      "line": 98,
+      "params": [
+        {
+          "name": "name",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

@@ -1,0 +1,17 @@
+{
+  "unit": "packages/shared/src/modelName.ts",
+  "files": 1,
+  "fingerprint": "eafad1b91f5214f7",
+  "coverage": {
+    "lines": 112,
+    "reached": 112,
+    "files": [
+      {
+        "file": "packages/shared/src/modelName.ts",
+        "lines": 112,
+        "reached": 112,
+        "missed": ""
+      }
+    ]
+  }
+}

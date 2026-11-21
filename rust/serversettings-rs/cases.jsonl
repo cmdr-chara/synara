@@ -1,0 +1,92 @@
+{"fn":"applyServerSettingsPatch","args":[{},0],"ok":0}
+{"fn":"applyServerSettingsPatch","args":[[],true],"ok":true}
+{"fn":"applyServerSettingsPatch","args":[{"a":"b"},true],"ok":true}
+{"fn":"applyServerSettingsPatch","args":[["a",1],{"a":"b"}],"ok":{"a":"b"}}
+{"fn":"applyServerSettingsPatch","args":[0,["a",1]],"ok":["a",1]}
+{"fn":"applyServerSettingsPatch","args":[{"a":"b"},0],"ok":0}
+{"fn":"applyServerSettingsPatch","args":[true,{"a":{"b":"c"}}],"ok":{"a":{"b":"c"}}}
+{"fn":"applyServerSettingsPatch","args":["x",0],"ok":0}
+{"fn":"applyServerSettingsPatch","args":[{"a":{"b":"c"}},{"a":"b"}],"ok":{"a":"b"}}
+{"fn":"applyServerSettingsPatch","args":[["a",1],{"a":{"b":"c"}}],"ok":{"a":{"b":"c"}}}
+{"fn":"applyServerSettingsPatch","args":[["a",1],{}],"ok":{}}
+{"fn":"applyServerSettingsPatch","args":["x",{"a":{"b":"c"}}],"ok":{"a":{"b":"c"}}}
+{"fn":"applyServerSettingsPatch","args":[{"a":{"b":"c"}},null],"error":"Cannot read properties of null (reading 'textGenerationModelSelection')"}
+{"fn":"applyServerSettingsPatch","args":[0,true],"ok":true}
+{"fn":"applyServerSettingsPatch","args":[true,0],"ok":0}
+{"fn":"applyServerSettingsPatch","args":[null,[]],"ok":[]}
+{"fn":"applyServerSettingsPatch","args":[true,{"a":"b"}],"ok":{"a":"b"}}
+{"fn":"applyServerSettingsPatch","args":[{"a":"b"},{}],"ok":{"a":"b"}}
+{"fn":"applyServerSettingsPatch","args":["x",true],"ok":true}
+{"fn":"applyServerSettingsPatch","args":["x",null],"error":"Cannot read properties of null (reading 'textGenerationModelSelection')"}
+{"fn":"applyServerSettingsPatch","args":[0,"x"],"ok":"x"}
+{"fn":"applyServerSettingsPatch","args":["x",[]],"ok":[]}
+{"fn":"applyServerSettingsPatch","args":[[],{"a":"b"}],"ok":{"a":"b"}}
+{"fn":"applyServerSettingsPatch","args":[true,true],"ok":true}
+{"fn":"applyServerSettingsPatch","args":[{},["a",1]],"ok":["a",1]}
+{"fn":"applyServerSettingsPatch","args":[null,["a",1]],"ok":["a",1]}
+{"fn":"applyServerSettingsPatch","args":[{"a":{"b":"c"}},[]],"ok":[]}
+{"fn":"applyServerSettingsPatch","args":[true,null],"error":"Cannot read properties of null (reading 'textGenerationModelSelection')"}
+{"fn":"applyServerSettingsPatch","args":[true,"x"],"ok":"x"}
+{"fn":"applyServerSettingsPatch","args":[["a",1],null],"error":"Cannot read properties of null (reading 'textGenerationModelSelection')"}
+{"fn":"applyServerSettingsPatch","args":[{},null],"error":"Cannot read properties of null (reading 'textGenerationModelSelection')"}
+{"fn":"applyServerSettingsPatch","args":[{"a":"b"},{"a":"b"}],"ok":{"a":"b"}}
+{"fn":"applyServerSettingsPatch","args":[{"a":{"b":"c"}},"x"],"ok":"x"}
+{"fn":"applyServerSettingsPatch","args":[{"a":{"b":"c"}},{"a":{"b":"c"}}],"ok":{"a":{"b":"c"}}}
+{"fn":"applyServerSettingsPatch","args":["x","x"],"ok":"x"}
+{"fn":"applyServerSettingsPatch","args":[[],["a",1]],"ok":["a",1]}
+{"fn":"applyServerSettingsPatch","args":[null,null],"error":"Cannot read properties of null (reading 'textGenerationModelSelection')"}
+{"fn":"applyServerSettingsPatch","args":[null,0],"ok":0}
+{"fn":"applyServerSettingsPatch","args":[["a",1],true],"ok":true}
+{"fn":"applyServerSettingsPatch","args":[[],"x"],"ok":"x"}
+{"fn":"applyServerSettingsPatch","args":[["a",1],0],"ok":0}
+{"fn":"applyServerSettingsPatch","args":[true,{}],"ok":{}}
+{"fn":"applyServerSettingsPatch","args":[{},{"a":"b"}],"ok":{"a":"b"}}
+{"fn":"applyServerSettingsPatch","args":[{},"x"],"ok":"x"}
+{"fn":"applyServerSettingsPatch","args":[["a",1],[]],"ok":[]}
+{"fn":"applyServerSettingsPatch","args":[0,{"a":{"b":"c"}}],"ok":{"a":{"b":"c"}}}
+{"fn":"applyServerSettingsPatch","args":[{"a":{"b":"c"}},{}],"ok":{"a":{"b":"c"}}}
+{"fn":"applyServerSettingsPatch","args":[{"a":{"b":"c"}},true],"ok":true}
+{"fn":"applyServerSettingsPatch","args":[0,{}],"ok":{}}
+{"fn":"applyServerSettingsPatch","args":[[],null],"error":"Cannot read properties of null (reading 'textGenerationModelSelection')"}
+{"fn":"applyServerSettingsPatch","args":[{},true],"ok":true}
+{"fn":"applyServerSettingsPatch","args":[{"a":"b"},["a",1]],"ok":["a",1]}
+{"fn":"applyServerSettingsPatch","args":[{},[]],"ok":[]}
+{"fn":"applyServerSettingsPatch","args":[null,"x"],"ok":"x"}
+{"fn":"applyServerSettingsPatch","args":[{"a":"b"},[]],"ok":[]}
+{"fn":"applyServerSettingsPatch","args":[[],0],"ok":0}
+{"fn":"applyServerSettingsPatch","args":[["a",1],"x"],"ok":"x"}
+{"fn":"applyServerSettingsPatch","args":[{"a":"b"},"x"],"ok":"x"}
+{"fn":"applyServerSettingsPatch","args":[0,{"a":"b"}],"ok":{"a":"b"}}
+{"fn":"applyServerSettingsPatch","args":[null,{"a":{"b":"c"}}],"ok":{"a":{"b":"c"}}}
+{"fn":"applyServerSettingsPatch","args":[{},{}],"ok":{}}
+{"fn":"applyServerSettingsPatch","args":[["a",1],["a",1]],"ok":["a",1]}
+{"fn":"applyServerSettingsPatch","args":[{"a":"b"},{"a":{"b":"c"}}],"ok":{"a":{"b":"c"}}}
+{"fn":"applyServerSettingsPatch","args":[[],{}],"ok":{}}
+{"fn":"applyServerSettingsPatch","args":[[],[]],"ok":[]}
+{"fn":"applyServerSettingsPatch","args":[0,null],"error":"Cannot read properties of null (reading 'textGenerationModelSelection')"}
+{"fn":"applyServerSettingsPatch","args":[true,[]],"ok":[]}
+{"fn":"applyServerSettingsPatch","args":[{"a":{"b":"c"}},0],"ok":0}
+{"fn":"applyServerSettingsPatch","args":[{},{"a":{"b":"c"}}],"ok":{"a":{"b":"c"}}}
+{"fn":"applyServerSettingsPatch","args":[{"a":{"b":"c"}},["a",1]],"ok":["a",1]}
+{"fn":"applyServerSettingsPatch","args":[null,{"a":"b"}],"ok":{"a":"b"}}
+{"fn":"applyServerSettingsPatch","args":[true,["a",1]],"ok":["a",1]}
+{"fn":"applyServerSettingsPatch","args":[0,[]],"ok":[]}
+{"fn":"applyServerSettingsPatch","args":["x",["a",1]],"ok":["a",1]}
+{"fn":"applyServerSettingsPatch","args":[0,0],"ok":0}
+{"fn":"applyServerSettingsPatch","args":["x",{}],"ok":{}}
+{"fn":"applyServerSettingsPatch","args":[null,true],"ok":true}
+{"fn":"applyServerSettingsPatch","args":[{"a":"b"},null],"error":"Cannot read properties of null (reading 'textGenerationModelSelection')"}
+{"fn":"applyServerSettingsPatch","args":[[],{"a":{"b":"c"}}],"ok":{"a":{"b":"c"}}}
+{"fn":"applyServerSettingsPatch","args":[null,{}],"ok":{}}
+{"fn":"applyServerSettingsPatch","args":["x",{"a":"b"}],"ok":{"a":"b"}}
+{"fn":"applyServerSettingsPatch","args":["X","x"],"ok":"x"}
+{"fn":"applyServerSettingsPatch","args":["x","X"],"ok":"X"}
+{"fn":"providerStartOptionsFromServerSettings","args":[0],"error":"Cannot read properties of undefined (reading 'codex')"}
+{"fn":"providerStartOptionsFromServerSettings","args":[{}],"error":"Cannot read properties of undefined (reading 'codex')"}
+{"fn":"providerStartOptionsFromServerSettings","args":[null],"error":"Cannot destructure property 'providers' of 'settings' as it is null."}
+{"fn":"providerStartOptionsFromServerSettings","args":[{"a":"b"}],"error":"Cannot read properties of undefined (reading 'codex')"}
+{"fn":"providerStartOptionsFromServerSettings","args":[true],"error":"Cannot read properties of undefined (reading 'codex')"}
+{"fn":"providerStartOptionsFromServerSettings","args":[{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'codex')"}
+{"fn":"providerStartOptionsFromServerSettings","args":["x"],"error":"Cannot read properties of undefined (reading 'codex')"}
+{"fn":"providerStartOptionsFromServerSettings","args":[["a",1]],"error":"Cannot read properties of undefined (reading 'codex')"}
+{"fn":"providerStartOptionsFromServerSettings","args":[[]],"error":"Cannot read properties of undefined (reading 'codex')"}

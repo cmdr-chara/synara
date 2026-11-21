@@ -1,0 +1,61 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/serverSettings.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "serversettings-rs",
+  "exports": [
+    {
+      "name": "applyServerSettingsPatch",
+      "file": "packages/shared/src/serverSettings.ts",
+      "line": 30,
+      "params": [
+        {
+          "name": "current",
+          "ts_type": "typeof typeof typeof typeof ServerSettings.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "patch",
+          "ts_type": "typeof typeof typeof typeof ServerSettingsPatch.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ServerSettings.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "providerStartOptionsFromServerSettings",
+      "file": "packages/shared/src/serverSettings.ts",
+      "line": 108,
+      "params": [
+        {
+          "name": "settings",
+          "ts_type": "typeof typeof typeof typeof ServerSettings.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ProviderStartOptions.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "settingsChangedBeyondNewThreadDefaults",
+      "file": "packages/shared/src/serverSettings.ts",
+      "line": 99,
+      "reason": "generic over `Settings`: values of any shape, functions included"
+    }
+  ]
+}

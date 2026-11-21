@@ -1,0 +1,17 @@
+{
+  "unit": "scripts/update-release-package-versions.ts",
+  "files": 1,
+  "fingerprint": "ac6f478f9c85912a",
+  "coverage": {
+    "lines": 93,
+    "reached": 30,
+    "files": [
+      {
+        "file": "scripts/update-release-package-versions.ts",
+        "lines": 93,
+        "reached": 30,
+        "missed": "32-33, 35-38, 40, 43-50, 52-56, 58-61, 63-70, 72-74, 76-80, 82-86, 88-89, 95-99, 101-103, 105-112"
+      }
+    ]
+  }
+}

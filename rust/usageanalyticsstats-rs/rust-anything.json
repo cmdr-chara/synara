@@ -1,0 +1,157 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/usageAnalyticsStats.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "usageanalyticsstats-rs",
+  "exports": [
+    {
+      "name": "resolveUsageAnalyticsWindow",
+      "file": "apps/server/src/usageAnalyticsStats.ts",
+      "line": 102,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "typeof typeof typeof typeof StatsGetUsageAnalyticsInput.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "AnalyticsWindow | { readonly error: string }",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "estimateCost",
+      "file": "apps/server/src/usageAnalyticsStats.ts",
+      "line": 154,
+      "params": [
+        {
+          "name": "prices",
+          "ts_type": "PriceTable",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "model",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "total",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "row",
+          "ts_type": "Pick<TokenHourRow, \"splitTokens\" | \"splitCacheTokens\" | \"outputTokens\" | \"cacheWriteTokens\">",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "{ readonly costUsd: number; readonly unpricedTokens: number; readonly unsplitTokens: number }",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "reportingProviders",
+      "file": "apps/server/src/usageAnalyticsStats.ts",
+      "line": 187,
+      "params": [
+        {
+          "name": "costRows",
+          "ts_type": "ReadonlyArray<CostHourRow>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ReadonlySet<string>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "needsPrices",
+      "file": "apps/server/src/usageAnalyticsStats.ts",
+      "line": 196,
+      "params": [
+        {
+          "name": "tokenRows",
+          "ts_type": "ReadonlyArray<TokenHourRow>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "reporting",
+          "ts_type": "ReadonlySet<string>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "buildUsageAnalytics",
+      "file": "apps/server/src/usageAnalyticsStats.ts",
+      "line": 205,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly window: AnalyticsWindow;\n  readonly tokenRows: ReadonlyArray<TokenHourRow>;\n  readonly turnRows: ReadonlyArray<TurnHourRow>;\n  readonly costRows: ReadonlyArray<CostHourRow>;\n  readonly prices: PriceTable;\n  readonly nowMs: number;\n  readonly scope?: typeof typeof typeof typeof StatsUsageAnalyticsScope.Type.Type.Type.Type;\n  readonly sessionFiles?: ReturnType<typeof buildTranscriptRows>;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof StatsGetUsageAnalyticsResult.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "buildTranscriptRows",
+      "file": "apps/server/src/usageAnalyticsStats.ts",
+      "line": 412,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly scan: TranscriptScan;\n  readonly window: AnalyticsWindow;\n  readonly prices: PriceTable;\n  readonly projectRoots: ReadonlyArray<ProjectRoot>;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "UsageAnalyticsQuery",
+      "file": "apps/server/src/usageAnalyticsStats.ts",
+      "line": 557,
+      "reason": "class: extends another class"
+    },
+    {
+      "name": "makeUsageAnalyticsQuery",
+      "file": "apps/server/src/usageAnalyticsStats.ts",
+      "line": 569,
+      "reason": "takes or returns a function"
+    }
+  ]
+}

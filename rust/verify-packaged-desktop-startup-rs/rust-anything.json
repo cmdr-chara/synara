@@ -1,0 +1,115 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "scripts/verify-packaged-desktop-startup.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "verify-packaged-desktop-startup-rs",
+  "exports": [
+    {
+      "name": "parsePackagedDesktopStartupArgs",
+      "file": "scripts/verify-packaged-desktop-startup.ts",
+      "line": 39,
+      "params": [
+        {
+          "name": "argv",
+          "ts_type": "ReadonlyArray<string>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "PackagedDesktopStartupOptions",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "verifyPackagedRuntimeDependencies",
+      "file": "scripts/verify-packaged-desktop-startup.ts",
+      "line": 239,
+      "params": [
+        {
+          "name": "runtime",
+          "ts_type": "PackagedRuntime",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "isolatedEnvironment",
+          "ts_type": "NodeJS.ProcessEnv",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "timeoutMs",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<void>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "createPackagedDesktopSmokeEnvironment",
+      "file": "scripts/verify-packaged-desktop-startup.ts",
+      "line": 353,
+      "params": [
+        {
+          "name": "root",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "options",
+          "ts_type": "Pick<PackagedDesktopStartupOptions, \"platform\" | \"version\" | \"executableName\">",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "inheritedEnvironment",
+          "ts_type": "NodeJS.ProcessEnv",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "NodeJS.ProcessEnv",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "readPackagedStartupLogTails",
+      "file": "scripts/verify-packaged-desktop-startup.ts",
+      "line": 463,
+      "params": [
+        {
+          "name": "logDirectory",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "verifyPackagedDesktopStartup",
+      "file": "scripts/verify-packaged-desktop-startup.ts",
+      "line": 484,
+      "reason": "checks `instanceof`: class identity does not survive the bridge"
+    }
+  ]
+}

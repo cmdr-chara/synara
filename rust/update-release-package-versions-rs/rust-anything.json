@@ -1,0 +1,36 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "scripts/update-release-package-versions.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "update-release-package-versions-rs",
+  "exports": [
+    {
+      "name": "updateReleasePackageVersions",
+      "file": "scripts/update-release-package-versions.ts",
+      "line": 21,
+      "params": [
+        {
+          "name": "version",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "options",
+          "ts_type": "UpdateReleasePackageVersionsOptions",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "{ changed: boolean }",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

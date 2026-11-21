@@ -1,0 +1,17 @@
+{
+  "unit": "packages/shared/src/shell.ts",
+  "files": 1,
+  "fingerprint": "842766a442eaf2eb",
+  "coverage": {
+    "lines": 302,
+    "reached": 243,
+    "files": [
+      {
+        "file": "packages/shared/src/shell.ts",
+        "lines": 302,
+        "reached": 243,
+        "missed": "41, 66-67, 99-103, 106-119, 174-181, 192-196, 198-200, 202-208, 210-211, 239-243, 245, 276-277, 295-296, 342-343"
+      }
+    ]
+  }
+}

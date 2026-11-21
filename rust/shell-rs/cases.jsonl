@@ -1,0 +1,1319 @@
+{"fn":"isShellEnvironmentHydrated","args":[true],"ok":false}
+{"fn":"isShellEnvironmentHydrated","args":[{"a":{"b":"c"}}],"ok":false}
+{"fn":"isShellEnvironmentHydrated","args":[null],"error":"Cannot read properties of null (reading 'SYNARA_PATH_HYDRATED')"}
+{"fn":"isShellEnvironmentHydrated","args":["x"],"ok":false}
+{"fn":"isShellEnvironmentHydrated","args":[{"a":"b"}],"ok":false}
+{"fn":"isShellEnvironmentHydrated","args":[[]],"ok":false}
+{"fn":"isShellEnvironmentHydrated","args":[{}],"ok":false}
+{"fn":"isShellEnvironmentHydrated","args":[["a",1]],"ok":false}
+{"fn":"isShellEnvironmentHydrated","args":[0],"ok":false}
+{"fn":"applyShellEnvironmentHydrationMarker","args":[[],true],"ok":[]}
+{"fn":"applyShellEnvironmentHydrationMarker","args":[{"a":"b"},false],"ok":{"a":"b"}}
+{"fn":"applyShellEnvironmentHydrationMarker","args":[[],false],"ok":[]}
+{"fn":"applyShellEnvironmentHydrationMarker","args":[true,true],"error":"Cannot create property 'SYNARA_PATH_HYDRATED' on boolean 'true'"}
+{"fn":"applyShellEnvironmentHydrationMarker","args":[["a",1],false],"ok":["a",1]}
+{"fn":"applyShellEnvironmentHydrationMarker","args":[true,false],"ok":true}
+{"fn":"applyShellEnvironmentHydrationMarker","args":[{"a":{"b":"c"}},true],"ok":{"a":{"b":"c"},"SYNARA_PATH_HYDRATED":"1"}}
+{"fn":"applyShellEnvironmentHydrationMarker","args":[0,false],"ok":0}
+{"fn":"applyShellEnvironmentHydrationMarker","args":[{},false],"ok":{}}
+{"fn":"applyShellEnvironmentHydrationMarker","args":["x",true],"error":"Cannot create property 'SYNARA_PATH_HYDRATED' on string 'x'"}
+{"fn":"applyShellEnvironmentHydrationMarker","args":[["a",1],true],"ok":["a",1]}
+{"fn":"applyShellEnvironmentHydrationMarker","args":[null,true],"error":"Cannot set properties of null (setting 'SYNARA_PATH_HYDRATED')"}
+{"fn":"applyShellEnvironmentHydrationMarker","args":[null,false],"error":"Cannot convert undefined or null to object"}
+{"fn":"applyShellEnvironmentHydrationMarker","args":[{"a":{"b":"c"}},false],"ok":{"a":{"b":"c"}}}
+{"fn":"applyShellEnvironmentHydrationMarker","args":["x",false],"ok":"x"}
+{"fn":"applyShellEnvironmentHydrationMarker","args":[{},true],"ok":{"SYNARA_PATH_HYDRATED":"1"}}
+{"fn":"applyShellEnvironmentHydrationMarker","args":[{"a":"b"},true],"ok":{"a":"b","SYNARA_PATH_HYDRATED":"1"}}
+{"fn":"applyShellEnvironmentHydrationMarker","args":[0,true],"error":"Cannot create property 'SYNARA_PATH_HYDRATED' on number '0'"}
+{"fn":"listLoginShellCandidates","args":[["a",1],"src/a/b.ts"],"ok":["src/a/b.ts","/bin/zsh"]}
+{"fn":"listLoginShellCandidates","args":[{},{"$undefined":true},"x"],"ok":["x"]}
+{"fn":"listLoginShellCandidates","args":[null,{"$undefined":true},null],"ok":[]}
+{"fn":"listLoginShellCandidates","args":[{"a":{"b":"c"}},"./x/**/*.json",["a",1]],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[true,".leading",0],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[{"a":"b"},"a:b:c日本語のテキスト",null],"ok":["a:b:c日本語のテキスト"]}
+{"fn":"listLoginShellCandidates","args":[["a",1],"﻿bom"],"ok":["bom","/bin/zsh"]}
+{"fn":"listLoginShellCandidates","args":[[],{"$undefined":true},0],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[null,"é",0],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[["a",1],"tab\tseparated",{"$undefined":true}],"ok":["tab\tseparated","/bin/zsh"]}
+{"fn":"listLoginShellCandidates","args":[{"a":"b"},"日本語のテキスト",{"a":{"b":"c"}}],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[true,"",true],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[[],{"$undefined":true},"x"],"ok":["x"]}
+{"fn":"listLoginShellCandidates","args":[{"a":{"b":"c"}},{"$undefined":true},{"$undefined":true}],"ok":["/bin/zsh"]}
+{"fn":"listLoginShellCandidates","args":[["a",1],{"$undefined":true},null],"ok":[]}
+{"fn":"listLoginShellCandidates","args":[0,"  padded  ",["a",1]],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[["a",1],"﻿bom",{"a":{"b":"c"}}],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[null,"ns:key.path",{"a":"b"}],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[[],"./x/**/*.jsonΣΊΣΥΦΟΣ","x"],"ok":["./x/**/*.jsonΣΊΣΥΦΟΣ","x"]}
+{"fn":"listLoginShellCandidates","args":[0,"hello"],"ok":["hello","/bin/zsh"]}
+{"fn":"listLoginShellCandidates","args":[[],"😀",["a",1]],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[{},"Hello Worldsrc/a/b.ts",[]],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[{},"İstanbul",{"a":"b"}],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[0,"日本語のテキスト",[]],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[["a",1],"HELLO",["a",1]],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":["x","Hello Worldstraße",["a",1]],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[{"a":"b"},"./x/**/*.json",[]],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[[],"  padded  ",{"a":"b"}],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[true,"",{"a":"b"}],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[true,"",{}],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[[],"  padded  ",0],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[{"a":"b"},"﻿bom"],"ok":["bom","/bin/zsh"]}
+{"fn":"listLoginShellCandidates","args":[{},{"$undefined":true},{"$undefined":true}],"ok":["/bin/zsh"]}
+{"fn":"listLoginShellCandidates","args":[null,"İstanbul",[]],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[[],"HELLO",0],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[0,"abHello World"],"ok":["abHello World","/bin/zsh"]}
+{"fn":"listLoginShellCandidates","args":[null,"key_name-1",0],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[["a",1],"ünïcödé",{}],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[{"a":"b"},{"$undefined":true},null],"ok":[]}
+{"fn":"listLoginShellCandidates","args":[true,"日本語のテキストa",[]],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[["a",1],"./x/**/*.json",null],"ok":["./x/**/*.json"]}
+{"fn":"listLoginShellCandidates","args":[["a",1],"",[]],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[{"a":{"b":"c"}},"ns:key.path","x"],"ok":["ns:key.path","x"]}
+{"fn":"listLoginShellCandidates","args":[0,"a"],"ok":["a","/bin/zsh"]}
+{"fn":"listLoginShellCandidates","args":[null,".leading",null],"ok":[".leading"]}
+{"fn":"listLoginShellCandidates","args":[0,"Hello Worldİstanbul",{"a":"b"}],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":["x","./x/**/*.json","x"],"ok":["./x/**/*.json","x"]}
+{"fn":"listLoginShellCandidates","args":["x",{"$undefined":true},["a",1]],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[[],"hello world",{"a":"b"}],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[true,"Hello World",{"$undefined":true}],"ok":["Hello World","/bin/zsh"]}
+{"fn":"listLoginShellCandidates","args":[{"a":"b"},"  padded  ﻿bom",{}],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[{},"line1\nline2{name} has {count} items",{"a":"b"}],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[null,"😀",["a",1]],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[["a",1],"ns:key.path",[]],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[["a",1],{"$undefined":true},0],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[{"a":"b"},"ΣΊΣΥΦΟΣ","x"],"ok":["ΣΊΣΥΦΟΣ","x"]}
+{"fn":"listLoginShellCandidates","args":[{},"emoji 👍🏽 mix"],"ok":["emoji 👍🏽 mix","/bin/zsh"]}
+{"fn":"listLoginShellCandidates","args":[["a",1],"a:",{"$undefined":true}],"ok":["a:","/bin/zsh"]}
+{"fn":"listLoginShellCandidates","args":["x","tab\tseparated"],"ok":["tab\tseparated","/bin/zsh"]}
+{"fn":"listLoginShellCandidates","args":[["a",1],"",["a",1]],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[null,"ΣΊΣΥΦΟΣ",null],"ok":["ΣΊΣΥΦΟΣ"]}
+{"fn":"listLoginShellCandidates","args":[true,"😀",{"a":{"b":"c"}}],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[{"a":"b"},"trailing.","a"],"ok":["trailing.","a"]}
+{"fn":"listLoginShellCandidates","args":[0,{"$undefined":true},{"$undefined":true}],"ok":["/bin/zsh"]}
+{"fn":"listLoginShellCandidates","args":[0,":",[]],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[0,"ns:key.path",[]],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[{},"line1\nline2",{"a":"b"}],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[{"a":"b"},"ab",{"a":{"b":"c"}}],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[true,{"$undefined":true},true],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[null,"line1\nline2a.b.c",{"$undefined":true}],"ok":["line1\nline2a.b.c","/bin/zsh"]}
+{"fn":"listLoginShellCandidates","args":["x","ünïcödé",["a",1]],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[[],"x","x"],"ok":["x"]}
+{"fn":"listLoginShellCandidates","args":[{"a":"b"},{"$undefined":true},0],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[null,{"$undefined":true},{"a":"b"}],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[0,{"$undefined":true},true],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[null,"😀",{"a":"b"}],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":["x","line1\nline2",{"a":{"b":"c"}}],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[{},":",{}],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":["pa","  padded  ",{"a":{"b":"c"}}],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[true,"﻿bom",{"a":"b"}],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[{"a":"b"},"trailing.",[]],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[true,"straße",{"a":"b"}],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[["a",1],"line1\nline2",{"a":{"b":"c"}}],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[{"a":"b"},"a:b:c",null],"ok":["a:b:c"]}
+{"fn":"listLoginShellCandidates","args":[[],"",{}],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[[],"ünïcödé","x"],"ok":["ünïcödé","x"]}
+{"fn":"listLoginShellCandidates","args":[true,"emoji 👍🏽 mix",{}],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[{"a":{"b":"c"}},"line1\nline2","x"],"ok":["line1\nline2","x"]}
+{"fn":"listLoginShellCandidates","args":["x","ab",0],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[["a",1],"a",{"a":"b"}],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[["a",1],"aa",[]],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[["a",1],"","x"],"ok":["x"]}
+{"fn":"listLoginShellCandidates","args":[{"a":{"b":"c"}},"ünïcödé",{"a":"b"}],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[{"a":{"b":"c"}},{"$undefined":true},null],"ok":[]}
+{"fn":"listLoginShellCandidates","args":[[],"aé",0],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[{"a":"b"},{"$undefined":true},["a",1]],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[true,{"$undefined":true},0],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[{"a":"b"},{"$undefined":true},true],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[true],"ok":["/bin/zsh"]}
+{"fn":"listLoginShellCandidates","args":[null,"HELLO",[]],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[[],{"$undefined":true},{"a":{"b":"c"}}],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[["a",1],"{name} has {count} items",true],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[[],"ns:key.path"],"ok":["ns:key.path","/bin/zsh"]}
+{"fn":"listLoginShellCandidates","args":[{"a":"b"},"日本語のテキスト"],"ok":["日本語のテキスト","/bin/zsh"]}
+{"fn":"listLoginShellCandidates","args":[[],{"$undefined":true},true],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[true,"é",["a",1]],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[["a",1],"a",0],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[null,"hello world","x"],"ok":["hello world","x"]}
+{"fn":"listLoginShellCandidates","args":["x","ab",{}],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[{},"a:b:c",{"$undefined":true}],"ok":["a:b:c","/bin/zsh"]}
+{"fn":"listLoginShellCandidates","args":[{},"ns:key.path",{"$undefined":true}],"ok":["ns:key.path","/bin/zsh"]}
+{"fn":"listLoginShellCandidates","args":[{},"ΣΊΣΥΦΟΣ",null],"ok":["ΣΊΣΥΦΟΣ"]}
+{"fn":"listLoginShellCandidates","args":[null,"hello",true],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[{"a":{"b":"c"}},"emoji 👍🏽 mixns:key.path",{"a":"b"}],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[null,"straßekey_name-1",{"a":"b"}],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[{"a":{"b":"c"}},"a😀b😀c",{"a":{"b":"c"}}],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[{"a":{"b":"c"}},"key_name-1",0],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[true,"key_name-1",{}],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[null,"﻿bom",{"a":"b"}],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":["x","{name} has {count} items","x"],"ok":["{name} has {count} items","x"]}
+{"fn":"listLoginShellCandidates","args":[0],"ok":["/bin/zsh"]}
+{"fn":"listLoginShellCandidates","args":[0,{"$undefined":true},{"a":"b"}],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[0,"./x/**/*.json  padded  ",{}],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[true,{"$undefined":true},{"a":"b"}],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[{"a":"b"},"src/a/b.tsΣΊΣΥΦΟΣ",null],"ok":["src/a/b.tsΣΊΣΥΦΟΣ"]}
+{"fn":"listLoginShellCandidates","args":[[]],"ok":["/bin/zsh"]}
+{"fn":"listLoginShellCandidates","args":[null,"{name} has {count} itemsé",{"$undefined":true}],"ok":["{name} has {count} itemsé","/bin/zsh"]}
+{"fn":"listLoginShellCandidates","args":[true,{"$undefined":true},{}],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[true,"日本語のテキスト{name} has {count} items",{"$undefined":true}],"ok":["日本語のテキスト{name} has {count} items","/bin/zsh"]}
+{"fn":"listLoginShellCandidates","args":[null,"hello",{"$undefined":true}],"ok":["hello","/bin/zsh"]}
+{"fn":"listLoginShellCandidates","args":[{},{"$undefined":true},{"a":"b"}],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[{"a":{"b":"c"}},"😀emoji 👍🏽 mix"],"ok":["😀emoji 👍🏽 mix","/bin/zsh"]}
+{"fn":"listLoginShellCandidates","args":[["a",1],{"$undefined":true},{"a":{"b":"c"}}],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[{},{"$undefined":true},true],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[{"a":"b"},"😀",{"$undefined":true}],"ok":["😀","/bin/zsh"]}
+{"fn":"listLoginShellCandidates","args":[[],""],"ok":["/bin/zsh"]}
+{"fn":"listLoginShellCandidates","args":[{},"straßeemoji 👍🏽 mix",{"$undefined":true}],"ok":["straßeemoji 👍🏽 mix","/bin/zsh"]}
+{"fn":"listLoginShellCandidates","args":[[],"hello",{"a":"b"}],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[["a",1],"./x/**/*.json"],"ok":["./x/**/*.json","/bin/zsh"]}
+{"fn":"listLoginShellCandidates","args":[{},{"$undefined":true},null],"ok":[]}
+{"fn":"listLoginShellCandidates","args":[{},"straßeünïcödé",[]],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[true,":straße",{}],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[[],"ΣΊΣΥΦΟΣ",{"$undefined":true}],"ok":["ΣΊΣΥΦΟΣ","/bin/zsh"]}
+{"fn":"listLoginShellCandidates","args":[[],"emoji 👍🏽 mixé",{"a":"b"}],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[{"a":"b"},"﻿bom",{"a":{"b":"c"}}],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[["a",1],"é😀",{"$undefined":true}],"ok":["é😀","/bin/zsh"]}
+{"fn":"listLoginShellCandidates","args":[{"a":"b"},"İstanbul",0],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[["a",1],{"$undefined":true}],"ok":["/bin/zsh"]}
+{"fn":"listLoginShellCandidates","args":[{},"ΣΊΣΥΦΟΣ"],"ok":["ΣΊΣΥΦΟΣ","/bin/zsh"]}
+{"fn":"listLoginShellCandidates","args":[[],"straßeemoji 👍🏽 mix",0],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[true,"é",null],"ok":["é"]}
+{"fn":"listLoginShellCandidates","args":[{"a":{"b":"c"}},{"$undefined":true},{"a":"b"}],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[null,"日本語のテキストline1\nline2",{"a":{"b":"c"}}],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[null,{"$undefined":true},0],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[0,"src/a/b.ts",{}],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[0,"trailing.",0],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[{},"a😀b😀c",{}],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[["a",1],{"$undefined":true},true],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[null,"😀",true],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[[],{"$undefined":true},["a",1]],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[[],{"$undefined":true},{"$undefined":true}],"ok":["/bin/zsh"]}
+{"fn":"listLoginShellCandidates","args":["x","Hello World",true],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[true,"abc",0],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[true,"ab{name} has {count} items",{}],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[{},"Hello World",true],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[null,"hello",0],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[true,"line1\nline2","x"],"ok":["line1\nline2","x"]}
+{"fn":"listLoginShellCandidates","args":[{"a":{"b":"c"}},"abcΣΊΣΥΦΟΣ"],"ok":["abcΣΊΣΥΦΟΣ","/bin/zsh"]}
+{"fn":"listLoginShellCandidates","args":[{"a":{"b":"c"}},{"$undefined":true},[]],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[0,"{name} has {count} items",null],"ok":["{name} has {count} items"]}
+{"fn":"listLoginShellCandidates","args":[[],{"$undefined":true},[]],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[true,{"$undefined":true},null],"ok":[]}
+{"fn":"listLoginShellCandidates","args":[{"a":{"b":"c"}},"ΣΊΣΥΦΟΣ",{"a":{"b":"c"}}],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[{"a":"b"},"  padded  ",[]],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[{"a":{"b":"c"}},"ab",true],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[[],{"$undefined":true}],"ok":["/bin/zsh"]}
+{"fn":"listLoginShellCandidates","args":[{"a":{"b":"c"}},"{name} has {count} items",[]],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[["a",1],"straße",{}],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[{"a":{"b":"c"}},"key_name-1"],"ok":["key_name-1","/bin/zsh"]}
+{"fn":"listLoginShellCandidates","args":[{},"😀key_name-1",{"a":"b"}],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[["a",1],"key_name-1",["a",1]],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":["x","tab\tseparated","x"],"ok":["tab\tseparated","x"]}
+{"fn":"listLoginShellCandidates","args":[[],"😀tab\tseparated",0],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[true,"key_name-1",{"a":{"b":"c"}}],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":["x",""],"ok":["/bin/zsh"]}
+{"fn":"listLoginShellCandidates","args":[{"a":"b"},{"$undefined":true},{"$undefined":true}],"ok":["/bin/zsh"]}
+{"fn":"listLoginShellCandidates","args":[{"a":{"b":"c"}},"src/a/b.ts",["a",1]],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[null,"trailing.","x"],"ok":["trailing.","x"]}
+{"fn":"listLoginShellCandidates","args":[true,"",null],"ok":[]}
+{"fn":"listLoginShellCandidates","args":[{"a":{"b":"c"}},"key_name-1",{"$undefined":true}],"ok":["key_name-1","/bin/zsh"]}
+{"fn":"listLoginShellCandidates","args":[{"a":"b"},"emoji 👍🏽 mix",null],"ok":["emoji 👍🏽 mix"]}
+{"fn":"listLoginShellCandidates","args":[["a",1],"tab\tseparated",true],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[[],"ab",{"a":"b"}],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[{"a":"b"},{"$undefined":true},"x"],"ok":["x"]}
+{"fn":"listLoginShellCandidates","args":[[],"a..b",{"a":{"b":"c"}}],"error":"value?.trim is not a function"}
+{"fn":"listLoginShellCandidates","args":[true,"a.b.c"],"ok":["a.b.c","/bin/zsh"]}
+{"fn":"listLoginShellCandidates","args":["x",{"$undefined":true}],"ok":["/bin/zsh"]}
+{"fn":"listLoginShellCandidates","args":["ΟΣ","ΣΊΣΥΦΟΣ",{"$undefined":true}],"ok":["ΣΊΣΥΦΟΣ","/bin/zsh"]}
+{"fn":"listLoginShellCandidates","args":[{"a":"b"},"  padded  ",null],"ok":["padded"]}
+{"fn":"listLoginShellCandidates","args":["x","abc",true],"error":"value?.trim is not a function"}
+{"fn":"resolveLoginShell","args":[{},"./x/**/*.jsontab\tseparated"],"ok":"./x/**/*.jsontab\tseparated"}
+{"fn":"resolveLoginShell","args":[[],"key_name-1"],"ok":"key_name-1"}
+{"fn":"resolveLoginShell","args":[{},"HELLO"],"ok":"HELLO"}
+{"fn":"resolveLoginShell","args":[{},"./x/**/*.json"],"ok":"./x/**/*.json"}
+{"fn":"resolveLoginShell","args":[{"a":{"b":"c"}},"HELLO"],"ok":"HELLO"}
+{"fn":"resolveLoginShell","args":[[],"src/a/b.ts"],"ok":"src/a/b.ts"}
+{"fn":"resolveLoginShell","args":["x","ΣΊΣΥΦΟΣ"],"ok":"ΣΊΣΥΦΟΣ"}
+{"fn":"resolveLoginShell","args":[{"a":"b"},"ΣΊΣΥΦΟΣ  padded  "],"ok":"ΣΊΣΥΦΟΣ  padded"}
+{"fn":"resolveLoginShell","args":[{"a":{"b":"c"}},"日本語のテキスト"],"ok":"日本語のテキスト"}
+{"fn":"resolveLoginShell","args":[true,"abchello world"],"ok":"abchello world"}
+{"fn":"resolveLoginShell","args":["x"],"ok":"/bin/zsh"}
+{"fn":"resolveLoginShell","args":[{"a":{"b":"c"}},"a..b"],"ok":"a..b"}
+{"fn":"resolveLoginShell","args":["x","日本語のテキスト"],"ok":"日本語のテキスト"}
+{"fn":"resolveLoginShell","args":["ΣΊΣΥ","ΣΊΣΥΦΟΣ"],"ok":"ΣΊΣΥΦΟΣ"}
+{"fn":"resolveLoginShell","args":[["a",1],".leading"],"ok":".leading"}
+{"fn":"resolveLoginShell","args":[["a",1],"./x/**/*.json"],"ok":"./x/**/*.json"}
+{"fn":"resolveLoginShell","args":[{"a":{"b":"c"}},"ns:key.path"],"ok":"ns:key.path"}
+{"fn":"resolveLoginShell","args":[{"a":{"b":"c"}},"ünïcödé"],"ok":"ünïcödé"}
+{"fn":"resolveLoginShell","args":[{},"ünïcödé"],"ok":"ünïcödé"}
+{"fn":"resolveLoginShell","args":["x","x"],"ok":"x"}
+{"fn":"resolveLoginShell","args":[{"a":"b"},"a😀b😀c"],"ok":"a😀b😀c"}
+{"fn":"resolveLoginShell","args":[0,"abcünïcödé"],"ok":"abcünïcödé"}
+{"fn":"resolveLoginShell","args":[null,"straße"],"ok":"straße"}
+{"fn":"resolveLoginShell","args":[0,"src/a/b.ts"],"ok":"src/a/b.ts"}
+{"fn":"resolveLoginShell","args":[{"a":"b"}],"ok":"/bin/zsh"}
+{"fn":"resolveLoginShell","args":[{"a":"b"},"HELLO"],"ok":"HELLO"}
+{"fn":"resolveLoginShell","args":["x","ünïcödé"],"ok":"ünïcödé"}
+{"fn":"resolveLoginShell","args":[[],"﻿bom"],"ok":"bom"}
+{"fn":"resolveLoginShell","args":[0,"日本語のテキスト"],"ok":"日本語のテキスト"}
+{"fn":"resolveLoginShell","args":[null],"ok":"/bin/zsh"}
+{"fn":"resolveLoginShell","args":[0,"{name} has {count} itemsab"],"ok":"{name} has {count} itemsab"}
+{"fn":"resolveLoginShell","args":[{"a":{"b":"c"}},{"$undefined":true}],"ok":"/bin/zsh"}
+{"fn":"resolveLoginShell","args":[[],".leading"],"ok":".leading"}
+{"fn":"resolveLoginShell","args":[true,"HELLO"],"ok":"HELLO"}
+{"fn":"resolveLoginShell","args":["x","aİstanbul"],"ok":"aİstanbul"}
+{"fn":"resolveLoginShell","args":["́","é"],"ok":"é"}
+{"fn":"resolveLoginShell","args":[null,"hello world"],"ok":"hello world"}
+{"fn":"resolveLoginShell","args":[[],"ns:key.path"],"ok":"ns:key.path"}
+{"fn":"resolveLoginShell","args":[["a",1]],"ok":"/bin/zsh"}
+{"fn":"resolveLoginShell","args":[0,"ΣΊΣΥΦΟΣ"],"ok":"ΣΊΣΥΦΟΣ"}
+{"fn":"resolveLoginShell","args":[[],"aba:b:c"],"ok":"aba:b:c"}
+{"fn":"resolveLoginShell","args":[true],"ok":"/bin/zsh"}
+{"fn":"resolveLoginShell","args":[{"a":{"b":"c"}},"a.b.c"],"ok":"a.b.c"}
+{"fn":"resolveLoginShell","args":[{"a":{"b":"c"}},"a😀b😀ca..b"],"ok":"a😀b😀ca..b"}
+{"fn":"resolveLoginShell","args":[0,"trailing."],"ok":"trailing."}
+{"fn":"resolveLoginShell","args":[null,"{name} has {count} items"],"ok":"{name} has {count} items"}
+{"fn":"resolveLoginShell","args":[{"a":{"b":"c"}},"abc"],"ok":"abc"}
+{"fn":"resolveLoginShell","args":[{},{"$undefined":true}],"ok":"/bin/zsh"}
+{"fn":"resolveLoginShell","args":[{"a":{"b":"c"}},"hello"],"ok":"hello"}
+{"fn":"resolveLoginShell","args":[{"a":{"b":"c"}},"src/a/b.ts"],"ok":"src/a/b.ts"}
+{"fn":"resolveLoginShell","args":[0,""],"ok":"/bin/zsh"}
+{"fn":"resolveLoginShell","args":["x","X"],"ok":"X"}
+{"fn":"resolveLoginShell","args":[{"a":{"b":"c"}},"aline1\nline2"],"ok":"aline1\nline2"}
+{"fn":"resolveLoginShell","args":[[],"tab\tseparated"],"ok":"tab\tseparated"}
+{"fn":"resolveLoginShell","args":[[],"key_name-1a"],"ok":"key_name-1a"}
+{"fn":"resolveLoginShell","args":[0,"key_name-1"],"ok":"key_name-1"}
+{"fn":"resolveLoginShell","args":[null,{"$undefined":true}],"ok":"/bin/zsh"}
+{"fn":"resolveLoginShell","args":[{},""],"ok":"/bin/zsh"}
+{"fn":"resolveLoginShell","args":[["a",1],"trailing."],"ok":"trailing."}
+{"fn":"resolveLoginShell","args":[{"a":"b"},"akey_name-1"],"ok":"akey_name-1"}
+{"fn":"resolveLoginShell","args":[{},"trailing.日本語のテキスト"],"ok":"trailing.日本語のテキスト"}
+{"fn":"resolveLoginShell","args":[true,"a😀b😀c"],"ok":"a😀b😀c"}
+{"fn":"resolveLoginShell","args":[0],"ok":"/bin/zsh"}
+{"fn":"resolveLoginShell","args":[{},"😀"],"ok":"😀"}
+{"fn":"resolveLoginShell","args":[0,"😀"],"ok":"😀"}
+{"fn":"resolveLoginShell","args":[{"a":{"b":"c"}},"a:b:c"],"ok":"a:b:c"}
+{"fn":"resolveLoginShell","args":[{"a":"b"},"a:b:c"],"ok":"a:b:c"}
+{"fn":"resolveLoginShell","args":[{"a":"b"},"key_name-1"],"ok":"key_name-1"}
+{"fn":"resolveLoginShell","args":[null,"ab"],"ok":"ab"}
+{"fn":"resolveLoginShell","args":[{"a":"b"},"Hello World"],"ok":"Hello World"}
+{"fn":"resolveLoginShell","args":[0,"a..b"],"ok":"a..b"}
+{"fn":"resolveLoginShell","args":[0,"hello"],"ok":"hello"}
+{"fn":"resolveLoginShell","args":[{"a":{"b":"c"}}],"ok":"/bin/zsh"}
+{"fn":"resolveLoginShell","args":[{"a":{"b":"c"}},":"],"ok":":"}
+{"fn":"resolveLoginShell","args":[[],"./x/**/*.jsona"],"ok":"./x/**/*.jsona"}
+{"fn":"resolveLoginShell","args":[true,"hello"],"ok":"hello"}
+{"fn":"resolveLoginShell","args":[null,"a"],"ok":"a"}
+{"fn":"resolveLoginShell","args":[0,"a..b﻿bom"],"ok":"a..b﻿bom"}
+{"fn":"resolveLoginShell","args":[{"a":"b"},"hello world"],"ok":"hello world"}
+{"fn":"resolveLoginShell","args":[{},"ab"],"ok":"ab"}
+{"fn":"resolveLoginShell","args":[{},"a"],"ok":"a"}
+{"fn":"resolveLoginShell","args":[{},"a😀b😀cHello World"],"ok":"a😀b😀cHello World"}
+{"fn":"resolveLoginShell","args":[null,"a..b"],"ok":"a..b"}
+{"fn":"resolveLoginShell","args":[null,"a:b:c"],"ok":"a:b:c"}
+{"fn":"resolveLoginShell","args":[true,{"$undefined":true}],"ok":"/bin/zsh"}
+{"fn":"resolveLoginShell","args":[null,"é"],"ok":"é"}
+{"fn":"resolveLoginShell","args":[0,"a"],"ok":"a"}
+{"fn":"resolveLoginShell","args":[[],{"$undefined":true}],"ok":"/bin/zsh"}
+{"fn":"resolveLoginShell","args":[true,"key_name-1"],"ok":"key_name-1"}
+{"fn":"resolveLoginShell","args":[["a",1],"{name} has {count} items"],"ok":"{name} has {count} items"}
+{"fn":"resolveLoginShell","args":[["a",1],"trailing..leading"],"ok":"trailing..leading"}
+{"fn":"resolveLoginShell","args":[{},"trailing."],"ok":"trailing."}
+{"fn":"resolveLoginShell","args":[0,"a😀b😀c"],"ok":"a😀b😀c"}
+{"fn":"resolveLoginShell","args":[{"a":{"b":"c"}},"straßea😀b😀c"],"ok":"straßea😀b😀c"}
+{"fn":"resolveLoginShell","args":["x","{name} has {count} items"],"ok":"{name} has {count} items"}
+{"fn":"resolveLoginShell","args":["x","😀src/a/b.ts"],"ok":"😀src/a/b.ts"}
+{"fn":"resolveLoginShell","args":["x","Hello World"],"ok":"Hello World"}
+{"fn":"resolveLoginShell","args":[true,"./x/**/*.json"],"ok":"./x/**/*.json"}
+{"fn":"resolveLoginShell","args":[{"a":{"b":"c"}},"ab"],"ok":"ab"}
+{"fn":"resolveLoginShell","args":[{},"hello"],"ok":"hello"}
+{"fn":"resolveLoginShell","args":[null,"a😀b😀c"],"ok":"a😀b😀c"}
+{"fn":"resolveLoginShell","args":[{}],"ok":"/bin/zsh"}
+{"fn":"resolveLoginShell","args":[null,"src/a/b.ts"],"ok":"src/a/b.ts"}
+{"fn":"resolveLoginShell","args":[{},"src/a/b.ts"],"ok":"src/a/b.ts"}
+{"fn":"resolveLoginShell","args":[{"a":"b"},"emoji 👍🏽 mix"],"ok":"emoji 👍🏽 mix"}
+{"fn":"resolveLoginShell","args":[["a",1],{"$undefined":true}],"ok":"/bin/zsh"}
+{"fn":"resolveLoginShell","args":[["a",1],"İstanbul"],"ok":"İstanbul"}
+{"fn":"resolveLoginShell","args":[{"a":"b"},"ΣΊΣΥΦΟΣ"],"ok":"ΣΊΣΥΦΟΣ"}
+{"fn":"resolveLoginShell","args":[{},"straße"],"ok":"straße"}
+{"fn":"resolveLoginShell","args":[{"a":{"b":"c"}},"straße.leading"],"ok":"straße.leading"}
+{"fn":"resolveLoginShell","args":[["a",1],"a"],"ok":"a"}
+{"fn":"resolveLoginShell","args":[[]],"ok":"/bin/zsh"}
+{"fn":"resolveLoginShell","args":[{"a":{"b":"c"}},"hello world"],"ok":"hello world"}
+{"fn":"resolveLoginShell","args":[0,{"$undefined":true}],"ok":"/bin/zsh"}
+{"fn":"resolveLoginShell","args":[[],"İstanbul"],"ok":"İstanbul"}
+{"fn":"resolveLoginShell","args":[true,"ΣΊΣΥΦΟΣ"],"ok":"ΣΊΣΥΦΟΣ"}
+{"fn":"resolveLoginShell","args":[[],"a..b"],"ok":"a..b"}
+{"fn":"resolveLoginShell","args":["x","trailing."],"ok":"trailing."}
+{"fn":"resolveLoginShell","args":[{},"line1\nline2"],"ok":"line1\nline2"}
+{"fn":"resolveLoginShell","args":[{"a":{"b":"c"}},"a:b:ca.b.c"],"ok":"a:b:ca.b.c"}
+{"fn":"resolveLoginShell","args":[{},"  padded  "],"ok":"padded"}
+{"fn":"resolveLoginShell","args":[true,"日本語のテキスト"],"ok":"日本語のテキスト"}
+{"fn":"resolveLoginShell","args":[0,":"],"ok":":"}
+{"fn":"resolveLoginShell","args":["r","straße"],"ok":"straße"}
+{"fn":"resolveLoginShell","args":[{"a":"b"},{"$undefined":true}],"ok":"/bin/zsh"}
+{"fn":"resolveLoginShell","args":[[],"src/a/b.tssrc/a/b.ts"],"ok":"src/a/b.tssrc/a/b.ts"}
+{"fn":"resolveLoginShell","args":[["a",1],"a:b:c"],"ok":"a:b:c"}
+{"fn":"resolveLoginShell","args":[{"a":"b"},".leading"],"ok":".leading"}
+{"fn":"resolveLoginShell","args":[null,"aHello World"],"ok":"aHello World"}
+{"fn":"resolveLoginShell","args":[{},"key_name-1emoji 👍🏽 mix"],"ok":"key_name-1emoji 👍🏽 mix"}
+{"fn":"resolveLoginShell","args":[["a",1],"a.b.c"],"ok":"a.b.c"}
+{"fn":"resolveLoginShell","args":[null,"hello"],"ok":"hello"}
+{"fn":"resolveLoginShell","args":[true,"src/a/b.ts"],"ok":"src/a/b.ts"}
+{"fn":"resolveLoginShell","args":[true,"ab"],"ok":"ab"}
+{"fn":"resolveLoginShell","args":[null,".leading"],"ok":".leading"}
+{"fn":"resolveLoginShell","args":["x","line1\nline2"],"ok":"line1\nline2"}
+{"fn":"resolveLoginShell","args":[0,"ab"],"ok":"ab"}
+{"fn":"resolveLoginShell","args":[{"a":{"b":"c"}},"tab\tseparated"],"ok":"tab\tseparated"}
+{"fn":"resolveLoginShell","args":[[],"line1\nline2"],"ok":"line1\nline2"}
+{"fn":"resolveLoginShell","args":[{"a":"b"},"abc"],"ok":"abc"}
+{"fn":"resolveLoginShell","args":["x","abc"],"ok":"abc"}
+{"fn":"resolveLoginShell","args":[0,"a:b:c"],"ok":"a:b:c"}
+{"fn":"resolveLoginShell","args":[null,"﻿bomkey_name-1"],"ok":"bomkey_name-1"}
+{"fn":"resolveLoginShell","args":[[],"Hello World"],"ok":"Hello World"}
+{"fn":"resolveLoginShell","args":[["a",1],"{name} has {count} items  padded  "],"ok":"{name} has {count} items  padded"}
+{"fn":"resolveLoginShell","args":[[],"{name} has {count} items"],"ok":"{name} has {count} items"}
+{"fn":"resolveLoginShell","args":[true,"  padded  "],"ok":"padded"}
+{"fn":"resolveLoginShell","args":[{"a":"b"},"tab\tseparated"],"ok":"tab\tseparated"}
+{"fn":"resolveLoginShell","args":[[],"straße"],"ok":"straße"}
+{"fn":"resolveLoginShell","args":[0,"  padded  "],"ok":"padded"}
+{"fn":"resolveLoginShell","args":[true,"a.b.c"],"ok":"a.b.c"}
+{"fn":"resolveLoginShell","args":[null,"./x/**/*.jsonab"],"ok":"./x/**/*.jsonab"}
+{"fn":"resolveLoginShell","args":[[],"éHELLO"],"ok":"éHELLO"}
+{"fn":"resolveLoginShell","args":["x","ns:key.path"],"ok":"ns:key.path"}
+{"fn":"resolveLoginShell","args":[0,"ünïcödé"],"ok":"ünïcödé"}
+{"fn":"resolveLoginShell","args":[[],"ab"],"ok":"ab"}
+{"fn":"resolveLoginShell","args":[{"a":"b"},"  padded  "],"ok":"padded"}
+{"fn":"resolveLoginShell","args":["x",".leading"],"ok":".leading"}
+{"fn":"resolveLoginShell","args":[["a",1],"key_name-1a..b"],"ok":"key_name-1a..b"}
+{"fn":"resolveLoginShell","args":[true,".leading"],"ok":".leading"}
+{"fn":"resolveLoginShell","args":[{"a":"b"},"é"],"ok":"é"}
+{"fn":"resolveLoginShell","args":[{},"tab\tseparated"],"ok":"tab\tseparated"}
+{"fn":"resolveLoginShell","args":[{"a":{"b":"c"}},"{name} has {count} items"],"ok":"{name} has {count} items"}
+{"fn":"resolveLoginShell","args":[true,"a..b"],"ok":"a..b"}
+{"fn":"resolveLoginShell","args":[null,"ns:key.path"],"ok":"ns:key.path"}
+{"fn":"resolveLoginShell","args":[{"a":{"b":"c"}},"helloab"],"ok":"helloab"}
+{"fn":"resolveLoginShell","args":[{"a":{"b":"c"}},"line1\nline2:"],"ok":"line1\nline2:"}
+{"fn":"resolveLoginShell","args":[["a",1],"a😀b😀c"],"ok":"a😀b😀c"}
+{"fn":"resolveLoginShell","args":[{"a":{"b":"c"}},"HELLOünïcödé"],"ok":"HELLOünïcödé"}
+{"fn":"resolveLoginShell","args":[0,"Hello World"],"ok":"Hello World"}
+{"fn":"resolveLoginShell","args":[true,"aa..b"],"ok":"aa..b"}
+{"fn":"resolveLoginShell","args":[{"a":{"b":"c"}},"aünïcödé"],"ok":"aünïcödé"}
+{"fn":"resolveLoginShell","args":[true,"ünïcödé😀"],"ok":"ünïcödé😀"}
+{"fn":"resolveLoginShell","args":[{"a":"b"},"{name} has {count} items"],"ok":"{name} has {count} items"}
+{"fn":"resolveLoginShell","args":[{"a":"b"},"abé"],"ok":"abé"}
+{"fn":"resolveLoginShell","args":[{"a":{"b":"c"}},"HELLO﻿bom"],"ok":"HELLO﻿bom"}
+{"fn":"resolveLoginShell","args":[["a",1],":"],"ok":":"}
+{"fn":"resolveLoginShell","args":[0,"straße"],"ok":"straße"}
+{"fn":"resolveLoginShell","args":[true,"İstanbulünïcödé"],"ok":"İstanbulünïcödé"}
+{"fn":"resolveLoginShell","args":[{"a":"b"},"İstanbul"],"ok":"İstanbul"}
+{"fn":"resolveLoginShell","args":[{"a":{"b":"c"}},"ünïcödéhello world"],"ok":"ünïcödéhello world"}
+{"fn":"resolveLoginShell","args":["x",""],"ok":"/bin/zsh"}
+{"fn":"resolveLoginShell","args":["x",{"$undefined":true}],"ok":"/bin/zsh"}
+{"fn":"resolveLoginShell","args":[["a",1],"tab\tseparated"],"ok":"tab\tseparated"}
+{"fn":"resolveLoginShell","args":[{"a":{"b":"c"}},"  padded  "],"ok":"padded"}
+{"fn":"resolveLoginShell","args":[{"a":{"b":"c"}},"trailing."],"ok":"trailing."}
+{"fn":"resolveLoginShell","args":[["a",1],"Hello World"],"ok":"Hello World"}
+{"fn":"resolveLoginShell","args":[null,"  padded  "],"ok":"padded"}
+{"fn":"resolveLoginShell","args":[{},"ΣΊΣΥΦΟΣa.b.c"],"ok":"ΣΊΣΥΦΟΣa.b.c"}
+{"fn":"resolveLoginShell","args":["x","İstanbul"],"ok":"İstanbul"}
+{"fn":"resolveLoginShell","args":[["a",1],"straße"],"ok":"straße"}
+{"fn":"resolveLoginShell","args":[[],"hello world"],"ok":"hello world"}
+{"fn":"resolveLoginShell","args":[["a",1],"hello"],"ok":"hello"}
+{"fn":"resolveLoginShell","args":[["a",1],"key_name-1"],"ok":"key_name-1"}
+{"fn":"resolveLoginShell","args":[["a",1],"hello world"],"ok":"hello world"}
+{"fn":"resolveLoginShell","args":["b","ab"],"ok":"ab"}
+{"fn":"resolveLoginShell","args":[[],"./x/**/*.json"],"ok":"./x/**/*.json"}
+{"fn":"resolveLoginShell","args":[{},"Hello WorldHello World"],"ok":"Hello WorldHello World"}
+{"fn":"resolveLoginShell","args":[[],"a.b.c"],"ok":"a.b.c"}
+{"fn":"resolveLoginShell","args":[{"a":{"b":"c"}},"./x/**/*.json"],"ok":"./x/**/*.json"}
+{"fn":"resolveLoginShell","args":[{},"héllo wörld"],"ok":"héllo wörld"}
+{"fn":"resolveLoginShell","args":[{},"👍🏽 thumbs"],"ok":"👍🏽 thumbs"}
+{"fn":"resolveLoginShell","args":[{},"日本語"],"ok":"日本語"}
+{"fn":"resolveLoginShell","args":[{},"é"],"ok":"é"}
+{"fn":"resolveLoginShell","args":[{},"İstanbul"],"ok":"İstanbul"}
+{"fn":"resolveLoginShell","args":[{},"ılık ırmak"],"ok":"ılık ırmak"}
+{"fn":"resolveLoginShell","args":[{},"👨‍👩‍👧 family"],"ok":"👨‍👩‍👧 family"}
+{"fn":"resolveLoginShell","args":[{},"a b"],"ok":"a b"}
+{"fn":"resolveLoginShell","args":[{},"ΣΊΣΥΦΟΣ"],"ok":"ΣΊΣΥΦΟΣ"}
+{"fn":"resolveLoginShell","args":[{},"a😀b"],"ok":"a😀b"}
+{"fn":"resolveLoginShell","args":[{},"﻿bom"],"ok":"bom"}
+{"fn":"resolveLoginShell","args":[{},"a²b x½ y①"],"ok":"a²b x½ y①"}
+{"fn":"resolveLoginShell","args":[{},"aⅠb Ⅻ"],"ok":"aⅠb Ⅻ"}
+{"fn":"resolveLoginShell","args":[{},"a𐐀b 𝐀bc"],"ok":"a𐐀b 𝐀bc"}
+{"fn":"resolveLoginShell","args":[{},"कि ٣٤"],"ok":"कि ٣٤"}
+{"fn":"mergePathEntries","args":["tab\tseparated","",true],"ok":"tab\tseparated"}
+{"fn":"mergePathEntries","args":["trailing.ΣΊΣΥΦΟΣ",{"$undefined":true},null],"ok":"trailing.ΣΊΣΥΦΟΣ"}
+{"fn":"mergePathEntries","args":["hello worlda😀b😀c","{name} has {count} items","x"],"ok":"hello worlda😀b😀c:{name} has {count} items"}
+{"fn":"mergePathEntries","args":["trailing.","HELLOİstanbul",{}],"ok":"trailing.:HELLOİstanbul"}
+{"fn":"mergePathEntries","args":["hello","emoji 👍🏽 mixtrailing.","x"],"ok":"hello:emoji 👍🏽 mixtrailing."}
+{"fn":"mergePathEntries","args":["a",{"$undefined":true},[]],"ok":"a"}
+{"fn":"mergePathEntries","args":["hello world","﻿bom",null],"ok":"hello world:bom"}
+{"fn":"mergePathEntries","args":["😀","ΣΊΣΥΦΟΣ",true],"ok":"😀:ΣΊΣΥΦΟΣ"}
+{"fn":"mergePathEntries","args":["line1\nline2","src/a/b.tsline1\nline2",0],"ok":"line1\nline2:src/a/b.tsline1\nline2"}
+{"fn":"mergePathEntries","args":["a:b:c",{"$undefined":true},["a",1]],"ok":"a:b:c"}
+{"fn":"mergePathEntries","args":["tab\tseparated","tab\tseparated",0],"ok":"tab\tseparated"}
+{"fn":"mergePathEntries","args":["emoji 👍🏽 mix","日本語のテキスト",true],"ok":"emoji 👍🏽 mix:日本語のテキスト"}
+{"fn":"mergePathEntries","args":[{"$undefined":true},"  padded  HELLO","x"],"ok":"padded  HELLO"}
+{"fn":"mergePathEntries","args":[{"$undefined":true},"Hello World",{"a":"b"}],"ok":"Hello World"}
+{"fn":"mergePathEntries","args":["ey_n","ΣΊΣΥΦΟΣkey_name-1",["a",1]],"ok":"ey_n:ΣΊΣΥΦΟΣkey_name-1"}
+{"fn":"mergePathEntries","args":["é",{"$undefined":true},{}],"ok":"é"}
+{"fn":"mergePathEntries","args":[{"$undefined":true},"{name} has {count} items",true],"ok":"{name} has {count} items"}
+{"fn":"mergePathEntries","args":["abc",{"$undefined":true},["a",1]],"ok":"abc"}
+{"fn":"mergePathEntries","args":["hello worldünïcödé",{"$undefined":true},["a",1]],"ok":"hello worldünïcödé"}
+{"fn":"mergePathEntries","args":["ΣΊΣΥΦΟΣ",{"$undefined":true},{}],"ok":"ΣΊΣΥΦΟΣ"}
+{"fn":"mergePathEntries","args":["",{"$undefined":true},["a",1]],"ok":{"$undefined":true}}
+{"fn":"mergePathEntries","args":["ΣΊΣΥΦΟΣ",{"$undefined":true},0],"ok":"ΣΊΣΥΦΟΣ"}
+{"fn":"mergePathEntries","args":["straßens:key.path","key_name-1",["a",1]],"ok":"straßens:key.path:key_name-1"}
+{"fn":"mergePathEntries","args":["a😀b😀c日本語のテキスト","😀b😀c日",0],"ok":"a😀b😀c日本語のテキスト:😀b😀c日"}
+{"fn":"mergePathEntries","args":[{"$undefined":true},"line1\nline2",[]],"ok":"line1\nline2"}
+{"fn":"mergePathEntries","args":[{"$undefined":true},"hello",0],"ok":"hello"}
+{"fn":"mergePathEntries","args":["abcHELLO","straße",{"a":{"b":"c"}}],"ok":"abcHELLO:straße"}
+{"fn":"mergePathEntries","args":[{"$undefined":true},"ünïcödé",null],"ok":"ünïcödé"}
+{"fn":"mergePathEntries","args":["a.b.c",{"$undefined":true},null],"ok":"a.b.c"}
+{"fn":"mergePathEntries","args":[{"$undefined":true},"a",{"a":{"b":"c"}}],"ok":"a"}
+{"fn":"mergePathEntries","args":["emoji 👍🏽 mix","👍",{"a":"b"}],"ok":"emoji 👍🏽 mix:👍"}
+{"fn":"mergePathEntries","args":["HELLOline1\nline2","ne",{"a":{"b":"c"}}],"ok":"HELLOline1\nline2:ne"}
+{"fn":"mergePathEntries","args":[{"$undefined":true},{"$undefined":true},0],"ok":{"$undefined":true}}
+{"fn":"mergePathEntries","args":["😀  padded  ","a..b","x"],"ok":"😀  padded:a..b"}
+{"fn":"mergePathEntries","args":[{"$undefined":true},"emoji 👍🏽 mix",true],"ok":"emoji 👍🏽 mix"}
+{"fn":"mergePathEntries","args":[{"$undefined":true},"a😀b😀c",0],"ok":"a😀b😀c"}
+{"fn":"mergePathEntries","args":["straße","ΣΊΣΥΦΟΣ",{"a":{"b":"c"}}],"ok":"straße:ΣΊΣΥΦΟΣ"}
+{"fn":"mergePathEntries","args":["é  padded  ","dded ",{"a":"b"}],"ok":"é  padded:dded"}
+{"fn":"mergePathEntries","args":["src/a/b.ts",":",{"a":"b"}],"ok":"src/a/b.ts"}
+{"fn":"mergePathEntries","args":["😀","日本語のテキスト",{"a":{"b":"c"}}],"ok":"😀:日本語のテキスト"}
+{"fn":"mergePathEntries","args":["a","ab",0],"ok":"a:ab"}
+{"fn":"mergePathEntries","args":["line1\nline2",{"$undefined":true},{"a":"b"}],"ok":"line1\nline2"}
+{"fn":"mergePathEntries","args":["trailing.","line1\nline2",{}],"ok":"trailing.:line1\nline2"}
+{"fn":"mergePathEntries","args":[{"$undefined":true},"Hello World",null],"ok":"Hello World"}
+{"fn":"mergePathEntries","args":["L","İstanbul",null],"ok":"L:İstanbul"}
+{"fn":"mergePathEntries","args":["tab\tseparateda..b","a😀b😀c",null],"ok":"tab\tseparateda..b:a😀b😀c"}
+{"fn":"mergePathEntries","args":["src/a/b.ts",{"$undefined":true},{"a":{"b":"c"}}],"ok":"src/a/b.ts"}
+{"fn":"mergePathEntries","args":[{"$undefined":true},{"$undefined":true},{}],"ok":{"$undefined":true}}
+{"fn":"mergePathEntries","args":[" a.","  padded  a.b.c","x"],"ok":"a.:padded  a.b.c"}
+{"fn":"mergePathEntries","args":["a😀b😀c","emoji 👍🏽 mix",["a",1]],"ok":"a😀b😀c:emoji 👍🏽 mix"}
+{"fn":"mergePathEntries","args":["a😀b😀c",{"$undefined":true},{"a":"b"}],"ok":"a😀b😀c"}
+{"fn":"mergePathEntries","args":["日本語のテキスト","😀",true],"ok":"日本語のテキスト:😀"}
+{"fn":"mergePathEntries","args":["abc",{"$undefined":true},{"a":"b"}],"ok":"abc"}
+{"fn":"mergePathEntries","args":["straßeünïcödé","abc",null],"ok":"straßeünïcödé:abc"}
+{"fn":"mergePathEntries","args":["HELLOa","a😀b😀c",{"a":{"b":"c"}}],"ok":"HELLOa:a😀b😀c"}
+{"fn":"mergePathEntries","args":["line1\nline2","ne1\nl",[]],"ok":"line1\nline2:ne1\nl"}
+{"fn":"mergePathEntries","args":["","HELLOabc",[]],"ok":"HELLOabc"}
+{"fn":"mergePathEntries","args":["ab","abc",[]],"ok":"ab:abc"}
+{"fn":"mergePathEntries","args":["é","Hello World",[]],"ok":"é:Hello World"}
+{"fn":"mergePathEntries","args":["İstanbul",{"$undefined":true},{"a":"b"}],"ok":"İstanbul"}
+{"fn":"mergePathEntries","args":[{"$undefined":true},"ünïcödé",true],"ok":"ünïcödé"}
+{"fn":"mergePathEntries","args":["a.b.cé",{"$undefined":true},{"a":{"b":"c"}}],"ok":"a.b.cé"}
+{"fn":"mergePathEntries","args":["key_name-1",{"$undefined":true},{}],"ok":"key_name-1"}
+{"fn":"mergePathEntries","args":["line1\nline2line1\nline2",{"$undefined":true},[]],"ok":"line1\nline2line1\nline2"}
+{"fn":"mergePathEntries","args":["hello world","key_name-1",null],"ok":"hello world:key_name-1"}
+{"fn":"mergePathEntries","args":["trailing.","hello world",["a",1]],"ok":"trailing.:hello world"}
+{"fn":"mergePathEntries","args":[{"$undefined":true},"😀",true],"ok":"😀"}
+{"fn":"mergePathEntries","args":["src/a/b.ts",{"$undefined":true},0],"ok":"src/a/b.ts"}
+{"fn":"mergePathEntries","args":["é",{"$undefined":true},[]],"ok":"é"}
+{"fn":"mergePathEntries","args":["Hello Worldemoji 👍🏽 mix",{"$undefined":true},{"a":"b"}],"ok":"Hello Worldemoji 👍🏽 mix"}
+{"fn":"mergePathEntries","args":["D","Hello World",true],"ok":"D:Hello World"}
+{"fn":"mergePathEntries","args":[{"$undefined":true},"a:b:c",[]],"ok":"a:b:c"}
+{"fn":"mergePathEntries","args":[{"$undefined":true},"HELLOa.b.c","x"],"ok":"HELLOa.b.c"}
+{"fn":"mergePathEntries","args":["./x/**/*.json","{name} has {count} items",null],"ok":"./x/**/*.json:{name} has {count} items"}
+{"fn":"mergePathEntries","args":["sr","﻿bomsrc/a/b.ts","x"],"ok":"sr:bomsrc/a/b.ts"}
+{"fn":"mergePathEntries","args":["😀b","a😀b😀c",["a",1]],"ok":"😀b:a😀b😀c"}
+{"fn":"mergePathEntries","args":[{"$undefined":true},"a.b.c",0],"ok":"a.b.c"}
+{"fn":"mergePathEntries","args":["","﻿bom",null],"ok":"bom"}
+{"fn":"mergePathEntries","args":[{"$undefined":true},"ns:key.path",0],"ok":"ns:key.path"}
+{"fn":"mergePathEntries","args":["ΣΊΣΥΦΟΣ","a:b:c",true],"ok":"ΣΊΣΥΦΟΣ:a:b:c"}
+{"fn":"mergePathEntries","args":[{"$undefined":true},{"$undefined":true},"x"],"ok":{"$undefined":true}}
+{"fn":"mergePathEntries","args":["{name} has {count} items","hello world",{}],"ok":"{name} has {count} items:hello world"}
+{"fn":"mergePathEntries","args":["line1\nline2","é日本語のテキスト",{}],"ok":"line1\nline2:é日本語のテキスト"}
+{"fn":"mergePathEntries","args":["a..b",":a",null],"ok":"a..b:a"}
+{"fn":"mergePathEntries","args":["hello","o","x"],"ok":"hello:o"}
+{"fn":"mergePathEntries","args":[{"$undefined":true},"﻿bom",{"a":{"b":"c"}}],"ok":"bom"}
+{"fn":"mergePathEntries","args":[{"$undefined":true},"a😀b😀c",["a",1]],"ok":"a😀b😀c"}
+{"fn":"mergePathEntries","args":["HELLO",{"$undefined":true},{"a":{"b":"c"}}],"ok":"HELLO"}
+{"fn":"mergePathEntries","args":["HELLO",":",0],"ok":"HELLO"}
+{"fn":"mergePathEntries","args":[{"$undefined":true},"hello world",[]],"ok":"hello world"}
+{"fn":"mergePathEntries","args":[{"$undefined":true},"a..b😀",{"a":{"b":"c"}}],"ok":"a..b😀"}
+{"fn":"mergePathEntries","args":["﻿bom","a.b.c",{"a":{"b":"c"}}],"ok":"bom:a.b.c"}
+{"fn":"mergePathEntries","args":["ΣΊΣΥΦΟΣline1\nline2",{"$undefined":true},{"a":"b"}],"ok":"ΣΊΣΥΦΟΣline1\nline2"}
+{"fn":"mergePathEntries","args":["日本語のテキスト","tab\tseparated",{}],"ok":"日本語のテキスト:tab\tseparated"}
+{"fn":"mergePathEntries","args":["hello","a.b.c",{}],"ok":"hello:a.b.c"}
+{"fn":"mergePathEntries","args":["b","ab",null],"ok":"b:ab"}
+{"fn":"mergePathEntries","args":["hello","é",[]],"ok":"hello:é"}
+{"fn":"mergePathEntries","args":[".leading","leading",true],"ok":".leading:leading"}
+{"fn":"mergePathEntries","args":["abc","abc",["a",1]],"ok":"abc"}
+{"fn":"mergePathEntries","args":["ΣΊΣΥΦΟΣ","emoji 👍🏽 mix",{"a":"b"}],"ok":"ΣΊΣΥΦΟΣ:emoji 👍🏽 mix"}
+{"fn":"mergePathEntries","args":["ns:key.pathHello World","a😀b😀c.leading",["a",1]],"ok":"ns:key.pathHello World:a😀b😀c.leading"}
+{"fn":"mergePathEntries","args":["é","line1\nline2",{}],"ok":"é:line1\nline2"}
+{"fn":"mergePathEntries","args":["",{"$undefined":true},[]],"ok":{"$undefined":true}}
+{"fn":"mergePathEntries","args":["abc","ΣΊΣΥΦΟΣ",[]],"ok":"abc:ΣΊΣΥΦΟΣ"}
+{"fn":"mergePathEntries","args":["./x/**/*.json",{"$undefined":true},["a",1]],"ok":"./x/**/*.json"}
+{"fn":"mergePathEntries","args":[{"$undefined":true},"abc",true],"ok":"abc"}
+{"fn":"mergePathEntries","args":[":",{"$undefined":true},true],"ok":{"$undefined":true}}
+{"fn":"mergePathEntries","args":["e1\nl","line1\nline2",{}],"ok":"e1\nl:line1\nline2"}
+{"fn":"mergePathEntries","args":[{"$undefined":true},{"$undefined":true},true],"ok":{"$undefined":true}}
+{"fn":"mergePathEntries","args":["key_name-1straße","Hello World",true],"ok":"key_name-1straße:Hello World"}
+{"fn":"mergePathEntries","args":["İstanbul","ab","x"],"ok":"İstanbul:ab"}
+{"fn":"mergePathEntries","args":["HELLO","",0],"ok":"HELLO"}
+{"fn":"mergePathEntries","args":["ΣΊΣΥΦΟΣé",{"$undefined":true},true],"ok":"ΣΊΣΥΦΟΣé"}
+{"fn":"mergePathEntries","args":["trailing.a.b.c","😀",null],"ok":"trailing.a.b.c:😀"}
+{"fn":"mergePathEntries","args":[{"$undefined":true},"  padded  ",{}],"ok":"padded"}
+{"fn":"mergePathEntries","args":["a..b","straßeé",null],"ok":"a..b:straßeé"}
+{"fn":"mergePathEntries","args":["日本語のテキスト","İstanbulstraße",{"a":{"b":"c"}}],"ok":"日本語のテキスト:İstanbulstraße"}
+{"fn":"mergePathEntries","args":[" wo","hello world",{"a":{"b":"c"}}],"ok":"wo:hello world"}
+{"fn":"mergePathEntries","args":[":","ünïcödé","x"],"ok":"ünïcödé"}
+{"fn":"mergePathEntries","args":["cö","a..bünïcödé",true],"ok":"cö:a..bünïcödé"}
+{"fn":"mergePathEntries","args":[{"$undefined":true},"﻿bom",0],"ok":"bom"}
+{"fn":"mergePathEntries","args":["./x/**/*.json","ünïcödé",{"a":"b"}],"ok":"./x/**/*.json:ünïcödé"}
+{"fn":"mergePathEntries","args":["straße","a.b.c",{}],"ok":"straße:a.b.c"}
+{"fn":"mergePathEntries","args":[{"$undefined":true},"é{name} has {count} items",0],"ok":"é{name} has {count} items"}
+{"fn":"mergePathEntries","args":["","./x/**/*.json",{"a":"b"}],"ok":"./x/**/*.json"}
+{"fn":"mergePathEntries","args":["é",{"$undefined":true},["a",1]],"ok":"é"}
+{"fn":"mergePathEntries","args":["t","ns:key.path",["a",1]],"ok":"t:ns:key.path"}
+{"fn":"mergePathEntries","args":["","日本語のテキスト","x"],"ok":"日本語のテキスト"}
+{"fn":"mergePathEntries","args":["Hello World"," Worl",true],"ok":"Hello World:Worl"}
+{"fn":"mergePathEntries","args":[{"$undefined":true},"😀",[]],"ok":"😀"}
+{"fn":"mergePathEntries","args":["l","hello world",[]],"ok":"l:hello world"}
+{"fn":"mergePathEntries","args":["Hello World",{"$undefined":true},null],"ok":"Hello World"}
+{"fn":"mergePathEntries","args":[{"$undefined":true},{"$undefined":true},["a",1]],"ok":{"$undefined":true}}
+{"fn":"mergePathEntries","args":[{"$undefined":true},".leading",["a",1]],"ok":".leading"}
+{"fn":"mergePathEntries","args":["a.b.c","ΣΊΣΥΦΟΣ",[]],"ok":"a.b.c:ΣΊΣΥΦΟΣ"}
+{"fn":"mergePathEntries","args":["ünïcödé","ns:key.path",null],"ok":"ünïcödé:ns:key.path"}
+{"fn":"mergePathEntries","args":["ADDED","  padded  ",{"a":{"b":"c"}}],"ok":"ADDED:padded"}
+{"fn":"mergePathEntries","args":["a:b:csrc/a/b.ts",{"$undefined":true},{}],"ok":"a:b:csrc/a/b.ts"}
+{"fn":"mergePathEntries","args":["./x/**/*.json","key_name-1",{"a":{"b":"c"}}],"ok":"./x/**/*.json:key_name-1"}
+{"fn":"mergePathEntries","args":["日本語のテキスト","é",true],"ok":"日本語のテキスト:é"}
+{"fn":"mergePathEntries","args":["İstanbul:",":",null],"ok":"İstanbul"}
+{"fn":"mergePathEntries","args":["stra","straße",{"a":"b"}],"ok":"stra:straße"}
+{"fn":"mergePathEntries","args":["  padded  ","d ",["a",1]],"ok":"padded:d"}
+{"fn":"mergePathEntries","args":["Hello World","line1\nline2",{"a":"b"}],"ok":"Hello World:line1\nline2"}
+{"fn":"mergePathEntries","args":["./x/**/*.json","İstanbulΣΊΣΥΦΟΣ",{"a":"b"}],"ok":"./x/**/*.json:İstanbulΣΊΣΥΦΟΣ"}
+{"fn":"mergePathEntries","args":["key_name-1","trailing.",null],"ok":"key_name-1:trailing."}
+{"fn":"mergePathEntries","args":["a:b:ctab\tseparated","a..b",true],"ok":"a:b:ctab\tseparated:a..b"}
+{"fn":"mergePathEntries","args":[".leading","a:b:c",true],"ok":".leading:a:b:c"}
+{"fn":"mergePathEntries","args":["ΣΊΣΥΦΟΣ","a:b:c",[]],"ok":"ΣΊΣΥΦΟΣ:a:b:c"}
+{"fn":"mergePathEntries","args":["","ab",{"a":{"b":"c"}}],"ok":"ab"}
+{"fn":"mergePathEntries","args":["a:b:c","a:b:c",0],"ok":"a:b:c"}
+{"fn":"mergePathEntries","args":["NT} ITEMS","{name} has {count} itemstab\tseparated",{"a":{"b":"c"}}],"ok":"NT} ITEMS:{name} has {count} itemstab\tseparated"}
+{"fn":"mergePathEntries","args":["a..b",{"$undefined":true},null],"ok":"a..b"}
+{"fn":"mergePathEntries","args":["ns:key.path","ab",true],"ok":"ns:key.path:ab"}
+{"fn":"mergePathEntries","args":[{"$undefined":true},"trailing.",{}],"ok":"trailing."}
+{"fn":"mergePathEntries","args":["tab\tseparated",{"$undefined":true},0],"ok":"tab\tseparated"}
+{"fn":"mergePathEntries","args":[":日本語のテキスト","HELLO","x"],"ok":"日本語のテキスト:HELLO"}
+{"fn":"mergePathEntries","args":["a😀b😀c",":",true],"ok":"a😀b😀c"}
+{"fn":"mergePathEntries","args":["trailing.","Hello World",0],"ok":"trailing.:Hello World"}
+{"fn":"mergePathEntries","args":[{"$undefined":true},{"$undefined":true},{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"mergePathEntries","args":[{"$undefined":true},"ab",{}],"ok":"ab"}
+{"fn":"mergePathEntries","args":[".leading",{"$undefined":true},null],"ok":".leading"}
+{"fn":"mergePathEntries","args":["hello","l",["a",1]],"ok":"hello:l"}
+{"fn":"mergePathEntries","args":["src/a/b.ts","a.b.c",{"a":{"b":"c"}}],"ok":"src/a/b.ts:a.b.c"}
+{"fn":"mergePathEntries","args":["{name} has {count} items","straße",[]],"ok":"{name} has {count} items:straße"}
+{"fn":"mergePathEntries","args":["tab\tseparated","a",true],"ok":"tab\tseparated:a"}
+{"fn":"mergePathEntries","args":["ΣΊΣΥΦΟΣ","  padded  hello world",{"a":{"b":"c"}}],"ok":"ΣΊΣΥΦΟΣ:padded  hello world"}
+{"fn":"mergePathEntries","args":["hello world","é",{"a":{"b":"c"}}],"ok":"hello world:é"}
+{"fn":"mergePathEntries","args":["hello worldtrailing.","HELLO",[]],"ok":"hello worldtrailing.:HELLO"}
+{"fn":"mergePathEntries","args":["hello","İstanbul﻿bom",{"a":"b"}],"ok":"hello:İstanbul﻿bom"}
+{"fn":"mergePathEntries","args":["straßestraße",":",null],"ok":"straßestraße"}
+{"fn":"mergePathEntries","args":["abc","abc﻿bom",null],"ok":"abc:abc﻿bom"}
+{"fn":"mergePathEntries","args":["İstanbul","{name} has {count} items",{"a":"b"}],"ok":"İstanbul:{name} has {count} items"}
+{"fn":"mergePathEntries","args":["line1\nline2","trailing.",0],"ok":"line1\nline2:trailing."}
+{"fn":"mergePathEntries","args":["src/a/b.ts  padded  ",{"$undefined":true},{}],"ok":"src/a/b.ts  padded"}
+{"fn":"mergePathEntries","args":["ns:key.path",{"$undefined":true},null],"ok":"ns:key.path"}
+{"fn":"mergePathEntries","args":["Hello World","straße:",{}],"ok":"Hello World:straße"}
+{"fn":"mergePathEntries","args":["line1\nline2","ine",null],"ok":"line1\nline2:ine"}
+{"fn":"mergePathEntries","args":[{"$undefined":true},{"$undefined":true},[]],"ok":{"$undefined":true}}
+{"fn":"mergePathEntries","args":[".leading","key_name-1",null],"ok":".leading:key_name-1"}
+{"fn":"mergePathEntries","args":[".leading",{"$undefined":true},true],"ok":".leading"}
+{"fn":"mergePathEntries","args":["hello",{"$undefined":true},"x"],"ok":"hello"}
+{"fn":"mergePathEntries","args":["ab","hello worldstraße",{"a":"b"}],"ok":"ab:hello worldstraße"}
+{"fn":"mergePathEntries","args":["a:b:c",":",null],"ok":"a:b:c"}
+{"fn":"mergePathEntries","args":["HELLOns:key.path","﻿bom","x"],"ok":"HELLOns:key.path:bom"}
+{"fn":"mergePathEntries","args":["Hello World","a😀b😀chello world","x"],"ok":"Hello World:a😀b😀chello world"}
+{"fn":"mergePathEntries","args":["a.b.c",{"$undefined":true},"x"],"ok":"a.b.c"}
+{"fn":"mergePathEntries","args":["trailing.","abc",0],"ok":"trailing.:abc"}
+{"fn":"mergePathEntries","args":[".leading","emoji 👍🏽 mix",null],"ok":".leading:emoji 👍🏽 mix"}
+{"fn":"mergePathEntries","args":["ΣΊΣΥΦΟΣünïcödé","a😀b😀c",{"a":"b"}],"ok":"ΣΊΣΥΦΟΣünïcödé:a😀b😀c"}
+{"fn":"mergePathEntries","args":[{"$undefined":true},"abc",{"a":"b"}],"ok":"abc"}
+{"fn":"mergePathEntries","args":[{"$undefined":true},{"$undefined":true},null],"ok":{"$undefined":true}}
+{"fn":"mergePathEntries","args":["a..ba.b.c","a:b:c",{"a":"b"}],"ok":"a..ba.b.c:a:b:c"}
+{"fn":"mergePathEntries","args":["ns:key.path",{"$undefined":true},{}],"ok":"ns:key.path"}
+{"fn":"mergePathEntries","args":["  padded  ","src/a/b.ts",{"a":"b"}],"ok":"padded:src/a/b.ts"}
+{"fn":"mergePathEntries","args":[{"$undefined":true},"é","x"],"ok":"é"}
+{"fn":"mergePathEntries","args":["a..bhello world",{"$undefined":true},[]],"ok":"a..bhello world"}
+{"fn":"mergePathEntries","args":["straße",{"$undefined":true},true],"ok":"straße"}
+{"fn":"mergePathEntries","args":["😀","Hello Worldsrc/a/b.ts",{"a":{"b":"c"}}],"ok":"😀:Hello Worldsrc/a/b.ts"}
+{"fn":"mergePathEntries","args":["HELLO","a..b",[]],"ok":"HELLO:a..b"}
+{"fn":"mergePathEntries","args":[{"$undefined":true},"",true],"ok":{"$undefined":true}}
+{"fn":"mergePathEntries","args":["héllo wörld","",true],"ok":"héllo wörld"}
+{"fn":"mergePathEntries","args":["👍🏽 thumbs","",true],"ok":"👍🏽 thumbs"}
+{"fn":"mergePathEntries","args":["日本語","",true],"ok":"日本語"}
+{"fn":"mergePathEntries","args":["","",true],"ok":{"$undefined":true}}
+{"fn":"mergePathEntries","args":["é","",true],"ok":"é"}
+{"fn":"mergePathEntries","args":["İstanbul","",true],"ok":"İstanbul"}
+{"fn":"mergePathEntries","args":["straße","",true],"ok":"straße"}
+{"fn":"mergePathEntries","args":["ılık ırmak","",true],"ok":"ılık ırmak"}
+{"fn":"mergePathEntries","args":["👨‍👩‍👧 family","",true],"ok":"👨‍👩‍👧 family"}
+{"fn":"mergePathEntries","args":["a b","",true],"ok":"a b"}
+{"fn":"mergePathEntries","args":["ΣΊΣΥΦΟΣ","",true],"ok":"ΣΊΣΥΦΟΣ"}
+{"fn":"mergePathEntries","args":["a😀b","",true],"ok":"a😀b"}
+{"fn":"mergePathEntries","args":["﻿bom","",true],"ok":"bom"}
+{"fn":"mergePathEntries","args":["a²b x½ y①","",true],"ok":"a²b x½ y①"}
+{"fn":"mergePathEntries","args":["aⅠb Ⅻ","",true],"ok":"aⅠb Ⅻ"}
+{"fn":"mergePathEntries","args":["a𐐀b 𝐀bc","",true],"ok":"a𐐀b 𝐀bc"}
+{"fn":"mergePathEntries","args":["कि ٣٤","",true],"ok":"कि ٣٤"}
+{"fn":"mergePathEntries","args":["tab\tseparated",{"$undefined":true},true],"ok":"tab\tseparated"}
+{"fn":"mergePathEntries","args":["tab\tseparated","héllo wörld",true],"ok":"tab\tseparated:héllo wörld"}
+{"fn":"mergePathEntries","args":["tab\tseparated","👍🏽 thumbs",true],"ok":"tab\tseparated:👍🏽 thumbs"}
+{"fn":"mergePathEntries","args":["tab\tseparated","日本語",true],"ok":"tab\tseparated:日本語"}
+{"fn":"mergePathEntries","args":["tab\tseparated","é",true],"ok":"tab\tseparated:é"}
+{"fn":"mergePathEntries","args":["tab\tseparated","İstanbul",true],"ok":"tab\tseparated:İstanbul"}
+{"fn":"mergePathEntries","args":["tab\tseparated","straße",true],"ok":"tab\tseparated:straße"}
+{"fn":"mergePathEntries","args":["tab\tseparated","ılık ırmak",true],"ok":"tab\tseparated:ılık ırmak"}
+{"fn":"mergePathEntries","args":["tab\tseparated","👨‍👩‍👧 family",true],"ok":"tab\tseparated:👨‍👩‍👧 family"}
+{"fn":"mergePathEntries","args":["tab\tseparated","a b",true],"ok":"tab\tseparated:a b"}
+{"fn":"mergePathEntries","args":["tab\tseparated","ΣΊΣΥΦΟΣ",true],"ok":"tab\tseparated:ΣΊΣΥΦΟΣ"}
+{"fn":"mergePathEntries","args":["tab\tseparated","a😀b",true],"ok":"tab\tseparated:a😀b"}
+{"fn":"mergePathEntries","args":["tab\tseparated","﻿bom",true],"ok":"tab\tseparated:bom"}
+{"fn":"mergePathEntries","args":["tab\tseparated","a²b x½ y①",true],"ok":"tab\tseparated:a²b x½ y①"}
+{"fn":"mergePathEntries","args":["tab\tseparated","aⅠb Ⅻ",true],"ok":"tab\tseparated:aⅠb Ⅻ"}
+{"fn":"mergePathEntries","args":["tab\tseparated","a𐐀b 𝐀bc",true],"ok":"tab\tseparated:a𐐀b 𝐀bc"}
+{"fn":"mergePathEntries","args":["tab\tseparated","कि ٣٤",true],"ok":"tab\tseparated:कि ٣٤"}
+{"fn":"readEnvironmentFromLoginShell","args":[{"a":{"b":"c"}},"x",{"$undefined":true}],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[{},{},{"a":"b"}],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[[],{},null],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[0,"x",["a",1]],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":["x",true,0],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[{},{"a":"b"},{"a":{"b":"c"}}],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[true,true,{}],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[{"a":"b"},[],["a",1]],"ok":{}}
+{"fn":"readEnvironmentFromLoginShell","args":[[],0,0],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[{"a":"b"},null,true],"error":"Cannot read properties of null (reading 'length')"}
+{"fn":"readEnvironmentFromLoginShell","args":["x","x",[]],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[true,"x",true],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[[],{},["a",1]],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[{},{"a":"b"},{"$undefined":true}],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[[],0,"x"],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[null,{"a":"b"},null],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[{"a":"b"},["a",1],{}],"error":"Unsupported environment variable name: a"}
+{"fn":"readEnvironmentFromLoginShell","args":["x",{"a":"b"},true],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[[],{},"x"],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[{"a":{"b":"c"}},0,null],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[[],["a",1],{"a":"b"}],"error":"Unsupported environment variable name: a"}
+{"fn":"readEnvironmentFromLoginShell","args":[{"a":"b"},{},0],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[["a",1],["a",1],null],"error":"Unsupported environment variable name: a"}
+{"fn":"readEnvironmentFromLoginShell","args":[true,true,["a",1]],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[{"a":{"b":"c"}},[],{"$undefined":true}],"ok":{}}
+{"fn":"readEnvironmentFromLoginShell","args":[null,null,{}],"error":"Cannot read properties of null (reading 'length')"}
+{"fn":"readEnvironmentFromLoginShell","args":[{},{"a":{"b":"c"}},{}],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[0,{"a":{"b":"c"}},{"a":"b"}],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[["a",1],[],"x"],"ok":{}}
+{"fn":"readEnvironmentFromLoginShell","args":[true,"x",["a",1]],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[["a",1],0,"x"],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[0,[],0],"ok":{}}
+{"fn":"readEnvironmentFromLoginShell","args":["x",["a",1],[]],"error":"Unsupported environment variable name: a"}
+{"fn":"readEnvironmentFromLoginShell","args":[true,true,"x"],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":["x",0,"x"],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[[],null,{"$undefined":true}],"error":"Cannot read properties of null (reading 'length')"}
+{"fn":"readEnvironmentFromLoginShell","args":[0,null,0],"error":"Cannot read properties of null (reading 'length')"}
+{"fn":"readEnvironmentFromLoginShell","args":[null,null,{"$undefined":true}],"error":"Cannot read properties of null (reading 'length')"}
+{"fn":"readEnvironmentFromLoginShell","args":["x",{}],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[0,true,{"a":{"b":"c"}}],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[["a",1],[],true],"ok":{}}
+{"fn":"readEnvironmentFromLoginShell","args":[["a",1],true,{"$undefined":true}],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[true,["a",1],null],"error":"Unsupported environment variable name: a"}
+{"fn":"readEnvironmentFromLoginShell","args":["x",{"a":{"b":"c"}},{}],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[{},{"a":{"b":"c"}},true],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[{},[],{"a":"b"}],"ok":{}}
+{"fn":"readEnvironmentFromLoginShell","args":[{},[],[]],"ok":{}}
+{"fn":"readEnvironmentFromLoginShell","args":[["a",1],true,null],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":["x",{"a":"b"},{"a":{"b":"c"}}],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[true,{},{"$undefined":true}],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[null,0,{"a":{"b":"c"}}],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[true,"x"],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[{"a":"b"},["a",1],0],"error":"Unsupported environment variable name: a"}
+{"fn":"readEnvironmentFromLoginShell","args":[["a",1],null,{"a":"b"}],"error":"Cannot read properties of null (reading 'length')"}
+{"fn":"readEnvironmentFromLoginShell","args":[{"a":"b"},{"a":"b"},null],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[{"a":"b"},0,{}],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[null,[],{"a":{"b":"c"}}],"ok":{}}
+{"fn":"readEnvironmentFromLoginShell","args":[{"a":"b"},0,["a",1]],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[0,{},null],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[["a",1],0,{}],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[[],true,{"a":"b"}],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[[],"x",null],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[{},0,{}],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[0,true,["a",1]],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[{"a":"b"},{"a":{"b":"c"}},"x"],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[{"a":"b"},["a",1],{"a":{"b":"c"}}],"error":"Unsupported environment variable name: a"}
+{"fn":"readEnvironmentFromLoginShell","args":[{"a":{"b":"c"}},0,"x"],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[[],{},{"a":"b"}],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[[],["a",1],{"$undefined":true}],"error":"Unsupported environment variable name: a"}
+{"fn":"readEnvironmentFromLoginShell","args":[null,null,"x"],"error":"Cannot read properties of null (reading 'length')"}
+{"fn":"readEnvironmentFromLoginShell","args":[true,true,0],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":["x",[],{"a":"b"}],"ok":{}}
+{"fn":"readEnvironmentFromLoginShell","args":[null,["a",1]],"error":"Unsupported environment variable name: a"}
+{"fn":"readEnvironmentFromLoginShell","args":["x",{"a":"b"},[]],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[null,"x","x"],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[0,{"a":{"b":"c"}},{}],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[["a",1],{"a":{"b":"c"}},{"$undefined":true}],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":["x",{"a":{"b":"c"}},{"a":"b"}],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[0,"x",true],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[{},true,{"$undefined":true}],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":["x",true,{"$undefined":true}],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[0,true],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[{},["a",1],[]],"error":"Unsupported environment variable name: a"}
+{"fn":"readEnvironmentFromLoginShell","args":[[],{},0],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[0,{"a":"b"},{"$undefined":true}],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[{"a":{"b":"c"}},true,["a",1]],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[0,["a",1],true],"error":"Unsupported environment variable name: a"}
+{"fn":"readEnvironmentFromLoginShell","args":[0,["a",1],["a",1]],"error":"Unsupported environment variable name: a"}
+{"fn":"readEnvironmentFromLoginShell","args":[{"a":"b"},true,{}],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[0,0,"x"],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[["a",1],"x",{"a":{"b":"c"}}],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[{},null,{"a":{"b":"c"}}],"error":"Cannot read properties of null (reading 'length')"}
+{"fn":"readEnvironmentFromLoginShell","args":["x",null,{"a":{"b":"c"}}],"error":"Cannot read properties of null (reading 'length')"}
+{"fn":"readEnvironmentFromLoginShell","args":["x",["a",1],{"a":"b"}],"error":"Unsupported environment variable name: a"}
+{"fn":"readEnvironmentFromLoginShell","args":[[],0,{"$undefined":true}],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[null,[],"x"],"ok":{}}
+{"fn":"readEnvironmentFromLoginShell","args":["x",{"a":"b"}],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[true,{},true],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[["a",1],0],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[{},{"a":{"b":"c"}},{"a":"b"}],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[{},[],{"$undefined":true}],"ok":{}}
+{"fn":"readEnvironmentFromLoginShell","args":[[],"x",true],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[true,true],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[["a",1],"x",{"a":"b"}],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":["x",null,{"$undefined":true}],"error":"Cannot read properties of null (reading 'length')"}
+{"fn":"readEnvironmentFromLoginShell","args":[[],"x",{}],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[true,0,0],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[true,null],"error":"Cannot read properties of null (reading 'length')"}
+{"fn":"readEnvironmentFromLoginShell","args":[null,{"a":"b"},{"$undefined":true}],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[{},0,["a",1]],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[{"a":{"b":"c"}},[],{}],"ok":{}}
+{"fn":"readEnvironmentFromLoginShell","args":[null,{},"x"],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[0,0,["a",1]],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":["x",{},0],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[null,{},{"$undefined":true}],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[0,[],{"a":"b"}],"ok":{}}
+{"fn":"readEnvironmentFromLoginShell","args":[{},{"a":{"b":"c"}},{"$undefined":true}],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[{"a":"b"},"x",{"a":{"b":"c"}}],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[null,"x"],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[{},["a",1]],"error":"Unsupported environment variable name: a"}
+{"fn":"readEnvironmentFromLoginShell","args":[0,null],"error":"Cannot read properties of null (reading 'length')"}
+{"fn":"readEnvironmentFromLoginShell","args":[{},0],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[true,true,[]],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":["x","x","x"],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[{"a":"b"},{"a":"b"},{"a":"b"}],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[0,["a",1],null],"error":"Unsupported environment variable name: a"}
+{"fn":"readEnvironmentFromLoginShell","args":[true,true,{"$undefined":true}],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":["x",{"a":{"b":"c"}},{"a":{"b":"c"}}],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[null,{"a":{"b":"c"}},{}],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[["a",1],{"a":"b"},true],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[[],{"a":"b"},{"a":{"b":"c"}}],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[{"a":{"b":"c"}},0,{"$undefined":true}],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[{"a":"b"},0,"x"],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[null,[],0],"ok":{}}
+{"fn":"readEnvironmentFromLoginShell","args":[[],{"a":"b"},"x"],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[null,0,0],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[0,null,["a",1]],"error":"Cannot read properties of null (reading 'length')"}
+{"fn":"readEnvironmentFromLoginShell","args":[[],{"a":"b"},0],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":["x",{"a":{"b":"c"}},"x"],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[null,["a",1],[]],"error":"Unsupported environment variable name: a"}
+{"fn":"readEnvironmentFromLoginShell","args":[true,["a",1],{"a":"b"}],"error":"Unsupported environment variable name: a"}
+{"fn":"readEnvironmentFromLoginShell","args":[{"a":"b"},null],"error":"Cannot read properties of null (reading 'length')"}
+{"fn":"readEnvironmentFromLoginShell","args":[{"a":"b"},{"a":{"b":"c"}},{}],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[["a",1],{"a":"b"},[]],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[{"a":{"b":"c"}},0,{}],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[["a",1],{"a":{"b":"c"}},true],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[null,{},{}],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":["x",{"a":{"b":"c"}}],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[{"a":"b"},[]],"ok":{}}
+{"fn":"readEnvironmentFromLoginShell","args":[["a",1],{"a":"b"},"x"],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[[],true,true],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[{"a":"b"},{"a":"b"}],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[0,{"a":"b"},"x"],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[true,{"a":"b"},"x"],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[{"a":{"b":"c"}},{"a":"b"}],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[["a",1],["a",1],[]],"error":"Unsupported environment variable name: a"}
+{"fn":"readEnvironmentFromLoginShell","args":[["a",1],true],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[null,{"a":"b"},true],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[0,{},["a",1]],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[[],"x",[]],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[{"a":{"b":"c"}},["a",1],["a",1]],"error":"Unsupported environment variable name: a"}
+{"fn":"readEnvironmentFromLoginShell","args":[true,null,null],"error":"Cannot read properties of null (reading 'length')"}
+{"fn":"readEnvironmentFromLoginShell","args":[null,true],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[{"a":{"b":"c"}},true,{"a":{"b":"c"}}],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[0,{"a":"b"},{"a":{"b":"c"}}],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[0,null,"x"],"error":"Cannot read properties of null (reading 'length')"}
+{"fn":"readEnvironmentFromLoginShell","args":[["a",1],[],{"a":{"b":"c"}}],"ok":{}}
+{"fn":"readEnvironmentFromLoginShell","args":[true,["a",1],{}],"error":"Unsupported environment variable name: a"}
+{"fn":"readEnvironmentFromLoginShell","args":[["a",1],0,{"a":"b"}],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":["x",true,[]],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[true,true,null],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[{},0,[]],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[true,["a",1],true],"error":"Unsupported environment variable name: a"}
+{"fn":"readEnvironmentFromLoginShell","args":[null,null,["a",1]],"error":"Cannot read properties of null (reading 'length')"}
+{"fn":"readEnvironmentFromLoginShell","args":[{"a":"b"},"x"],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[[],{},[]],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[{"a":{"b":"c"}},true,{}],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[{"a":{"b":"c"}},{},[]],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[{"a":{"b":"c"}},true],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[[],0,["a",1]],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[[],{},{}],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[null,"x",null],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[{"a":"b"},[],{"a":"b"}],"ok":{}}
+{"fn":"readEnvironmentFromLoginShell","args":[null,0,"x"],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[["a",1],{"a":{"b":"c"}},0],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[true,{},[]],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[{"a":"b"},{"a":"b"},{"a":{"b":"c"}}],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[{},null,{}],"error":"Cannot read properties of null (reading 'length')"}
+{"fn":"readEnvironmentFromLoginShell","args":[0,true,"x"],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[[],{"a":{"b":"c"}},0],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[true,0],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[{},0,{"a":{"b":"c"}}],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[null,0,{}],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[[],true,"x"],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[{"a":"b"},true,{"a":{"b":"c"}}],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[{},{"a":"b"}],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[0,{"a":{"b":"c"}},[]],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[true,{"a":{"b":"c"}},{}],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[{"a":{"b":"c"}},0,["a",1]],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[{"a":"b"},[],{"a":{"b":"c"}}],"ok":{}}
+{"fn":"readEnvironmentFromLoginShell","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6},"x",{"$undefined":true}],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7},"x",{"$undefined":true}],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[[3,1,2],"x",{"$undefined":true}],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[{},"x",{"$undefined":true}],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[{"a":{"b":"c"}},{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6},{"$undefined":true}],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[{"a":{"b":"c"}},{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7},{"$undefined":true}],"error":"names.map is not a function"}
+{"fn":"readEnvironmentFromLoginShell","args":[{"a":{"b":"c"}},[3,1,2],{"$undefined":true}],"error":"The \"file\" argument must be of type string. Received an instance of Object"}
+{"fn":"readEnvironmentFromLoginShell","args":[{"a":{"b":"c"}},{},{"$undefined":true}],"error":"names.map is not a function"}
+{"fn":"isPathName","args":["ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isPathName","args":["ab"],"ok":false}
+{"fn":"isPathName","args":["hellohello world"],"ok":false}
+{"fn":"isPathName","args":["a"],"ok":false}
+{"fn":"isPathName","args":["line1\nline2"],"ok":false}
+{"fn":"isPathName","args":["tab\tseparated"],"ok":false}
+{"fn":"isPathName","args":["abc"],"ok":false}
+{"fn":"isPathName","args":["İstanbul{name} has {count} items"],"ok":false}
+{"fn":"isPathName","args":["trailing."],"ok":false}
+{"fn":"isPathName","args":[".leading"],"ok":false}
+{"fn":"isPathName","args":["straße"],"ok":false}
+{"fn":"isPathName","args":["a😀b😀c"],"ok":false}
+{"fn":"isPathName","args":[":"],"ok":false}
+{"fn":"isPathName","args":["😀tab\tseparated"],"ok":false}
+{"fn":"isPathName","args":["emoji 👍🏽 mixa:b:c"],"ok":false}
+{"fn":"isPathName","args":["src/a/b.ts"],"ok":false}
+{"fn":"isPathName","args":["hello"],"ok":false}
+{"fn":"isPathName","args":["日本語のテキスト"],"ok":false}
+{"fn":"isPathName","args":["HELLO"],"ok":false}
+{"fn":"isPathName","args":["./x/**/*.json"],"ok":false}
+{"fn":"isPathName","args":["a:b:c"],"ok":false}
+{"fn":"isPathName","args":["﻿bom"],"ok":false}
+{"fn":"isPathName","args":["emoji 👍🏽 mix"],"ok":false}
+{"fn":"isPathName","args":[""],"ok":false}
+{"fn":"isPathName","args":["./x/**/*.json.leading"],"ok":false}
+{"fn":"isPathName","args":["ünïcödé"],"ok":false}
+{"fn":"isPathName","args":["é"],"ok":false}
+{"fn":"isPathName","args":["line1\nline2{name} has {count} items"],"ok":false}
+{"fn":"isPathName","args":["hello world"],"ok":false}
+{"fn":"isPathName","args":["😀"],"ok":false}
+{"fn":"isPathName","args":["  padded  "],"ok":false}
+{"fn":"isPathName","args":["Hello World"],"ok":false}
+{"fn":"isPathName","args":[".leadinghello world"],"ok":false}
+{"fn":"isPathName","args":["{name} has {count} items"],"ok":false}
+{"fn":"isPathName","args":["straßesrc/a/b.ts"],"ok":false}
+{"fn":"isPathName","args":["line1\nline2İstanbul"],"ok":false}
+{"fn":"isPathName","args":["étrailing."],"ok":false}
+{"fn":"isPathName","args":["a:b:cab"],"ok":false}
+{"fn":"isPathName","args":["ünïcödétab\tseparated"],"ok":false}
+{"fn":"isPathName","args":["İstanbul"],"ok":false}
+{"fn":"isPathName","args":["abcns:key.path"],"ok":false}
+{"fn":"isPathName","args":["a.b.cline1\nline2"],"ok":false}
+{"fn":"isPathName","args":["abc{name} has {count} items"],"ok":false}
+{"fn":"isPathName","args":["abab"],"ok":false}
+{"fn":"isPathName","args":["a😀b😀c{name} has {count} items"],"ok":false}
+{"fn":"isPathName","args":["a.b.c"],"ok":false}
+{"fn":"isPathName","args":["key_name-1"],"ok":false}
+{"fn":"isPathName","args":["a😀b😀ctrailing."],"ok":false}
+{"fn":"isPathName","args":["ΣΊΣΥΦΟΣa"],"ok":false}
+{"fn":"isPathName","args":["a:b:cline1\nline2"],"ok":false}
+{"fn":"isPathName","args":["key_name-1é"],"ok":false}
+{"fn":"isPathName","args":["straßea:b:c"],"ok":false}
+{"fn":"isPathName","args":["absrc/a/b.ts"],"ok":false}
+{"fn":"isPathName","args":["ünïcödéa.b.c"],"ok":false}
+{"fn":"isPathName","args":["aa:b:c"],"ok":false}
+{"fn":"isPathName","args":["HELLOhello"],"ok":false}
+{"fn":"isPathName","args":[":😀"],"ok":false}
+{"fn":"isPathName","args":["ab😀"],"ok":false}
+{"fn":"isPathName","args":["tab\tseparateda.b.c"],"ok":false}
+{"fn":"isPathName","args":["HELLOkey_name-1"],"ok":false}
+{"fn":"isPathName","args":["a..b"],"ok":false}
+{"fn":"isPathName","args":["  padded  ab"],"ok":false}
+{"fn":"isPathName","args":["{name} has {count} items日本語のテキスト"],"ok":false}
+{"fn":"isPathName","args":["İstanbul  padded  "],"ok":false}
+{"fn":"isPathName","args":["﻿bom./x/**/*.json"],"ok":false}
+{"fn":"isPathName","args":["éab"],"ok":false}
+{"fn":"isPathName","args":["İstanbulline1\nline2"],"ok":false}
+{"fn":"isPathName","args":["trailing.hello"],"ok":false}
+{"fn":"isPathName","args":["hello worldabc"],"ok":false}
+{"fn":"isPathName","args":["key_name-1a😀b😀c"],"ok":false}
+{"fn":"isPathName","args":["trailing.ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isPathName","args":["😀line1\nline2"],"ok":false}
+{"fn":"isPathName","args":["ns:key.path"],"ok":false}
+{"fn":"isPathName","args":["ns:key.pathns:key.path"],"ok":false}
+{"fn":"isPathName","args":["  padded  a.b.c"],"ok":false}
+{"fn":"isPathName","args":["a  padded  "],"ok":false}
+{"fn":"isPathName","args":["emoji 👍🏽 mixabc"],"ok":false}
+{"fn":"isPathName","args":["trailing../x/**/*.json"],"ok":false}
+{"fn":"isPathName","args":["tab\tseparatedns:key.path"],"ok":false}
+{"fn":"isPathName","args":["line1\nline2abc"],"ok":false}
+{"fn":"isPathName","args":["😀.leading"],"ok":false}
+{"fn":"isPathName","args":["abkey_name-1"],"ok":false}
+{"fn":"isPathName","args":["trailing.😀"],"ok":false}
+{"fn":"isPathName","args":["a:b:c{name} has {count} items"],"ok":false}
+{"fn":"isPathName","args":["Hello Worlda:b:c"],"ok":false}
+{"fn":"isPathName","args":["a..bİstanbul"],"ok":false}
+{"fn":"isPathName","args":["😀trailing."],"ok":false}
+{"fn":"isPathName","args":["ab:"],"ok":false}
+{"fn":"isPathName","args":["éabc"],"ok":false}
+{"fn":"isPathName","args":["line1\nline2line1\nline2"],"ok":false}
+{"fn":"isPathName","args":["src/a/b.tsns:key.path"],"ok":false}
+{"fn":"isPathName","args":["ΣΊΣΥΦΟΣabc"],"ok":false}
+{"fn":"isPathName","args":["ünïcödéé"],"ok":false}
+{"fn":"isPathName","args":["Hello Worldns:key.path"],"ok":false}
+{"fn":"isPathName","args":["abctab\tseparated"],"ok":false}
+{"fn":"isPathName","args":["ésrc/a/b.ts"],"ok":false}
+{"fn":"isPathName","args":["ékey_name-1"],"ok":false}
+{"fn":"isPathName","args":["trailing.é"],"ok":false}
+{"fn":"isPathName","args":["trailing.ünïcödé"],"ok":false}
+{"fn":"isPathName","args":["straßeabc"],"ok":false}
+{"fn":"isPathName","args":["hello worlda.b.c"],"ok":false}
+{"fn":"isPathName","args":["﻿bom:"],"ok":false}
+{"fn":"isPathName","args":["tab\tseparated{name} has {count} items"],"ok":false}
+{"fn":"isPathName","args":["a😀b😀chello world"],"ok":false}
+{"fn":"isPathName","args":["a😀b😀cline1\nline2"],"ok":false}
+{"fn":"isPathName","args":[":ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isPathName","args":["éünïcödé"],"ok":false}
+{"fn":"isPathName","args":["./x/**/*.json日本語のテキスト"],"ok":false}
+{"fn":"isPathName","args":["src/a/b.tsünïcödé"],"ok":false}
+{"fn":"isPathName","args":["﻿bomhello world"],"ok":false}
+{"fn":"isPathName","args":["😀ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isPathName","args":["hello.leading"],"ok":false}
+{"fn":"isPathName","args":["ns:key.patha😀b😀c"],"ok":false}
+{"fn":"isPathName","args":["éa:b:c"],"ok":false}
+{"fn":"isPathName","args":["ünïcödéünïcödé"],"ok":false}
+{"fn":"isPathName","args":["straßea..b"],"ok":false}
+{"fn":"isPathName","args":["abhello"],"ok":false}
+{"fn":"isPathName","args":["tab\tseparatedünïcödé"],"ok":false}
+{"fn":"isPathName","args":["helloa:b:c"],"ok":false}
+{"fn":"isPathName","args":["HELLOİstanbul"],"ok":false}
+{"fn":"isPathName","args":[":a:b:c"],"ok":false}
+{"fn":"isPathName","args":["straßens:key.path"],"ok":false}
+{"fn":"isPathName","args":["tab\tseparated﻿bom"],"ok":false}
+{"fn":"isPathName","args":["İstanbulé"],"ok":false}
+{"fn":"isPathName","args":["a.b.chello"],"ok":false}
+{"fn":"isPathName","args":[".leadingé"],"ok":false}
+{"fn":"isPathName","args":["日本語のテキストns:key.path"],"ok":false}
+{"fn":"isPathName","args":["a.b.chello world"],"ok":false}
+{"fn":"isPathName","args":["日本語のテキスト./x/**/*.json"],"ok":false}
+{"fn":"isPathName","args":["astraße"],"ok":false}
+{"fn":"isPathName","args":["ns:key.path日本語のテキスト"],"ok":false}
+{"fn":"isPathName","args":["{name} has {count} itemsstraße"],"ok":false}
+{"fn":"isPathName","args":["trailing.emoji 👍🏽 mix"],"ok":false}
+{"fn":"isPathName","args":["ΣΊΣΥΦΟΣ{name} has {count} items"],"ok":false}
+{"fn":"isPathName","args":["日本語のテキストab"],"ok":false}
+{"fn":"isPathName","args":[".leadinghello"],"ok":false}
+{"fn":"isPathName","args":["hellotrailing."],"ok":false}
+{"fn":"isPathName","args":["İstanbul日本語のテキスト"],"ok":false}
+{"fn":"isPathName","args":["emoji 👍🏽 mixa.b.c"],"ok":false}
+{"fn":"isPathName","args":["İstanbul.leading"],"ok":false}
+{"fn":"isPathName","args":["{name} has {count} itemsns:key.path"],"ok":false}
+{"fn":"isPathName","args":["src/a/b.tsHello World"],"ok":false}
+{"fn":"isPathName","args":["src/a/b.tsstraße"],"ok":false}
+{"fn":"isPathName","args":["😀  padded  "],"ok":false}
+{"fn":"isPathName","args":["src/a/b.ts{name} has {count} items"],"ok":false}
+{"fn":"isPathName","args":["emoji 👍🏽 mixHELLO"],"ok":false}
+{"fn":"isPathName","args":["atrailing."],"ok":false}
+{"fn":"isPathName","args":["emoji 👍🏽 mixhello"],"ok":false}
+{"fn":"isPathName","args":["line1\nline2hello world"],"ok":false}
+{"fn":"isPathName","args":["İstanbulhello world"],"ok":false}
+{"fn":"isPathName","args":["﻿bomns:key.path"],"ok":false}
+{"fn":"isPathName","args":["ahello"],"ok":false}
+{"fn":"isPathName","args":["abcünïcödé"],"ok":false}
+{"fn":"isPathName","args":["emoji 👍🏽 mix.leading"],"ok":false}
+{"fn":"isPathName","args":["helloa"],"ok":false}
+{"fn":"isPathName","args":["ünïcödéabc"],"ok":false}
+{"fn":"isPathName","args":["a😀b😀c./x/**/*.json"],"ok":false}
+{"fn":"isPathName","args":[":a😀b😀c"],"ok":false}
+{"fn":"isPathName","args":["a.b.c{name} has {count} items"],"ok":false}
+{"fn":"isPathName","args":["ünïcödéİstanbul"],"ok":false}
+{"fn":"isPathName","args":["straßeİstanbul"],"ok":false}
+{"fn":"isPathName","args":["emoji 👍🏽 mixHello World"],"ok":false}
+{"fn":"isPathName","args":["a..bsrc/a/b.ts"],"ok":false}
+{"fn":"isPathName","args":["key_name-1./x/**/*.json"],"ok":false}
+{"fn":"isPathName","args":["key_name-1{name} has {count} items"],"ok":false}
+{"fn":"isPathName","args":["aHELLO"],"ok":false}
+{"fn":"isPathName","args":["İstanbula"],"ok":false}
+{"fn":"isPathName","args":["ns:key.pathabc"],"ok":false}
+{"fn":"isPathName","args":["emoji 👍🏽 mixΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isPathName","args":["a😀b😀c😀"],"ok":false}
+{"fn":"isPathName","args":["a..bΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isPathName","args":["  padded  Hello World"],"ok":false}
+{"fn":"isPathName","args":["trailing.trailing."],"ok":false}
+{"fn":"isPathName","args":["ns:key.pathΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isPathName","args":["﻿bomkey_name-1"],"ok":false}
+{"fn":"isPathName","args":["straße.leading"],"ok":false}
+{"fn":"isPathName","args":["Hello Worldkey_name-1"],"ok":false}
+{"fn":"isPathName","args":["./x/**/*.jsona:b:c"],"ok":false}
+{"fn":"isPathName","args":["abcab"],"ok":false}
+{"fn":"isPathName","args":["a..bab"],"ok":false}
+{"fn":"isPathName","args":["﻿bomemoji 👍🏽 mix"],"ok":false}
+{"fn":"isPathName","args":["{name} has {count} itemsa.b.c"],"ok":false}
+{"fn":"isPathName","args":["abc😀"],"ok":false}
+{"fn":"isPathName","args":[".leadingkey_name-1"],"ok":false}
+{"fn":"isPathName","args":["  padded  ünïcödé"],"ok":false}
+{"fn":"isPathName","args":["hello  padded  "],"ok":false}
+{"fn":"isPathName","args":["straßestraße"],"ok":false}
+{"fn":"isPathName","args":["abcemoji 👍🏽 mix"],"ok":false}
+{"fn":"isPathName","args":["src/a/b.tstrailing."],"ok":false}
+{"fn":"isPathName","args":["a:b:cΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isPathName","args":["abİstanbul"],"ok":false}
+{"fn":"isPathName","args":["key_name-1emoji 👍🏽 mix"],"ok":false}
+{"fn":"isPathName","args":["ünïcödé😀"],"ok":false}
+{"fn":"isPathName","args":["straße:"],"ok":false}
+{"fn":"isPathName","args":["Hello Worldhello world"],"ok":false}
+{"fn":"isPathName","args":["src/a/b.tssrc/a/b.ts"],"ok":false}
+{"fn":"isPathName","args":["key_name-1:"],"ok":false}
+{"fn":"isPathName","args":["straßeé"],"ok":false}
+{"fn":"isPathName","args":["😀key_name-1"],"ok":false}
+{"fn":"isPathName","args":["helloİstanbul"],"ok":false}
+{"fn":"isPathName","args":["héllo wörld"],"ok":false}
+{"fn":"isPathName","args":["👍🏽 thumbs"],"ok":false}
+{"fn":"isPathName","args":["日本語"],"ok":false}
+{"fn":"isPathName","args":["ılık ırmak"],"ok":false}
+{"fn":"isPathName","args":["👨‍👩‍👧 family"],"ok":false}
+{"fn":"isPathName","args":["a b"],"ok":false}
+{"fn":"isPathName","args":["a😀b"],"ok":false}
+{"fn":"isPathName","args":["a²b x½ y①"],"ok":false}
+{"fn":"isPathName","args":["aⅠb Ⅻ"],"ok":false}
+{"fn":"isPathName","args":["a𐐀b 𝐀bc"],"ok":false}
+{"fn":"isPathName","args":["कि ٣٤"],"ok":false}
+{"fn":"isPathName","args":["Iı İi"],"ok":false}
+{"fn":"isPathName","args":["K K k"],"ok":false}
+{"fn":"isPathName","args":["ſ s S"],"ok":false}
+{"fn":"isPathName","args":["x‍y 👨‍👩‍👧"],"ok":false}
+{"fn":"isPathName","args":["a b c　d"],"ok":false}
+{"fn":"isPathName","args":["١٢٣ ٤٥"],"ok":false}
+{"fn":"isPathName","args":["𝟘𝟙 ²³"],"ok":false}
+{"fn":"isPathName","args":["snake_case foo-bar o'neil"],"ok":false}
+{"fn":"isPathName","args":["ǅungla Ǆ"],"ok":false}
+{"fn":"isPathName","args":["one\r\ntwo threefour"],"ok":false}
+{"fn":"isPathName","args":["café café"],"ok":false}
+{"fn":"isPathName","args":["ΣΑΣ σας ς"],"ok":false}
+{"fn":"mergeWindowsScopes","args":[[],{"title":".leading","a":"src/a/b.ts","a.b":"ans:key.path"}],"ok":{"title":".leading","a":"src/a/b.ts","a.b":"ans:key.path"}}
+{"fn":"mergeWindowsScopes","args":[{},{"10":"straße","ünï":":","nav":"ünïcödéİstanbul"}],"ok":{"10":"straße","ünï":":","nav":"ünïcödéİstanbul"}}
+{"fn":"mergeWindowsScopes","args":[{},{"10":"Hello Worlda.b.c","a.b":"日本語のテキスト.leading"}],"ok":{"10":"Hello Worlda.b.c","a.b":"日本語のテキスト.leading"}}
+{"fn":"mergeWindowsScopes","args":[{},{}],"ok":{}}
+{"fn":"mergeWindowsScopes","args":[{},{"a":"日本語のテキスト.leading"}],"ok":{"a":"日本語のテキスト.leading"}}
+{"fn":"mergeWindowsScopes","args":[{},{"nav":"ns:key.pathhello world","😀":"{name} has {count} items","home":"😀"}],"ok":{"nav":"ns:key.pathhello world","😀":"{name} has {count} items","home":"😀"}}
+{"fn":"mergeWindowsScopes","args":[{"a":{"b":"c"}},{"2":"trailing.ünïcödé","nav":"ΣΊΣΥΦΟΣa:b:c"}],"error":"value?.trim is not a function"}
+{"fn":"mergeWindowsScopes","args":[{"nav":"ünïcödé"},{"2":"hello world","a":"﻿bom"}],"ok":{"2":"hello world","nav":"ünïcödé","a":"bom"}}
+{"fn":"mergeWindowsScopes","args":[null,{"2":"Hello World","home":"HELLO","nav":"😀"}],"error":"Cannot convert undefined or null to object"}
+{"fn":"mergeWindowsScopes","args":[{"😀":"İstanbul"},{"nav":"İstanbula.b.c"}],"ok":{"😀":"İstanbul","nav":"İstanbula.b.c"}}
+{"fn":"mergeWindowsScopes","args":[null,{}],"error":"Cannot convert undefined or null to object"}
+{"fn":"mergeWindowsScopes","args":[{"a":"b"},{"a":"日本語のテキスト"}],"ok":{"a":"日本語のテキスト"}}
+{"fn":"mergeWindowsScopes","args":[{"a":"b"},{"a.b":"ünïcödé","😀":"hello world","nav":"😀"}],"ok":{"a":"b","a.b":"ünïcödé","😀":"hello world","nav":"😀"}}
+{"fn":"mergeWindowsScopes","args":[{},{"home":"ünïcödé"}],"ok":{"home":"ünïcödé"}}
+{"fn":"mergeWindowsScopes","args":[["a",1],{"😀":"key_name-1"}],"error":"value?.trim is not a function"}
+{"fn":"mergeWindowsScopes","args":[{"home":"tab\tseparated","a":"a😀b😀c"},{"title":"key_name-1","a":"a.b.c./x/**/*.json"}],"ok":{"home":"tab\tseparated","a":"a.b.c./x/**/*.json","title":"key_name-1"}}
+{"fn":"mergeWindowsScopes","args":[{"2":"Hello World"},{"home":"abc"}],"ok":{"2":"Hello World","home":"abc"}}
+{"fn":"mergeWindowsScopes","args":[null,[]],"error":"Cannot convert undefined or null to object"}
+{"fn":"mergeWindowsScopes","args":[{"home":"./x/**/*.json","a.b":"a:b:c"},{"2":"ΣΊΣΥΦΟΣ","a":"src/a/b.ts"}],"ok":{"2":"ΣΊΣΥΦΟΣ","home":"./x/**/*.json","a.b":"a:b:c","a":"src/a/b.ts"}}
+{"fn":"mergeWindowsScopes","args":[{"2":"trailing.","ünï":"src/a/b.ts","😀":"abc"},{"10":"{name} has {count} items","b":"a:b:c"}],"ok":{"2":"trailing.","10":"{name} has {count} items","ünï":"src/a/b.ts","😀":"abc","b":"a:b:c"}}
+{"fn":"mergeWindowsScopes","args":[{"2":"😀","😀":"a😀b😀c"},{"nav":"ab","a":"trailing."}],"ok":{"2":"😀","😀":"a😀b😀c","nav":"ab","a":"trailing."}}
+{"fn":"mergeWindowsScopes","args":[{"10":"a..b","nav":"key_name-1ΣΊΣΥΦΟΣ"},{"home":".leadinga:b:c","a.b":"line1\nline2"}],"ok":{"10":"a..b","nav":"key_name-1ΣΊΣΥΦΟΣ","home":".leadinga:b:c","a.b":"line1\nline2"}}
+{"fn":"mergeWindowsScopes","args":[{},{"title":"hello world","a.b":"a:b:c"}],"ok":{"title":"hello world","a.b":"a:b:c"}}
+{"fn":"mergeWindowsScopes","args":[{},{"2":"  padded  ","😀":"  padded  "}],"ok":{"2":"padded","😀":"padded"}}
+{"fn":"mergeWindowsScopes","args":[{"home":":tab\tseparated"},{}],"ok":{"home":":tab\tseparated"}}
+{"fn":"mergeWindowsScopes","args":[{"title":"./x/**/*.json{name} has {count} items","a.b":"a:b:c"},"x"],"ok":{"0":"x","title":"./x/**/*.json{name} has {count} items","a.b":"a:b:c"}}
+{"fn":"mergeWindowsScopes","args":[{},{"10":"hello worldkey_name-1"}],"ok":{"10":"hello worldkey_name-1"}}
+{"fn":"mergeWindowsScopes","args":[{"a.b":"a😀b😀cé","title":"ab"},{"home":"line1\nline2","b":"tab\tseparated","nav":"ns:key.path"}],"ok":{"a.b":"a😀b😀cé","title":"ab","home":"line1\nline2","b":"tab\tseparated","nav":"ns:key.path"}}
+{"fn":"mergeWindowsScopes","args":[{"home":"trailing.","title":"ab"},{"b":"tab\tseparated","😀":"a..b","nav":"İstanbul"}],"ok":{"home":"trailing.","title":"ab","b":"tab\tseparated","😀":"a..b","nav":"İstanbul"}}
+{"fn":"mergeWindowsScopes","args":[{},{"2":"a:b:c","home":"straße"}],"ok":{"2":"a:b:c","home":"straße"}}
+{"fn":"mergeWindowsScopes","args":[["a",1],{"ünï":"日本語のテキストns:key.path","b":"straße"}],"error":"value?.trim is not a function"}
+{"fn":"mergeWindowsScopes","args":[{"nav":":"},{"2":"ab","a.b":"İstanbul"}],"ok":{"2":"ab","nav":":","a.b":"İstanbul"}}
+{"fn":"mergeWindowsScopes","args":[{},{"a":"straße","ünï":"src/a/b.tshello world","home":"trailing."}],"ok":{"a":"straße","ünï":"src/a/b.tshello world","home":"trailing."}}
+{"fn":"mergeWindowsScopes","args":[{"a":{"b":"c"}},{"title":".leadingtrailing.","home":"﻿bom"}],"error":"value?.trim is not a function"}
+{"fn":"mergeWindowsScopes","args":[{},{"a":"﻿bom"}],"ok":{"a":"bom"}}
+{"fn":"mergeWindowsScopes","args":[{},{"😀":"a😀b😀ckey_name-1"}],"ok":{"😀":"a😀b😀ckey_name-1"}}
+{"fn":"mergeWindowsScopes","args":[{},{"nav":"a..b","a.b":":"}],"ok":{"nav":"a..b","a.b":":"}}
+{"fn":"mergeWindowsScopes","args":[{"home":"./x/**/*.json"},{"title":"straße","nav":"key_name-1"}],"ok":{"home":"./x/**/*.json","title":"straße","nav":"key_name-1"}}
+{"fn":"mergeWindowsScopes","args":[{"b":"{name} has {count} itemsa.b.c","a.b":"./x/**/*.json"},{"10":"{name} has {count} itemsa😀b😀c","ünï":"key_name-1","home":"  padded  "}],"ok":{"10":"{name} has {count} itemsa😀b😀c","b":"{name} has {count} itemsa.b.c","a.b":"./x/**/*.json","ünï":"key_name-1","home":"padded"}}
+{"fn":"mergeWindowsScopes","args":[null,{"10":"a.b.c","a":"éHELLO"}],"error":"Cannot convert undefined or null to object"}
+{"fn":"mergeWindowsScopes","args":[{"ünï":"line1\nline2","a":"a.b.c"},{"😀":"hello world  padded  ","nav":"a..b","a.b":"ab"}],"ok":{"ünï":"line1\nline2","a":"a.b.c","😀":"hello world  padded","nav":"a..b","a.b":"ab"}}
+{"fn":"mergeWindowsScopes","args":[true,{}],"ok":{}}
+{"fn":"mergeWindowsScopes","args":[{},{"10":"tab\tseparatedemoji 👍🏽 mix","ünï":"emoji 👍🏽 mix"}],"ok":{"10":"tab\tseparatedemoji 👍🏽 mix","ünï":"emoji 👍🏽 mix"}}
+{"fn":"mergeWindowsScopes","args":[{},"x"],"ok":{"0":"x"}}
+{"fn":"mergeWindowsScopes","args":[{},{"2":"ns:key.path","ünï":"a:b:c"}],"ok":{"2":"ns:key.path","ünï":"a:b:c"}}
+{"fn":"mergeWindowsScopes","args":[{},{"nav":"src/a/b.ts"}],"ok":{"nav":"src/a/b.ts"}}
+{"fn":"mergeWindowsScopes","args":[{"a":"straße{name} has {count} items"},{"2":"key_name-1","10":"{name} has {count} items"}],"ok":{"2":"key_name-1","10":"{name} has {count} items","a":"straße{name} has {count} items"}}
+{"fn":"mergeWindowsScopes","args":[{"😀":"﻿bomline1\nline2"},{"title":"emoji 👍🏽 mix"}],"ok":{"😀":"bomline1\nline2","title":"emoji 👍🏽 mix"}}
+{"fn":"mergeWindowsScopes","args":[{},{"2":"line1\nline2","10":"a..b","ünï":"key_name-1"}],"ok":{"2":"line1\nline2","10":"a..b","ünï":"key_name-1"}}
+{"fn":"mergeWindowsScopes","args":[{"a.b":"a.b.c","home":"HELLO"},{"a":"hello","b":"{name} has {count} items"}],"ok":{"a.b":"a.b.c","home":"HELLO","a":"hello","b":"{name} has {count} items"}}
+{"fn":"mergeWindowsScopes","args":[{"ünï":"abc"},{"2":".leading","nav":".leading"}],"ok":{"2":".leading","ünï":"abc","nav":".leading"}}
+{"fn":"mergeWindowsScopes","args":[{"ünï":"é"},{"10":"a..b","a.b":"hello world","title":"İstanbul"}],"ok":{"10":"a..b","ünï":"é","a.b":"hello world","title":"İstanbul"}}
+{"fn":"mergeWindowsScopes","args":[[],{"2":"  padded  tab\tseparated","a":"Hello World","a.b":"ns:key.path"}],"ok":{"2":"padded  tab\tseparated","a":"Hello World","a.b":"ns:key.path"}}
+{"fn":"mergeWindowsScopes","args":[{},{"a.b":""}],"ok":{}}
+{"fn":"mergeWindowsScopes","args":[{"a.b":"{name} has {count} items{name} has {count} items","b":"hello"},{"title":"﻿boma.b.c"}],"ok":{"a.b":"{name} has {count} items{name} has {count} items","b":"hello","title":"boma.b.c"}}
+{"fn":"mergeWindowsScopes","args":[{},{"b":"😀{name} has {count} items","title":"İstanbul"}],"ok":{"b":"😀{name} has {count} items","title":"İstanbul"}}
+{"fn":"mergeWindowsScopes","args":[{},true],"ok":{}}
+{"fn":"mergeWindowsScopes","args":[{"b":"{name} has {count} items","😀":"trailing.ns:key.path"},{"home":"line1\nline2","😀":"key_name-1"}],"ok":{"b":"{name} has {count} items","😀":"key_name-1","home":"line1\nline2"}}
+{"fn":"mergeWindowsScopes","args":[{"😀":".leading","a":"tab\tseparated","b":"key_name-1ab"},{}],"ok":{"😀":".leading","a":"tab\tseparated","b":"key_name-1ab"}}
+{"fn":"mergeWindowsScopes","args":[{"2":"日本語のテキスト","title":"﻿bom","ünï":"./x/**/*.json"},{"nav":"Hello World","home":"  padded  ","😀":"tab\tseparated"}],"ok":{"2":"日本語のテキスト","title":"bom","ünï":"./x/**/*.json","nav":"Hello World","home":"padded","😀":"tab\tseparated"}}
+{"fn":"mergeWindowsScopes","args":[{"2":"src/a/b.ts","😀":"tab\tseparated"},{"😀":"line1\nline2","title":"😀","nav":"😀emoji 👍🏽 mix"}],"ok":{"2":"src/a/b.ts","😀":"line1\nline2","title":"😀","nav":"😀emoji 👍🏽 mix"}}
+{"fn":"mergeWindowsScopes","args":[{"title":"ns:key.path","b":".leading日本語のテキスト","a":"hello world"},true],"ok":{"title":"ns:key.path","b":".leading日本語のテキスト","a":"hello world"}}
+{"fn":"mergeWindowsScopes","args":[{"b":"a😀b😀c","ünï":"Hello World"},{"2":"","home":"./x/**/*.jsonhello"}],"ok":{"b":"a😀b😀c","ünï":"Hello World","home":"./x/**/*.jsonhello"}}
+{"fn":"mergeWindowsScopes","args":[{"b":"hello","ünï":"ab"},{"nav":"ünïcödé"}],"ok":{"b":"hello","ünï":"ab","nav":"ünïcödé"}}
+{"fn":"mergeWindowsScopes","args":[{},{"😀":"﻿bom","a.b":"line1\nline2","home":"hello"}],"ok":{"😀":"bom","a.b":"line1\nline2","home":"hello"}}
+{"fn":"mergeWindowsScopes","args":[{"😀":".leading","a.b":"a.b.ca.b.c","ünï":"straße"},{"b":"HELLO:"}],"ok":{"😀":".leading","a.b":"a.b.ca.b.c","ünï":"straße","b":"HELLO:"}}
+{"fn":"mergeWindowsScopes","args":[{},{"10":"tab\tseparatedab","b":"a.b.c:","home":"İstanbul"}],"ok":{"10":"tab\tseparatedab","b":"a.b.c:","home":"İstanbul"}}
+{"fn":"mergeWindowsScopes","args":[true,{"😀":"日本語のテキストsrc/a/b.ts","ünï":"ns:key.pathünïcödé","nav":"é"}],"ok":{"😀":"日本語のテキストsrc/a/b.ts","ünï":"ns:key.pathünïcödé","nav":"é"}}
+{"fn":"mergeWindowsScopes","args":[{"a.b":"aa..b","home":"ΣΊΣΥΦΟΣ"},{"ünï":"./x/**/*.json"}],"ok":{"a.b":"aa..b","home":"ΣΊΣΥΦΟΣ","ünï":"./x/**/*.json"}}
+{"fn":"mergeWindowsScopes","args":[{"10":"src/a/b.ts.leading","a":"ésrc/a/b.ts"},{}],"ok":{"10":"src/a/b.ts.leading","a":"ésrc/a/b.ts"}}
+{"fn":"mergeWindowsScopes","args":[{"a":{"b":"c"}},"x"],"error":"value?.trim is not a function"}
+{"fn":"mergeWindowsScopes","args":[{"a":"hellotab\tseparated"},{"2":"ünïcödé","b":"tab\tseparated"}],"ok":{"2":"ünïcödé","a":"hellotab\tseparated","b":"tab\tseparated"}}
+{"fn":"mergeWindowsScopes","args":[{"nav":"  padded  ","a.b":"Hello World"},{"title":"ΣΊΣΥΦΟΣ","nav":"ΣΊΣΥΦΟΣ"}],"ok":{"nav":"ΣΊΣΥΦΟΣ","a.b":"Hello World","title":"ΣΊΣΥΦΟΣ"}}
+{"fn":"mergeWindowsScopes","args":[{},{"😀":"{name} has {count} items:","b":"tab\tseparated"}],"ok":{"😀":"{name} has {count} items:","b":"tab\tseparated"}}
+{"fn":"mergeWindowsScopes","args":[{},{"nav":"😀"}],"ok":{"nav":"😀"}}
+{"fn":"mergeWindowsScopes","args":[{"nav":"😀"},{"2":"tab\tseparated","10":"a:b:c"}],"ok":{"2":"tab\tseparated","10":"a:b:c","nav":"😀"}}
+{"fn":"mergeWindowsScopes","args":[{"10":".leading","title":"trailing."},{"10":"a😀b😀c"}],"ok":{"10":"a😀b😀c","title":"trailing."}}
+{"fn":"mergeWindowsScopes","args":[{"a.b":":","title":"hello world"},{"10":"﻿bom","a.b":":"}],"ok":{"10":"bom","a.b":":","title":"hello world"}}
+{"fn":"mergeWindowsScopes","args":[{"b":"a..b","home":""},{}],"ok":{"b":"a..b"}}
+{"fn":"mergeWindowsScopes","args":[{"2":"ns:key.path","a":"a.b.c","b":"HELLO"},{"nav":"a..b","title":"a.b.c"}],"ok":{"2":"ns:key.path","a":"a.b.c","b":"HELLO","nav":"a..b","title":"a.b.c"}}
+{"fn":"mergeWindowsScopes","args":[null,{"a.b":"Hello World","a":"hello","b":"src/a/b.tsa..b"}],"error":"Cannot convert undefined or null to object"}
+{"fn":"mergeWindowsScopes","args":[{"title":"{name} has {count} items","😀":"ns:key.path"},{}],"ok":{"title":"{name} has {count} items","😀":"ns:key.path"}}
+{"fn":"mergeWindowsScopes","args":["x",{"b":"﻿bom","nav":"a😀b😀c"}],"ok":{"0":"x","b":"bom","nav":"a😀b😀c"}}
+{"fn":"mergeWindowsScopes","args":[{"a":"trailing.","😀":"line1\nline2"},{}],"ok":{"a":"trailing.","😀":"line1\nline2"}}
+{"fn":"mergeWindowsScopes","args":[{"title":"日本語のテキスト"},{"ünï":"İstanbul","a":"tab\tseparated"}],"ok":{"title":"日本語のテキスト","ünï":"İstanbul","a":"tab\tseparated"}}
+{"fn":"mergeWindowsScopes","args":[{"a.b":".leading"},{"title":"İstanbul","ünï":"tab\tseparated","😀":"a"}],"ok":{"a.b":".leading","title":"İstanbul","ünï":"tab\tseparated","😀":"a"}}
+{"fn":"mergeWindowsScopes","args":[{"😀":":hello","nav":"helloabc"},{"a.b":"line1\nline2"}],"ok":{"😀":":hello","nav":"helloabc","a.b":"line1\nline2"}}
+{"fn":"mergeWindowsScopes","args":[{"title":"abc"},{"a.b":"İstanbul","title":"a..b"}],"ok":{"title":"a..b","a.b":"İstanbul"}}
+{"fn":"mergeWindowsScopes","args":[{},{"2":":","title":"  padded  ","home":"a😀b😀c"}],"ok":{"2":":","title":"padded","home":"a😀b😀c"}}
+{"fn":"mergeWindowsScopes","args":[{"10":"line1\nline2","a":"  padded  "},{"b":"İstanbul"}],"ok":{"10":"line1\nline2","a":"padded","b":"İstanbul"}}
+{"fn":"mergeWindowsScopes","args":[{"10":"hello"},{"2":".leading","a":"İstanbul"}],"ok":{"2":".leading","10":"hello","a":"İstanbul"}}
+{"fn":"mergeWindowsScopes","args":[{},{"ünï":"straßehello","title":"src/a/b.ts","nav":"hello world"}],"ok":{"ünï":"straßehello","title":"src/a/b.ts","nav":"hello world"}}
+{"fn":"mergeWindowsScopes","args":[{"title":"line1\nline2"},{}],"ok":{"title":"line1\nline2"}}
+{"fn":"mergeWindowsScopes","args":[{"a":"İstanbul"},true],"ok":{"a":"İstanbul"}}
+{"fn":"mergeWindowsScopes","args":[{"10":"a","b":"  padded  "},{"2":"a","home":"line1\nline2","title":":"}],"ok":{"2":"a","10":"a","b":"padded","home":"line1\nline2","title":":"}}
+{"fn":"mergeWindowsScopes","args":[{},{"2":"line1\nline2hello world"}],"ok":{"2":"line1\nline2hello world"}}
+{"fn":"mergeWindowsScopes","args":[{"nav":"src/a/b.ts","ünï":"HELLO"},{"b":"hello","😀":"﻿bom","title":"emoji 👍🏽 mix"}],"ok":{"nav":"src/a/b.ts","ünï":"HELLO","b":"hello","😀":"bom","title":"emoji 👍🏽 mix"}}
+{"fn":"mergeWindowsScopes","args":[{"a.b":"src/a/b.ts:","title":"straße"},{}],"ok":{"a.b":"src/a/b.ts:","title":"straße"}}
+{"fn":"mergeWindowsScopes","args":[{"nav":":","title":"ΣΊΣΥΦΟΣ"},{}],"ok":{"nav":":","title":"ΣΊΣΥΦΟΣ"}}
+{"fn":"mergeWindowsScopes","args":[{"b":"key_name-1","title":"a","nav":"abc"},{"ünï":":","home":"İstanbul"}],"ok":{"b":"key_name-1","title":"a","nav":"abc","ünï":":","home":"İstanbul"}}
+{"fn":"mergeWindowsScopes","args":[{"2":"line1\nline2","title":"a"},0],"ok":{"2":"line1\nline2","title":"a"}}
+{"fn":"mergeWindowsScopes","args":[{"nav":"hello","title":"İstanbul"},{"😀":"hello"}],"ok":{"nav":"hello","title":"İstanbul","😀":"hello"}}
+{"fn":"mergeWindowsScopes","args":[{},{"2":"Hello World","ünï":"a.b.c","nav":"ns:key.path"}],"ok":{"2":"Hello World","ünï":"a.b.c","nav":"ns:key.path"}}
+{"fn":"mergeWindowsScopes","args":[{"2":"ab","😀":"İstanbul","nav":"key_name-1src/a/b.ts"},{"2":"a:b:c","ünï":"﻿bom"}],"ok":{"2":"a:b:c","😀":"İstanbul","nav":"key_name-1src/a/b.ts","ünï":"bom"}}
+{"fn":"mergeWindowsScopes","args":[{},{"a.b":"ab😀"}],"ok":{"a.b":"ab😀"}}
+{"fn":"mergeWindowsScopes","args":[{"2":"a.b.cab","nav":":"},{"a.b":"straße😀"}],"ok":{"2":"a.b.cab","nav":":","a.b":"straße😀"}}
+{"fn":"mergeWindowsScopes","args":[{"😀":"😀"},{"10":"é","😀":"a😀b😀c"}],"ok":{"10":"é","😀":"a😀b😀c"}}
+{"fn":"mergeWindowsScopes","args":[{"a.b":"key_name-1","😀":"hello"},{}],"ok":{"a.b":"key_name-1","😀":"hello"}}
+{"fn":"mergeWindowsScopes","args":[{"ünï":"tab\tseparated"},{"title":"src/a/b.ts"}],"ok":{"ünï":"tab\tseparated","title":"src/a/b.ts"}}
+{"fn":"mergeWindowsScopes","args":[{"10":"src/a/b.ts"},"x"],"ok":{"0":"x","10":"src/a/b.ts"}}
+{"fn":"mergeWindowsScopes","args":[{"2":"line1\nline2","a.b":"İstanbul","title":"./x/**/*.json"},{"ünï":"HELLO"}],"ok":{"2":"line1\nline2","a.b":"İstanbul","title":"./x/**/*.json","ünï":"HELLO"}}
+{"fn":"mergeWindowsScopes","args":[{"b":"a.b.c"},{"title":"  padded  ","😀":"ΣΊΣΥΦΟΣ"}],"ok":{"b":"a.b.c","title":"padded","😀":"ΣΊΣΥΦΟΣ"}}
+{"fn":"mergeWindowsScopes","args":[{"10":"./x/**/*.jsonstraße","b":"Hello World","😀":"a"},{}],"ok":{"10":"./x/**/*.jsonstraße","b":"Hello World","😀":"a"}}
+{"fn":"mergeWindowsScopes","args":[{"nav":"a","home":".leading"},{"nav":"Hello World"}],"ok":{"nav":"Hello World","home":".leading"}}
+{"fn":"mergeWindowsScopes","args":[{"2":"hello world","home":"trailing.ab","a.b":"src/a/b.tsabc"},{}],"ok":{"2":"hello world","home":"trailing.ab","a.b":"src/a/b.tsabc"}}
+{"fn":"mergeWindowsScopes","args":[null,{"title":"hello world","😀":"HELLO😀"}],"error":"Cannot convert undefined or null to object"}
+{"fn":"mergeWindowsScopes","args":[{"2":"a","home":"line1\nline2"},{"10":"","home":"emoji 👍🏽 mix"}],"ok":{"2":"a","home":"emoji 👍🏽 mix"}}
+{"fn":"mergeWindowsScopes","args":[{"nav":"tab\tseparated","home":"hello"},{"2":"hello","ünï":"HELLO"}],"ok":{"2":"hello","nav":"tab\tseparated","home":"hello","ünï":"HELLO"}}
+{"fn":"mergeWindowsScopes","args":[{"title":"straße"},{"a":"b"}],"ok":{"title":"straße","a":"b"}}
+{"fn":"mergeWindowsScopes","args":[{},{"b":"tab\tseparated"}],"ok":{"b":"tab\tseparated"}}
+{"fn":"mergeWindowsScopes","args":[{"b":"ünïcödé","nav":"emoji 👍🏽 mixa"},{"nav":"😀","home":"hello world"}],"ok":{"b":"ünïcödé","nav":"😀","home":"hello world"}}
+{"fn":"mergeWindowsScopes","args":[{"home":"ns:key.path","title":"abc"},{"😀":"emoji 👍🏽 mix","ünï":"﻿bom.leading","a.b":"ünïcödé"}],"ok":{"home":"ns:key.path","title":"abc","😀":"emoji 👍🏽 mix","ünï":"bom.leading","a.b":"ünïcödé"}}
+{"fn":"mergeWindowsScopes","args":[{"nav":"line1\nline2"},{"😀":"😀😀","b":"ünïcödé"}],"ok":{"nav":"line1\nline2","😀":"😀😀","b":"ünïcödé"}}
+{"fn":"mergeWindowsScopes","args":[true,{"10":"straße","a.b":"a.b.c"}],"ok":{"10":"straße","a.b":"a.b.c"}}
+{"fn":"mergeWindowsScopes","args":[{"10":"straße","b":"straßea.b.c"},{"home":"hello","b":"straßeünïcödé"}],"ok":{"10":"straße","b":"straßeünïcödé","home":"hello"}}
+{"fn":"mergeWindowsScopes","args":[{"a":"src/a/b.ts"},{"b":"hello"}],"ok":{"a":"src/a/b.ts","b":"hello"}}
+{"fn":"mergeWindowsScopes","args":[{"home":"﻿bom./x/**/*.json"},{"title":":"}],"ok":{"home":"bom./x/**/*.json","title":":"}}
+{"fn":"mergeWindowsScopes","args":[{"2":"line1\nline2","title":"abünïcödé"},0],"ok":{"2":"line1\nline2","title":"abünïcödé"}}
+{"fn":"mergeWindowsScopes","args":[{"2":"a"},{}],"ok":{"2":"a"}}
+{"fn":"mergeWindowsScopes","args":[{"title":"straße"},{"2":"src/a/b.ts"}],"ok":{"2":"src/a/b.ts","title":"straße"}}
+{"fn":"mergeWindowsScopes","args":[{"10":"﻿bom","b":"src/a/b.ts","home":"emoji 👍🏽 mix"},{"a":"straße","b":"a","home":"Hello World"}],"ok":{"10":"bom","b":"a","home":"Hello World","a":"straße"}}
+{"fn":"mergeWindowsScopes","args":[{"a":"trailing."},{}],"ok":{"a":"trailing."}}
+{"fn":"mergeWindowsScopes","args":[{},{"a.b":"İstanbul","ünï":"HELLO"}],"ok":{"a.b":"İstanbul","ünï":"HELLO"}}
+{"fn":"mergeWindowsScopes","args":[{"title":"a..b"},null],"error":"Cannot convert undefined or null to object"}
+{"fn":"mergeWindowsScopes","args":[{"2":"tab\tseparatedstraße"},null],"error":"Cannot convert undefined or null to object"}
+{"fn":"mergeWindowsScopes","args":[{"a":"a😀b😀c","home":"key_name-1","nav":"İstanbul"},{"2":"ünïcödétrailing.","10":"HELLO","b":"a"}],"ok":{"2":"ünïcödétrailing.","10":"HELLO","a":"a😀b😀c","home":"key_name-1","nav":"İstanbul","b":"a"}}
+{"fn":"mergeWindowsScopes","args":[{},null],"error":"Cannot convert undefined or null to object"}
+{"fn":"mergeWindowsScopes","args":[{"b":"a.b.c","ünï":"tab\tseparated"},{"10":"tab\tseparated","a.b":"straßeabc","home":"straße"}],"ok":{"10":"tab\tseparated","b":"a.b.c","ünï":"tab\tseparated","a.b":"straßeabc","home":"straße"}}
+{"fn":"mergeWindowsScopes","args":[{"home":"İstanbul.leading"},{"2":"src/a/b.ts","nav":"HELLO","ünï":"HELLO"}],"ok":{"2":"src/a/b.ts","home":"İstanbul.leading","nav":"HELLO","ünï":"HELLO"}}
+{"fn":"mergeWindowsScopes","args":[{"😀":"tab\tseparated","a":"ΣΊΣΥΦΟΣ"},{"10":"ünïcödé","nav":"src/a/b.ts","a":"  padded  HELLO"}],"ok":{"10":"ünïcödé","😀":"tab\tseparated","a":"padded  HELLO","nav":"src/a/b.ts"}}
+{"fn":"mergeWindowsScopes","args":[{"2":"  padded  "},{"a":"b"}],"ok":{"2":"padded","a":"b"}}
+{"fn":"mergeWindowsScopes","args":[{"2":"😀","title":"key_name-1İstanbul"},{"nav":"key_name-1"}],"ok":{"2":"😀","title":"key_name-1İstanbul","nav":"key_name-1"}}
+{"fn":"mergeWindowsScopes","args":[{"10":"😀","nav":"a😀b😀c"},{}],"ok":{"10":"😀","nav":"a😀b😀c"}}
+{"fn":"mergeWindowsScopes","args":[{},{"title":"İstanbul","a.b":"line1\nline2"}],"ok":{"title":"İstanbul","a.b":"line1\nline2"}}
+{"fn":"mergeWindowsScopes","args":[{},{"ünï":"😀"}],"ok":{"ünï":"😀"}}
+{"fn":"mergeWindowsScopes","args":[{"10":"hello","home":"emoji 👍🏽 mix","title":"key_name-1"},{"home":"src/a/b.ts","title":"ΣΊΣΥΦΟΣ"}],"ok":{"10":"hello","home":"src/a/b.ts","title":"ΣΊΣΥΦΟΣ"}}
+{"fn":"mergeWindowsScopes","args":[{"a":"日本語のテキスト","😀":"hello"},{"a.b":"a..b","😀":"trailing."}],"ok":{"a":"日本語のテキスト","😀":"trailing.","a.b":"a..b"}}
+{"fn":"mergeWindowsScopes","args":[{},{"10":"a:b:c"}],"ok":{"10":"a:b:c"}}
+{"fn":"mergeWindowsScopes","args":[{"10":"Hello World","a.b":"hello"},{"😀":"İstanbul"}],"ok":{"10":"Hello World","a.b":"hello","😀":"İstanbul"}}
+{"fn":"mergeWindowsScopes","args":[{},{"home":"","ünï":"trailing.","a.b":"key_name-1"}],"ok":{"ünï":"trailing.","a.b":"key_name-1"}}
+{"fn":"mergeWindowsScopes","args":[{"2":"./x/**/*.json日本語のテキスト","ünï":"  padded  "},{}],"ok":{"2":"./x/**/*.json日本語のテキスト","ünï":"padded"}}
+{"fn":"mergeWindowsScopes","args":[{"home":"ΣΊΣΥΦΟΣ","a.b":"ab"},{"a":{"b":"c"}}],"error":"value?.trim is not a function"}
+{"fn":"mergeWindowsScopes","args":[{"😀":"a😀b😀c","ünï":"hello world","b":"ns:key.path"},{}],"ok":{"😀":"a😀b😀c","ünï":"hello world","b":"ns:key.path"}}
+{"fn":"mergeWindowsScopes","args":[{"a":{"b":"c"}},{"10":"ab","ünï":"a","nav":"hello"}],"error":"value?.trim is not a function"}
+{"fn":"mergeWindowsScopes","args":[{"10":"Hello World","a":"éa..b","nav":"hello worldns:key.path"},{"😀":"key_name-1"}],"ok":{"10":"Hello World","a":"éa..b","nav":"hello worldns:key.path","😀":"key_name-1"}}
+{"fn":"mergeWindowsScopes","args":[{"2":"éstraße","😀":"日本語のテキスト"},true],"ok":{"2":"éstraße","😀":"日本語のテキスト"}}
+{"fn":"mergeWindowsScopes","args":[{"10":"emoji 👍🏽 mix日本語のテキスト"},{"a.b":"HELLO","nav":"a.b.c"}],"ok":{"10":"emoji 👍🏽 mix日本語のテキスト","a.b":"HELLO","nav":"a.b.c"}}
+{"fn":"mergeWindowsScopes","args":[{"a":{"b":"c"}},{}],"error":"value?.trim is not a function"}
+{"fn":"mergeWindowsScopes","args":[{"2":"trailing.ab","b":"İstanbul"},{}],"ok":{"2":"trailing.ab","b":"İstanbul"}}
+{"fn":"mergeWindowsScopes","args":[{"nav":"a.b.c","home":"trailing."},{}],"ok":{"nav":"a.b.c","home":"trailing."}}
+{"fn":"mergeWindowsScopes","args":[{"10":"Hello World","a":"hello world"},{"b":"emoji 👍🏽 mix"}],"ok":{"10":"Hello World","a":"hello world","b":"emoji 👍🏽 mix"}}
+{"fn":"mergeWindowsScopes","args":[{"b":"ΣΊΣΥΦΟΣ"},{"a.b":"hello world"}],"ok":{"b":"ΣΊΣΥΦΟΣ","a.b":"hello world"}}
+{"fn":"mergeWindowsScopes","args":[{"2":"a.b.c"},{}],"ok":{"2":"a.b.c"}}
+{"fn":"mergeWindowsScopes","args":[{"2":"ab","nav":"Hello World"},{"b":"a.b.c"}],"ok":{"2":"ab","nav":"Hello World","b":"a.b.c"}}
+{"fn":"mergeWindowsScopes","args":[{"10":"😀{name} has {count} items","😀":"ΣΊΣΥΦΟΣ"},{"a":"{name} has {count} items"}],"ok":{"10":"😀{name} has {count} items","😀":"ΣΊΣΥΦΟΣ","a":"{name} has {count} items"}}
+{"fn":"mergeWindowsScopes","args":[{},{"a":"b"}],"ok":{"a":"b"}}
+{"fn":"mergeWindowsScopes","args":[{"a":{"b":"c"}},null],"error":"value?.trim is not a function"}
+{"fn":"mergeWindowsScopes","args":[{"10":"ns:key.path","a":"İstanbul"},{"b":"hello","ünï":":key_name-1","😀":"HELLO"}],"ok":{"10":"ns:key.path","a":"İstanbul","b":"hello","ünï":":key_name-1","😀":"HELLO"}}
+{"fn":"mergeWindowsScopes","args":[{"a":{"b":"c"}},{"b":"ünïcödé"}],"error":"value?.trim is not a function"}
+{"fn":"mergeWindowsScopes","args":[{"a":"abc"},{"10":"","a.b":":hello"}],"ok":{"a":"abc","a.b":":hello"}}
+{"fn":"mergeWindowsScopes","args":[{"10":"a:b:c"},{}],"ok":{"10":"a:b:c"}}
+{"fn":"mergeWindowsScopes","args":[{},{"a.b":"日本語のテキスト","ünï":":İstanbul","a":"日本語のテキスト"}],"ok":{"a.b":"日本語のテキスト","ünï":":İstanbul","a":"日本語のテキスト"}}
+{"fn":"mergeWindowsScopes","args":[{"😀":"emoji 👍🏽 mixünïcödé","home":"tab\tseparated"},{"10":"日本語のテキスト","ünï":"  padded  "}],"ok":{"10":"日本語のテキスト","😀":"emoji 👍🏽 mixünïcödé","home":"tab\tseparated","ünï":"padded"}}
+{"fn":"mergeWindowsScopes","args":[{"nav":"éa:b:c","title":"ab","😀":"ab"},{}],"ok":{"nav":"éa:b:c","title":"ab","😀":"ab"}}
+{"fn":"mergeWindowsScopes","args":[{"title":"ab"},"x"],"ok":{"0":"x","title":"ab"}}
+{"fn":"mergeWindowsScopes","args":[{"a":"a..b日本語のテキスト","title":"ünïcödé"},{"ünï":"HELLO"}],"ok":{"a":"a..b日本語のテキスト","title":"ünïcödé","ünï":"HELLO"}}
+{"fn":"mergeWindowsScopes","args":[{"a.b":"line1\nline2"},{"2":"tab\tseparated","😀":"a.b.c"}],"ok":{"2":"tab\tseparated","a.b":"line1\nline2","😀":"a.b.c"}}
+{"fn":"mergeWindowsScopes","args":[{"2":"a..b:"},null],"error":"Cannot convert undefined or null to object"}
+{"fn":"mergeWindowsScopes","args":[{"title":"a:b:c","home":"😀"},{"2":"a:b:c"}],"ok":{"2":"a:b:c","title":"a:b:c","home":"😀"}}
+{"fn":"mergeWindowsScopes","args":[{"nav":"a😀b😀c","a.b":"tab\tseparated"},{"title":"./x/**/*.json","ünï":"﻿bomhello"}],"ok":{"nav":"a😀b😀c","a.b":"tab\tseparated","title":"./x/**/*.json","ünï":"bomhello"}}
+{"fn":"mergeWindowsScopes","args":[{"a":"﻿bom","b":"a.b.c"},{"b":"line1\nline2","😀":"src/a/b.tsHello World"}],"ok":{"a":"bom","b":"line1\nline2","😀":"src/a/b.tsHello World"}}
+{"fn":"mergeWindowsScopes","args":[{"a.b":"﻿bom"},{"nav":"日本語のテキストhello world","😀":"İstanbul"}],"ok":{"a.b":"bom","nav":"日本語のテキストhello world","😀":"İstanbul"}}
+{"fn":"mergeWindowsScopes","args":[{"a.b":"İstanbul","title":"HELLO"},{"10":"src/a/b.ts","home":"ab﻿bom","b":"Hello World"}],"ok":{"10":"src/a/b.ts","a.b":"İstanbul","title":"HELLO","home":"ab﻿bom","b":"Hello World"}}
+{"fn":"mergeWindowsScopes","args":[{"nav":"ab"},{"10":"HELLO","a.b":"trailing."}],"ok":{"10":"HELLO","nav":"ab","a.b":"trailing."}}
+{"fn":"mergeWindowsScopes","args":[[],{"10":"é","a":"HELLO","😀":"Hello World😀"}],"ok":{"10":"é","a":"HELLO","😀":"Hello World😀"}}
+{"fn":"mergeWindowsScopes","args":[{"a":"straße","ünï":"a.b.c"},{}],"ok":{"a":"straße","ünï":"a.b.c"}}
+{"fn":"mergeWindowsScopes","args":[{"home":"a"},{"a":"b"}],"ok":{"home":"a","a":"b"}}
+{"fn":"mergeWindowsScopes","args":[{},{"2":"a:b:c","ünï":"key_name-1"}],"ok":{"2":"a:b:c","ünï":"key_name-1"}}
+{"fn":"mergeWindowsScopes","args":[{"b":".leading  padded  ","a":"src/a/b.ts"},{"title":"日本語のテキストa.b.c","a":"﻿bom","a.b":"﻿bom"}],"ok":{"b":".leading  padded","a":"bom","title":"日本語のテキストa.b.c","a.b":"bom"}}
+{"fn":"mergeWindowsScopes","args":[{"😀":"helloé","title":"a..b"},{"home":"ns:key.path","title":"ünïcödé","b":"😀"}],"ok":{"😀":"helloé","title":"ünïcödé","home":"ns:key.path","b":"😀"}}
+{"fn":"mergeWindowsScopes","args":[{"b":"ns:key.pathsrc/a/b.ts"},["a",1]],"error":"value?.trim is not a function"}
+{"fn":"mergeWindowsScopes","args":[{"a":"b"},{"ünï":"key_name-1./x/**/*.json"}],"ok":{"a":"b","ünï":"key_name-1./x/**/*.json"}}
+{"fn":"mergeWindowsScopes","args":[0,{}],"ok":{}}
+{"fn":"mergeWindowsScopes","args":[{"a":"key_name-1","title":"a.b.c"},{"title":"a.b.c","ünï":"ab","a.b":"straße"}],"ok":{"a":"key_name-1","title":"a.b.c","ünï":"ab","a.b":"straße"}}
+{"fn":"mergeWindowsScopes","args":[{"title":"emoji 👍🏽 mix"},{"a":"b"}],"ok":{"title":"emoji 👍🏽 mix","a":"b"}}
+{"fn":"mergeWindowsScopes","args":[{"10":"./x/**/*.json","b":"ns:key.path./x/**/*.json"},{}],"ok":{"10":"./x/**/*.json","b":"ns:key.path./x/**/*.json"}}
+{"fn":"mergeWindowsScopes","args":[{"a.b":"a..b"},{}],"ok":{"a.b":"a..b"}}
+{"fn":"mergeWindowsScopes","args":[[],{}],"ok":{}}
+{"fn":"mergeWindowsScopes","args":[{"a.b":"./x/**/*.json","ünï":"emoji 👍🏽 mix","b":"日本語のテキスト"},{"a":{"b":"c"}}],"error":"value?.trim is not a function"}
+{"fn":"mergeWindowsScopes","args":[{"a.b":"İstanbul﻿bom","a":"emoji 👍🏽 mix","home":"İstanbul"},{"nav":"Hello World😀"}],"ok":{"a.b":"İstanbul﻿bom","a":"emoji 👍🏽 mix","home":"İstanbul","nav":"Hello World😀"}}
+{"fn":"readWindowsPersistentEnvironment","args":[[]],"error":"execFile is not a function"}
+{"fn":"readWindowsPersistentEnvironment","args":[["a",1]],"error":"execFile is not a function"}
+{"fn":"readWindowsPersistentEnvironment","args":[{"a":{"b":"c"}}],"error":"execFile is not a function"}
+{"fn":"readWindowsPersistentEnvironment","args":[0],"error":"execFile is not a function"}
+{"fn":"readWindowsPersistentEnvironment","args":["x"],"error":"execFile is not a function"}
+{"fn":"readWindowsPersistentEnvironment","args":[],"error":"spawnSync C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe ENOENT"}
+{"fn":"readWindowsPersistentEnvironment","args":[true],"error":"execFile is not a function"}
+{"fn":"readWindowsPersistentEnvironment","args":[null],"error":"execFile is not a function"}
+{"fn":"readWindowsPersistentEnvironment","args":[{"$undefined":true}],"error":"spawnSync C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe ENOENT"}
+{"fn":"readWindowsPersistentEnvironment","args":[{"a":"b"}],"error":"execFile is not a function"}
+{"fn":"readWindowsPersistentEnvironment","args":[{}],"error":"execFile is not a function"}

@@ -1,0 +1,241 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/shell.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "shell-rs",
+  "exports": [
+    {
+      "name": "isShellEnvironmentHydrated",
+      "file": "packages/shared/src/shell.ts",
+      "line": 38,
+      "params": [
+        {
+          "name": "env",
+          "ts_type": "NodeJS.ProcessEnv",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "applyShellEnvironmentHydrationMarker",
+      "file": "packages/shared/src/shell.ts",
+      "line": 50,
+      "params": [
+        {
+          "name": "env",
+          "ts_type": "NodeJS.ProcessEnv",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "hydrated",
+          "ts_type": "boolean",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "NodeJS.ProcessEnv",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "listLoginShellCandidates",
+      "file": "packages/shared/src/shell.ts",
+      "line": 70,
+      "params": [
+        {
+          "name": "platform",
+          "ts_type": "NodeJS.Platform",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "shell",
+          "ts_type": "string | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "userShell",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "ReadonlyArray<string>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveLoginShell",
+      "file": "packages/shared/src/shell.ts",
+      "line": 91,
+      "params": [
+        {
+          "name": "platform",
+          "ts_type": "NodeJS.Platform",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "shell",
+          "ts_type": "string | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "mergePathEntries",
+      "file": "packages/shared/src/shell.ts",
+      "line": 121,
+      "params": [
+        {
+          "name": "preferredPath",
+          "ts_type": "string | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "inheritedPath",
+          "ts_type": "string | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "platform",
+          "ts_type": "NodeJS.Platform",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "readEnvironmentFromLoginShell",
+      "file": "packages/shared/src/shell.ts",
+      "line": 219,
+      "params": [
+        {
+          "name": "shell",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "names",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "execFile",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isPathName",
+      "file": "packages/shared/src/shell.ts",
+      "line": 252,
+      "params": [
+        {
+          "name": "name",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "mergeWindowsScopes",
+      "file": "packages/shared/src/shell.ts",
+      "line": 258,
+      "params": [
+        {
+          "name": "machine",
+          "ts_type": "Partial<Record<string, string>>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "user",
+          "ts_type": "Partial<Record<string, string>>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Partial<Record<string, string>>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "readWindowsPersistentEnvironment",
+      "file": "packages/shared/src/shell.ts",
+      "line": 324,
+      "params": [
+        {
+          "name": "execFile",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "readPathFromLoginShell",
+      "file": "packages/shared/src/shell.ts",
+      "line": 98,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "readPathFromLaunchctl",
+      "file": "packages/shared/src/shell.ts",
+      "line": 105,
+      "reason": "takes or returns a function"
+    }
+  ]
+}

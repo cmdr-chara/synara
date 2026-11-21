@@ -1,0 +1,30 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/browserAutomationMcpError.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "browserautomationmcperror-rs",
+  "exports": [
+    {
+      "name": "encodeBrowserMcpToolError",
+      "file": "packages/shared/src/browserAutomationMcpError.ts",
+      "line": 13,
+      "params": [
+        {
+          "name": "error",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "BrowserMcpToolErrorResult",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

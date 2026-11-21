@@ -1,0 +1,17 @@
+{
+  "unit": "packages/shared/src/platformEnvironment.ts",
+  "files": 1,
+  "fingerprint": "e0ea6fe47ef76a77",
+  "coverage": {
+    "lines": 33,
+    "reached": 33,
+    "files": [
+      {
+        "file": "packages/shared/src/platformEnvironment.ts",
+        "lines": 33,
+        "reached": 33,
+        "missed": ""
+      }
+    ]
+  }
+}

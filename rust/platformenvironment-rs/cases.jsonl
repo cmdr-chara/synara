@@ -1,0 +1,253 @@
+{"fn":"resolveWindowsSystemRoot","args":[{}],"ok":"C:\\Windows"}
+{"fn":"resolveWindowsSystemRoot","args":[[]],"ok":"C:\\Windows"}
+{"fn":"resolveWindowsSystemRoot","args":[0],"ok":"C:\\Windows"}
+{"fn":"resolveWindowsSystemRoot","args":[{"a":{"b":"c"}}],"ok":"C:\\Windows"}
+{"fn":"resolveWindowsSystemRoot","args":[["a",1]],"ok":"C:\\Windows"}
+{"fn":"resolveWindowsSystemRoot","args":[],"ok":"C:\\Windows"}
+{"fn":"resolveWindowsSystemRoot","args":[null],"error":"Cannot read properties of null (reading 'SystemRoot')"}
+{"fn":"resolveWindowsSystemRoot","args":[{"$undefined":true}],"ok":"C:\\Windows"}
+{"fn":"resolveWindowsSystemRoot","args":["x"],"ok":"C:\\Windows"}
+{"fn":"resolveWindowsSystemRoot","args":[true],"ok":"C:\\Windows"}
+{"fn":"resolveWindowsSystemRoot","args":[{"a":"b"}],"ok":"C:\\Windows"}
+{"fn":"resolveWindowsSystemExecutable","args":[["","Hello World","﻿bom"],true],"ok":"C:\\Windows\\Hello World\\﻿bom"}
+{"fn":"resolveWindowsSystemExecutable","args":[["ünïcödéünïcödé","日本語のテキスト"],{"a":"b"}],"ok":"C:\\Windows\\ünïcödéünïcödé\\日本語のテキスト"}
+{"fn":"resolveWindowsSystemExecutable","args":[["trailing."],"x"],"ok":"C:\\Windows\\trailing."}
+{"fn":"resolveWindowsSystemExecutable","args":[["ns:key.path","a.b.c","﻿bom:"],{"a":"b"}],"ok":"C:\\Windows\\ns:key.path\\a.b.c\\﻿bom:"}
+{"fn":"resolveWindowsSystemExecutable","args":[["key_name-1"],["a",1]],"ok":"C:\\Windows\\key_name-1"}
+{"fn":"resolveWindowsSystemExecutable","args":[["tab\tseparated"],[]],"ok":"C:\\Windows\\tab\tseparated"}
+{"fn":"resolveWindowsSystemExecutable","args":[["é","a😀b😀c"],0],"ok":"C:\\Windows\\é\\a😀b😀c"}
+{"fn":"resolveWindowsSystemExecutable","args":[["./x/**/*.jsona","a..b"],["a",1]],"ok":"C:\\Windows\\x\\**\\*.jsona\\a..b"}
+{"fn":"resolveWindowsSystemExecutable","args":[["😀","key_name-1"],[]],"ok":"C:\\Windows\\😀\\key_name-1"}
+{"fn":"resolveWindowsSystemExecutable","args":[["HELLO","a.b.c"],0],"ok":"C:\\Windows\\HELLO\\a.b.c"}
+{"fn":"resolveWindowsSystemExecutable","args":[["İstanbul","a.b.c","emoji 👍🏽 mix"],"x"],"ok":"C:\\Windows\\İstanbul\\a.b.c\\emoji 👍🏽 mix"}
+{"fn":"resolveWindowsSystemExecutable","args":[["line1\nline2","a..b"]],"ok":"C:\\Windows\\line1\nline2\\a..b"}
+{"fn":"resolveWindowsSystemExecutable","args":[["a:b:c","emoji 👍🏽 mix"],0],"ok":"C:\\Windows\\a:b:c\\emoji 👍🏽 mix"}
+{"fn":"resolveWindowsSystemExecutable","args":[["trailing."],true],"ok":"C:\\Windows\\trailing."}
+{"fn":"resolveWindowsSystemExecutable","args":[["key_name-1","a"],{}],"ok":"C:\\Windows\\key_name-1\\a"}
+{"fn":"resolveWindowsSystemExecutable","args":[["ünïcödé","straßea..b","Hello World"],["a",1]],"ok":"C:\\Windows\\ünïcödé\\straßea..b\\Hello World"}
+{"fn":"resolveWindowsSystemExecutable","args":[["./x/**/*.json","ab","straße"],[]],"ok":"C:\\Windows\\x\\**\\*.json\\ab\\straße"}
+{"fn":"resolveWindowsSystemExecutable","args":[["  padded  ","emoji 👍🏽 mix日本語のテキスト","İstanbul"],"x"],"ok":"C:\\Windows\\  padded  \\emoji 👍🏽 mix日本語のテキスト\\İstanbul"}
+{"fn":"resolveWindowsSystemExecutable","args":[["HELLO"]],"ok":"C:\\Windows\\HELLO"}
+{"fn":"resolveWindowsSystemExecutable","args":[[],true],"ok":"C:\\Windows"}
+{"fn":"resolveWindowsSystemExecutable","args":[["HELLO","日本語のテキスト{name} has {count} items"]],"ok":"C:\\Windows\\HELLO\\日本語のテキスト{name} has {count} items"}
+{"fn":"resolveWindowsSystemExecutable","args":[["","a😀b😀c","straßeΣΊΣΥΦΟΣ"],[]],"ok":"C:\\Windows\\a😀b😀c\\straßeΣΊΣΥΦΟΣ"}
+{"fn":"resolveWindowsSystemExecutable","args":[[],"x"],"ok":"C:\\Windows"}
+{"fn":"resolveWindowsSystemExecutable","args":[[],{"$undefined":true}],"ok":"C:\\Windows"}
+{"fn":"resolveWindowsSystemExecutable","args":[["Hello World",":"],{"a":"b"}],"ok":"C:\\Windows\\Hello World\\:"}
+{"fn":"resolveWindowsSystemExecutable","args":[["é","ΣΊΣΥΦΟΣ"],true],"ok":"C:\\Windows\\é\\ΣΊΣΥΦΟΣ"}
+{"fn":"resolveWindowsSystemExecutable","args":[[],{}],"ok":"C:\\Windows"}
+{"fn":"resolveWindowsSystemExecutable","args":[["straße","ünïcödé",":"],{"$undefined":true}],"ok":"C:\\Windows\\straße\\ünïcödé\\:"}
+{"fn":"resolveWindowsSystemExecutable","args":[["  padded  "],0],"ok":"C:\\Windows\\  padded  "}
+{"fn":"resolveWindowsSystemExecutable","args":[["tab\tseparated","line1\nline2","a.b.c"],"x"],"ok":"C:\\Windows\\tab\tseparated\\line1\nline2\\a.b.c"}
+{"fn":"resolveWindowsSystemExecutable","args":[["key_name-1","tab\tseparated","key_name-1"],true],"ok":"C:\\Windows\\key_name-1\\tab\tseparated\\key_name-1"}
+{"fn":"resolveWindowsSystemExecutable","args":[["Hello Worldünïcödé","abc"],{"a":{"b":"c"}}],"ok":"C:\\Windows\\Hello Worldünïcödé\\abc"}
+{"fn":"resolveWindowsSystemExecutable","args":[["ab"],{"$undefined":true}],"ok":"C:\\Windows\\ab"}
+{"fn":"resolveWindowsSystemExecutable","args":[[".leading","src/a/b.ts"],{"$undefined":true}],"ok":"C:\\Windows\\.leading\\src\\a\\b.ts"}
+{"fn":"resolveWindowsSystemExecutable","args":[[],{"a":{"b":"c"}}],"ok":"C:\\Windows"}
+{"fn":"resolveWindowsSystemExecutable","args":[["tab\tseparated","é","a.b.c"],{}],"ok":"C:\\Windows\\tab\tseparated\\é\\a.b.c"}
+{"fn":"resolveWindowsSystemExecutable","args":[["Hello World","{name} has {count} items"],"x"],"ok":"C:\\Windows\\Hello World\\{name} has {count} items"}
+{"fn":"resolveWindowsSystemExecutable","args":[["tab\tseparated","a:b:c","hello world"],0],"ok":"C:\\Windows\\tab\tseparated\\a:b:c\\hello world"}
+{"fn":"resolveWindowsSystemExecutable","args":[[],["a",1]],"ok":"C:\\Windows"}
+{"fn":"resolveWindowsSystemExecutable","args":[["日本語のテキスト","a"],{}],"ok":"C:\\Windows\\日本語のテキスト\\a"}
+{"fn":"resolveWindowsSystemExecutable","args":[["😀"],"x"],"ok":"C:\\Windows\\😀"}
+{"fn":"resolveWindowsSystemExecutable","args":[["hello world","ΣΊΣΥΦΟΣ","ab"],{}],"ok":"C:\\Windows\\hello world\\ΣΊΣΥΦΟΣ\\ab"}
+{"fn":"resolveWindowsSystemExecutable","args":[["emoji 👍🏽 mix",":"],{"a":"b"}],"ok":"C:\\Windows\\emoji 👍🏽 mix\\:"}
+{"fn":"resolveWindowsSystemExecutable","args":[["a😀b😀ca:b:c","hello"],0],"ok":"C:\\Windows\\a😀b😀ca:b:c\\hello"}
+{"fn":"resolveWindowsSystemExecutable","args":[[":","Hello World","ΣΊΣΥΦΟΣstraße"],{"a":{"b":"c"}}],"ok":"C:\\Windows\\:\\Hello World\\ΣΊΣΥΦΟΣstraße"}
+{"fn":"resolveWindowsSystemExecutable","args":[["﻿bom","  padded  "],{}],"ok":"C:\\Windows\\﻿bom\\  padded  "}
+{"fn":"resolveWindowsSystemExecutable","args":[["abc","./x/**/*.jsonHELLO","İstanbulhello world"],["a",1]],"ok":"C:\\Windows\\abc\\x\\**\\*.jsonHELLO\\İstanbulhello world"}
+{"fn":"resolveWindowsSystemExecutable","args":[["ab","é"],null],"error":"Cannot read properties of null (reading 'SystemRoot')"}
+{"fn":"resolveWindowsSystemExecutable","args":[["😀","ünïcödé"],{"a":{"b":"c"}}],"ok":"C:\\Windows\\😀\\ünïcödé"}
+{"fn":"resolveWindowsSystemExecutable","args":[["ab","日本語のテキスト","😀ns:key.path"],{"$undefined":true}],"ok":"C:\\Windows\\ab\\日本語のテキスト\\😀ns:key.path"}
+{"fn":"resolveWindowsSystemExecutable","args":[["hello","emoji 👍🏽 mix","a😀b😀c"],{"a":"b"}],"ok":"C:\\Windows\\hello\\emoji 👍🏽 mix\\a😀b😀c"}
+{"fn":"resolveWindowsSystemExecutable","args":[[]],"ok":"C:\\Windows"}
+{"fn":"resolveWindowsSystemExecutable","args":[["日本語のテキスト","emoji 👍🏽 mix","a"],{"a":{"b":"c"}}],"ok":"C:\\Windows\\日本語のテキスト\\emoji 👍🏽 mix\\a"}
+{"fn":"resolveWindowsSystemExecutable","args":[["﻿bom","ab","ΣΊΣΥΦΟΣ"],true],"ok":"C:\\Windows\\﻿bom\\ab\\ΣΊΣΥΦΟΣ"}
+{"fn":"resolveWindowsSystemExecutable","args":[["trailing.","a.b.c"],["a",1]],"ok":"C:\\Windows\\trailing.\\a.b.c"}
+{"fn":"resolveWindowsSystemExecutable","args":[["hello world"],["a",1]],"ok":"C:\\Windows\\hello world"}
+{"fn":"resolveWindowsSystemExecutable","args":[["key_name-1","a.b.csrc/a/b.ts"],["a",1]],"ok":"C:\\Windows\\key_name-1\\a.b.csrc\\a\\b.ts"}
+{"fn":"resolveWindowsSystemExecutable","args":[["a..b","ünïcödéΣΊΣΥΦΟΣ","HELLO"],{}],"ok":"C:\\Windows\\a..b\\ünïcödéΣΊΣΥΦΟΣ\\HELLO"}
+{"fn":"resolveWindowsSystemExecutable","args":[["./x/**/*.jsonhello world","ns:key.pathkey_name-1"],true],"ok":"C:\\Windows\\x\\**\\*.jsonhello world\\ns:key.pathkey_name-1"}
+{"fn":"resolveWindowsSystemExecutable","args":[["﻿bom","line1\nline2"],0],"ok":"C:\\Windows\\﻿bom\\line1\nline2"}
+{"fn":"resolveWindowsSystemExecutable","args":[["","İstanbulstraße"],"x"],"ok":"C:\\Windows\\İstanbulstraße"}
+{"fn":"resolveWindowsSystemExecutable","args":[[],{"a":"b"}],"ok":"C:\\Windows"}
+{"fn":"resolveWindowsSystemExecutable","args":[["a..b","a😀b😀c"],{"a":"b"}],"ok":"C:\\Windows\\a..b\\a😀b😀c"}
+{"fn":"resolveWindowsSystemExecutable","args":[["İstanbulHello World","hello world"],{"a":"b"}],"ok":"C:\\Windows\\İstanbulHello World\\hello world"}
+{"fn":"resolveWindowsSystemExecutable","args":[["Hello World","a:b:c","HELLO"],{}],"ok":"C:\\Windows\\Hello World\\a:b:c\\HELLO"}
+{"fn":"resolveWindowsSystemExecutable","args":[["trailing."],{}],"ok":"C:\\Windows\\trailing."}
+{"fn":"resolveWindowsSystemExecutable","args":[["./x/**/*.json","İstanbul"],null],"error":"Cannot read properties of null (reading 'SystemRoot')"}
+{"fn":"resolveWindowsSystemExecutable","args":[["hello world","hello","a..b"],true],"ok":"C:\\Windows\\hello world\\hello\\a..b"}
+{"fn":"resolveWindowsSystemExecutable","args":[["a:b:c","😀"],{"$undefined":true}],"ok":"C:\\Windows\\a:b:c\\😀"}
+{"fn":"resolveWindowsSystemExecutable","args":[["aHello World"],"x"],"ok":"C:\\Windows\\aHello World"}
+{"fn":"resolveWindowsSystemExecutable","args":[["ns:key.path"]],"ok":"C:\\Windows\\ns:key.path"}
+{"fn":"resolveWindowsSystemExecutable","args":[["ns:key.path","  padded  "]],"ok":"C:\\Windows\\ns:key.path\\  padded  "}
+{"fn":"resolveWindowsSystemExecutable","args":[["line1\nline2","Hello World😀"],[]],"ok":"C:\\Windows\\line1\nline2\\Hello World😀"}
+{"fn":"resolveWindowsSystemExecutable","args":[["HELLO",".leadinga.b.c"],{"a":"b"}],"ok":"C:\\Windows\\HELLO\\.leadinga.b.c"}
+{"fn":"resolveWindowsSystemExecutable","args":[["﻿bom","hello world","./x/**/*.json"]],"ok":"C:\\Windows\\﻿bom\\hello world\\x\\**\\*.json"}
+{"fn":"resolveWindowsSystemExecutable","args":[[],[]],"ok":"C:\\Windows"}
+{"fn":"resolveWindowsSystemExecutable","args":[["Hello World","ns:key.path😀","ab"],true],"ok":"C:\\Windows\\Hello World\\ns:key.path😀\\ab"}
+{"fn":"resolveWindowsSystemExecutable","args":[[],0],"ok":"C:\\Windows"}
+{"fn":"resolveWindowsSystemExecutable","args":[["ΣΊΣΥΦΟΣ","a..b"],{"$undefined":true}],"ok":"C:\\Windows\\ΣΊΣΥΦΟΣ\\a..b"}
+{"fn":"resolveWindowsSystemExecutable","args":[["  padded  "],{"a":{"b":"c"}}],"ok":"C:\\Windows\\  padded  "}
+{"fn":"resolveWindowsSystemExecutable","args":[["src/a/b.ts"],{}],"ok":"C:\\Windows\\src\\a\\b.ts"}
+{"fn":"resolveWindowsSystemExecutable","args":[["trailing.trailing."],null],"error":"Cannot read properties of null (reading 'SystemRoot')"}
+{"fn":"resolveWindowsSystemExecutable","args":[["tab\tseparated","a..b"],{"$undefined":true}],"ok":"C:\\Windows\\tab\tseparated\\a..b"}
+{"fn":"resolveWindowsSystemExecutable","args":[["a:b:c","日本語のテキスト","ns:key.pathtab\tseparated"],"x"],"ok":"C:\\Windows\\a:b:c\\日本語のテキスト\\ns:key.pathtab\tseparated"}
+{"fn":"resolveWindowsSystemExecutable","args":[["a:b:cabc","abc","line1\nline2😀"],{"$undefined":true}],"ok":"C:\\Windows\\a:b:cabc\\abc\\line1\nline2😀"}
+{"fn":"resolveWindowsSystemExecutable","args":[["ΣΊΣΥΦΟΣ"],null],"error":"Cannot read properties of null (reading 'SystemRoot')"}
+{"fn":"resolveWindowsSystemExecutable","args":[["HELLO.leading"],"x"],"ok":"C:\\Windows\\HELLO.leading"}
+{"fn":"resolveWindowsSystemExecutable","args":[["hello"],{"a":{"b":"c"}}],"ok":"C:\\Windows\\hello"}
+{"fn":"resolveWindowsSystemExecutable","args":[[],null],"error":"Cannot read properties of null (reading 'SystemRoot')"}
+{"fn":"resolveWindowsSystemExecutable","args":[["a:b:c","tab\tseparated","ünïcödéa..b"],{"a":"b"}],"ok":"C:\\Windows\\a:b:c\\tab\tseparated\\ünïcödéa..b"}
+{"fn":"resolveWindowsSystemExecutable","args":[["ünïcödé","ab日本語のテキスト"]],"ok":"C:\\Windows\\ünïcödé\\ab日本語のテキスト"}
+{"fn":"resolveWindowsSystemExecutable","args":[["😀","./x/**/*.json😀","İstanbul"],{"a":"b"}],"ok":"C:\\Windows\\😀\\x\\**\\*.json😀\\İstanbul"}
+{"fn":"resolveWindowsSystemExecutable","args":[["trailing."],{"a":{"b":"c"}}],"ok":"C:\\Windows\\trailing."}
+{"fn":"resolveWindowsSystemExecutable","args":[["😀"],true],"ok":"C:\\Windows\\😀"}
+{"fn":"resolveWindowsSystemExecutable","args":[["tab\tseparated","{name} has {count} items","a.b.c"],null],"error":"Cannot read properties of null (reading 'SystemRoot')"}
+{"fn":"resolveWindowsSystemExecutable","args":[["İstanbul","😀emoji 👍🏽 mix",":İstanbul"],{}],"ok":"C:\\Windows\\İstanbul\\😀emoji 👍🏽 mix\\:İstanbul"}
+{"fn":"resolveWindowsSystemExecutable","args":[["a:b:c{name} has {count} items",":","日本語のテキスト"],{}],"ok":"C:\\Windows\\a:b:c{name} has {count} items\\:\\日本語のテキスト"}
+{"fn":"resolveWindowsSystemExecutable","args":[[".leading","日本語のテキスト"],0],"ok":"C:\\Windows\\.leading\\日本語のテキスト"}
+{"fn":"resolveWindowsSystemExecutable","args":[["./x/**/*.json😀","Hello World","a😀b😀c"],{}],"ok":"C:\\Windows\\x\\**\\*.json😀\\Hello World\\a😀b😀c"}
+{"fn":"resolveWindowsSystemExecutable","args":[["key_name-1"]],"ok":"C:\\Windows\\key_name-1"}
+{"fn":"resolveWindowsSystemExecutable","args":[["straßesrc/a/b.ts","ns:key.path"],[]],"ok":"C:\\Windows\\straßesrc\\a\\b.ts\\ns:key.path"}
+{"fn":"resolveWindowsSystemExecutable","args":[["  padded  ","abc","line1\nline2"],null],"error":"Cannot read properties of null (reading 'SystemRoot')"}
+{"fn":"resolveWindowsSystemExecutable","args":[["straße"]],"ok":"C:\\Windows\\straße"}
+{"fn":"resolveWindowsSystemExecutable","args":[["straße","trailing."],0],"ok":"C:\\Windows\\straße\\trailing."}
+{"fn":"resolveWindowsSystemExecutable","args":[["日本語のテキスト"],true],"ok":"C:\\Windows\\日本語のテキスト"}
+{"fn":"resolveWindowsSystemExecutable","args":[["ünïcödé","emoji 👍🏽 mix"],{"a":"b"}],"ok":"C:\\Windows\\ünïcödé\\emoji 👍🏽 mix"}
+{"fn":"resolveWindowsSystemExecutable","args":[["ünïcödé","hello world","tab\tseparated"],{"$undefined":true}],"ok":"C:\\Windows\\ünïcödé\\hello world\\tab\tseparated"}
+{"fn":"resolveWindowsSystemExecutable","args":[["a😀b😀c","  padded  "],{"a":{"b":"c"}}],"ok":"C:\\Windows\\a😀b😀c\\  padded  "}
+{"fn":"resolveWindowsSystemExecutable","args":[["ünïcödéünïcödé"],{"$undefined":true}],"ok":"C:\\Windows\\ünïcödéünïcödé"}
+{"fn":"resolveWindowsSystemExecutable","args":[["a..bünïcödé","HELLO","HELLO"],null],"error":"Cannot read properties of null (reading 'SystemRoot')"}
+{"fn":"resolveWindowsSystemExecutable","args":[["hello","hello","a"],true],"ok":"C:\\Windows\\hello\\hello\\a"}
+{"fn":"resolveWindowsSystemExecutable","args":[["a😀b😀c","ünïcödéünïcödé"],"x"],"ok":"C:\\Windows\\a😀b😀c\\ünïcödéünïcödé"}
+{"fn":"resolveWindowsSystemExecutable","args":[["日本語のテキストa.b.c","é","ab"],0],"ok":"C:\\Windows\\日本語のテキストa.b.c\\é\\ab"}
+{"fn":"resolveWindowsSystemExecutable","args":[["ΣΊΣΥΦΟΣ","key_name-1","straße"],[]],"ok":"C:\\Windows\\ΣΊΣΥΦΟΣ\\key_name-1\\straße"}
+{"fn":"resolveWindowsSystemExecutable","args":[["abHELLO","a.b.c"],{"$undefined":true}],"ok":"C:\\Windows\\abHELLO\\a.b.c"}
+{"fn":"resolveWindowsSystemExecutable","args":[["ns:key.path","é","日本語のテキスト"],null],"error":"Cannot read properties of null (reading 'SystemRoot')"}
+{"fn":"resolveWindowsSystemExecutable","args":[["trailing.","a..b"],0],"ok":"C:\\Windows\\trailing.\\a..b"}
+{"fn":"resolveWindowsSystemExecutable","args":[["{name} has {count} items","HELLO","./x/**/*.jsonhello world"],{"$undefined":true}],"ok":"C:\\Windows\\{name} has {count} items\\HELLO\\x\\**\\*.jsonhello world"}
+{"fn":"resolveWindowsSystemExecutable","args":[["tab\tseparatedstraße","  padded  "],0],"ok":"C:\\Windows\\tab\tseparatedstraße\\  padded  "}
+{"fn":"resolveWindowsSystemExecutable","args":[["a..b"],{"a":{"b":"c"}}],"ok":"C:\\Windows\\a..b"}
+{"fn":"resolveWindowsSystemExecutable","args":[["  padded  "],{}],"ok":"C:\\Windows\\  padded  "}
+{"fn":"resolveWindowsSystemExecutable","args":[["a..b"],0],"ok":"C:\\Windows\\a..b"}
+{"fn":"resolveWindowsSystemExecutable","args":[["a..b","{name} has {count} items"],"x"],"ok":"C:\\Windows\\a..b\\{name} has {count} items"}
+{"fn":"resolveWindowsSystemExecutable","args":[["tab\tseparated"],{"a":{"b":"c"}}],"ok":"C:\\Windows\\tab\tseparated"}
+{"fn":"resolveWindowsSystemExecutable","args":[["","Hello Worldkey_name-1"],"x"],"ok":"C:\\Windows\\Hello Worldkey_name-1"}
+{"fn":"resolveWindowsSystemExecutable","args":[[":","a:b:ca..b","a..b"],["a",1]],"ok":"C:\\Windows\\:\\a:b:ca..b\\a..b"}
+{"fn":"resolveWindowsSystemExecutable","args":[["İstanbul"],0],"ok":"C:\\Windows\\İstanbul"}
+{"fn":"resolveWindowsSystemExecutable","args":[["straße","﻿bom",".leading"],"x"],"ok":"C:\\Windows\\straße\\﻿bom\\.leading"}
+{"fn":"resolveWindowsSystemExecutable","args":[[".leading","tab\tseparateda"],"x"],"ok":"C:\\Windows\\.leading\\tab\tseparateda"}
+{"fn":"resolveWindowsSystemExecutable","args":[["src/a/b.ts😀","é"],["a",1]],"ok":"C:\\Windows\\src\\a\\b.ts😀\\é"}
+{"fn":"resolveWindowsSystemExecutable","args":[["a","a","aabc"],{}],"ok":"C:\\Windows\\a\\a\\aabc"}
+{"fn":"resolveWindowsSystemExecutable","args":[[".leading","  padded  ünïcödé","ΣΊΣΥΦΟΣ"],["a",1]],"ok":"C:\\Windows\\.leading\\  padded  ünïcödé\\ΣΊΣΥΦΟΣ"}
+{"fn":"resolveWindowsSystemExecutable","args":[["ab"],null],"error":"Cannot read properties of null (reading 'SystemRoot')"}
+{"fn":"resolveWindowsSystemExecutable","args":[["İstanbulemoji 👍🏽 mix","ns:key.path","ünïcödé"],0],"ok":"C:\\Windows\\İstanbulemoji 👍🏽 mix\\ns:key.path\\ünïcödé"}
+{"fn":"resolveWindowsSystemExecutable","args":[["","a.b.c","ΣΊΣΥΦΟΣ"],{"$undefined":true}],"ok":"C:\\Windows\\a.b.c\\ΣΊΣΥΦΟΣ"}
+{"fn":"resolveWindowsSystemExecutable","args":[["  padded  key_name-1","emoji 👍🏽 mix"],{"a":"b"}],"ok":"C:\\Windows\\  padded  key_name-1\\emoji 👍🏽 mix"}
+{"fn":"resolveWindowsSystemExecutable","args":[["{name} has {count} items"],{"a":{"b":"c"}}],"ok":"C:\\Windows\\{name} has {count} items"}
+{"fn":"resolveWindowsSystemExecutable","args":[["src/a/b.tsa:b:c","","a.b.c"],["a",1]],"ok":"C:\\Windows\\src\\a\\b.tsa:b:c\\a.b.c"}
+{"fn":"resolveWindowsSystemExecutable","args":[["a..b","hello world.leading"],{"$undefined":true}],"ok":"C:\\Windows\\a..b\\hello world.leading"}
+{"fn":"resolveWindowsSystemExecutable","args":[["é",":{name} has {count} items","é"],{"a":"b"}],"ok":"C:\\Windows\\é\\:{name} has {count} items\\é"}
+{"fn":"resolveWindowsSystemExecutable","args":[["{name} has {count} items","{name} has {count} itemssrc/a/b.ts"],true],"ok":"C:\\Windows\\{name} has {count} items\\{name} has {count} itemssrc\\a\\b.ts"}
+{"fn":"resolveWindowsSystemExecutable","args":[["ΣΊΣΥΦΟΣkey_name-1"],{"a":"b"}],"ok":"C:\\Windows\\ΣΊΣΥΦΟΣkey_name-1"}
+{"fn":"resolveWindowsSystemExecutable","args":[["Hello World","hello"],{"a":{"b":"c"}}],"ok":"C:\\Windows\\Hello World\\hello"}
+{"fn":"resolveWindowsSystemExecutable","args":[["emoji 👍🏽 mixsrc/a/b.ts"],{"a":"b"}],"ok":"C:\\Windows\\emoji 👍🏽 mixsrc\\a\\b.ts"}
+{"fn":"resolveWindowsSystemExecutable","args":[["","a:b:cHello World"],{"a":"b"}],"ok":"C:\\Windows\\a:b:cHello World"}
+{"fn":"resolveWindowsSystemExecutable","args":[["İstanbul"],true],"ok":"C:\\Windows\\İstanbul"}
+{"fn":"resolveWindowsSystemExecutable","args":[["a.b.c"],["a",1]],"ok":"C:\\Windows\\a.b.c"}
+{"fn":"resolveWindowsSystemExecutable","args":[["a😀b😀c","key_name-1"],null],"error":"Cannot read properties of null (reading 'SystemRoot')"}
+{"fn":"resolveWindowsSystemExecutable","args":[["é","tab\tseparated{name} has {count} items","Hello World"],{"$undefined":true}],"ok":"C:\\Windows\\é\\tab\tseparated{name} has {count} items\\Hello World"}
+{"fn":"resolveWindowsSystemExecutable","args":[["﻿bom","a"],true],"ok":"C:\\Windows\\﻿bom\\a"}
+{"fn":"resolveWindowsSystemExecutable","args":[["./x/**/*.json"],{"$undefined":true}],"ok":"C:\\Windows\\x\\**\\*.json"}
+{"fn":"resolveWindowsSystemExecutable","args":[["İstanbul"]],"ok":"C:\\Windows\\İstanbul"}
+{"fn":"resolveWindowsSystemExecutable","args":[["ΣΊΣΥΦΟΣ"],["a",1]],"ok":"C:\\Windows\\ΣΊΣΥΦΟΣ"}
+{"fn":"resolveWindowsSystemExecutable","args":[["ünïcödé"],["a",1]],"ok":"C:\\Windows\\ünïcödé"}
+{"fn":"resolveWindowsSystemExecutable","args":[["src/a/b.ts"],"x"],"ok":"C:\\Windows\\src\\a\\b.ts"}
+{"fn":"resolveWindowsSystemExecutable","args":[[".leading","😀"],0],"ok":"C:\\Windows\\.leading\\😀"}
+{"fn":"resolveWindowsSystemExecutable","args":[["😀😀","a:b:c","ΣΊΣΥΦΟΣ"],"x"],"ok":"C:\\Windows\\😀😀\\a:b:c\\ΣΊΣΥΦΟΣ"}
+{"fn":"resolveWindowsSystemExecutable","args":[["./x/**/*.json"],{"a":{"b":"c"}}],"ok":"C:\\Windows\\x\\**\\*.json"}
+{"fn":"resolveWindowsSystemExecutable","args":[["  padded  ","日本語のテキスト","HELLO"],{"a":{"b":"c"}}],"ok":"C:\\Windows\\  padded  \\日本語のテキスト\\HELLO"}
+{"fn":"resolveWindowsSystemExecutable","args":[["abc","abΣΊΣΥΦΟΣ",":"]],"ok":"C:\\Windows\\abc\\abΣΊΣΥΦΟΣ\\:"}
+{"fn":"resolveWindowsSystemExecutable","args":[["src/a/b.ts","abc","a.b.c"],{"$undefined":true}],"ok":"C:\\Windows\\src\\a\\b.ts\\abc\\a.b.c"}
+{"fn":"resolveWindowsSystemExecutable","args":[["hello world","é","straße"],{}],"ok":"C:\\Windows\\hello world\\é\\straße"}
+{"fn":"resolveWindowsSystemExecutable","args":[["abc","日本語のテキスト","ahello"],{"$undefined":true}],"ok":"C:\\Windows\\abc\\日本語のテキスト\\ahello"}
+{"fn":"resolveWindowsSystemExecutable","args":[["Hello Worldline1\nline2","日本語のテキスト","{name} has {count} items"]],"ok":"C:\\Windows\\Hello Worldline1\nline2\\日本語のテキスト\\{name} has {count} items"}
+{"fn":"resolveWindowsSystemExecutable","args":[["Hello Worldline1\nline2","ΣΊΣΥΦΟΣ"],{"a":{"b":"c"}}],"ok":"C:\\Windows\\Hello Worldline1\nline2\\ΣΊΣΥΦΟΣ"}
+{"fn":"resolveWindowsSystemExecutable","args":[["ünïcödé"],{"a":{"b":"c"}}],"ok":"C:\\Windows\\ünïcödé"}
+{"fn":"resolveWindowsSystemExecutable","args":[[".leading"],{}],"ok":"C:\\Windows\\.leading"}
+{"fn":"resolveWindowsSystemExecutable","args":[["hello world","line1\nline2"],0],"ok":"C:\\Windows\\hello world\\line1\nline2"}
+{"fn":"resolveWindowsSystemExecutable","args":[["key_name-1","  padded  ","é"],[]],"ok":"C:\\Windows\\key_name-1\\  padded  \\é"}
+{"fn":"resolveWindowsSystemExecutable","args":[["Hello Worlda.b.c","ΣΊΣΥΦΟΣ","Hello World"]],"ok":"C:\\Windows\\Hello Worlda.b.c\\ΣΊΣΥΦΟΣ\\Hello World"}
+{"fn":"resolveWindowsSystemExecutable","args":[["./x/**/*.json","Hello World"]],"ok":"C:\\Windows\\x\\**\\*.json\\Hello World"}
+{"fn":"resolveWindowsSystemExecutable","args":[["ns:key.path","straße"],{"$undefined":true}],"ok":"C:\\Windows\\ns:key.path\\straße"}
+{"fn":"resolveWindowsSystemExecutable","args":[[":","hello world","emoji 👍🏽 mix"],["a",1]],"ok":"C:\\Windows\\:\\hello world\\emoji 👍🏽 mix"}
+{"fn":"resolveWindowsSystemExecutable","args":[["😀{name} has {count} items","src/a/b.ts","tab\tseparated"],{"a":"b"}],"ok":"C:\\Windows\\😀{name} has {count} items\\src\\a\\b.ts\\tab\tseparated"}
+{"fn":"resolveWindowsSystemExecutable","args":[["  padded  ünïcödé","HELLOab","﻿bom"],[]],"ok":"C:\\Windows\\  padded  ünïcödé\\HELLOab\\﻿bom"}
+{"fn":"resolveWindowsSystemExecutable","args":[[""],{}],"ok":"C:\\Windows"}
+{"fn":"resolveWindowsSystemExecutable","args":[["İstanbulhello world","hello"],null],"error":"Cannot read properties of null (reading 'SystemRoot')"}
+{"fn":"resolveWindowsSystemExecutable","args":[[".leading﻿bom","src/a/b.tshello world","Hello World"]],"ok":"C:\\Windows\\.leading﻿bom\\src\\a\\b.tshello world\\Hello World"}
+{"fn":"resolveWindowsSystemExecutable","args":[["é"],null],"error":"Cannot read properties of null (reading 'SystemRoot')"}
+{"fn":"resolveWindowsSystemExecutable","args":[["./x/**/*.json","{name} has {count} items"],"x"],"ok":"C:\\Windows\\x\\**\\*.json\\{name} has {count} items"}
+{"fn":"resolveWindowsSystemExecutable","args":[["emoji 👍🏽 mix",".leading"],{"$undefined":true}],"ok":"C:\\Windows\\emoji 👍🏽 mix\\.leading"}
+{"fn":"resolveWindowsSystemExecutable","args":[["a..b","  padded  "],{"a":"b"}],"ok":"C:\\Windows\\a..b\\  padded  "}
+{"fn":"resolveWindowsSystemExecutable","args":[[".leading","straße","emoji 👍🏽 mixline1\nline2"],0],"ok":"C:\\Windows\\.leading\\straße\\emoji 👍🏽 mixline1\nline2"}
+{"fn":"resolveWindowsSystemExecutable","args":[["ünïcödé","a.b.c",".leading"],{"a":"b"}],"ok":"C:\\Windows\\ünïcödé\\a.b.c\\.leading"}
+{"fn":"resolveWindowsSystemExecutable","args":[["./x/**/*.jsonsrc/a/b.ts"]],"ok":"C:\\Windows\\x\\**\\*.jsonsrc\\a\\b.ts"}
+{"fn":"resolveWindowsSystemExecutable","args":[["abc"],[]],"ok":"C:\\Windows\\abc"}
+{"fn":"resolveWindowsSystemExecutable","args":[["./x/**/*.jsontab\tseparated"],"x"],"ok":"C:\\Windows\\x\\**\\*.jsontab\tseparated"}
+{"fn":"resolveWindowsSystemExecutable","args":[["a..b","ΣΊΣΥΦΟΣ",".leading"]],"ok":"C:\\Windows\\a..b\\ΣΊΣΥΦΟΣ\\.leading"}
+{"fn":"resolveWindowsSystemExecutable","args":[["ab:","  padded  ","😀trailing."],["a",1]],"ok":"C:\\Windows\\ab:\\  padded  \\😀trailing."}
+{"fn":"resolveWindowsSystemExecutable","args":[["a.b.c","straße","./x/**/*.jsontab\tseparated"],{"$undefined":true}],"ok":"C:\\Windows\\a.b.c\\straße\\x\\**\\*.jsontab\tseparated"}
+{"fn":"resolveWindowsSystemExecutable","args":[["{name} has {count} items","é",".leading"],["a",1]],"ok":"C:\\Windows\\{name} has {count} items\\é\\.leading"}
+{"fn":"resolveWindowsSystemExecutable","args":[["src/a/b.tskey_name-1",".leading"]],"ok":"C:\\Windows\\src\\a\\b.tskey_name-1\\.leading"}
+{"fn":"resolveWindowsSystemExecutable","args":[[".leadingtrailing.","日本語のテキストa:b:c"],null],"error":"Cannot read properties of null (reading 'SystemRoot')"}
+{"fn":"resolveWindowsSystemExecutable","args":[["  padded  src/a/b.ts","hello"],{"$undefined":true}],"ok":"C:\\Windows\\  padded  src\\a\\b.ts\\hello"}
+{"fn":"resolveWindowsSystemExecutable","args":[["ΣΊΣΥΦΟΣ","日本語のテキスト"],{"a":{"b":"c"}}],"ok":"C:\\Windows\\ΣΊΣΥΦΟΣ\\日本語のテキスト"}
+{"fn":"resolveWindowsSystemExecutable","args":[["a.b.c"],null],"error":"Cannot read properties of null (reading 'SystemRoot')"}
+{"fn":"resolveWindowsSystemExecutable","args":[["line1\nline2","trailing.","hello worldhello world"],[]],"ok":"C:\\Windows\\line1\nline2\\trailing.\\hello worldhello world"}
+{"fn":"resolveWindowsSystemExecutable","args":[["abc","emoji 👍🏽 mixa..b"],"x"],"ok":"C:\\Windows\\abc\\emoji 👍🏽 mixa..b"}
+{"fn":"resolveWindowsSystemExecutable","args":[["./x/**/*.json",".leading","  padded  "]],"ok":"C:\\Windows\\x\\**\\*.json\\.leading\\  padded  "}
+{"fn":"resolveWindowsSystemExecutable","args":[[":",".leading😀","ns:key.path"],true],"ok":"C:\\Windows\\:\\.leading😀\\ns:key.path"}
+{"fn":"resolveWindowsSystemExecutable","args":[["b","a","B","é","10","9","a"],true],"ok":"C:\\Windows\\b\\a\\B\\é\\10\\9\\a"}
+{"fn":"resolveWindowsComSpec","args":[["a",1]],"ok":"C:\\Windows\\System32\\cmd.exe"}
+{"fn":"resolveWindowsComSpec","args":[null],"error":"Cannot read properties of null (reading 'ComSpec')"}
+{"fn":"resolveWindowsComSpec","args":["x"],"ok":"C:\\Windows\\System32\\cmd.exe"}
+{"fn":"resolveWindowsComSpec","args":[[]],"ok":"C:\\Windows\\System32\\cmd.exe"}
+{"fn":"resolveWindowsComSpec","args":[0],"ok":"C:\\Windows\\System32\\cmd.exe"}
+{"fn":"resolveWindowsComSpec","args":[],"ok":"C:\\Windows\\System32\\cmd.exe"}
+{"fn":"resolveWindowsComSpec","args":[{"a":{"b":"c"}}],"ok":"C:\\Windows\\System32\\cmd.exe"}
+{"fn":"resolveWindowsComSpec","args":[{}],"ok":"C:\\Windows\\System32\\cmd.exe"}
+{"fn":"resolveWindowsComSpec","args":[true],"ok":"C:\\Windows\\System32\\cmd.exe"}
+{"fn":"resolveWindowsComSpec","args":[{"$undefined":true}],"ok":"C:\\Windows\\System32\\cmd.exe"}
+{"fn":"resolveWindowsComSpec","args":[{"a":"b"}],"ok":"C:\\Windows\\System32\\cmd.exe"}
+{"fn":"resolveWindowsWslExecutable","args":[],"ok":"C:\\Windows\\System32\\wsl.exe"}
+{"fn":"resolveWindowsWslExecutable","args":["x"],"ok":"C:\\Windows\\System32\\wsl.exe"}
+{"fn":"resolveWindowsWslExecutable","args":[{"$undefined":true}],"ok":"C:\\Windows\\System32\\wsl.exe"}
+{"fn":"resolveWindowsWslExecutable","args":[{}],"ok":"C:\\Windows\\System32\\wsl.exe"}
+{"fn":"resolveWindowsWslExecutable","args":[0],"ok":"C:\\Windows\\System32\\wsl.exe"}
+{"fn":"resolveWindowsWslExecutable","args":[{"a":"b"}],"ok":"C:\\Windows\\System32\\wsl.exe"}
+{"fn":"resolveWindowsWslExecutable","args":[[]],"ok":"C:\\Windows\\System32\\wsl.exe"}
+{"fn":"resolveWindowsWslExecutable","args":[true],"ok":"C:\\Windows\\System32\\wsl.exe"}
+{"fn":"resolveWindowsWslExecutable","args":[["a",1]],"ok":"C:\\Windows\\System32\\wsl.exe"}
+{"fn":"resolveWindowsWslExecutable","args":[null],"error":"Cannot read properties of null (reading 'SystemRoot')"}
+{"fn":"resolveWindowsWslExecutable","args":[{"a":{"b":"c"}}],"ok":"C:\\Windows\\System32\\wsl.exe"}
+{"fn":"resolveWindowsPowerShellExecutable","args":[{"a":{"b":"c"}}],"ok":"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"}
+{"fn":"resolveWindowsPowerShellExecutable","args":[],"ok":"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"}
+{"fn":"resolveWindowsPowerShellExecutable","args":[{"$undefined":true}],"ok":"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"}
+{"fn":"resolveWindowsPowerShellExecutable","args":["x"],"ok":"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"}
+{"fn":"resolveWindowsPowerShellExecutable","args":[["a",1]],"ok":"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"}
+{"fn":"resolveWindowsPowerShellExecutable","args":[{"a":"b"}],"ok":"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"}
+{"fn":"resolveWindowsPowerShellExecutable","args":[null],"error":"Cannot read properties of null (reading 'SystemRoot')"}
+{"fn":"resolveWindowsPowerShellExecutable","args":[0],"ok":"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"}
+{"fn":"resolveWindowsPowerShellExecutable","args":[[]],"ok":"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"}
+{"fn":"resolveWindowsPowerShellExecutable","args":[{}],"ok":"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"}
+{"fn":"resolveWindowsPowerShellExecutable","args":[true],"ok":"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"}
+{"fn":"resolveWindowsSystemRoot","args":[{"SystemRoot":"D:\\Windows","ComSpec":"D:\\Windows\\System32\\custom-cmd.exe"}],"ok":"D:\\Windows"}
+{"fn":"resolveWindowsComSpec","args":[{"SystemRoot":"D:\\Windows","ComSpec":"D:\\Windows\\System32\\custom-cmd.exe"}],"ok":"D:\\Windows\\System32\\custom-cmd.exe"}
+{"fn":"resolveWindowsWslExecutable","args":[{"SystemRoot":"D:\\Windows","ComSpec":"D:\\Windows\\System32\\custom-cmd.exe"}],"ok":"D:\\Windows\\System32\\wsl.exe"}
+{"fn":"resolveWindowsSystemExecutable","args":[["System32","wsl.exe"],{"SystemRoot":"D:\\Windows","ComSpec":"D:\\Windows\\System32\\custom-cmd.exe"}],"ok":"D:\\Windows\\System32\\wsl.exe"}
+{"fn":"resolveWindowsPowerShellExecutable","args":[{"SystemRoot":"D:\\Windows","ComSpec":"D:\\Windows\\System32\\custom-cmd.exe"}],"ok":"D:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"}
+{"fn":"resolveWindowsSystemExecutable","args":[["System32","WindowsPowerShell","v1.0","powershell.exe"],{"SystemRoot":"D:\\Windows","ComSpec":"D:\\Windows\\System32\\custom-cmd.exe"}],"ok":"D:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"}
+{"fn":"resolveWindowsSystemExecutable","args":[["System32","tool.exe"],{"SYSTEMROOT":"C:\\WIN"}],"ok":"C:\\WIN\\System32\\tool.exe"}
+{"fn":"resolveWindowsSystemRoot","args":[{"SYSTEMROOT":"C:\\WIN"}],"ok":"C:\\WIN"}

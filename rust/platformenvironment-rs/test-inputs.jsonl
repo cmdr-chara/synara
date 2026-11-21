@@ -1,0 +1,8 @@
+{"fn":"resolveWindowsSystemRoot","args":[{"SystemRoot":"D:\\Windows","ComSpec":"D:\\Windows\\System32\\custom-cmd.exe"}]}
+{"fn":"resolveWindowsComSpec","args":[{"SystemRoot":"D:\\Windows","ComSpec":"D:\\Windows\\System32\\custom-cmd.exe"}]}
+{"fn":"resolveWindowsWslExecutable","args":[{"SystemRoot":"D:\\Windows","ComSpec":"D:\\Windows\\System32\\custom-cmd.exe"}]}
+{"fn":"resolveWindowsSystemExecutable","args":[["System32","wsl.exe"],{"SystemRoot":"D:\\Windows","ComSpec":"D:\\Windows\\System32\\custom-cmd.exe"}]}
+{"fn":"resolveWindowsPowerShellExecutable","args":[{"SystemRoot":"D:\\Windows","ComSpec":"D:\\Windows\\System32\\custom-cmd.exe"}]}
+{"fn":"resolveWindowsSystemExecutable","args":[["System32","WindowsPowerShell","v1.0","powershell.exe"],{"SystemRoot":"D:\\Windows","ComSpec":"D:\\Windows\\System32\\custom-cmd.exe"}]}
+{"fn":"resolveWindowsSystemExecutable","args":[["System32","tool.exe"],{"SYSTEMROOT":"C:\\WIN"}]}
+{"fn":"resolveWindowsSystemRoot","args":[{"SYSTEMROOT":"C:\\WIN"}]}

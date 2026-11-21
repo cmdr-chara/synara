@@ -1,0 +1,108 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/platformEnvironment.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "platformenvironment-rs",
+  "exports": [
+    {
+      "name": "resolveWindowsSystemRoot",
+      "file": "packages/shared/src/platformEnvironment.ts",
+      "line": 12,
+      "params": [
+        {
+          "name": "env",
+          "ts_type": "NodeJS.ProcessEnv",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveWindowsSystemExecutable",
+      "file": "packages/shared/src/platformEnvironment.ts",
+      "line": 16,
+      "params": [
+        {
+          "name": "relativeSegments",
+          "ts_type": "ReadonlyArray<string>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "env",
+          "ts_type": "NodeJS.ProcessEnv",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveWindowsComSpec",
+      "file": "packages/shared/src/platformEnvironment.ts",
+      "line": 23,
+      "params": [
+        {
+          "name": "env",
+          "ts_type": "NodeJS.ProcessEnv",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveWindowsWslExecutable",
+      "file": "packages/shared/src/platformEnvironment.ts",
+      "line": 31,
+      "params": [
+        {
+          "name": "env",
+          "ts_type": "NodeJS.ProcessEnv",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveWindowsPowerShellExecutable",
+      "file": "packages/shared/src/platformEnvironment.ts",
+      "line": 35,
+      "params": [
+        {
+          "name": "env",
+          "ts_type": "NodeJS.ProcessEnv",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

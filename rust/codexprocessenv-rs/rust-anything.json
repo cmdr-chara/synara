@@ -1,0 +1,337 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/codexProcessEnv.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "codexprocessenv-rs",
+  "exports": [
+    {
+      "name": "buildCodexAppServerArgs",
+      "file": "apps/server/src/codexProcessEnv.ts",
+      "line": 194,
+      "params": [
+        {
+          "name": "sourceHomePath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "readonly string[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "readEffectiveCodexAuthCredentialsStoreMode",
+      "file": "apps/server/src/codexProcessEnv.ts",
+      "line": 332,
+      "params": [
+        {
+          "name": "config",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(\"file\" | \"keyring\" | \"auto\" | \"ephemeral\")",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "readCodexPreparedHomeFileSnapshot",
+      "file": "apps/server/src/codexProcessEnv.ts",
+      "line": 566,
+      "params": [
+        {
+          "name": "source",
+          "ts_type": "(| { readonly kind: \"missing\" }\n  | {\n      readonly kind: \"bound\";\n      readonly canonicalHomePath: string;\n      readonly device: bigint;\n      readonly inode: bigint;\n    })",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "fileName",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Buffer | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "readCodexPreparedAuthTrackingFingerprint",
+      "file": "apps/server/src/codexProcessEnv.ts",
+      "line": 779,
+      "params": [
+        {
+          "name": "tracking",
+          "ts_type": "PreparedCodexAuthTracking",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "readSynaraConfigSuppressions",
+      "file": "apps/server/src/codexProcessEnv.ts",
+      "line": 1012,
+      "params": [
+        {
+          "name": "markerPath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<readonly string[]>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "disableCodexConfigSections",
+      "file": "apps/server/src/codexProcessEnv.ts",
+      "line": 1037,
+      "params": [
+        {
+          "name": "config",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "sectionHeaders",
+          "ts_type": "readonly string[]",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "appendMissing",
+          "ts_type": "boolean",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "disableCompetingCodexBrowserPluginsInConfig",
+      "file": "apps/server/src/codexProcessEnv.ts",
+      "line": 1108,
+      "params": [
+        {
+          "name": "config",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "linkOrCopyCodexOverlayEntry",
+      "file": "apps/server/src/codexProcessEnv.ts",
+      "line": 1136,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n    readonly entryName: string;\n    readonly sourcePath: string;\n    readonly targetPath: string;\n    readonly type: \"dir\" | \"file\";\n  }",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "linker",
+          "ts_type": "CodexOverlayEntryLinker",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<void>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "prioritizeCodexOverlayEntries",
+      "file": "apps/server/src/codexProcessEnv.ts",
+      "line": 1159,
+      "params": [
+        {
+          "name": "entries",
+          "ts_type": "readonly string[]",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "extractManagedCodexConfigSection",
+      "file": "apps/server/src/codexProcessEnv.ts",
+      "line": 2270,
+      "params": [
+        {
+          "name": "config",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "configHasTomlTableHeader",
+      "file": "apps/server/src/codexProcessEnv.ts",
+      "line": 2402,
+      "params": [
+        {
+          "name": "config",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "header",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "mergeShellEnvPolicyExclude",
+      "file": "apps/server/src/codexProcessEnv.ts",
+      "line": 2521,
+      "params": [
+        {
+          "name": "config",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "envVarName",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "CodexPreparedHomeFileSnapshotError",
+      "file": "apps/server/src/codexProcessEnv.ts",
+      "line": 114,
+      "reason": "class: extends another class, public field `failure`, public field `fileName`"
+    },
+    {
+      "name": "hydrateCodexProviderCredentialEnvironment",
+      "file": "apps/server/src/codexProcessEnv.ts",
+      "line": 164,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "writeCodexOverlayConfigAtomically",
+      "file": "apps/server/src/codexProcessEnv.ts",
+      "line": 220,
+      "reason": "uses `CodexOverlayConfigPublicationHooks`, which has function members"
+    },
+    {
+      "name": "resolveCodexProcessSourceEnvironment",
+      "file": "apps/server/src/codexProcessEnv.ts",
+      "line": 796,
+      "reason": "uses `CodexProcessEnvInput`, which has function members"
+    },
+    {
+      "name": "prepareCodexAuthTracking",
+      "file": "apps/server/src/codexProcessEnv.ts",
+      "line": 919,
+      "reason": "uses `CodexProcessEnvInput`, which has function members"
+    },
+    {
+      "name": "readCodexSharedContinuationGeneration",
+      "file": "apps/server/src/codexProcessEnv.ts",
+      "line": 2098,
+      "reason": "uses `CodexProcessEnvInput`, which has function members"
+    },
+    {
+      "name": "isCodexSharedContinuationStatePrepared",
+      "file": "apps/server/src/codexProcessEnv.ts",
+      "line": 2136,
+      "reason": "uses `CodexProcessEnvInput`, which has function members"
+    },
+    {
+      "name": "prepareCodexHomeOverlay",
+      "file": "apps/server/src/codexProcessEnv.ts",
+      "line": 2934,
+      "reason": "uses `CodexProcessEnvInput`, which has function members"
+    },
+    {
+      "name": "prepareCodexHomeOverlayFromPreparedContinuationSource",
+      "file": "apps/server/src/codexProcessEnv.ts",
+      "line": 2944,
+      "reason": "uses `CodexProcessEnvInput`, which has function members"
+    },
+    {
+      "name": "buildCodexProcessEnv",
+      "file": "apps/server/src/codexProcessEnv.ts",
+      "line": 2950,
+      "reason": "uses `CodexProcessEnvInput`, which has function members"
+    },
+    {
+      "name": "buildCodexProcessLaunchContext",
+      "file": "apps/server/src/codexProcessEnv.ts",
+      "line": 3044,
+      "reason": "uses `CodexProcessEnvInput`, which has function members"
+    },
+    {
+      "name": "readCodexAuthFingerprintAsync",
+      "file": "apps/server/src/codexProcessEnv.ts",
+      "line": 3088,
+      "reason": "uses `CodexProcessEnvInput`, which has function members"
+    }
+  ]
+}

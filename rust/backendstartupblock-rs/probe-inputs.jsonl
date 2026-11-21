@@ -1,0 +1,19 @@
+{"class": "BackendStartupBlockDetector", "ctor": [], "calls": [{"method": "push", "args": ["database is locked", "stdout"]}, {"method": "end", "args": ["stdout"]}, {"method": "read", "args": []}]}
+{"class": "BackendStartupBlockDetector", "ctor": [], "calls": [{"method": "push", "args": ["database is locked", "stderr"]}, {"method": "end", "args": ["stderr"]}, {"method": "read", "args": []}]}
+{"class": "BackendStartupBlockDetector", "ctor": [], "calls": [{"method": "push", "args": ["SQLITE_BUSY", "stderr"]}, {"method": "end", "args": ["stderr"]}, {"method": "read", "args": []}]}
+{"class": "BackendStartupBlockDetector", "ctor": [], "calls": [{"method": "push", "args": ["Error: database is locked by another process", "stderr"]}, {"method": "end", "args": ["stderr"]}, {"method": "read", "args": []}]}
+{"class": "BackendStartupBlockDetector", "ctor": [], "calls": [{"method": "push", "args": ["migration required", "stderr"]}, {"method": "end", "args": ["stderr"]}, {"method": "read", "args": []}]}
+{"class": "BackendStartupBlockDetector", "ctor": [], "calls": [{"method": "push", "args": ["migration failed", "stderr"]}, {"method": "end", "args": ["stderr"]}, {"method": "read", "args": []}]}
+{"class": "BackendStartupBlockDetector", "ctor": [], "calls": [{"method": "push", "args": ["{\"kind\":\"database-locked\",\"ownerPid\":1234}", "stderr"]}, {"method": "end", "args": ["stderr"]}, {"method": "read", "args": []}]}
+{"class": "BackendStartupBlockDetector", "ctor": [], "calls": [{"method": "push", "args": ["startup block", "stderr"]}, {"method": "end", "args": ["stderr"]}, {"method": "read", "args": []}]}
+{"class": "BackendStartupBlockDetector", "ctor": [], "calls": [{"method": "push", "args": ["SYNARA_STARTUP_BLOCK", "stderr"]}, {"method": "end", "args": ["stderr"]}, {"method": "read", "args": []}]}
+{"class": "BackendStartupBlockDetector", "ctor": [], "calls": [{"method": "push", "args": ["MigrationDivergence", "stderr"]}, {"method": "end", "args": ["stderr"]}, {"method": "read", "args": []}]}
+{"class": "BackendStartupBlockDetector", "ctor": [], "calls": [{"method": "push", "args": ["schema too new", "stderr"]}, {"method": "end", "args": ["stderr"]}, {"method": "read", "args": []}]}
+{"class": "BackendStartupBlockDetector", "ctor": [], "calls": [{"method": "push", "args": ["recovery required", "stderr"]}, {"method": "end", "args": ["stderr"]}, {"method": "read", "args": []}]}
+{"class": "BackendStartupBlockDetector", "ctor": [], "calls": [{"method": "push", "args": ["runtime identity mismatch", "stderr"]}, {"method": "end", "args": ["stderr"]}, {"method": "read", "args": []}]}
+{"class": "BackendStartupBlockDetector", "ctor": [], "calls": [{"method": "push", "args": ["EADDRINUSE", "stderr"]}, {"method": "end", "args": ["stderr"]}, {"method": "read", "args": []}]}
+{"class": "BackendStartupBlockDetector", "ctor": [], "calls": [{"method": "push", "args": ["port already in use", "stderr"]}, {"method": "end", "args": ["stderr"]}, {"method": "read", "args": []}]}
+{"class": "BackendStartupBlockDetector", "ctor": [], "calls": [{"method": "push", "args": ["[startup-block]", "stderr"]}, {"method": "end", "args": ["stderr"]}, {"method": "read", "args": []}]}
+{"class": "BackendStartupBlockDetector", "ctor": [], "calls": [{"method": "push", "args": ["startupBlock", "stderr"]}, {"method": "end", "args": ["stderr"]}, {"method": "read", "args": []}]}
+{"class": "BackendStartupBlockDetector", "ctor": [], "calls": [{"method": "push", "args": ["database is locked", "stderr"]}, {"method": "read", "args": []}]}
+{"class": "BackendStartupBlockDetector", "ctor": [], "calls": [{"method": "push", "args": [{"": [100, 97, 116, 97, 98, 97, 115, 101, 32, 105, 115, 32, 108, 111, 99, 107, 101, 100]}, "stderr"]}, {"method": "read", "args": []}, {"method": "end", "args": ["stderr"]}, {"method": "read", "args": []}]}

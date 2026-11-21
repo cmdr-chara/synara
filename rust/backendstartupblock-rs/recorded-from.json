@@ -1,0 +1,17 @@
+{
+  "unit": "apps/desktop/src/backendStartupBlock.ts",
+  "files": 1,
+  "fingerprint": "bd5459e1558c75d0",
+  "coverage": {
+    "lines": 134,
+    "reached": 123,
+    "files": [
+      {
+        "file": "apps/desktop/src/backendStartupBlock.ts",
+        "lines": 134,
+        "reached": 123,
+        "missed": "81-83, 88-90, 93-95, 99-100"
+      }
+    ]
+  }
+}

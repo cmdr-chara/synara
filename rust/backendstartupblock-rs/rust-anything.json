@@ -1,0 +1,85 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/desktop/src/backendStartupBlock.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "backendstartupblock-rs",
+  "exports": [],
+  "classes": [
+    {
+      "name": "BackendStartupBlockDetector",
+      "file": "apps/desktop/src/backendStartupBlock.ts",
+      "line": 45,
+      "constructor": [],
+      "methods": [
+        {
+          "name": "push",
+          "file": "apps/desktop/src/backendStartupBlock.ts",
+          "line": 56,
+          "params": [
+            {
+              "name": "chunk",
+              "ts_type": "unknown",
+              "optional": false,
+              "rest": false
+            },
+            {
+              "name": "source",
+              "ts_type": "\"stdout\" | \"stderr\"",
+              "optional": true,
+              "rest": false
+            }
+          ],
+          "returns": "void",
+          "is_async": false,
+          "is_generator": false,
+          "type_params": [],
+          "uses_instanceof": false
+        },
+        {
+          "name": "end",
+          "file": "apps/desktop/src/backendStartupBlock.ts",
+          "line": 62,
+          "params": [
+            {
+              "name": "source",
+              "ts_type": "\"stdout\" | \"stderr\"",
+              "optional": false,
+              "rest": false
+            }
+          ],
+          "returns": "void",
+          "is_async": false,
+          "is_generator": false,
+          "type_params": [],
+          "uses_instanceof": false
+        },
+        {
+          "name": "freeze",
+          "file": "apps/desktop/src/backendStartupBlock.ts",
+          "line": 71,
+          "params": [],
+          "returns": "void",
+          "is_async": false,
+          "is_generator": false,
+          "type_params": [],
+          "uses_instanceof": false
+        },
+        {
+          "name": "read",
+          "file": "apps/desktop/src/backendStartupBlock.ts",
+          "line": 109,
+          "params": [],
+          "returns": "(| {\n      readonly kind: \"database-locked\";\n      readonly ownerPid: number | null;\n    }\n  | {\n      readonly kind: \"migration-recovery-required\";\n    }\n  | {\n      readonly kind: \"migration-divergence-consent-required\";\n      readonly challenge: MigrationDivergenceConsentChallenge;\n    }\n  | {\n      readonly kind: \"migration-runtime-identity-mismatch\";\n    }\n  | {\n      readonly kind: \"migration-schema-too-new\";\n      readonly block: MigrationSchemaTooNewStartupBlock;\n    }\n  | {\n      readonly kind: \"migration-startup-block-invalid\";\n    }) | null",
+          "is_async": false,
+          "is_generator": false,
+          "type_params": [],
+          "uses_instanceof": false
+        }
+      ],
+      "blocker": null
+    }
+  ],
+  "js_only": []
+}

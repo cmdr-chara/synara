@@ -1,0 +1,211 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/storeTestFixtures.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "storetestfixtures-rs",
+  "exports": [
+    {
+      "name": "makeThread",
+      "file": "apps/web/src/storeTestFixtures.ts",
+      "line": 22,
+      "params": [
+        {
+          "name": "overrides",
+          "ts_type": "Partial<Thread>",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "Thread",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "makeDomainEvent",
+      "file": "apps/web/src/storeTestFixtures.ts",
+      "line": 57,
+      "params": [
+        {
+          "name": "type",
+          "ts_type": "(typeof typeof typeof typeof OrchestrationEvent.Type.Type.Type.Type[\"type\"])",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "payload",
+          "ts_type": "Extract<typeof typeof typeof typeof OrchestrationEvent.Type.Type.Type.Type, { type: (typeof typeof typeof typeof OrchestrationEvent.Type.Type.Type.Type[\"type\"]) }>[\"payload\"]",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "overrides",
+          "ts_type": "Partial<Omit<Extract<typeof typeof typeof typeof OrchestrationEvent.Type.Type.Type.Type, { type: (typeof typeof typeof typeof OrchestrationEvent.Type.Type.Type.Type[\"type\"]) }>, \"type\" | \"payload\">>",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "Extract<typeof typeof typeof typeof OrchestrationEvent.Type.Type.Type.Type, { type: (typeof typeof typeof typeof OrchestrationEvent.Type.Type.Type.Type[\"type\"]) }>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "makeActivity",
+      "file": "apps/web/src/storeTestFixtures.ts",
+      "line": 88,
+      "params": [
+        {
+          "name": "overrides",
+          "ts_type": "{\n  id?: string;\n  createdAt?: string;\n  kind?: string;\n  summary?: string;\n  tone?: typeof typeof typeof typeof OrchestrationThreadActivity.Type.Type.Type.Type[\"tone\"];\n  payload?: typeof typeof typeof typeof OrchestrationThreadActivity.Type.Type.Type.Type[\"payload\"];\n  turnId?: string;\n  sequence?: number;\n  sequenceSource?: typeof typeof typeof typeof OrchestrationThreadActivity.Type.Type.Type.Type[\"sequenceSource\"];\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof OrchestrationThreadActivity.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "makeState",
+      "file": "apps/web/src/storeTestFixtures.ts",
+      "line": 112,
+      "params": [
+        {
+          "name": "thread",
+          "ts_type": "Thread",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "AppState",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "makeProject",
+      "file": "apps/web/src/storeTestFixtures.ts",
+      "line": 153,
+      "params": [
+        {
+          "name": "overrides",
+          "ts_type": "Partial<AppState[\"projects\"][number]>",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "AppState[\"projects\"][number]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "makeReadModelThread",
+      "file": "apps/web/src/storeTestFixtures.ts",
+      "line": 175,
+      "params": [
+        {
+          "name": "overrides",
+          "ts_type": "Partial<typeof typeof typeof typeof OrchestrationReadModel.Type.Type.Type.Type[\"threads\"][number]>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "makeReadModel",
+      "file": "apps/web/src/storeTestFixtures.ts",
+      "line": 205,
+      "params": [
+        {
+          "name": "thread",
+          "ts_type": "typeof typeof typeof typeof OrchestrationReadModel.Type.Type.Type.Type[\"threads\"][number]",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof OrchestrationReadModel.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "makeShellSnapshot",
+      "file": "apps/web/src/storeTestFixtures.ts",
+      "line": 233,
+      "params": [
+        {
+          "name": "thread",
+          "ts_type": "typeof typeof typeof typeof OrchestrationShellSnapshot.Type.Type.Type.Type[\"threads\"][number]",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "makeReadModelProject",
+      "file": "apps/web/src/storeTestFixtures.ts",
+      "line": 257,
+      "params": [
+        {
+          "name": "overrides",
+          "ts_type": "Partial<typeof typeof typeof typeof OrchestrationReadModel.Type.Type.Type.Type[\"projects\"][number]>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof OrchestrationReadModel.Type.Type.Type.Type[\"projects\"][number]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "makeUsageLimitRecovery",
+      "file": "apps/web/src/storeTestFixtures.ts",
+      "line": 300,
+      "params": [
+        {
+          "name": "overrides",
+          "ts_type": "Partial<NonNullable<Thread[\"usageLimitRecovery\"]>>",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "NonNullable<Thread[\"usageLimitRecovery\"]>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "makeFakeWindow",
+      "file": "apps/web/src/storeTestFixtures.ts",
+      "line": 280,
+      "reason": "takes or returns a function"
+    }
+  ]
+}

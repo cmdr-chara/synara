@@ -1,0 +1,23 @@
+{
+  "unit": "apps/server/src/sensitiveKeys.ts",
+  "files": 1,
+  "fingerprint": "caf751abfa76fbe7",
+  "coverage": {
+    "lines": 238,
+    "reached": 174,
+    "files": [
+      {
+        "file": "apps/server/src/providerChildEnvironment.ts",
+        "lines": 133,
+        "reached": 80,
+        "missed": "39-43, 51-52, 78-80, 97-103, 109-122, 124-143, 145-146"
+      },
+      {
+        "file": "apps/server/src/sensitiveKeys.ts",
+        "lines": 105,
+        "reached": 94,
+        "missed": "80-81, 84-85, 92-93, 95-98, 101"
+      }
+    ]
+  }
+}

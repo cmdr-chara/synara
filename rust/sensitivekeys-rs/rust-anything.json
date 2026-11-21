@@ -1,0 +1,54 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/sensitiveKeys.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "sensitivekeys-rs",
+  "exports": [
+    {
+      "name": "isSensitiveKey",
+      "file": "apps/server/src/sensitiveKeys.ts",
+      "line": 78,
+      "params": [
+        {
+          "name": "key",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "redactSensitiveJsonFields",
+      "file": "apps/server/src/sensitiveKeys.ts",
+      "line": 108,
+      "params": [
+        {
+          "name": "key",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

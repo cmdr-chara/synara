@@ -1,0 +1,162 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/pullRequests.logic.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "pullrequests-rs",
+  "exports": [
+    {
+      "name": "repositoryPullRequestIdentityKey",
+      "file": "apps/server/src/pullRequests.logic.ts",
+      "line": 13,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  repository: string;\n  number: number;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "projectPullRequestIdentityKey",
+      "file": "apps/server/src/pullRequests.logic.ts",
+      "line": 23,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  projectId: string;\n  repository: string;\n  number: number;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "selectRecoverablePullRequestPins",
+      "file": "apps/server/src/pullRequests.logic.ts",
+      "line": 34,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  pins: ReadonlyArray<({ projectId: P; repositoryKey: string; number: number })>;\n  presentKeys: ReadonlySet<string>;\n  repositoryKeysByProject: ReadonlyMap<(string), ReadonlySet<string>>;\n  batches: ReadonlyArray<{\n    repository: string;\n    truncated: boolean;\n    projectIds: ReadonlyArray<(string)>;\n  }>;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "({ projectId: P; repositoryKey: string; number: number })[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "buildPullRequestListEntry",
+      "file": "apps/server/src/pullRequests.logic.ts",
+      "line": 70,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  project: { id: typeof typeof typeof typeof PullRequestListEntry.Type.Type.Type.Type[\"projectId\"]; title: string };\n  repository: string;\n  pullRequest: GitHubInboxPullRequest;\n  viewerReviewRequested: boolean;\n  viewerInvolvement: typeof typeof typeof typeof GitHubViewerInvolvement.Type.Type.Type.Type;\n  isPinned: boolean;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof PullRequestListEntry.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "orderPullRequestListEntries",
+      "file": "apps/server/src/pullRequests.logic.ts",
+      "line": 116,
+      "params": [
+        {
+          "name": "entries",
+          "ts_type": "readonly ({ readonly isPinned?: boolean | undefined; readonly updatedAt: string })[]",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "({ readonly isPinned?: boolean | undefined; readonly updatedAt: string })[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isViewerReviewRequested",
+      "file": "apps/server/src/pullRequests.logic.ts",
+      "line": 126,
+      "params": [
+        {
+          "name": "author",
+          "ts_type": "typeof typeof typeof typeof PullRequestActor.Type.Type.Type.Type | null",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "reviewRequestLogins",
+          "ts_type": "ReadonlyArray<string>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "viewer",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "matchedReviewingQuery",
+          "ts_type": "boolean",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isPullRequestMergeMethodAllowed",
+      "file": "apps/server/src/pullRequests.logic.ts",
+      "line": 140,
+      "params": [
+        {
+          "name": "capabilities",
+          "ts_type": "typeof typeof typeof typeof PullRequestMergeCapabilities.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "method",
+          "ts_type": "typeof typeof typeof typeof PullRequestMergeMethod.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

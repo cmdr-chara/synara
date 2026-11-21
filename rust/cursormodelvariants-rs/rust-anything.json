@@ -1,0 +1,48 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/cursorModelVariants.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "cursormodelvariants-rs",
+  "exports": [
+    {
+      "name": "normalizeCursorModelVariantBaseId",
+      "file": "apps/web/src/cursorModelVariants.ts",
+      "line": 32,
+      "params": [
+        {
+          "name": "model",
+          "ts_type": "string | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "collapseCursorModelVariants",
+      "file": "apps/web/src/cursorModelVariants.ts",
+      "line": 137,
+      "params": [
+        {
+          "name": "models",
+          "ts_type": "ReadonlyArray<typeof typeof typeof typeof ProviderModelDescriptor.Type.Type.Type.Type>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ProviderModelDescriptor.Type.Type.Type.Type[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

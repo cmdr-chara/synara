@@ -1,0 +1,202 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/composerDraftStoreTestFixtures.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "composerdraftstoretestfixtures-rs",
+  "exports": [
+    {
+      "name": "stubComposerDraftBrowserStorage",
+      "file": "apps/web/src/composerDraftStoreTestFixtures.ts",
+      "line": 30,
+      "params": [],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "makeBrowserAnnotation",
+      "file": "apps/web/src/composerDraftStoreTestFixtures.ts",
+      "line": 35,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "Partial<BrowserAnnotationDraft> & { id: string }",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "BrowserAnnotationDraft",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "makeImage",
+      "file": "apps/web/src/composerDraftStoreTestFixtures.ts",
+      "line": 58,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  id: string;\n  previewUrl: string;\n  name?: string;\n  mimeType?: string;\n  sizeBytes?: number;\n  lastModified?: number;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ComposerImageAttachment",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "makeFile",
+      "file": "apps/web/src/composerDraftStoreTestFixtures.ts",
+      "line": 85,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  id: string;\n  name?: string;\n  mimeType?: string;\n  sizeBytes?: number;\n  lastModified?: number;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ComposerFileAttachment",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "makeTerminalContext",
+      "file": "apps/web/src/composerDraftStoreTestFixtures.ts",
+      "line": 110,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  id: string;\n  text?: string;\n  terminalId?: string;\n  terminalLabel?: string;\n  lineStart?: number;\n  lineEnd?: number;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "TerminalContextDraft",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "makeQueuedTurn",
+      "file": "apps/web/src/composerDraftStoreTestFixtures.ts",
+      "line": 130,
+      "params": [
+        {
+          "name": "id",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(QueuedComposerChatTurn | QueuedComposerPlanFollowUp)",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "makeQueuedChatTurn",
+      "file": "apps/web/src/composerDraftStoreTestFixtures.ts",
+      "line": 149,
+      "params": [
+        {
+          "name": "id",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "image",
+          "ts_type": "ComposerImageAttachment",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "(QueuedComposerChatTurn | QueuedComposerPlanFollowUp)",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resetComposerDraftStore",
+      "file": "apps/web/src/composerDraftStoreTestFixtures.ts",
+      "line": 187,
+      "params": [],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "modelSelection",
+      "file": "apps/web/src/composerDraftStoreTestFixtures.ts",
+      "line": 191,
+      "params": [
+        {
+          "name": "provider",
+          "ts_type": "typeof typeof typeof typeof ModelSelection.Type.Type.Type.Type[\"provider\"]",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "model",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "options",
+          "ts_type": "typeof typeof typeof typeof ModelSelection.Type.Type.Type.Type[\"options\"]",
+          "optional": true,
+          "rest": false
+        },
+        {
+          "name": "instanceId",
+          "ts_type": "string",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ModelSelection.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "providerModelOptions",
+      "file": "apps/web/src/composerDraftStoreTestFixtures.ts",
+      "line": 205,
+      "params": [
+        {
+          "name": "options",
+          "ts_type": "typeof typeof typeof typeof ProviderModelOptions.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ProviderModelOptions.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

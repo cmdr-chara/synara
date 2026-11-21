@@ -1,0 +1,41 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/desktop/src/cuaDriverHost.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "cuadriverhost-rs",
+  "exports": [
+    {
+      "name": "sweepOrphanedCuaDrivers",
+      "file": "apps/desktop/src/cuaDriverHost.ts",
+      "line": 300,
+      "params": [],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "sweepOrphanedCuaDriversInBackground",
+      "file": "apps/desktop/src/cuaDriverHost.ts",
+      "line": 319,
+      "params": [],
+      "returns": "Promise<void>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "CuaDriverHost",
+      "file": "apps/desktop/src/cuaDriverHost.ts",
+      "line": 413,
+      "reason": "class: accessor `isInputMonitorRequested`, async or generator method `listen`, async or generator method `stopTaskByUser`, async or generator method `dispose`"
+    }
+  ]
+}

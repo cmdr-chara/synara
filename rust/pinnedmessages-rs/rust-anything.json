@@ -1,0 +1,204 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/pinnedMessages.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "pinnedmessages-rs",
+  "exports": [
+    {
+      "name": "isMessagePinned",
+      "file": "packages/shared/src/pinnedMessages.ts",
+      "line": 17,
+      "params": [
+        {
+          "name": "pins",
+          "ts_type": "readonly typeof typeof typeof typeof PinnedMessage.Type.Type.Type.Type[] | null | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "messageId",
+          "ts_type": "typeof typeof typeof typeof MessageId.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "addPinnedMessage",
+      "file": "packages/shared/src/pinnedMessages.ts",
+      "line": 24,
+      "params": [
+        {
+          "name": "pins",
+          "ts_type": "readonly typeof typeof typeof typeof PinnedMessage.Type.Type.Type.Type[] | null | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "pin",
+          "ts_type": "typeof typeof typeof typeof PinnedMessage.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof PinnedMessage.Type.Type.Type.Type[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "removePinnedMessage",
+      "file": "packages/shared/src/pinnedMessages.ts",
+      "line": 34,
+      "params": [
+        {
+          "name": "pins",
+          "ts_type": "readonly typeof typeof typeof typeof PinnedMessage.Type.Type.Type.Type[] | null | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "messageId",
+          "ts_type": "typeof typeof typeof typeof MessageId.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof PinnedMessage.Type.Type.Type.Type[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "setPinnedMessageDone",
+      "file": "packages/shared/src/pinnedMessages.ts",
+      "line": 43,
+      "params": [
+        {
+          "name": "pins",
+          "ts_type": "readonly typeof typeof typeof typeof PinnedMessage.Type.Type.Type.Type[] | null | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "messageId",
+          "ts_type": "typeof typeof typeof typeof MessageId.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "done",
+          "ts_type": "boolean",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof PinnedMessage.Type.Type.Type.Type[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "togglePinnedMessageDone",
+      "file": "packages/shared/src/pinnedMessages.ts",
+      "line": 60,
+      "params": [
+        {
+          "name": "pins",
+          "ts_type": "readonly typeof typeof typeof typeof PinnedMessage.Type.Type.Type.Type[] | null | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "messageId",
+          "ts_type": "typeof typeof typeof typeof MessageId.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof PinnedMessage.Type.Type.Type.Type[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "normalizePinLabel",
+      "file": "packages/shared/src/pinnedMessages.ts",
+      "line": 76,
+      "params": [
+        {
+          "name": "label",
+          "ts_type": "string | null",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "setPinnedMessageLabel",
+      "file": "packages/shared/src/pinnedMessages.ts",
+      "line": 86,
+      "params": [
+        {
+          "name": "pins",
+          "ts_type": "readonly typeof typeof typeof typeof PinnedMessage.Type.Type.Type.Type[] | null | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "messageId",
+          "ts_type": "typeof typeof typeof typeof MessageId.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "label",
+          "ts_type": "string | null",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof PinnedMessage.Type.Type.Type.Type[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "clampThreadNotes",
+      "file": "packages/shared/src/pinnedMessages.ts",
+      "line": 104,
+      "params": [
+        {
+          "name": "notes",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

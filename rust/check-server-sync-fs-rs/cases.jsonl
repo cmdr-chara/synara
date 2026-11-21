@@ -1,0 +1,703 @@
+{"fn":"countSyncFsReferences","args":["ünïcödé"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["straße"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["{name} has {count} itemssrc/a/b.ts"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["Hello World"],"ok":{}}
+{"fn":"countSyncFsReferences","args":[".leading"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["src/a/b.ts"],"ok":{}}
+{"fn":"countSyncFsReferences","args":[":"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["a.b.c"],"ok":{}}
+{"fn":"countSyncFsReferences","args":[""],"ok":{}}
+{"fn":"countSyncFsReferences","args":["日本語のテキスト"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["HELLO"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["{name} has {count} items"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["{name} has {count} items.leading"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["emoji 👍🏽 mix"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["hello"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["trailing.a"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["ΣΊΣΥΦΟΣ"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["é"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["hellosrc/a/b.ts"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["  padded  "],"ok":{}}
+{"fn":"countSyncFsReferences","args":["a"],"ok":{}}
+{"fn":"countSyncFsReferences","args":[":ab"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["😀"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["{name} has {count} itemsΣΊΣΥΦΟΣ"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["tab\tseparated"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["İstanbulemoji 👍🏽 mix"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["tab\tseparatedtab\tseparated"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["﻿bom"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["a😀b😀c"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["  padded  .leading"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["ns:key.path"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["ns:key.path.leading"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["./x/**/*.json"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["line1\nline2"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["key_name-1"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["abc"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["Hello World😀"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["key_name-1  padded  "],"ok":{}}
+{"fn":"countSyncFsReferences","args":["a😀b😀ca..b"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["a:b:c"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["HELLOtab\tseparated"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["İstanbul"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["日本語のテキストhello world"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["😀İstanbul"],"ok":{}}
+{"fn":"countSyncFsReferences","args":[".leadinghello"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["abc  padded  "],"ok":{}}
+{"fn":"countSyncFsReferences","args":[".leading{name} has {count} items"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["a..b"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["hello world"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["src/a/b.tsa😀b😀c"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["trailing."],"ok":{}}
+{"fn":"countSyncFsReferences","args":["﻿bom﻿bom"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["abhello"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["line1\nline2  padded  "],"ok":{}}
+{"fn":"countSyncFsReferences","args":["a.b.cΣΊΣΥΦΟΣ"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["src/a/b.tsΣΊΣΥΦΟΣ"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["ab"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["helloa😀b😀c"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["HELLOhello world"],"ok":{}}
+{"fn":"countSyncFsReferences","args":[".leadingHello World"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["a:b:ca.b.c"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["tab\tseparatedns:key.path"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["abcİstanbul"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["ünïcödéns:key.path"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["line1\nline2😀"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["{name} has {count} itemsa.b.c"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["line1\nline2a😀b😀c"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["src/a/b.ts  padded  "],"ok":{}}
+{"fn":"countSyncFsReferences","args":[":a"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["ab./x/**/*.json"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["abcstraße"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["aé"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["İstanbul.leading"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["﻿bomhello"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["日本語のテキストstraße"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["İstanbula:b:c"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["日本語のテキストİstanbul"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["a:b:c:"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["ΣΊΣΥΦΟΣ./x/**/*.json"],"ok":{}}
+{"fn":"countSyncFsReferences","args":[".leading😀"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["hello world:"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["ns:key.pathHELLO"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["line1\nline2{name} has {count} items"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["a:b:cemoji 👍🏽 mix"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["Hello Worlda..b"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["😀line1\nline2"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["ünïcödé😀"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["trailing.﻿bom"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["src/a/b.ts./x/**/*.json"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["straßeemoji 👍🏽 mix"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["straße😀"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["aünïcödé"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["abİstanbul"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["ünïcödéa.b.c"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["HELLOa😀b😀c"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["é😀"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["éa..b"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["a😀b😀cİstanbul"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["ΣΊΣΥΦΟΣa:b:c"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["trailing.HELLO"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["abcΣΊΣΥΦΟΣ"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["Hello Worlda.b.c"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["emoji 👍🏽 mixİstanbul"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["abca"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["line1\nline2ünïcödé"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["ΣΊΣΥΦΟΣ﻿bom"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["ns:key.pathabc"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["a😀b😀chello"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["日本語のテキストabc"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["atab\tseparated"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["a.b.cHELLO"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["a..bhello"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["emoji 👍🏽 mixtab\tseparated"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["straßesrc/a/b.ts"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["ΣΊΣΥΦΟΣa"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["{name} has {count} items日本語のテキスト"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["helloline1\nline2"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["😀trailing."],"ok":{}}
+{"fn":"countSyncFsReferences","args":["aİstanbul"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["a😀b😀cline1\nline2"],"ok":{}}
+{"fn":"countSyncFsReferences","args":[".leadingstraße"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["ns:key.pathHello World"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["İstanbulabc"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["İstanbulé"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["{name} has {count} itemsé"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["a:b:csrc/a/b.ts"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["{name} has {count} itemstrailing."],"ok":{}}
+{"fn":"countSyncFsReferences","args":["hello worldé"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["ünïcödéline1\nline2"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["abc﻿bom"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["Hello Worldünïcödé"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["a..b.leading"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["﻿bomkey_name-1"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["hello worldΣΊΣΥΦΟΣ"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["abemoji 👍🏽 mix"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["emoji 👍🏽 mixHello World"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["emoji 👍🏽 mixΣΊΣΥΦΟΣ"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["{name} has {count} itemsstraße"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["﻿bomline1\nline2"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["İstanbulstraße"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["./x/**/*.jsonab"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["ΣΊΣΥΦΟΣ{name} has {count} items"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["emoji 👍🏽 mixhello"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["ΣΊΣΥΦΟΣ日本語のテキスト"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["HELLOline1\nline2"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["emoji 👍🏽 mixünïcödé"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["éé"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["İstanbul{name} has {count} items"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["étab\tseparated"],"ok":{}}
+{"fn":"countSyncFsReferences","args":[".leadingHELLO"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["ns:key.path  padded  "],"ok":{}}
+{"fn":"countSyncFsReferences","args":[".leadingünïcödé"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["ΣΊΣΥΦΟΣns:key.path"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["helloa.b.c"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["a😀b😀csrc/a/b.ts"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["key_name-1key_name-1"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["key_name-1a:b:c"],"ok":{}}
+{"fn":"countSyncFsReferences","args":[":ΣΊΣΥΦΟΣ"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["ünïcödékey_name-1"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["src/a/b.tsünïcödé"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["😀ΣΊΣΥΦΟΣ"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["./x/**/*.jsonHELLO"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["helloΣΊΣΥΦΟΣ"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["﻿bomemoji 👍🏽 mix"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["HELLO  padded  "],"ok":{}}
+{"fn":"countSyncFsReferences","args":["aΣΊΣΥΦΟΣ"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["helloa"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["ΣΊΣΥΦΟΣsrc/a/b.ts"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["a..ba..b"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["HELLO.leading"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["😀日本語のテキスト"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["a😀b😀cé"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["{name} has {count} itemsa..b"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["日本語のテキストa:b:c"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["日本語のテキストemoji 👍🏽 mix"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["./x/**/*.jsonkey_name-1"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["straße./x/**/*.json"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["  padded  emoji 👍🏽 mix"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["emoji 👍🏽 mixHELLO"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["﻿bom  padded  "],"ok":{}}
+{"fn":"countSyncFsReferences","args":["a😀b😀chello world"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["Hello Worldhello world"],"ok":{}}
+{"fn":"countSyncFsReferences","args":[":Hello World"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["ΣΊΣΥΦΟΣΣΊΣΥΦΟΣ"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["src/a/b.tsa..b"],"ok":{}}
+{"fn":"countSyncFsReferences","args":[".leadingé"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["a.b.chello"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["emoji 👍🏽 mixa..b"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["src/a/b.ts日本語のテキスト"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["abline1\nline2"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["hello world﻿bom"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["straßea😀b😀c"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["ΣΊΣΥΦΟΣabc"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["{name} has {count} itemsHELLO"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["éstraße"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["straßea..b"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["HELLOtrailing."],"ok":{}}
+{"fn":"countSyncFsReferences","args":["{name} has {count} itemsa😀b😀c"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["ns:key.patha..b"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["line1\nline2a"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["héllo wörld"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["👍🏽 thumbs"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["日本語"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["ılık ırmak"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["👨‍👩‍👧 family"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["a b"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["a😀b"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["a²b x½ y①"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["aⅠb Ⅻ"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["a𐐀b 𝐀bc"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["कि ٣٤"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["Iı İi"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["K K k"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["ſ s S"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["x‍y 👨‍👩‍👧"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["a b c　d"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["١٢٣ ٤٥"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["𝟘𝟙 ²³"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["snake_case foo-bar o'neil"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["ǅungla Ǆ"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["one\r\ntwo threefour"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["café café"],"ok":{}}
+{"fn":"countSyncFsReferences","args":["ΣΑΣ σας ς"],"ok":{}}
+{"fn":"syncFsViolations","args":["İstanbul","İstanb",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["ünïcödé","İstanbul",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["a:b:c","é",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["İstanbul","  padded  ",{"a":{"reason":"İstanbul","references":null},"b":{"reason":"日本語のテキスト","references":null},"title":{"reason":".leadinga","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["ünïcödé","c",{"home":{"reason":"{name} has {count} items","references":null},"b":{"reason":"tab\tseparated","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["a.b.c","hello",{"10":{"reason":"abc","references":null},"title":{"reason":"{name} has {count} items","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["./x/**/*.json","日本語のテキスト😀",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["EL","HELLO",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["ab","a",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["emoji 👍🏽 mix","ab",{"ünï":{"reason":"a.b.c","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["日本語のテキスト","a",{"ünï":{"reason":"a😀b😀c","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["Hello World","./x/**/*.json",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["line1\nline2line1\nline2","a😀b😀c",{"home":{"reason":"straßehello world","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["hello","{name} has {count} items",{"nav":{"reason":":","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["a:b:c","a..b  padded  ",{"10":{"reason":"a","references":null},"b":{"reason":"  padded  ","references":null},"a.b":{"reason":":","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["trailing.","line1\nline2emoji 👍🏽 mix",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["src/a/b.tsa:b:c","tab\tseparated",{"a.b":{"reason":"straße😀","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["  padded  ","ΣΊΣΥΦΟΣ",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["a..bHello World","trailing.",{"a":{"b":"c"}}],"ok":[]}
+{"fn":"syncFsViolations","args":["a..b","abns:key.path",[]],"ok":[]}
+{"fn":"syncFsViolations","args":["hello",".leading./x/**/*.json",{"2":{"reason":".leading","references":null},"b":{"reason":"ünïcödé","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["HELLO","a.b.c",{"😀":{"reason":"﻿bom","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["ΣΊΣΥ","ΣΊΣΥΦΟΣ",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["DED ","  padded  ",{"title":{"reason":":","references":null},"b":{"reason":"abhello","references":null},"ünï":{"reason":"İstanbulline1\nline2","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["😀","./x/**/*.json",{"😀":{"reason":"a","references":null},"b":{"reason":":","references":null},"home":{"reason":"{name} has {count} items","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["straße","a😀b😀c",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["﻿bom","a.b.c",{"b":{"reason":"Hello World","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["key_name-1İstanbul","{name} has {count} items",{"b":{"reason":"straßeab","references":null},"nav":{"reason":"./x/**/*.json","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["src/a/b.tsabc","emoji 👍🏽 mix",{"a.b":{"reason":"a.b.c","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["a","a:b:c",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["öd","ünïcödé",{"10":{"reason":"straße","references":null},"home":{"reason":"abc","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["ns:key.path","trailing.",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["﻿bom","hello",{"10":{"reason":"  padded  日本語のテキスト","references":null},"a":{"reason":":","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["ΣΊΣΥΦΟΣ","straße",null],"error":"Cannot read properties of null (reading 'ΣΊΣΥΦΟΣ')"}
+{"fn":"syncFsViolations","args":["straße","ΣΊΣΥΦΟΣ😀",{"title":{"reason":"Hello World","references":null},"a":{"reason":"{name} has {count} items","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["a😀b😀c","😀",null],"error":"Cannot read properties of null (reading 'a😀b😀c')"}
+{"fn":"syncFsViolations","args":["HELLO","Hello World",{"a":{"reason":"abc","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["tab\tseparatedİstanbul","straße",{"nav":{"reason":"İstanbul","references":null},"b":{"reason":"a.b.c","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["a..b","a😀b😀c",{"a.b":{"reason":"a:b:c","references":null},"nav":{"reason":".leading","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["key_name-1","{name} has {count} items﻿bom",{"😀":{"reason":"a:b:cé","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["a😀b😀c","abckey_name-1",{"ünï":{"reason":"abc","references":null},"title":{"reason":"HELLOsrc/a/b.ts","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["hellotrailing.","日本語のテキスト",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["ab","straße",{"a":{"reason":"a:b:c","references":null},"nav":{"reason":"é","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["é","{name} has {count} items",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["  padded  ","ünïcödé",{"home":{"reason":"src/a/b.ts","references":null},"nav":{"reason":"İstanbulns:key.path","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["a","a.b.c",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["./x/**/*.json","İstanbul{name} has {count} items",{"title":{"reason":"Hello World","references":null},"ünï":{"reason":"line1\nline2","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["ns:key.path","é",{"title":{"reason":"ab","references":null},"ünï":{"reason":"trailing.","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["a..b","ünïcödé",{"😀":{"reason":"src/a/b.ts","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["ünïcödé","./x/**/*.json./x/**/*.json",{"ünï":{"reason":"trailing.","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["ns:key.path","HELLO﻿bom",{"a.b":{"reason":"abc","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["emoji 👍🏽 mix","emoji 👍🏽 mix",{"home":{"reason":"{name} has {count} items","references":null},"nav":{"reason":"Hello World","references":null},"ünï":{"reason":"  padded  ","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["ns:key.pathtrailing.","a😀b😀c",{"ünï":{"reason":"hello","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["abc","é./x/**/*.json",{"10":{"reason":"a😀b😀ca","references":null},"home":{"reason":"./x/**/*.json","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["Hello World","helloab",{"home":{"reason":"hello","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["hello world","ello wo",{}],"ok":[]}
+{"fn":"syncFsViolations","args":[".leading","İstanbul",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["a..b",".leading",{"nav":{"reason":"abc","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["cöd","ünïcödé",{"b":{"reason":"﻿bom","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":[".leading","{name} has {count} items",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["a","a",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["{name} has {count} items","{count} item",{"b":{"reason":"a","references":null},"a":{"reason":"ΣΊΣΥΦΟΣ","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["abc","ab",{"10":{"reason":"straße","references":null},"😀":{"reason":"line1\nline2","references":null},"b":{"reason":"ΣΊΣΥΦΟΣ","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["a.b.c",".leading{name} has {count} items",{"a.b":{"reason":"😀","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["","src/a/b.ts",{"ünï":{"reason":"abc","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["a.b.c","HELLO",{"a":{"reason":"Hello WorldHELLO","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["a..b","a.b.c",0],"ok":[]}
+{"fn":"syncFsViolations","args":["hello","a😀b😀c",{"home":{"reason":"src/a/b.ts","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["HELLO","H",{"ünï":{"reason":"abc","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["emoji 👍🏽 mixkey_name-1","JI 👍🏽 MIXKEY",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["abc","a😀b😀c","x"],"ok":[]}
+{"fn":"syncFsViolations","args":["hello","tab\tseparated",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["trailing.","a.b.c",{"😀":{"reason":"./x/**/*.json","references":null},"nav":{"reason":"src/a/b.tsé","references":null},"a.b":{"reason":"a.b.c","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["ünïcödé","{name} has {count} itemsa😀b😀c",{"home":{"reason":"ünïcödé","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["a😀b😀c","é",{"a":{"b":"c"}}],"ok":[]}
+{"fn":"syncFsViolations","args":["ab.leading","b.le",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["line1\nline2","é",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["abcHELLO","trailing.",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["İstanbul","trailing.",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["ed","  padded  ",{"10":{"reason":"a😀b😀cabc","references":null},"😀":{"reason":"a","references":null},"a":{"reason":"hello world","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["a","HELLO",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["./x/**/*.json","a:b:ca",{"title":{"reason":"ünïcödé","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["O","a..bHELLO",{"a.b":{"reason":"src/a/b.tskey_name-1","references":null},"a":{"reason":"ns:key.path","references":null},"nav":{"reason":"é","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["..","😀a..b",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["a","./x/**/*.json",{"ünï":{"reason":"emoji 👍🏽 mix","references":null},"nav":{"reason":"::","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":[":","Hello Worldé",{"2":{"reason":"ab","references":null},"title":{"reason":"Hello World","references":null},"home":{"reason":"a","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["ΣΊΣΥΦΟΣ","ΣΊΣΥΦΟ",{"10":{"reason":"ünïcödé","references":null},"ünï":{"reason":"Hello World","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["straße","hello world",0],"ok":[]}
+{"fn":"syncFsViolations","args":["  padded ","  padded  ",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["a","ab",{"a.b":{"reason":"﻿bom","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["a:b:c","abc",{"b":{"reason":"Hello World","references":null},"ünï":{"reason":"😀hello world","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["  padded  ","d  ",{"2":{"reason":"Hello World","references":null},"a.b":{"reason":"./x/**/*.json","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["a.b.c","ab",[]],"ok":[]}
+{"fn":"syncFsViolations","args":["HELLO","straße",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["src/a/b.ts","Hello World",{"title":{"reason":"ünïcödé","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["﻿bom","a😀b😀c",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["abcsrc/a/b.ts","{name} has {count} items",{"2":{"reason":"﻿bom","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["日本語のテキストemoji 👍🏽 mix","line1\nline2",{"a.b":{"reason":"İstanbul","references":null},"a":{"reason":"Hello World","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["a..b:","ΣΊΣΥΦΟΣ",true],"ok":[]}
+{"fn":"syncFsViolations","args":[":","ΣΊΣΥΦΟΣ  padded  ",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["{name} has {count} itemstab\tseparated","./x/**/*.json",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["ünïcödé","{name} has {count} items",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["{name} has {count} items","line1\nline2",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["./x/**/*.json","abc",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["a:b:c","Hello World",[]],"ok":[]}
+{"fn":"syncFsViolations","args":["a..bHELLO","",{"a":{"reason":"ünïcödé","references":null},"a.b":{"reason":"Hello Worldtab\tseparated","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["emoji 👍🏽 mixline1\nline2","🏽 MIXLINE1\nLINE",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["Hello World","rld",{}],"ok":[]}
+{"fn":"syncFsViolations","args":[".leading","ΣΊΣΥΦΟΣ",{"2":{"reason":".leading","references":null},"home":{"reason":"a  padded  ","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["abc",".leadingünïcödé",{"ünï":{"reason":"a:b:c","references":null},"😀":{"reason":"ünïcödé","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["abc","﻿bom",0],"ok":[]}
+{"fn":"syncFsViolations","args":["ΣΊΣΥΦΟΣ","ns:key.path",{"b":{"reason":"{name} has {count} items","references":null},"title":{"reason":"ab","references":null},"nav":{"reason":"key_name-1","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["m","﻿bom",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["  padded  ","  padded  ",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["tab\tseparateda..b","ünïcödé",["a",1]],"ok":[]}
+{"fn":"syncFsViolations","args":["HELLO","O",{"ünï":{"reason":"src/a/b.tstab\tseparated","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["ünïcödé","ΣΊΣΥΦΟΣ",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["ünïcödé","日本語のテキスト",{"a":{"reason":"ab","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["src/a/b.ts","src/a/b.ts",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["key_name-1","a",{"ünï":{"reason":"a😀b😀c","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["abc","{name} has {count} items",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["straße","hello world",{}],"ok":[]}
+{"fn":"syncFsViolations","args":[".p","ns:key.path",{}],"ok":[]}
+{"fn":"syncFsViolations","args":[".leading","le",{"a":{"reason":"﻿bom","references":null},"ünï":{"reason":"﻿bom","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["hello world","😀",{"😀":{"reason":"a..bline1\nline2","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["trailing.","key_name-1",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["hello","",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["line1\nline2","src/a/b.ts",{"home":{"reason":"line1\nline2a😀b😀c","references":null},"ünï":{"reason":"emoji 👍🏽 mix","references":null},"b":{"reason":"abc","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["a.b.c","abc",{"2":{"reason":"line1\nline2","references":null},"b":{"reason":"ünïcödé","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["İstanbul","{name} has {count} items.leading",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["G","trailing.",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["Hello World","a:b:c",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["emoji 👍🏽 mix","日本語のテキスト",{"10":{"reason":"ΣΊΣΥΦΟΣ","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["b\tsep","tab\tseparated",{"10":{"reason":".leading","references":null},"a":{"reason":"a:b:ca..b","references":null},"ünï":{"reason":"Hello World","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["a.b.c",".leading",{"home":{"reason":"a","references":null},"b":{"reason":"ΣΊΣΥΦΟΣ","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["abc","ns:key.patha..b",{"a":{"reason":"hello world","references":null},"title":{"reason":"","references":null},"nav":{"reason":"{name} has {count} items","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["a😀b😀c",":abc",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["a..b","src/a/b.ts",{"a":{"reason":"  padded  ","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["a..b","a:b:c",{}],"ok":[]}
+{"fn":"syncFsViolations","args":[":","éstraße",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["a..b",".b",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["key_name-1","﻿bom",{"10":{"reason":"key_name-1","references":null},"title":{"reason":"HELLO","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["HELLO","{name} has {count} itemsünïcödé",{"b":{"reason":":","references":null},"title":{"reason":"a.b.c","references":null},"home":{"reason":"ΣΊΣΥΦΟΣ","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["a..b","..b",{"a":{"reason":"ns:key.path","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["{name} has {count} items","item",{"10":{"reason":"﻿bomkey_name-1","references":null},"😀":{"reason":"hello worldé","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["é","́",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["A😀B😀C","a😀b😀c",{"10":{"reason":"HELLO","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["a😀b😀c","ns:key.path",["a",1]],"ok":[]}
+{"fn":"syncFsViolations","args":["日本語のテキスト","  padded  ",{"10":{"reason":"ΣΊΣΥΦΟΣ","references":null},"a.b":{"reason":"emoji 👍🏽 mix{name} has {count} items","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":[":","HELLO",{"a.b":{"reason":"a.b.c","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["src/a/b.ts","é./x/**/*.json",{"a":"b"}],"ok":[]}
+{"fn":"syncFsViolations","args":["src/a/b.tstrailing.","  padded  ",[]],"ok":[]}
+{"fn":"syncFsViolations","args":["te","tab\tseparated",null],"error":"Cannot read properties of null (reading 'te')"}
+{"fn":"syncFsViolations","args":["straße","ünïcödé",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["./x/**/*.json","**",{"10":{"reason":"a..bünïcödé","references":null},"nav":{"reason":"ünïcödé","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["straße","tab\tseparated",{"a":{"reason":"straße","references":null},"title":{"reason":"日本語のテキスト","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["ab","key_name-1",0],"ok":[]}
+{"fn":"syncFsViolations","args":[":","straße",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["日本語のテキスト","emoji 👍🏽 mix",{"nav":{"reason":"hello","references":null},"a.b":{"reason":"straße","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["key_name-1","{name} has {count} items",{"home":{"reason":"tab\tseparated","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["ΣΊΣΥΦΟΣ","😀",{"home":{"reason":"abcemoji 👍🏽 mix","references":null},"b":{"reason":"./x/**/*.json","references":null},"a.b":{"reason":"line1\nline2","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["a..b","src/a/b.ts  padded  ",{"😀":{"reason":".leading","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["Hello World","HELLOa.b.c",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["﻿bom","emoji 👍🏽 mixé","🏽 mixe"],"ok":[]}
+{"fn":"syncFsViolations","args":["atrailing.","trailing.ab",{"home":{"reason":"é","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["日本語のテキストa.b.c","trailing.",{"2":{"reason":"HELLO","references":null},"home":{"reason":"./x/**/*.json","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["Hello Worlda.b.c",".leading",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["ab{name} has {count} items","hello",[]],"ok":[]}
+{"fn":"syncFsViolations","args":["﻿bom","o",{"ünï":{"reason":"ΣΊΣΥΦΟΣ","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":[".leading","ΣΊΣΥΦΟΣemoji 👍🏽 mix",{"😀":{"reason":"a😀b😀cΣΊΣΥΦΟΣ","references":null},"b":{"reason":"hello worlda..b","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["﻿bom","trailing.",{"😀":{"reason":"abc","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["hello worldünïcödé","﻿bom",{"10":{"reason":"hello","references":null},"a.b":{"reason":"a:b:c","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["hello","ünïcödé",{"a":{"reason":"emoji 👍🏽 mix","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":[":","",{"ünï":{"reason":"ns:key.path","references":null},"😀":{"reason":"a..b:","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["hello","😀",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["","ns:key.path",{"a.b":{"reason":"","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["İstanbul","{name} has {count} items  padded  ",{"nav":{"reason":"日本語のテキスト","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["trailing.","hello world",{"10":{"reason":"","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["src/a/b.ts","a/",{"a":"b"}],"ok":[]}
+{"fn":"syncFsViolations","args":["İstanbul","tab\tseparateda",{"2":{"reason":"{name} has {count} items","references":null},"home":{"reason":"key_name-1","references":null},"nav":{"reason":"😀","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":[":{name} has {count} items","  padded  ",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["ns:key.path","a.b.c",{"10":{"reason":"hello world","references":null},"ünï":{"reason":"a:b:ctab\tseparated","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["trailing.","hello world",{"home":{"reason":"a:b:c","references":null},"a.b":{"reason":"a😀b😀c","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["😀","{name} has {count} items{name} has {count} items",{"😀":{"reason":":","references":null},"ünï":{"reason":"hello world","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["日本語のテキスト","İstanbul",{"10":{"reason":"straße","references":null},"home":{"reason":"😀","references":null},"a":{"reason":"a:b:c","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["hello world","d",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["ab","a..b  padded  ",["a",1]],"ok":[]}
+{"fn":"syncFsViolations","args":[":",":",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["key_name-1","line1\nline2",{"10":{"reason":"hello world","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["src/a/b.ts","/a/b.ts",{"a":{"reason":"","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":[".leading","abc",{"2":{"reason":"a:b:c","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["line1\nline2","ab",{"😀":{"reason":"abline1\nline2","references":null},"nav":{"reason":"a..b","references":null},"a.b":{"reason":".leadinga😀b😀c","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["  padded  "," p",true],"ok":[]}
+{"fn":"syncFsViolations","args":["straße","trailing.a",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["HELLO","trailing.",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["","a😀b😀cΣΊΣΥΦΟΣ",{"2":{"reason":":","references":null},"a":{"reason":":","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["a..b","line1\nline2a:b:c",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["./x/**/*.json","😀abc",{"nav":{"reason":"a😀b😀c","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":[" PADDE","  padded  ",{"b":{"reason":"😀","references":null}}],"ok":[]}
+{"fn":"syncFsViolations","args":["a😀b😀c日本語のテキスト","a{name} has {count} items",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["héllo wörld","İstanb",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["👍🏽 thumbs","İstanb",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["日本語","İstanb",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["","İstanb",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["é","İstanb",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["straße","İstanb",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["ılık ırmak","İstanb",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["👨‍👩‍👧 family","İstanb",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["a b","İstanb",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["ΣΊΣΥΦΟΣ","İstanb",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["a😀b","İstanb",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["﻿bom","İstanb",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["a²b x½ y①","İstanb",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["aⅠb Ⅻ","İstanb",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["a𐐀b 𝐀bc","İstanb",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["कि ٣٤","İstanb",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["Iı İi","İstanb",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["K K k","İstanb",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["ſ s S","İstanb",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["x‍y 👨‍👩‍👧","İstanb",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["a b c　d","İstanb",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["١٢٣ ٤٥","İstanb",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["𝟘𝟙 ²³","İstanb",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["snake_case foo-bar o'neil","İstanb",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["ǅungla Ǆ","İstanb",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["one\r\ntwo threefour","İstanb",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["café café","İstanb",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["ΣΑΣ σας ς","İstanb",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["İstanbul","héllo wörld",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["İstanbul","👍🏽 thumbs",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["İstanbul","日本語",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["İstanbul","",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["İstanbul","é",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["İstanbul","İstanbul",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["İstanbul","straße",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["İstanbul","ılık ırmak",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["İstanbul","👨‍👩‍👧 family",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["İstanbul","a b",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["İstanbul","ΣΊΣΥΦΟΣ",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["İstanbul","a😀b",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["İstanbul","﻿bom",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["İstanbul","a²b x½ y①",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["İstanbul","aⅠb Ⅻ",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["İstanbul","a𐐀b 𝐀bc",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["İstanbul","कि ٣٤",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["İstanbul","Iı İi",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["İstanbul","K K k",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["İstanbul","ſ s S",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["İstanbul","x‍y 👨‍👩‍👧",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["İstanbul","a b c　d",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["İstanbul","١٢٣ ٤٥",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["İstanbul","𝟘𝟙 ²³",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["İstanbul","snake_case foo-bar o'neil",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["İstanbul","ǅungla Ǆ",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["İstanbul","one\r\ntwo threefour",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["İstanbul","café café",{}],"ok":[]}
+{"fn":"syncFsViolations","args":["İstanbul","ΣΑΣ σας ς",{}],"ok":[]}
+{"fn":"serverSources","args":["ΣΊΣΥΦΟΣ"],"error":"ENOENT: no such file or directory, scandir 'ΣΊΣΥΦΟΣ'"}
+{"fn":"serverSources","args":["hellotab\tseparated"],"error":"ENOENT: no such file or directory, scandir 'hellotab\tseparated'"}
+{"fn":"serverSources","args":["src/a/b.ts"],"error":"ENOENT: no such file or directory, scandir 'src/a/b.ts'"}
+{"fn":"serverSources","args":["abemoji 👍🏽 mix"],"error":"ENOENT: no such file or directory, scandir 'abemoji 👍🏽 mix'"}
+{"fn":"serverSources","args":["a😀b😀c"],"error":"ENOENT: no such file or directory, scandir 'a😀b😀c'"}
+{"fn":"serverSources","args":["a.b.c"],"error":"ENOENT: no such file or directory, scandir 'a.b.c'"}
+{"fn":"serverSources","args":["HELLOns:key.path"],"error":"ENOENT: no such file or directory, scandir 'HELLOns:key.path'"}
+{"fn":"serverSources","args":["trailing.abc"],"error":"ENOENT: no such file or directory, scandir 'trailing.abc'"}
+{"fn":"serverSources","args":["straße"],"error":"ENOENT: no such file or directory, scandir 'straße'"}
+{"fn":"serverSources","args":["ns:key.path"],"error":"ENOENT: no such file or directory, scandir 'ns:key.path'"}
+{"fn":"serverSources","args":["hello"],"error":"ENOENT: no such file or directory, scandir 'hello'"}
+{"fn":"serverSources","args":["ΣΊΣΥΦΟΣ{name} has {count} items"],"error":"ENOENT: no such file or directory, scandir 'ΣΊΣΥΦΟΣ{name} has {count} items'"}
+{"fn":"serverSources","args":["line1\nline2"],"error":"ENOENT: no such file or directory, scandir 'line1\nline2'"}
+{"fn":"serverSources","args":[""],"error":"ENOENT: no such file or directory, scandir ''"}
+{"fn":"serverSources","args":["日本語のテキスト"],"error":"ENOENT: no such file or directory, scandir '日本語のテキスト'"}
+{"fn":"serverSources","args":["tab\tseparatedabc"],"error":"ENOENT: no such file or directory, scandir 'tab\tseparatedabc'"}
+{"fn":"serverSources","args":["a😀b😀cİstanbul"],"error":"ENOENT: no such file or directory, scandir 'a😀b😀cİstanbul'"}
+{"fn":"serverSources","args":["trailing."],"error":"ENOENT: no such file or directory, scandir 'trailing.'"}
+{"fn":"serverSources","args":["tab\tseparated"],"error":"ENOENT: no such file or directory, scandir 'tab\tseparated'"}
+{"fn":"serverSources","args":["key_name-1"],"error":"ENOENT: no such file or directory, scandir 'key_name-1'"}
+{"fn":"serverSources","args":["a:b:c"],"error":"ENOENT: no such file or directory, scandir 'a:b:c'"}
+{"fn":"serverSources","args":["emoji 👍🏽 mix"],"error":"ENOENT: no such file or directory, scandir 'emoji 👍🏽 mix'"}
+{"fn":"serverSources","args":["a..b﻿bom"],"error":"ENOENT: no such file or directory, scandir 'a..b﻿bom'"}
+{"fn":"serverSources","args":["a"],"error":"ENOENT: no such file or directory, scandir 'a'"}
+{"fn":"serverSources","args":["./x/**/*.json"],"error":"ENOENT: no such file or directory, scandir './x/**/*.json'"}
+{"fn":"serverSources","args":["😀src/a/b.ts"],"error":"ENOENT: no such file or directory, scandir '😀src/a/b.ts'"}
+{"fn":"serverSources","args":["a:b:c:"],"error":"ENOENT: no such file or directory, scandir 'a:b:c:'"}
+{"fn":"serverSources","args":["ab"],"error":"ENOENT: no such file or directory, scandir 'ab'"}
+{"fn":"serverSources","args":["abc"],"error":"ENOENT: no such file or directory, scandir 'abc'"}
+{"fn":"serverSources","args":["HELLO"],"error":"ENOENT: no such file or directory, scandir 'HELLO'"}
+{"fn":"serverSources","args":["a..b"],"error":"ENOENT: no such file or directory, scandir 'a..b'"}
+{"fn":"serverSources","args":["😀"],"error":"ENOENT: no such file or directory, scandir '😀'"}
+{"fn":"serverSources","args":[":trailing."],"error":"ENOENT: no such file or directory, scandir ':trailing.'"}
+{"fn":"serverSources","args":["hellohello world"],"error":"ENOENT: no such file or directory, scandir 'hellohello world'"}
+{"fn":"serverSources","args":["﻿bom:"],"error":"ENOENT: no such file or directory, scandir '﻿bom:'"}
+{"fn":"serverSources","args":["Hello World"],"error":"ENOENT: no such file or directory, scandir 'Hello World'"}
+{"fn":"serverSources","args":["tab\tseparatedhello world"],"error":"ENOENT: no such file or directory, scandir 'tab\tseparatedhello world'"}
+{"fn":"serverSources","args":["helloa.b.c"],"error":"ENOENT: no such file or directory, scandir 'helloa.b.c'"}
+{"fn":"serverSources","args":["a..bhello world"],"error":"ENOENT: no such file or directory, scandir 'a..bhello world'"}
+{"fn":"serverSources","args":["ΣΊΣΥΦΟΣsrc/a/b.ts"],"error":"ENOENT: no such file or directory, scandir 'ΣΊΣΥΦΟΣsrc/a/b.ts'"}
+{"fn":"serverSources","args":["é"],"error":"ENOENT: no such file or directory, scandir 'é'"}
+{"fn":"serverSources","args":[".leadingHello World"],"error":"ENOENT: no such file or directory, scandir '.leadingHello World'"}
+{"fn":"serverSources","args":["hello world"],"error":"ENOENT: no such file or directory, scandir 'hello world'"}
+{"fn":"serverSources","args":["ünïcödé"],"error":"ENOENT: no such file or directory, scandir 'ünïcödé'"}
+{"fn":"serverSources","args":[".leading"],"error":"ENOENT: no such file or directory, scandir '.leading'"}
+{"fn":"serverSources","args":[":"],"error":"ENOENT: no such file or directory, scandir ':'"}
+{"fn":"serverSources","args":["trailing..leading"],"error":"ENOENT: no such file or directory, scandir 'trailing..leading'"}
+{"fn":"serverSources","args":["  padded  "],"error":"ENOENT: no such file or directory, scandir '  padded  '"}
+{"fn":"serverSources","args":["{name} has {count} items"],"error":"ENOENT: no such file or directory, scandir '{name} has {count} items'"}
+{"fn":"serverSources","args":["😀.leading"],"error":"ENOENT: no such file or directory, scandir '😀.leading'"}
+{"fn":"serverSources","args":["a:b:cns:key.path"],"error":"ENOENT: no such file or directory, scandir 'a:b:cns:key.path'"}
+{"fn":"serverSources","args":["hello worldünïcödé"],"error":"ENOENT: no such file or directory, scandir 'hello worldünïcödé'"}
+{"fn":"serverSources","args":["﻿bom{name} has {count} items"],"error":"ENOENT: no such file or directory, scandir '﻿bom{name} has {count} items'"}
+{"fn":"serverSources","args":["ΣΊΣΥΦΟΣ:"],"error":"ENOENT: no such file or directory, scandir 'ΣΊΣΥΦΟΣ:'"}
+{"fn":"serverSources","args":["hello😀"],"error":"ENOENT: no such file or directory, scandir 'hello😀'"}
+{"fn":"serverSources","args":["hello  padded  "],"error":"ENOENT: no such file or directory, scandir 'hello  padded  '"}
+{"fn":"serverSources","args":["line1\nline2ns:key.path"],"error":"ENOENT: no such file or directory, scandir 'line1\nline2ns:key.path'"}
+{"fn":"serverSources","args":["﻿bomabc"],"error":"ENOENT: no such file or directory, scandir '﻿bomabc'"}
+{"fn":"serverSources","args":["ns:key.pathhello world"],"error":"ENOENT: no such file or directory, scandir 'ns:key.pathhello world'"}
+{"fn":"serverSources","args":["Hello Worldns:key.path"],"error":"ENOENT: no such file or directory, scandir 'Hello Worldns:key.path'"}
+{"fn":"serverSources","args":["﻿bom.leading"],"error":"ENOENT: no such file or directory, scandir '﻿bom.leading'"}
+{"fn":"serverSources","args":["İstanbul"],"error":"ENOENT: no such file or directory, scandir 'İstanbul'"}
+{"fn":"serverSources","args":["{name} has {count} itemsa:b:c"],"error":"ENOENT: no such file or directory, scandir '{name} has {count} itemsa:b:c'"}
+{"fn":"serverSources","args":["﻿bom"],"error":"ENOENT: no such file or directory, scandir '﻿bom'"}
+{"fn":"serverSources","args":[":line1\nline2"],"error":"ENOENT: no such file or directory, scandir ':line1\nline2'"}
+{"fn":"serverSources","args":["tab\tseparated{name} has {count} items"],"error":"ENOENT: no such file or directory, scandir 'tab\tseparated{name} has {count} items'"}
+{"fn":"serverSources","args":["./x/**/*.jsonsrc/a/b.ts"],"error":"ENOENT: no such file or directory, scandir './x/**/*.jsonsrc/a/b.ts'"}
+{"fn":"serverSources","args":["{name} has {count} items日本語のテキスト"],"error":"ENOENT: no such file or directory, scandir '{name} has {count} items日本語のテキスト'"}
+{"fn":"serverSources","args":["hello﻿bom"],"error":"ENOENT: no such file or directory, scandir 'hello﻿bom'"}
+{"fn":"serverSources","args":["{name} has {count} itemstrailing."],"error":"ENOENT: no such file or directory, scandir '{name} has {count} itemstrailing.'"}
+{"fn":"serverSources","args":["  padded  a:b:c"],"error":"ENOENT: no such file or directory, scandir '  padded  a:b:c'"}
+{"fn":"serverSources","args":["aab"],"error":"ENOENT: no such file or directory, scandir 'aab'"}
+{"fn":"serverSources","args":["key_name-1HELLO"],"error":"ENOENT: no such file or directory, scandir 'key_name-1HELLO'"}
+{"fn":"serverSources","args":["😀ns:key.path"],"error":"ENOENT: no such file or directory, scandir '😀ns:key.path'"}
+{"fn":"serverSources","args":["﻿boma"],"error":"ENOENT: no such file or directory, scandir '﻿boma'"}
+{"fn":"serverSources","args":["a..bhello"],"error":"ENOENT: no such file or directory, scandir 'a..bhello'"}
+{"fn":"serverSources","args":["helloa"],"error":"ENOENT: no such file or directory, scandir 'helloa'"}
+{"fn":"serverSources","args":["emoji 👍🏽 mix日本語のテキスト"],"error":"ENOENT: no such file or directory, scandir 'emoji 👍🏽 mix日本語のテキスト'"}
+{"fn":"serverSources","args":["a:b:csrc/a/b.ts"],"error":"ENOENT: no such file or directory, scandir 'a:b:csrc/a/b.ts'"}
+{"fn":"serverSources","args":["key_name-1tab\tseparated"],"error":"ENOENT: no such file or directory, scandir 'key_name-1tab\tseparated'"}
+{"fn":"serverSources","args":["ünïcödéΣΊΣΥΦΟΣ"],"error":"ENOENT: no such file or directory, scandir 'ünïcödéΣΊΣΥΦΟΣ'"}
+{"fn":"serverSources","args":[":src/a/b.ts"],"error":"ENOENT: no such file or directory, scandir ':src/a/b.ts'"}
+{"fn":"serverSources","args":["ΣΊΣΥΦΟΣa..b"],"error":"ENOENT: no such file or directory, scandir 'ΣΊΣΥΦΟΣa..b'"}
+{"fn":"serverSources","args":["ΣΊΣΥΦΟΣkey_name-1"],"error":"ENOENT: no such file or directory, scandir 'ΣΊΣΥΦΟΣkey_name-1'"}
+{"fn":"serverSources","args":["ab:"],"error":"ENOENT: no such file or directory, scandir 'ab:'"}
+{"fn":"serverSources","args":["./x/**/*.jsonhello"],"error":"ENOENT: no such file or directory, scandir './x/**/*.jsonhello'"}
+{"fn":"serverSources","args":["a:b:cstraße"],"error":"ENOENT: no such file or directory, scandir 'a:b:cstraße'"}
+{"fn":"serverSources","args":["a.b.cns:key.path"],"error":"ENOENT: no such file or directory, scandir 'a.b.cns:key.path'"}
+{"fn":"serverSources","args":["abca:b:c"],"error":"ENOENT: no such file or directory, scandir 'abca:b:c'"}
+{"fn":"serverSources","args":["emoji 👍🏽 mixé"],"error":"ENOENT: no such file or directory, scandir 'emoji 👍🏽 mixé'"}
+{"fn":"serverSources","args":["ΣΊΣΥΦΟΣHELLO"],"error":"ENOENT: no such file or directory, scandir 'ΣΊΣΥΦΟΣHELLO'"}
+{"fn":"serverSources","args":["hello worldns:key.path"],"error":"ENOENT: no such file or directory, scandir 'hello worldns:key.path'"}
+{"fn":"serverSources","args":["emoji 👍🏽 mixtrailing."],"error":"ENOENT: no such file or directory, scandir 'emoji 👍🏽 mixtrailing.'"}
+{"fn":"serverSources","args":["key_name-1./x/**/*.json"],"error":"ENOENT: no such file or directory, scandir 'key_name-1./x/**/*.json'"}
+{"fn":"serverSources","args":["emoji 👍🏽 mixns:key.path"],"error":"ENOENT: no such file or directory, scandir 'emoji 👍🏽 mixns:key.path'"}
+{"fn":"serverSources","args":["Hello Worldé"],"error":"ENOENT: no such file or directory, scandir 'Hello Worldé'"}
+{"fn":"serverSources","args":["﻿bom﻿bom"],"error":"ENOENT: no such file or directory, scandir '﻿bom﻿bom'"}
+{"fn":"serverSources","args":["src/a/b.ts{name} has {count} items"],"error":"ENOENT: no such file or directory, scandir 'src/a/b.ts{name} has {count} items'"}
+{"fn":"serverSources","args":["src/a/b.ts.leading"],"error":"ENOENT: no such file or directory, scandir 'src/a/b.ts.leading'"}
+{"fn":"serverSources","args":["a日本語のテキスト"],"error":"ENOENT: no such file or directory, scandir 'a日本語のテキスト'"}
+{"fn":"serverSources","args":["hello world./x/**/*.json"],"error":"ENOENT: no such file or directory, scandir 'hello world./x/**/*.json'"}
+{"fn":"serverSources","args":["a😀b😀ckey_name-1"],"error":"ENOENT: no such file or directory, scandir 'a😀b😀ckey_name-1'"}
+{"fn":"serverSources","args":["İstanbul./x/**/*.json"],"error":"ENOENT: no such file or directory, scandir 'İstanbul./x/**/*.json'"}
+{"fn":"serverSources","args":["﻿bomHello World"],"error":"ENOENT: no such file or directory, scandir '﻿bomHello World'"}
+{"fn":"serverSources","args":["ΣΊΣΥΦΟΣa"],"error":"ENOENT: no such file or directory, scandir 'ΣΊΣΥΦΟΣa'"}
+{"fn":"serverSources","args":["ΣΊΣΥΦΟΣstraße"],"error":"ENOENT: no such file or directory, scandir 'ΣΊΣΥΦΟΣstraße'"}
+{"fn":"serverSources","args":["trailing.Hello World"],"error":"ENOENT: no such file or directory, scandir 'trailing.Hello World'"}
+{"fn":"serverSources","args":["line1\nline2  padded  "],"error":"ENOENT: no such file or directory, scandir 'line1\nline2  padded  '"}
+{"fn":"serverSources","args":["line1\nline2hello"],"error":"ENOENT: no such file or directory, scandir 'line1\nline2hello'"}
+{"fn":"serverSources","args":["  padded  straße"],"error":"ENOENT: no such file or directory, scandir '  padded  straße'"}
+{"fn":"serverSources","args":["trailing.{name} has {count} items"],"error":"ENOENT: no such file or directory, scandir 'trailing.{name} has {count} items'"}
+{"fn":"serverSources","args":["trailing.﻿bom"],"error":"ENOENT: no such file or directory, scandir 'trailing.﻿bom'"}
+{"fn":"serverSources","args":["éhello"],"error":"ENOENT: no such file or directory, scandir 'éhello'"}
+{"fn":"serverSources","args":["İstanbulünïcödé"],"error":"ENOENT: no such file or directory, scandir 'İstanbulünïcödé'"}
+{"fn":"serverSources","args":["a..bHello World"],"error":"ENOENT: no such file or directory, scandir 'a..bHello World'"}
+{"fn":"serverSources","args":["a.b.cİstanbul"],"error":"ENOENT: no such file or directory, scandir 'a.b.cİstanbul'"}
+{"fn":"serverSources","args":["tab\tseparated.leading"],"error":"ENOENT: no such file or directory, scandir 'tab\tseparated.leading'"}
+{"fn":"serverSources","args":[".leadingabc"],"error":"ENOENT: no such file or directory, scandir '.leadingabc'"}
+{"fn":"serverSources","args":["  padded  .leading"],"error":"ENOENT: no such file or directory, scandir '  padded  .leading'"}
+{"fn":"serverSources","args":["straße😀"],"error":"ENOENT: no such file or directory, scandir 'straße😀'"}
+{"fn":"serverSources","args":["tab\tseparated﻿bom"],"error":"ENOENT: no such file or directory, scandir 'tab\tseparated﻿bom'"}
+{"fn":"serverSources","args":["a😀b😀ca"],"error":"ENOENT: no such file or directory, scandir 'a😀b😀ca'"}
+{"fn":"serverSources","args":["aba"],"error":"ENOENT: no such file or directory, scandir 'aba'"}
+{"fn":"serverSources","args":["src/a/b.tsİstanbul"],"error":"ENOENT: no such file or directory, scandir 'src/a/b.tsİstanbul'"}
+{"fn":"serverSources","args":["hello world{name} has {count} items"],"error":"ENOENT: no such file or directory, scandir 'hello world{name} has {count} items'"}
+{"fn":"serverSources","args":["  padded  ab"],"error":"ENOENT: no such file or directory, scandir '  padded  ab'"}
+{"fn":"serverSources","args":["a:b:ckey_name-1"],"error":"ENOENT: no such file or directory, scandir 'a:b:ckey_name-1'"}
+{"fn":"serverSources","args":["tab\tseparateda😀b😀c"],"error":"ENOENT: no such file or directory, scandir 'tab\tseparateda😀b😀c'"}
+{"fn":"serverSources","args":["trailing.ab"],"error":"ENOENT: no such file or directory, scandir 'trailing.ab'"}
+{"fn":"serverSources","args":["Hello Worlda..b"],"error":"ENOENT: no such file or directory, scandir 'Hello Worlda..b'"}
+{"fn":"serverSources","args":["a.b.c./x/**/*.json"],"error":"ENOENT: no such file or directory, scandir 'a.b.c./x/**/*.json'"}
+{"fn":"serverSources","args":["abkey_name-1"],"error":"ENOENT: no such file or directory, scandir 'abkey_name-1'"}
+{"fn":"serverSources","args":["ns:key.pathünïcödé"],"error":"ENOENT: no such file or directory, scandir 'ns:key.pathünïcödé'"}
+{"fn":"serverSources","args":["tab\tseparateda:b:c"],"error":"ENOENT: no such file or directory, scandir 'tab\tseparateda:b:c'"}
+{"fn":"serverSources","args":[":.leading"],"error":"ENOENT: no such file or directory, scandir ':.leading'"}
+{"fn":"serverSources","args":["hello worldsrc/a/b.ts"],"error":"ENOENT: no such file or directory, scandir 'hello worldsrc/a/b.ts'"}
+{"fn":"serverSources","args":["hello worldemoji 👍🏽 mix"],"error":"ENOENT: no such file or directory, scandir 'hello worldemoji 👍🏽 mix'"}
+{"fn":"serverSources","args":["trailing.src/a/b.ts"],"error":"ENOENT: no such file or directory, scandir 'trailing.src/a/b.ts'"}
+{"fn":"serverSources","args":["Hello Worlda.b.c"],"error":"ENOENT: no such file or directory, scandir 'Hello Worlda.b.c'"}
+{"fn":"serverSources","args":["emoji 👍🏽 mixtab\tseparated"],"error":"ENOENT: no such file or directory, scandir 'emoji 👍🏽 mixtab\tseparated'"}
+{"fn":"serverSources","args":["emoji 👍🏽 mix😀"],"error":"ENOENT: no such file or directory, scandir 'emoji 👍🏽 mix😀'"}
+{"fn":"serverSources","args":["a:b:cünïcödé"],"error":"ENOENT: no such file or directory, scandir 'a:b:cünïcödé'"}
+{"fn":"serverSources","args":["  padded    padded  "],"error":"ENOENT: no such file or directory, scandir '  padded    padded  '"}
+{"fn":"serverSources","args":["HELLOkey_name-1"],"error":"ENOENT: no such file or directory, scandir 'HELLOkey_name-1'"}
+{"fn":"serverSources","args":["trailing.ΣΊΣΥΦΟΣ"],"error":"ENOENT: no such file or directory, scandir 'trailing.ΣΊΣΥΦΟΣ'"}
+{"fn":"serverSources","args":["İstanbul﻿bom"],"error":"ENOENT: no such file or directory, scandir 'İstanbul﻿bom'"}
+{"fn":"serverSources","args":["  padded  {name} has {count} items"],"error":"ENOENT: no such file or directory, scandir '  padded  {name} has {count} items'"}
+{"fn":"serverSources","args":["日本語のテキスト{name} has {count} items"],"error":"ENOENT: no such file or directory, scandir '日本語のテキスト{name} has {count} items'"}
+{"fn":"serverSources","args":["straßea:b:c"],"error":"ENOENT: no such file or directory, scandir 'straßea:b:c'"}
+{"fn":"serverSources","args":["hello worldHello World"],"error":"ENOENT: no such file or directory, scandir 'hello worldHello World'"}
+{"fn":"serverSources","args":["HELLOa..b"],"error":"ENOENT: no such file or directory, scandir 'HELLOa..b'"}
+{"fn":"serverSources","args":["tab\tseparated./x/**/*.json"],"error":"ENOENT: no such file or directory, scandir 'tab\tseparated./x/**/*.json'"}
+{"fn":"serverSources","args":["ns:key.patha😀b😀c"],"error":"ENOENT: no such file or directory, scandir 'ns:key.patha😀b😀c'"}
+{"fn":"serverSources","args":["a.b.c{name} has {count} items"],"error":"ENOENT: no such file or directory, scandir 'a.b.c{name} has {count} items'"}
+{"fn":"serverSources","args":["a😀"],"error":"ENOENT: no such file or directory, scandir 'a😀'"}
+{"fn":"serverSources","args":["a😀b😀c{name} has {count} items"],"error":"ENOENT: no such file or directory, scandir 'a😀b😀c{name} has {count} items'"}
+{"fn":"serverSources","args":["Hello Worlda"],"error":"ENOENT: no such file or directory, scandir 'Hello Worlda'"}
+{"fn":"serverSources","args":["hellosrc/a/b.ts"],"error":"ENOENT: no such file or directory, scandir 'hellosrc/a/b.ts'"}
+{"fn":"serverSources","args":["a..ba.b.c"],"error":"ENOENT: no such file or directory, scandir 'a..ba.b.c'"}
+{"fn":"serverSources","args":["😀  padded  "],"error":"ENOENT: no such file or directory, scandir '😀  padded  '"}
+{"fn":"serverSources","args":["aa"],"error":"ENOENT: no such file or directory, scandir 'aa'"}
+{"fn":"serverSources","args":["ünïcödé./x/**/*.json"],"error":"ENOENT: no such file or directory, scandir 'ünïcödé./x/**/*.json'"}
+{"fn":"serverSources","args":["{name} has {count} itemssrc/a/b.ts"],"error":"ENOENT: no such file or directory, scandir '{name} has {count} itemssrc/a/b.ts'"}
+{"fn":"serverSources","args":["src/a/b.tsemoji 👍🏽 mix"],"error":"ENOENT: no such file or directory, scandir 'src/a/b.tsemoji 👍🏽 mix'"}
+{"fn":"serverSources","args":["abhello"],"error":"ENOENT: no such file or directory, scandir 'abhello'"}
+{"fn":"serverSources","args":[":HELLO"],"error":"ENOENT: no such file or directory, scandir ':HELLO'"}
+{"fn":"serverSources","args":["line1\nline2ΣΊΣΥΦΟΣ"],"error":"ENOENT: no such file or directory, scandir 'line1\nline2ΣΊΣΥΦΟΣ'"}
+{"fn":"serverSources","args":["HELLOHello World"],"error":"ENOENT: no such file or directory, scandir 'HELLOHello World'"}
+{"fn":"serverSources","args":["HELLO﻿bom"],"error":"ENOENT: no such file or directory, scandir 'HELLO﻿bom'"}
+{"fn":"serverSources","args":["aemoji 👍🏽 mix"],"error":"ENOENT: no such file or directory, scandir 'aemoji 👍🏽 mix'"}
+{"fn":"serverSources","args":["a:b:chello"],"error":"ENOENT: no such file or directory, scandir 'a:b:chello'"}
+{"fn":"serverSources","args":["ünïcödésrc/a/b.ts"],"error":"ENOENT: no such file or directory, scandir 'ünïcödésrc/a/b.ts'"}
+{"fn":"serverSources","args":["hellons:key.path"],"error":"ENOENT: no such file or directory, scandir 'hellons:key.path'"}
+{"fn":"serverSources","args":["line1\nline2./x/**/*.json"],"error":"ENOENT: no such file or directory, scandir 'line1\nline2./x/**/*.json'"}
+{"fn":"serverSources","args":[":😀"],"error":"ENOENT: no such file or directory, scandir ':😀'"}
+{"fn":"serverSources","args":["ab./x/**/*.json"],"error":"ENOENT: no such file or directory, scandir 'ab./x/**/*.json'"}
+{"fn":"serverSources","args":["straße.leading"],"error":"ENOENT: no such file or directory, scandir 'straße.leading'"}
+{"fn":"serverSources","args":["a.b.cé"],"error":"ENOENT: no such file or directory, scandir 'a.b.cé'"}
+{"fn":"serverSources","args":[".leadinghello world"],"error":"ENOENT: no such file or directory, scandir '.leadinghello world'"}
+{"fn":"serverSources","args":["ns:key.pathemoji 👍🏽 mix"],"error":"ENOENT: no such file or directory, scandir 'ns:key.pathemoji 👍🏽 mix'"}
+{"fn":"serverSources","args":["key_name-1é"],"error":"ENOENT: no such file or directory, scandir 'key_name-1é'"}
+{"fn":"serverSources","args":["straßeabc"],"error":"ENOENT: no such file or directory, scandir 'straßeabc'"}
+{"fn":"serverSources","args":["helloemoji 👍🏽 mix"],"error":"ENOENT: no such file or directory, scandir 'helloemoji 👍🏽 mix'"}
+{"fn":"serverSources","args":["HELLOstraße"],"error":"ENOENT: no such file or directory, scandir 'HELLOstraße'"}
+{"fn":"serverSources","args":["İstanbulHello World"],"error":"ENOENT: no such file or directory, scandir 'İstanbulHello World'"}
+{"fn":"serverSources","args":["İstanbulns:key.path"],"error":"ENOENT: no such file or directory, scandir 'İstanbulns:key.path'"}
+{"fn":"serverSources","args":["Hello Worlda😀b😀c"],"error":"ENOENT: no such file or directory, scandir 'Hello Worlda😀b😀c'"}
+{"fn":"serverSources","args":["éline1\nline2"],"error":"ENOENT: no such file or directory, scandir 'éline1\nline2'"}
+{"fn":"serverSources","args":["日本語のテキスト  padded  "],"error":"ENOENT: no such file or directory, scandir '日本語のテキスト  padded  '"}
+{"fn":"serverSources","args":["abcİstanbul"],"error":"ENOENT: no such file or directory, scandir 'abcİstanbul'"}
+{"fn":"serverSources","args":["./x/**/*.json  padded  "],"error":"ENOENT: no such file or directory, scandir './x/**/*.json  padded  '"}
+{"fn":"serverSources","args":["straßeHELLO"],"error":"ENOENT: no such file or directory, scandir 'straßeHELLO'"}
+{"fn":"serverSources","args":["a..bHELLO"],"error":"ENOENT: no such file or directory, scandir 'a..bHELLO'"}
+{"fn":"serverSources","args":["Hello WorldHello World"],"error":"ENOENT: no such file or directory, scandir 'Hello WorldHello World'"}
+{"fn":"serverSources","args":["emoji 👍🏽 mixab"],"error":"ENOENT: no such file or directory, scandir 'emoji 👍🏽 mixab'"}
+{"fn":"serverSources","args":["hellokey_name-1"],"error":"ENOENT: no such file or directory, scandir 'hellokey_name-1'"}
+{"fn":"serverSources","args":["hello日本語のテキスト"],"error":"ENOENT: no such file or directory, scandir 'hello日本語のテキスト'"}
+{"fn":"serverSources","args":["éa"],"error":"ENOENT: no such file or directory, scandir 'éa'"}
+{"fn":"serverSources","args":["abcsrc/a/b.ts"],"error":"ENOENT: no such file or directory, scandir 'abcsrc/a/b.ts'"}
+{"fn":"serverSources","args":["a:b:cΣΊΣΥΦΟΣ"],"error":"ENOENT: no such file or directory, scandir 'a:b:cΣΊΣΥΦΟΣ'"}
+{"fn":"serverSources","args":["héllo wörld"],"error":"ENOENT: no such file or directory, scandir 'héllo wörld'"}
+{"fn":"serverSources","args":["👍🏽 thumbs"],"error":"ENOENT: no such file or directory, scandir '👍🏽 thumbs'"}
+{"fn":"serverSources","args":["日本語"],"error":"ENOENT: no such file or directory, scandir '日本語'"}
+{"fn":"serverSources","args":["ılık ırmak"],"error":"ENOENT: no such file or directory, scandir 'ılık ırmak'"}
+{"fn":"serverSources","args":["👨‍👩‍👧 family"],"error":"ENOENT: no such file or directory, scandir '👨‍👩‍👧 family'"}
+{"fn":"serverSources","args":["a b"],"error":"ENOENT: no such file or directory, scandir 'a b'"}
+{"fn":"serverSources","args":["a😀b"],"error":"ENOENT: no such file or directory, scandir 'a😀b'"}
+{"fn":"serverSources","args":["a²b x½ y①"],"error":"ENOENT: no such file or directory, scandir 'a²b x½ y①'"}
+{"fn":"serverSources","args":["aⅠb Ⅻ"],"error":"ENOENT: no such file or directory, scandir 'aⅠb Ⅻ'"}
+{"fn":"serverSources","args":["a𐐀b 𝐀bc"],"error":"ENOENT: no such file or directory, scandir 'a𐐀b 𝐀bc'"}
+{"fn":"serverSources","args":["कि ٣٤"],"error":"ENOENT: no such file or directory, scandir 'कि ٣٤'"}
+{"fn":"serverSources","args":["Iı İi"],"error":"ENOENT: no such file or directory, scandir 'Iı İi'"}
+{"fn":"serverSources","args":["K K k"],"error":"ENOENT: no such file or directory, scandir 'K K k'"}
+{"fn":"serverSources","args":["ſ s S"],"error":"ENOENT: no such file or directory, scandir 'ſ s S'"}
+{"fn":"serverSources","args":["x‍y 👨‍👩‍👧"],"error":"ENOENT: no such file or directory, scandir 'x‍y 👨‍👩‍👧'"}
+{"fn":"serverSources","args":["a b c　d"],"error":"ENOENT: no such file or directory, scandir 'a b c　d'"}
+{"fn":"serverSources","args":["١٢٣ ٤٥"],"error":"ENOENT: no such file or directory, scandir '١٢٣ ٤٥'"}
+{"fn":"serverSources","args":["𝟘𝟙 ²³"],"error":"ENOENT: no such file or directory, scandir '𝟘𝟙 ²³'"}
+{"fn":"serverSources","args":["snake_case foo-bar o'neil"],"error":"ENOENT: no such file or directory, scandir 'snake_case foo-bar o'neil'"}
+{"fn":"serverSources","args":["ǅungla Ǆ"],"error":"ENOENT: no such file or directory, scandir 'ǅungla Ǆ'"}
+{"fn":"serverSources","args":["one\r\ntwo threefour"],"error":"ENOENT: no such file or directory, scandir 'one\r\ntwo threefour'"}
+{"fn":"serverSources","args":["café café"],"error":"ENOENT: no such file or directory, scandir 'café café'"}
+{"fn":"serverSources","args":["ΣΑΣ σας ς"],"error":"ENOENT: no such file or directory, scandir 'ΣΑΣ σας ς'"}

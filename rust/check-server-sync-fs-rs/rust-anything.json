@@ -1,0 +1,78 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "scripts/check-server-sync-fs.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "check-server-sync-fs-rs",
+  "exports": [
+    {
+      "name": "countSyncFsReferences",
+      "file": "scripts/check-server-sync-fs.ts",
+      "line": 17,
+      "params": [
+        {
+          "name": "source",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Record<string, number>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "syncFsViolations",
+      "file": "scripts/check-server-sync-fs.ts",
+      "line": 137,
+      "params": [
+        {
+          "name": "file",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "source",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "budget",
+          "ts_type": "Readonly<\n  Record<\n    string,\n    {\n      readonly reason: string;\n      readonly references: Readonly<Record<string, number>>;\n    }\n  >\n>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "serverSources",
+      "file": "scripts/check-server-sync-fs.ts",
+      "line": 154,
+      "params": [
+        {
+          "name": "root",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

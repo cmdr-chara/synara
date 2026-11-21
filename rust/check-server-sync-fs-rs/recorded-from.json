@@ -1,0 +1,17 @@
+{
+  "unit": "scripts/check-server-sync-fs.ts",
+  "files": 1,
+  "fingerprint": "b3451598220b9f91",
+  "coverage": {
+    "lines": 180,
+    "reached": 87,
+    "files": [
+      {
+        "file": "scripts/check-server-sync-fs.ts",
+        "lines": 180,
+        "reached": 87,
+        "missed": "23, 28-30, 33, 38-42, 52-56, 58-60, 69-72, 74-76, 78-82, 85-89, 91-92, 95-97, 99, 106-107, 110-111, 113-117, 121-124, 126-130, 143-150, 156-159, 164-185"
+      }
+    ]
+  }
+}

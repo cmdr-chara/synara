@@ -1,0 +1,30 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/endpointReporter.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "endpointreporter-rs",
+  "exports": [
+    {
+      "name": "networkFingerprint",
+      "file": "apps/server/src/endpointReporter.ts",
+      "line": 11,
+      "params": [],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "startEndpointReporter",
+      "file": "apps/server/src/endpointReporter.ts",
+      "line": 28,
+      "reason": "takes or returns a function"
+    }
+  ]
+}

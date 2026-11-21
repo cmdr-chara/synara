@@ -1,0 +1,36 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/contextMenuFallback.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "contextmenufallback-rs",
+  "exports": [
+    {
+      "name": "showContextMenuFallback",
+      "file": "apps/web/src/contextMenuFallback.ts",
+      "line": 40,
+      "params": [
+        {
+          "name": "items",
+          "ts_type": "readonly ContextMenuItem<(string)>[]",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "position",
+          "ts_type": "{ x: number; y: number }",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<(string) | null>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

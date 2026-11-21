@@ -1,0 +1,59 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/siteFaviconCache.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "sitefaviconcache-rs",
+  "exports": [
+    {
+      "name": "tryParseHost",
+      "file": "apps/server/src/siteFaviconCache.ts",
+      "line": 41,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveFavicon",
+      "file": "apps/server/src/siteFaviconCache.ts",
+      "line": 149,
+      "params": [
+        {
+          "name": "host",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<CachedFavicon>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "clearSiteFaviconCache",
+      "file": "apps/server/src/siteFaviconCache.ts",
+      "line": 177,
+      "params": [],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

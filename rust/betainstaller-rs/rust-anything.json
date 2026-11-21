@@ -1,0 +1,157 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/desktop/src/betaInstaller.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "betainstaller-rs",
+  "exports": [
+    {
+      "name": "parseBetaMacManifest",
+      "file": "apps/desktop/src/betaInstaller.ts",
+      "line": 82,
+      "params": [
+        {
+          "name": "text",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "BetaMacManifest",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "selectBetaDownloadFile",
+      "file": "apps/desktop/src/betaInstaller.ts",
+      "line": 128,
+      "params": [
+        {
+          "name": "files",
+          "ts_type": "readonly BetaFeedFile[]",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "arch",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "BetaFeedFile",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "httpsFetchText",
+      "file": "apps/desktop/src/betaInstaller.ts",
+      "line": 181,
+      "params": [
+        {
+          "name": "url",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "sha512FileBase64",
+      "file": "apps/desktop/src/betaInstaller.ts",
+      "line": 255,
+      "params": [
+        {
+          "name": "path",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "httpsDownloadFile",
+      "file": "apps/desktop/src/betaInstaller.ts",
+      "line": 266,
+      "params": [
+        {
+          "name": "url",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "destinationPath",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "onProgress",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "verifyBetaAppBundle",
+      "file": "apps/desktop/src/betaInstaller.ts",
+      "line": 379,
+      "params": [
+        {
+          "name": "appPath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "resolveBetaFeedLocation",
+      "file": "apps/desktop/src/betaInstaller.ts",
+      "line": 221,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "verifyBetaCodeSignature",
+      "file": "apps/desktop/src/betaInstaller.ts",
+      "line": 361,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "installBetaFromFeed",
+      "file": "apps/desktop/src/betaInstaller.ts",
+      "line": 427,
+      "reason": "takes or returns a function"
+    }
+  ]
+}

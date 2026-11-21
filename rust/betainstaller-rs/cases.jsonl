@@ -1,0 +1,1122 @@
+{"fn":"parseBetaMacManifest","args":["key_name-1"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["ünïcödé"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["😀"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["a😀b😀c"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["a"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["line1\nline2"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["a..b😀"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["emoji 👍🏽 mixkey_name-1"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["abc"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":[".leading"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["hello world"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["﻿bom"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":[""],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["straße"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":[":  padded  "],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["./x/**/*.json"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["﻿bomHello World"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["ΣΊΣΥΦΟΣ"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["tab\tseparated"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["  padded  "],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":[":"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["Hello WorldΣΊΣΥΦΟΣ"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["ab"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["HELLO{name} has {count} items"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["ns:key.path"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["日本語のテキストhello"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["Hello World"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["日本語のテキスト"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["HELLOé"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["a.b.cline1\nline2"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["ns:key.pathsrc/a/b.ts"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["emoji 👍🏽 mix"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["a.b.c"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["İstanbul"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["line1\nline2hello world"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["src/a/b.ts"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["﻿bomabc"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["😀a😀b😀c"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["hello"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":[":straße"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["HELLO"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["line1\nline2a..b"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["é"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["trailing."],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["ΣΊΣΥΦΟΣab"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["a:b:c"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["  padded  é"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["{name} has {count} items"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["é./x/**/*.json"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["HELLOtab\tseparated"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["a..b./x/**/*.json"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["ns:key.path./x/**/*.json"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["abctab\tseparated"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["😀ns:key.path"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["hello world😀"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["a..ba.b.c"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["日本語のテキスト  padded  "],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["a..b"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["aba"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["src/a/b.tshello world"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["日本語のテキストünïcödé"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["hello.leading"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["abca..b"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["😀﻿bom"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["a日本語のテキスト"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["ΣΊΣΥΦΟΣhello world"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["hello{name} has {count} items"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["src/a/b.tsHello World"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["a😀b😀cé"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["key_name-1emoji 👍🏽 mix"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":[":Hello World"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["a{name} has {count} items"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["tab\tseparatedsrc/a/b.ts"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["abİstanbul"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["emoji 👍🏽 mixhello world"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["  padded  Hello World"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["日本語のテキスト./x/**/*.json"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["a😀b😀chello world"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["a..b日本語のテキスト"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["😀a"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["trailing.ns:key.path"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["a😀b😀c:"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["key_name-1key_name-1"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["a./x/**/*.json"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["straßehello world"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["  padded  a😀b😀c"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["ns:key.patha😀b😀c"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["  padded  emoji 👍🏽 mix"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["ΣΊΣΥΦΟΣa..b"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["é﻿bom"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["a  padded  "],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":[":hello world"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["a😀b😀ca:b:c"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["ns:key.patha..b"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["😀key_name-1"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["tab\tseparateda.b.c"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["./x/**/*.json😀"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["hello worldns:key.path"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["straße😀"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["﻿boma😀b😀c"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["atrailing."],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":[":a..b"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["a:b:c./x/**/*.json"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["Hello Worlda..b"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["Hello World./x/**/*.json"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["abc  padded  "],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["a.b.c😀"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["éab"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["key_name-1abc"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["a:b:cünïcödé"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":[":emoji 👍🏽 mix"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["ünïcödétrailing."],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["a..bkey_name-1"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["a..bünïcödé"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["😀İstanbul"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["ΣΊΣΥΦΟΣhello"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["ΣΊΣΥΦΟΣ日本語のテキスト"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["trailing.emoji 👍🏽 mix"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["{name} has {count} items{name} has {count} items"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["line1\nline2😀"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["İstanbul./x/**/*.json"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["hellokey_name-1"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":[".leading  padded  "],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["éns:key.path"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["ns:key.patha.b.c"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["a:b:cstraße"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["emoji 👍🏽 mixHELLO"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["tab\tseparatedHELLO"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["abc😀"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["﻿bom{name} has {count} items"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["日本語のテキストa.b.c"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["a😀b😀c.leading"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["{name} has {count} itemstab\tseparated"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["tab\tseparatedstraße"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["./x/**/*.json  padded  "],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["straßestraße"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["key_name-1a.b.c"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["trailing.a"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["ünïcödéHello World"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":[":a.b.c"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["a..bstraße"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["ΣΊΣΥΦΟΣ  padded  "],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["src/a/b.tsemoji 👍🏽 mix"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["{name} has {count} itemsa..b"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["a..b{name} has {count} items"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["aünïcödé"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["ΣΊΣΥΦΟΣa"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["key_name-1日本語のテキスト"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["ns:key.path:"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["ΣΊΣΥΦΟΣns:key.path"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["emoji 👍🏽 mix😀"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["  padded  İstanbul"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["a:b:ca..b"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["a😀b😀ca"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["trailing.日本語のテキスト"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["line1\nline2abc"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["Hello Worldİstanbul"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["hello worlda"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["hello worldtrailing."],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["  padded  hello"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["{name} has {count} items:"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["ab日本語のテキスト"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["{name} has {count} itemsa"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["tab\tseparated﻿bom"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["日本語のテキスト:"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["éa..b"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["  padded  😀"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["aa.b.c"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["HELLOline1\nline2"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["ab  padded  "],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["﻿bom./x/**/*.json"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["{name} has {count} items日本語のテキスト"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["😀é"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["line1\nline2emoji 👍🏽 mix"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["İstanbul{name} has {count} items"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["line1\nline2hello"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["emoji 👍🏽 mixa:b:c"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["{name} has {count} itemskey_name-1"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["﻿bomkey_name-1"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["ahello"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["trailing.line1\nline2"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["日本語のテキストİstanbul"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["{name} has {count} itemsemoji 👍🏽 mix"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["HELLOa😀b😀c"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["straßeHELLO"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["﻿bom.leading"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["aba:b:c"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["  padded  ünïcödé"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["a😀b😀cİstanbul"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["😀trailing."],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["abcHello World"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":[".leading﻿bom"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["key_name-1{name} has {count} items"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["a:b:c  padded  "],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["abline1\nline2"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["a😀b😀c  padded  "],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":[".leadinghello world"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["hello worlda.b.c"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["src/a/b.ts﻿bom"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["ab{name} has {count} items"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["héllo wörld"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["👍🏽 thumbs"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["日本語"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["ılık ırmak"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["👨‍👩‍👧 family"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["a b"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["a😀b"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["a²b x½ y①"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["aⅠb Ⅻ"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["a𐐀b 𝐀bc"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["कि ٣٤"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["Iı İi"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["K K k"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["ſ s S"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["x‍y 👨‍👩‍👧"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["a b c　d"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["١٢٣ ٤٥"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["𝟘𝟙 ²³"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["snake_case foo-bar o'neil"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["ǅungla Ǆ"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["one\r\ntwo threefour"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["café café"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"parseBetaMacManifest","args":["ΣΑΣ σας ς"],"error":"Could not parse beta-mac.yml: missing version or files."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"a","sha512":"é"}],"a"],"error":"No beta download for a in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"Hello World","sha512":"a😀b😀c","size":{"$num":"-Infinity"}},{"url":"hello world","sha512":"HELLO","size":0}],""],"error":"No beta download for  in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"ünïcödé","sha512":"trailing.","size":100},{"url":"hello","sha512":"{name} has {count} items","size":{"$num":"Infinity"}}],"straße"],"error":"No beta download for straße in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"{name} has {count} items","sha512":"a:b:ctab\tseparated","size":3}],"a.b.c"],"error":"No beta download for a.b.c in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"İstanbul","sha512":"./x/**/*.jsonab"},{"url":"{name} has {count} items","sha512":"ΣΊΣΥΦΟΣsrc/a/b.ts","size":1000000},{"url":"a😀b😀c","sha512":"tab\tseparated"}],"{name} has {count} itemsé"],"error":"No beta download for {name} has {count} itemsé in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"Hello World","sha512":"a.b.c","size":3}],"a.b.c"],"error":"No beta download for a.b.c in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[],"trailing."],"error":"No beta download for trailing. in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[true,"line1\nline2"],"error":"files.filter is not a function"}
+{"fn":"selectBetaDownloadFile","args":[[],"straßea"],"error":"No beta download for straßea in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"HELLO","sha512":"emoji 👍🏽 mixİstanbul"}],"a.b.c"],"error":"No beta download for a.b.c in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"😀","sha512":"hello world","size":{"$num":"-Infinity"}},{"url":"﻿bom","sha512":"src/a/b.ts"},{"url":"a..b","sha512":"hello world","size":42}],"src/a/b.ts"],"error":"No beta download for src/a/b.ts in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[null,"😀"],"error":"Cannot read properties of null (reading 'filter')"}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"key_name-1","sha512":"line1\nline2","size":1},{"url":"a😀b😀cé","sha512":"","size":2147483648},{"url":"a😀b😀ca","sha512":"hello world","size":42}],"tab\tseparatedemoji 👍🏽 mix"],"error":"No beta download for tab\tseparatedemoji 👍🏽 mix in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[{"a":{"b":"c"}},"Hello World😀"],"error":"files.filter is not a function"}
+{"fn":"selectBetaDownloadFile","args":[[],"key_name-1"],"error":"No beta download for key_name-1 in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[["a",1],"helloa:b:c"],"error":"Cannot read properties of undefined (reading 'endsWith')"}
+{"fn":"selectBetaDownloadFile","args":[[],"ns:key.path"],"error":"No beta download for ns:key.path in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[],"a.b.c"],"error":"No beta download for a.b.c in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[{"a":{"b":"c"}},"ab"],"error":"files.filter is not a function"}
+{"fn":"selectBetaDownloadFile","args":[null,"{name} has {count} items"],"error":"Cannot read properties of null (reading 'filter')"}
+{"fn":"selectBetaDownloadFile","args":[[{"url":":","sha512":"日本語のテキスト"},{"url":"a😀b😀c","sha512":"﻿bom","size":9007199254740992}],"﻿bom"],"error":"No beta download for ﻿bom in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"straßesrc/a/b.ts","sha512":":","size":3}],"trailing."],"error":"No beta download for trailing. in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"﻿bom","sha512":"line1\nline2","size":{"$num":"Infinity"}},{"url":"abc","sha512":"emoji 👍🏽 mix"}],"HELLO"],"error":"No beta download for HELLO in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"日本語のテキスト","sha512":"","size":10},{"url":"a","sha512":"abc"},{"url":"a.b.c","sha512":"a.b.cemoji 👍🏽 mix","size":{"$num":"Infinity"}}],"key_name-1"],"error":"No beta download for key_name-1 in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[],"a"],"error":"No beta download for a in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"😀","sha512":"Hello World","size":{"$num":"-0"}},{"url":"Hello World","sha512":"hello world"},{"url":"İstanbul","sha512":"ΣΊΣΥΦΟΣ","size":2147483648}],"line1\nline2😀"],"error":"No beta download for line1\nline2😀 in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[],"hello"],"error":"No beta download for hello in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"a..b😀","sha512":"emoji 👍🏽 mix","size":-1},{"url":"src/a/b.ts","sha512":"  padded  "},{"url":"line1\nline2","sha512":".leading"}],"src/a/b.ts"],"error":"No beta download for src/a/b.ts in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"a:b:chello world","sha512":"é","size":1000000},{"url":"﻿bom","sha512":"ΣΊΣΥΦΟΣé","size":{"$num":"NaN"}}],"HELLO"],"error":"No beta download for HELLO in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[["a",1],"key_name-1"],"error":"Cannot read properties of undefined (reading 'endsWith')"}
+{"fn":"selectBetaDownloadFile","args":[[],"{name} has {count} items"],"error":"No beta download for {name} has {count} items in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"aa..b","sha512":":"},{"url":"","sha512":"straße","size":2147483648},{"url":"emoji 👍🏽 mix.leading","sha512":".leading","size":{"$num":"NaN"}}],"a:b:c"],"error":"No beta download for a:b:c in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"hello","sha512":"ns:key.path","size":-2.5}],""],"error":"No beta download for  in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"HELLO","sha512":"emoji 👍🏽 mix","size":0},{"url":"a..b","sha512":"Hello World","size":{"$num":"NaN"}}],"trailing."],"error":"No beta download for trailing. in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"日本語のテキスト","sha512":"straße","size":1000000},{"url":"emoji 👍🏽 mix","sha512":"日本語のテキスト","size":1},{"url":"{name} has {count} itemsa.b.c","sha512":"","size":{"$num":"-0"}}],":"],"error":"No beta download for : in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[],"abc"],"error":"No beta download for abc in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":":./x/**/*.json","sha512":"abc","size":2},{"url":"{name} has {count} items日本語のテキスト","sha512":"ns:key.path","size":{"$num":"-0"}},{"url":"tab\tseparated","sha512":"","size":{"$num":"-Infinity"}}],"ab"],"error":"No beta download for ab in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[0,"line1\nline2"],"error":"files.filter is not a function"}
+{"fn":"selectBetaDownloadFile","args":[[],"﻿bom"],"error":"No beta download for ﻿bom in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"  padded  ","sha512":"a😀b😀c","size":9007199254740992},{"url":"hello","sha512":"emoji 👍🏽 mixünïcödé","size":3},{"url":"ünïcödéHELLO","sha512":"ab","size":-2.5}],"a😀b😀c"],"error":"No beta download for a😀b😀c in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"key_name-1","sha512":"ΣΊΣΥΦΟΣ"},{"url":"line1\nline2","sha512":"src/a/b.tsé","size":100},{"url":"src/a/b.ts","sha512":""}],"trailing.a"],"error":"No beta download for trailing.a in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"line1\nline2tab\tseparated","sha512":"key_name-1","size":2},{"url":"key_name-1","sha512":"﻿bom","size":1000000}],"  padded  "],"error":"No beta download for   padded   in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"日本語のテキスト","sha512":"src/a/b.ts"},{"url":"src/a/b.ts","sha512":"ab","size":2}],"trailing."],"error":"No beta download for trailing. in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"ΣΊΣΥΦΟΣa","sha512":"a.b.c","size":{"$num":"-0"}},{"url":"Hello World","sha512":"","size":{"$num":"NaN"}}],".leading"],"error":"No beta download for .leading in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"./x/**/*.json","sha512":"a..bHELLO","size":-2.5},{"url":"a","sha512":"éHELLO","size":10},{"url":"ünïcödéİstanbul","sha512":"a..b"}],"emoji 👍🏽 mix"],"error":"No beta download for emoji 👍🏽 mix in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"  padded  ","sha512":"trailing.","size":42},{"url":"ab","sha512":"./x/**/*.json"},{"url":"a","sha512":"emoji 👍🏽 mix","size":{"$num":"-0"}}],"straße"],"error":"No beta download for straße in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[],"{name} has {count} itemshello world"],"error":"No beta download for {name} has {count} itemshello world in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"straßeemoji 👍🏽 mix","sha512":"ünïcödé","size":1000000},{"url":"a..b","sha512":"a..b","size":10}],"a..bline1\nline2"],"error":"No beta download for a..bline1\nline2 in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":":","sha512":"a","size":0.5}],"a.b.c"],"error":"No beta download for a.b.c in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[],"src/a/b.ts"],"error":"No beta download for src/a/b.ts in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"a.b.c","sha512":"é","size":2}],":"],"error":"No beta download for : in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"src/a/b.ts","sha512":":"},{"url":"﻿bom  padded  ","sha512":"emoji 👍🏽 mix"}],"a..b"],"error":"No beta download for a..b in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"","sha512":"é"}],""],"error":"No beta download for  in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"./x/**/*.json","sha512":"a..b"}],"ns:key.patha.b.c"],"error":"No beta download for ns:key.patha.b.c in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"HELLO日本語のテキスト","sha512":"😀","size":{"$num":"NaN"}}],"trailing."],"error":"No beta download for trailing. in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"hello﻿bom","sha512":"hello world","size":0.5},{"url":"ünïcödé","sha512":"﻿bom","size":1000},{"url":"hello world","sha512":":","size":-1}],"ab"],"error":"No beta download for ab in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"ünïcödéHELLO","sha512":"{name} has {count} items","size":{"$num":"NaN"}},{"url":"Hello World","sha512":"﻿bom","size":{"$num":"Infinity"}}],"src/a/b.ts"],"error":"No beta download for src/a/b.ts in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[],"İstanbul"],"error":"No beta download for İstanbul in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"é","sha512":"İstanbula😀b😀c","size":1},{"url":"tab\tseparated","sha512":"helloline1\nline2"}],"﻿bom"],"error":"No beta download for ﻿bom in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"a:b:c","sha512":"ab"}],"ünïcödé"],"error":"No beta download for ünïcödé in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[{"a":"b"},"tab\tseparated"],"error":"files.filter is not a function"}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"😀","sha512":"a😀b😀c","size":2147483648},{"url":"emoji 👍🏽 mix日本語のテキスト","sha512":"a..b  padded  ","size":100},{"url":"line1\nline2","sha512":"src/a/b.ts","size":10}],"a"],"error":"No beta download for a in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"😀","sha512":"hello","size":1},{"url":"abc","sha512":"tab\tseparated"}],"ΣΊΣΥΦΟΣ"],"error":"No beta download for ΣΊΣΥΦΟΣ in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[{"a":"b"},"line1\nline2"],"error":"files.filter is not a function"}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"Hello World","sha512":"ΣΊΣΥΦΟΣ","size":9007199254740992}],"ünïcödéemoji 👍🏽 mix"],"error":"No beta download for ünïcödéemoji 👍🏽 mix in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"","sha512":"a:b:c","size":{"$num":"-0"}},{"url":"ΣΊΣΥΦΟΣ","sha512":"a.b.ca😀b😀c","size":9007199254740992}],"HELLO"],"error":"No beta download for HELLO in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"abc😀","sha512":"a😀b😀c"},{"url":"﻿boma:b:c","sha512":"ünïcödé"}],"a.b.c"],"error":"No beta download for a.b.c in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"tab\tseparated","sha512":"hello worldHello World","size":-1},{"url":"abHello World","sha512":"key_name-1","size":2147483648}],"{name} has {count} items"],"error":"No beta download for {name} has {count} items in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"emoji 👍🏽 mix日本語のテキスト","sha512":"a"},{"url":"src/a/b.ts","sha512":"﻿bomé","size":1}],"Hello World"],"error":"No beta download for Hello World in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"Hello World","sha512":"src/a/b.ts","size":2147483648}],"hello world"],"error":"No beta download for hello world in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"a:b:c","sha512":"./x/**/*.json","size":{"$num":"NaN"}}],"ünïcödé"],"error":"No beta download for ünïcödé in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"tab\tseparatedstraße","sha512":":","size":{"$num":"Infinity"}}],"key_name-1ΣΊΣΥΦΟΣ"],"error":"No beta download for key_name-1ΣΊΣΥΦΟΣ in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[{"a":{"b":"c"}},"./x/**/*.json"],"error":"files.filter is not a function"}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"HELLO","sha512":"emoji 👍🏽 mix","size":{"$num":"-Infinity"}},{"url":"İstanbul","sha512":"ΣΊΣΥΦΟΣ"}],"{name} has {count} items.leading"],"error":"No beta download for {name} has {count} items.leading in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[],"a😀b😀c:"],"error":"No beta download for a😀b😀c: in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[["a",1],"HELLO"],"error":"Cannot read properties of undefined (reading 'endsWith')"}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"ns:key.path","sha512":"﻿bom","size":{"$num":"Infinity"}},{"url":"src/a/b.ts","sha512":"a:b:c","size":{"$num":"-Infinity"}},{"url":"a😀b😀c","sha512":"é","size":1000000}],"HELLO"],"error":"No beta download for HELLO in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"İstanbul","sha512":"trailing."},{"url":"ns:key.path","sha512":"abcabc","size":0}],"ΣΊΣΥΦΟΣ"],"error":"No beta download for ΣΊΣΥΦΟΣ in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[],"HELLO"],"error":"No beta download for HELLO in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"hello world","sha512":"a..bns:key.path","size":2147483648},{"url":"😀😀","sha512":"emoji 👍🏽 mix","size":0},{"url":"{name} has {count} items","sha512":"a:b:c","size":9007199254740992}],"ns:key.path"],"error":"No beta download for ns:key.path in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"  padded  ","sha512":"Hello World"}],""],"error":"No beta download for  in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"İstanbul","sha512":"  padded  ","size":-1}],"hello world"],"error":"No beta download for hello world in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"abtrailing.","sha512":"ünïcödé","size":42},{"url":"a..b","sha512":"a..b","size":{"$num":"Infinity"}},{"url":"tab\tseparated","sha512":"a😀b😀c","size":0.5}],"helloa.b.c"],"error":"No beta download for helloa.b.c in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":":","sha512":"ΣΊΣΥΦΟΣ","size":1},{"url":"Hello World","sha512":"日本語のテキスト","size":1},{"url":"hello","sha512":"ns:key.path","size":10}],".leading"],"error":"No beta download for .leading in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"hello worlda.b.c","sha512":"line1\nline2","size":{"$num":"-Infinity"}}],"abemoji 👍🏽 mix"],"error":"No beta download for abemoji 👍🏽 mix in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"line1\nline2","sha512":"a😀b😀cns:key.path","size":1000},{"url":"straße","sha512":"line1\nline2","size":0.5}],"straße"],"error":"No beta download for straße in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"ab","sha512":"é  padded  "}],"ns:key.pathünïcödé"],"error":"No beta download for ns:key.pathünïcödé in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[],"hello worldabc"],"error":"No beta download for hello worldabc in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"emoji 👍🏽 mix","sha512":"a:b:csrc/a/b.ts"}],"a  padded  "],"error":"No beta download for a  padded   in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"abc","sha512":"key_name-1a😀b😀c","size":{"$num":"-Infinity"}}],"日本語のテキスト"],"error":"No beta download for 日本語のテキスト in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"straßeHello World","sha512":"a.b.c"},{"url":"é","sha512":"src/a/b.ts","size":10},{"url":"HELLO","sha512":"tab\tseparated","size":-1}],"İstanbul"],"error":"No beta download for İstanbul in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[],"./x/**/*.json"],"error":"No beta download for ./x/**/*.json in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"ns:key.path","sha512":"ünïcödé","size":9007199254740992}],"İstanbul"],"error":"No beta download for İstanbul in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"a:b:cΣΊΣΥΦΟΣ","sha512":"abc"}],"a:b:c"],"error":"No beta download for a:b:c in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[],"hello world"],"error":"No beta download for hello world in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"HELLO","sha512":"key_name-1abc","size":42},{"url":"  padded  ","sha512":"ünïcödéstraße","size":{"$num":"-Infinity"}}],"line1\nline2"],"error":"No beta download for line1\nline2 in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"","sha512":"ünïcödé","size":1},{"url":"İstanbul","sha512":"./x/**/*.json"},{"url":"Hello World","sha512":"İstanbul","size":0.5}],"ünïcödé"],"error":"No beta download for ünïcödé in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[],"a..b"],"error":"No beta download for a..b in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"a😀b😀c","sha512":"HELLO","size":1000},{"url":"straße","sha512":"ünïcödéé"}],"hello"],"error":"No beta download for hello in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"İstanbul","sha512":"hello world","size":{"$num":"-Infinity"}},{"url":"line1\nline2","sha512":"src/a/b.ts﻿bom","size":0}],"./x/**/*.json"],"error":"No beta download for ./x/**/*.json in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[true,"abc"],"error":"files.filter is not a function"}
+{"fn":"selectBetaDownloadFile","args":[[],"ab"],"error":"No beta download for ab in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[],"ΣΊΣΥΦΟΣ"],"error":"No beta download for ΣΊΣΥΦΟΣ in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[null,"a"],"error":"Cannot read properties of null (reading 'filter')"}
+{"fn":"selectBetaDownloadFile","args":[0,"Hello World"],"error":"files.filter is not a function"}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"ünïcödé","sha512":"ab","size":-2.5},{"url":"./x/**/*.json","sha512":"ns:key.path"},{"url":"straße","sha512":"hello"}],"😀"],"error":"No beta download for 😀 in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"İstanbul","sha512":"﻿bom日本語のテキスト","size":10}],"  padded  emoji 👍🏽 mix"],"error":"No beta download for   padded  emoji 👍🏽 mix in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"key_name-1ns:key.path","sha512":"","size":9007199254740992}],"straße"],"error":"No beta download for straße in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[],"日本語のテキスト"],"error":"No beta download for 日本語のテキスト in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"{name} has {count} itemsa..b","sha512":"{name} has {count} items","size":-2.5}],"a😀b😀c"],"error":"No beta download for a😀b😀c in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[{},"é😀"],"error":"files.filter is not a function"}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"key_name-1","sha512":""},{"url":"hello world","sha512":"key_name-1","size":2},{"url":".leading","sha512":":emoji 👍🏽 mix","size":3}],"😀"],"error":"No beta download for 😀 in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"ab","sha512":"ünïcödé"},{"url":"a😀b😀csrc/a/b.ts","sha512":""},{"url":"a.b.cemoji 👍🏽 mix","sha512":"straße"}],"hellostraße"],"error":"No beta download for hellostraße in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"﻿bom","sha512":"./x/**/*.json"},{"url":"abc","sha512":"tab\tseparated"},{"url":"a..b","sha512":"straßeHELLO","size":0.5}],"helloünïcödé"],"error":"No beta download for helloünïcödé in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[],"a:b:c"],"error":"No beta download for a:b:c in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[{"a":"b"},"Hello World"],"error":"files.filter is not a function"}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"ünïcödé","sha512":"日本語のテキスト","size":42},{"url":"HELLO","sha512":"İstanbul"}],"ab"],"error":"No beta download for ab in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[],"ünïcödé"],"error":"No beta download for ünïcödé in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"straße","sha512":"tab\tseparated","size":9007199254740992},{"url":"a","sha512":"ns:key.path","size":42},{"url":"hello","sha512":"a.b.c","size":{"$num":"NaN"}}],"line1\nline2"],"error":"No beta download for line1\nline2 in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[null,"é"],"error":"Cannot read properties of null (reading 'filter')"}
+{"fn":"selectBetaDownloadFile","args":[[{"url":":","sha512":"İstanbul","size":-1}],"a😀b😀ckey_name-1"],"error":"No beta download for a😀b😀ckey_name-1 in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"😀","sha512":"HELLO"}],"ΣΊΣΥΦΟΣ"],"error":"No beta download for ΣΊΣΥΦΟΣ in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"a..b","sha512":":","size":0.5}],"a😀b😀c"],"error":"No beta download for a😀b😀c in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":":src/a/b.ts","sha512":"key_name-1"}],"日本語のテキストstraße"],"error":"No beta download for 日本語のテキストstraße in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"","sha512":"a.b.ca"}],"é"],"error":"No beta download for é in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"key_name-1","sha512":"line1\nline2","size":-2.5}],"{name} has {count} items"],"error":"No beta download for {name} has {count} items in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"Hello Worldsrc/a/b.ts","sha512":"abc","size":2},{"url":"key_name-1","sha512":"tab\tseparated.leading","size":100}],".leading"],"error":"No beta download for .leading in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[0,"😀"],"error":"files.filter is not a function"}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"trailing.","sha512":"İstanbul","size":100},{"url":"tab\tseparated","sha512":"straße","size":2}],"src/a/b.ts"],"error":"No beta download for src/a/b.ts in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[],"  padded  "],"error":"No beta download for   padded   in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[],"日本語のテキスト:"],"error":"No beta download for 日本語のテキスト: in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[{"a":"b"},"ünïcödé"],"error":"files.filter is not a function"}
+{"fn":"selectBetaDownloadFile","args":[[],":abc"],"error":"No beta download for :abc in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"{name} has {count} items./x/**/*.json","sha512":"日本語のテキスト","size":3},{"url":"{name} has {count} itemsa:b:c","sha512":"a","size":100}],"a.b.c"],"error":"No beta download for a.b.c in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[],"tab\tseparated"],"error":"No beta download for tab\tseparated in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"HELLO","sha512":"hello world","size":100},{"url":"hello world","sha512":"{name} has {count} items"},{"url":"é","sha512":"日本語のテキストHELLO"}],"a😀b😀c"],"error":"No beta download for a😀b😀c in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":".leading","sha512":"﻿bomab","size":100}],"a:b:cstraße"],"error":"No beta download for a:b:cstraße in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"emoji 👍🏽 mix","sha512":"tab\tseparated","size":0.5},{"url":"emoji 👍🏽 mix","sha512":"a😀b😀c","size":0},{"url":"İstanbula","sha512":"ns:key.path","size":{"$num":"NaN"}}],"a"],"error":"No beta download for a in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"a😀b😀c﻿bom","sha512":"src/a/b.ts","size":2147483648},{"url":"日本語のテキストhello","sha512":"İstanbul","size":-1}],"trailing."],"error":"No beta download for trailing. in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[],"emoji 👍🏽 mixabc"],"error":"No beta download for emoji 👍🏽 mixabc in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[],"日本語のテキスト{name} has {count} items"],"error":"No beta download for 日本語のテキスト{name} has {count} items in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[],"Hello World.leading"],"error":"No beta download for Hello World.leading in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"ΣΊΣΥΦΟΣ","sha512":"a😀b😀c","size":3},{"url":"a.b.c","sha512":"a..b","size":-2.5},{"url":"tab\tseparated","sha512":"ns:key.path","size":{"$num":"-0"}}],"hello"],"error":"No beta download for hello in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"line1\nline2","sha512":"Hello World","size":9007199254740992},{"url":"straße","sha512":"a:b:c"}],".leadingline1\nline2"],"error":"No beta download for .leadingline1\nline2 in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"abc","sha512":"hello world"},{"url":"tab\tseparated","sha512":"hello world"},{"url":"a","sha512":"key_name-1","size":10}],"İstanbul"],"error":"No beta download for İstanbul in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"tab\tseparated","sha512":"a.b.c"}],"ünïcödé"],"error":"No beta download for ünïcödé in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"ΣΊΣΥΦΟΣ","sha512":"line1\nline2","size":-2.5},{"url":"Hello World","sha512":"line1\nline2","size":2}],"HELLO"],"error":"No beta download for HELLO in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"tab\tseparateda","sha512":"ünïcödéline1\nline2","size":1},{"url":"İstanbul","sha512":"  padded  "},{"url":"İstanbul","sha512":""}],".leadingns:key.path"],"error":"No beta download for .leadingns:key.path in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[{"a":{"b":"c"}},".leading  padded  "],"error":"files.filter is not a function"}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"./x/**/*.jsonİstanbul","sha512":".leading","size":2147483648},{"url":"a😀b😀c","sha512":"a","size":-1},{"url":"ΣΊΣΥΦΟΣ","sha512":"ΣΊΣΥΦΟΣΣΊΣΥΦΟΣ","size":9007199254740992}],"日本語のテキスト"],"error":"No beta download for 日本語のテキスト in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"ab","sha512":"./x/**/*.jsonab","size":0.5},{"url":"a:b:c","sha512":"a😀b😀c"}],"hello"],"error":"No beta download for hello in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[{"a":{"b":"c"}},"  padded  "],"error":"files.filter is not a function"}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"src/a/b.ts","sha512":"a..b","size":{"$num":"-Infinity"}},{"url":"﻿bom","sha512":"emoji 👍🏽 mix","size":1000}],"a:b:c"],"error":"No beta download for a:b:c in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[0,"hello"],"error":"files.filter is not a function"}
+{"fn":"selectBetaDownloadFile","args":[[],"line1\nline2Hello World"],"error":"No beta download for line1\nline2Hello World in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"line1\nline2","sha512":"a","size":10}],"{name} has {count} items"],"error":"No beta download for {name} has {count} items in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"  padded  ","sha512":"ünïcödé","size":42}],"a:b:c"],"error":"No beta download for a:b:c in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"é","sha512":"ünïcödé","size":-1}],"a:b:c"],"error":"No beta download for a:b:c in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[],"HELLOtab\tseparated"],"error":"No beta download for HELLOtab\tseparated in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"./x/**/*.jsona:b:c","sha512":"src/a/b.ts","size":9007199254740992}],"./x/**/*.json"],"error":"No beta download for ./x/**/*.json in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"ns:key.path","sha512":"a..b"},{"url":"","sha512":"abc","size":{"$num":"NaN"}},{"url":":","sha512":"a:b:c.leading"}],"emoji 👍🏽 mix"],"error":"No beta download for emoji 👍🏽 mix in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"ΣΊΣΥΦΟΣ","sha512":"key_name-1a.b.c"}],"  padded  "],"error":"No beta download for   padded   in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"ab","sha512":".leading😀","size":2},{"url":"a:b:c","sha512":"line1\nline2","size":-2.5},{"url":"a.b.c","sha512":"hello","size":0}],"a😀b😀c"],"error":"No beta download for a😀b😀c in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"ΣΊΣΥΦΟΣa.b.c","sha512":"a..b","size":0.5},{"url":"ünïcödé","sha512":"İstanbul","size":0.5}],"tab\tseparated"],"error":"No beta download for tab\tseparated in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"a😀b😀c","sha512":"line1\nline2"}],"straße"],"error":"No beta download for straße in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"😀","sha512":"straße","size":-1},{"url":"hello world","sha512":"日本語のテキスト","size":-2.5}],"tab\tseparated"],"error":"No beta download for tab\tseparated in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"tab\tseparatedé","sha512":"emoji 👍🏽 mix","size":2},{"url":"src/a/b.ts","sha512":"ab"},{"url":"HELLO","sha512":"a:b:c","size":10}],"trailing."],"error":"No beta download for trailing. in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[],"a:b:ckey_name-1"],"error":"No beta download for a:b:ckey_name-1 in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[{},""],"error":"files.filter is not a function"}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"trailing.","sha512":"straße","size":3},{"url":"{name} has {count} items","sha512":"é","size":3},{"url":"😀é","sha512":"﻿bom","size":2}],"ns:key.path"],"error":"No beta download for ns:key.path in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"日本語のテキスト","sha512":"  padded  a:b:c","size":{"$num":"-0"}},{"url":"","sha512":"emoji 👍🏽 mix","size":9007199254740992}],"ns:key.path"],"error":"No beta download for ns:key.path in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[],"straßeabc"],"error":"No beta download for straßeabc in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[{"a":"b"},"a..b"],"error":"files.filter is not a function"}
+{"fn":"selectBetaDownloadFile","args":["x","tab\tseparatedabc"],"error":"files.filter is not a function"}
+{"fn":"selectBetaDownloadFile","args":[[],"﻿bomHello World"],"error":"No beta download for ﻿bomHello World in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"a😀b😀c","sha512":"😀a","size":0.5},{"url":"straße","sha512":"emoji 👍🏽 mix","size":-2.5}],"abc😀"],"error":"No beta download for abc😀 in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"日本語のテキスト日本語のテキスト","sha512":"😀","size":-1},{"url":"ns:key.path","sha512":"tab\tseparated😀","size":0.5}],"a..b"],"error":"No beta download for a..b in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"{name} has {count} items","sha512":"tab\tseparated","size":1000000}],"ünïcödé"],"error":"No beta download for ünïcödé in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"","sha512":"tab\tseparatedtab\tseparated"},{"url":"key_name-1","sha512":"emoji 👍🏽 mixHello World","size":9007199254740992},{"url":"a😀b😀c","sha512":"ΣΊΣΥΦΟΣns:key.path","size":42}],"a.b.c"],"error":"No beta download for a.b.c in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"HELLOabc","sha512":"İstanbul","size":{"$num":"NaN"}}],"ünïcödé"],"error":"No beta download for ünïcödé in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"ΣΊΣΥΦΟΣ","sha512":":","size":100},{"url":"İstanbul","sha512":"ünïcödé","size":1}],"a..b"],"error":"No beta download for a..b in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"  padded  ","sha512":"﻿bom","size":1},{"url":"﻿bom","sha512":"ΣΊΣΥΦΟΣkey_name-1","size":9007199254740992}],":"],"error":"No beta download for : in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"line1\nline2","sha512":"a.b.c"},{"url":"hello world","sha512":"hello world"}],"tab\tseparatedünïcödé"],"error":"No beta download for tab\tseparatedünïcödé in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"src/a/b.ts","sha512":"é","size":2147483648},{"url":":","sha512":"hello world","size":1000},{"url":"ΣΊΣΥΦΟΣ","sha512":"日本語のテキスト","size":{"$num":"-0"}}],"hello"],"error":"No beta download for hello in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"key_name-1","sha512":".leading","size":9007199254740992}],"emoji 👍🏽 mixΣΊΣΥΦΟΣ"],"error":"No beta download for emoji 👍🏽 mixΣΊΣΥΦΟΣ in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"./x/**/*.json","sha512":"","size":-1},{"url":"a😀b😀c","sha512":"hello","size":-2.5}],"HELLOa"],"error":"No beta download for HELLOa in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":":  padded  ","sha512":"hello world","size":-2.5},{"url":"a","sha512":".leading","size":1}],".leading"],"error":"No beta download for .leading in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"trailing.","sha512":"src/a/b.ts","size":-1},{"url":"straße","sha512":"😀","size":-2.5}],"line1\nline2"],"error":"No beta download for line1\nline2 in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"Hello World","sha512":"ns:key.path","size":100},{"url":"İstanbul","sha512":"é","size":0.5}],"Hello World"],"error":"No beta download for Hello World in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"é","sha512":"straße","size":{"$num":"Infinity"}},{"url":"a:b:c","sha512":"./x/**/*.jsonab","size":{"$num":"NaN"}},{"url":"İstanbul","sha512":"tab\tseparated","size":1000000}],"./x/**/*.json"],"error":"No beta download for ./x/**/*.json in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"İstanbul","sha512":"Hello World","size":0.5},{"url":"😀a.b.c","sha512":"{name} has {count} items","size":0}],"src/a/b.ts"],"error":"No beta download for src/a/b.ts in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"emoji 👍🏽 mix","sha512":"😀","size":0.5},{"url":"a.b.c","sha512":"HELLO","size":3},{"url":"a😀b😀ckey_name-1","sha512":"a","size":0}],":"],"error":"No beta download for : in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"hello world","sha512":"a"}],"Hello World"],"error":"No beta download for Hello World in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":["x","{name} has {count} items"],"error":"files.filter is not a function"}
+{"fn":"selectBetaDownloadFile","args":[[],"ΣΊΣΥΦΟΣa..b"],"error":"No beta download for ΣΊΣΥΦΟΣa..b in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"trailing.é","sha512":"  padded  "},{"url":"a.b.c","sha512":"a","size":0.5}],"ΣΊΣΥΦΟΣ"],"error":"No beta download for ΣΊΣΥΦΟΣ in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"abtrailing.","sha512":"emoji 👍🏽 mixa😀b😀c","size":10}],"ns:key.path"],"error":"No beta download for ns:key.path in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"ünïcödé","sha512":"a.b.c","size":2},{"url":"ahello","sha512":"İstanbul","size":42},{"url":"﻿bom","sha512":"emoji 👍🏽 mix","size":-1}],"./x/**/*.json"],"error":"No beta download for ./x/**/*.json in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"a.b.c😀","sha512":"straße","size":9007199254740992},{"url":"trailing.","sha512":"emoji 👍🏽 mix","size":100},{"url":"😀","sha512":"{name} has {count} items"}],"  padded  "],"error":"No beta download for   padded   in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"é","sha512":"﻿bom"},{"url":"emoji 👍🏽 mix","sha512":"😀","size":2},{"url":"abc","sha512":"key_name-1","size":{"$num":"Infinity"}}],"{name} has {count} items﻿bom"],"error":"No beta download for {name} has {count} items﻿bom in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"a","sha512":"é"}],"héllo wörld"],"error":"No beta download for héllo wörld in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"a","sha512":"é"}],"👍🏽 thumbs"],"error":"No beta download for 👍🏽 thumbs in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"a","sha512":"é"}],"日本語"],"error":"No beta download for 日本語 in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"a","sha512":"é"}],""],"error":"No beta download for  in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"a","sha512":"é"}],"é"],"error":"No beta download for é in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"a","sha512":"é"}],"İstanbul"],"error":"No beta download for İstanbul in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"a","sha512":"é"}],"straße"],"error":"No beta download for straße in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"a","sha512":"é"}],"ılık ırmak"],"error":"No beta download for ılık ırmak in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"a","sha512":"é"}],"👨‍👩‍👧 family"],"error":"No beta download for 👨‍👩‍👧 family in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"a","sha512":"é"}],"a b"],"error":"No beta download for a b in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"a","sha512":"é"}],"ΣΊΣΥΦΟΣ"],"error":"No beta download for ΣΊΣΥΦΟΣ in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"a","sha512":"é"}],"a😀b"],"error":"No beta download for a😀b in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"a","sha512":"é"}],"﻿bom"],"error":"No beta download for ﻿bom in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"a","sha512":"é"}],"a²b x½ y①"],"error":"No beta download for a²b x½ y① in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"a","sha512":"é"}],"aⅠb Ⅻ"],"error":"No beta download for aⅠb Ⅻ in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"a","sha512":"é"}],"a𐐀b 𝐀bc"],"error":"No beta download for a𐐀b 𝐀bc in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"a","sha512":"é"}],"कि ٣٤"],"error":"No beta download for कि ٣٤ in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"a","sha512":"é"}],"Iı İi"],"error":"No beta download for Iı İi in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"a","sha512":"é"}],"K K k"],"error":"No beta download for K K k in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"a","sha512":"é"}],"ſ s S"],"error":"No beta download for ſ s S in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"a","sha512":"é"}],"x‍y 👨‍👩‍👧"],"error":"No beta download for x‍y 👨‍👩‍👧 in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"a","sha512":"é"}],"a b c　d"],"error":"No beta download for a b c　d in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"a","sha512":"é"}],"١٢٣ ٤٥"],"error":"No beta download for ١٢٣ ٤٥ in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"a","sha512":"é"}],"𝟘𝟙 ²³"],"error":"No beta download for 𝟘𝟙 ²³ in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"a","sha512":"é"}],"snake_case foo-bar o'neil"],"error":"No beta download for snake_case foo-bar o'neil in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"a","sha512":"é"}],"ǅungla Ǆ"],"error":"No beta download for ǅungla Ǆ in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"a","sha512":"é"}],"one\r\ntwo threefour"],"error":"No beta download for one\r\ntwo threefour in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"a","sha512":"é"}],"café café"],"error":"No beta download for café café in beta-mac.yml."}
+{"fn":"selectBetaDownloadFile","args":[[{"url":"a","sha512":"é"}],"ΣΑΣ σας ς"],"error":"No beta download for ΣΑΣ σας ς in beta-mac.yml."}
+{"fn":"httpsFetchText","args":[true],"error":"Invalid URL"}
+{"fn":"httpsFetchText","args":[{"a":"b"}],"error":"Invalid URL"}
+{"fn":"httpsFetchText","args":[["a",1]],"error":"Invalid URL"}
+{"fn":"httpsFetchText","args":["x"],"error":"Invalid URL"}
+{"fn":"httpsFetchText","args":[[]],"error":"Invalid URL"}
+{"fn":"httpsFetchText","args":[{"a":{"b":"c"}}],"error":"Invalid URL"}
+{"fn":"httpsFetchText","args":[null],"error":"Invalid URL"}
+{"fn":"httpsFetchText","args":[{}],"error":"Invalid URL"}
+{"fn":"httpsFetchText","args":[0],"error":"Invalid URL"}
+{"fn":"httpsFetchText","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6}],"error":"Invalid URL"}
+{"fn":"httpsFetchText","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7}],"error":"Invalid URL"}
+{"fn":"httpsFetchText","args":[[3,1,2]],"error":"Invalid URL"}
+{"fn":"sha512FileBase64","args":["a:b:c"],"error":"ENOENT: no such file or directory, open 'a:b:c'"}
+{"fn":"sha512FileBase64","args":["src/a/b.ts"],"error":"ENOENT: no such file or directory, open 'src/a/b.ts'"}
+{"fn":"sha512FileBase64","args":["ab"],"error":"ENOENT: no such file or directory, open 'ab'"}
+{"fn":"sha512FileBase64","args":["日本語のテキスト"],"error":"ENOENT: no such file or directory, open '日本語のテキスト'"}
+{"fn":"sha512FileBase64","args":["a😀b😀c"],"error":"ENOENT: no such file or directory, open 'a😀b😀c'"}
+{"fn":"sha512FileBase64","args":[".leading"],"error":"ENOENT: no such file or directory, open '.leading'"}
+{"fn":"sha512FileBase64","args":["😀"],"error":"ENOENT: no such file or directory, open '😀'"}
+{"fn":"sha512FileBase64","args":[""],"error":"ENOENT: no such file or directory, open ''"}
+{"fn":"sha512FileBase64","args":["é"],"error":"ENOENT: no such file or directory, open 'é'"}
+{"fn":"sha512FileBase64","args":["HELLOHELLO"],"error":"ENOENT: no such file or directory, open 'HELLOHELLO'"}
+{"fn":"sha512FileBase64","args":["key_name-1Hello World"],"error":"ENOENT: no such file or directory, open 'key_name-1Hello World'"}
+{"fn":"sha512FileBase64","args":["hello"],"error":"ENOENT: no such file or directory, open 'hello'"}
+{"fn":"sha512FileBase64","args":["tab\tseparated"],"error":"ENOENT: no such file or directory, open 'tab\tseparated'"}
+{"fn":"sha512FileBase64","args":["ns:key.patha..b"],"error":"ENOENT: no such file or directory, open 'ns:key.patha..b'"}
+{"fn":"sha512FileBase64","args":[":"],"error":"ENOENT: no such file or directory, open ':'"}
+{"fn":"sha512FileBase64","args":["HELLOünïcödé"],"error":"ENOENT: no such file or directory, open 'HELLOünïcödé'"}
+{"fn":"sha512FileBase64","args":["straße"],"error":"ENOENT: no such file or directory, open 'straße'"}
+{"fn":"sha512FileBase64","args":["Hello Worldünïcödé"],"error":"ENOENT: no such file or directory, open 'Hello Worldünïcödé'"}
+{"fn":"sha512FileBase64","args":["a.b.c"],"error":"ENOENT: no such file or directory, open 'a.b.c'"}
+{"fn":"sha512FileBase64","args":["hello world"],"error":"ENOENT: no such file or directory, open 'hello world'"}
+{"fn":"sha512FileBase64","args":["İstanbul"],"error":"ENOENT: no such file or directory, open 'İstanbul'"}
+{"fn":"sha512FileBase64","args":[":./x/**/*.json"],"error":"ENOENT: no such file or directory, open ':./x/**/*.json'"}
+{"fn":"sha512FileBase64","args":["line1\nline2"],"error":"ENOENT: no such file or directory, open 'line1\nline2'"}
+{"fn":"sha512FileBase64","args":["﻿bom"],"error":"ENOENT: no such file or directory, open '﻿bom'"}
+{"fn":"sha512FileBase64","args":["日本語のテキストa.b.c"],"error":"ENOENT: no such file or directory, open '日本語のテキストa.b.c'"}
+{"fn":"sha512FileBase64","args":["  padded  "],"error":"ENOENT: no such file or directory, open '  padded  '"}
+{"fn":"sha512FileBase64","args":["line1\nline2trailing."],"error":"ENOENT: no such file or directory, open 'line1\nline2trailing.'"}
+{"fn":"sha512FileBase64","args":["ünïcödé{name} has {count} items"],"error":"ENOENT: no such file or directory, open 'ünïcödé{name} has {count} items'"}
+{"fn":"sha512FileBase64","args":["abc"],"error":"ENOENT: no such file or directory, open 'abc'"}
+{"fn":"sha512FileBase64","args":["ünïcödé"],"error":"ENOENT: no such file or directory, open 'ünïcödé'"}
+{"fn":"sha512FileBase64","args":["{name} has {count} items"],"error":"ENOENT: no such file or directory, open '{name} has {count} items'"}
+{"fn":"sha512FileBase64","args":["trailing."],"error":"ENOENT: no such file or directory, open 'trailing.'"}
+{"fn":"sha512FileBase64","args":["emoji 👍🏽 mix"],"error":"ENOENT: no such file or directory, open 'emoji 👍🏽 mix'"}
+{"fn":"sha512FileBase64","args":["a.b.c  padded  "],"error":"ENOENT: no such file or directory, open 'a.b.c  padded  '"}
+{"fn":"sha512FileBase64","args":["./x/**/*.json"],"error":"ENOENT: no such file or directory, open './x/**/*.json'"}
+{"fn":"sha512FileBase64","args":["HELLO"],"error":"ENOENT: no such file or directory, open 'HELLO'"}
+{"fn":"sha512FileBase64","args":[":tab\tseparated"],"error":"ENOENT: no such file or directory, open ':tab\tseparated'"}
+{"fn":"sha512FileBase64","args":["emoji 👍🏽 mix.leading"],"error":"ENOENT: no such file or directory, open 'emoji 👍🏽 mix.leading'"}
+{"fn":"sha512FileBase64","args":["src/a/b.ts  padded  "],"error":"ENOENT: no such file or directory, open 'src/a/b.ts  padded  '"}
+{"fn":"sha512FileBase64","args":["a..b"],"error":"ENOENT: no such file or directory, open 'a..b'"}
+{"fn":"sha512FileBase64","args":["hello world日本語のテキスト"],"error":"ENOENT: no such file or directory, open 'hello world日本語のテキスト'"}
+{"fn":"sha512FileBase64","args":["a"],"error":"ENOENT: no such file or directory, open 'a'"}
+{"fn":"sha512FileBase64","args":["hello worldkey_name-1"],"error":"ENOENT: no such file or directory, open 'hello worldkey_name-1'"}
+{"fn":"sha512FileBase64","args":["a..bemoji 👍🏽 mix"],"error":"ENOENT: no such file or directory, open 'a..bemoji 👍🏽 mix'"}
+{"fn":"sha512FileBase64","args":["ΣΊΣΥΦΟΣ"],"error":"ENOENT: no such file or directory, open 'ΣΊΣΥΦΟΣ'"}
+{"fn":"sha512FileBase64","args":["emoji 👍🏽 mix日本語のテキスト"],"error":"ENOENT: no such file or directory, open 'emoji 👍🏽 mix日本語のテキスト'"}
+{"fn":"sha512FileBase64","args":["日本語のテキストab"],"error":"ENOENT: no such file or directory, open '日本語のテキストab'"}
+{"fn":"sha512FileBase64","args":["helloline1\nline2"],"error":"ENOENT: no such file or directory, open 'helloline1\nline2'"}
+{"fn":"sha512FileBase64","args":["ns:key.path"],"error":"ENOENT: no such file or directory, open 'ns:key.path'"}
+{"fn":"sha512FileBase64","args":["hello worldHello World"],"error":"ENOENT: no such file or directory, open 'hello worldHello World'"}
+{"fn":"sha512FileBase64","args":["日本語のテキストİstanbul"],"error":"ENOENT: no such file or directory, open '日本語のテキストİstanbul'"}
+{"fn":"sha512FileBase64","args":["éab"],"error":"ENOENT: no such file or directory, open 'éab'"}
+{"fn":"sha512FileBase64","args":["﻿bom.leading"],"error":"ENOENT: no such file or directory, open '﻿bom.leading'"}
+{"fn":"sha512FileBase64","args":["aba"],"error":"ENOENT: no such file or directory, open 'aba'"}
+{"fn":"sha512FileBase64","args":["Hello World"],"error":"ENOENT: no such file or directory, open 'Hello World'"}
+{"fn":"sha512FileBase64","args":["é:"],"error":"ENOENT: no such file or directory, open 'é:'"}
+{"fn":"sha512FileBase64","args":["hello worldΣΊΣΥΦΟΣ"],"error":"ENOENT: no such file or directory, open 'hello worldΣΊΣΥΦΟΣ'"}
+{"fn":"sha512FileBase64","args":["key_name-1"],"error":"ENOENT: no such file or directory, open 'key_name-1'"}
+{"fn":"sha512FileBase64","args":["a.b.c./x/**/*.json"],"error":"ENOENT: no such file or directory, open 'a.b.c./x/**/*.json'"}
+{"fn":"sha512FileBase64","args":["abns:key.path"],"error":"ENOENT: no such file or directory, open 'abns:key.path'"}
+{"fn":"sha512FileBase64","args":["a:b:cstraße"],"error":"ENOENT: no such file or directory, open 'a:b:cstraße'"}
+{"fn":"sha512FileBase64","args":[".leadinghello world"],"error":"ENOENT: no such file or directory, open '.leadinghello world'"}
+{"fn":"sha512FileBase64","args":["hello./x/**/*.json"],"error":"ENOENT: no such file or directory, open 'hello./x/**/*.json'"}
+{"fn":"sha512FileBase64","args":["abhello world"],"error":"ENOENT: no such file or directory, open 'abhello world'"}
+{"fn":"sha512FileBase64","args":["src/a/b.tsé"],"error":"ENOENT: no such file or directory, open 'src/a/b.tsé'"}
+{"fn":"sha512FileBase64","args":["tab\tseparated😀"],"error":"ENOENT: no such file or directory, open 'tab\tseparated😀'"}
+{"fn":"sha512FileBase64","args":[".leadinghello"],"error":"ENOENT: no such file or directory, open '.leadinghello'"}
+{"fn":"sha512FileBase64","args":["a😀b😀cemoji 👍🏽 mix"],"error":"ENOENT: no such file or directory, open 'a😀b😀cemoji 👍🏽 mix'"}
+{"fn":"sha512FileBase64","args":["{name} has {count} itemssrc/a/b.ts"],"error":"ENOENT: no such file or directory, open '{name} has {count} itemssrc/a/b.ts'"}
+{"fn":"sha512FileBase64","args":["abHello World"],"error":"ENOENT: no such file or directory, open 'abHello World'"}
+{"fn":"sha512FileBase64","args":["helloHELLO"],"error":"ENOENT: no such file or directory, open 'helloHELLO'"}
+{"fn":"sha512FileBase64","args":["a..ba"],"error":"ENOENT: no such file or directory, open 'a..ba'"}
+{"fn":"sha512FileBase64","args":["abHELLO"],"error":"ENOENT: no such file or directory, open 'abHELLO'"}
+{"fn":"sha512FileBase64","args":["HELLOé"],"error":"ENOENT: no such file or directory, open 'HELLOé'"}
+{"fn":"sha512FileBase64","args":["ΣΊΣΥΦΟΣa:b:c"],"error":"ENOENT: no such file or directory, open 'ΣΊΣΥΦΟΣa:b:c'"}
+{"fn":"sha512FileBase64","args":["😀a😀b😀c"],"error":"ENOENT: no such file or directory, open '😀a😀b😀c'"}
+{"fn":"sha512FileBase64","args":["straßeİstanbul"],"error":"ENOENT: no such file or directory, open 'straßeİstanbul'"}
+{"fn":"sha512FileBase64","args":["ΣΊΣΥΦΟΣa😀b😀c"],"error":"ENOENT: no such file or directory, open 'ΣΊΣΥΦΟΣa😀b😀c'"}
+{"fn":"sha512FileBase64","args":["trailing.ns:key.path"],"error":"ENOENT: no such file or directory, open 'trailing.ns:key.path'"}
+{"fn":"sha512FileBase64","args":[".leading./x/**/*.json"],"error":"ENOENT: no such file or directory, open '.leading./x/**/*.json'"}
+{"fn":"sha512FileBase64","args":["key_name-1trailing."],"error":"ENOENT: no such file or directory, open 'key_name-1trailing.'"}
+{"fn":"sha512FileBase64","args":[":straße"],"error":"ENOENT: no such file or directory, open ':straße'"}
+{"fn":"sha512FileBase64","args":["src/a/b.tsemoji 👍🏽 mix"],"error":"ENOENT: no such file or directory, open 'src/a/b.tsemoji 👍🏽 mix'"}
+{"fn":"sha512FileBase64","args":[".leadinga"],"error":"ENOENT: no such file or directory, open '.leadinga'"}
+{"fn":"sha512FileBase64","args":["é日本語のテキスト"],"error":"ENOENT: no such file or directory, open 'é日本語のテキスト'"}
+{"fn":"sha512FileBase64","args":["İstanbula"],"error":"ENOENT: no such file or directory, open 'İstanbula'"}
+{"fn":"sha512FileBase64","args":["emoji 👍🏽 mix./x/**/*.json"],"error":"ENOENT: no such file or directory, open 'emoji 👍🏽 mix./x/**/*.json'"}
+{"fn":"sha512FileBase64","args":["ünïcödéstraße"],"error":"ENOENT: no such file or directory, open 'ünïcödéstraße'"}
+{"fn":"sha512FileBase64","args":["ünïcödéİstanbul"],"error":"ENOENT: no such file or directory, open 'ünïcödéİstanbul'"}
+{"fn":"sha512FileBase64","args":["{name} has {count} itemstab\tseparated"],"error":"ENOENT: no such file or directory, open '{name} has {count} itemstab\tseparated'"}
+{"fn":"sha512FileBase64","args":["a.b.ca.b.c"],"error":"ENOENT: no such file or directory, open 'a.b.ca.b.c'"}
+{"fn":"sha512FileBase64","args":["straße{name} has {count} items"],"error":"ENOENT: no such file or directory, open 'straße{name} has {count} items'"}
+{"fn":"sha512FileBase64","args":["src/a/b.tsns:key.path"],"error":"ENOENT: no such file or directory, open 'src/a/b.tsns:key.path'"}
+{"fn":"sha512FileBase64","args":["emoji 👍🏽 mixa😀b😀c"],"error":"ENOENT: no such file or directory, open 'emoji 👍🏽 mixa😀b😀c'"}
+{"fn":"sha512FileBase64","args":["emoji 👍🏽 mixa.b.c"],"error":"ENOENT: no such file or directory, open 'emoji 👍🏽 mixa.b.c'"}
+{"fn":"sha512FileBase64","args":["emoji 👍🏽 mixtab\tseparated"],"error":"ENOENT: no such file or directory, open 'emoji 👍🏽 mixtab\tseparated'"}
+{"fn":"sha512FileBase64","args":["key_name-1key_name-1"],"error":"ENOENT: no such file or directory, open 'key_name-1key_name-1'"}
+{"fn":"sha512FileBase64","args":["helloHello World"],"error":"ENOENT: no such file or directory, open 'helloHello World'"}
+{"fn":"sha512FileBase64","args":["ab😀"],"error":"ENOENT: no such file or directory, open 'ab😀'"}
+{"fn":"sha512FileBase64","args":["key_name-1abc"],"error":"ENOENT: no such file or directory, open 'key_name-1abc'"}
+{"fn":"sha512FileBase64","args":["a:b:cİstanbul"],"error":"ENOENT: no such file or directory, open 'a:b:cİstanbul'"}
+{"fn":"sha512FileBase64","args":["straßeHELLO"],"error":"ENOENT: no such file or directory, open 'straßeHELLO'"}
+{"fn":"sha512FileBase64","args":["ünïcödéHELLO"],"error":"ENOENT: no such file or directory, open 'ünïcödéHELLO'"}
+{"fn":"sha512FileBase64","args":["abkey_name-1"],"error":"ENOENT: no such file or directory, open 'abkey_name-1'"}
+{"fn":"sha512FileBase64","args":["  padded  a:b:c"],"error":"ENOENT: no such file or directory, open '  padded  a:b:c'"}
+{"fn":"sha512FileBase64","args":["tab\tseparated./x/**/*.json"],"error":"ENOENT: no such file or directory, open 'tab\tseparated./x/**/*.json'"}
+{"fn":"sha512FileBase64","args":[":a..b"],"error":"ENOENT: no such file or directory, open ':a..b'"}
+{"fn":"sha512FileBase64","args":["İstanbula:b:c"],"error":"ENOENT: no such file or directory, open 'İstanbula:b:c'"}
+{"fn":"sha512FileBase64","args":["﻿boma:b:c"],"error":"ENOENT: no such file or directory, open '﻿boma:b:c'"}
+{"fn":"sha512FileBase64","args":["emoji 👍🏽 mix:"],"error":"ENOENT: no such file or directory, open 'emoji 👍🏽 mix:'"}
+{"fn":"sha512FileBase64","args":["ünïcödéhello"],"error":"ENOENT: no such file or directory, open 'ünïcödéhello'"}
+{"fn":"sha512FileBase64","args":["abcemoji 👍🏽 mix"],"error":"ENOENT: no such file or directory, open 'abcemoji 👍🏽 mix'"}
+{"fn":"sha512FileBase64","args":["a:b:csrc/a/b.ts"],"error":"ENOENT: no such file or directory, open 'a:b:csrc/a/b.ts'"}
+{"fn":"sha512FileBase64","args":["abstraße"],"error":"ENOENT: no such file or directory, open 'abstraße'"}
+{"fn":"sha512FileBase64","args":["abtrailing."],"error":"ENOENT: no such file or directory, open 'abtrailing.'"}
+{"fn":"sha512FileBase64","args":["./x/**/*.json.leading"],"error":"ENOENT: no such file or directory, open './x/**/*.json.leading'"}
+{"fn":"sha512FileBase64","args":["hello world😀"],"error":"ENOENT: no such file or directory, open 'hello world😀'"}
+{"fn":"sha512FileBase64","args":["ünïcödékey_name-1"],"error":"ENOENT: no such file or directory, open 'ünïcödékey_name-1'"}
+{"fn":"sha512FileBase64","args":["./x/**/*.json:"],"error":"ENOENT: no such file or directory, open './x/**/*.json:'"}
+{"fn":"sha512FileBase64","args":["HELLOhello world"],"error":"ENOENT: no such file or directory, open 'HELLOhello world'"}
+{"fn":"sha512FileBase64","args":["HELLOtrailing."],"error":"ENOENT: no such file or directory, open 'HELLOtrailing.'"}
+{"fn":"sha512FileBase64","args":["abünïcödé"],"error":"ENOENT: no such file or directory, open 'abünïcödé'"}
+{"fn":"sha512FileBase64","args":["Hello Worlda:b:c"],"error":"ENOENT: no such file or directory, open 'Hello Worlda:b:c'"}
+{"fn":"sha512FileBase64","args":["ΣΊΣΥΦΟΣİstanbul"],"error":"ENOENT: no such file or directory, open 'ΣΊΣΥΦΟΣİstanbul'"}
+{"fn":"sha512FileBase64","args":["trailing.:"],"error":"ENOENT: no such file or directory, open 'trailing.:'"}
+{"fn":"sha512FileBase64","args":["abcab"],"error":"ENOENT: no such file or directory, open 'abcab'"}
+{"fn":"sha512FileBase64","args":["HELLOİstanbul"],"error":"ENOENT: no such file or directory, open 'HELLOİstanbul'"}
+{"fn":"sha512FileBase64","args":["./x/**/*.jsonİstanbul"],"error":"ENOENT: no such file or directory, open './x/**/*.jsonİstanbul'"}
+{"fn":"sha512FileBase64","args":["a.b.c日本語のテキスト"],"error":"ENOENT: no such file or directory, open 'a.b.c日本語のテキスト'"}
+{"fn":"sha512FileBase64","args":["./x/**/*.json./x/**/*.json"],"error":"ENOENT: no such file or directory, open './x/**/*.json./x/**/*.json'"}
+{"fn":"sha512FileBase64","args":["src/a/b.ts.leading"],"error":"ENOENT: no such file or directory, open 'src/a/b.ts.leading'"}
+{"fn":"sha512FileBase64","args":["ünïcödétrailing."],"error":"ENOENT: no such file or directory, open 'ünïcödétrailing.'"}
+{"fn":"sha512FileBase64","args":["hello worldtab\tseparated"],"error":"ENOENT: no such file or directory, open 'hello worldtab\tseparated'"}
+{"fn":"sha512FileBase64","args":["a😀b😀cé"],"error":"ENOENT: no such file or directory, open 'a😀b😀cé'"}
+{"fn":"sha512FileBase64","args":["abc😀"],"error":"ENOENT: no such file or directory, open 'abc😀'"}
+{"fn":"sha512FileBase64","args":["./x/**/*.json日本語のテキスト"],"error":"ENOENT: no such file or directory, open './x/**/*.json日本語のテキスト'"}
+{"fn":"sha512FileBase64","args":["日本語のテキストa:b:c"],"error":"ENOENT: no such file or directory, open '日本語のテキストa:b:c'"}
+{"fn":"sha512FileBase64","args":["ns:key.patha.b.c"],"error":"ENOENT: no such file or directory, open 'ns:key.patha.b.c'"}
+{"fn":"sha512FileBase64","args":["a{name} has {count} items"],"error":"ENOENT: no such file or directory, open 'a{name} has {count} items'"}
+{"fn":"sha512FileBase64","args":["a..bhello world"],"error":"ENOENT: no such file or directory, open 'a..bhello world'"}
+{"fn":"sha512FileBase64","args":["./x/**/*.jsonline1\nline2"],"error":"ENOENT: no such file or directory, open './x/**/*.jsonline1\nline2'"}
+{"fn":"sha512FileBase64","args":["HELLOa.b.c"],"error":"ENOENT: no such file or directory, open 'HELLOa.b.c'"}
+{"fn":"sha512FileBase64","args":["😀ΣΊΣΥΦΟΣ"],"error":"ENOENT: no such file or directory, open '😀ΣΊΣΥΦΟΣ'"}
+{"fn":"sha512FileBase64","args":["İstanbula.b.c"],"error":"ENOENT: no such file or directory, open 'İstanbula.b.c'"}
+{"fn":"sha512FileBase64","args":["line1\nline2İstanbul"],"error":"ENOENT: no such file or directory, open 'line1\nline2İstanbul'"}
+{"fn":"sha512FileBase64","args":["emoji 👍🏽 mixemoji 👍🏽 mix"],"error":"ENOENT: no such file or directory, open 'emoji 👍🏽 mixemoji 👍🏽 mix'"}
+{"fn":"sha512FileBase64","args":["a😀b😀cab"],"error":"ENOENT: no such file or directory, open 'a😀b😀cab'"}
+{"fn":"sha512FileBase64","args":["﻿bomhello"],"error":"ENOENT: no such file or directory, open '﻿bomhello'"}
+{"fn":"sha512FileBase64","args":["a:b:ckey_name-1"],"error":"ENOENT: no such file or directory, open 'a:b:ckey_name-1'"}
+{"fn":"sha512FileBase64","args":["éhello"],"error":"ENOENT: no such file or directory, open 'éhello'"}
+{"fn":"sha512FileBase64","args":["./x/**/*.json﻿bom"],"error":"ENOENT: no such file or directory, open './x/**/*.json﻿bom'"}
+{"fn":"sha512FileBase64","args":["日本語のテキストhello"],"error":"ENOENT: no such file or directory, open '日本語のテキストhello'"}
+{"fn":"sha512FileBase64","args":["a..b日本語のテキスト"],"error":"ENOENT: no such file or directory, open 'a..b日本語のテキスト'"}
+{"fn":"sha512FileBase64","args":["abckey_name-1"],"error":"ENOENT: no such file or directory, open 'abckey_name-1'"}
+{"fn":"sha512FileBase64","args":["abc  padded  "],"error":"ENOENT: no such file or directory, open 'abc  padded  '"}
+{"fn":"sha512FileBase64","args":["Hello Worldline1\nline2"],"error":"ENOENT: no such file or directory, open 'Hello Worldline1\nline2'"}
+{"fn":"sha512FileBase64","args":["a.b.ca😀b😀c"],"error":"ENOENT: no such file or directory, open 'a.b.ca😀b😀c'"}
+{"fn":"sha512FileBase64","args":["{name} has {count} itemsHello World"],"error":"ENOENT: no such file or directory, open '{name} has {count} itemsHello World'"}
+{"fn":"sha512FileBase64","args":["😀ab"],"error":"ENOENT: no such file or directory, open '😀ab'"}
+{"fn":"sha512FileBase64","args":["İstanbul.leading"],"error":"ENOENT: no such file or directory, open 'İstanbul.leading'"}
+{"fn":"sha512FileBase64","args":["trailing.😀"],"error":"ENOENT: no such file or directory, open 'trailing.😀'"}
+{"fn":"sha512FileBase64","args":["a:b:ctab\tseparated"],"error":"ENOENT: no such file or directory, open 'a:b:ctab\tseparated'"}
+{"fn":"sha512FileBase64","args":[".leading  padded  "],"error":"ENOENT: no such file or directory, open '.leading  padded  '"}
+{"fn":"sha512FileBase64","args":[".leadingİstanbul"],"error":"ENOENT: no such file or directory, open '.leadingİstanbul'"}
+{"fn":"sha512FileBase64","args":["straßeab"],"error":"ENOENT: no such file or directory, open 'straßeab'"}
+{"fn":"sha512FileBase64","args":["日本語のテキストé"],"error":"ENOENT: no such file or directory, open '日本語のテキストé'"}
+{"fn":"sha512FileBase64","args":["emoji 👍🏽 mixHELLO"],"error":"ENOENT: no such file or directory, open 'emoji 👍🏽 mixHELLO'"}
+{"fn":"sha512FileBase64","args":["a.b.cabc"],"error":"ENOENT: no such file or directory, open 'a.b.cabc'"}
+{"fn":"sha512FileBase64","args":["😀key_name-1"],"error":"ENOENT: no such file or directory, open '😀key_name-1'"}
+{"fn":"sha512FileBase64","args":["abΣΊΣΥΦΟΣ"],"error":"ENOENT: no such file or directory, open 'abΣΊΣΥΦΟΣ'"}
+{"fn":"sha512FileBase64","args":["straßea:b:c"],"error":"ENOENT: no such file or directory, open 'straßea:b:c'"}
+{"fn":"sha512FileBase64","args":["a😀b😀cHELLO"],"error":"ENOENT: no such file or directory, open 'a😀b😀cHELLO'"}
+{"fn":"sha512FileBase64","args":["İstanbul{name} has {count} items"],"error":"ENOENT: no such file or directory, open 'İstanbul{name} has {count} items'"}
+{"fn":"sha512FileBase64","args":["ns:key.pathé"],"error":"ENOENT: no such file or directory, open 'ns:key.pathé'"}
+{"fn":"sha512FileBase64","args":["abc日本語のテキスト"],"error":"ENOENT: no such file or directory, open 'abc日本語のテキスト'"}
+{"fn":"sha512FileBase64","args":["tab\tseparatedHELLO"],"error":"ENOENT: no such file or directory, open 'tab\tseparatedHELLO'"}
+{"fn":"sha512FileBase64","args":["  padded  ns:key.path"],"error":"ENOENT: no such file or directory, open '  padded  ns:key.path'"}
+{"fn":"sha512FileBase64","args":[":src/a/b.ts"],"error":"ENOENT: no such file or directory, open ':src/a/b.ts'"}
+{"fn":"sha512FileBase64","args":["ΣΊΣΥΦΟΣkey_name-1"],"error":"ENOENT: no such file or directory, open 'ΣΊΣΥΦΟΣkey_name-1'"}
+{"fn":"sha512FileBase64","args":["src/a/b.tsstraße"],"error":"ENOENT: no such file or directory, open 'src/a/b.tsstraße'"}
+{"fn":"sha512FileBase64","args":["abab"],"error":"ENOENT: no such file or directory, open 'abab'"}
+{"fn":"sha512FileBase64","args":["Hello Worldhello world"],"error":"ENOENT: no such file or directory, open 'Hello Worldhello world'"}
+{"fn":"sha512FileBase64","args":["abc.leading"],"error":"ENOENT: no such file or directory, open 'abc.leading'"}
+{"fn":"sha512FileBase64","args":["emoji 👍🏽 mixsrc/a/b.ts"],"error":"ENOENT: no such file or directory, open 'emoji 👍🏽 mixsrc/a/b.ts'"}
+{"fn":"sha512FileBase64","args":["﻿bomkey_name-1"],"error":"ENOENT: no such file or directory, open '﻿bomkey_name-1'"}
+{"fn":"sha512FileBase64","args":["emoji 👍🏽 mixab"],"error":"ENOENT: no such file or directory, open 'emoji 👍🏽 mixab'"}
+{"fn":"sha512FileBase64","args":["aba😀b😀c"],"error":"ENOENT: no such file or directory, open 'aba😀b😀c'"}
+{"fn":"sha512FileBase64","args":["日本語のテキストabc"],"error":"ENOENT: no such file or directory, open '日本語のテキストabc'"}
+{"fn":"sha512FileBase64","args":["😀﻿bom"],"error":"ENOENT: no such file or directory, open '😀﻿bom'"}
+{"fn":"sha512FileBase64","args":["key_name-1./x/**/*.json"],"error":"ENOENT: no such file or directory, open 'key_name-1./x/**/*.json'"}
+{"fn":"sha512FileBase64","args":["ahello"],"error":"ENOENT: no such file or directory, open 'ahello'"}
+{"fn":"sha512FileBase64","args":["line1\nline2a:b:c"],"error":"ENOENT: no such file or directory, open 'line1\nline2a:b:c'"}
+{"fn":"sha512FileBase64","args":["straßetrailing."],"error":"ENOENT: no such file or directory, open 'straßetrailing.'"}
+{"fn":"sha512FileBase64","args":["straßehello"],"error":"ENOENT: no such file or directory, open 'straßehello'"}
+{"fn":"sha512FileBase64","args":["key_name-1hello"],"error":"ENOENT: no such file or directory, open 'key_name-1hello'"}
+{"fn":"sha512FileBase64","args":["abcabc"],"error":"ENOENT: no such file or directory, open 'abcabc'"}
+{"fn":"sha512FileBase64","args":["  padded  HELLO"],"error":"ENOENT: no such file or directory, open '  padded  HELLO'"}
+{"fn":"sha512FileBase64","args":["straßehello world"],"error":"ENOENT: no such file or directory, open 'straßehello world'"}
+{"fn":"sha512FileBase64","args":["日本語のテキスト./x/**/*.json"],"error":"ENOENT: no such file or directory, open '日本語のテキスト./x/**/*.json'"}
+{"fn":"sha512FileBase64","args":["é./x/**/*.json"],"error":"ENOENT: no such file or directory, open 'é./x/**/*.json'"}
+{"fn":"sha512FileBase64","args":["héllo wörld"],"error":"ENOENT: no such file or directory, open 'héllo wörld'"}
+{"fn":"sha512FileBase64","args":["👍🏽 thumbs"],"error":"ENOENT: no such file or directory, open '👍🏽 thumbs'"}
+{"fn":"sha512FileBase64","args":["日本語"],"error":"ENOENT: no such file or directory, open '日本語'"}
+{"fn":"sha512FileBase64","args":["ılık ırmak"],"error":"ENOENT: no such file or directory, open 'ılık ırmak'"}
+{"fn":"sha512FileBase64","args":["👨‍👩‍👧 family"],"error":"ENOENT: no such file or directory, open '👨‍👩‍👧 family'"}
+{"fn":"sha512FileBase64","args":["a b"],"error":"ENOENT: no such file or directory, open 'a b'"}
+{"fn":"sha512FileBase64","args":["a😀b"],"error":"ENOENT: no such file or directory, open 'a😀b'"}
+{"fn":"sha512FileBase64","args":["a²b x½ y①"],"error":"ENOENT: no such file or directory, open 'a²b x½ y①'"}
+{"fn":"sha512FileBase64","args":["aⅠb Ⅻ"],"error":"ENOENT: no such file or directory, open 'aⅠb Ⅻ'"}
+{"fn":"sha512FileBase64","args":["a𐐀b 𝐀bc"],"error":"ENOENT: no such file or directory, open 'a𐐀b 𝐀bc'"}
+{"fn":"sha512FileBase64","args":["कि ٣٤"],"error":"ENOENT: no such file or directory, open 'कि ٣٤'"}
+{"fn":"sha512FileBase64","args":["Iı İi"],"error":"ENOENT: no such file or directory, open 'Iı İi'"}
+{"fn":"sha512FileBase64","args":["K K k"],"error":"ENOENT: no such file or directory, open 'K K k'"}
+{"fn":"sha512FileBase64","args":["ſ s S"],"error":"ENOENT: no such file or directory, open 'ſ s S'"}
+{"fn":"sha512FileBase64","args":["x‍y 👨‍👩‍👧"],"error":"ENOENT: no such file or directory, open 'x‍y 👨‍👩‍👧'"}
+{"fn":"sha512FileBase64","args":["a b c　d"],"error":"ENOENT: no such file or directory, open 'a b c　d'"}
+{"fn":"sha512FileBase64","args":["١٢٣ ٤٥"],"error":"ENOENT: no such file or directory, open '١٢٣ ٤٥'"}
+{"fn":"sha512FileBase64","args":["𝟘𝟙 ²³"],"error":"ENOENT: no such file or directory, open '𝟘𝟙 ²³'"}
+{"fn":"sha512FileBase64","args":["snake_case foo-bar o'neil"],"error":"ENOENT: no such file or directory, open 'snake_case foo-bar o'neil'"}
+{"fn":"sha512FileBase64","args":["ǅungla Ǆ"],"error":"ENOENT: no such file or directory, open 'ǅungla Ǆ'"}
+{"fn":"sha512FileBase64","args":["one\r\ntwo threefour"],"error":"ENOENT: no such file or directory, open 'one\r\ntwo threefour'"}
+{"fn":"sha512FileBase64","args":["café café"],"error":"ENOENT: no such file or directory, open 'café café'"}
+{"fn":"sha512FileBase64","args":["ΣΑΣ σας ς"],"error":"ENOENT: no such file or directory, open 'ΣΑΣ σας ς'"}
+{"fn":"httpsDownloadFile","args":[{"a":"b"},"x",{"a":"b"}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[null,{},0],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[["a",1],true,{}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{},0,0],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[[],[],0],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[0,{},{}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[[],null,null],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":["x",{},["a",1]],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{"a":{"b":"c"}},{"a":"b"},0],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{"a":{"b":"c"}},["a",1],["a",1]],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[[],{"a":{"b":"c"}},[]],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{},"x","x"],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[["a",1],["a",1],"x"],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[true,{},"x"],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[[],"x",true],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{"a":"b"},["a",1],{"a":"b"}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[[],"x",[]],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[null,{},["a",1]],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{"a":{"b":"c"}},0,{"a":"b"}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":["x",0,["a",1]],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[0,"x",{"a":"b"}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[true,["a",1],["a",1]],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[null,{"a":{"b":"c"}},["a",1]],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[null,["a",1],[]],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[[],0,{"a":{"b":"c"}}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[["a",1],{"a":{"b":"c"}},{"a":{"b":"c"}}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[[],true,0],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{"a":"b"},{},{"a":{"b":"c"}}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":["x","x",{"a":{"b":"c"}}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":["x",null,{"a":{"b":"c"}}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":["x",["a",1],{"a":{"b":"c"}}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{"a":{"b":"c"}},{},{"a":"b"}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[true,null,["a",1]],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{"a":{"b":"c"}},0,{}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{"a":{"b":"c"}},{},0],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{},["a",1],{}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[["a",1],[],0],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[true,"x",{}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[true,0,null],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":["x",true,"x"],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[[],{"a":"b"},{"a":{"b":"c"}}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[0,["a",1],null],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[null,true,null],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[[],true,"x"],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[0,"x",{"a":{"b":"c"}}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[["a",1],true,"x"],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[true,{"a":{"b":"c"}},{"a":"b"}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":["x",{"a":"b"},0],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{"a":{"b":"c"}},["a",1],[]],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{"a":"b"},null,["a",1]],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[null,{"a":"b"},true],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{"a":"b"},["a",1],null],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":["x",["a",1],true],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[["a",1],[],{"a":"b"}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[["a",1],[],true],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[0,{"a":"b"},[]],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[[],{"a":"b"},["a",1]],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[true,{"a":"b"},"x"],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{},"x",["a",1]],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[["a",1],"x",0],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[["a",1],["a",1],{"a":{"b":"c"}}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[true,{},[]],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[true,{"a":{"b":"c"}},true],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[null,{"a":{"b":"c"}},null],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[0,true,"x"],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":["x",[],"x"],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[true,true,{"a":{"b":"c"}}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[[],{"a":{"b":"c"}},{"a":"b"}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[["a",1],true,true],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{"a":"b"},["a",1],{}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[true,null,"x"],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{"a":"b"},null,0],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{"a":{"b":"c"}},true,{"a":"b"}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[["a",1],{},true],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[["a",1],["a",1],null],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{},"x",0],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[true,0,["a",1]],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{"a":"b"},true,{"a":"b"}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{"a":"b"},{"a":"b"},0],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{"a":"b"},["a",1],["a",1]],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[true,true,null],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":["x",null,[]],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{"a":{"b":"c"}},true,{"a":{"b":"c"}}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[["a",1],0,null],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{},true,{}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{"a":{"b":"c"}},["a",1],{"a":{"b":"c"}}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[["a",1],{"a":"b"},["a",1]],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{"a":{"b":"c"}},{},"x"],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{},[],true],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{"a":{"b":"c"}},null,0],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{"a":{"b":"c"}},{"a":{"b":"c"}},{"a":"b"}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[null,true,[]],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[null,"x",true],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[[],null,{"a":"b"}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[true,{},{"a":"b"}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[true,{},["a",1]],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[null,0,"x"],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":["x",null,{}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{},["a",1],null],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[true,{"a":{"b":"c"}},[]],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{},[],{}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[0,{"a":"b"},{"a":"b"}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[true,["a",1],null],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[[],{},null],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{},[],0],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{"a":"b"},[],true],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[["a",1],"x",[]],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[true,[],["a",1]],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{"a":{"b":"c"}},["a",1],"x"],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[null,"x","x"],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{"a":"b"},0,{}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[["a",1],true,[]],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{"a":"b"},{"a":"b"},true],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{"a":{"b":"c"}},"x",{"a":"b"}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[0,true,["a",1]],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[null,{"a":{"b":"c"}},{}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{"a":{"b":"c"}},0,["a",1]],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[null,{"a":"b"},0],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[["a",1],{"a":{"b":"c"}},{"a":"b"}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":["x","x",{}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":["x",0,true],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[null,true,true],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[true,0,true],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[["a",1],{"a":"b"},{}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{},null,{"a":"b"}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[0,null,0],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[0,{"a":"b"},true],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[true,null,[]],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{"a":"b"},true,{"a":{"b":"c"}}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":["x",{},{}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[[],null,{"a":{"b":"c"}}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{"a":"b"},[],0],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[null,{"a":{"b":"c"}},{"a":"b"}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[[],["a",1],["a",1]],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{},{"a":{"b":"c"}},"x"],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{"a":"b"},null,[]],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":["x",null,0],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[[],{},0],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[["a",1],true,0],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[[],{"a":"b"},0],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[true,{"a":"b"},0],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[[],0,["a",1]],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{"a":"b"},null,{"a":"b"}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[true,"x",null],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[["a",1],null,{}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{},{"a":"b"},{"a":{"b":"c"}}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{"a":{"b":"c"}},["a",1],null],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":["x",0,[]],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{"a":{"b":"c"}},{"a":{"b":"c"}},null],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{"a":{"b":"c"}},0,true],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[null,{"a":{"b":"c"}},{"a":{"b":"c"}}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[0,[],0],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{},0,[]],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[null,"x",{"a":{"b":"c"}}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[0,{"a":{"b":"c"}},["a",1]],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[null,[],"x"],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[0,"x",true],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":["x",{},null],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[null,true,0],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[0,[],["a",1]],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{},{},0],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[null,["a",1],true],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{"a":{"b":"c"}},{},{"a":{"b":"c"}}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[null,{"a":{"b":"c"}},[]],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{},{"a":{"b":"c"}},{"a":{"b":"c"}}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{"a":"b"},"x",0],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[[],null,["a",1]],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{"a":{"b":"c"}},"x",0],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{},[],null],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[[],"x","x"],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{"a":"b"},{},true],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[true,"x",0],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[null,true,{"a":{"b":"c"}}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":["x",0,{"a":"b"}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[0,{"a":"b"},null],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[null,null,{}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[null,{},{"a":{"b":"c"}}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[null,{"a":"b"},{}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[null,{},null],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[true,{"a":{"b":"c"}},["a",1]],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":["x",{},true],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{},{"a":"b"},null],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[["a",1],{},{"a":"b"}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[["a",1],[],["a",1]],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[true,["a",1],[]],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{},null,null],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{},{},true],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[["a",1],{"a":{"b":"c"}},["a",1]],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[true,true,[]],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[0,["a",1],{}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{"a":"b"},[],"x"],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":["x",{"a":"b"},{"a":"b"}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[0,0,true],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{"a":{"b":"c"}},{},["a",1]],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{},{"a":"b"},{}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{"a":{"b":"c"}},{"a":"b"},{"a":"b"}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{"a":{"b":"c"}},null,[]],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[null,null,{"a":"b"}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[null,0,0],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[true,"x",true],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6},"x",{"a":"b"}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7},"x",{"a":"b"}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[[3,1,2],"x",{"a":"b"}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{},"x",{"a":"b"}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{"a":"b"},{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6},{"a":"b"}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{"a":"b"},{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7},{"a":"b"}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{"a":"b"},[3,1,2],{"a":"b"}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{"a":"b"},{},{"a":"b"}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{"a":"b"},"x",{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{"a":"b"},"x",{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7}],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{"a":"b"},"x",[3,1,2]],"error":"Invalid URL"}
+{"fn":"httpsDownloadFile","args":[{"a":"b"},"x",{}],"error":"Invalid URL"}
+{"fn":"verifyBetaAppBundle","args":["a😀b😀c"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["a..b"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["😀"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["line1\nline2"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["ab"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["a:b:c  padded  "],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["./x/**/*.json./x/**/*.json"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["ünïcödé./x/**/*.json"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["hello world"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["İstanbul./x/**/*.json"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["hello"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["ünïcödé"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["{name} has {count} itemsünïcödé"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["{name} has {count} items"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["{name} has {count} items./x/**/*.json"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["﻿bom"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["日本語のテキストünïcödé"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":[""],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["src/a/b.tstab\tseparated"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["key_name-1"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["ΣΊΣΥΦΟΣ"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["a:b:c"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["straße"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["./x/**/*.json"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["é"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":[":"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["  padded  "],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["a.b.c"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["日本語のテキスト"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["a"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["src/a/b.ts"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["{name} has {count} itemsab"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["emoji 👍🏽 mix"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["éa"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["helloa:b:c"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":[":é"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["HELLO"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["aa..b"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":[".leading"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["key_name-1tab\tseparated"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["HELLOtab\tseparated"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["src/a/b.tsa.b.c"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":[":ns:key.path"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["emoji 👍🏽 mixkey_name-1"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["Hello World"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["abc"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["ns:key.path"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["trailing.a.b.c"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["abcé"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["trailing.src/a/b.ts"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["tab\tseparated"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["abΣΊΣΥΦΟΣ"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["hello.leading"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["a:b:cab"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["a..bkey_name-1"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["emoji 👍🏽 mixline1\nline2"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["日本語のテキストsrc/a/b.ts"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["İstanbul"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["Hello World./x/**/*.json"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["Hello Worlda.b.c"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["a{name} has {count} items"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["abc  padded  "],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["Hello World.leading"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["  padded  src/a/b.ts"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["./x/**/*.json  padded  "],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":[":.leading"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["étab\tseparated"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["a.b.ctab\tseparated"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["éΣΊΣΥΦΟΣ"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["trailing."],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["abcline1\nline2"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["key_name-1Hello World"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["日本語のテキストHello World"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["line1\nline2ns:key.path"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["a.b.cstraße"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["  padded  tab\tseparated"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["HELLOtrailing."],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["Hello Worldhello world"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["a.b.c{name} has {count} items"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["a..babc"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["﻿bom😀"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["﻿bomHello World"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["straßetrailing."],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["İstanbultab\tseparated"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["ns:key.path  padded  "],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["a.b.ca"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":[".leadingkey_name-1"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["HELLO日本語のテキスト"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":[":a.b.c"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["aline1\nline2"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["HELLO﻿bom"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":[":a"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["ns:key.pathünïcödé"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["﻿bomİstanbul"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["éab"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["Hello Worldsrc/a/b.ts"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["key_name-1é"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["abHello World"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["日本語のテキストkey_name-1"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["{name} has {count} itemsa"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["ns:key.pathab"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["ΣΊΣΥΦΟΣ😀"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["straßea:b:c"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["emoji 👍🏽 mixa:b:c"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["./x/**/*.jsontab\tseparated"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":[".leading:"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["hello worlda😀b😀c"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["a.b.c﻿bom"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["a..bns:key.path"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["line1\nline2😀"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["İstanbulabc"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["hello worldns:key.path"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["ΣΊΣΥΦΟΣab"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["日本語のテキストa..b"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["ns:key.path日本語のテキスト"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["HELLOHello World"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["./x/**/*.jsonHELLO"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["line1\nline2é"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["abünïcödé"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["emoji 👍🏽 mix😀"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["a.b.csrc/a/b.ts"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["😀emoji 👍🏽 mix"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["a😀b😀ca..b"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["ünïcödétab\tseparated"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["hello world﻿bom"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":[".leadingΣΊΣΥΦΟΣ"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["line1\nline2line1\nline2"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["aba:b:c"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["﻿boma:b:c"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["tab\tseparateda😀b😀c"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["a😀b😀c  padded  "],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["key_name-1ünïcödé"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["日本語のテキスト😀"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["﻿bomHELLO"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["{name} has {count} itemsline1\nline2"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["emoji 👍🏽 mix.leading"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["ΣΊΣΥΦΟΣünïcödé"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["ΣΊΣΥΦΟΣa..b"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["ΣΊΣΥΦΟΣstraße"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["./x/**/*.jsonHello World"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["ünïcödéns:key.path"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["a😀b😀ca.b.c"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["é﻿bom"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["ΣΊΣΥΦΟΣé"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["a.b.c:"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["./x/**/*.json😀"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["  padded  hello world"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["src/a/b.tsΣΊΣΥΦΟΣ"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["HELLOa:b:c"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["ünïcödéstraße"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["tab\tseparatedé"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["ünïcödéemoji 👍🏽 mix"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["a.b.c./x/**/*.json"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":[".leading😀"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["hellotrailing."],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":[".leadingHello World"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["straßeΣΊΣΥΦΟΣ"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["😀a:b:c"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["ΣΊΣΥΦΟΣHELLO"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["😀😀"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["src/a/b.ts./x/**/*.json"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["😀ns:key.path"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["HELLOa..b"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["﻿bomünïcödé"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["abkey_name-1"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["İstanbul  padded  "],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["hello worldé"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["﻿bomtrailing."],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":[".leadinga"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["a.b.c😀"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["{name} has {count} items  padded  "],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["abcHello World"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["ünïcödé{name} has {count} items"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["İstanbulHELLO"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["a😀b😀ctrailing."],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["::"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["./x/**/*.jsona😀b😀c"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["line1\nline2a.b.c"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["😀HELLO"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["ns:key.pathtab\tseparated"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["é:"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["a😀b😀cİstanbul"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["a.b.cé"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["﻿boma😀b😀c"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["a.b.cabc"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["hello world  padded  "],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["  padded  ünïcödé"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["emoji 👍🏽 mixİstanbul"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["  padded  ﻿bom"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["日本語のテキストstraße"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["  padded  abc"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["éa:b:c"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["﻿bomΣΊΣΥΦΟΣ"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["a.b.ckey_name-1"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["HELLO{name} has {count} items"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["helloemoji 👍🏽 mix"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["key_name-1ns:key.path"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["straße{name} has {count} items"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["trailing.key_name-1"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["akey_name-1"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["héllo wörld"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["👍🏽 thumbs"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["日本語"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["ılık ırmak"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["👨‍👩‍👧 family"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["a b"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["a😀b"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["a²b x½ y①"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["aⅠb Ⅻ"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["a𐐀b 𝐀bc"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["कि ٣٤"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["Iı İi"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["K K k"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["ſ s S"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["x‍y 👨‍👩‍👧"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["a b c　d"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["١٢٣ ٤٥"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["𝟘𝟙 ²³"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["snake_case foo-bar o'neil"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["ǅungla Ǆ"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["one\r\ntwo threefour"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["café café"],"error":"The download did not contain Synara Beta.app."}
+{"fn":"verifyBetaAppBundle","args":["ΣΑΣ σας ς"],"error":"The download did not contain Synara Beta.app."}

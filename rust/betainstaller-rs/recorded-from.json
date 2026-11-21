@@ -1,0 +1,17 @@
+{
+  "unit": "apps/desktop/src/betaInstaller.ts",
+  "files": 1,
+  "fingerprint": "384ad98e9e53e61d",
+  "coverage": {
+    "lines": 469,
+    "reached": 227,
+    "files": [
+      {
+        "file": "apps/desktop/src/betaInstaller.ts",
+        "lines": 469,
+        "reached": 227,
+        "missed": "52-59, 62-75, 96-98, 100-101, 105-112, 121, 137, 164-165, 167-171, 175, 188-207, 213, 222-253, 279-312, 318, 324, 333-338, 362-373, 389-390, 393-405, 428-462, 464-467, 469-472, 474-505"
+      }
+    ]
+  }
+}

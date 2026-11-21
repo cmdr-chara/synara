@@ -1,0 +1,25 @@
+{"fn":"normalizeSocialUsername","args":["x","emanueledpt"]}
+{"fn":"normalizeSocialUsername","args":["x","  @emanueledpt "]}
+{"fn":"normalizeSocialUsername","args":["threads","@ema.dpt"]}
+{"fn":"normalizeSocialUsername","args":["x","https://twitter.com/emanueledpt?s=21"]}
+{"fn":"normalizeSocialUsername","args":["x","x.com/emanueledpt/"]}
+{"fn":"normalizeSocialUsername","args":["linkedin","https://www.linkedin.com/in/ema-dpt/"]}
+{"fn":"normalizeSocialUsername","args":["github","https://github.com/Emanuele-web04"]}
+{"fn":"normalizeSocialUsername","args":["threads","https://www.threads.net/@ema.dpt"]}
+{"fn":"normalizeSocialUsername","args":["youtube","m.youtube.com/@emadpt"]}
+{"fn":"normalizeSocialUsername","args":["x","https://evil.example/emanueledpt"]}
+{"fn":"normalizeSocialUsername","args":["github","https://github.com/a/b"]}
+{"fn":"normalizeSocialUsername","args":["linkedin","https://linkedin.com/company/acme"]}
+{"fn":"normalizeSocialUsername","args":["x","way_too_long_for_x_handles"]}
+{"fn":"normalizeSocialUsername","args":["github","-leading-dash"]}
+{"fn":"normalizeSocialUsername","args":["x","javascript:alert(1)"]}
+{"fn":"normalizeSocialUsername","args":["youtube",""]}
+{"fn":"socialProfileUrl","args":["x","a"]}
+{"fn":"socialProfileUrl","args":["linkedin","abc"]}
+{"fn":"socialProfileUrl","args":["github","a"]}
+{"fn":"socialProfileUrl","args":["threads","a"]}
+{"fn":"socialProfileUrl","args":["youtube","abc"]}
+{"fn":"socialLinkLabel","args":["linkedin"]}
+{"fn":"sanitizeSocialLinks","args":[{"x":"emanueledpt","github":"https://github.com/x","mastodon":"someone","youtube":42}]}
+{"fn":"sanitizeSocialLinks","args":[null]}
+{"fn":"sanitizeSocialLinks","args":[["x"]]}

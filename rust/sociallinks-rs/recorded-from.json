@@ -1,0 +1,17 @@
+{
+  "unit": "packages/shared/src/socialLinks.ts",
+  "files": 1,
+  "fingerprint": "e39ca0879f6375b7",
+  "coverage": {
+    "lines": 88,
+    "reached": 88,
+    "files": [
+      {
+        "file": "packages/shared/src/socialLinks.ts",
+        "lines": 88,
+        "reached": 88,
+        "missed": ""
+      }
+    ]
+  }
+}

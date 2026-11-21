@@ -1,0 +1,96 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/socialLinks.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "sociallinks-rs",
+  "exports": [
+    {
+      "name": "normalizeSocialUsername",
+      "file": "packages/shared/src/socialLinks.ts",
+      "line": 46,
+      "params": [
+        {
+          "name": "platform",
+          "ts_type": "(typeof SOCIAL_LINK_PLATFORMS)[number]",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "input",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "socialProfileUrl",
+      "file": "packages/shared/src/socialLinks.ts",
+      "line": 74,
+      "params": [
+        {
+          "name": "platform",
+          "ts_type": "(typeof SOCIAL_LINK_PLATFORMS)[number]",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "username",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "socialLinkLabel",
+      "file": "packages/shared/src/socialLinks.ts",
+      "line": 78,
+      "params": [
+        {
+          "name": "platform",
+          "ts_type": "(typeof SOCIAL_LINK_PLATFORMS)[number]",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "sanitizeSocialLinks",
+      "file": "packages/shared/src/socialLinks.ts",
+      "line": 83,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Partial<Record<(typeof SOCIAL_LINK_PLATFORMS)[number], string>>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

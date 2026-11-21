@@ -1,0 +1,1716 @@
+{"fn":"normalizeSocialUsername","args":[true,"İstanbulabc"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{},"a..b:"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"a😀b😀c"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[null,"  padded  line1\nline2"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[["a",1],"straße"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"HELLO"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":{"b":"c"}},"tab\tseparated"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[null,"HELLO﻿bom"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":"b"},"straße{name} has {count} items"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"a:b:c"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":["x","Hello World"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["x","ünïcödésrc/a/b.ts"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["x","a..b"],"ok":null}
+{"fn":"normalizeSocialUsername","args":[[],"a😀b😀c"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[["a",1],"😀"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":{"b":"c"}},"﻿bom"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[null,"a.b.c.leading"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[[],"ünïcödé"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[["a",1],"abc"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[null,"a.b.cemoji 👍🏽 mix"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[null,"hello"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":"b"},"emoji 👍🏽 mix"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[["a",1],"﻿bom"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[0,"HELLO﻿bom"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":["h","ns:key.path"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{},"a:b:c"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{},"HELLO"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":{"b":"c"}},"ΣΊΣΥΦΟΣ"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[null,"﻿bom"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{},"ns:key.path"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[0,"ab"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{},"abé"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":"b"},"HELLO"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":["x","ünïcödé"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["x","ünïcödéa😀b😀c"],"ok":null}
+{"fn":"normalizeSocialUsername","args":[true,"ns:key.path"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"Hello World"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[[],"./x/**/*.json"],"ok":null}
+{"fn":"normalizeSocialUsername","args":[true,"İstanbul"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[[],"  padded  hello"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[null,"a..b"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":{"b":"c"}},"src/a/b.tsHELLO"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["é","é"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":{"b":"c"}},"Hello World"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{},"a"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"a..b"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[[],"HELLO"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":{"b":"c"}},".leadingab"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[null,"  padded  ΣΊΣΥΦΟΣ"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":"b"},"a😀b😀c"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[[],"a..b"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[[],""],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[[],"a:b:ca😀b😀c"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":"b"},"{name} has {count} items"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":"b"},"é"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[0,"a.b.c"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[[],"hello world"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[null,"emoji 👍🏽 mixline1\nline2"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{},"﻿bom"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"ünïcödé"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":{"b":"c"}},"é"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":{"b":"c"}},"straßesrc/a/b.ts"],"ok":null}
+{"fn":"normalizeSocialUsername","args":[["a",1],"😀a.b.c"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[0,".leadingİstanbul"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"😀"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":["x","X"],"ok":"X"}
+{"fn":"normalizeSocialUsername","args":[[],"ΣΊΣΥΦΟΣ"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":["x","{name} has {count} items"],"ok":null}
+{"fn":"normalizeSocialUsername","args":[null,"./x/**/*.json"],"ok":null}
+{"fn":"normalizeSocialUsername","args":[true,":"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":["1E","key_name-1é"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"ΣΊΣΥΦΟΣkey_name-1"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":["x","a😀b😀c"],"ok":null}
+{"fn":"normalizeSocialUsername","args":[["a",1],".leading"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":{"b":"c"}},"ab"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,""],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[0,"key_name-1"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":{"b":"c"}},"a:b:c"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":["x","a..bHELLO"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["x","./x/**/*.json"],"ok":null}
+{"fn":"normalizeSocialUsername","args":[{"a":"b"},":tab\tseparated"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":{"b":"c"}},"ns:key.path"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[["a",1],"Hello World"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":["x","x"],"ok":"x"}
+{"fn":"normalizeSocialUsername","args":[{"a":"b"},":"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[["a",1],"hello world"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[null,"key_name-1line1\nline2"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[0,"😀"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[null,"tab\tseparated"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":"b"},"abcstraße"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":"b"},"hello worlda😀b😀c"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[[],"straßetab\tseparated"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[[],"a.b.c"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[null,"Hello World"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[0,".leading"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[[],"日本語のテキスト"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"日本語のテキスト"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":"b"},"key_name-1"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"hello world"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{},"line1\nline2"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{},"{name} has {count} items"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[["a",1],"./x/**/*.json"],"ok":null}
+{"fn":"normalizeSocialUsername","args":[0,"emoji 👍🏽 mix"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[0,"日本語のテキスト"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{},"straße"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[[],"ünïcödéabc"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":{"b":"c"}},"HELLO{name} has {count} items"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[[],"a"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{},"İstanbul"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":"b"},"﻿bom"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":{"b":"c"}},"trailing..leading"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":{"b":"c"}},"./x/**/*.json"],"ok":null}
+{"fn":"normalizeSocialUsername","args":[null,"İstanbul"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[0,"a:b:c"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":{"b":"c"}},"straße"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[null,"ΣΊΣΥΦΟΣ😀"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"key_name-1"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[0,"Hello World"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"./x/**/*.json"],"ok":null}
+{"fn":"normalizeSocialUsername","args":[{"a":"b"},"./x/**/*.jsonΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"normalizeSocialUsername","args":[{},"a..bsrc/a/b.ts"],"ok":null}
+{"fn":"normalizeSocialUsername","args":[0,"ünïcödé"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":"b"},"abc{name} has {count} items"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[[],"ΣΊΣΥΦΟΣa"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[null,"{name} has {count} items"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{},"a😀b😀c"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":{"b":"c"}},"  padded  "],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":"b"},"ΣΊΣΥΦΟΣ"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"é"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":"b"},"a:b:c"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[[],"ns:key.path"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[["a",1],"::"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[[],"😀"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[["a",1],"tab\tseparated"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":"b"},"hello"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[["a",1],"é"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[["a",1],"hello"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[["a",1],"ΣΊΣΥΦΟΣ"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"abc"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[null,"ΣΊΣΥΦΟΣ"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"line1\nline2"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{},"é./x/**/*.json"],"ok":null}
+{"fn":"normalizeSocialUsername","args":[{"a":"b"},"straße"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":"b"},"😀"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[null,"trailing."],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{},".leading"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[["a",1],":"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":{"b":"c"}},"key_name-1"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[["a",1],"é:"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[null,"emoji 👍🏽 mix"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":["x","a"],"ok":"a"}
+{"fn":"normalizeSocialUsername","args":["x",".leading.leading"],"ok":null}
+{"fn":"normalizeSocialUsername","args":[{"a":"b"},"./x/**/*.json"],"ok":null}
+{"fn":"normalizeSocialUsername","args":[[],"a😀b😀cabc"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[0,"abc"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[null,"Hello Worldabc"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":{"b":"c"}},""],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[["a",1],"a.b.c"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[null,"src/a/b.ts"],"ok":null}
+{"fn":"normalizeSocialUsername","args":[{},"tab\tseparated"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"src/a/b.ts"],"ok":null}
+{"fn":"normalizeSocialUsername","args":[0,"HELLOabc"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{},"trailing."],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,".leading"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[0,"tab\tseparated"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{},"é"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[null,"src/a/b.tsİstanbul"],"ok":null}
+{"fn":"normalizeSocialUsername","args":[[],"trailing.hello"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[["a",1],"ab"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[0,"src/a/b.ts"],"ok":null}
+{"fn":"normalizeSocialUsername","args":[{},""],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[["a",1],"key_name-1"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[["a",1],"src/a/b.ts"],"ok":null}
+{"fn":"normalizeSocialUsername","args":[null,"line1\nline2"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":["x","line1\nline2"],"ok":null}
+{"fn":"normalizeSocialUsername","args":[{"a":"b"},"a"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[0,"hello world"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"ab"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[null,"HELLO"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{},"a.b.ca"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":"b"},"a.b.c"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[[],".leading"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[0,"HELLO"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[null,"akey_name-1"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":{"b":"c"}},"a"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":{"b":"c"}},"日本語のテキスト"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[["a",1],"a..b"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"a"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":["x","日本語のテキスト"],"ok":null}
+{"fn":"normalizeSocialUsername","args":[[],"abc"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[["a",1],":a😀b😀c"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[[],"ab"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[["a",1],"hello worldünïcödé"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[["a",1],"a.b.cab"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":{"b":"c"}},"a..b"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[["a",1],"{name} has {count} items"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[0,"trailing.a"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"Hello Worldemoji 👍🏽 mix"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":{"b":"c"}},"{name} has {count} items"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":"b"},"src/a/b.ts"],"ok":null}
+{"fn":"normalizeSocialUsername","args":[true,"héllo wörld"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"👍🏽 thumbs"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"日本語"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"straße"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"ılık ırmak"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"👨‍👩‍👧 family"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"a b"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"ΣΊΣΥΦΟΣ"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"a😀b"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"﻿bom"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"a²b x½ y①"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"aⅠb Ⅻ"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"a𐐀b 𝐀bc"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"कि ٣٤"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"Iı İi"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"K K k"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"ſ s S"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"x‍y 👨‍👩‍👧"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"a b c　d"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"١٢٣ ٤٥"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"𝟘𝟙 ²³"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"snake_case foo-bar o'neil"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"ǅungla Ǆ"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"one\r\ntwo threefour"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"café café"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"ΣΑΣ σας ς"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"socialProfileUrl","args":["H","key_name-1ns:key.path"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["x","  padded  "],"ok":"https://x.com/  padded  "}
+{"fn":"socialProfileUrl","args":[{"a":{"b":"c"}},"日本語のテキスト"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[[],"é"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":{"b":"c"}},"a.b.cHello World"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[0,"a:b:c"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[true,"  padded  "],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":{"b":"c"}},"İstanbul"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{},"Hello World"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":"b"},"./x/**/*.json"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[[],"line1\nline2"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["x","HELLO"],"ok":"https://x.com/HELLO"}
+{"fn":"socialProfileUrl","args":[["a",1],"Hello World"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[0,"  padded  "],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[["a",1],":"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[null,"a..b"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":"b"},"é"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[true,"abc"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[["a",1],"日本語のテキスト"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["1\nlin","line1\nline2"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{},"😀"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[0,"{name} has {count} items"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{},"line1\nline2"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{},"é"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[null,"a:b:c"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[null,"日本語のテキスト"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[true,"😀😀"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["x","hello worldab"],"ok":"https://x.com/hello worldab"}
+{"fn":"socialProfileUrl","args":[{"a":"b"},"tab\tseparated"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":{"b":"c"}},"key_name-1"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[null,"key_name-1"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[null,"Hello Worldkey_name-1"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[null,"﻿bom"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[true,"é./x/**/*.json"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":{"b":"c"}},"{name} has {count} items"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":"b"},"ünïcödé"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[[],"﻿bom"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["x","src/a/b.ts"],"ok":"https://x.com/src/a/b.ts"}
+{"fn":"socialProfileUrl","args":[0,"ns:key.path"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{},"a.b.cline1\nline2"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{},"a..b"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[0,"a"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[["a",1],"İstanbul"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":"b"},"line1\nline2"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":"b"},"ab"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[true,"a"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{},"日本語のテキスト"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":{"b":"c"}},"src/a/b.ts"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[true,"İstanbul"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{},"hello world"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["x","trailing."],"ok":"https://x.com/trailing."}
+{"fn":"socialProfileUrl","args":[{},"hello"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{},"İstanbulemoji 👍🏽 mix"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[["a",1],"abc"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[0,"hello world"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[null,"日本語のテキストa..b"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":"b"},"a..b"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[["a",1],"ΣΊΣΥΦΟΣ"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{},"İstanbul"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[null,"line1\nline2"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":{"b":"c"}},"a:b:c"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":"b"},"ΣΊΣΥΦΟΣ"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{},"tab\tseparated"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":{"b":"c"}},"ab"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[["a",1],"a:b:c"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":"b"},"straßeünïcödé"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[true,"line1\nline2a.b.c"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[0,"é"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["x","a😀b😀c"],"ok":"https://x.com/a😀b😀c"}
+{"fn":"socialProfileUrl","args":[true,"./x/**/*.json"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[true,"straße"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[["a",1],"a.b.cns:key.path"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{},"  padded  "],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["x","a"],"ok":"https://x.com/a"}
+{"fn":"socialProfileUrl","args":[{},"trailing.ünïcödé"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[0,"İstanbul"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[true,"é"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[0,"key_name-1"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[null,"  padded  "],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[0,"a.b.c"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":{"b":"c"}},"hello"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[0,"ΣΊΣΥΦΟΣa..b"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{},"straßestraße"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":{"b":"c"}},"HELLO"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[true,"emoji 👍🏽 mix  padded  "],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":{"b":"c"}},":"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[true,"src/a/b.tshello"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{},".leading"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[true,"ab:"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[true,"a..b"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[true,":"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["スト","abc日本語のテキスト"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[["a",1],"abc﻿bom"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["x","X"],"ok":"https://x.com/X"}
+{"fn":"socialProfileUrl","args":[["a",1],"{name} has {count} items"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[[],"trailing."],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{},"a😀b😀c"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{},"emoji 👍🏽 mix.leading"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[0,"ΣΊΣΥΦΟΣ"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{},"{name} has {count} items"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["x","hello"],"ok":"https://x.com/hello"}
+{"fn":"socialProfileUrl","args":[["a",1],"line1\nline2"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["x","😀"],"ok":"https://x.com/😀"}
+{"fn":"socialProfileUrl","args":[null,"ab"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[null,"HELLOünïcödé"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[null,"Hello World"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[[],"ΣΊΣΥΦΟΣ"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["x",".leadingünïcödé"],"ok":"https://x.com/.leadingünïcödé"}
+{"fn":"socialProfileUrl","args":["x","./x/**/*.json"],"ok":"https://x.com/./x/**/*.json"}
+{"fn":"socialProfileUrl","args":[null,"ns:key.path"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[[],"src/a/b.ts"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[[],"hello"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{},"a:b:chello world"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[true,"emoji 👍🏽 mix"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":{"b":"c"}},"ns:key.path"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[[],"hello world"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{},"straße"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["x","straße"],"ok":"https://x.com/straße"}
+{"fn":"socialProfileUrl","args":[{},"ünïcödé"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":"b"},"{name} has {count} items"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[[],"straße"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{},"a:b:c"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[null,"a"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":{"b":"c"}},"{name} has {count} items./x/**/*.json"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":"b"},"straße"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":{"b":"c"}},"ΣΊΣΥΦΟΣ"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{},"src/a/b.ts"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[["a",1],"ünïcödé"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{},"line1\nline2😀"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":{"b":"c"}},"line1\nline2key_name-1"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[0,"hello"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[[],"emoji 👍🏽 mix"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[0,"./x/**/*.json"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["x","ab"],"ok":"https://x.com/ab"}
+{"fn":"socialProfileUrl","args":[{"a":{"b":"c"}},"a"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[["a",1],"HELLO"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":{"b":"c"}},"﻿bom"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[null,"a:b:c./x/**/*.json"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[0,"İstanbulkey_name-1"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[[],"a😀b😀c"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["x",":"],"ok":"https://x.com/:"}
+{"fn":"socialProfileUrl","args":[["a",1],"a:b:ca"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[true,"key_name-1"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[true,"hello world"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{},"ab{name} has {count} items"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[[],"tab\tseparatedemoji 👍🏽 mix"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[null,""],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":{"b":"c"}},"emoji 👍🏽 mix﻿bom"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[true,"ab"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":{"b":"c"}},"😀"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[["a",1],"😀"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[[],"{name} has {count} items"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["x","ünïcödé"],"ok":"https://x.com/ünïcödé"}
+{"fn":"socialProfileUrl","args":[["a",1],"﻿bom"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":"b"},"abcabc"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[[],"hello worldline1\nline2"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[0,"src/a/b.ts{name} has {count} items"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[null,"src/a/b.ts"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":{"b":"c"}},"a..b"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[0,"﻿bom"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{},"ab"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[["a",1],"ab"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":"b"},"trailing."],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":"b"},".leading"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[[],"abcstraße"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[[],".leading"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[null,"İstanbul"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[null,":"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{},"ünïcödéİstanbul"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["x","line1\nline2"],"ok":"https://x.com/line1\nline2"}
+{"fn":"socialProfileUrl","args":[{"a":"b"},"İstanbul"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[["a",1],"  padded  "],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[null,"emoji 👍🏽 mix"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":"b"},"a😀b😀cünïcödé"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[null,"a.b.c日本語のテキスト"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[[],"ünïcödé"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[true,"ns:key.path"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["x","hello worldemoji 👍🏽 mix"],"ok":"https://x.com/hello worldemoji 👍🏽 mix"}
+{"fn":"socialProfileUrl","args":[0,"ünïcödé"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[true,"line1\nline2trailing."],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":"b"},""],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[0,"src/a/b.ts"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{},":"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":"b"},"src/a/b.ts"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[["a",1],"hello world"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":"b"},"abc"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":"b"},"emoji 👍🏽 mix"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[true,""],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[0,":"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":{"b":"c"}},"tab\tseparated"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[0,"abc"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":"b"},"😀"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":{"b":"c"}},"ünïcödéé"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["x","x"],"ok":"https://x.com/x"}
+{"fn":"socialProfileUrl","args":[0,"😀"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["2","line1\nline2"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[true,"a:b:c"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{},"emoji 👍🏽 mix"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":{"b":"c"}},"./x/**/*.json"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[null,"hello"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["H","héllo wörld"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["H","👍🏽 thumbs"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["H","日本語"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["H",""],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["H","é"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["H","İstanbul"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["H","straße"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["H","ılık ırmak"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["H","👨‍👩‍👧 family"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["H","a b"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["H","ΣΊΣΥΦΟΣ"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["H","a😀b"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["H","﻿bom"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["H","a²b x½ y①"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["H","aⅠb Ⅻ"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["H","a𐐀b 𝐀bc"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["H","कि ٣٤"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["H","Iı İi"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["H","K K k"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["H","ſ s S"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["H","x‍y 👨‍👩‍👧"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["H","a b c　d"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["H","١٢٣ ٤٥"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["H","𝟘𝟙 ²³"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["H","snake_case foo-bar o'neil"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["H","ǅungla Ǆ"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["H","one\r\ntwo threefour"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["H","café café"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["H","ΣΑΣ σας ς"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialLinkLabel","args":[{}],"error":"Cannot read properties of undefined (reading 'label')"}
+{"fn":"socialLinkLabel","args":[null],"error":"Cannot read properties of undefined (reading 'label')"}
+{"fn":"socialLinkLabel","args":["x"],"ok":"X"}
+{"fn":"socialLinkLabel","args":[[]],"error":"Cannot read properties of undefined (reading 'label')"}
+{"fn":"socialLinkLabel","args":[{"a":"b"}],"error":"Cannot read properties of undefined (reading 'label')"}
+{"fn":"socialLinkLabel","args":[{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'label')"}
+{"fn":"socialLinkLabel","args":[0],"error":"Cannot read properties of undefined (reading 'label')"}
+{"fn":"socialLinkLabel","args":[true],"error":"Cannot read properties of undefined (reading 'label')"}
+{"fn":"socialLinkLabel","args":[["a",1]],"error":"Cannot read properties of undefined (reading 'label')"}
+{"fn":"sanitizeSocialLinks","args":[["a",1]],"ok":{}}
+{"fn":"sanitizeSocialLinks","args":[{}],"ok":{}}
+{"fn":"sanitizeSocialLinks","args":[0],"ok":{}}
+{"fn":"sanitizeSocialLinks","args":[{"a":{"b":"c"}}],"ok":{}}
+{"fn":"sanitizeSocialLinks","args":[true],"ok":{}}
+{"fn":"sanitizeSocialLinks","args":[[]],"ok":{}}
+{"fn":"sanitizeSocialLinks","args":[null],"ok":{}}
+{"fn":"sanitizeSocialLinks","args":[{"a":"b"}],"ok":{}}
+{"fn":"sanitizeSocialLinks","args":["x"],"ok":{}}
+{"fn":"sanitizeSocialLinks","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6}],"ok":{}}
+{"fn":"sanitizeSocialLinks","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7}],"ok":{}}
+{"fn":"sanitizeSocialLinks","args":[[3,1,2]],"ok":{}}
+{"fn":"normalizeSocialUsername","args":[true,"İstanbulabc"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{},"a..b:"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"a😀b😀c"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[null,"  padded  line1\nline2"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[["a",1],"straße"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"HELLO"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":{"b":"c"}},"tab\tseparated"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[null,"HELLO﻿bom"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":"b"},"straße{name} has {count} items"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"a:b:c"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":["x","Hello World"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["x","ünïcödésrc/a/b.ts"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["x","a..b"],"ok":null}
+{"fn":"normalizeSocialUsername","args":[[],"a😀b😀c"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[["a",1],"😀"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":{"b":"c"}},"﻿bom"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[null,"a.b.c.leading"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[[],"ünïcödé"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[["a",1],"abc"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[null,"a.b.cemoji 👍🏽 mix"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[null,"hello"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":"b"},"emoji 👍🏽 mix"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[["a",1],"﻿bom"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[0,"HELLO﻿bom"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":["h","ns:key.path"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{},"a:b:c"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{},"HELLO"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":{"b":"c"}},"ΣΊΣΥΦΟΣ"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[null,"﻿bom"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{},"ns:key.path"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[0,"ab"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{},"abé"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":"b"},"HELLO"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":["x","ünïcödé"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["x","ünïcödéa😀b😀c"],"ok":null}
+{"fn":"normalizeSocialUsername","args":[true,"ns:key.path"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"Hello World"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[[],"./x/**/*.json"],"ok":null}
+{"fn":"normalizeSocialUsername","args":[true,"İstanbul"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[[],"  padded  hello"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[null,"a..b"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":{"b":"c"}},"src/a/b.tsHELLO"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["é","é"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":{"b":"c"}},"Hello World"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{},"a"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"a..b"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[[],"HELLO"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":{"b":"c"}},".leadingab"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[null,"  padded  ΣΊΣΥΦΟΣ"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":"b"},"a😀b😀c"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[[],"a..b"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[[],""],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[[],"a:b:ca😀b😀c"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":"b"},"{name} has {count} items"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":"b"},"é"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[0,"a.b.c"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[[],"hello world"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[null,"emoji 👍🏽 mixline1\nline2"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{},"﻿bom"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"ünïcödé"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":{"b":"c"}},"é"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":{"b":"c"}},"straßesrc/a/b.ts"],"ok":null}
+{"fn":"normalizeSocialUsername","args":[["a",1],"😀a.b.c"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[0,".leadingİstanbul"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"😀"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":["x","X"],"ok":"X"}
+{"fn":"normalizeSocialUsername","args":[[],"ΣΊΣΥΦΟΣ"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":["x","{name} has {count} items"],"ok":null}
+{"fn":"normalizeSocialUsername","args":[null,"./x/**/*.json"],"ok":null}
+{"fn":"normalizeSocialUsername","args":[true,":"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":["1E","key_name-1é"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"ΣΊΣΥΦΟΣkey_name-1"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":["x","a😀b😀c"],"ok":null}
+{"fn":"normalizeSocialUsername","args":[["a",1],".leading"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":{"b":"c"}},"ab"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,""],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[0,"key_name-1"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":{"b":"c"}},"a:b:c"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":["x","a..bHELLO"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["x","./x/**/*.json"],"ok":null}
+{"fn":"normalizeSocialUsername","args":[{"a":"b"},":tab\tseparated"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":{"b":"c"}},"ns:key.path"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[["a",1],"Hello World"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":["x","x"],"ok":"x"}
+{"fn":"normalizeSocialUsername","args":[{"a":"b"},":"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[["a",1],"hello world"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[null,"key_name-1line1\nline2"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[0,"😀"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[null,"tab\tseparated"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":"b"},"abcstraße"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":"b"},"hello worlda😀b😀c"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[[],"straßetab\tseparated"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[[],"a.b.c"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[null,"Hello World"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[0,".leading"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[[],"日本語のテキスト"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"日本語のテキスト"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":"b"},"key_name-1"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"hello world"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{},"line1\nline2"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{},"{name} has {count} items"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[["a",1],"./x/**/*.json"],"ok":null}
+{"fn":"normalizeSocialUsername","args":[0,"emoji 👍🏽 mix"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[0,"日本語のテキスト"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{},"straße"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[[],"ünïcödéabc"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":{"b":"c"}},"HELLO{name} has {count} items"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[[],"a"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{},"İstanbul"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":"b"},"﻿bom"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":{"b":"c"}},"trailing..leading"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":{"b":"c"}},"./x/**/*.json"],"ok":null}
+{"fn":"normalizeSocialUsername","args":[null,"İstanbul"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[0,"a:b:c"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":{"b":"c"}},"straße"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[null,"ΣΊΣΥΦΟΣ😀"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"key_name-1"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[0,"Hello World"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"./x/**/*.json"],"ok":null}
+{"fn":"normalizeSocialUsername","args":[{"a":"b"},"./x/**/*.jsonΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"normalizeSocialUsername","args":[{},"a..bsrc/a/b.ts"],"ok":null}
+{"fn":"normalizeSocialUsername","args":[0,"ünïcödé"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":"b"},"abc{name} has {count} items"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[[],"ΣΊΣΥΦΟΣa"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[null,"{name} has {count} items"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{},"a😀b😀c"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":{"b":"c"}},"  padded  "],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":"b"},"ΣΊΣΥΦΟΣ"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"é"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":"b"},"a:b:c"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[[],"ns:key.path"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[["a",1],"::"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[[],"😀"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[["a",1],"tab\tseparated"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":"b"},"hello"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[["a",1],"é"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[["a",1],"hello"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[["a",1],"ΣΊΣΥΦΟΣ"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"abc"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[null,"ΣΊΣΥΦΟΣ"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"line1\nline2"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{},"é./x/**/*.json"],"ok":null}
+{"fn":"normalizeSocialUsername","args":[{"a":"b"},"straße"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":"b"},"😀"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[null,"trailing."],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{},".leading"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[["a",1],":"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":{"b":"c"}},"key_name-1"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[["a",1],"é:"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[null,"emoji 👍🏽 mix"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":["x","a"],"ok":"a"}
+{"fn":"normalizeSocialUsername","args":["x",".leading.leading"],"ok":null}
+{"fn":"normalizeSocialUsername","args":[{"a":"b"},"./x/**/*.json"],"ok":null}
+{"fn":"normalizeSocialUsername","args":[[],"a😀b😀cabc"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[0,"abc"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[null,"Hello Worldabc"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":{"b":"c"}},""],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[["a",1],"a.b.c"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[null,"src/a/b.ts"],"ok":null}
+{"fn":"normalizeSocialUsername","args":[{},"tab\tseparated"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"src/a/b.ts"],"ok":null}
+{"fn":"normalizeSocialUsername","args":[0,"HELLOabc"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{},"trailing."],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,".leading"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[0,"tab\tseparated"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{},"é"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[null,"src/a/b.tsİstanbul"],"ok":null}
+{"fn":"normalizeSocialUsername","args":[[],"trailing.hello"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[["a",1],"ab"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[0,"src/a/b.ts"],"ok":null}
+{"fn":"normalizeSocialUsername","args":[{},""],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[["a",1],"key_name-1"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[["a",1],"src/a/b.ts"],"ok":null}
+{"fn":"normalizeSocialUsername","args":[null,"line1\nline2"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":["x","line1\nline2"],"ok":null}
+{"fn":"normalizeSocialUsername","args":[{"a":"b"},"a"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[0,"hello world"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"ab"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[null,"HELLO"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{},"a.b.ca"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":"b"},"a.b.c"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[[],".leading"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[0,"HELLO"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[null,"akey_name-1"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":{"b":"c"}},"a"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":{"b":"c"}},"日本語のテキスト"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[["a",1],"a..b"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"a"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":["x","日本語のテキスト"],"ok":null}
+{"fn":"normalizeSocialUsername","args":[[],"abc"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[["a",1],":a😀b😀c"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[[],"ab"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[["a",1],"hello worldünïcödé"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[["a",1],"a.b.cab"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":{"b":"c"}},"a..b"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[["a",1],"{name} has {count} items"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[0,"trailing.a"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"Hello Worldemoji 👍🏽 mix"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":{"b":"c"}},"{name} has {count} items"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[{"a":"b"},"src/a/b.ts"],"ok":null}
+{"fn":"normalizeSocialUsername","args":[true,"héllo wörld"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"👍🏽 thumbs"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"日本語"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"straße"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"ılık ırmak"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"👨‍👩‍👧 family"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"a b"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"ΣΊΣΥΦΟΣ"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"a😀b"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"﻿bom"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"a²b x½ y①"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"aⅠb Ⅻ"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"a𐐀b 𝐀bc"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"कि ٣٤"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"Iı İi"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"K K k"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"ſ s S"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"x‍y 👨‍👩‍👧"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"a b c　d"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"١٢٣ ٤٥"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"𝟘𝟙 ²³"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"snake_case foo-bar o'neil"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"ǅungla Ǆ"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"one\r\ntwo threefour"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"café café"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":[true,"ΣΑΣ σας ς"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"socialProfileUrl","args":["H","key_name-1ns:key.path"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["x","  padded  "],"ok":"https://x.com/  padded  "}
+{"fn":"socialProfileUrl","args":[{"a":{"b":"c"}},"日本語のテキスト"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[[],"é"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":{"b":"c"}},"a.b.cHello World"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[0,"a:b:c"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[true,"  padded  "],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":{"b":"c"}},"İstanbul"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{},"Hello World"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":"b"},"./x/**/*.json"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[[],"line1\nline2"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["x","HELLO"],"ok":"https://x.com/HELLO"}
+{"fn":"socialProfileUrl","args":[["a",1],"Hello World"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[0,"  padded  "],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[["a",1],":"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[null,"a..b"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":"b"},"é"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[true,"abc"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[["a",1],"日本語のテキスト"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["1\nlin","line1\nline2"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{},"😀"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[0,"{name} has {count} items"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{},"line1\nline2"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{},"é"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[null,"a:b:c"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[null,"日本語のテキスト"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[true,"😀😀"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["x","hello worldab"],"ok":"https://x.com/hello worldab"}
+{"fn":"socialProfileUrl","args":[{"a":"b"},"tab\tseparated"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":{"b":"c"}},"key_name-1"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[null,"key_name-1"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[null,"Hello Worldkey_name-1"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[null,"﻿bom"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[true,"é./x/**/*.json"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":{"b":"c"}},"{name} has {count} items"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":"b"},"ünïcödé"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[[],"﻿bom"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["x","src/a/b.ts"],"ok":"https://x.com/src/a/b.ts"}
+{"fn":"socialProfileUrl","args":[0,"ns:key.path"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{},"a.b.cline1\nline2"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{},"a..b"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[0,"a"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[["a",1],"İstanbul"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":"b"},"line1\nline2"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":"b"},"ab"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[true,"a"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{},"日本語のテキスト"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":{"b":"c"}},"src/a/b.ts"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[true,"İstanbul"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{},"hello world"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["x","trailing."],"ok":"https://x.com/trailing."}
+{"fn":"socialProfileUrl","args":[{},"hello"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{},"İstanbulemoji 👍🏽 mix"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[["a",1],"abc"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[0,"hello world"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[null,"日本語のテキストa..b"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":"b"},"a..b"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[["a",1],"ΣΊΣΥΦΟΣ"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{},"İstanbul"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[null,"line1\nline2"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":{"b":"c"}},"a:b:c"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":"b"},"ΣΊΣΥΦΟΣ"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{},"tab\tseparated"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":{"b":"c"}},"ab"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[["a",1],"a:b:c"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":"b"},"straßeünïcödé"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[true,"line1\nline2a.b.c"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[0,"é"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["x","a😀b😀c"],"ok":"https://x.com/a😀b😀c"}
+{"fn":"socialProfileUrl","args":[true,"./x/**/*.json"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[true,"straße"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[["a",1],"a.b.cns:key.path"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{},"  padded  "],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["x","a"],"ok":"https://x.com/a"}
+{"fn":"socialProfileUrl","args":[{},"trailing.ünïcödé"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[0,"İstanbul"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[true,"é"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[0,"key_name-1"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[null,"  padded  "],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[0,"a.b.c"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":{"b":"c"}},"hello"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[0,"ΣΊΣΥΦΟΣa..b"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{},"straßestraße"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":{"b":"c"}},"HELLO"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[true,"emoji 👍🏽 mix  padded  "],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":{"b":"c"}},":"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[true,"src/a/b.tshello"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{},".leading"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[true,"ab:"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[true,"a..b"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[true,":"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["スト","abc日本語のテキスト"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[["a",1],"abc﻿bom"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["x","X"],"ok":"https://x.com/X"}
+{"fn":"socialProfileUrl","args":[["a",1],"{name} has {count} items"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[[],"trailing."],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{},"a😀b😀c"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{},"emoji 👍🏽 mix.leading"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[0,"ΣΊΣΥΦΟΣ"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{},"{name} has {count} items"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["x","hello"],"ok":"https://x.com/hello"}
+{"fn":"socialProfileUrl","args":[["a",1],"line1\nline2"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["x","😀"],"ok":"https://x.com/😀"}
+{"fn":"socialProfileUrl","args":[null,"ab"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[null,"HELLOünïcödé"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[null,"Hello World"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[[],"ΣΊΣΥΦΟΣ"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["x",".leadingünïcödé"],"ok":"https://x.com/.leadingünïcödé"}
+{"fn":"socialProfileUrl","args":["x","./x/**/*.json"],"ok":"https://x.com/./x/**/*.json"}
+{"fn":"socialProfileUrl","args":[null,"ns:key.path"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[[],"src/a/b.ts"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[[],"hello"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{},"a:b:chello world"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[true,"emoji 👍🏽 mix"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":{"b":"c"}},"ns:key.path"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[[],"hello world"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{},"straße"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["x","straße"],"ok":"https://x.com/straße"}
+{"fn":"socialProfileUrl","args":[{},"ünïcödé"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":"b"},"{name} has {count} items"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[[],"straße"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{},"a:b:c"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[null,"a"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":{"b":"c"}},"{name} has {count} items./x/**/*.json"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":"b"},"straße"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":{"b":"c"}},"ΣΊΣΥΦΟΣ"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{},"src/a/b.ts"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[["a",1],"ünïcödé"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{},"line1\nline2😀"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":{"b":"c"}},"line1\nline2key_name-1"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[0,"hello"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[[],"emoji 👍🏽 mix"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[0,"./x/**/*.json"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["x","ab"],"ok":"https://x.com/ab"}
+{"fn":"socialProfileUrl","args":[{"a":{"b":"c"}},"a"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[["a",1],"HELLO"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":{"b":"c"}},"﻿bom"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[null,"a:b:c./x/**/*.json"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[0,"İstanbulkey_name-1"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[[],"a😀b😀c"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["x",":"],"ok":"https://x.com/:"}
+{"fn":"socialProfileUrl","args":[["a",1],"a:b:ca"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[true,"key_name-1"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[true,"hello world"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{},"ab{name} has {count} items"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[[],"tab\tseparatedemoji 👍🏽 mix"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[null,""],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":{"b":"c"}},"emoji 👍🏽 mix﻿bom"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[true,"ab"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":{"b":"c"}},"😀"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[["a",1],"😀"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[[],"{name} has {count} items"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["x","ünïcödé"],"ok":"https://x.com/ünïcödé"}
+{"fn":"socialProfileUrl","args":[["a",1],"﻿bom"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":"b"},"abcabc"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[[],"hello worldline1\nline2"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[0,"src/a/b.ts{name} has {count} items"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[null,"src/a/b.ts"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":{"b":"c"}},"a..b"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[0,"﻿bom"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{},"ab"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[["a",1],"ab"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":"b"},"trailing."],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":"b"},".leading"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[[],"abcstraße"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[[],".leading"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[null,"İstanbul"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[null,":"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{},"ünïcödéİstanbul"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["x","line1\nline2"],"ok":"https://x.com/line1\nline2"}
+{"fn":"socialProfileUrl","args":[{"a":"b"},"İstanbul"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[["a",1],"  padded  "],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[null,"emoji 👍🏽 mix"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":"b"},"a😀b😀cünïcödé"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[null,"a.b.c日本語のテキスト"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[[],"ünïcödé"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[true,"ns:key.path"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["x","hello worldemoji 👍🏽 mix"],"ok":"https://x.com/hello worldemoji 👍🏽 mix"}
+{"fn":"socialProfileUrl","args":[0,"ünïcödé"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[true,"line1\nline2trailing."],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":"b"},""],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[0,"src/a/b.ts"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{},":"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":"b"},"src/a/b.ts"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[["a",1],"hello world"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":"b"},"abc"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":"b"},"emoji 👍🏽 mix"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[true,""],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[0,":"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":{"b":"c"}},"tab\tseparated"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[0,"abc"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":"b"},"😀"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":{"b":"c"}},"ünïcödéé"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["x","x"],"ok":"https://x.com/x"}
+{"fn":"socialProfileUrl","args":[0,"😀"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["2","line1\nline2"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[true,"a:b:c"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{},"emoji 👍🏽 mix"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[{"a":{"b":"c"}},"./x/**/*.json"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":[null,"hello"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["H","héllo wörld"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["H","👍🏽 thumbs"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["H","日本語"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["H",""],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["H","é"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["H","İstanbul"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["H","straße"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["H","ılık ırmak"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["H","👨‍👩‍👧 family"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["H","a b"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["H","ΣΊΣΥΦΟΣ"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["H","a😀b"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["H","﻿bom"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["H","a²b x½ y①"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["H","aⅠb Ⅻ"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["H","a𐐀b 𝐀bc"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["H","कि ٣٤"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["H","Iı İi"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["H","K K k"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["H","ſ s S"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["H","x‍y 👨‍👩‍👧"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["H","a b c　d"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["H","١٢٣ ٤٥"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["H","𝟘𝟙 ²³"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["H","snake_case foo-bar o'neil"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["H","ǅungla Ǆ"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["H","one\r\ntwo threefour"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["H","café café"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialProfileUrl","args":["H","ΣΑΣ σας ς"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialLinkLabel","args":[{}],"error":"Cannot read properties of undefined (reading 'label')"}
+{"fn":"socialLinkLabel","args":[null],"error":"Cannot read properties of undefined (reading 'label')"}
+{"fn":"socialLinkLabel","args":["x"],"ok":"X"}
+{"fn":"socialLinkLabel","args":[[]],"error":"Cannot read properties of undefined (reading 'label')"}
+{"fn":"socialLinkLabel","args":[{"a":"b"}],"error":"Cannot read properties of undefined (reading 'label')"}
+{"fn":"socialLinkLabel","args":[{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'label')"}
+{"fn":"socialLinkLabel","args":[0],"error":"Cannot read properties of undefined (reading 'label')"}
+{"fn":"socialLinkLabel","args":[true],"error":"Cannot read properties of undefined (reading 'label')"}
+{"fn":"socialLinkLabel","args":[["a",1]],"error":"Cannot read properties of undefined (reading 'label')"}
+{"fn":"sanitizeSocialLinks","args":[["a",1]],"ok":{}}
+{"fn":"sanitizeSocialLinks","args":[{}],"ok":{}}
+{"fn":"sanitizeSocialLinks","args":[0],"ok":{}}
+{"fn":"sanitizeSocialLinks","args":[{"a":{"b":"c"}}],"ok":{}}
+{"fn":"sanitizeSocialLinks","args":[true],"ok":{}}
+{"fn":"sanitizeSocialLinks","args":[[]],"ok":{}}
+{"fn":"sanitizeSocialLinks","args":[null],"ok":{}}
+{"fn":"sanitizeSocialLinks","args":[{"a":"b"}],"ok":{}}
+{"fn":"sanitizeSocialLinks","args":["x"],"ok":{}}
+{"fn":"sanitizeSocialLinks","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6}],"ok":{}}
+{"fn":"sanitizeSocialLinks","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7}],"ok":{}}
+{"fn":"sanitizeSocialLinks","args":[[3,1,2]],"ok":{}}
+{"fn":"normalizeSocialUsername","args":["x","emanueledpt"],"ok":"emanueledpt"}
+{"fn":"normalizeSocialUsername","args":["x","  @emanueledpt "],"ok":"emanueledpt"}
+{"fn":"normalizeSocialUsername","args":["threads","@ema.dpt"],"ok":"ema.dpt"}
+{"fn":"normalizeSocialUsername","args":["x","https://twitter.com/emanueledpt?s=21"],"ok":"emanueledpt"}
+{"fn":"normalizeSocialUsername","args":["x","x.com/emanueledpt/"],"ok":"emanueledpt"}
+{"fn":"normalizeSocialUsername","args":["linkedin","https://www.linkedin.com/in/ema-dpt/"],"ok":"ema-dpt"}
+{"fn":"normalizeSocialUsername","args":["github","https://github.com/Emanuele-web04"],"ok":"Emanuele-web04"}
+{"fn":"normalizeSocialUsername","args":["threads","https://www.threads.net/@ema.dpt"],"ok":"ema.dpt"}
+{"fn":"normalizeSocialUsername","args":["youtube","m.youtube.com/@emadpt"],"ok":"emadpt"}
+{"fn":"normalizeSocialUsername","args":["x","https://evil.example/emanueledpt"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["github","https://github.com/a/b"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["linkedin","https://linkedin.com/company/acme"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["x","way_too_long_for_x_handles"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["github","-leading-dash"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["x","javascript:alert(1)"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["youtube",""],"ok":null}
+{"fn":"socialProfileUrl","args":["linkedin","abc"],"ok":"https://www.linkedin.com/in/abc"}
+{"fn":"socialProfileUrl","args":["github","a"],"ok":"https://github.com/a"}
+{"fn":"socialProfileUrl","args":["threads","a"],"ok":"https://www.threads.com/@a"}
+{"fn":"socialProfileUrl","args":["youtube","abc"],"ok":"https://www.youtube.com/@abc"}
+{"fn":"socialLinkLabel","args":["linkedin"],"ok":"LinkedIn"}
+{"fn":"sanitizeSocialLinks","args":[{"x":"emanueledpt","github":"https://github.com/x","mastodon":"someone","youtube":42}],"ok":{"x":"emanueledpt"}}
+{"fn":"sanitizeSocialLinks","args":[["x"]],"ok":{}}
+{"fn":"normalizeSocialUsername","args":["x","user"],"ok":"user"}
+{"fn":"normalizeSocialUsername","args":["x","@user"],"ok":"user"}
+{"fn":"normalizeSocialUsername","args":["x","user-name"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["x","https://x.com/user"],"ok":"user"}
+{"fn":"normalizeSocialUsername","args":["x","https://www.x.com/user"],"ok":"user"}
+{"fn":"normalizeSocialUsername","args":["x","x.com/user"],"ok":"user"}
+{"fn":"normalizeSocialUsername","args":["x","www.x.com/user"],"ok":"user"}
+{"fn":"normalizeSocialUsername","args":["x","https://twitter.com/user"],"ok":"user"}
+{"fn":"normalizeSocialUsername","args":["x","http://x.com/user"],"ok":"user"}
+{"fn":"normalizeSocialUsername","args":["x","X.COM/user"],"ok":"user"}
+{"fn":"normalizeSocialUsername","args":["x","x.com/user/"],"ok":"user"}
+{"fn":"normalizeSocialUsername","args":["x","x.com/user?a=1"],"ok":"user"}
+{"fn":"normalizeSocialUsername","args":["x","https://x.com/user/status/1"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["x","x.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["x","twitter.com/user"],"ok":"user"}
+{"fn":"normalizeSocialUsername","args":["x","https://github.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["x","github.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["x","www.github.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["x","github.com/user/"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["x","github.com/user/repo"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["x","https://www.linkedin.com/in/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["x","linkedin.com/in/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["x","https://linkedin.com/in/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["x","linkedin.com/in/user/"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["x","https://www.linkedin.com/company/acme"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["x","https://www.threads.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["x","threads.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["x","threads.net/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["x","www.threads.net/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["x","https://www.threads.net/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["x","threads.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["x","https://www.youtube.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["x","youtube.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["x","m.youtube.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["x","www.youtube.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["x","https://www.youtube.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["x","youtube.com/c/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["x","youtu.be/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["linkedin","user"],"ok":"user"}
+{"fn":"normalizeSocialUsername","args":["linkedin","@user"],"ok":"user"}
+{"fn":"normalizeSocialUsername","args":["linkedin","user-name"],"ok":"user-name"}
+{"fn":"normalizeSocialUsername","args":["linkedin","https://x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["linkedin","https://www.x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["linkedin","x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["linkedin","www.x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["linkedin","https://twitter.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["linkedin","http://x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["linkedin","X.COM/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["linkedin","x.com/user/"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["linkedin","x.com/user?a=1"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["linkedin","https://x.com/user/status/1"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["linkedin","x.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["linkedin","twitter.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["linkedin","https://github.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["linkedin","github.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["linkedin","www.github.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["linkedin","github.com/user/"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["linkedin","github.com/user/repo"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["linkedin","https://www.linkedin.com/in/user"],"ok":"user"}
+{"fn":"normalizeSocialUsername","args":["linkedin","linkedin.com/in/user"],"ok":"user"}
+{"fn":"normalizeSocialUsername","args":["linkedin","https://linkedin.com/in/user"],"ok":"user"}
+{"fn":"normalizeSocialUsername","args":["linkedin","linkedin.com/in/user/"],"ok":"user"}
+{"fn":"normalizeSocialUsername","args":["linkedin","https://www.linkedin.com/company/acme"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["linkedin","https://www.threads.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["linkedin","threads.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["linkedin","threads.net/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["linkedin","www.threads.net/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["linkedin","https://www.threads.net/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["linkedin","threads.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["linkedin","https://www.youtube.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["linkedin","youtube.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["linkedin","m.youtube.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["linkedin","www.youtube.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["linkedin","https://www.youtube.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["linkedin","youtube.com/c/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["linkedin","youtu.be/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["github","user"],"ok":"user"}
+{"fn":"normalizeSocialUsername","args":["github","@user"],"ok":"user"}
+{"fn":"normalizeSocialUsername","args":["github","user-name"],"ok":"user-name"}
+{"fn":"normalizeSocialUsername","args":["github","https://x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["github","https://www.x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["github","x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["github","www.x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["github","https://twitter.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["github","http://x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["github","X.COM/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["github","x.com/user/"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["github","x.com/user?a=1"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["github","https://x.com/user/status/1"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["github","x.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["github","twitter.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["github","https://github.com/user"],"ok":"user"}
+{"fn":"normalizeSocialUsername","args":["github","github.com/user"],"ok":"user"}
+{"fn":"normalizeSocialUsername","args":["github","www.github.com/user"],"ok":"user"}
+{"fn":"normalizeSocialUsername","args":["github","github.com/user/"],"ok":"user"}
+{"fn":"normalizeSocialUsername","args":["github","github.com/user/repo"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["github","https://www.linkedin.com/in/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["github","linkedin.com/in/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["github","https://linkedin.com/in/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["github","linkedin.com/in/user/"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["github","https://www.linkedin.com/company/acme"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["github","https://www.threads.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["github","threads.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["github","threads.net/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["github","www.threads.net/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["github","https://www.threads.net/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["github","threads.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["github","https://www.youtube.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["github","youtube.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["github","m.youtube.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["github","www.youtube.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["github","https://www.youtube.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["github","youtube.com/c/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["github","youtu.be/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["threads","user"],"ok":"user"}
+{"fn":"normalizeSocialUsername","args":["threads","@user"],"ok":"user"}
+{"fn":"normalizeSocialUsername","args":["threads","user-name"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["threads","https://x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["threads","https://www.x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["threads","x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["threads","www.x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["threads","https://twitter.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["threads","http://x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["threads","X.COM/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["threads","x.com/user/"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["threads","x.com/user?a=1"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["threads","https://x.com/user/status/1"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["threads","x.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["threads","twitter.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["threads","https://github.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["threads","github.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["threads","www.github.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["threads","github.com/user/"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["threads","github.com/user/repo"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["threads","https://www.linkedin.com/in/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["threads","linkedin.com/in/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["threads","https://linkedin.com/in/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["threads","linkedin.com/in/user/"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["threads","https://www.linkedin.com/company/acme"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["threads","https://www.threads.com/@user"],"ok":"user"}
+{"fn":"normalizeSocialUsername","args":["threads","threads.com/@user"],"ok":"user"}
+{"fn":"normalizeSocialUsername","args":["threads","threads.net/@user"],"ok":"user"}
+{"fn":"normalizeSocialUsername","args":["threads","www.threads.net/@user"],"ok":"user"}
+{"fn":"normalizeSocialUsername","args":["threads","https://www.threads.net/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["threads","threads.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["threads","https://www.youtube.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["threads","youtube.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["threads","m.youtube.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["threads","www.youtube.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["threads","https://www.youtube.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["threads","youtube.com/c/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["threads","youtu.be/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["youtube","user"],"ok":"user"}
+{"fn":"normalizeSocialUsername","args":["youtube","@user"],"ok":"user"}
+{"fn":"normalizeSocialUsername","args":["youtube","user-name"],"ok":"user-name"}
+{"fn":"normalizeSocialUsername","args":["youtube","https://x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["youtube","https://www.x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["youtube","x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["youtube","www.x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["youtube","https://twitter.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["youtube","http://x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["youtube","X.COM/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["youtube","x.com/user/"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["youtube","x.com/user?a=1"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["youtube","https://x.com/user/status/1"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["youtube","x.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["youtube","twitter.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["youtube","https://github.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["youtube","github.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["youtube","www.github.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["youtube","github.com/user/"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["youtube","github.com/user/repo"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["youtube","https://www.linkedin.com/in/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["youtube","linkedin.com/in/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["youtube","https://linkedin.com/in/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["youtube","linkedin.com/in/user/"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["youtube","https://www.linkedin.com/company/acme"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["youtube","https://www.threads.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["youtube","threads.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["youtube","threads.net/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["youtube","www.threads.net/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["youtube","https://www.threads.net/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["youtube","threads.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["youtube","https://www.youtube.com/@user"],"ok":"user"}
+{"fn":"normalizeSocialUsername","args":["youtube","youtube.com/@user"],"ok":"user"}
+{"fn":"normalizeSocialUsername","args":["youtube","m.youtube.com/@user"],"ok":"user"}
+{"fn":"normalizeSocialUsername","args":["youtube","www.youtube.com/@user"],"ok":"user"}
+{"fn":"normalizeSocialUsername","args":["youtube","https://www.youtube.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["youtube","youtube.com/c/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["youtube","youtu.be/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["mastodon","user"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":["mastodon","@user"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":["mastodon","user-name"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":["mastodon","https://x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["mastodon","https://www.x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["mastodon","x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["mastodon","www.x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["mastodon","https://twitter.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["mastodon","http://x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["mastodon","X.COM/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["mastodon","x.com/user/"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["mastodon","x.com/user?a=1"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["mastodon","https://x.com/user/status/1"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["mastodon","x.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["mastodon","twitter.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["mastodon","https://github.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["mastodon","github.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["mastodon","www.github.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["mastodon","github.com/user/"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["mastodon","github.com/user/repo"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["mastodon","https://www.linkedin.com/in/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["mastodon","linkedin.com/in/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["mastodon","https://linkedin.com/in/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["mastodon","linkedin.com/in/user/"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["mastodon","https://www.linkedin.com/company/acme"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["mastodon","https://www.threads.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["mastodon","threads.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["mastodon","threads.net/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["mastodon","www.threads.net/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["mastodon","https://www.threads.net/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["mastodon","threads.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["mastodon","https://www.youtube.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["mastodon","youtube.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["mastodon","m.youtube.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["mastodon","www.youtube.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["mastodon","https://www.youtube.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["mastodon","youtube.com/c/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["mastodon","youtu.be/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["bluesky","user"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":["bluesky","@user"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":["bluesky","user-name"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":["bluesky","https://x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["bluesky","https://www.x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["bluesky","x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["bluesky","www.x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["bluesky","https://twitter.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["bluesky","http://x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["bluesky","X.COM/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["bluesky","x.com/user/"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["bluesky","x.com/user?a=1"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["bluesky","https://x.com/user/status/1"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["bluesky","x.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["bluesky","twitter.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["bluesky","https://github.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["bluesky","github.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["bluesky","www.github.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["bluesky","github.com/user/"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["bluesky","github.com/user/repo"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["bluesky","https://www.linkedin.com/in/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["bluesky","linkedin.com/in/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["bluesky","https://linkedin.com/in/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["bluesky","linkedin.com/in/user/"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["bluesky","https://www.linkedin.com/company/acme"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["bluesky","https://www.threads.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["bluesky","threads.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["bluesky","threads.net/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["bluesky","www.threads.net/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["bluesky","https://www.threads.net/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["bluesky","threads.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["bluesky","https://www.youtube.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["bluesky","youtube.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["bluesky","m.youtube.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["bluesky","www.youtube.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["bluesky","https://www.youtube.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["bluesky","youtube.com/c/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["bluesky","youtu.be/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["instagram","user"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":["instagram","@user"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":["instagram","user-name"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":["instagram","https://x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["instagram","https://www.x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["instagram","x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["instagram","www.x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["instagram","https://twitter.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["instagram","http://x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["instagram","X.COM/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["instagram","x.com/user/"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["instagram","x.com/user?a=1"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["instagram","https://x.com/user/status/1"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["instagram","x.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["instagram","twitter.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["instagram","https://github.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["instagram","github.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["instagram","www.github.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["instagram","github.com/user/"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["instagram","github.com/user/repo"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["instagram","https://www.linkedin.com/in/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["instagram","linkedin.com/in/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["instagram","https://linkedin.com/in/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["instagram","linkedin.com/in/user/"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["instagram","https://www.linkedin.com/company/acme"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["instagram","https://www.threads.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["instagram","threads.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["instagram","threads.net/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["instagram","www.threads.net/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["instagram","https://www.threads.net/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["instagram","threads.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["instagram","https://www.youtube.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["instagram","youtube.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["instagram","m.youtube.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["instagram","www.youtube.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["instagram","https://www.youtube.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["instagram","youtube.com/c/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["instagram","youtu.be/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["website","user"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":["website","@user"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":["website","user-name"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":["website","https://x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["website","https://www.x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["website","x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["website","www.x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["website","https://twitter.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["website","http://x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["website","X.COM/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["website","x.com/user/"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["website","x.com/user?a=1"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["website","https://x.com/user/status/1"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["website","x.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["website","twitter.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["website","https://github.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["website","github.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["website","www.github.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["website","github.com/user/"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["website","github.com/user/repo"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["website","https://www.linkedin.com/in/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["website","linkedin.com/in/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["website","https://linkedin.com/in/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["website","linkedin.com/in/user/"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["website","https://www.linkedin.com/company/acme"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["website","https://www.threads.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["website","threads.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["website","threads.net/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["website","www.threads.net/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["website","https://www.threads.net/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["website","threads.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["website","https://www.youtube.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["website","youtube.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["website","m.youtube.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["website","www.youtube.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["website","https://www.youtube.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["website","youtube.com/c/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["website","youtu.be/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["discord","user"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":["discord","@user"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":["discord","user-name"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":["discord","https://x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["discord","https://www.x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["discord","x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["discord","www.x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["discord","https://twitter.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["discord","http://x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["discord","X.COM/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["discord","x.com/user/"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["discord","x.com/user?a=1"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["discord","https://x.com/user/status/1"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["discord","x.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["discord","twitter.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["discord","https://github.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["discord","github.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["discord","www.github.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["discord","github.com/user/"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["discord","github.com/user/repo"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["discord","https://www.linkedin.com/in/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["discord","linkedin.com/in/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["discord","https://linkedin.com/in/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["discord","linkedin.com/in/user/"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["discord","https://www.linkedin.com/company/acme"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["discord","https://www.threads.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["discord","threads.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["discord","threads.net/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["discord","www.threads.net/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["discord","https://www.threads.net/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["discord","threads.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["discord","https://www.youtube.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["discord","youtube.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["discord","m.youtube.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["discord","www.youtube.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["discord","https://www.youtube.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["discord","youtube.com/c/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["discord","youtu.be/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["twitch","user"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":["twitch","@user"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":["twitch","user-name"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":["twitch","https://x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["twitch","https://www.x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["twitch","x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["twitch","www.x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["twitch","https://twitter.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["twitch","http://x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["twitch","X.COM/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["twitch","x.com/user/"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["twitch","x.com/user?a=1"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["twitch","https://x.com/user/status/1"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["twitch","x.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["twitch","twitter.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["twitch","https://github.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["twitch","github.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["twitch","www.github.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["twitch","github.com/user/"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["twitch","github.com/user/repo"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["twitch","https://www.linkedin.com/in/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["twitch","linkedin.com/in/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["twitch","https://linkedin.com/in/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["twitch","linkedin.com/in/user/"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["twitch","https://www.linkedin.com/company/acme"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["twitch","https://www.threads.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["twitch","threads.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["twitch","threads.net/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["twitch","www.threads.net/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["twitch","https://www.threads.net/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["twitch","threads.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["twitch","https://www.youtube.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["twitch","youtube.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["twitch","m.youtube.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["twitch","www.youtube.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["twitch","https://www.youtube.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["twitch","youtube.com/c/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["twitch","youtu.be/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["tiktok","user"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":["tiktok","@user"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":["tiktok","user-name"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":["tiktok","https://x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["tiktok","https://www.x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["tiktok","x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["tiktok","www.x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["tiktok","https://twitter.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["tiktok","http://x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["tiktok","X.COM/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["tiktok","x.com/user/"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["tiktok","x.com/user?a=1"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["tiktok","https://x.com/user/status/1"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["tiktok","x.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["tiktok","twitter.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["tiktok","https://github.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["tiktok","github.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["tiktok","www.github.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["tiktok","github.com/user/"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["tiktok","github.com/user/repo"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["tiktok","https://www.linkedin.com/in/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["tiktok","linkedin.com/in/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["tiktok","https://linkedin.com/in/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["tiktok","linkedin.com/in/user/"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["tiktok","https://www.linkedin.com/company/acme"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["tiktok","https://www.threads.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["tiktok","threads.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["tiktok","threads.net/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["tiktok","www.threads.net/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["tiktok","https://www.threads.net/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["tiktok","threads.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["tiktok","https://www.youtube.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["tiktok","youtube.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["tiktok","m.youtube.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["tiktok","www.youtube.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["tiktok","https://www.youtube.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["tiktok","youtube.com/c/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["tiktok","youtu.be/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["facebook","user"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":["facebook","@user"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":["facebook","user-name"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":["facebook","https://x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["facebook","https://www.x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["facebook","x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["facebook","www.x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["facebook","https://twitter.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["facebook","http://x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["facebook","X.COM/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["facebook","x.com/user/"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["facebook","x.com/user?a=1"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["facebook","https://x.com/user/status/1"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["facebook","x.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["facebook","twitter.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["facebook","https://github.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["facebook","github.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["facebook","www.github.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["facebook","github.com/user/"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["facebook","github.com/user/repo"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["facebook","https://www.linkedin.com/in/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["facebook","linkedin.com/in/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["facebook","https://linkedin.com/in/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["facebook","linkedin.com/in/user/"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["facebook","https://www.linkedin.com/company/acme"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["facebook","https://www.threads.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["facebook","threads.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["facebook","threads.net/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["facebook","www.threads.net/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["facebook","https://www.threads.net/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["facebook","threads.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["facebook","https://www.youtube.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["facebook","youtube.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["facebook","m.youtube.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["facebook","www.youtube.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["facebook","https://www.youtube.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["facebook","youtube.com/c/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["facebook","youtu.be/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["twitter","user"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":["twitter","@user"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":["twitter","user-name"],"error":"Cannot read properties of undefined (reading 'pattern')"}
+{"fn":"normalizeSocialUsername","args":["twitter","https://x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["twitter","https://www.x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["twitter","x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["twitter","www.x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["twitter","https://twitter.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["twitter","http://x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["twitter","X.COM/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["twitter","x.com/user/"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["twitter","x.com/user?a=1"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["twitter","https://x.com/user/status/1"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["twitter","x.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["twitter","twitter.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["twitter","https://github.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["twitter","github.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["twitter","www.github.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["twitter","github.com/user/"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["twitter","github.com/user/repo"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["twitter","https://www.linkedin.com/in/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["twitter","linkedin.com/in/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["twitter","https://linkedin.com/in/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["twitter","linkedin.com/in/user/"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["twitter","https://www.linkedin.com/company/acme"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["twitter","https://www.threads.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["twitter","threads.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["twitter","threads.net/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["twitter","www.threads.net/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["twitter","https://www.threads.net/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["twitter","threads.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["twitter","https://www.youtube.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["twitter","youtube.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["twitter","m.youtube.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["twitter","www.youtube.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["twitter","https://www.youtube.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["twitter","youtube.com/c/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["twitter","youtu.be/user"],"ok":null}
+{"fn":"socialProfileUrl","args":["x","user"],"ok":"https://x.com/user"}
+{"fn":"socialProfileUrl","args":["linkedin","user"],"ok":"https://www.linkedin.com/in/user"}
+{"fn":"socialLinkLabel","args":["github"],"ok":"GitHub"}
+{"fn":"socialProfileUrl","args":["github","user"],"ok":"https://github.com/user"}
+{"fn":"socialLinkLabel","args":["threads"],"ok":"Threads"}
+{"fn":"socialProfileUrl","args":["threads","user"],"ok":"https://www.threads.com/@user"}
+{"fn":"socialLinkLabel","args":["youtube"],"ok":"YouTube"}
+{"fn":"socialProfileUrl","args":["youtube","user"],"ok":"https://www.youtube.com/@user"}
+{"fn":"socialLinkLabel","args":["mastodon"],"error":"Cannot read properties of undefined (reading 'label')"}
+{"fn":"socialProfileUrl","args":["mastodon","user"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialLinkLabel","args":["bluesky"],"error":"Cannot read properties of undefined (reading 'label')"}
+{"fn":"socialProfileUrl","args":["bluesky","user"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialLinkLabel","args":["instagram"],"error":"Cannot read properties of undefined (reading 'label')"}
+{"fn":"socialProfileUrl","args":["instagram","user"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialLinkLabel","args":["website"],"error":"Cannot read properties of undefined (reading 'label')"}
+{"fn":"socialProfileUrl","args":["website","user"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialLinkLabel","args":["discord"],"error":"Cannot read properties of undefined (reading 'label')"}
+{"fn":"socialProfileUrl","args":["discord","user"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialLinkLabel","args":["twitch"],"error":"Cannot read properties of undefined (reading 'label')"}
+{"fn":"socialProfileUrl","args":["twitch","user"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialLinkLabel","args":["tiktok"],"error":"Cannot read properties of undefined (reading 'label')"}
+{"fn":"socialProfileUrl","args":["tiktok","user"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialLinkLabel","args":["facebook"],"error":"Cannot read properties of undefined (reading 'label')"}
+{"fn":"socialProfileUrl","args":["facebook","user"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"socialLinkLabel","args":["twitter"],"error":"Cannot read properties of undefined (reading 'label')"}
+{"fn":"socialProfileUrl","args":["twitter","user"],"error":"Cannot read properties of undefined (reading 'url')"}
+{"fn":"normalizeSocialUsername","args":["x","github.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["linkedin","github.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["github","github.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["threads","github.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["youtube","github.com/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["x","linkedin.com/in/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["linkedin","linkedin.com/in/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["github","linkedin.com/in/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["threads","linkedin.com/in/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["youtube","linkedin.com/in/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["x","GITHUB.COM/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["linkedin","GITHUB.COM/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["github","GITHUB.COM/user"],"ok":"user"}
+{"fn":"normalizeSocialUsername","args":["threads","GITHUB.COM/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["youtube","GITHUB.COM/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["x","Twitter.com/user"],"ok":"user"}
+{"fn":"normalizeSocialUsername","args":["linkedin","Twitter.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["github","Twitter.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["threads","Twitter.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["youtube","Twitter.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["x","THREADS.NET/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["linkedin","THREADS.NET/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["github","THREADS.NET/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["threads","THREADS.NET/@user"],"ok":"user"}
+{"fn":"normalizeSocialUsername","args":["youtube","THREADS.NET/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["x","YOUTUBE.COM/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["linkedin","YOUTUBE.COM/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["github","YOUTUBE.COM/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["threads","YOUTUBE.COM/@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["youtube","YOUTUBE.COM/@user"],"ok":"user"}
+{"fn":"normalizeSocialUsername","args":["x","x.com/user/more"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["linkedin","x.com/user/more"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["github","x.com/user/more"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["threads","x.com/user/more"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["youtube","x.com/user/more"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["x","http://github.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["linkedin","http://github.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["github","http://github.com/user"],"ok":"user"}
+{"fn":"normalizeSocialUsername","args":["threads","http://github.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["youtube","http://github.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["x","https://x.com/"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["linkedin","https://x.com/"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["github","https://x.com/"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["threads","https://x.com/"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["youtube","https://x.com/"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["x","x.com/"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["linkedin","x.com/"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["github","x.com/"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["threads","x.com/"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["youtube","x.com/"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["x","@x"],"ok":"x"}
+{"fn":"normalizeSocialUsername","args":["linkedin","@x"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["github","@x"],"ok":"x"}
+{"fn":"normalizeSocialUsername","args":["threads","@x"],"ok":"x"}
+{"fn":"normalizeSocialUsername","args":["youtube","@x"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["x","@@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["linkedin","@@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["github","@@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["threads","@@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["youtube","@@user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["x"," @x "],"ok":"x"}
+{"fn":"normalizeSocialUsername","args":["linkedin"," @x "],"ok":null}
+{"fn":"normalizeSocialUsername","args":["github"," @x "],"ok":"x"}
+{"fn":"normalizeSocialUsername","args":["threads"," @x "],"ok":"x"}
+{"fn":"normalizeSocialUsername","args":["youtube"," @x "],"ok":null}
+{"fn":"normalizeSocialUsername","args":["x","x.com/user#frag"],"ok":"user"}
+{"fn":"normalizeSocialUsername","args":["linkedin","x.com/user#frag"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["github","x.com/user#frag"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["threads","x.com/user#frag"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["youtube","x.com/user#frag"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["x","sub.x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["linkedin","sub.x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["github","sub.x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["threads","sub.x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["youtube","sub.x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["x","x.com.evil.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["linkedin","x.com.evil.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["github","x.com.evil.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["threads","x.com.evil.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["youtube","x.com.evil.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["x","notx.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["linkedin","notx.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["github","notx.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["threads","notx.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["youtube","notx.com/user"],"ok":null}
+{"fn":"sanitizeSocialLinks","args":[{"x":" abc "}],"ok":{}}
+{"fn":"sanitizeSocialLinks","args":[{"x":"@abc"}],"ok":{}}
+{"fn":"sanitizeSocialLinks","args":[{"x":null}],"ok":{}}
+{"fn":"sanitizeSocialLinks","args":[{"x":""}],"ok":{}}
+{"fn":"sanitizeSocialLinks","args":[{"X":"abc"}],"ok":{}}
+{"fn":"sanitizeSocialLinks","args":[{"x":"aaaaaaaaaaaaaaaa"}],"ok":{}}
+{"fn":"sanitizeSocialLinks","args":[{"x":"aaaaaaaaaaaaaaa"}],"ok":{"x":"aaaaaaaaaaaaaaa"}}
+{"fn":"sanitizeSocialLinks","args":[{"github":"a-b"}],"ok":{"github":"a-b"}}
+{"fn":"sanitizeSocialLinks","args":[{"github":"a--b"}],"ok":{}}
+{"fn":"sanitizeSocialLinks","args":[{"github":"a-"}],"ok":{}}
+{"fn":"sanitizeSocialLinks","args":[{"linkedin":"ab"}],"ok":{}}
+{"fn":"sanitizeSocialLinks","args":[{"linkedin":"abc"}],"ok":{"linkedin":"abc"}}
+{"fn":"sanitizeSocialLinks","args":[{"threads":".dot"}],"ok":{"threads":".dot"}}
+{"fn":"sanitizeSocialLinks","args":[{"youtube":"ab"}],"ok":{}}
+{"fn":"sanitizeSocialLinks","args":[{"youtube":"abc"}],"ok":{"youtube":"abc"}}
+{"fn":"sanitizeSocialLinks","args":[{"x":"ok","bogus":"ok"}],"ok":{"x":"ok"}}
+{"fn":"sanitizeSocialLinks","args":[{"__proto__":"x"}],"ok":{}}
+{"fn":"sanitizeSocialLinks","args":[{"x":"ok2"}],"ok":{"x":"ok2"}}
+{"fn":"normalizeSocialUsername","args":["x","@x.com/user"],"ok":"user"}
+{"fn":"normalizeSocialUsername","args":["linkedin","@x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["github","@x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["threads","@x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["youtube","@x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["x","xx.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["linkedin","xx.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["github","xx.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["threads","xx.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["youtube","xx.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["x","pre x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["linkedin","pre x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["github","pre x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["threads","pre x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["youtube","pre x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["x","x.com/user!more"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["linkedin","x.com/user!more"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["github","x.com/user!more"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["threads","x.com/user!more"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["youtube","x.com/user!more"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["x","x.com/user.more"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["linkedin","x.com/user.more"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["github","x.com/user.more"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["threads","x.com/user.more"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["youtube","x.com/user.more"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["x","x.com/user-x"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["linkedin","x.com/user-x"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["github","x.com/user-x"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["threads","x.com/user-x"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["youtube","x.com/user-x"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["x","x.com/user_x"],"ok":"user_x"}
+{"fn":"normalizeSocialUsername","args":["linkedin","x.com/user_x"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["github","x.com/user_x"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["threads","x.com/user_x"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["youtube","x.com/user_x"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["x","x.com/u.s.e.r"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["linkedin","x.com/u.s.e.r"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["github","x.com/u.s.e.r"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["threads","x.com/u.s.e.r"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["youtube","x.com/u.s.e.r"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["x","github.com/user/repo?x=1"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["linkedin","github.com/user/repo?x=1"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["github","github.com/user/repo?x=1"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["threads","github.com/user/repo?x=1"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["youtube","github.com/user/repo?x=1"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["x","linkedin.com/in/user-x/extra"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["linkedin","linkedin.com/in/user-x/extra"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["github","linkedin.com/in/user-x/extra"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["threads","linkedin.com/in/user-x/extra"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["youtube","linkedin.com/in/user-x/extra"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["x","threads.net/@a.b_c"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["linkedin","threads.net/@a.b_c"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["github","threads.net/@a.b_c"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["threads","threads.net/@a.b_c"],"ok":"a.b_c"}
+{"fn":"normalizeSocialUsername","args":["youtube","threads.net/@a.b_c"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["x","youtube.com/@a-b_c.d"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["linkedin","youtube.com/@a-b_c.d"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["github","youtube.com/@a-b_c.d"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["threads","youtube.com/@a-b_c.d"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["youtube","youtube.com/@a-b_c.d"],"ok":"a-b_c.d"}
+{"fn":"normalizeSocialUsername","args":["x","x.com/User_X9"],"ok":"User_X9"}
+{"fn":"normalizeSocialUsername","args":["linkedin","x.com/User_X9"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["github","x.com/User_X9"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["threads","x.com/User_X9"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["youtube","x.com/User_X9"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["x","HTTPS://X.COM/user"],"ok":"user"}
+{"fn":"normalizeSocialUsername","args":["linkedin","HTTPS://X.COM/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["github","HTTPS://X.COM/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["threads","HTTPS://X.COM/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["youtube","HTTPS://X.COM/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["x","//x.com/user"],"ok":"user"}
+{"fn":"normalizeSocialUsername","args":["linkedin","//x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["github","//x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["threads","//x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["youtube","//x.com/user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["x","x.com//user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["linkedin","x.com//user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["github","x.com//user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["threads","x.com//user"],"ok":null}
+{"fn":"normalizeSocialUsername","args":["youtube","x.com//user"],"ok":null}

@@ -1,0 +1,162 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/timestampFormat.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "timestampformat-rs",
+  "exports": [
+    {
+      "name": "getTimestampFormatOptions",
+      "file": "apps/web/src/timestampFormat.ts",
+      "line": 4,
+      "params": [
+        {
+          "name": "timestampFormat",
+          "ts_type": "typeof typeof typeof typeof TimestampFormat.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "includeSeconds",
+          "ts_type": "boolean",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Intl.DateTimeFormatOptions",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "formatTimestamp",
+      "file": "apps/web/src/timestampFormat.ts",
+      "line": 52,
+      "params": [
+        {
+          "name": "isoDate",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "timestampFormat",
+          "ts_type": "typeof typeof typeof typeof TimestampFormat.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "locale",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "formatShortTimestamp",
+      "file": "apps/web/src/timestampFormat.ts",
+      "line": 60,
+      "params": [
+        {
+          "name": "isoDate",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "timestampFormat",
+          "ts_type": "typeof typeof typeof typeof TimestampFormat.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "locale",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "formatShortDateTimestamp",
+      "file": "apps/web/src/timestampFormat.ts",
+      "line": 68,
+      "params": [
+        {
+          "name": "isoDate",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "timestampFormat",
+          "ts_type": "typeof typeof typeof typeof TimestampFormat.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "locale",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "formatDayAwareTimestamp",
+      "file": "apps/web/src/timestampFormat.ts",
+      "line": 115,
+      "params": [
+        {
+          "name": "isoDate",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "timestampFormat",
+          "ts_type": "typeof typeof typeof typeof TimestampFormat.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "now",
+          "ts_type": "Date",
+          "optional": true,
+          "rest": false
+        },
+        {
+          "name": "locale",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

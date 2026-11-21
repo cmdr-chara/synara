@@ -1,0 +1,886 @@
+{"fn":"getTimestampFormatOptions","args":[true,true],"ok":{"hour":"numeric","minute":"2-digit","second":"2-digit","hour12":false}}
+{"fn":"getTimestampFormatOptions","args":[["a",1],false],"ok":{"hour":"numeric","minute":"2-digit","hour12":false}}
+{"fn":"getTimestampFormatOptions","args":[{"a":{"b":"c"}},false],"ok":{"hour":"numeric","minute":"2-digit","hour12":false}}
+{"fn":"getTimestampFormatOptions","args":[{"a":"b"},false],"ok":{"hour":"numeric","minute":"2-digit","hour12":false}}
+{"fn":"getTimestampFormatOptions","args":["x",true],"ok":{"hour":"numeric","minute":"2-digit","second":"2-digit","hour12":false}}
+{"fn":"getTimestampFormatOptions","args":["x",false],"ok":{"hour":"numeric","minute":"2-digit","hour12":false}}
+{"fn":"getTimestampFormatOptions","args":[null,false],"ok":{"hour":"numeric","minute":"2-digit","hour12":false}}
+{"fn":"getTimestampFormatOptions","args":[{},true],"ok":{"hour":"numeric","minute":"2-digit","second":"2-digit","hour12":false}}
+{"fn":"getTimestampFormatOptions","args":[{},false],"ok":{"hour":"numeric","minute":"2-digit","hour12":false}}
+{"fn":"getTimestampFormatOptions","args":[{"a":"b"},true],"ok":{"hour":"numeric","minute":"2-digit","second":"2-digit","hour12":false}}
+{"fn":"getTimestampFormatOptions","args":[null,true],"ok":{"hour":"numeric","minute":"2-digit","second":"2-digit","hour12":false}}
+{"fn":"getTimestampFormatOptions","args":[[],true],"ok":{"hour":"numeric","minute":"2-digit","second":"2-digit","hour12":false}}
+{"fn":"getTimestampFormatOptions","args":[["a",1],true],"ok":{"hour":"numeric","minute":"2-digit","second":"2-digit","hour12":false}}
+{"fn":"getTimestampFormatOptions","args":[0,true],"ok":{"hour":"numeric","minute":"2-digit","second":"2-digit","hour12":false}}
+{"fn":"getTimestampFormatOptions","args":[[],false],"ok":{"hour":"numeric","minute":"2-digit","hour12":false}}
+{"fn":"getTimestampFormatOptions","args":[true,false],"ok":{"hour":"numeric","minute":"2-digit","hour12":false}}
+{"fn":"getTimestampFormatOptions","args":[0,false],"ok":{"hour":"numeric","minute":"2-digit","hour12":false}}
+{"fn":"getTimestampFormatOptions","args":[{"a":{"b":"c"}},true],"ok":{"hour":"numeric","minute":"2-digit","second":"2-digit","hour12":false}}
+{"fn":"formatTimestamp","args":["  padded  ",0,null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatTimestamp","args":["Hello Worlda😀b😀c",null,null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatTimestamp","args":["😀emoji 👍🏽 mix",{"a":{"b":"c"}},{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["ünïcödé{name} has {count} items",null,"x"],"error":"invalid language tag: x"}
+{"fn":"formatTimestamp","args":["hello world",[],{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["hello world","LO ",[]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["﻿bom",{"a":{"b":"c"}},true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["{name} has {count} items",0,{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":[".leadingtab\tseparated",[],{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["hello worlda😀b😀c",{},{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["a:b:cstraße",null,{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["straße",[],0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["a.b.c",["a",1],["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatTimestamp","args":["tab\tseparated",true,{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["hello",[],"x"],"error":"invalid language tag: x"}
+{"fn":"formatTimestamp","args":["a..bΣΊΣΥΦΟΣ","x"],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["  padded  ",true,["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatTimestamp","args":["emoji 👍🏽 mix",null,{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["Hello World",["a",1]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["src/a/b.ts",[],{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["ünïcödé",{},"x"],"error":"invalid language tag: x"}
+{"fn":"formatTimestamp","args":["emoji 👍🏽 mix",[],{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["ab",["a",1],{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["ünïcödé",{"a":"b"},true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["src/a/b.ts",null,null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatTimestamp","args":["ΣΊΣΥΦΟΣHELLO",["a",1],{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["hello world",["a",1],{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["Hello World﻿bom",[],[]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["a😀b😀c","x",null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatTimestamp","args":["straßestraße",["a",1],null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatTimestamp","args":["./x/**/*.json",[],{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":[":straße",0,true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["tab\tseparated",{"a":{"b":"c"}},[]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["Hello World","x",{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["key_name-1",0,{"a":{"b":"c"}}],"ok":"00:00:00"}
+{"fn":"formatTimestamp","args":["a:b:cemoji 👍🏽 mix",[],null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatTimestamp","args":["./x/**/*.json",{"a":{"b":"c"}},{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["ΣΊΣΥΦΟΣ",0,0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["a",{"a":{"b":"c"}},["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatTimestamp","args":["a😀b😀c","A😀B😀",null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatTimestamp","args":["  padded  日本語のテキスト","x",{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["Hello World",{"a":{"b":"c"}},{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["key_name-1./x/**/*.json",{"a":"b"},{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":[".leadinga.b.c",[],{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["Hello World",["a",1],"x"],"error":"invalid language tag: x"}
+{"fn":"formatTimestamp","args":["absrc/a/b.ts",[],{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["straße😀",null,"x"],"error":"invalid language tag: x"}
+{"fn":"formatTimestamp","args":["helloline1\nline2",{"a":{"b":"c"}},{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["straße",[],{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["a.b.c",null,[]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["İstanbulkey_name-1",[],["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatTimestamp","args":["a..b",["a",1],true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["ab",{},{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["Hello Worldünïcödé",[]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["﻿bom",true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["a.b.ctrailing.",["a",1],[]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":[":",[]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["key_name-1é",{},0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["a..b",{"a":"b"},{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["abns:key.path",{"a":"b"},true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["emoji 👍🏽 mix",true,{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["a😀b😀c",["a",1],null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatTimestamp","args":["a:b:c",{},["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatTimestamp","args":["  padded  ",[],["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatTimestamp","args":["İstanbul﻿bom",0,true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["éab",null,null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatTimestamp","args":[".leading",true,null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatTimestamp","args":["ab",["a",1],["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatTimestamp","args":["HELLO",["a",1],[]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["  padded  ",["a",1],"x"],"error":"invalid language tag: x"}
+{"fn":"formatTimestamp","args":["ünïcödéa😀b😀c",null],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["{name} has {count} items",true,null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatTimestamp","args":["x","x",null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatTimestamp","args":["./x/**/*.json",["a",1],[]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["a:b:c",{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["😀",{"a":"b"},true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["abİstanbul",[],"x"],"error":"invalid language tag: x"}
+{"fn":"formatTimestamp","args":["﻿bom",0,0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["line1\nline2",null,["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatTimestamp","args":["a..b",[],"b"],"error":"invalid language tag: b"}
+{"fn":"formatTimestamp","args":["./x/**/*.json",0,{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["Hello World","x",{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["a:b:c",{"a":"b"},{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["Hello World","D",{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["line1\nline2",true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["src/a/b.ts",0,null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatTimestamp","args":["a..b",null,0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["é./x/**/*.json",{"a":{"b":"c"}},{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["{name} has {count} items","x",null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatTimestamp","args":[".leadingstraße","x",{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["key_name-1","x",{"a":"b"}],"ok":"00:00:00"}
+{"fn":"formatTimestamp","args":["",["a",1],[]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["😀日本語のテキスト",{"a":{"b":"c"}},{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":[".leading",null,["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatTimestamp","args":["x","x",{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["hello world",[],0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["",0,{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["hello",true,{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":[":",{"a":{"b":"c"}},0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["a:b:c",["a",1],0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":[".leading",{"a":{"b":"c"}},null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatTimestamp","args":["",{"a":"b"},{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":[":",true,"x"],"error":"invalid language tag: x"}
+{"fn":"formatTimestamp","args":["İstanbul",{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["  padded  ",{"a":"b"},[]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["./x/**/*.json",["a",1],{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":[":",{},null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatTimestamp","args":["a:b:c",{"a":{"b":"c"}},{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["﻿bomHello World",null,"x"],"error":"invalid language tag: x"}
+{"fn":"formatTimestamp","args":["./x/**/*.json",null],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":[":",null,{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["::",0,0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["key_name-1","x",[]],"ok":"00:00:00"}
+{"fn":"formatTimestamp","args":["  padded  ./x/**/*.json",["a",1],{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["a:b:c",["a",1],["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatTimestamp","args":["src/a/b.ts","x"],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["İstanbul",0,{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["a..b",null,{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["ab",{"a":"b"},null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatTimestamp","args":["aΣΊΣΥΦΟΣ","x",0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["ns:key.path﻿bom",0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["ns:key.path",true,{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["abc",{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["a.b.c",{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["😀",true,{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":[".leading:",{"a":"b"},true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["key_name-1",[],{"a":{"b":"c"}}],"ok":"00:00:00"}
+{"fn":"formatTimestamp","args":["./x/**/*.jsona..b",0,"x"],"error":"invalid language tag: x"}
+{"fn":"formatTimestamp","args":["hello",true,{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["abctrailing.",{"a":"b"},{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":[":",{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["  padded  ",null,true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["😀",true,null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatTimestamp","args":["﻿bomΣΊΣΥΦΟΣ",{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["HELLO",["a",1]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["İstanbul",true,{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["a😀b😀c",0,true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["ünïcödé",{"a":"b"},{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["İstanbul",[],true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["hello",{},[]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["a.b.c",null,"x"],"error":"invalid language tag: x"}
+{"fn":"formatTimestamp","args":["a..b",null],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["a😀b😀c",["a",1],[]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["./x/**/*.json",null,{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["./x/**/*.json",["a",1],"x"],"error":"invalid language tag: x"}
+{"fn":"formatTimestamp","args":["emoji 👍🏽 mix","x","x"],"error":"invalid language tag: x"}
+{"fn":"formatTimestamp","args":["key_name-1",0,null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatTimestamp","args":["日本語のテキスト",null,["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatTimestamp","args":["abc",{"a":"b"},0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["line1\nline2",{"a":{"b":"c"}},["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatTimestamp","args":["﻿bom",true,{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["a:b:c",{"a":"b"},null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatTimestamp","args":["İstanbul.leading",0,["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatTimestamp","args":[":","x",0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["a",{},["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatTimestamp","args":["a",{},{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["key_name-1",["a",1],{"$undefined":true}],"ok":"00:00:00"}
+{"fn":"formatTimestamp","args":["emoji 👍🏽 mix",["a",1],{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["key_name-1",true],"ok":"00:00:00"}
+{"fn":"formatTimestamp","args":["a..b",0,{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["X",{},"x"],"error":"invalid language tag: x"}
+{"fn":"formatTimestamp","args":["a..b",{"a":{"b":"c"}},{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["İstanbulns:key.path","x",{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["  padded  ",{"a":"b"},{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["Hello World","x",{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["abc",{},{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["é",{"a":"b"},null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatTimestamp","args":["{name} has {count} items","x","x"],"error":"invalid language tag: x"}
+{"fn":"formatTimestamp","args":["line1\nline2",{"a":"b"},null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatTimestamp","args":["😀",[],"x"],"error":"invalid language tag: x"}
+{"fn":"formatTimestamp","args":["a:b:c","x",{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["ünïcödé  padded  ",null],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["é",["a",1],true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["ΣΊΣΥΦΟΣ","x",{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["line1\nline2","x",["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatTimestamp","args":["tab\tseparated","x"],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["ns:key.path",{"a":{"b":"c"}},true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["emoji 👍🏽 mix","x",true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["a日本語のテキスト",null,{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["﻿bom",null,["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatTimestamp","args":["abİstanbul",0,true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["line1\nline2",["a",1],null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatTimestamp","args":["abckey_name-1",true],"ok":"00:00:00"}
+{"fn":"formatTimestamp","args":["",0,{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["a",true,{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["hello",[],true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["ΣΊΣΥΦΟΣ",{"a":{"b":"c"}},{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["hello",null,{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["HELLO",true,[]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["trailing.é",{},true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["a..b",["a",1],{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["😀.leading",null,["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatTimestamp","args":["a..b",0,0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["key_name-1",0,{}],"ok":"00:00:00"}
+{"fn":"formatTimestamp","args":["emoji 👍🏽 mixtrailing.",0,{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["a😀b😀ca..b",{},true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["trailing.",true,[]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["key_name-1a😀b😀c",{},{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["  padded  ",{"a":"b"},"d "],"error":"invalid language tag: d "}
+{"fn":"formatTimestamp","args":["日本語のテキスト","x",[]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatTimestamp","args":["héllo wörld",0,null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatTimestamp","args":["👍🏽 thumbs",0,null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatTimestamp","args":["日本語",0,null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatTimestamp","args":["",0,null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatTimestamp","args":["é",0,null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatTimestamp","args":["İstanbul",0,null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatTimestamp","args":["straße",0,null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatTimestamp","args":["ılık ırmak",0,null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatTimestamp","args":["👨‍👩‍👧 family",0,null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatTimestamp","args":["a b",0,null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatTimestamp","args":["ΣΊΣΥΦΟΣ",0,null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatTimestamp","args":["a😀b",0,null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatTimestamp","args":["﻿bom",0,null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatTimestamp","args":["a²b x½ y①",0,null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatTimestamp","args":["aⅠb Ⅻ",0,null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatTimestamp","args":["a𐐀b 𝐀bc",0,null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatTimestamp","args":["कि ٣٤",0,null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatShortTimestamp","args":["hello",{},0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["﻿bom{name} has {count} items","x",[]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["a..b",{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["x","x",true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["tab\tseparated",{},{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["  padded  ",{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":[".leading",true,null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatShortTimestamp","args":["日本語のテキスト",0,0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["ΣΊΣΥΦΟΣ",{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["é",true,null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatShortTimestamp","args":["aünïcödé",["a",1],null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatShortTimestamp","args":["﻿bom",{"a":"b"},{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["Hello World",null,{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["line1\nline2","x","x"],"error":"invalid language tag: x"}
+{"fn":"formatShortTimestamp","args":["a😀b😀ca😀b😀c",{"a":{"b":"c"}},{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["a.b.cabc",null,0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":[".leading",["a",1],{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["Hello World",{"a":"b"},null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatShortTimestamp","args":["HELLO",0,{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":[":  padded  ",true,null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatShortTimestamp","args":["ünïcödé",{"a":"b"},null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatShortTimestamp","args":["src/a/b.ts",true,{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["日本語のテキスト",["a",1]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["emoji 👍🏽 mixtrailing.","x",true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["a..b",{},{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["src/a/b.ts{name} has {count} items",{"a":{"b":"c"}},{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["İstanbul",["a",1],null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatShortTimestamp","args":["ünïcödé",{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["﻿bom",[],{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["key_name-1Hello World","x",{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["./x/**/*.json",0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["trailing.",["a",1]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["emoji 👍🏽 mix",{},"x"],"error":"invalid language tag: x"}
+{"fn":"formatShortTimestamp","args":[":",["a",1],0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["a😀b😀c",["a",1],0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["emoji 👍🏽 mix",{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["straße",true,{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["tab\tseparated",{},[]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["line1\nline2","x",{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["é",0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["ab",{"a":{"b":"c"}},{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["a:b:c",{},{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":[":",[],["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatShortTimestamp","args":["tab\tseparated",{"a":"b"},null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatShortTimestamp","args":["a😀b😀c",{"a":{"b":"c"}},"x"],"error":"invalid language tag: x"}
+{"fn":"formatShortTimestamp","args":["a..b",[],"x"],"error":"invalid language tag: x"}
+{"fn":"formatShortTimestamp","args":["x","x",{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["ab",{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["trailing.",null,0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["a.b.ca😀b😀c",true,{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["é",["a",1],{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["a😀b😀c",true,0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["a😀b😀cΣΊΣΥΦΟΣ",["a",1],{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["﻿bom",{},["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatShortTimestamp","args":["",{},null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatShortTimestamp","args":["straße",["a",1],["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatShortTimestamp","args":["HELLOns:key.path",[],0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["  padded  line1\nline2",0,"x"],"error":"invalid language tag: x"}
+{"fn":"formatShortTimestamp","args":["emoji 👍🏽 mix",null,["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatShortTimestamp","args":["src/a/b.ts",{"a":{"b":"c"}},null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatShortTimestamp","args":["Hello World",null,[]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["key_name-1",{"a":"b"},true],"ok":"00:00"}
+{"fn":"formatShortTimestamp","args":["İstanbul",{},{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["key_name-1ab",["a",1],[]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["ab","ab",null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatShortTimestamp","args":["ünïcödé",0,0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["key_name-1","x",{"a":{"b":"c"}}],"ok":"00:00"}
+{"fn":"formatShortTimestamp","args":["abc",["a",1],{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["",{},[]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["",{},{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["trailing.line1\nline2",{"a":{"b":"c"}},true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["tab\tseparated",0,{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["a.b.cline1\nline2",{"a":{"b":"c"}},0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["ns:key.path",{"a":"b"},["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatShortTimestamp","args":["  padded  ",null],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["a.b.c",{},[]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["İstanbula😀b😀c",{"a":"b"},[]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["abc",{},["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatShortTimestamp","args":["ns:key.path",true,true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["straßehello world",0,[]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["ΣΊΣΥΦΟΣ",[],{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":[":",null,true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["é{name} has {count} items",true,{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["﻿bom",{"a":"b"},true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["a.b.c",{},true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["trailing.",{},null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatShortTimestamp","args":["ns:key.path",true,null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatShortTimestamp","args":["日本語のテキスト",[],true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["a",0,true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["a..b","b",[]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["straße:","x",{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["straße",{"a":"b"},["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatShortTimestamp","args":["ns:key.pathsrc/a/b.ts",["a",1],{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["./x/**/*.json",[]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["ab",[],null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatShortTimestamp","args":["ΣΊΣΥΦΟΣ",true,{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["src/a/b.tsemoji 👍🏽 mix",null,{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["x","x",{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["Hello World",["a",1],null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatShortTimestamp","args":["﻿bom",["a",1],["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatShortTimestamp","args":["hello world",0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["line1\nline2",0,{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["a.b.c",null,{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["é",["a",1],null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatShortTimestamp","args":["a",null,[]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["trailing.",{"a":"b"},{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["straße","x",["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatShortTimestamp","args":[":",0,["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatShortTimestamp","args":["a:b:c",{"a":"b"},"x"],"error":"invalid language tag: x"}
+{"fn":"formatShortTimestamp","args":["line1\nline2",{"a":"b"},{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["  padded  ",null,0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":[":",{"a":"b"},["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatShortTimestamp","args":["  padded  ",null,{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["straße😀",{"a":"b"},[]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["straße","x",{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["😀","x",{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["a:b:c",["a",1],["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatShortTimestamp","args":["😀",null,{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["{name} has {count} items",{"a":"b"},{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["straße  padded  ",true,"x"],"error":"invalid language tag: x"}
+{"fn":"formatShortTimestamp","args":["ns:key.path",[],[]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["HELLO:",["a",1],["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatShortTimestamp","args":[".leading",{"a":"b"},[]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["abc",[],["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatShortTimestamp","args":["a:b:c",null,[]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["日本語のテキスト",["a",1],{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["ab",null,null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatShortTimestamp","args":["emoji 👍🏽 mix",{},[]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":[".leading",{"a":"b"},["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatShortTimestamp","args":[":",true,"x"],"error":"invalid language tag: x"}
+{"fn":"formatShortTimestamp","args":["a:b:c",{},"b:"],"error":"invalid language tag: b:"}
+{"fn":"formatShortTimestamp","args":["./x/**/*.json",{"a":{"b":"c"}},{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["straße",{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["é",{"a":"b"},"x"],"error":"invalid language tag: x"}
+{"fn":"formatShortTimestamp","args":["ab",{"a":"b"},"x"],"error":"invalid language tag: x"}
+{"fn":"formatShortTimestamp","args":["日本語のテキスト",0,[]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":[":",{"a":{"b":"c"}},{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["a..b",{"a":"b"},null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatShortTimestamp","args":["{name} has {count} items",true,[]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["ab",0,0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["ünïcödé","x"],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["hello worlda:b:c",{"a":{"b":"c"}},true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["a:b:c",{},0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["line1\nline2",["a",1],{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["emoji 👍🏽 mixé",true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["﻿bom",{"a":{"b":"c"}},["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatShortTimestamp","args":["key_name-1",{"a":"b"},{"a":"b"}],"ok":"00:00"}
+{"fn":"formatShortTimestamp","args":["éns:key.path",{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["x",0,"x"],"error":"invalid language tag: x"}
+{"fn":"formatShortTimestamp","args":["  padded  ",{"a":"b"},["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatShortTimestamp","args":["abc",0,["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatShortTimestamp","args":["a{name} has {count} items",{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["a.b.c",null,[]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["key_name-1",{"a":"b"},"x"],"error":"invalid language tag: x"}
+{"fn":"formatShortTimestamp","args":["a.b.ckey_name-1",[],{"a":"b"}],"ok":"00:00"}
+{"fn":"formatShortTimestamp","args":[".leading",{"a":"b"},"x"],"error":"invalid language tag: x"}
+{"fn":"formatShortTimestamp","args":["abc",{"a":"b"},0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["key_name-1a.b.c",null,0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["emoji 👍🏽 mix",{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["a.b.c",null,{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["ns:key.path","x",{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["",{},["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatShortTimestamp","args":[".leading",true,{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["😀",{},{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["Hello World",{},{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":[".leading",{"a":"b"},0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["ünïcödé",{},null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatShortTimestamp","args":[".leading",0,{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["a😀b😀c",{},{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["HELLO",{},{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["a.b.c",["a",1],"x"],"error":"invalid language tag: x"}
+{"fn":"formatShortTimestamp","args":["hello",{"a":"b"},{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["HELLO",{},null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatShortTimestamp","args":["key_name-1",null,[]],"ok":"00:00"}
+{"fn":"formatShortTimestamp","args":["src/a/b.tshello",0,null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatShortTimestamp","args":["line1\nline2",{},true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["﻿boma.b.c",0,["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatShortTimestamp","args":["é",{"a":{"b":"c"}},0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["ab",true,{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["line1\nline2",{},{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["./x/**/*.json",{"a":{"b":"c"}},{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["Hello World",0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["line1\nline2",{"a":{"b":"c"}},["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatShortTimestamp","args":["key_name-1",["a",1]],"ok":"00:00"}
+{"fn":"formatShortTimestamp","args":["abc",{},{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["HELLO","H",0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["HELLO",[]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["ΣΊΣΥΦΟΣ",null,0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["a.b.ca😀b😀c",[],["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatShortTimestamp","args":["straße  padded  ","x",{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["abc",null,["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatShortTimestamp","args":["x","x","x"],"error":"invalid language tag: x"}
+{"fn":"formatShortTimestamp","args":["tab\tseparated",["a",1],"x"],"error":"invalid language tag: x"}
+{"fn":"formatShortTimestamp","args":["ünïcödé",null,{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["﻿bom",true,["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatShortTimestamp","args":["straßestraße",{},["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatShortTimestamp","args":["tab\tseparated",null,{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["ns:key.path",0,["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatShortTimestamp","args":["  padded  İstanbul",["a",1],null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatShortTimestamp","args":["a.b.c","x",{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["héllo wörld",{},0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["👍🏽 thumbs",{},0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["日本語",{},0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["",{},0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["é",{},0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["İstanbul",{},0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["straße",{},0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["ılık ırmak",{},0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["👨‍👩‍👧 family",{},0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["a b",{},0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["ΣΊΣΥΦΟΣ",{},0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["a😀b",{},0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["﻿bom",{},0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["a²b x½ y①",{},0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["aⅠb Ⅻ",{},0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["a𐐀b 𝐀bc",{},0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortTimestamp","args":["कि ٣٤",{},0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["tab\tseparated",null,true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["emoji 👍🏽 mix",{"a":{"b":"c"}},{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["line1\nline2﻿bom",{"a":{"b":"c"}},true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["{name} has {count} items",["a",1],["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatShortDateTimestamp","args":["a.b.c",null,null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatShortDateTimestamp","args":["HELLO",{},0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["a:b:c",true,[]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["a😀b😀ca..b",{},{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["emoji 👍🏽 mix",{"a":"b"},{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["ns:key.pathé",{"a":{"b":"c"}},["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatShortDateTimestamp","args":["./x/**/*.json",["a",1],["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatShortDateTimestamp","args":["﻿bomsrc/a/b.ts",{"a":{"b":"c"}},0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["trailing.",0,"x"],"error":"invalid language tag: x"}
+{"fn":"formatShortDateTimestamp","args":["",{"a":"b"},{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["key_name-1",null,{"a":"b"}],"ok":"Jan 1, 2001 at 00:00"}
+{"fn":"formatShortDateTimestamp","args":["ΣΊΣΥΦΟΣ",{"a":{"b":"c"}},0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["trailing.",true,{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["emoji 👍🏽 mix",0,0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["a..b",0,{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["hello world",null,{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["a😀b😀c",0,{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["trailing.","x",{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["日本語のテキスト",[],{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["日本語のテキスト",0,0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["日本語のテキスト",null,{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":[":tab\tseparated",["a",1],{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["﻿bom",0,null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatShortDateTimestamp","args":["﻿bom",null,null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatShortDateTimestamp","args":["é﻿bom",true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["a..b",[],"x"],"error":"invalid language tag: x"}
+{"fn":"formatShortDateTimestamp","args":["a.b.c",true,{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["ünïcödé",true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["a",{"a":{"b":"c"}},{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["trailing.",null,["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatShortDateTimestamp","args":["hello world",["a",1],"x"],"error":"invalid language tag: x"}
+{"fn":"formatShortDateTimestamp","args":["a..b",["a",1]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["a:b:chello",null,"x"],"error":"invalid language tag: x"}
+{"fn":"formatShortDateTimestamp","args":["😀",null,"😀"],"error":"invalid language tag: 😀"}
+{"fn":"formatShortDateTimestamp","args":["a😀b😀c",{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["emoji 👍🏽 mix",{"a":"b"},{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["HELLO",[],[]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["emoji 👍🏽 mix",null,["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatShortDateTimestamp","args":["abΣΊΣΥΦΟΣ",[],["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatShortDateTimestamp","args":["a.b.c",null,[]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["İstanbul",["a",1],"x"],"error":"invalid language tag: x"}
+{"fn":"formatShortDateTimestamp","args":["ésrc/a/b.ts",null,{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["😀tab\tseparated",0,["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatShortDateTimestamp","args":["日本語のテキスト",true,{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["tab\tseparated",{"a":{"b":"c"}},{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["é",[],"x"],"error":"invalid language tag: x"}
+{"fn":"formatShortDateTimestamp","args":["key_name-1a..b",{"a":"b"},["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatShortDateTimestamp","args":["é",{"a":"b"},"x"],"error":"invalid language tag: x"}
+{"fn":"formatShortDateTimestamp","args":["./x/**/*.jsonHello World",["a",1],{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["﻿bom",0,["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatShortDateTimestamp","args":["😀","x",true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["a..b",0,0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["é",0,[]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["ünïcödé",{"a":{"b":"c"}},{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["Hello World",null,{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["a..b",[],{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["  padded  ",0,true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["line1\nline2",true,[]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["hello",{"a":{"b":"c"}},{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["abckey_name-1",[]],"ok":"Jan 1, 2001 at 00:00"}
+{"fn":"formatShortDateTimestamp","args":["HELLOünïcödé",["a",1],{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["a..b",[],{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["İstanbulkey_name-1",[],["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatShortDateTimestamp","args":["﻿bom",{"a":"b"},["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatShortDateTimestamp","args":["./x/**/*.jsonünïcödé",{},{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["ΣΊΣΥΦΟΣ","x","x"],"error":"invalid language tag: x"}
+{"fn":"formatShortDateTimestamp","args":["日本語のテキスト","x","x"],"error":"invalid language tag: x"}
+{"fn":"formatShortDateTimestamp","args":["tab\tseparated",[],[]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["HELLO",{"a":"b"},{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["  padded  ",{},true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["x",{},"x"],"error":"invalid language tag: x"}
+{"fn":"formatShortDateTimestamp","args":["a😀b😀ckey_name-1",true,"x"],"error":"invalid language tag: x"}
+{"fn":"formatShortDateTimestamp","args":["﻿bom",true,0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["hello",[],{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["src/a/b.ts😀",{},[]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["a:b:c",true,null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatShortDateTimestamp","args":[":a😀b😀c",{"a":"b"},0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["ns:key.path",{},{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["a😀b😀cİstanbul","x","x"],"error":"invalid language tag: x"}
+{"fn":"formatShortDateTimestamp","args":["a:b:c",{"a":{"b":"c"}},{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["emoji 👍🏽 mixa.b.c",[],0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["﻿bom",["a",1],{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["abc",[],{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["ΣΊΣΥΦΟΣ","x",{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["a😀b😀c",0,{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["{name} has {count} items","N",{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["ünïcödé",0,["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatShortDateTimestamp","args":["a:b:c",{"a":"b"},{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":[":",{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["hello worldline1\nline2",{},true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["Hello World",true,["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatShortDateTimestamp","args":["ns:key.pathab",true,{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["straße","stra",["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatShortDateTimestamp","args":["straße",0,{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["key_name-1",null,true],"ok":"Jan 1, 2001 at 00:00"}
+{"fn":"formatShortDateTimestamp","args":["a",{},true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["tab\tseparated",[],{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["Hello World",{"a":{"b":"c"}},"ld"],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["src/a/b.ts:",{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["./x/**/*.json",[]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":[".leading",{"a":{"b":"c"}},null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatShortDateTimestamp","args":["hello",{},{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["line1\nline2",["a",1],{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["é",{"a":{"b":"c"}},0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["ns:key.path",["a",1],["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatShortDateTimestamp","args":["{name} has {count} items",{"a":{"b":"c"}},[]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["tab\tseparated","x",{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["{name} has {count} itemsns:key.path",true,[]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["helloab",{"a":"b"},{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["a😀b😀c",{"a":{"b":"c"}},true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["trailing.",{"a":"b"},0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["./x/**/*.json","x",[]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["key_name-1a..b",[],{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["Hello World",["a",1]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["İstanbul",[],{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["./x/**/*.json",0,["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatShortDateTimestamp","args":["hello world",{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["",null,{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["",{"a":"b"},0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["a.b.c",true,{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["İstanbul",[],{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["é",0,true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["hello",{},{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["ab",0,{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["",[],{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["key_name-1",["a",1],0],"ok":"Jan 1, 2001 at 00:00"}
+{"fn":"formatShortDateTimestamp","args":["./x/**/*.json",null,{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["a..bHello World",0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["key_name-1",true,{"a":"b"}],"ok":"Jan 1, 2001 at 00:00"}
+{"fn":"formatShortDateTimestamp","args":["a😀b😀c",[],{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":[".leading",{"a":"b"},{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["a.b.c",["a",1],{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["abc","a",0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["X","x"],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["a","x",{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["İstanbula",{"a":"b"},true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["Hello World",{},["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatShortDateTimestamp","args":["tab\tseparated",0,{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["emoji 👍🏽 mix",{"a":{"b":"c"}},{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["./x/**/*.json","x",0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["日本語のテキスト",0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["abc",[],{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["日本語のテキスト",{},true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["é",{},null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatShortDateTimestamp","args":["{name} has {count} items",["a",1],true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["  padded  ","ded ",0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["a😀b😀chello",{},0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["a..b","x",0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["line1\nline2tab\tseparated","x",{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["a😀b😀cabc",{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["",true,{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["a😀b😀c",{"a":{"b":"c"}},[]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":[":",0,{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["a..b",null,[]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["X","x",true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["日本語のテキスト",0,null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatShortDateTimestamp","args":["x",true,"x"],"error":"invalid language tag: x"}
+{"fn":"formatShortDateTimestamp","args":["﻿bom",{"a":{"b":"c"}},[]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["a","x","x"],"error":"invalid language tag: x"}
+{"fn":"formatShortDateTimestamp","args":["a.b.c","a.b",{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["{name} has {count} items",true,{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["hello",0,null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatShortDateTimestamp","args":[":line1\nline2",null,{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["a😀b😀c",0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["éa..b",0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["ΣΊΣΥΦΟΣ",{"a":"b"},{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["Hello World",true,{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["HELLO",{"a":{"b":"c"}},[]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["a..b",null,{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":[".leading",["a",1],{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["HELLO",null,"O"],"error":"invalid language tag: O"}
+{"fn":"formatShortDateTimestamp","args":["ab",{"a":"b"},null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatShortDateTimestamp","args":["",{},{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["a..b",true,"x"],"error":"invalid language tag: x"}
+{"fn":"formatShortDateTimestamp","args":["日本語のテキスト",true,true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["{name} has {count} items",true,["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatShortDateTimestamp","args":["Hello World",["a",1],["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatShortDateTimestamp","args":[".leading",0,[]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["a😀b😀c",[],true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["﻿bom","x",true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["abc",[],"b"],"error":"invalid language tag: b"}
+{"fn":"formatShortDateTimestamp","args":["HELLOkey_name-1",{}],"ok":"Jan 1, 2001 at 00:00"}
+{"fn":"formatShortDateTimestamp","args":["ΣΊΣΥΦΟΣ",["a",1],null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatShortDateTimestamp","args":["src/a/b.ts",null,["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatShortDateTimestamp","args":["./x/**/*.json",{"a":{"b":"c"}},"x"],"error":"invalid language tag: x"}
+{"fn":"formatShortDateTimestamp","args":["",null,[]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["emoji 👍🏽 mix",[],0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["ΣΊΣΥΦΟΣ",{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":[":ünïcödé",["a",1],{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["ΣΊΣΥΦΟΣ",true,["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatShortDateTimestamp","args":["日本語のテキスト",["a",1],{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["a:b:c",{"a":"b"},{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["key_name-1a😀b😀c",true,{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["﻿bom",{},{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["{name} has {count} items","x",["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatShortDateTimestamp","args":["﻿bom",["a",1],0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["héllo wörld",null,true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["👍🏽 thumbs",null,true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["日本語",null,true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["",null,true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["é",null,true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["İstanbul",null,true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["straße",null,true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["ılık ırmak",null,true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["👨‍👩‍👧 family",null,true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["a b",null,true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["ΣΊΣΥΦΟΣ",null,true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["a😀b",null,true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["﻿bom",null,true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["a²b x½ y①",null,true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["aⅠb Ⅻ",null,true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["a𐐀b 𝐀bc",null,true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatShortDateTimestamp","args":["कि ٣٤",null,true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["Hello World",null,{"$undefined":true},null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatDayAwareTimestamp","args":["tab\tseparated",["a",1],"x","x"],"error":"invalid language tag: x"}
+{"fn":"formatDayAwareTimestamp","args":["emoji 👍🏽 mix",{"a":"b"},{"a":"b"},null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatDayAwareTimestamp","args":["abline1\nline2",true,true,[]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["a:b:cHello World",{"a":"b"},[],{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["emoji 👍🏽 mix",[],{"$undefined":true},null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatDayAwareTimestamp","args":["a..b",{"a":"b"},0,null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatDayAwareTimestamp","args":["{name} has {count} items",0,[],[]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["a:b:c",["a",1],":B",{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["a:b:c",true,["a",1],["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatDayAwareTimestamp","args":["a:b:c",{"a":{"b":"c"}},0,{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["ab",{},{"$undefined":true},{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["aab",["a",1],{"a":{"b":"c"}},{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["hello","x",true,{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["trailing.ab",{},["a",1],{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["ns:key.path:",null,[],{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["emoji 👍🏽 mix",0,{"a":"b"},"x"],"error":"invalid language tag: x"}
+{"fn":"formatDayAwareTimestamp","args":[".leadingsrc/a/b.ts",["a",1],0,["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatDayAwareTimestamp","args":["hello",true,[],0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["HELLO",0,{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["a:b:c",null,["a",1],{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["abc","c",null,{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["ΣΊΣΥΦΟΣ",{},{"a":{"b":"c"}},null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatDayAwareTimestamp","args":["İstanbul",null,[],{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["hello world",["a",1],true,[]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["{name} has {count} items",{"a":{"b":"c"}},{},{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":[":tab\tseparated",{},{},{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["HELLO","x",{"$undefined":true},["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatDayAwareTimestamp","args":["tab\tseparated",0,{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["line1\nline2",true,"x",[]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["😀",["a",1],{"$undefined":true},{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["Hello World",["a",1],{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["line1\nline2",{},[],{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["éns:key.path",{"a":{"b":"c"}},["a",1],{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["﻿bomHELLO",[],{"a":"b"},[]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["emoji 👍🏽 mix",["a",1]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["é",[],true,0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["a..b",true,{"$undefined":true},0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["ab",true,"x",{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["line1\nline2",true,{"a":{"b":"c"}},{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["ab",0,null,{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["é",["a",1],{"$undefined":true},"x"],"error":"invalid language tag: x"}
+{"fn":"formatDayAwareTimestamp","args":["a..b",true,{},{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["",null,["a",1],{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["é",[],{"$undefined":true},{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":[".leading日本語のテキスト",{"a":"b"},"LE"],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["é",["a",1],{"a":{"b":"c"}},true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["x",true,"x"],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["{name} has {count} items","x",[],{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["﻿bom",["a",1],{},{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["a😀b😀c",[],{},"x"],"error":"invalid language tag: x"}
+{"fn":"formatDayAwareTimestamp","args":["ns:key.path",0,0,{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["straße",null,null,"aße"],"error":"invalid language tag: aße"}
+{"fn":"formatDayAwareTimestamp","args":["😀","x",{"$undefined":true},{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["",null,{"a":{"b":"c"}},true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["日本語のテキスト:",{},0,0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["a..ba..b",null,{"$undefined":true},0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["./x/**/*.json","x",["a",1],"x"],"error":"invalid language tag: x"}
+{"fn":"formatDayAwareTimestamp","args":["hello world",null,{},[]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["{name} has {count} itemsns:key.path",true,true,{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["Hello World",{},"x",{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["hello worldhello world",null,0,{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["hello world",null,{},{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["",{"a":"b"},[],"x"],"error":"invalid language tag: x"}
+{"fn":"formatDayAwareTimestamp","args":["x",[],{"a":{"b":"c"}},"x"],"error":"invalid language tag: x"}
+{"fn":"formatDayAwareTimestamp","args":["é",0,["a",1],"x"],"error":"invalid language tag: x"}
+{"fn":"formatDayAwareTimestamp","args":["./x/**/*.json",true,["a",1],{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":[".leading",0,0,[]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["emoji 👍🏽 mix",{"a":"b"},null,{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["hello",{"a":{"b":"c"}},[],["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatDayAwareTimestamp","args":["a.b.c",["a",1],{"a":"b"},["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatDayAwareTimestamp","args":["tab\tseparated",["a",1],{"$undefined":true},true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["helloa..b",{"a":"b"},{},{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["😀",{"a":"b"},{"$undefined":true},"x"],"error":"invalid language tag: x"}
+{"fn":"formatDayAwareTimestamp","args":["a😀b😀c",{"a":{"b":"c"}},["a",1]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["ab./x/**/*.json",{},{"a":{"b":"c"}},{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["trailing.",true,0,{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["ΣΊΣΥΦΟΣ","ΊΣ","x",0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["Hello World",0,["a",1],{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["trailing.",0,[],["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatDayAwareTimestamp","args":["ékey_name-1","x",true,0],"error":"b.getFullYear is not a function. (In 'b.getFullYear()', 'b.getFullYear' is undefined)"}
+{"fn":"formatDayAwareTimestamp","args":["key_name-1",{"a":"b"},[],0],"error":"b.getFullYear is not a function. (In 'b.getFullYear()', 'b.getFullYear' is undefined)"}
+{"fn":"formatDayAwareTimestamp","args":["a:b:c",{},{"$undefined":true},{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["straße",[],["a",1],true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["{name} has {count} items",{},["a",1],{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["  padded  ",{},{},{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["日本語のテキストHELLO",0,{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["Hello World",null,0,["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatDayAwareTimestamp","args":["日本語のテキスト",{},{},{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["x",true,0,"x"],"error":"invalid language tag: x"}
+{"fn":"formatDayAwareTimestamp","args":["a",[],{"$undefined":true},{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["line1\nline2",["a",1],{"$undefined":true},"x"],"error":"invalid language tag: x"}
+{"fn":"formatDayAwareTimestamp","args":["a:b:c",0,["a",1],{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["X","x",{"$undefined":true},{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["key_name-1",{},{"$undefined":true},[]],"ok":"Jan 1, 2001 00:00"}
+{"fn":"formatDayAwareTimestamp","args":["line1\nline2",{"a":"b"},{},{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["emoji 👍🏽 mix",0,{"a":{"b":"c"}},true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["İstanbul",{},0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["line1\nline2",true,[],{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["😀",0,{},null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatDayAwareTimestamp","args":["a",["a",1],{"$undefined":true},{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["﻿bom",true,"x",{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["tab\tseparated",{"a":{"b":"c"}},{"a":{"b":"c"}},null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatDayAwareTimestamp","args":["ab",0,"x",{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["😀",["a",1],{"$undefined":true},["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatDayAwareTimestamp","args":["a..b","x",0,{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["a",null,true,[]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["a😀b😀c",null,[],0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["key_name-1",0,null,{"a":{"b":"c"}}],"error":"null is not an object (evaluating 'b.getFullYear')"}
+{"fn":"formatDayAwareTimestamp","args":["emoji 👍🏽 mix",{"a":"b"},true,[]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["a😀b😀c",null,{"$undefined":true},0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["日本語のテキスト","キスト",0,0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["hellohello",[],{"a":{"b":"c"}},["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatDayAwareTimestamp","args":["abc",null,{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["ΣΊΣΥΦΟΣ",0,{},true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["a..b","x",{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["./x/**/*.json",["a",1],[],0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["hello world",true,null,true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["{name} has {count} items",null,null,{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["HELLOa:b:c",true,[],"x"],"error":"invalid language tag: x"}
+{"fn":"formatDayAwareTimestamp","args":["日本語のテキスト",null,"x",{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["trailing.",{},null,[]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":[":",{"a":{"b":"c"}},{"$undefined":true},{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["a:b:c",null,[],[]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["a😀b😀c",{},[]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["src/a/b.ts",null,["a",1],{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["./x/**/*.json",{},null,{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["a..b",["a",1],["a",1]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["trailing.",true,[],0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["src/a/b.tssrc/a/b.ts",[],{"$undefined":true},{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["HELLO",true,{"$undefined":true},null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatDayAwareTimestamp","args":["a.b.c",{"a":{"b":"c"}},["a",1],0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["😀",true,true,{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["ΣΊΣΥΦΟΣ","x","x",{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["é",{"a":{"b":"c"}},true,{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["tab\tseparated😀",["a",1],{"a":{"b":"c"}},{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["a:b:c",true,"x",["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatDayAwareTimestamp","args":["emoji 👍🏽 mix",[],0,{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":[":",[],null,"x"],"error":"invalid language tag: x"}
+{"fn":"formatDayAwareTimestamp","args":["日本語のテキスト",{},{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["trailing.",{},0,[]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["İstanbul",{},0,{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["é日本語のテキスト",0,{"$undefined":true},[]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["ab",true,["a",1],null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatDayAwareTimestamp","args":["tab\tseparated",[],{"a":{"b":"c"}},"x"],"error":"invalid language tag: x"}
+{"fn":"formatDayAwareTimestamp","args":["a",{},["a",1],{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["😀",true,0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["﻿bom",[],null,{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["Hello World{name} has {count} items",{},null,"x"],"error":"invalid language tag: x"}
+{"fn":"formatDayAwareTimestamp","args":["HELLO","x",{},["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatDayAwareTimestamp","args":["Hello World",null,{"a":{"b":"c"}},{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["emoji 👍🏽 mix",{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["a..b","x",{"$undefined":true},{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["a..b",{"a":"b"},[],{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["﻿bom","x","x",[]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["hellokey_name-1",{},[],[]],"error":"b.getFullYear is not a function. (In 'b.getFullYear()', 'b.getFullYear' is undefined)"}
+{"fn":"formatDayAwareTimestamp","args":["ab  padded  ",null,["a",1],{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["{name} has {count} items",null,{"a":{"b":"c"}},{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["é","x",{},{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["ab",[],{"a":"b"},null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatDayAwareTimestamp","args":["a😀b😀c.leading",true,{"$undefined":true},{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["a.b.c","x",{"a":{"b":"c"}},{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["  padded  ",{"a":"b"}," padded"],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["日本語のテキストns:key.path",{},{"$undefined":true},{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["﻿bom",null,0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["ΣΊΣΥΦΟΣ",true,{"a":"b"},{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["HELLO",null,{},{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["src/a/b.tssrc/a/b.ts","x",{},["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatDayAwareTimestamp","args":["a.b.c",["a",1],{"$undefined":true},["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatDayAwareTimestamp","args":["{name} has {count} items",{"a":"b"},true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["aİstanbul",{"a":"b"},[]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":[".leading",[],"x",{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["a😀b😀c","x",0,null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatDayAwareTimestamp","args":["",null,{"a":{"b":"c"}},{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["a",true,"x",["a",1]],"error":"invalid language tag: a"}
+{"fn":"formatDayAwareTimestamp","args":["ab",{"a":"b"},["a",1],{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["{name} has {count} items","x",{"a":"b"},{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["é",{"a":"b"},{},"x"],"error":"invalid language tag: x"}
+{"fn":"formatDayAwareTimestamp","args":["emoji 👍🏽 mix",{"a":"b"},{"a":{"b":"c"}},{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":[".leading","x","x",{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["trailing.","x",["a",1],{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["trailing.abc",{"a":{"b":"c"}},{"a":"b"},{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["key_name-1",true,{"$undefined":true},null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatDayAwareTimestamp","args":["ünïcödéa😀b😀c",true,{},{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["a😀b😀c",{},null,null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatDayAwareTimestamp","args":["line1\nline2",{"a":"b"},[],{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["ns:key.path",0,"x",[]],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["😀",0,true,{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["😀","x",null,{"a":{"b":"c"}}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["ab",null,0],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["日本語のテキスト",null,null,true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["line1\nline2","x","x",{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["İstanbulsrc/a/b.ts",true,true,true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["日本語のテキスト",null,{"a":"b"},{"$undefined":true}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["hello",0,{"$undefined":true},{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":[":",true,[],{"a":"b"}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["line1\nline2",{"a":"b"},"x",{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["a.b.c",{"a":{"b":"c"}},"X","x"],"error":"invalid language tag: x"}
+{"fn":"formatDayAwareTimestamp","args":["a:b:c",{},{},true],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["a.b.csrc/a/b.ts",0,["a",1],{}],"error":"date value is not finite in DateTimeFormat format()"}
+{"fn":"formatDayAwareTimestamp","args":["héllo wörld",null,{"$undefined":true},null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatDayAwareTimestamp","args":["👍🏽 thumbs",null,{"$undefined":true},null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatDayAwareTimestamp","args":["日本語",null,{"$undefined":true},null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatDayAwareTimestamp","args":["",null,{"$undefined":true},null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatDayAwareTimestamp","args":["é",null,{"$undefined":true},null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatDayAwareTimestamp","args":["İstanbul",null,{"$undefined":true},null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatDayAwareTimestamp","args":["straße",null,{"$undefined":true},null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatDayAwareTimestamp","args":["ılık ırmak",null,{"$undefined":true},null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatDayAwareTimestamp","args":["👨‍👩‍👧 family",null,{"$undefined":true},null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatDayAwareTimestamp","args":["a b",null,{"$undefined":true},null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatDayAwareTimestamp","args":["ΣΊΣΥΦΟΣ",null,{"$undefined":true},null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatDayAwareTimestamp","args":["a😀b",null,{"$undefined":true},null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatDayAwareTimestamp","args":["﻿bom",null,{"$undefined":true},null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatDayAwareTimestamp","args":["a²b x½ y①",null,{"$undefined":true},null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatDayAwareTimestamp","args":["aⅠb Ⅻ",null,{"$undefined":true},null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatDayAwareTimestamp","args":["a𐐀b 𝐀bc",null,{"$undefined":true},null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}
+{"fn":"formatDayAwareTimestamp","args":["कि ٣٤",null,{"$undefined":true},null],"error":"null is not an object (evaluating 'new Intl.DateTimeFormat(locale, {\n    ...includeDate ? CALENDAR_DATE_OPTIONS : {},\n    ...getTimestampFormatOptions(timestampFormat, includeSeconds)\n  })')"}

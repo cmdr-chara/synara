@@ -1,0 +1,400 @@
+{"fn":"derivePendingApprovals","args":[["a",1],[],{}],"error":"undefined is not an object (evaluating 'left.createdAt.localeCompare')"}
+{"fn":"derivePendingApprovals","args":[{"a":"b"},{"$undefined":true},{}],"error":"{} is not iterable"}
+{"fn":"derivePendingApprovals","args":[["a",1],0,{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":".leading"}],"error":"undefined is not an object (evaluating 'left.createdAt.localeCompare')"}
+{"fn":"derivePendingApprovals","args":[{"a":"b"},{"$undefined":true},{"authoritativeHasPending":true,"latestTurnId":["a",1],"responseClaimReferenceAt":"a..b"}],"error":"{} is not iterable"}
+{"fn":"derivePendingApprovals","args":[{"a":{"b":"c"}},{},{"authoritativeHasPending":false,"latestTurnId":{"$undefined":true}}],"error":"{} is not iterable"}
+{"fn":"derivePendingApprovals","args":["x",null,{"authoritativeHasPending":{"$undefined":true},"latestTurnId":[]}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingApprovals","args":[null,[],{"authoritativeHasPending":false,"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"abc"}],"error":"null is not an object (evaluating 'activities.length')"}
+{"fn":"derivePendingApprovals","args":["x",null,{"$undefined":true}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingApprovals","args":[null,["a",1],{"authoritativeHasPending":true,"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"emoji 👍🏽 mix"}],"error":"null is not an object (evaluating 'activities.length')"}
+{"fn":"derivePendingApprovals","args":[{"a":{"b":"c"}},"x",{"$undefined":true}],"error":"{} is not iterable"}
+{"fn":"derivePendingApprovals","args":[{"a":{"b":"c"}},true,{"authoritativeHasPending":true,"latestTurnId":{},"responseClaimReferenceAt":""}],"error":"{} is not iterable"}
+{"fn":"derivePendingApprovals","args":[{"a":"b"},{},{"authoritativeHasPending":true,"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":".leading"}],"error":"{} is not iterable"}
+{"fn":"derivePendingApprovals","args":[0,{"a":"b"},{"authoritativeHasPending":true,"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"a"}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingApprovals","args":[{"a":{"b":"c"}},true,{"authoritativeHasPending":true,"latestTurnId":{"a":"b"},"responseClaimReferenceAt":"a.b.c.leading"}],"error":"{} is not iterable"}
+{"fn":"derivePendingApprovals","args":["x",{"a":"b"},{"authoritativeHasPending":false,"latestTurnId":0,"responseClaimReferenceAt":"hello world"}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingApprovals","args":[{},null],"error":"{} is not iterable"}
+{"fn":"derivePendingApprovals","args":[[],{"$undefined":true},{"authoritativeHasPending":{"$undefined":true},"latestTurnId":[],"responseClaimReferenceAt":":"}],"ok":[]}
+{"fn":"derivePendingApprovals","args":[0,true],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingApprovals","args":[true,{"$undefined":true},[]],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingApprovals","args":[{},{"a":{"b":"c"}},{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{"$undefined":true}}],"error":"{} is not iterable"}
+{"fn":"derivePendingApprovals","args":[{"a":"b"},null,{"a":{"b":"c"}}],"error":"{} is not iterable"}
+{"fn":"derivePendingApprovals","args":[true,{"a":{"b":"c"}},{"authoritativeHasPending":true,"latestTurnId":"x","responseClaimReferenceAt":"日本語のテキスト"}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingApprovals","args":["x",{"a":"b"},{"$undefined":true}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingApprovals","args":[["a",1],{"$undefined":true},{"authoritativeHasPending":true,"latestTurnId":{"$undefined":true}}],"error":"undefined is not an object (evaluating 'left.createdAt.localeCompare')"}
+{"fn":"derivePendingApprovals","args":[{"a":{"b":"c"}},{"$undefined":true},{"authoritativeHasPending":false,"latestTurnId":true,"responseClaimReferenceAt":"abc"}],"ok":[]}
+{"fn":"derivePendingApprovals","args":["x",["a",1],{"authoritativeHasPending":false,"latestTurnId":0,"responseClaimReferenceAt":"hello"}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingApprovals","args":[{"a":{"b":"c"}},0,{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{},"responseClaimReferenceAt":"Hello World"}],"error":"{} is not iterable"}
+{"fn":"derivePendingApprovals","args":[{},{"$undefined":true},{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{"a":{"b":"c"}},"responseClaimReferenceAt":"日本語のテキスト"}],"error":"{} is not iterable"}
+{"fn":"derivePendingApprovals","args":[true,["a",1]],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingApprovals","args":["x",{"a":"b"},{"authoritativeHasPending":false,"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"helloa😀b😀c"}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingApprovals","args":[{"a":"b"},0,{"authoritativeHasPending":false,"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"straße./x/**/*.json"}],"error":"{} is not iterable"}
+{"fn":"derivePendingApprovals","args":[0,[],{"authoritativeHasPending":false,"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"hello world"}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingApprovals","args":[[],{"$undefined":true}],"ok":[]}
+{"fn":"derivePendingApprovals","args":["x",0,{}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingApprovals","args":[["a",1],true,{"authoritativeHasPending":false,"latestTurnId":"x","responseClaimReferenceAt":"é"}],"error":"undefined is not an object (evaluating 'left.createdAt.localeCompare')"}
+{"fn":"derivePendingApprovals","args":[["a",1],null,{"authoritativeHasPending":{"$undefined":true},"latestTurnId":["a",1]}],"error":"undefined is not an object (evaluating 'left.createdAt.localeCompare')"}
+{"fn":"derivePendingApprovals","args":[null,[],{"authoritativeHasPending":false,"latestTurnId":null,"responseClaimReferenceAt":"key_name-1"}],"error":"null is not an object (evaluating 'activities.length')"}
+{"fn":"derivePendingApprovals","args":[[],true,{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"ünïcödé"}],"error":"settlements.filter is not a function. (In 'settlements.filter((settlement) => settlement.interactionKind === interactionKind && (settlement.status === \"pending\" || settlement.status === \"retryable\" || responseClaimReferenceAt !== void 0 && isPendingInteractionResponseClaimable({\n    status: settlement.status,\n    responseRequestedAt: settlement.responseRequestedAt,\n    requestedAt: responseClaimReferenceAt\n  })))', 'settlements.filter' is undefined)"}
+{"fn":"derivePendingApprovals","args":[null,[],{"$undefined":true}],"error":"null is not an object (evaluating 'activities.length')"}
+{"fn":"derivePendingApprovals","args":["x",{"$undefined":true},true],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingApprovals","args":[{"a":"b"},null,{"authoritativeHasPending":false,"latestTurnId":{},"responseClaimReferenceAt":"ünïcödéabc"}],"error":"{} is not iterable"}
+{"fn":"derivePendingApprovals","args":[{"a":{"b":"c"}},{"a":{"b":"c"}},{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":""}],"error":"{} is not iterable"}
+{"fn":"derivePendingApprovals","args":[null,0,{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"trailing."}],"error":"null is not an object (evaluating 'activities.length')"}
+{"fn":"derivePendingApprovals","args":[0,true,{"authoritativeHasPending":true,"latestTurnId":{"$undefined":true}}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingApprovals","args":[0,[],{"authoritativeHasPending":false,"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"a😀b😀c"}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingApprovals","args":[true,"x"],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingApprovals","args":[[],true,{}],"error":"settlements.filter is not a function. (In 'settlements.filter((settlement) => settlement.interactionKind === interactionKind && (settlement.status === \"pending\" || settlement.status === \"retryable\" || responseClaimReferenceAt !== void 0 && isPendingInteractionResponseClaimable({\n    status: settlement.status,\n    responseRequestedAt: settlement.responseRequestedAt,\n    requestedAt: responseClaimReferenceAt\n  })))', 'settlements.filter' is undefined)"}
+{"fn":"derivePendingApprovals","args":[[],true,{"authoritativeHasPending":false,"latestTurnId":true,"responseClaimReferenceAt":"ΣΊΣΥΦΟΣ"}],"error":"settlements.filter is not a function. (In 'settlements.filter((settlement) => settlement.interactionKind === interactionKind && (settlement.status === \"pending\" || settlement.status === \"retryable\" || responseClaimReferenceAt !== void 0 && isPendingInteractionResponseClaimable({\n    status: settlement.status,\n    responseRequestedAt: settlement.responseRequestedAt,\n    requestedAt: responseClaimReferenceAt\n  })))', 'settlements.filter' is undefined)"}
+{"fn":"derivePendingApprovals","args":[null,{"$undefined":true},{"authoritativeHasPending":true,"latestTurnId":{"a":"b"},"responseClaimReferenceAt":"a.b.c:"}],"error":"null is not an object (evaluating 'activities.length')"}
+{"fn":"derivePendingApprovals","args":[{"a":"b"},[],{}],"error":"{} is not iterable"}
+{"fn":"derivePendingApprovals","args":[{"a":{"b":"c"}},"x",{"authoritativeHasPending":true,"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"line1\nline2"}],"error":"{} is not iterable"}
+{"fn":"derivePendingApprovals","args":[null,null,{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{"a":"b"}}],"error":"null is not an object (evaluating 'activities.length')"}
+{"fn":"derivePendingApprovals","args":[null,{"a":"b"},{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{"$undefined":true}}],"error":"null is not an object (evaluating 'activities.length')"}
+{"fn":"derivePendingApprovals","args":[0,["a",1],{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"tab\tseparatedabc"}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingApprovals","args":[{"a":"b"},{"a":"b"},"x"],"error":"{} is not iterable"}
+{"fn":"derivePendingApprovals","args":[{"a":{"b":"c"}}],"error":"{} is not iterable"}
+{"fn":"derivePendingApprovals","args":[[],null,{"authoritativeHasPending":true,"latestTurnId":[],"responseClaimReferenceAt":"src/a/b.ts"}],"error":"null is not an object (evaluating 'settlements.filter')"}
+{"fn":"derivePendingApprovals","args":[{"a":{"b":"c"}},"x",{"authoritativeHasPending":true,"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"hello worldtab\tseparated"}],"error":"{} is not iterable"}
+{"fn":"derivePendingApprovals","args":["x",{},{"authoritativeHasPending":{"$undefined":true},"latestTurnId":null,"responseClaimReferenceAt":"日本語のテキスト"}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingApprovals","args":[0,true,{"authoritativeHasPending":true,"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"é"}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingApprovals","args":[true,{"$undefined":true},{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"Hello World"}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingApprovals","args":[0,{"$undefined":true},{"authoritativeHasPending":true,"latestTurnId":{"$undefined":true}}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingApprovals","args":[null,0,{"$undefined":true}],"error":"null is not an object (evaluating 'activities.length')"}
+{"fn":"derivePendingApprovals","args":[0,{},{"authoritativeHasPending":true,"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"hello world"}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingApprovals","args":[null,{"a":{"b":"c"}},"x"],"error":"null is not an object (evaluating 'activities.length')"}
+{"fn":"derivePendingApprovals","args":[{"a":{"b":"c"}},true,[]],"error":"{} is not iterable"}
+{"fn":"derivePendingApprovals","args":[[],0,{"$undefined":true}],"error":"settlements.filter is not a function. (In 'settlements.filter((settlement) => settlement.interactionKind === interactionKind && (settlement.status === \"pending\" || settlement.status === \"retryable\" || responseClaimReferenceAt !== void 0 && isPendingInteractionResponseClaimable({\n    status: settlement.status,\n    responseRequestedAt: settlement.responseRequestedAt,\n    requestedAt: responseClaimReferenceAt\n  })))', 'settlements.filter' is undefined)"}
+{"fn":"derivePendingApprovals","args":["x",0,null],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingApprovals","args":[null,[],{"authoritativeHasPending":true,"latestTurnId":0,"responseClaimReferenceAt":"straße"}],"error":"null is not an object (evaluating 'activities.length')"}
+{"fn":"derivePendingApprovals","args":["x",true,{"authoritativeHasPending":false,"latestTurnId":true,"responseClaimReferenceAt":":"}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingApprovals","args":["x",[]],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingApprovals","args":["x",{"a":{"b":"c"}},{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"a:b:ca"}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingApprovals","args":[["a",1],["a",1],{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{"$undefined":true}}],"error":"undefined is not an object (evaluating 'left.createdAt.localeCompare')"}
+{"fn":"derivePendingApprovals","args":[["a",1],{}],"error":"undefined is not an object (evaluating 'left.createdAt.localeCompare')"}
+{"fn":"derivePendingApprovals","args":[[],{},["a",1]],"error":"settlements.filter is not a function. (In 'settlements.filter((settlement) => settlement.interactionKind === interactionKind && (settlement.status === \"pending\" || settlement.status === \"retryable\" || responseClaimReferenceAt !== void 0 && isPendingInteractionResponseClaimable({\n    status: settlement.status,\n    responseRequestedAt: settlement.responseRequestedAt,\n    requestedAt: responseClaimReferenceAt\n  })))', 'settlements.filter' is undefined)"}
+{"fn":"derivePendingApprovals","args":[true,{"$undefined":true}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingApprovals","args":[true,"x",{"authoritativeHasPending":false,"latestTurnId":0,"responseClaimReferenceAt":"a.b.c"}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingApprovals","args":[{"a":{"b":"c"}},"x",{"authoritativeHasPending":true,"latestTurnId":{"$undefined":true}}],"error":"{} is not iterable"}
+{"fn":"derivePendingApprovals","args":[[],null],"error":"null is not an object (evaluating 'settlements.filter')"}
+{"fn":"derivePendingApprovals","args":[["a",1],true,{"authoritativeHasPending":{"$undefined":true},"latestTurnId":[],"responseClaimReferenceAt":"é"}],"error":"undefined is not an object (evaluating 'left.createdAt.localeCompare')"}
+{"fn":"derivePendingApprovals","args":["x",null,"x"],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingApprovals","args":[{"a":{"b":"c"}},{"$undefined":true},{"authoritativeHasPending":{"$undefined":true},"latestTurnId":[],"responseClaimReferenceAt":"HELLO"}],"error":"{} is not iterable"}
+{"fn":"derivePendingApprovals","args":[0,0,{"$undefined":true}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingApprovals","args":[true,"x",{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{"a":"b"},"responseClaimReferenceAt":"a.leading"}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingApprovals","args":[{"a":"b"},0,{"$undefined":true}],"error":"{} is not iterable"}
+{"fn":"derivePendingApprovals","args":[["a",1],null,{"authoritativeHasPending":false,"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"ns:key.path"}],"error":"undefined is not an object (evaluating 'left.createdAt.localeCompare')"}
+{"fn":"derivePendingApprovals","args":[[],null,{"authoritativeHasPending":false,"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"ab"}],"error":"null is not an object (evaluating 'settlements.filter')"}
+{"fn":"derivePendingApprovals","args":["x",[],{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"ünïcödé"}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingApprovals","args":[{"a":{"b":"c"}},{"$undefined":true},{"authoritativeHasPending":false,"latestTurnId":{"a":"b"},"responseClaimReferenceAt":"ns:key.path"}],"ok":[]}
+{"fn":"derivePendingApprovals","args":[null,true,{"authoritativeHasPending":true,"latestTurnId":{"a":"b"}}],"error":"null is not an object (evaluating 'activities.length')"}
+{"fn":"derivePendingApprovals","args":[{"a":"b"},"x",{"authoritativeHasPending":{"$undefined":true},"latestTurnId":0}],"error":"{} is not iterable"}
+{"fn":"derivePendingApprovals","args":[[],[],{"authoritativeHasPending":true,"latestTurnId":null}],"ok":[]}
+{"fn":"derivePendingApprovals","args":[{"a":"b"},"x",{"authoritativeHasPending":false,"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"Hello World"}],"error":"{} is not iterable"}
+{"fn":"derivePendingApprovals","args":[["a",1],{"a":"b"},{"$undefined":true}],"error":"undefined is not an object (evaluating 'left.createdAt.localeCompare')"}
+{"fn":"derivePendingApprovals","args":[{},"x",{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"é"}],"error":"{} is not iterable"}
+{"fn":"derivePendingApprovals","args":[null,["a",1],{"authoritativeHasPending":false,"latestTurnId":0,"responseClaimReferenceAt":"abc"}],"error":"null is not an object (evaluating 'activities.length')"}
+{"fn":"derivePendingApprovals","args":[null,["a",1],{"authoritativeHasPending":{"$undefined":true},"latestTurnId":null,"responseClaimReferenceAt":"trailing."}],"error":"null is not an object (evaluating 'activities.length')"}
+{"fn":"derivePendingApprovals","args":[[],{"a":"b"},{"authoritativeHasPending":true,"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"tab\tseparatedé"}],"error":"settlements.filter is not a function. (In 'settlements.filter((settlement) => settlement.interactionKind === interactionKind && (settlement.status === \"pending\" || settlement.status === \"retryable\" || responseClaimReferenceAt !== void 0 && isPendingInteractionResponseClaimable({\n    status: settlement.status,\n    responseRequestedAt: settlement.responseRequestedAt,\n    requestedAt: responseClaimReferenceAt\n  })))', 'settlements.filter' is undefined)"}
+{"fn":"derivePendingApprovals","args":[{"a":"b"},[],{"authoritativeHasPending":true,"latestTurnId":{"$undefined":true}}],"error":"{} is not iterable"}
+{"fn":"derivePendingApprovals","args":[null,["a",1]],"error":"null is not an object (evaluating 'activities.length')"}
+{"fn":"derivePendingApprovals","args":[["a",1],["a",1],{"$undefined":true}],"error":"undefined is not an object (evaluating 'left.createdAt.localeCompare')"}
+{"fn":"derivePendingApprovals","args":[0,{"a":"b"},{"authoritativeHasPending":false,"latestTurnId":0,"responseClaimReferenceAt":"a"}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingApprovals","args":[0,null,{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{"$undefined":true}}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingApprovals","args":[{"a":{"b":"c"}},{"$undefined":true},{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"日本語のテキスト"}],"error":"{} is not iterable"}
+{"fn":"derivePendingApprovals","args":[{"a":"b"},{"a":"b"},{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{"$undefined":true}}],"error":"{} is not iterable"}
+{"fn":"derivePendingApprovals","args":[["a",1],{},{"authoritativeHasPending":{"$undefined":true},"latestTurnId":"x","responseClaimReferenceAt":"key_name-1hello world"}],"error":"undefined is not an object (evaluating 'left.createdAt.localeCompare')"}
+{"fn":"derivePendingApprovals","args":[{"a":"b"},{"$undefined":true},{"authoritativeHasPending":true,"latestTurnId":{"$undefined":true}}],"error":"{} is not iterable"}
+{"fn":"derivePendingApprovals","args":[[],["a",1],{"authoritativeHasPending":true,"latestTurnId":["a",1]}],"ok":[]}
+{"fn":"derivePendingApprovals","args":[{"a":"b"},"x",{"$undefined":true}],"error":"{} is not iterable"}
+{"fn":"derivePendingApprovals","args":[["a",1],{},{"authoritativeHasPending":true,"latestTurnId":{"$undefined":true}}],"error":"undefined is not an object (evaluating 'left.createdAt.localeCompare')"}
+{"fn":"derivePendingApprovals","args":[null,"x",{"authoritativeHasPending":false,"latestTurnId":["a",1],"responseClaimReferenceAt":"a😀b😀c"}],"error":"null is not an object (evaluating 'activities.length')"}
+{"fn":"derivePendingApprovals","args":["x",["a",1],{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"./x/**/*.json"}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingApprovals","args":[{"a":"b"},null,{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{"a":{"b":"c"}},"responseClaimReferenceAt":"trailing."}],"error":"{} is not iterable"}
+{"fn":"derivePendingApprovals","args":[{"a":"b"},["a",1],{"authoritativeHasPending":true,"latestTurnId":0,"responseClaimReferenceAt":"a.b.c"}],"error":"{} is not iterable"}
+{"fn":"derivePendingApprovals","args":[{},{"$undefined":true},{"authoritativeHasPending":false,"latestTurnId":{"$undefined":true}}],"ok":[]}
+{"fn":"derivePendingApprovals","args":[true,[],{"authoritativeHasPending":{"$undefined":true},"latestTurnId":null,"responseClaimReferenceAt":"ns:key.path"}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingApprovals","args":[{"a":{"b":"c"}},"x",{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"Hello World"}],"error":"{} is not iterable"}
+{"fn":"derivePendingApprovals","args":[[],{"a":"b"},["a",1]],"error":"settlements.filter is not a function. (In 'settlements.filter((settlement) => settlement.interactionKind === interactionKind && (settlement.status === \"pending\" || settlement.status === \"retryable\" || responseClaimReferenceAt !== void 0 && isPendingInteractionResponseClaimable({\n    status: settlement.status,\n    responseRequestedAt: settlement.responseRequestedAt,\n    requestedAt: responseClaimReferenceAt\n  })))', 'settlements.filter' is undefined)"}
+{"fn":"derivePendingApprovals","args":["x",{"$undefined":true},{"authoritativeHasPending":false,"latestTurnId":{"a":"b"},"responseClaimReferenceAt":"a😀b😀cHello World"}],"ok":[]}
+{"fn":"derivePendingApprovals","args":[0,[]],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingApprovals","args":["x",null],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingApprovals","args":[[],{},{"authoritativeHasPending":false,"latestTurnId":0,"responseClaimReferenceAt":"hello"}],"error":"settlements.filter is not a function. (In 'settlements.filter((settlement) => settlement.interactionKind === interactionKind && (settlement.status === \"pending\" || settlement.status === \"retryable\" || responseClaimReferenceAt !== void 0 && isPendingInteractionResponseClaimable({\n    status: settlement.status,\n    responseRequestedAt: settlement.responseRequestedAt,\n    requestedAt: responseClaimReferenceAt\n  })))', 'settlements.filter' is undefined)"}
+{"fn":"derivePendingApprovals","args":[{},[],{"$undefined":true}],"error":"{} is not iterable"}
+{"fn":"derivePendingApprovals","args":["x",["a",1],{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{},"responseClaimReferenceAt":"{name} has {count} items"}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingApprovals","args":[0],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingApprovals","args":[{},0,{"authoritativeHasPending":true,"latestTurnId":"x","responseClaimReferenceAt":"a.b.c"}],"error":"{} is not iterable"}
+{"fn":"derivePendingApprovals","args":[null,0,{"authoritativeHasPending":true,"latestTurnId":0,"responseClaimReferenceAt":"helloHELLO"}],"error":"null is not an object (evaluating 'activities.length')"}
+{"fn":"derivePendingApprovals","args":[0,{"$undefined":true},{"authoritativeHasPending":false,"latestTurnId":null,"responseClaimReferenceAt":"trailing.😀"}],"ok":[]}
+{"fn":"derivePendingApprovals","args":[["a",1],{"a":{"b":"c"}},0],"error":"undefined is not an object (evaluating 'left.createdAt.localeCompare')"}
+{"fn":"derivePendingApprovals","args":[{"a":{"b":"c"}},{"$undefined":true},{"$undefined":true}],"error":"{} is not iterable"}
+{"fn":"derivePendingApprovals","args":["x",{"$undefined":true},{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{"$undefined":true}}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingApprovals","args":[{"a":{"b":"c"}},["a",1],{"authoritativeHasPending":false,"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"  padded  "}],"error":"{} is not iterable"}
+{"fn":"derivePendingApprovals","args":[["a",1],0,{"authoritativeHasPending":{"$undefined":true},"latestTurnId":0,"responseClaimReferenceAt":"ΣΊΣΥΦΟΣ"}],"error":"undefined is not an object (evaluating 'left.createdAt.localeCompare')"}
+{"fn":"derivePendingApprovals","args":[{},{"a":{"b":"c"}},{"a":"b"}],"error":"{} is not iterable"}
+{"fn":"derivePendingApprovals","args":["x",0,{"$undefined":true}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingApprovals","args":[{"a":{"b":"c"}},{"$undefined":true},{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{},"responseClaimReferenceAt":"tab\tseparated"}],"error":"{} is not iterable"}
+{"fn":"derivePendingApprovals","args":["x",{"a":{"b":"c"}},{"authoritativeHasPending":true,"latestTurnId":{},"responseClaimReferenceAt":"hello world"}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingApprovals","args":[{"a":{"b":"c"}},{"a":{"b":"c"}},["a",1]],"error":"{} is not iterable"}
+{"fn":"derivePendingApprovals","args":[[],{"$undefined":true},{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{"a":{"b":"c"}},"responseClaimReferenceAt":"Hello World"}],"ok":[]}
+{"fn":"derivePendingApprovals","args":[{"a":{"b":"c"}},true,{"authoritativeHasPending":{"$undefined":true},"latestTurnId":[],"responseClaimReferenceAt":"a"}],"error":"{} is not iterable"}
+{"fn":"derivePendingApprovals","args":["x","x"],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingApprovals","args":[{"a":"b"},null,{"authoritativeHasPending":false,"latestTurnId":[],"responseClaimReferenceAt":"é"}],"error":"{} is not iterable"}
+{"fn":"derivePendingApprovals","args":[{},null,{"authoritativeHasPending":true,"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"﻿bom"}],"error":"{} is not iterable"}
+{"fn":"derivePendingApprovals","args":[{"a":"b"},["a",1],{"authoritativeHasPending":false,"latestTurnId":{"a":{"b":"c"}},"responseClaimReferenceAt":"hello world"}],"error":"{} is not iterable"}
+{"fn":"derivePendingApprovals","args":[null,"x",{"authoritativeHasPending":false,"latestTurnId":{"a":"b"},"responseClaimReferenceAt":"a😀b😀c"}],"error":"null is not an object (evaluating 'activities.length')"}
+{"fn":"derivePendingApprovals","args":[{"a":"b"},0,{"authoritativeHasPending":true,"latestTurnId":"x","responseClaimReferenceAt":"ab"}],"error":"{} is not iterable"}
+{"fn":"derivePendingApprovals","args":[{"a":"b"},[],{"$undefined":true}],"error":"{} is not iterable"}
+{"fn":"derivePendingApprovals","args":["x","x",{"authoritativeHasPending":{"$undefined":true},"latestTurnId":"x","responseClaimReferenceAt":"./x/**/*.json"}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingApprovals","args":[[],true,{"$undefined":true}],"error":"settlements.filter is not a function. (In 'settlements.filter((settlement) => settlement.interactionKind === interactionKind && (settlement.status === \"pending\" || settlement.status === \"retryable\" || responseClaimReferenceAt !== void 0 && isPendingInteractionResponseClaimable({\n    status: settlement.status,\n    responseRequestedAt: settlement.responseRequestedAt,\n    requestedAt: responseClaimReferenceAt\n  })))', 'settlements.filter' is undefined)"}
+{"fn":"derivePendingApprovals","args":[true,{"$undefined":true},{"$undefined":true}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingApprovals","args":["x",[],{"$undefined":true}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingApprovals","args":[{"a":"b"},"x",{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{"a":{"b":"c"}}}],"error":"{} is not iterable"}
+{"fn":"derivePendingApprovals","args":[null,{}],"error":"null is not an object (evaluating 'activities.length')"}
+{"fn":"derivePendingApprovals","args":[{},true,"x"],"error":"{} is not iterable"}
+{"fn":"derivePendingApprovals","args":[[],true,{"authoritativeHasPending":false,"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"a😀b😀c"}],"error":"settlements.filter is not a function. (In 'settlements.filter((settlement) => settlement.interactionKind === interactionKind && (settlement.status === \"pending\" || settlement.status === \"retryable\" || responseClaimReferenceAt !== void 0 && isPendingInteractionResponseClaimable({\n    status: settlement.status,\n    responseRequestedAt: settlement.responseRequestedAt,\n    requestedAt: responseClaimReferenceAt\n  })))', 'settlements.filter' is undefined)"}
+{"fn":"derivePendingApprovals","args":[true,["a",1],{"authoritativeHasPending":false,"latestTurnId":true,"responseClaimReferenceAt":"trailing."}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingApprovals","args":[true,{"$undefined":true},{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"ΣΊΣΥΦΟΣ"}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingApprovals","args":[true,{"a":{"b":"c"}},{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"İstanbul"}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingApprovals","args":[["a",1],{},["a",1]],"error":"undefined is not an object (evaluating 'left.createdAt.localeCompare')"}
+{"fn":"derivePendingApprovals","args":["x",true,{"$undefined":true}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingApprovals","args":[{"a":{"b":"c"}},null,{}],"error":"{} is not iterable"}
+{"fn":"derivePendingApprovals","args":[[],"x",{"authoritativeHasPending":true,"latestTurnId":{"$undefined":true}}],"error":"settlements.filter is not a function. (In 'settlements.filter((settlement) => settlement.interactionKind === interactionKind && (settlement.status === \"pending\" || settlement.status === \"retryable\" || responseClaimReferenceAt !== void 0 && isPendingInteractionResponseClaimable({\n    status: settlement.status,\n    responseRequestedAt: settlement.responseRequestedAt,\n    requestedAt: responseClaimReferenceAt\n  })))', 'settlements.filter' is undefined)"}
+{"fn":"derivePendingApprovals","args":[{"a":{"b":"c"}},[],{"a":{"b":"c"}}],"error":"{} is not iterable"}
+{"fn":"derivePendingApprovals","args":[0,0,{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":""}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingApprovals","args":["x",{"a":"b"}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingApprovals","args":[{"a":{"b":"c"}},"x",["a",1]],"error":"{} is not iterable"}
+{"fn":"derivePendingApprovals","args":[["a",1],{"a":{"b":"c"}},{"authoritativeHasPending":false,"latestTurnId":{"$undefined":true}}],"error":"undefined is not an object (evaluating 'left.createdAt.localeCompare')"}
+{"fn":"derivePendingApprovals","args":[["a",1],{"a":{"b":"c"}},{"authoritativeHasPending":true,"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"ΣΊΣΥΦΟΣ"}],"error":"undefined is not an object (evaluating 'left.createdAt.localeCompare')"}
+{"fn":"derivePendingApprovals","args":[true,{"$undefined":true},{"a":{"b":"c"}}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingApprovals","args":[{"a":{"b":"c"}},{},{"authoritativeHasPending":{"$undefined":true},"latestTurnId":0,"responseClaimReferenceAt":"ΣΊΣΥΦΟΣ"}],"error":"{} is not iterable"}
+{"fn":"derivePendingApprovals","args":[{"a":"b"},{"a":"b"},{"a":{"b":"c"}}],"error":"{} is not iterable"}
+{"fn":"derivePendingApprovals","args":[true,null,{"authoritativeHasPending":true,"latestTurnId":["a",1],"responseClaimReferenceAt":"Hello World"}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingApprovals","args":[[],["a",1],{"authoritativeHasPending":false,"latestTurnId":["a",1]}],"ok":[]}
+{"fn":"derivePendingApprovals","args":[true,0,{"authoritativeHasPending":{"$undefined":true},"latestTurnId":[],"responseClaimReferenceAt":".leading"}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingApprovals","args":[true,[],{"authoritativeHasPending":{"$undefined":true},"latestTurnId":0,"responseClaimReferenceAt":"a..b"}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingApprovals","args":[{},0,{"authoritativeHasPending":{"$undefined":true},"latestTurnId":["a",1],"responseClaimReferenceAt":"😀"}],"error":"{} is not iterable"}
+{"fn":"derivePendingApprovals","args":[{},{"a":{"b":"c"}},{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{"a":{"b":"c"}},"responseClaimReferenceAt":"  padded  "}],"error":"{} is not iterable"}
+{"fn":"derivePendingApprovals","args":[0,true,{"authoritativeHasPending":false,"latestTurnId":{"$undefined":true}}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingApprovals","args":[0,{},{"authoritativeHasPending":{"$undefined":true},"latestTurnId":[]}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingApprovals","args":[{"a":{"b":"c"}},{"a":{"b":"c"}},{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{"a":{"b":"c"}},"responseClaimReferenceAt":"ΣΊΣΥΦΟΣ"}],"error":"{} is not iterable"}
+{"fn":"derivePendingApprovals","args":["x",{"$undefined":true},"x"],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingApprovals","args":["x",{"$undefined":true},{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"abc"}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingApprovals","args":[{"a":"b"},{"$undefined":true},{"$undefined":true}],"error":"{} is not iterable"}
+{"fn":"derivePendingApprovals","args":[{},{"a":{"b":"c"}},{"authoritativeHasPending":false,"latestTurnId":{"$undefined":true}}],"error":"{} is not iterable"}
+{"fn":"derivePendingApprovals","args":[true,{"a":{"b":"c"}},["a",1]],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingApprovals","args":[{},["a",1],0],"error":"{} is not iterable"}
+{"fn":"derivePendingApprovals","args":[{"a":{"b":"c"}},["a",1],{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{"$undefined":true}}],"error":"{} is not iterable"}
+{"fn":"derivePendingApprovals","args":[0,"x"],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingApprovals","args":["x",["a",1],{"authoritativeHasPending":false,"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"HELLO"}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingApprovals","args":[{},{"$undefined":true},{"authoritativeHasPending":false,"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"Hello Worldkey_name-1"}],"ok":[]}
+{"fn":"derivePendingApprovals","args":[0,{"$undefined":true},{"authoritativeHasPending":true,"latestTurnId":null,"responseClaimReferenceAt":"hello"}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingApprovals","args":[{"a":"b"},[]],"error":"{} is not iterable"}
+{"fn":"derivePendingApprovals","args":[0,{},{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{}}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingApprovals","args":["x",{},{"authoritativeHasPending":true,"latestTurnId":{"$undefined":true}}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingApprovals","args":[{},{"a":"b"}],"error":"{} is not iterable"}
+{"fn":"derivePendingApprovals","args":[null,{"a":{"b":"c"}},{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":".leading"}],"error":"null is not an object (evaluating 'activities.length')"}
+{"fn":"derivePendingApprovals","args":[["a",1],0,{"a":"b"}],"error":"undefined is not an object (evaluating 'left.createdAt.localeCompare')"}
+{"fn":"derivePendingApprovals","args":[["a",1],null,{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"a😀b😀c"}],"error":"undefined is not an object (evaluating 'left.createdAt.localeCompare')"}
+{"fn":"derivePendingApprovals","args":[0,0,"x"],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingApprovals","args":[{},["a",1],{"authoritativeHasPending":true,"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"key_name-1"}],"error":"{} is not iterable"}
+{"fn":"derivePendingUserInputs","args":[true,{"$undefined":true},{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{"$undefined":true}}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingUserInputs","args":[null,{"$undefined":true},{"authoritativeHasPending":{"$undefined":true},"latestTurnId":0,"responseClaimReferenceAt":""}],"error":"null is not an object (evaluating 'activities.length')"}
+{"fn":"derivePendingUserInputs","args":[[],{"a":"b"},true],"error":"settlements.filter is not a function. (In 'settlements.filter((settlement) => settlement.interactionKind === interactionKind && (settlement.status === \"pending\" || settlement.status === \"retryable\" || responseClaimReferenceAt !== void 0 && isPendingInteractionResponseClaimable({\n    status: settlement.status,\n    responseRequestedAt: settlement.responseRequestedAt,\n    requestedAt: responseClaimReferenceAt\n  })))', 'settlements.filter' is undefined)"}
+{"fn":"derivePendingUserInputs","args":[{"a":{"b":"c"}},[],{"authoritativeHasPending":true,"latestTurnId":true,"responseClaimReferenceAt":"ünïcödé:"}],"error":"{} is not iterable"}
+{"fn":"derivePendingUserInputs","args":[["a",1],{},{"authoritativeHasPending":{"$undefined":true},"latestTurnId":0}],"error":"undefined is not an object (evaluating 'left.createdAt.localeCompare')"}
+{"fn":"derivePendingUserInputs","args":[{"a":{"b":"c"}},null,{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{"$undefined":true}}],"error":"{} is not iterable"}
+{"fn":"derivePendingUserInputs","args":[{},[],{"authoritativeHasPending":false,"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":".leading"}],"error":"{} is not iterable"}
+{"fn":"derivePendingUserInputs","args":[{},0,{"authoritativeHasPending":false,"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"日本語のテキスト"}],"error":"{} is not iterable"}
+{"fn":"derivePendingUserInputs","args":[[],{"$undefined":true},{}],"ok":[]}
+{"fn":"derivePendingUserInputs","args":[{"a":{"b":"c"}},["a",1],[]],"error":"{} is not iterable"}
+{"fn":"derivePendingUserInputs","args":[0,"x",{"authoritativeHasPending":true,"latestTurnId":[],"responseClaimReferenceAt":"key_name-1"}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingUserInputs","args":[true,{"$undefined":true},{"$undefined":true}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingUserInputs","args":[["a",1],{"a":{"b":"c"}},{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"İstanbul"}],"error":"undefined is not an object (evaluating 'left.createdAt.localeCompare')"}
+{"fn":"derivePendingUserInputs","args":[{"a":"b"},[],{"$undefined":true}],"error":"{} is not iterable"}
+{"fn":"derivePendingUserInputs","args":[[],{"$undefined":true},{"authoritativeHasPending":true,"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"Hello Worlda..b"}],"ok":[]}
+{"fn":"derivePendingUserInputs","args":["x",null,{"authoritativeHasPending":false,"latestTurnId":{"$undefined":true}}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingUserInputs","args":[true,0,{"authoritativeHasPending":true,"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"ns:key.path"}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingUserInputs","args":[[],[],{"authoritativeHasPending":true,"latestTurnId":["a",1]}],"ok":[]}
+{"fn":"derivePendingUserInputs","args":[{"a":"b"},"x",{"authoritativeHasPending":true,"latestTurnId":["a",1]}],"error":"{} is not iterable"}
+{"fn":"derivePendingUserInputs","args":[0],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingUserInputs","args":[{"a":"b"},["a",1],{"authoritativeHasPending":false,"latestTurnId":0}],"error":"{} is not iterable"}
+{"fn":"derivePendingUserInputs","args":[{},["a",1],{"authoritativeHasPending":false,"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"﻿bomünïcödé"}],"error":"{} is not iterable"}
+{"fn":"derivePendingUserInputs","args":[null,{"$undefined":true},{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"Hello World"}],"error":"null is not an object (evaluating 'activities.length')"}
+{"fn":"derivePendingUserInputs","args":[null,{"$undefined":true},{"$undefined":true}],"error":"null is not an object (evaluating 'activities.length')"}
+{"fn":"derivePendingUserInputs","args":[true,{"a":"b"},{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"HELLOns:key.path"}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingUserInputs","args":[["a",1],{},{"$undefined":true}],"error":"undefined is not an object (evaluating 'left.createdAt.localeCompare')"}
+{"fn":"derivePendingUserInputs","args":[{"a":"b"},{"$undefined":true},{"authoritativeHasPending":{"$undefined":true},"latestTurnId":null,"responseClaimReferenceAt":"src/a/b.ts"}],"error":"{} is not iterable"}
+{"fn":"derivePendingUserInputs","args":[null,["a",1],{"authoritativeHasPending":true,"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"ab"}],"error":"null is not an object (evaluating 'activities.length')"}
+{"fn":"derivePendingUserInputs","args":[null,{"a":"b"},{"authoritativeHasPending":true,"latestTurnId":[],"responseClaimReferenceAt":"tab\tseparated"}],"error":"null is not an object (evaluating 'activities.length')"}
+{"fn":"derivePendingUserInputs","args":[[],{"a":"b"},null],"error":"settlements.filter is not a function. (In 'settlements.filter((settlement) => settlement.interactionKind === interactionKind && (settlement.status === \"pending\" || settlement.status === \"retryable\" || responseClaimReferenceAt !== void 0 && isPendingInteractionResponseClaimable({\n    status: settlement.status,\n    responseRequestedAt: settlement.responseRequestedAt,\n    requestedAt: responseClaimReferenceAt\n  })))', 'settlements.filter' is undefined)"}
+{"fn":"derivePendingUserInputs","args":[true,true,{"$undefined":true}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingUserInputs","args":["x",[],{"a":"b"}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingUserInputs","args":[null,{"$undefined":true},{"authoritativeHasPending":{"$undefined":true},"latestTurnId":true,"responseClaimReferenceAt":"./x/**/*.json"}],"error":"null is not an object (evaluating 'activities.length')"}
+{"fn":"derivePendingUserInputs","args":[true,0,true],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingUserInputs","args":[{"a":"b"},{"a":"b"},{"authoritativeHasPending":false,"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"a😀b😀c"}],"error":"{} is not iterable"}
+{"fn":"derivePendingUserInputs","args":[{"a":{"b":"c"}},["a",1],{"authoritativeHasPending":false,"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"key_name-1a😀b😀c"}],"error":"{} is not iterable"}
+{"fn":"derivePendingUserInputs","args":[[],null],"error":"null is not an object (evaluating 'settlements.filter')"}
+{"fn":"derivePendingUserInputs","args":["x",0,{"authoritativeHasPending":false,"latestTurnId":{},"responseClaimReferenceAt":"a:b:chello world"}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingUserInputs","args":[[],{"$undefined":true},{"authoritativeHasPending":false,"latestTurnId":{"a":{"b":"c"}},"responseClaimReferenceAt":"ΣΊΣΥΦΟΣ"}],"ok":[]}
+{"fn":"derivePendingUserInputs","args":[{"a":{"b":"c"}},{"$undefined":true},{"authoritativeHasPending":false,"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":""}],"ok":[]}
+{"fn":"derivePendingUserInputs","args":[{},{"a":"b"},{"$undefined":true}],"error":"{} is not iterable"}
+{"fn":"derivePendingUserInputs","args":[null,["a",1],[]],"error":"null is not an object (evaluating 'activities.length')"}
+{"fn":"derivePendingUserInputs","args":[[],{},{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"trailing."}],"error":"settlements.filter is not a function. (In 'settlements.filter((settlement) => settlement.interactionKind === interactionKind && (settlement.status === \"pending\" || settlement.status === \"retryable\" || responseClaimReferenceAt !== void 0 && isPendingInteractionResponseClaimable({\n    status: settlement.status,\n    responseRequestedAt: settlement.responseRequestedAt,\n    requestedAt: responseClaimReferenceAt\n  })))', 'settlements.filter' is undefined)"}
+{"fn":"derivePendingUserInputs","args":["x",true,{}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingUserInputs","args":[[],{"a":"b"},{"authoritativeHasPending":true,"latestTurnId":{"a":"b"}}],"error":"settlements.filter is not a function. (In 'settlements.filter((settlement) => settlement.interactionKind === interactionKind && (settlement.status === \"pending\" || settlement.status === \"retryable\" || responseClaimReferenceAt !== void 0 && isPendingInteractionResponseClaimable({\n    status: settlement.status,\n    responseRequestedAt: settlement.responseRequestedAt,\n    requestedAt: responseClaimReferenceAt\n  })))', 'settlements.filter' is undefined)"}
+{"fn":"derivePendingUserInputs","args":[true,[],"x"],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingUserInputs","args":[true,{"$undefined":true},{"authoritativeHasPending":false,"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"abctab\tseparated"}],"ok":[]}
+{"fn":"derivePendingUserInputs","args":[null,{"$undefined":true},{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{"$undefined":true}}],"error":"null is not an object (evaluating 'activities.length')"}
+{"fn":"derivePendingUserInputs","args":[["a",1],{"a":"b"},{"authoritativeHasPending":{"$undefined":true},"latestTurnId":"x"}],"error":"undefined is not an object (evaluating 'left.createdAt.localeCompare')"}
+{"fn":"derivePendingUserInputs","args":[{"a":{"b":"c"}},{"$undefined":true},{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"a.b.c"}],"error":"{} is not iterable"}
+{"fn":"derivePendingUserInputs","args":[[],true,{"authoritativeHasPending":{"$undefined":true},"latestTurnId":null,"responseClaimReferenceAt":"src/a/b.ts"}],"error":"settlements.filter is not a function. (In 'settlements.filter((settlement) => settlement.interactionKind === interactionKind && (settlement.status === \"pending\" || settlement.status === \"retryable\" || responseClaimReferenceAt !== void 0 && isPendingInteractionResponseClaimable({\n    status: settlement.status,\n    responseRequestedAt: settlement.responseRequestedAt,\n    requestedAt: responseClaimReferenceAt\n  })))', 'settlements.filter' is undefined)"}
+{"fn":"derivePendingUserInputs","args":[null,{"a":"b"},{"authoritativeHasPending":false,"latestTurnId":null,"responseClaimReferenceAt":"İstanbul{name} has {count} items"}],"error":"null is not an object (evaluating 'activities.length')"}
+{"fn":"derivePendingUserInputs","args":[{},{},{"authoritativeHasPending":false,"latestTurnId":{"a":"b"}}],"error":"{} is not iterable"}
+{"fn":"derivePendingUserInputs","args":[[],0,{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{"a":{"b":"c"}},"responseClaimReferenceAt":"日本語のテキスト"}],"error":"settlements.filter is not a function. (In 'settlements.filter((settlement) => settlement.interactionKind === interactionKind && (settlement.status === \"pending\" || settlement.status === \"retryable\" || responseClaimReferenceAt !== void 0 && isPendingInteractionResponseClaimable({\n    status: settlement.status,\n    responseRequestedAt: settlement.responseRequestedAt,\n    requestedAt: responseClaimReferenceAt\n  })))', 'settlements.filter' is undefined)"}
+{"fn":"derivePendingUserInputs","args":[{},[]],"error":"{} is not iterable"}
+{"fn":"derivePendingUserInputs","args":[0,{"$undefined":true},{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{"$undefined":true}}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingUserInputs","args":[null,null,{"authoritativeHasPending":{"$undefined":true},"latestTurnId":0,"responseClaimReferenceAt":"hello world"}],"error":"null is not an object (evaluating 'activities.length')"}
+{"fn":"derivePendingUserInputs","args":[{"a":"b"},true,{"authoritativeHasPending":{"$undefined":true},"latestTurnId":true,"responseClaimReferenceAt":"İstanbulkey_name-1"}],"error":"{} is not iterable"}
+{"fn":"derivePendingUserInputs","args":[["a",1],{"$undefined":true},{"authoritativeHasPending":false,"latestTurnId":["a",1]}],"ok":[]}
+{"fn":"derivePendingUserInputs","args":[null,{"a":{"b":"c"}},{"$undefined":true}],"error":"null is not an object (evaluating 'activities.length')"}
+{"fn":"derivePendingUserInputs","args":[true,{"a":"b"},{"a":"b"}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingUserInputs","args":[[],{},{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{"$undefined":true}}],"error":"settlements.filter is not a function. (In 'settlements.filter((settlement) => settlement.interactionKind === interactionKind && (settlement.status === \"pending\" || settlement.status === \"retryable\" || responseClaimReferenceAt !== void 0 && isPendingInteractionResponseClaimable({\n    status: settlement.status,\n    responseRequestedAt: settlement.responseRequestedAt,\n    requestedAt: responseClaimReferenceAt\n  })))', 'settlements.filter' is undefined)"}
+{"fn":"derivePendingUserInputs","args":[[],{"$undefined":true},{"authoritativeHasPending":true,"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"  padded  "}],"ok":[]}
+{"fn":"derivePendingUserInputs","args":["x",0,{"authoritativeHasPending":true,"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"  padded  é"}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingUserInputs","args":[{},["a",1]],"error":"{} is not iterable"}
+{"fn":"derivePendingUserInputs","args":[{},{},{"authoritativeHasPending":{"$undefined":true},"latestTurnId":["a",1],"responseClaimReferenceAt":"﻿bom"}],"error":"{} is not iterable"}
+{"fn":"derivePendingUserInputs","args":[["a",1],0,{"authoritativeHasPending":true,"latestTurnId":[],"responseClaimReferenceAt":"İstanbula😀b😀c"}],"error":"undefined is not an object (evaluating 'left.createdAt.localeCompare')"}
+{"fn":"derivePendingUserInputs","args":[null,{"a":"b"},{"authoritativeHasPending":false,"latestTurnId":null,"responseClaimReferenceAt":"  padded  "}],"error":"null is not an object (evaluating 'activities.length')"}
+{"fn":"derivePendingUserInputs","args":[["a",1],{"a":"b"},{"authoritativeHasPending":{"$undefined":true},"latestTurnId":0,"responseClaimReferenceAt":"key_name-1"}],"error":"undefined is not an object (evaluating 'left.createdAt.localeCompare')"}
+{"fn":"derivePendingUserInputs","args":[{"a":{"b":"c"}},["a",1],{"authoritativeHasPending":true,"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"straße"}],"error":"{} is not iterable"}
+{"fn":"derivePendingUserInputs","args":[null,{},{"authoritativeHasPending":false,"latestTurnId":null,"responseClaimReferenceAt":"Hello World"}],"error":"null is not an object (evaluating 'activities.length')"}
+{"fn":"derivePendingUserInputs","args":[{"a":{"b":"c"}},["a",1],{"authoritativeHasPending":false,"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"ab"}],"error":"{} is not iterable"}
+{"fn":"derivePendingUserInputs","args":[{},{"$undefined":true},{"$undefined":true}],"error":"{} is not iterable"}
+{"fn":"derivePendingUserInputs","args":[{},"x",{"authoritativeHasPending":{"$undefined":true},"latestTurnId":true,"responseClaimReferenceAt":":.leading"}],"error":"{} is not iterable"}
+{"fn":"derivePendingUserInputs","args":[null,[],{"authoritativeHasPending":{"$undefined":true},"latestTurnId":true}],"error":"null is not an object (evaluating 'activities.length')"}
+{"fn":"derivePendingUserInputs","args":[0,{"$undefined":true},{"authoritativeHasPending":false,"latestTurnId":{"a":"b"},"responseClaimReferenceAt":"emoji 👍🏽 mix"}],"ok":[]}
+{"fn":"derivePendingUserInputs","args":["x",["a",1],{}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingUserInputs","args":[[],0,{"$undefined":true}],"error":"settlements.filter is not a function. (In 'settlements.filter((settlement) => settlement.interactionKind === interactionKind && (settlement.status === \"pending\" || settlement.status === \"retryable\" || responseClaimReferenceAt !== void 0 && isPendingInteractionResponseClaimable({\n    status: settlement.status,\n    responseRequestedAt: settlement.responseRequestedAt,\n    requestedAt: responseClaimReferenceAt\n  })))', 'settlements.filter' is undefined)"}
+{"fn":"derivePendingUserInputs","args":[{"a":"b"},0,{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"hello"}],"error":"{} is not iterable"}
+{"fn":"derivePendingUserInputs","args":[{},true,null],"error":"{} is not iterable"}
+{"fn":"derivePendingUserInputs","args":[{"a":{"b":"c"}},{"$undefined":true},{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{"a":"b"},"responseClaimReferenceAt":"ünïcödé"}],"error":"{} is not iterable"}
+{"fn":"derivePendingUserInputs","args":[true,true,{"authoritativeHasPending":true,"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"src/a/b.ts"}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingUserInputs","args":[[],null,{"authoritativeHasPending":false,"latestTurnId":null}],"error":"null is not an object (evaluating 'settlements.filter')"}
+{"fn":"derivePendingUserInputs","args":["x",{"a":"b"},{"authoritativeHasPending":{"$undefined":true},"latestTurnId":0}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingUserInputs","args":[null,{"a":"b"},{"authoritativeHasPending":{"$undefined":true},"latestTurnId":["a",1]}],"error":"null is not an object (evaluating 'activities.length')"}
+{"fn":"derivePendingUserInputs","args":["x",{"$undefined":true},{"$undefined":true}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingUserInputs","args":[0,{}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingUserInputs","args":[{"a":{"b":"c"}},"x",{"authoritativeHasPending":{"$undefined":true},"latestTurnId":0,"responseClaimReferenceAt":"abc"}],"error":"{} is not iterable"}
+{"fn":"derivePendingUserInputs","args":[{"a":{"b":"c"}},{"$undefined":true},{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"src/a/b.ts"}],"error":"{} is not iterable"}
+{"fn":"derivePendingUserInputs","args":[0,{"$undefined":true},{"$undefined":true}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingUserInputs","args":["x",0,{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"trailing."}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingUserInputs","args":[0,0,{"authoritativeHasPending":false,"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"trailing."}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingUserInputs","args":[null,"x",{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"Hello Worldhello world"}],"error":"null is not an object (evaluating 'activities.length')"}
+{"fn":"derivePendingUserInputs","args":[0,null,{"authoritativeHasPending":false,"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"{name} has {count} items"}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingUserInputs","args":[{"a":"b"},null,{"authoritativeHasPending":false,"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"😀"}],"error":"{} is not iterable"}
+{"fn":"derivePendingUserInputs","args":[{"a":{"b":"c"}},["a",1],{"authoritativeHasPending":false,"latestTurnId":true,"responseClaimReferenceAt":"aa..b"}],"error":"{} is not iterable"}
+{"fn":"derivePendingUserInputs","args":[true,true,{"authoritativeHasPending":false,"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"😀"}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingUserInputs","args":[{},"x",{"authoritativeHasPending":false,"latestTurnId":{"$undefined":true}}],"error":"{} is not iterable"}
+{"fn":"derivePendingUserInputs","args":[true,"x",["a",1]],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingUserInputs","args":[null,{"a":{"b":"c"}},{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"abc"}],"error":"null is not an object (evaluating 'activities.length')"}
+{"fn":"derivePendingUserInputs","args":[null,null,{"$undefined":true}],"error":"null is not an object (evaluating 'activities.length')"}
+{"fn":"derivePendingUserInputs","args":[["a",1],true,{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{},"responseClaimReferenceAt":"ünïcödéa😀b😀c"}],"error":"undefined is not an object (evaluating 'left.createdAt.localeCompare')"}
+{"fn":"derivePendingUserInputs","args":["x","x",{"authoritativeHasPending":false,"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":""}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingUserInputs","args":[0,null,{"authoritativeHasPending":true,"latestTurnId":{"$undefined":true}}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingUserInputs","args":["x",0,{"authoritativeHasPending":true,"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"a"}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingUserInputs","args":[["a",1],{"$undefined":true},{"$undefined":true}],"error":"undefined is not an object (evaluating 'left.createdAt.localeCompare')"}
+{"fn":"derivePendingUserInputs","args":["x",[],{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{},"responseClaimReferenceAt":"﻿bom"}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingUserInputs","args":[{},{"$undefined":true},{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"ünïcödé"}],"error":"{} is not iterable"}
+{"fn":"derivePendingUserInputs","args":[true,"x",{"authoritativeHasPending":false,"latestTurnId":{"a":{"b":"c"}},"responseClaimReferenceAt":"a..btab\tseparated"}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingUserInputs","args":[null,null,{"authoritativeHasPending":false,"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"a..b"}],"error":"null is not an object (evaluating 'activities.length')"}
+{"fn":"derivePendingUserInputs","args":[[],{"$undefined":true},{"authoritativeHasPending":false,"latestTurnId":"x"}],"ok":[]}
+{"fn":"derivePendingUserInputs","args":[{"a":"b"},[],{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{"a":"b"}}],"error":"{} is not iterable"}
+{"fn":"derivePendingUserInputs","args":[null,{"$undefined":true},{"authoritativeHasPending":true,"latestTurnId":"x"}],"error":"null is not an object (evaluating 'activities.length')"}
+{"fn":"derivePendingUserInputs","args":[{},["a",1],{"authoritativeHasPending":true,"latestTurnId":true,"responseClaimReferenceAt":"abc"}],"error":"{} is not iterable"}
+{"fn":"derivePendingUserInputs","args":[["a",1],{"a":"b"},{"authoritativeHasPending":false,"latestTurnId":{"a":{"b":"c"}},"responseClaimReferenceAt":"İstanbulab"}],"error":"undefined is not an object (evaluating 'left.createdAt.localeCompare')"}
+{"fn":"derivePendingUserInputs","args":[{"a":{"b":"c"}},{"$undefined":true},{"authoritativeHasPending":true,"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"a:b:ctrailing."}],"error":"{} is not iterable"}
+{"fn":"derivePendingUserInputs","args":[{},true,{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"a..b"}],"error":"{} is not iterable"}
+{"fn":"derivePendingUserInputs","args":["x",true],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingUserInputs","args":[{"a":{"b":"c"}},"x",["a",1]],"error":"{} is not iterable"}
+{"fn":"derivePendingUserInputs","args":["x",["a",1],{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{"$undefined":true}}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingUserInputs","args":[{"a":{"b":"c"}},[],{"authoritativeHasPending":true,"latestTurnId":0}],"error":"{} is not iterable"}
+{"fn":"derivePendingUserInputs","args":[null,{"a":{"b":"c"}},{"authoritativeHasPending":false,"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"straße"}],"error":"null is not an object (evaluating 'activities.length')"}
+{"fn":"derivePendingUserInputs","args":[null,true,{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"ünïcödé"}],"error":"null is not an object (evaluating 'activities.length')"}
+{"fn":"derivePendingUserInputs","args":[0,[]],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingUserInputs","args":["x",[],{"authoritativeHasPending":false,"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"hello world"}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingUserInputs","args":[null,"x",{"authoritativeHasPending":{"$undefined":true},"latestTurnId":0,"responseClaimReferenceAt":"a..b"}],"error":"null is not an object (evaluating 'activities.length')"}
+{"fn":"derivePendingUserInputs","args":[{"a":"b"},{},{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{"$undefined":true}}],"error":"{} is not iterable"}
+{"fn":"derivePendingUserInputs","args":[{"a":{"b":"c"}},[]],"error":"{} is not iterable"}
+{"fn":"derivePendingUserInputs","args":[{"a":"b"},true,{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{"a":"b"},"responseClaimReferenceAt":"line1\nline2"}],"error":"{} is not iterable"}
+{"fn":"derivePendingUserInputs","args":[true,{"a":{"b":"c"}},{"authoritativeHasPending":true,"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"a..b"}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingUserInputs","args":[[],{"a":{"b":"c"}},{"authoritativeHasPending":false,"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"a..b"}],"error":"settlements.filter is not a function. (In 'settlements.filter((settlement) => settlement.interactionKind === interactionKind && (settlement.status === \"pending\" || settlement.status === \"retryable\" || responseClaimReferenceAt !== void 0 && isPendingInteractionResponseClaimable({\n    status: settlement.status,\n    responseRequestedAt: settlement.responseRequestedAt,\n    requestedAt: responseClaimReferenceAt\n  })))', 'settlements.filter' is undefined)"}
+{"fn":"derivePendingUserInputs","args":[true,{"a":{"b":"c"}},{"authoritativeHasPending":{"$undefined":true},"latestTurnId":["a",1],"responseClaimReferenceAt":""}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingUserInputs","args":["x",{"a":"b"},{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"a😀b😀c"}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingUserInputs","args":[true,{},{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{"a":{"b":"c"}}}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingUserInputs","args":[{"a":{"b":"c"}},{"a":{"b":"c"}},{"authoritativeHasPending":false,"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"a.b.c"}],"error":"{} is not iterable"}
+{"fn":"derivePendingUserInputs","args":["x",null,{"authoritativeHasPending":true,"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"src/a/b.ts"}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingUserInputs","args":["x",{"a":{"b":"c"}},{"a":{"b":"c"}}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingUserInputs","args":[0,{},{"authoritativeHasPending":false,"latestTurnId":true}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingUserInputs","args":["x",{"a":{"b":"c"}},{"$undefined":true}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingUserInputs","args":[["a",1],{},{"authoritativeHasPending":false,"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"{name} has {count} items"}],"error":"undefined is not an object (evaluating 'left.createdAt.localeCompare')"}
+{"fn":"derivePendingUserInputs","args":[true,{"$undefined":true},{"authoritativeHasPending":true,"latestTurnId":"x","responseClaimReferenceAt":"ab"}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingUserInputs","args":[null],"error":"null is not an object (evaluating 'activities.length')"}
+{"fn":"derivePendingUserInputs","args":[0,{"$undefined":true},{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"straße"}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingUserInputs","args":["x",[],{"authoritativeHasPending":false,"latestTurnId":{"$undefined":true}}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingUserInputs","args":[0,{"$undefined":true},{"authoritativeHasPending":false,"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"ab"}],"ok":[]}
+{"fn":"derivePendingUserInputs","args":[[],null,{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"İstanbul"}],"error":"null is not an object (evaluating 'settlements.filter')"}
+{"fn":"derivePendingUserInputs","args":[true,{"a":"b"},{"authoritativeHasPending":false,"latestTurnId":null,"responseClaimReferenceAt":"trailing../x/**/*.json"}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingUserInputs","args":[0,"x",{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{},"responseClaimReferenceAt":"é"}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingUserInputs","args":[{"a":"b"},{"a":{"b":"c"}}],"error":"{} is not iterable"}
+{"fn":"derivePendingUserInputs","args":[{"a":"b"},{"a":{"b":"c"}},{"a":{"b":"c"}}],"error":"{} is not iterable"}
+{"fn":"derivePendingUserInputs","args":[{"a":"b"},true,{"$undefined":true}],"error":"{} is not iterable"}
+{"fn":"derivePendingUserInputs","args":[true,{"a":"b"},{"authoritativeHasPending":true,"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"straße"}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingUserInputs","args":[{"a":{"b":"c"}},0,{"authoritativeHasPending":true,"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"a.b.c"}],"error":"{} is not iterable"}
+{"fn":"derivePendingUserInputs","args":[{},{"$undefined":true},{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"abc"}],"error":"{} is not iterable"}
+{"fn":"derivePendingUserInputs","args":[true,["a",1],{"authoritativeHasPending":false,"latestTurnId":0,"responseClaimReferenceAt":"😀"}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingUserInputs","args":[[],0,true],"error":"settlements.filter is not a function. (In 'settlements.filter((settlement) => settlement.interactionKind === interactionKind && (settlement.status === \"pending\" || settlement.status === \"retryable\" || responseClaimReferenceAt !== void 0 && isPendingInteractionResponseClaimable({\n    status: settlement.status,\n    responseRequestedAt: settlement.responseRequestedAt,\n    requestedAt: responseClaimReferenceAt\n  })))', 'settlements.filter' is undefined)"}
+{"fn":"derivePendingUserInputs","args":[null,{"$undefined":true},{"authoritativeHasPending":false,"latestTurnId":{"$undefined":true}}],"ok":[]}
+{"fn":"derivePendingUserInputs","args":["x",0,{"authoritativeHasPending":true,"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"straße"}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingUserInputs","args":[["a",1],{}],"error":"undefined is not an object (evaluating 'left.createdAt.localeCompare')"}
+{"fn":"derivePendingUserInputs","args":[{},{"a":"b"}],"error":"{} is not iterable"}
+{"fn":"derivePendingUserInputs","args":[true,["a",1],{"authoritativeHasPending":false,"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"HELLO"}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingUserInputs","args":[{},{"a":"b"},{"authoritativeHasPending":true,"latestTurnId":null,"responseClaimReferenceAt":"emoji 👍🏽 mix"}],"error":"{} is not iterable"}
+{"fn":"derivePendingUserInputs","args":[["a",1],{"$undefined":true},{"authoritativeHasPending":{"$undefined":true},"latestTurnId":"x","responseClaimReferenceAt":"{name} has {count} items"}],"error":"undefined is not an object (evaluating 'left.createdAt.localeCompare')"}
+{"fn":"derivePendingUserInputs","args":[["a",1],0,{"$undefined":true}],"error":"undefined is not an object (evaluating 'left.createdAt.localeCompare')"}
+{"fn":"derivePendingUserInputs","args":[[],[],{"$undefined":true}],"ok":[]}
+{"fn":"derivePendingUserInputs","args":["x",["a",1],{"authoritativeHasPending":false,"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"hello"}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingUserInputs","args":["x",[],0],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingUserInputs","args":[[],{"$undefined":true},{"authoritativeHasPending":true,"latestTurnId":{},"responseClaimReferenceAt":".leading"}],"ok":[]}
+{"fn":"derivePendingUserInputs","args":[0,0,{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{}}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingUserInputs","args":[{"a":"b"},null,"x"],"error":"{} is not iterable"}
+{"fn":"derivePendingUserInputs","args":[{},"x"],"error":"{} is not iterable"}
+{"fn":"derivePendingUserInputs","args":[[],["a",1],{"$undefined":true}],"ok":[]}
+{"fn":"derivePendingUserInputs","args":[{"a":{"b":"c"}},{"a":"b"},{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{"a":{"b":"c"}}}],"error":"{} is not iterable"}
+{"fn":"derivePendingUserInputs","args":[0,{"a":{"b":"c"}},{"authoritativeHasPending":false,"latestTurnId":true}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingUserInputs","args":[true,{},{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":":a😀b😀c"}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingUserInputs","args":[{"a":"b"},[],{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{"$undefined":true}}],"error":"{} is not iterable"}
+{"fn":"derivePendingUserInputs","args":[{"a":{"b":"c"}},{"$undefined":true},{"authoritativeHasPending":false,"latestTurnId":{"$undefined":true}}],"ok":[]}
+{"fn":"derivePendingUserInputs","args":[{"a":"b"},true,{"authoritativeHasPending":{"$undefined":true},"latestTurnId":["a",1],"responseClaimReferenceAt":"a.b.c"}],"error":"{} is not iterable"}
+{"fn":"derivePendingUserInputs","args":[true,null,{"$undefined":true}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingUserInputs","args":[{"a":{"b":"c"}},{"a":{"b":"c"}},{"authoritativeHasPending":{"$undefined":true},"latestTurnId":["a",1],"responseClaimReferenceAt":"ns:key.path"}],"error":"{} is not iterable"}
+{"fn":"derivePendingUserInputs","args":[true,null,{"authoritativeHasPending":false,"latestTurnId":{"a":{"b":"c"}},"responseClaimReferenceAt":".leading"}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingUserInputs","args":[null,true,{"authoritativeHasPending":true,"latestTurnId":{"$undefined":true}}],"error":"null is not an object (evaluating 'activities.length')"}
+{"fn":"derivePendingUserInputs","args":[{"a":{"b":"c"}},["a",1],{"authoritativeHasPending":true,"latestTurnId":{},"responseClaimReferenceAt":"Hello World"}],"error":"{} is not iterable"}
+{"fn":"derivePendingUserInputs","args":[{"a":{"b":"c"}},0,[]],"error":"{} is not iterable"}
+{"fn":"derivePendingUserInputs","args":[{"a":{"b":"c"}},{"$undefined":true},{"a":"b"}],"error":"{} is not iterable"}
+{"fn":"derivePendingUserInputs","args":[{},0],"error":"{} is not iterable"}
+{"fn":"derivePendingUserInputs","args":["x",true,{"$undefined":true}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingUserInputs","args":[["a",1],["a",1],{"authoritativeHasPending":false,"latestTurnId":"x"}],"error":"undefined is not an object (evaluating 'left.createdAt.localeCompare')"}
+{"fn":"derivePendingUserInputs","args":[{"a":"b"},{"$undefined":true}],"error":"{} is not iterable"}
+{"fn":"derivePendingUserInputs","args":[0,{"a":"b"},{"a":{"b":"c"}}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingUserInputs","args":[0,{"a":{"b":"c"}},{"authoritativeHasPending":false,"latestTurnId":true,"responseClaimReferenceAt":"﻿bom"}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingUserInputs","args":["x",{"a":{"b":"c"}},{"authoritativeHasPending":true,"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"trailing."}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingUserInputs","args":["x",{"a":"b"},{"$undefined":true}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingUserInputs","args":[["a",1],{"a":{"b":"c"}},{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"abtrailing."}],"error":"undefined is not an object (evaluating 'left.createdAt.localeCompare')"}
+{"fn":"derivePendingUserInputs","args":[null,{},{"authoritativeHasPending":{"$undefined":true},"latestTurnId":0,"responseClaimReferenceAt":"日本語のテキスト"}],"error":"null is not an object (evaluating 'activities.length')"}
+{"fn":"derivePendingUserInputs","args":[null,"x",{"authoritativeHasPending":true,"latestTurnId":{},"responseClaimReferenceAt":"a:b:c"}],"error":"null is not an object (evaluating 'activities.length')"}
+{"fn":"derivePendingUserInputs","args":[{"a":{"b":"c"}},[],{"$undefined":true}],"error":"{} is not iterable"}
+{"fn":"derivePendingUserInputs","args":[0,{"$undefined":true},{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":"a..b"}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingUserInputs","args":[0,{"$undefined":true}],"error":"WeakMap keys must be objects or non-registered symbols"}
+{"fn":"derivePendingUserInputs","args":[{},{"a":"b"},{"authoritativeHasPending":{"$undefined":true},"latestTurnId":{"$undefined":true},"responseClaimReferenceAt":".leading"}],"error":"{} is not iterable"}

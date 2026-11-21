@@ -1,0 +1,72 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/pendingInteractionDerivation.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "pendinginteractionderivation-rs",
+  "exports": [
+    {
+      "name": "derivePendingApprovals",
+      "file": "apps/web/src/pendingInteractionDerivation.ts",
+      "line": 254,
+      "params": [
+        {
+          "name": "activities",
+          "ts_type": "ReadonlyArray<typeof typeof typeof typeof OrchestrationThreadActivity.Type.Type.Type.Type>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "settlements",
+          "ts_type": "ReadonlyArray<typeof typeof typeof typeof OrchestrationPendingInteraction.Type.Type.Type.Type>",
+          "optional": true,
+          "rest": false
+        },
+        {
+          "name": "options",
+          "ts_type": "PendingInteractionDerivationOptions",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "PendingApproval[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "derivePendingUserInputs",
+      "file": "apps/web/src/pendingInteractionDerivation.ts",
+      "line": 365,
+      "params": [
+        {
+          "name": "activities",
+          "ts_type": "ReadonlyArray<typeof typeof typeof typeof OrchestrationThreadActivity.Type.Type.Type.Type>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "settlements",
+          "ts_type": "ReadonlyArray<typeof typeof typeof typeof OrchestrationPendingInteraction.Type.Type.Type.Type>",
+          "optional": true,
+          "rest": false
+        },
+        {
+          "name": "options",
+          "ts_type": "PendingInteractionDerivationOptions",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "PendingUserInput[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

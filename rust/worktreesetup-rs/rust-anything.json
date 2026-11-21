@@ -1,0 +1,60 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/worktreeSetup.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "worktreesetup-rs",
+  "exports": [
+    {
+      "name": "findWorktreeSetupScript",
+      "file": "apps/server/src/worktreeSetup.ts",
+      "line": 7,
+      "params": [
+        {
+          "name": "scripts",
+          "ts_type": "ReadonlyArray<typeof typeof typeof typeof ProjectScript.Type.Type.Type.Type>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ProjectScript.Type.Type.Type.Type | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "runWorktreeSetupScript",
+      "file": "apps/server/src/worktreeSetup.ts",
+      "line": 14,
+      "params": [
+        {
+          "name": "scripts",
+          "ts_type": "ReadonlyArray<typeof typeof typeof typeof ProjectScript.Type.Type.Type.Type>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "cwd",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "signal",
+          "ts_type": "AbortSignal",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<void>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

@@ -1,0 +1,224 @@
+{"fn":"findWorktreeSetupScript","args":[["a",1]],"ok":null}
+{"fn":"findWorktreeSetupScript","args":[0],"error":"scripts.find is not a function"}
+{"fn":"findWorktreeSetupScript","args":[{}],"error":"scripts.find is not a function"}
+{"fn":"findWorktreeSetupScript","args":[null],"error":"Cannot read properties of null (reading 'find')"}
+{"fn":"findWorktreeSetupScript","args":[{"a":"b"}],"error":"scripts.find is not a function"}
+{"fn":"findWorktreeSetupScript","args":["x"],"error":"scripts.find is not a function"}
+{"fn":"findWorktreeSetupScript","args":[{"a":{"b":"c"}}],"error":"scripts.find is not a function"}
+{"fn":"findWorktreeSetupScript","args":[true],"error":"scripts.find is not a function"}
+{"fn":"findWorktreeSetupScript","args":[[]],"ok":null}
+{"fn":"runWorktreeSetupScript","args":["x","abc","x"],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":["x","İstanbul","x"],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[true,"ahello",0],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[0,"ünïcödé",null],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[{},"hello world"],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[0,".leading"],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":["x","straße","x"],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":["x","straße",{"a":{"b":"c"}}],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[{"a":{"b":"c"}},"line1\nline2",[]],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[{"a":"b"},"",["a",1]],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[0,"a😀b😀c",[]],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[null,"a",["a",1]],"error":"Cannot read properties of null (reading 'find')"}
+{"fn":"runWorktreeSetupScript","args":[{"a":{"b":"c"}},"ΣΊΣΥΦΟΣ",{"a":{"b":"c"}}],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[true,":",[]],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[{},"ünïcödé",true],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":["x","x",true],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[["a",1],"a..b",{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"runWorktreeSetupScript","args":[{"a":{"b":"c"}},"ünïcödé"],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[{"a":"b"},"hello",{"a":"b"}],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[{"a":"b"},"a😀b😀c﻿bom",{"a":"b"}],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[["a",1],"trailing.",{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"runWorktreeSetupScript","args":[["a",1],"hello",{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"runWorktreeSetupScript","args":[null,"﻿bom",["a",1]],"error":"Cannot read properties of null (reading 'find')"}
+{"fn":"runWorktreeSetupScript","args":[{"a":{"b":"c"}},"absrc/a/b.ts",0],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[true,"./x/**/*.jsona😀b😀c",[]],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[true,"a:b:c"],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[0,"ab",["a",1]],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[null,"  padded  ",null],"error":"Cannot read properties of null (reading 'find')"}
+{"fn":"runWorktreeSetupScript","args":["x","emoji 👍🏽 mixİstanbul","x"],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[null,"hello world",null],"error":"Cannot read properties of null (reading 'find')"}
+{"fn":"runWorktreeSetupScript","args":[{},"Hello World",true],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[["a",1],"a..b"],"ok":{"$undefined":true}}
+{"fn":"runWorktreeSetupScript","args":[true,"astraße",{"a":"b"}],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[["a",1],"src/a/b.ts./x/**/*.json",{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"runWorktreeSetupScript","args":[true,"a..b",0],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[["a",1],"line1\nline2",0],"ok":{"$undefined":true}}
+{"fn":"runWorktreeSetupScript","args":[["a",1],"İstanbul.leading",{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"runWorktreeSetupScript","args":[0,"a.b.c",["a",1]],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[{"a":"b"},"é",0],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[[],"a",["a",1]],"ok":{"$undefined":true}}
+{"fn":"runWorktreeSetupScript","args":[{},"hello",0],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":["x","key_name-1",{"$undefined":true}],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[["a",1],"a.b.cHello World",true],"ok":{"$undefined":true}}
+{"fn":"runWorktreeSetupScript","args":[0,"straßeΣΊΣΥΦΟΣ",[]],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[["a",1],"./x/**/*.jsonab",0],"ok":{"$undefined":true}}
+{"fn":"runWorktreeSetupScript","args":[0,"ab",0],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[{},"line1\nline2",null],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[0,"a..b",{"$undefined":true}],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[{"a":"b"},"a.b.c",{"a":"b"}],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[{},".leading"],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[true,"hellohello",{"$undefined":true}],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":["x","tab\tseparated",[]],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[{},"﻿bom",{"a":{"b":"c"}}],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[{},"  padded  ",{"a":"b"}],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[{},".leading",{}],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[null,"a:b:c","x"],"error":"Cannot read properties of null (reading 'find')"}
+{"fn":"runWorktreeSetupScript","args":[true,"😀",{}],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[{},"é"],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[{"a":{"b":"c"}},"abc","x"],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[0,"hello",{"a":{"b":"c"}}],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[true,"ünïcödé","x"],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[{"a":"b"},"absrc/a/b.ts",{}],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[{},"a..b",null],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[{"a":"b"},"./x/**/*.json",{}],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[true,"src/a/b.ts",[]],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[{"a":"b"},"HELLO",{"a":{"b":"c"}}],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[[],"a",0],"ok":{"$undefined":true}}
+{"fn":"runWorktreeSetupScript","args":[{"a":"b"},"Hello World",true],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":["x","x",0],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[{},"emoji 👍🏽 mix",null],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[{"a":"b"},"😀",null],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[true,"a..b",[]],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[["a",1],"hello",null],"ok":{"$undefined":true}}
+{"fn":"runWorktreeSetupScript","args":[0,"İstanbul","x"],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[[],"ünïcödé",{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"runWorktreeSetupScript","args":[{"a":{"b":"c"}},"hello",null],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[{},":.leading",{"a":{"b":"c"}}],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[[],"straße",{}],"ok":{"$undefined":true}}
+{"fn":"runWorktreeSetupScript","args":["x","  padded  ",null],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[{},"trailing.","x"],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[0,"./x/**/*.json",null],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[[],"a:b:c",{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"runWorktreeSetupScript","args":[true,"a",0],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[{"a":{"b":"c"}},"",["a",1]],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":["x","a..b",{"$undefined":true}],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[true,"",{"$undefined":true}],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[true,"a:b:c",{"a":"b"}],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[["a",1],"éa:b:c",true],"ok":{"$undefined":true}}
+{"fn":"runWorktreeSetupScript","args":[[],"",{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"runWorktreeSetupScript","args":[{"a":"b"},"ns:key.path",true],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[true,"hello world",[]],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[true,"a:b:c",null],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[{},"./x/**/*.json",{}],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[null,"Hello World./x/**/*.json"],"error":"Cannot read properties of null (reading 'find')"}
+{"fn":"runWorktreeSetupScript","args":[0,"a",0],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[null,"{name} has {count} items",{"a":"b"}],"error":"Cannot read properties of null (reading 'find')"}
+{"fn":"runWorktreeSetupScript","args":[true,"  padded  key_name-1",null],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[0,"{name} has {count} items",{"a":"b"}],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[null,"é",true],"error":"Cannot read properties of null (reading 'find')"}
+{"fn":"runWorktreeSetupScript","args":[[],"{name} has {count} items",[]],"ok":{"$undefined":true}}
+{"fn":"runWorktreeSetupScript","args":[null,"é",{}],"error":"Cannot read properties of null (reading 'find')"}
+{"fn":"runWorktreeSetupScript","args":["x","ünïcödé",[]],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[{"a":{"b":"c"}},"straße",{"$undefined":true}],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[{"a":{"b":"c"}},"hello",[]],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[{"a":{"b":"c"}},"😀src/a/b.ts",null],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[true,"Hello World",{"a":"b"}],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[{"a":"b"},"a😀b😀c",{}],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[0,"","x"],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[0,"x","x"],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[{"a":"b"},"key_name-1hello",true],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[{"a":{"b":"c"}},"key_name-1",0],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[{"a":"b"},"😀",true],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[0,"﻿bom",{"a":{"b":"c"}}],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[{"a":{"b":"c"}},":",[]],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":["x","日本語のテキスト",["a",1]],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[{"a":{"b":"c"}},"é","x"],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[{},"a.b.c",null],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":["x","X",{"$undefined":true}],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[{"a":"b"},"İstanbul",0],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[0,"  padded  "],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":["x","﻿bom",[]],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[["a",1],"日本語のテキスト",0],"ok":{"$undefined":true}}
+{"fn":"runWorktreeSetupScript","args":[null,"ns:key.pathns:key.path",{"a":"b"}],"error":"Cannot read properties of null (reading 'find')"}
+{"fn":"runWorktreeSetupScript","args":["x","X",[]],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[0,"ünïcödé",["a",1]],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[{"a":"b"},"key_name-1",true],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[true,"hello world",0],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[0,"src/a/b.ts",null],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[["a",1],"a:b:c",{}],"ok":{"$undefined":true}}
+{"fn":"runWorktreeSetupScript","args":[{"a":{"b":"c"}},"﻿bom",{"$undefined":true}],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[true,"ΣΊΣΥΦΟΣ",[]],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[["a",1],":",{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"runWorktreeSetupScript","args":[null,"日本語のテキストa😀b😀c"],"error":"Cannot read properties of null (reading 'find')"}
+{"fn":"runWorktreeSetupScript","args":[{"a":"b"},"",null],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[["a",1],"a.b.c",{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"runWorktreeSetupScript","args":["x","a😀b😀c",{"a":"b"}],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[{"a":{"b":"c"}},"tab\tseparated",[]],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[{"a":"b"},"line1\nline2",{}],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[null,"a.b.c",null],"error":"Cannot read properties of null (reading 'find')"}
+{"fn":"runWorktreeSetupScript","args":[{"a":{"b":"c"}},"HELLO",0],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[{"a":{"b":"c"}},"line1\nline2",["a",1]],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[{"a":"b"},"HELLO",0],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[{"a":"b"},"emoji 👍🏽 mix","x"],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[null,"{name} has {count} items","x"],"error":"Cannot read properties of null (reading 'find')"}
+{"fn":"runWorktreeSetupScript","args":[{"a":{"b":"c"}},"İstanbul",{}],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[0,"abc",["a",1]],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[{},"hello world",0],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[0,""],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[0,"trailing.",{"$undefined":true}],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":["x","src/a/b.ts",{"$undefined":true}],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[{"a":"b"},"trailing.HELLO","x"],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[["a",1],"abc",0],"ok":{"$undefined":true}}
+{"fn":"runWorktreeSetupScript","args":[[],"hello",true],"ok":{"$undefined":true}}
+{"fn":"runWorktreeSetupScript","args":["x","x","x"],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[[],"ns:key.path",{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"runWorktreeSetupScript","args":[{"a":"b"},"ns:key.path",{"$undefined":true}],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[0,"İstanbul",true],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[["a",1],"﻿bom",["a",1]],"ok":{"$undefined":true}}
+{"fn":"runWorktreeSetupScript","args":[["a",1],"ab"],"ok":{"$undefined":true}}
+{"fn":"runWorktreeSetupScript","args":[["a",1],"emoji 👍🏽 mix",{}],"ok":{"$undefined":true}}
+{"fn":"runWorktreeSetupScript","args":[null,"hello world",[]],"error":"Cannot read properties of null (reading 'find')"}
+{"fn":"runWorktreeSetupScript","args":[{"a":"b"},"ΣΊΣΥΦΟΣé",0],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[0,"hello","x"],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[{},"key_name-1",{}],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[["a",1],"a  padded  "],"ok":{"$undefined":true}}
+{"fn":"runWorktreeSetupScript","args":[{},"  padded  ",["a",1]],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[null,"line1\nline2",[]],"error":"Cannot read properties of null (reading 'find')"}
+{"fn":"runWorktreeSetupScript","args":["x","abc",[]],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[[],"étrailing.",true],"ok":{"$undefined":true}}
+{"fn":"runWorktreeSetupScript","args":[["a",1],"ab",{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"runWorktreeSetupScript","args":["x","x",{"$undefined":true}],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":["x","日本語のテキスト",{"$undefined":true}],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":["x","key_name-1",{"a":"b"}],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[[],"src/a/b.ts",[]],"ok":{"$undefined":true}}
+{"fn":"runWorktreeSetupScript","args":[0,"ünïcödé",true],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[{},"İstanbul",true],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[true,"trailing.",["a",1]],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[{"a":"b"},"hello world",["a",1]],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[["a",1],"ΣΊΣΥΦΟΣ",{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"runWorktreeSetupScript","args":[{},"a",{"a":"b"}],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[{"a":{"b":"c"}},"a:b:c",{"a":{"b":"c"}}],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[true,"日本語のテキスト",true],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[null,"src/a/b.tsHello World"],"error":"Cannot read properties of null (reading 'find')"}
+{"fn":"runWorktreeSetupScript","args":[["a",1],"Hello World",{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"runWorktreeSetupScript","args":[true,"a",{"$undefined":true}],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[{},"😀ns:key.path",{"$undefined":true}],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[{"a":{"b":"c"}},"a..b",{"a":{"b":"c"}}],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[null,"./x/**/*.json",null],"error":"Cannot read properties of null (reading 'find')"}
+{"fn":"runWorktreeSetupScript","args":[0,"日本語のテキスト",true],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[[],"a:b:c",{}],"ok":{"$undefined":true}}
+{"fn":"runWorktreeSetupScript","args":["x","ns:key.path"],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[null,"hello",0],"error":"Cannot read properties of null (reading 'find')"}
+{"fn":"runWorktreeSetupScript","args":[true,"tab\tseparated",{}],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[[],"😀",0],"ok":{"$undefined":true}}
+{"fn":"runWorktreeSetupScript","args":[{},"  padded  ",true],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[{},"./x/**/*.json"],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[["a",1],"tab\tseparated",{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"runWorktreeSetupScript","args":[[],"a😀b😀c",{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"runWorktreeSetupScript","args":[{},"a..b",0],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":[["a",1],"a..b",0],"ok":{"$undefined":true}}
+{"fn":"runWorktreeSetupScript","args":["x","héllo wörld","x"],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":["x","👍🏽 thumbs","x"],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":["x","日本語","x"],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":["x","","x"],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":["x","é","x"],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":["x","ılık ırmak","x"],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":["x","👨‍👩‍👧 family","x"],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":["x","a b","x"],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":["x","ΣΊΣΥΦΟΣ","x"],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":["x","a😀b","x"],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":["x","﻿bom","x"],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":["x","a²b x½ y①","x"],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":["x","aⅠb Ⅻ","x"],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":["x","a𐐀b 𝐀bc","x"],"error":"scripts.find is not a function"}
+{"fn":"runWorktreeSetupScript","args":["x","कि ٣٤","x"],"error":"scripts.find is not a function"}

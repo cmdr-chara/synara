@@ -1,0 +1,17 @@
+{
+  "unit": "apps/desktop/src/bundleSwapDetection.ts",
+  "files": 1,
+  "fingerprint": "fc031712a1bfbd9e",
+  "coverage": {
+    "lines": 62,
+    "reached": 62,
+    "files": [
+      {
+        "file": "apps/desktop/src/bundleSwapDetection.ts",
+        "lines": 62,
+        "reached": 62,
+        "missed": ""
+      }
+    ]
+  }
+}

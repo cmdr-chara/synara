@@ -1,0 +1,96 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/desktop/src/bundleSwapDetection.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "bundleswapdetection-rs",
+  "exports": [
+    {
+      "name": "bundleSignatureFromStats",
+      "file": "apps/desktop/src/bundleSwapDetection.ts",
+      "line": 27,
+      "params": [
+        {
+          "name": "stats",
+          "ts_type": "BundleStatLike",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "BundleSignature",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isWatchableBundlePath",
+      "file": "apps/desktop/src/bundleSwapDetection.ts",
+      "line": 35,
+      "params": [
+        {
+          "name": "appPath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isBundleSwapped",
+      "file": "apps/desktop/src/bundleSwapDetection.ts",
+      "line": 45,
+      "params": [
+        {
+          "name": "baseline",
+          "ts_type": "BundleSignature",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "current",
+          "ts_type": "BundleSignature | null",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isBundleStable",
+      "file": "apps/desktop/src/bundleSwapDetection.ts",
+      "line": 63,
+      "params": [
+        {
+          "name": "baseline",
+          "ts_type": "BundleSignature",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "current",
+          "ts_type": "BundleSignature | null",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "current is BundleSignature",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

@@ -1,0 +1,48 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/threadActivation.logic.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "threadactivation-rs",
+  "exports": [
+    {
+      "name": "resolveThreadCommandActivation",
+      "file": "apps/web/src/threadActivation.logic.ts",
+      "line": 24,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  threadId: typeof typeof typeof typeof ThreadId.Type.Type.Type.Type;\n  threadExists: boolean;\n  activeSidebarThreadId: typeof typeof typeof typeof ThreadId.Type.Type.Type.Type | null | undefined;\n  preferredSplitViewId: string | null;\n  splitPaneId: string | null;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(| { kind: \"ignore\" }\n  | { kind: \"single\"; threadId: typeof typeof typeof ThreadId.Type.Type.Type }\n  | { kind: \"split\"; threadId: typeof typeof typeof ThreadId.Type.Type.Type; splitViewId: string; paneId: string })",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolvePreferredSplitForCommand",
+      "file": "apps/web/src/threadActivation.logic.ts",
+      "line": 58,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  activeSplitView: SplitView | null;\n  splitViewsById: Record<string, SplitView | undefined>;\n  threadId: typeof typeof typeof typeof ThreadId.Type.Type.Type.Type;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "{ splitViewId: string; paneId: string } | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

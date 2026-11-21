@@ -1,0 +1,18 @@
+{"fn":"resolveThreadCommandActivation","args":[{"a":"b"}],"ok":{"kind":"ignore"}}
+{"fn":"resolveThreadCommandActivation","args":[0],"ok":{"kind":"ignore"}}
+{"fn":"resolveThreadCommandActivation","args":["x"],"ok":{"kind":"ignore"}}
+{"fn":"resolveThreadCommandActivation","args":[{}],"ok":{"kind":"ignore"}}
+{"fn":"resolveThreadCommandActivation","args":[["a",1]],"ok":{"kind":"ignore"}}
+{"fn":"resolveThreadCommandActivation","args":[null],"error":"Cannot read properties of null (reading 'threadExists')"}
+{"fn":"resolveThreadCommandActivation","args":[[]],"ok":{"kind":"ignore"}}
+{"fn":"resolveThreadCommandActivation","args":[true],"ok":{"kind":"ignore"}}
+{"fn":"resolveThreadCommandActivation","args":[{"a":{"b":"c"}}],"ok":{"kind":"ignore"}}
+{"fn":"resolvePreferredSplitForCommand","args":[["a",1]],"error":"Cannot convert undefined or null to object"}
+{"fn":"resolvePreferredSplitForCommand","args":["x"],"error":"Cannot convert undefined or null to object"}
+{"fn":"resolvePreferredSplitForCommand","args":[[]],"error":"Cannot convert undefined or null to object"}
+{"fn":"resolvePreferredSplitForCommand","args":[0],"error":"Cannot convert undefined or null to object"}
+{"fn":"resolvePreferredSplitForCommand","args":[true],"error":"Cannot convert undefined or null to object"}
+{"fn":"resolvePreferredSplitForCommand","args":[{"a":{"b":"c"}}],"error":"Cannot convert undefined or null to object"}
+{"fn":"resolvePreferredSplitForCommand","args":[null],"error":"Cannot read properties of null (reading 'activeSplitView')"}
+{"fn":"resolvePreferredSplitForCommand","args":[{"a":"b"}],"error":"Cannot convert undefined or null to object"}
+{"fn":"resolvePreferredSplitForCommand","args":[{}],"error":"Cannot convert undefined or null to object"}

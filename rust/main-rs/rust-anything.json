@@ -1,0 +1,43 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/main.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "main-rs",
+  "exports": [
+    {
+      "name": "makeServerStartupLogData",
+      "file": "apps/server/src/main.ts",
+      "line": 467,
+      "params": [
+        {
+          "name": "config",
+          "ts_type": "ServerConfigShape",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Record<string, unknown>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "StartupError",
+      "file": "apps/server/src/main.ts",
+      "line": 131,
+      "reason": "class: extends another class"
+    },
+    {
+      "name": "CliConfig",
+      "file": "apps/server/src/main.ts",
+      "line": 192,
+      "reason": "class: extends another class, public field `layer`"
+    }
+  ]
+}

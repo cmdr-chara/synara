@@ -1,0 +1,192 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/editorAppDiscovery.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "editorappdiscovery-rs",
+  "exports": [
+    {
+      "name": "getEditorMacApplications",
+      "file": "apps/server/src/editorAppDiscovery.ts",
+      "line": 47,
+      "params": [
+        {
+          "name": "editor",
+          "ts_type": "(typeof EDITORS)[number]",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "readonly string[] | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "getEditorWindowsUriScheme",
+      "file": "apps/server/src/editorAppDiscovery.ts",
+      "line": 51,
+      "params": [
+        {
+          "name": "editor",
+          "ts_type": "(typeof EDITORS)[number]",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "getEditorWindowsStorePackages",
+      "file": "apps/server/src/editorAppDiscovery.ts",
+      "line": 55,
+      "params": [
+        {
+          "name": "editor",
+          "ts_type": "(typeof EDITORS)[number]",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "readonly {\n  readonly packageName: string;\n  readonly publisherId: string;\n}[] | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "normalizeMacApplicationBundleName",
+      "file": "apps/server/src/editorAppDiscovery.ts",
+      "line": 61,
+      "params": [
+        {
+          "name": "appName",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveMacApplicationSearchPaths",
+      "file": "apps/server/src/editorAppDiscovery.ts",
+      "line": 66,
+      "params": [
+        {
+          "name": "appName",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "env",
+          "ts_type": "NodeJS.ProcessEnv",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ReadonlyArray<string>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveMacApplicationBundlePath",
+      "file": "apps/server/src/editorAppDiscovery.ts",
+      "line": 89,
+      "params": [
+        {
+          "name": "appNames",
+          "ts_type": "readonly string[] | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "platform",
+          "ts_type": "NodeJS.Platform",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "env",
+          "ts_type": "NodeJS.ProcessEnv",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveAvailableMacApplication",
+      "file": "apps/server/src/editorAppDiscovery.ts",
+      "line": 109,
+      "params": [
+        {
+          "name": "appNames",
+          "ts_type": "readonly string[] | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "platform",
+          "ts_type": "NodeJS.Platform",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "env",
+          "ts_type": "NodeJS.ProcessEnv",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "clearWindowsStorePackageDiscoveryCache",
+      "file": "apps/server/src/editorAppDiscovery.ts",
+      "line": 178,
+      "params": [],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "resolveWindowsStorePackageDirectoryFromPowerShell",
+      "file": "apps/server/src/editorAppDiscovery.ts",
+      "line": 182,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "resolveWindowsStorePackageInstallLocation",
+      "file": "apps/server/src/editorAppDiscovery.ts",
+      "line": 244,
+      "reason": "takes or returns a function"
+    }
+  ]
+}

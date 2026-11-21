@@ -1,0 +1,882 @@
+{"fn":"getEditorMacApplications","args":[[]],"ok":{"$undefined":true}}
+{"fn":"getEditorMacApplications","args":[["a",1]],"ok":{"$undefined":true}}
+{"fn":"getEditorMacApplications","args":[{}],"ok":{"$undefined":true}}
+{"fn":"getEditorMacApplications","args":[{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"getEditorMacApplications","args":[null],"error":"Cannot use 'in' operator to search for 'macApplications' in null"}
+{"fn":"getEditorMacApplications","args":[{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"getEditorMacApplications","args":[true],"error":"Cannot use 'in' operator to search for 'macApplications' in true"}
+{"fn":"getEditorMacApplications","args":["x"],"error":"Cannot use 'in' operator to search for 'macApplications' in x"}
+{"fn":"getEditorMacApplications","args":[0],"error":"Cannot use 'in' operator to search for 'macApplications' in 0"}
+{"fn":"getEditorWindowsUriScheme","args":[{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"getEditorWindowsUriScheme","args":[[]],"ok":{"$undefined":true}}
+{"fn":"getEditorWindowsUriScheme","args":["x"],"error":"Cannot use 'in' operator to search for 'windowsUriScheme' in x"}
+{"fn":"getEditorWindowsUriScheme","args":[true],"error":"Cannot use 'in' operator to search for 'windowsUriScheme' in true"}
+{"fn":"getEditorWindowsUriScheme","args":[null],"error":"Cannot use 'in' operator to search for 'windowsUriScheme' in null"}
+{"fn":"getEditorWindowsUriScheme","args":[{}],"ok":{"$undefined":true}}
+{"fn":"getEditorWindowsUriScheme","args":[{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"getEditorWindowsUriScheme","args":[["a",1]],"ok":{"$undefined":true}}
+{"fn":"getEditorWindowsUriScheme","args":[0],"error":"Cannot use 'in' operator to search for 'windowsUriScheme' in 0"}
+{"fn":"getEditorWindowsStorePackages","args":[["a",1]],"ok":{"$undefined":true}}
+{"fn":"getEditorWindowsStorePackages","args":[{}],"ok":{"$undefined":true}}
+{"fn":"getEditorWindowsStorePackages","args":["x"],"error":"Cannot use 'in' operator to search for 'windowsStorePackages' in x"}
+{"fn":"getEditorWindowsStorePackages","args":[true],"error":"Cannot use 'in' operator to search for 'windowsStorePackages' in true"}
+{"fn":"getEditorWindowsStorePackages","args":[0],"error":"Cannot use 'in' operator to search for 'windowsStorePackages' in 0"}
+{"fn":"getEditorWindowsStorePackages","args":[[]],"ok":{"$undefined":true}}
+{"fn":"getEditorWindowsStorePackages","args":[{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"getEditorWindowsStorePackages","args":[null],"error":"Cannot use 'in' operator to search for 'windowsStorePackages' in null"}
+{"fn":"getEditorWindowsStorePackages","args":[{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"normalizeMacApplicationBundleName","args":["abc"],"ok":"abc.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["HELLO"],"ok":"HELLO.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["日本語のテキスト"],"ok":"日本語のテキスト.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["{name} has {count} items"],"ok":"{name} has {count} items.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["abca:b:c"],"ok":"abca:b:c.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["trailing."],"ok":"trailing..app"}
+{"fn":"normalizeMacApplicationBundleName","args":["日本語のテキストHELLO"],"ok":"日本語のテキストHELLO.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["a:b:c"],"ok":"a:b:c.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["a.leading"],"ok":"a.leading.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["line1\nline2"],"ok":"line1\nline2.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["ns:key.path"],"ok":"ns:key.path.app"}
+{"fn":"normalizeMacApplicationBundleName","args":[""],"ok":".app"}
+{"fn":"normalizeMacApplicationBundleName","args":["tab\tseparated"],"ok":"tab\tseparated.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["hello world"],"ok":"hello world.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["key_name-1"],"ok":"key_name-1.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["😀"],"ok":"😀.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["a"],"ok":"a.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["./x/**/*.json./x/**/*.json"],"ok":"./x/**/*.json./x/**/*.json.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["key_name-1hello world"],"ok":"key_name-1hello world.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["hello"],"ok":"hello.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["ΣΊΣΥΦΟΣ"],"ok":"ΣΊΣΥΦΟΣ.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["é"],"ok":"é.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["a:b:c{name} has {count} items"],"ok":"a:b:c{name} has {count} items.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["﻿bom"],"ok":"﻿bom.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["  padded  ns:key.path"],"ok":"  padded  ns:key.path.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["ünïcödé"],"ok":"ünïcödé.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["ab"],"ok":"ab.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["src/a/b.ts"],"ok":"src/a/b.ts.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["İstanbul"],"ok":"İstanbul.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["./x/**/*.json"],"ok":"./x/**/*.json.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["{name} has {count} itemsemoji 👍🏽 mix"],"ok":"{name} has {count} itemsemoji 👍🏽 mix.app"}
+{"fn":"normalizeMacApplicationBundleName","args":[":"],"ok":":.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["a😀b😀c"],"ok":"a😀b😀c.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["straßeabc"],"ok":"straßeabc.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["a..b"],"ok":"a..b.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["emoji 👍🏽 mix"],"ok":"emoji 👍🏽 mix.app"}
+{"fn":"normalizeMacApplicationBundleName","args":[".leadingabc"],"ok":".leadingabc.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["straßeΣΊΣΥΦΟΣ"],"ok":"straßeΣΊΣΥΦΟΣ.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["a..ba:b:c"],"ok":"a..ba:b:c.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["line1\nline2é"],"ok":"line1\nline2é.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["Hello World"],"ok":"Hello World.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["straße"],"ok":"straße.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["HELLO  padded  "],"ok":"HELLO  padded  .app"}
+{"fn":"normalizeMacApplicationBundleName","args":["a.b.c"],"ok":"a.b.c.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["  padded  "],"ok":"  padded  .app"}
+{"fn":"normalizeMacApplicationBundleName","args":["abctrailing."],"ok":"abctrailing..app"}
+{"fn":"normalizeMacApplicationBundleName","args":["helloHello World"],"ok":"helloHello World.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["a:b:cHELLO"],"ok":"a:b:cHELLO.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["ékey_name-1"],"ok":"ékey_name-1.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["straßea😀b😀c"],"ok":"straßea😀b😀c.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["./x/**/*.json﻿bom"],"ok":"./x/**/*.json﻿bom.app"}
+{"fn":"normalizeMacApplicationBundleName","args":[".leading"],"ok":".leading.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["{name} has {count} itemsé"],"ok":"{name} has {count} itemsé.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["tab\tseparatedkey_name-1"],"ok":"tab\tseparatedkey_name-1.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["{name} has {count} itemshello world"],"ok":"{name} has {count} itemshello world.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["éline1\nline2"],"ok":"éline1\nline2.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["helloHELLO"],"ok":"helloHELLO.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["a..bünïcödé"],"ok":"a..bünïcödé.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["a.b.csrc/a/b.ts"],"ok":"a.b.csrc/a/b.ts.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["ns:key.pathé"],"ok":"ns:key.pathé.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["hellohello"],"ok":"hellohello.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["aa.b.c"],"ok":"aa.b.c.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["日本語のテキストhello world"],"ok":"日本語のテキストhello world.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["  padded  line1\nline2"],"ok":"  padded  line1\nline2.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["a.b.cab"],"ok":"a.b.cab.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["ns:key.pathsrc/a/b.ts"],"ok":"ns:key.pathsrc/a/b.ts.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["a.b.cHello World"],"ok":"a.b.cHello World.app"}
+{"fn":"normalizeMacApplicationBundleName","args":[".leading日本語のテキスト"],"ok":".leading日本語のテキスト.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["😀日本語のテキスト"],"ok":"😀日本語のテキスト.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["İstanbulİstanbul"],"ok":"İstanbulİstanbul.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["abİstanbul"],"ok":"abİstanbul.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["ΣΊΣΥΦΟΣa😀b😀c"],"ok":"ΣΊΣΥΦΟΣa😀b😀c.app"}
+{"fn":"normalizeMacApplicationBundleName","args":[":日本語のテキスト"],"ok":":日本語のテキスト.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["src/a/b.tsns:key.path"],"ok":"src/a/b.tsns:key.path.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["src/a/b.tsΣΊΣΥΦΟΣ"],"ok":"src/a/b.tsΣΊΣΥΦΟΣ.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["İstanbulsrc/a/b.ts"],"ok":"İstanbulsrc/a/b.ts.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["trailing.ünïcödé"],"ok":"trailing.ünïcödé.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["éhello"],"ok":"éhello.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["hello worldé"],"ok":"hello worldé.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["emoji 👍🏽 mixé"],"ok":"emoji 👍🏽 mixé.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["ünïcödé  padded  "],"ok":"ünïcödé  padded  .app"}
+{"fn":"normalizeMacApplicationBundleName","args":["src/a/b.tsa😀b😀c"],"ok":"src/a/b.tsa😀b😀c.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["a:b:c./x/**/*.json"],"ok":"a:b:c./x/**/*.json.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["line1\nline2  padded  "],"ok":"line1\nline2  padded  .app"}
+{"fn":"normalizeMacApplicationBundleName","args":["﻿bom😀"],"ok":"﻿bom😀.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["trailing.a..b"],"ok":"trailing.a..b.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["tab\tseparateda😀b😀c"],"ok":"tab\tseparateda😀b😀c.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["  padded  Hello World"],"ok":"  padded  Hello World.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["😀ns:key.path"],"ok":"😀ns:key.path.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["ns:key.pathhello world"],"ok":"ns:key.pathhello world.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["a:b:c.leading"],"ok":"a:b:c.leading.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["Hello Worldsrc/a/b.ts"],"ok":"Hello Worldsrc/a/b.ts.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["key_name-1a:b:c"],"ok":"key_name-1a:b:c.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["emoji 👍🏽 mixhello"],"ok":"emoji 👍🏽 mixhello.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["ΣΊΣΥΦΟΣa"],"ok":"ΣΊΣΥΦΟΣa.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["ünïcödétab\tseparated"],"ok":"ünïcödétab\tseparated.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["src/a/b.tsemoji 👍🏽 mix"],"ok":"src/a/b.tsemoji 👍🏽 mix.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["straße./x/**/*.json"],"ok":"straße./x/**/*.json.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["HELLOé"],"ok":"HELLOé.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["straße﻿bom"],"ok":"straße﻿bom.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["emoji 👍🏽 mix.leading"],"ok":"emoji 👍🏽 mix.leading.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["  padded  src/a/b.ts"],"ok":"  padded  src/a/b.ts.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["ΣΊΣΥΦΟΣsrc/a/b.ts"],"ok":"ΣΊΣΥΦΟΣsrc/a/b.ts.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["a.b.cns:key.path"],"ok":"a.b.cns:key.path.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["helloİstanbul"],"ok":"helloİstanbul.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["key_name-1src/a/b.ts"],"ok":"key_name-1src/a/b.ts.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["tab\tseparatedé"],"ok":"tab\tseparatedé.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["src/a/b.ts.leading"],"ok":"src/a/b.ts.leading.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["hello worldİstanbul"],"ok":"hello worldİstanbul.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["Hello World﻿bom"],"ok":"Hello World﻿bom.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["emoji 👍🏽 mix😀"],"ok":"emoji 👍🏽 mix😀.app"}
+{"fn":"normalizeMacApplicationBundleName","args":[":ab"],"ok":":ab.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["line1\nline2ab"],"ok":"line1\nline2ab.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["{name} has {count} itemsns:key.path"],"ok":"{name} has {count} itemsns:key.path.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["ünïcödéa.b.c"],"ok":"ünïcödéa.b.c.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["İstanbula"],"ok":"İstanbula.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["Hello Worlda..b"],"ok":"Hello Worlda..b.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["Hello Worldhello world"],"ok":"Hello Worldhello world.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["hello worlda..b"],"ok":"hello worlda..b.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["key_name-1emoji 👍🏽 mix"],"ok":"key_name-1emoji 👍🏽 mix.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["tab\tseparated:"],"ok":"tab\tseparated:.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["Hello Worldns:key.path"],"ok":"Hello Worldns:key.path.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["{name} has {count} itemstrailing."],"ok":"{name} has {count} itemstrailing..app"}
+{"fn":"normalizeMacApplicationBundleName","args":["key_name-1trailing."],"ok":"key_name-1trailing..app"}
+{"fn":"normalizeMacApplicationBundleName","args":["éa:b:c"],"ok":"éa:b:c.app"}
+{"fn":"normalizeMacApplicationBundleName","args":[":ünïcödé"],"ok":":ünïcödé.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["emoji 👍🏽 mixa..b"],"ok":"emoji 👍🏽 mixa..b.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["line1\nline2﻿bom"],"ok":"line1\nline2﻿bom.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["ab{name} has {count} items"],"ok":"ab{name} has {count} items.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["﻿bom﻿bom"],"ok":"﻿bom﻿bom.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["😀.leading"],"ok":"😀.leading.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["trailing.key_name-1"],"ok":"trailing.key_name-1.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["﻿bomHELLO"],"ok":"﻿bomHELLO.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["emoji 👍🏽 mixHello World"],"ok":"emoji 👍🏽 mixHello World.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["日本語のテキスト日本語のテキスト"],"ok":"日本語のテキスト日本語のテキスト.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["a😀b😀cHello World"],"ok":"a😀b😀cHello World.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["İstanbulline1\nline2"],"ok":"İstanbulline1\nline2.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["line1\nline2{name} has {count} items"],"ok":"line1\nline2{name} has {count} items.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["a😀b😀cline1\nline2"],"ok":"a😀b😀cline1\nline2.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["﻿bomİstanbul"],"ok":"﻿bomİstanbul.app"}
+{"fn":"normalizeMacApplicationBundleName","args":[".leading{name} has {count} items"],"ok":".leading{name} has {count} items.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["a:b:chello"],"ok":"a:b:chello.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["a..b日本語のテキスト"],"ok":"a..b日本語のテキスト.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["abcemoji 👍🏽 mix"],"ok":"abcemoji 👍🏽 mix.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["emoji 👍🏽 mixhello world"],"ok":"emoji 👍🏽 mixhello world.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["a.b.cİstanbul"],"ok":"a.b.cİstanbul.app"}
+{"fn":"normalizeMacApplicationBundleName","args":[".leading😀"],"ok":".leading😀.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["ns:key.pathtab\tseparated"],"ok":"ns:key.pathtab\tseparated.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["a..bstraße"],"ok":"a..bstraße.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["asrc/a/b.ts"],"ok":"asrc/a/b.ts.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["ns:key.pathtrailing."],"ok":"ns:key.pathtrailing..app"}
+{"fn":"normalizeMacApplicationBundleName","args":["  padded  İstanbul"],"ok":"  padded  İstanbul.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["abcstraße"],"ok":"abcstraße.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["aba😀b😀c"],"ok":"aba😀b😀c.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["{name} has {count} itemsHELLO"],"ok":"{name} has {count} itemsHELLO.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["ünïcödé﻿bom"],"ok":"ünïcödé﻿bom.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["{name} has {count} itemskey_name-1"],"ok":"{name} has {count} itemskey_name-1.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["a😀b😀ca😀b😀c"],"ok":"a😀b😀ca😀b😀c.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["aHello World"],"ok":"aHello World.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["a.b.ca:b:c"],"ok":"a.b.ca:b:c.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["trailing.hello"],"ok":"trailing.hello.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["trailing../x/**/*.json"],"ok":"trailing../x/**/*.json.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["日本語のテキストns:key.path"],"ok":"日本語のテキストns:key.path.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["line1\nline2a.b.c"],"ok":"line1\nline2a.b.c.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["emoji 👍🏽 mixİstanbul"],"ok":"emoji 👍🏽 mixİstanbul.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["src/a/b.tskey_name-1"],"ok":"src/a/b.tskey_name-1.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["éns:key.path"],"ok":"éns:key.path.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["a:b:c:"],"ok":"a:b:c:.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["abtrailing."],"ok":"abtrailing..app"}
+{"fn":"normalizeMacApplicationBundleName","args":["Hello WorldΣΊΣΥΦΟΣ"],"ok":"Hello WorldΣΊΣΥΦΟΣ.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["hello world😀"],"ok":"hello world😀.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["  padded  a😀b😀c"],"ok":"  padded  a😀b😀c.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["a😀b😀ca.b.c"],"ok":"a😀b😀ca.b.c.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["trailing.日本語のテキスト"],"ok":"trailing.日本語のテキスト.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["  padded  key_name-1"],"ok":"  padded  key_name-1.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["src/a/b.tshello"],"ok":"src/a/b.tshello.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["HELLOns:key.path"],"ok":"HELLOns:key.path.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["straße😀"],"ok":"straße😀.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["Hello World./x/**/*.json"],"ok":"Hello World./x/**/*.json.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["straßestraße"],"ok":"straßestraße.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["İstanbulemoji 👍🏽 mix"],"ok":"İstanbulemoji 👍🏽 mix.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["abca..b"],"ok":"abca..b.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["astraße"],"ok":"astraße.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["line1\nline2./x/**/*.json"],"ok":"line1\nline2./x/**/*.json.app"}
+{"fn":"normalizeMacApplicationBundleName","args":[".leadinga:b:c"],"ok":".leadinga:b:c.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["HELLOab"],"ok":"HELLOab.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["HELLO./x/**/*.json"],"ok":"HELLO./x/**/*.json.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["😀a.b.c"],"ok":"😀a.b.c.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["abcsrc/a/b.ts"],"ok":"abcsrc/a/b.ts.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["a..bhello"],"ok":"a..bhello.app"}
+{"fn":"normalizeMacApplicationBundleName","args":[":a😀b😀c"],"ok":":a😀b😀c.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["abcHello World"],"ok":"abcHello World.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["hello worldns:key.path"],"ok":"hello worldns:key.path.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["a..ba..b"],"ok":"a..ba..b.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["é日本語のテキスト"],"ok":"é日本語のテキスト.app"}
+{"fn":"normalizeMacApplicationBundleName","args":[":İstanbul"],"ok":":İstanbul.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["a:b:csrc/a/b.ts"],"ok":"a:b:csrc/a/b.ts.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["tab\tseparatedabc"],"ok":"tab\tseparatedabc.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["straßeünïcödé"],"ok":"straßeünïcödé.app"}
+{"fn":"normalizeMacApplicationBundleName","args":[":tab\tseparated"],"ok":":tab\tseparated.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["héllo wörld"],"ok":"héllo wörld.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["👍🏽 thumbs"],"ok":"👍🏽 thumbs.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["日本語"],"ok":"日本語.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["ılık ırmak"],"ok":"ılık ırmak.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["👨‍👩‍👧 family"],"ok":"👨‍👩‍👧 family.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["a b"],"ok":"a b.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["a😀b"],"ok":"a😀b.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["a²b x½ y①"],"ok":"a²b x½ y①.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["aⅠb Ⅻ"],"ok":"aⅠb Ⅻ.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["a𐐀b 𝐀bc"],"ok":"a𐐀b 𝐀bc.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["कि ٣٤"],"ok":"कि ٣٤.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["Iı İi"],"ok":"Iı İi.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["K K k"],"ok":"K K k.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["ſ s S"],"ok":"ſ s S.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["x‍y 👨‍👩‍👧"],"ok":"x‍y 👨‍👩‍👧.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["a b c　d"],"ok":"a b c　d.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["١٢٣ ٤٥"],"ok":"١٢٣ ٤٥.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["𝟘𝟙 ²³"],"ok":"𝟘𝟙 ²³.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["snake_case foo-bar o'neil"],"ok":"snake_case foo-bar o'neil.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["ǅungla Ǆ"],"ok":"ǅungla Ǆ.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["one\r\ntwo threefour"],"ok":"one\r\ntwo threefour.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["café café"],"ok":"café café.app"}
+{"fn":"normalizeMacApplicationBundleName","args":["ΣΑΣ σας ς"],"ok":"ΣΑΣ σας ς.app"}
+{"fn":"resolveMacApplicationSearchPaths","args":["src/a/b.ts",[]],"ok":["/Applications/src/a/b.ts.app","/Applications/Utilities/src/a/b.ts.app","/Applications/JetBrains Toolbox/src/a/b.ts.app","/System/Applications/src/a/b.ts.app","/System/Applications/Utilities/src/a/b.ts.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["Hello Worldé",{"a":"b"}],"ok":["/Applications/Hello Worldé.app","/Applications/Utilities/Hello Worldé.app","/Applications/JetBrains Toolbox/Hello Worldé.app","/System/Applications/Hello Worldé.app","/System/Applications/Utilities/Hello Worldé.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["﻿bom",{"a":{"b":"c"}}],"ok":["/Applications/﻿bom.app","/Applications/Utilities/﻿bom.app","/Applications/JetBrains Toolbox/﻿bom.app","/System/Applications/﻿bom.app","/System/Applications/Utilities/﻿bom.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["trailing.",{"a":"b"}],"ok":["/Applications/trailing..app","/Applications/Utilities/trailing..app","/Applications/JetBrains Toolbox/trailing..app","/System/Applications/trailing..app","/System/Applications/Utilities/trailing..app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["İstanbul",true],"ok":["/Applications/İstanbul.app","/Applications/Utilities/İstanbul.app","/Applications/JetBrains Toolbox/İstanbul.app","/System/Applications/İstanbul.app","/System/Applications/Utilities/İstanbul.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["hello",null],"error":"Cannot read properties of null (reading 'HOME')"}
+{"fn":"resolveMacApplicationSearchPaths","args":["😀","😀"],"ok":["/Applications/😀.app","/Applications/Utilities/😀.app","/Applications/JetBrains Toolbox/😀.app","/System/Applications/😀.app","/System/Applications/Utilities/😀.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["emoji 👍🏽 mix",0],"ok":["/Applications/emoji 👍🏽 mix.app","/Applications/Utilities/emoji 👍🏽 mix.app","/Applications/JetBrains Toolbox/emoji 👍🏽 mix.app","/System/Applications/emoji 👍🏽 mix.app","/System/Applications/Utilities/emoji 👍🏽 mix.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["hello","x"],"ok":["/Applications/hello.app","/Applications/Utilities/hello.app","/Applications/JetBrains Toolbox/hello.app","/System/Applications/hello.app","/System/Applications/Utilities/hello.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["emoji 👍🏽 mix",{"a":{"b":"c"}}],"ok":["/Applications/emoji 👍🏽 mix.app","/Applications/Utilities/emoji 👍🏽 mix.app","/Applications/JetBrains Toolbox/emoji 👍🏽 mix.app","/System/Applications/emoji 👍🏽 mix.app","/System/Applications/Utilities/emoji 👍🏽 mix.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["日本語のテキスト",null],"error":"Cannot read properties of null (reading 'HOME')"}
+{"fn":"resolveMacApplicationSearchPaths","args":["日本語のテキスト",{"a":{"b":"c"}}],"ok":["/Applications/日本語のテキスト.app","/Applications/Utilities/日本語のテキスト.app","/Applications/JetBrains Toolbox/日本語のテキスト.app","/System/Applications/日本語のテキスト.app","/System/Applications/Utilities/日本語のテキスト.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["Hello World",null],"error":"Cannot read properties of null (reading 'HOME')"}
+{"fn":"resolveMacApplicationSearchPaths","args":["./x/**/*.json",[]],"ok":["/Applications/x/**/*.json.app","/Applications/Utilities/x/**/*.json.app","/Applications/JetBrains Toolbox/x/**/*.json.app","/System/Applications/x/**/*.json.app","/System/Applications/Utilities/x/**/*.json.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["a.b.c",null],"error":"Cannot read properties of null (reading 'HOME')"}
+{"fn":"resolveMacApplicationSearchPaths","args":["tab\tseparateda.b.c",0],"ok":["/Applications/tab\tseparateda.b.c.app","/Applications/Utilities/tab\tseparateda.b.c.app","/Applications/JetBrains Toolbox/tab\tseparateda.b.c.app","/System/Applications/tab\tseparateda.b.c.app","/System/Applications/Utilities/tab\tseparateda.b.c.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["tab\tseparated",["a",1]],"ok":["/Applications/tab\tseparated.app","/Applications/Utilities/tab\tseparated.app","/Applications/JetBrains Toolbox/tab\tseparated.app","/System/Applications/tab\tseparated.app","/System/Applications/Utilities/tab\tseparated.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["line1\nline2",["a",1]],"ok":["/Applications/line1\nline2.app","/Applications/Utilities/line1\nline2.app","/Applications/JetBrains Toolbox/line1\nline2.app","/System/Applications/line1\nline2.app","/System/Applications/Utilities/line1\nline2.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["日本語のテキスト",{}],"ok":["/Applications/日本語のテキスト.app","/Applications/Utilities/日本語のテキスト.app","/Applications/JetBrains Toolbox/日本語のテキスト.app","/System/Applications/日本語のテキスト.app","/System/Applications/Utilities/日本語のテキスト.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["trailing.:",["a",1]],"ok":["/Applications/trailing.:.app","/Applications/Utilities/trailing.:.app","/Applications/JetBrains Toolbox/trailing.:.app","/System/Applications/trailing.:.app","/System/Applications/Utilities/trailing.:.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["a😀b😀c",{"a":"b"}],"ok":["/Applications/a😀b😀c.app","/Applications/Utilities/a😀b😀c.app","/Applications/JetBrains Toolbox/a😀b😀c.app","/System/Applications/a😀b😀c.app","/System/Applications/Utilities/a😀b😀c.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["﻿bom",[]],"ok":["/Applications/﻿bom.app","/Applications/Utilities/﻿bom.app","/Applications/JetBrains Toolbox/﻿bom.app","/System/Applications/﻿bom.app","/System/Applications/Utilities/﻿bom.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["src/a/b.ts",{"a":{"b":"c"}}],"ok":["/Applications/src/a/b.ts.app","/Applications/Utilities/src/a/b.ts.app","/Applications/JetBrains Toolbox/src/a/b.ts.app","/System/Applications/src/a/b.ts.app","/System/Applications/Utilities/src/a/b.ts.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["a",{}],"ok":["/Applications/a.app","/Applications/Utilities/a.app","/Applications/JetBrains Toolbox/a.app","/System/Applications/a.app","/System/Applications/Utilities/a.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["abc",{}],"ok":["/Applications/abc.app","/Applications/Utilities/abc.app","/Applications/JetBrains Toolbox/abc.app","/System/Applications/abc.app","/System/Applications/Utilities/abc.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["trailing.",true],"ok":["/Applications/trailing..app","/Applications/Utilities/trailing..app","/Applications/JetBrains Toolbox/trailing..app","/System/Applications/trailing..app","/System/Applications/Utilities/trailing..app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["  padded  ",{"a":{"b":"c"}}],"ok":["/Applications/  padded  .app","/Applications/Utilities/  padded  .app","/Applications/JetBrains Toolbox/  padded  .app","/System/Applications/  padded  .app","/System/Applications/Utilities/  padded  .app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["straßeünïcödé",null],"error":"Cannot read properties of null (reading 'HOME')"}
+{"fn":"resolveMacApplicationSearchPaths","args":["a:b:c",true],"ok":["/Applications/a:b:c.app","/Applications/Utilities/a:b:c.app","/Applications/JetBrains Toolbox/a:b:c.app","/System/Applications/a:b:c.app","/System/Applications/Utilities/a:b:c.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["a..b",true],"ok":["/Applications/a..b.app","/Applications/Utilities/a..b.app","/Applications/JetBrains Toolbox/a..b.app","/System/Applications/a..b.app","/System/Applications/Utilities/a..b.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["{name} has {count} items",null],"error":"Cannot read properties of null (reading 'HOME')"}
+{"fn":"resolveMacApplicationSearchPaths","args":["hello",{}],"ok":["/Applications/hello.app","/Applications/Utilities/hello.app","/Applications/JetBrains Toolbox/hello.app","/System/Applications/hello.app","/System/Applications/Utilities/hello.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["key_name-1{name} has {count} items",true],"ok":["/Applications/key_name-1{name} has {count} items.app","/Applications/Utilities/key_name-1{name} has {count} items.app","/Applications/JetBrains Toolbox/key_name-1{name} has {count} items.app","/System/Applications/key_name-1{name} has {count} items.app","/System/Applications/Utilities/key_name-1{name} has {count} items.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["key_name-1",{"a":"b"}],"ok":["/Applications/key_name-1.app","/Applications/Utilities/key_name-1.app","/Applications/JetBrains Toolbox/key_name-1.app","/System/Applications/key_name-1.app","/System/Applications/Utilities/key_name-1.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":[":src/a/b.ts",{"a":{"b":"c"}}],"ok":["/Applications/:src/a/b.ts.app","/Applications/Utilities/:src/a/b.ts.app","/Applications/JetBrains Toolbox/:src/a/b.ts.app","/System/Applications/:src/a/b.ts.app","/System/Applications/Utilities/:src/a/b.ts.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["line1\nline2","x"],"ok":["/Applications/line1\nline2.app","/Applications/Utilities/line1\nline2.app","/Applications/JetBrains Toolbox/line1\nline2.app","/System/Applications/line1\nline2.app","/System/Applications/Utilities/line1\nline2.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["a😀b😀c",null],"error":"Cannot read properties of null (reading 'HOME')"}
+{"fn":"resolveMacApplicationSearchPaths","args":["emoji 👍🏽 mixa:b:c",0],"ok":["/Applications/emoji 👍🏽 mixa:b:c.app","/Applications/Utilities/emoji 👍🏽 mixa:b:c.app","/Applications/JetBrains Toolbox/emoji 👍🏽 mixa:b:c.app","/System/Applications/emoji 👍🏽 mixa:b:c.app","/System/Applications/Utilities/emoji 👍🏽 mixa:b:c.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["日本語のテキストhello",{"a":"b"}],"ok":["/Applications/日本語のテキストhello.app","/Applications/Utilities/日本語のテキストhello.app","/Applications/JetBrains Toolbox/日本語のテキストhello.app","/System/Applications/日本語のテキストhello.app","/System/Applications/Utilities/日本語のテキストhello.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["src/a/b.ts",0],"ok":["/Applications/src/a/b.ts.app","/Applications/Utilities/src/a/b.ts.app","/Applications/JetBrains Toolbox/src/a/b.ts.app","/System/Applications/src/a/b.ts.app","/System/Applications/Utilities/src/a/b.ts.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["src/a/b.tsemoji 👍🏽 mix",["a",1]],"ok":["/Applications/src/a/b.tsemoji 👍🏽 mix.app","/Applications/Utilities/src/a/b.tsemoji 👍🏽 mix.app","/Applications/JetBrains Toolbox/src/a/b.tsemoji 👍🏽 mix.app","/System/Applications/src/a/b.tsemoji 👍🏽 mix.app","/System/Applications/Utilities/src/a/b.tsemoji 👍🏽 mix.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":[".leadinga😀b😀c","x"],"ok":["/Applications/.leadinga😀b😀c.app","/Applications/Utilities/.leadinga😀b😀c.app","/Applications/JetBrains Toolbox/.leadinga😀b😀c.app","/System/Applications/.leadinga😀b😀c.app","/System/Applications/Utilities/.leadinga😀b😀c.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["{name} has {count} items",{"a":{"b":"c"}}],"ok":["/Applications/{name} has {count} items.app","/Applications/Utilities/{name} has {count} items.app","/Applications/JetBrains Toolbox/{name} has {count} items.app","/System/Applications/{name} has {count} items.app","/System/Applications/Utilities/{name} has {count} items.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["",{"a":"b"}],"ok":["/Applications/.app","/Applications/Utilities/.app","/Applications/JetBrains Toolbox/.app","/System/Applications/.app","/System/Applications/Utilities/.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["emoji 👍🏽 mix",{"a":"b"}],"ok":["/Applications/emoji 👍🏽 mix.app","/Applications/Utilities/emoji 👍🏽 mix.app","/Applications/JetBrains Toolbox/emoji 👍🏽 mix.app","/System/Applications/emoji 👍🏽 mix.app","/System/Applications/Utilities/emoji 👍🏽 mix.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["a:b:ca:b:c",{}],"ok":["/Applications/a:b:ca:b:c.app","/Applications/Utilities/a:b:ca:b:c.app","/Applications/JetBrains Toolbox/a:b:ca:b:c.app","/System/Applications/a:b:ca:b:c.app","/System/Applications/Utilities/a:b:ca:b:c.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["key_name-1",true],"ok":["/Applications/key_name-1.app","/Applications/Utilities/key_name-1.app","/Applications/JetBrains Toolbox/key_name-1.app","/System/Applications/key_name-1.app","/System/Applications/Utilities/key_name-1.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["./x/**/*.json",null],"error":"Cannot read properties of null (reading 'HOME')"}
+{"fn":"resolveMacApplicationSearchPaths","args":["  padded  ",[]],"ok":["/Applications/  padded  .app","/Applications/Utilities/  padded  .app","/Applications/JetBrains Toolbox/  padded  .app","/System/Applications/  padded  .app","/System/Applications/Utilities/  padded  .app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["😀",{}],"ok":["/Applications/😀.app","/Applications/Utilities/😀.app","/Applications/JetBrains Toolbox/😀.app","/System/Applications/😀.app","/System/Applications/Utilities/😀.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["İstanbulHello World",true],"ok":["/Applications/İstanbulHello World.app","/Applications/Utilities/İstanbulHello World.app","/Applications/JetBrains Toolbox/İstanbulHello World.app","/System/Applications/İstanbulHello World.app","/System/Applications/Utilities/İstanbulHello World.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["hello",["a",1]],"ok":["/Applications/hello.app","/Applications/Utilities/hello.app","/Applications/JetBrains Toolbox/hello.app","/System/Applications/hello.app","/System/Applications/Utilities/hello.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["﻿bomsrc/a/b.ts",[]],"ok":["/Applications/﻿bomsrc/a/b.ts.app","/Applications/Utilities/﻿bomsrc/a/b.ts.app","/Applications/JetBrains Toolbox/﻿bomsrc/a/b.ts.app","/System/Applications/﻿bomsrc/a/b.ts.app","/System/Applications/Utilities/﻿bomsrc/a/b.ts.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["😀",0],"ok":["/Applications/😀.app","/Applications/Utilities/😀.app","/Applications/JetBrains Toolbox/😀.app","/System/Applications/😀.app","/System/Applications/Utilities/😀.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["trailing.",[]],"ok":["/Applications/trailing..app","/Applications/Utilities/trailing..app","/Applications/JetBrains Toolbox/trailing..app","/System/Applications/trailing..app","/System/Applications/Utilities/trailing..app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["abc",0],"ok":["/Applications/abc.app","/Applications/Utilities/abc.app","/Applications/JetBrains Toolbox/abc.app","/System/Applications/abc.app","/System/Applications/Utilities/abc.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["abc",{"a":"b"}],"ok":["/Applications/abc.app","/Applications/Utilities/abc.app","/Applications/JetBrains Toolbox/abc.app","/System/Applications/abc.app","/System/Applications/Utilities/abc.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["é",0],"ok":["/Applications/é.app","/Applications/Utilities/é.app","/Applications/JetBrains Toolbox/é.app","/System/Applications/é.app","/System/Applications/Utilities/é.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["abhello world",true],"ok":["/Applications/abhello world.app","/Applications/Utilities/abhello world.app","/Applications/JetBrains Toolbox/abhello world.app","/System/Applications/abhello world.app","/System/Applications/Utilities/abhello world.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["trailing.","x"],"ok":["/Applications/trailing..app","/Applications/Utilities/trailing..app","/Applications/JetBrains Toolbox/trailing..app","/System/Applications/trailing..app","/System/Applications/Utilities/trailing..app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":[".leading",true],"ok":["/Applications/.leading.app","/Applications/Utilities/.leading.app","/Applications/JetBrains Toolbox/.leading.app","/System/Applications/.leading.app","/System/Applications/Utilities/.leading.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["key_name-1",{}],"ok":["/Applications/key_name-1.app","/Applications/Utilities/key_name-1.app","/Applications/JetBrains Toolbox/key_name-1.app","/System/Applications/key_name-1.app","/System/Applications/Utilities/key_name-1.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["./x/**/*.jsona😀b😀c",{"a":{"b":"c"}}],"ok":["/Applications/x/**/*.jsona😀b😀c.app","/Applications/Utilities/x/**/*.jsona😀b😀c.app","/Applications/JetBrains Toolbox/x/**/*.jsona😀b😀c.app","/System/Applications/x/**/*.jsona😀b😀c.app","/System/Applications/Utilities/x/**/*.jsona😀b😀c.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["﻿bom","x"],"ok":["/Applications/﻿bom.app","/Applications/Utilities/﻿bom.app","/Applications/JetBrains Toolbox/﻿bom.app","/System/Applications/﻿bom.app","/System/Applications/Utilities/﻿bom.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["x","x"],"ok":["/Applications/x.app","/Applications/Utilities/x.app","/Applications/JetBrains Toolbox/x.app","/System/Applications/x.app","/System/Applications/Utilities/x.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["hello",true],"ok":["/Applications/hello.app","/Applications/Utilities/hello.app","/Applications/JetBrains Toolbox/hello.app","/System/Applications/hello.app","/System/Applications/Utilities/hello.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["a😀b😀c./x/**/*.json",true],"ok":["/Applications/a😀b😀c./x/**/*.json.app","/Applications/Utilities/a😀b😀c./x/**/*.json.app","/Applications/JetBrains Toolbox/a😀b😀c./x/**/*.json.app","/System/Applications/a😀b😀c./x/**/*.json.app","/System/Applications/Utilities/a😀b😀c./x/**/*.json.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["Hello World",[]],"ok":["/Applications/Hello World.app","/Applications/Utilities/Hello World.app","/Applications/JetBrains Toolbox/Hello World.app","/System/Applications/Hello World.app","/System/Applications/Utilities/Hello World.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["ünïcödé",{"a":"b"}],"ok":["/Applications/ünïcödé.app","/Applications/Utilities/ünïcödé.app","/Applications/JetBrains Toolbox/ünïcödé.app","/System/Applications/ünïcödé.app","/System/Applications/Utilities/ünïcödé.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["hello world",{"a":{"b":"c"}}],"ok":["/Applications/hello world.app","/Applications/Utilities/hello world.app","/Applications/JetBrains Toolbox/hello world.app","/System/Applications/hello world.app","/System/Applications/Utilities/hello world.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["./x/**/*.json",true],"ok":["/Applications/x/**/*.json.app","/Applications/Utilities/x/**/*.json.app","/Applications/JetBrains Toolbox/x/**/*.json.app","/System/Applications/x/**/*.json.app","/System/Applications/Utilities/x/**/*.json.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["tab\tseparated",[]],"ok":["/Applications/tab\tseparated.app","/Applications/Utilities/tab\tseparated.app","/Applications/JetBrains Toolbox/tab\tseparated.app","/System/Applications/tab\tseparated.app","/System/Applications/Utilities/tab\tseparated.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["ns:key.path",true],"ok":["/Applications/ns:key.path.app","/Applications/Utilities/ns:key.path.app","/Applications/JetBrains Toolbox/ns:key.path.app","/System/Applications/ns:key.path.app","/System/Applications/Utilities/ns:key.path.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["a.b.c",["a",1]],"ok":["/Applications/a.b.c.app","/Applications/Utilities/a.b.c.app","/Applications/JetBrains Toolbox/a.b.c.app","/System/Applications/a.b.c.app","/System/Applications/Utilities/a.b.c.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["😀a😀b😀c",0],"ok":["/Applications/😀a😀b😀c.app","/Applications/Utilities/😀a😀b😀c.app","/Applications/JetBrains Toolbox/😀a😀b😀c.app","/System/Applications/😀a😀b😀c.app","/System/Applications/Utilities/😀a😀b😀c.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["😀",{"a":{"b":"c"}}],"ok":["/Applications/😀.app","/Applications/Utilities/😀.app","/Applications/JetBrains Toolbox/😀.app","/System/Applications/😀.app","/System/Applications/Utilities/😀.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["emoji 👍🏽 mix",[]],"ok":["/Applications/emoji 👍🏽 mix.app","/Applications/Utilities/emoji 👍🏽 mix.app","/Applications/JetBrains Toolbox/emoji 👍🏽 mix.app","/System/Applications/emoji 👍🏽 mix.app","/System/Applications/Utilities/emoji 👍🏽 mix.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["a:b:cabc","x"],"ok":["/Applications/a:b:cabc.app","/Applications/Utilities/a:b:cabc.app","/Applications/JetBrains Toolbox/a:b:cabc.app","/System/Applications/a:b:cabc.app","/System/Applications/Utilities/a:b:cabc.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["key_name-1",[]],"ok":["/Applications/key_name-1.app","/Applications/Utilities/key_name-1.app","/Applications/JetBrains Toolbox/key_name-1.app","/System/Applications/key_name-1.app","/System/Applications/Utilities/key_name-1.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":[":",{}],"ok":["/Applications/:.app","/Applications/Utilities/:.app","/Applications/JetBrains Toolbox/:.app","/System/Applications/:.app","/System/Applications/Utilities/:.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["{name} has {count} items",{}],"ok":["/Applications/{name} has {count} items.app","/Applications/Utilities/{name} has {count} items.app","/Applications/JetBrains Toolbox/{name} has {count} items.app","/System/Applications/{name} has {count} items.app","/System/Applications/Utilities/{name} has {count} items.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["ab",{}],"ok":["/Applications/ab.app","/Applications/Utilities/ab.app","/Applications/JetBrains Toolbox/ab.app","/System/Applications/ab.app","/System/Applications/Utilities/ab.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["trailing.",{}],"ok":["/Applications/trailing..app","/Applications/Utilities/trailing..app","/Applications/JetBrains Toolbox/trailing..app","/System/Applications/trailing..app","/System/Applications/Utilities/trailing..app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["a..b",{}],"ok":["/Applications/a..b.app","/Applications/Utilities/a..b.app","/Applications/JetBrains Toolbox/a..b.app","/System/Applications/a..b.app","/System/Applications/Utilities/a..b.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["﻿bomhello",{"a":"b"}],"ok":["/Applications/﻿bomhello.app","/Applications/Utilities/﻿bomhello.app","/Applications/JetBrains Toolbox/﻿bomhello.app","/System/Applications/﻿bomhello.app","/System/Applications/Utilities/﻿bomhello.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["é",{"a":{"b":"c"}}],"ok":["/Applications/é.app","/Applications/Utilities/é.app","/Applications/JetBrains Toolbox/é.app","/System/Applications/é.app","/System/Applications/Utilities/é.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":[":",["a",1]],"ok":["/Applications/:.app","/Applications/Utilities/:.app","/Applications/JetBrains Toolbox/:.app","/System/Applications/:.app","/System/Applications/Utilities/:.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["src/a/b.ts",{"a":"b"}],"ok":["/Applications/src/a/b.ts.app","/Applications/Utilities/src/a/b.ts.app","/Applications/JetBrains Toolbox/src/a/b.ts.app","/System/Applications/src/a/b.ts.app","/System/Applications/Utilities/src/a/b.ts.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["line1\nline2tab\tseparated",0],"ok":["/Applications/line1\nline2tab\tseparated.app","/Applications/Utilities/line1\nline2tab\tseparated.app","/Applications/JetBrains Toolbox/line1\nline2tab\tseparated.app","/System/Applications/line1\nline2tab\tseparated.app","/System/Applications/Utilities/line1\nline2tab\tseparated.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["é",{}],"ok":["/Applications/é.app","/Applications/Utilities/é.app","/Applications/JetBrains Toolbox/é.app","/System/Applications/é.app","/System/Applications/Utilities/é.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["{name} has {count} items","x"],"ok":["/Applications/{name} has {count} items.app","/Applications/Utilities/{name} has {count} items.app","/Applications/JetBrains Toolbox/{name} has {count} items.app","/System/Applications/{name} has {count} items.app","/System/Applications/Utilities/{name} has {count} items.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["HELLO",true],"ok":["/Applications/HELLO.app","/Applications/Utilities/HELLO.app","/Applications/JetBrains Toolbox/HELLO.app","/System/Applications/HELLO.app","/System/Applications/Utilities/HELLO.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["😀ns:key.path",{"a":"b"}],"ok":["/Applications/😀ns:key.path.app","/Applications/Utilities/😀ns:key.path.app","/Applications/JetBrains Toolbox/😀ns:key.path.app","/System/Applications/😀ns:key.path.app","/System/Applications/Utilities/😀ns:key.path.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["﻿bom","bom"],"ok":["/Applications/﻿bom.app","/Applications/Utilities/﻿bom.app","/Applications/JetBrains Toolbox/﻿bom.app","/System/Applications/﻿bom.app","/System/Applications/Utilities/﻿bom.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["tab\tseparated",{}],"ok":["/Applications/tab\tseparated.app","/Applications/Utilities/tab\tseparated.app","/Applications/JetBrains Toolbox/tab\tseparated.app","/System/Applications/tab\tseparated.app","/System/Applications/Utilities/tab\tseparated.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["straßekey_name-1",{"a":{"b":"c"}}],"ok":["/Applications/straßekey_name-1.app","/Applications/Utilities/straßekey_name-1.app","/Applications/JetBrains Toolbox/straßekey_name-1.app","/System/Applications/straßekey_name-1.app","/System/Applications/Utilities/straßekey_name-1.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["trailing.tab\tseparated","x"],"ok":["/Applications/trailing.tab\tseparated.app","/Applications/Utilities/trailing.tab\tseparated.app","/Applications/JetBrains Toolbox/trailing.tab\tseparated.app","/System/Applications/trailing.tab\tseparated.app","/System/Applications/Utilities/trailing.tab\tseparated.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":[":",{"a":{"b":"c"}}],"ok":["/Applications/:.app","/Applications/Utilities/:.app","/Applications/JetBrains Toolbox/:.app","/System/Applications/:.app","/System/Applications/Utilities/:.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["HELLO","x"],"ok":["/Applications/HELLO.app","/Applications/Utilities/HELLO.app","/Applications/JetBrains Toolbox/HELLO.app","/System/Applications/HELLO.app","/System/Applications/Utilities/HELLO.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["😀a:b:c",null],"error":"Cannot read properties of null (reading 'HOME')"}
+{"fn":"resolveMacApplicationSearchPaths","args":["a",["a",1]],"ok":["/Applications/a.app","/Applications/Utilities/a.app","/Applications/JetBrains Toolbox/a.app","/System/Applications/a.app","/System/Applications/Utilities/a.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["emoji 👍🏽 mix",{}],"ok":["/Applications/emoji 👍🏽 mix.app","/Applications/Utilities/emoji 👍🏽 mix.app","/Applications/JetBrains Toolbox/emoji 👍🏽 mix.app","/System/Applications/emoji 👍🏽 mix.app","/System/Applications/Utilities/emoji 👍🏽 mix.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["./x/**/*.json",0],"ok":["/Applications/x/**/*.json.app","/Applications/Utilities/x/**/*.json.app","/Applications/JetBrains Toolbox/x/**/*.json.app","/System/Applications/x/**/*.json.app","/System/Applications/Utilities/x/**/*.json.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["./x/**/*.json",{}],"ok":["/Applications/x/**/*.json.app","/Applications/Utilities/x/**/*.json.app","/Applications/JetBrains Toolbox/x/**/*.json.app","/System/Applications/x/**/*.json.app","/System/Applications/Utilities/x/**/*.json.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["a😀b😀c",["a",1]],"ok":["/Applications/a😀b😀c.app","/Applications/Utilities/a😀b😀c.app","/Applications/JetBrains Toolbox/a😀b😀c.app","/System/Applications/a😀b😀c.app","/System/Applications/Utilities/a😀b😀c.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["﻿bom",{"a":"b"}],"ok":["/Applications/﻿bom.app","/Applications/Utilities/﻿bom.app","/Applications/JetBrains Toolbox/﻿bom.app","/System/Applications/﻿bom.app","/System/Applications/Utilities/﻿bom.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["a",{"a":"b"}],"ok":["/Applications/a.app","/Applications/Utilities/a.app","/Applications/JetBrains Toolbox/a.app","/System/Applications/a.app","/System/Applications/Utilities/a.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["éemoji 👍🏽 mix",null],"error":"Cannot read properties of null (reading 'HOME')"}
+{"fn":"resolveMacApplicationSearchPaths","args":["hello world",null],"error":"Cannot read properties of null (reading 'HOME')"}
+{"fn":"resolveMacApplicationSearchPaths","args":["HELLO",["a",1]],"ok":["/Applications/HELLO.app","/Applications/Utilities/HELLO.app","/Applications/JetBrains Toolbox/HELLO.app","/System/Applications/HELLO.app","/System/Applications/Utilities/HELLO.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["a.b.c",true],"ok":["/Applications/a.b.c.app","/Applications/Utilities/a.b.c.app","/Applications/JetBrains Toolbox/a.b.c.app","/System/Applications/a.b.c.app","/System/Applications/Utilities/a.b.c.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["a😀b😀c",[]],"ok":["/Applications/a😀b😀c.app","/Applications/Utilities/a😀b😀c.app","/Applications/JetBrains Toolbox/a😀b😀c.app","/System/Applications/a😀b😀c.app","/System/Applications/Utilities/a😀b😀c.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["./x/**/*.json",{"a":{"b":"c"}}],"ok":["/Applications/x/**/*.json.app","/Applications/Utilities/x/**/*.json.app","/Applications/JetBrains Toolbox/x/**/*.json.app","/System/Applications/x/**/*.json.app","/System/Applications/Utilities/x/**/*.json.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["a😀b😀c",true],"ok":["/Applications/a😀b😀c.app","/Applications/Utilities/a😀b😀c.app","/Applications/JetBrains Toolbox/a😀b😀c.app","/System/Applications/a😀b😀c.app","/System/Applications/Utilities/a😀b😀c.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["Hello World",true],"ok":["/Applications/Hello World.app","/Applications/Utilities/Hello World.app","/Applications/JetBrains Toolbox/Hello World.app","/System/Applications/Hello World.app","/System/Applications/Utilities/Hello World.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["ΣΊΣΥΦΟΣ",{"a":{"b":"c"}}],"ok":["/Applications/ΣΊΣΥΦΟΣ.app","/Applications/Utilities/ΣΊΣΥΦΟΣ.app","/Applications/JetBrains Toolbox/ΣΊΣΥΦΟΣ.app","/System/Applications/ΣΊΣΥΦΟΣ.app","/System/Applications/Utilities/ΣΊΣΥΦΟΣ.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["ünïcödé",null],"error":"Cannot read properties of null (reading 'HOME')"}
+{"fn":"resolveMacApplicationSearchPaths","args":["tab\tseparated",true],"ok":["/Applications/tab\tseparated.app","/Applications/Utilities/tab\tseparated.app","/Applications/JetBrains Toolbox/tab\tseparated.app","/System/Applications/tab\tseparated.app","/System/Applications/Utilities/tab\tseparated.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["ns:key.path",{"a":{"b":"c"}}],"ok":["/Applications/ns:key.path.app","/Applications/Utilities/ns:key.path.app","/Applications/JetBrains Toolbox/ns:key.path.app","/System/Applications/ns:key.path.app","/System/Applications/Utilities/ns:key.path.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["﻿boma😀b😀c",0],"ok":["/Applications/﻿boma😀b😀c.app","/Applications/Utilities/﻿boma😀b😀c.app","/Applications/JetBrains Toolbox/﻿boma😀b😀c.app","/System/Applications/﻿boma😀b😀c.app","/System/Applications/Utilities/﻿boma😀b😀c.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["Hello World","x"],"ok":["/Applications/Hello World.app","/Applications/Utilities/Hello World.app","/Applications/JetBrains Toolbox/Hello World.app","/System/Applications/Hello World.app","/System/Applications/Utilities/Hello World.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["{name} has {count} items",["a",1]],"ok":["/Applications/{name} has {count} items.app","/Applications/Utilities/{name} has {count} items.app","/Applications/JetBrains Toolbox/{name} has {count} items.app","/System/Applications/{name} has {count} items.app","/System/Applications/Utilities/{name} has {count} items.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["  padded  ",["a",1]],"ok":["/Applications/  padded  .app","/Applications/Utilities/  padded  .app","/Applications/JetBrains Toolbox/  padded  .app","/System/Applications/  padded  .app","/System/Applications/Utilities/  padded  .app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["trailing.",0],"ok":["/Applications/trailing..app","/Applications/Utilities/trailing..app","/Applications/JetBrains Toolbox/trailing..app","/System/Applications/trailing..app","/System/Applications/Utilities/trailing..app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["ns:key.pathhello",{"a":"b"}],"ok":["/Applications/ns:key.pathhello.app","/Applications/Utilities/ns:key.pathhello.app","/Applications/JetBrains Toolbox/ns:key.pathhello.app","/System/Applications/ns:key.pathhello.app","/System/Applications/Utilities/ns:key.pathhello.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["ünïcödé",{"a":{"b":"c"}}],"ok":["/Applications/ünïcödé.app","/Applications/Utilities/ünïcödé.app","/Applications/JetBrains Toolbox/ünïcödé.app","/System/Applications/ünïcödé.app","/System/Applications/Utilities/ünïcödé.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["{name} has {count} itemsa.b.c",["a",1]],"ok":["/Applications/{name} has {count} itemsa.b.c.app","/Applications/Utilities/{name} has {count} itemsa.b.c.app","/Applications/JetBrains Toolbox/{name} has {count} itemsa.b.c.app","/System/Applications/{name} has {count} itemsa.b.c.app","/System/Applications/Utilities/{name} has {count} itemsa.b.c.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["日本語のテキスト",0],"ok":["/Applications/日本語のテキスト.app","/Applications/Utilities/日本語のテキスト.app","/Applications/JetBrains Toolbox/日本語のテキスト.app","/System/Applications/日本語のテキスト.app","/System/Applications/Utilities/日本語のテキスト.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["ΣΊΣΥΦΟΣns:key.path",["a",1]],"ok":["/Applications/ΣΊΣΥΦΟΣns:key.path.app","/Applications/Utilities/ΣΊΣΥΦΟΣns:key.path.app","/Applications/JetBrains Toolbox/ΣΊΣΥΦΟΣns:key.path.app","/System/Applications/ΣΊΣΥΦΟΣns:key.path.app","/System/Applications/Utilities/ΣΊΣΥΦΟΣns:key.path.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["a.b.c",{"a":"b"}],"ok":["/Applications/a.b.c.app","/Applications/Utilities/a.b.c.app","/Applications/JetBrains Toolbox/a.b.c.app","/System/Applications/a.b.c.app","/System/Applications/Utilities/a.b.c.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["tab\tseparatedİstanbul",{"a":{"b":"c"}}],"ok":["/Applications/tab\tseparatedİstanbul.app","/Applications/Utilities/tab\tseparatedİstanbul.app","/Applications/JetBrains Toolbox/tab\tseparatedİstanbul.app","/System/Applications/tab\tseparatedİstanbul.app","/System/Applications/Utilities/tab\tseparatedİstanbul.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["ns:key.path",{}],"ok":["/Applications/ns:key.path.app","/Applications/Utilities/ns:key.path.app","/Applications/JetBrains Toolbox/ns:key.path.app","/System/Applications/ns:key.path.app","/System/Applications/Utilities/ns:key.path.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["é",[]],"ok":["/Applications/é.app","/Applications/Utilities/é.app","/Applications/JetBrains Toolbox/é.app","/System/Applications/é.app","/System/Applications/Utilities/é.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["ünïcödé",0],"ok":["/Applications/ünïcödé.app","/Applications/Utilities/ünïcödé.app","/Applications/JetBrains Toolbox/ünïcödé.app","/System/Applications/ünïcödé.app","/System/Applications/Utilities/ünïcödé.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["ab",{"a":"b"}],"ok":["/Applications/ab.app","/Applications/Utilities/ab.app","/Applications/JetBrains Toolbox/ab.app","/System/Applications/ab.app","/System/Applications/Utilities/ab.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["./x/**/*.json","x"],"ok":["/Applications/x/**/*.json.app","/Applications/Utilities/x/**/*.json.app","/Applications/JetBrains Toolbox/x/**/*.json.app","/System/Applications/x/**/*.json.app","/System/Applications/Utilities/x/**/*.json.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["﻿bom","m"],"ok":["/Applications/﻿bom.app","/Applications/Utilities/﻿bom.app","/Applications/JetBrains Toolbox/﻿bom.app","/System/Applications/﻿bom.app","/System/Applications/Utilities/﻿bom.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["abcline1\nline2",null],"error":"Cannot read properties of null (reading 'HOME')"}
+{"fn":"resolveMacApplicationSearchPaths","args":["a﻿bom",[]],"ok":["/Applications/a﻿bom.app","/Applications/Utilities/a﻿bom.app","/Applications/JetBrains Toolbox/a﻿bom.app","/System/Applications/a﻿bom.app","/System/Applications/Utilities/a﻿bom.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["tab\tseparated",null],"error":"Cannot read properties of null (reading 'HOME')"}
+{"fn":"resolveMacApplicationSearchPaths","args":[":",0],"ok":["/Applications/:.app","/Applications/Utilities/:.app","/Applications/JetBrains Toolbox/:.app","/System/Applications/:.app","/System/Applications/Utilities/:.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":[":日本語のテキスト",0],"ok":["/Applications/:日本語のテキスト.app","/Applications/Utilities/:日本語のテキスト.app","/Applications/JetBrains Toolbox/:日本語のテキスト.app","/System/Applications/:日本語のテキスト.app","/System/Applications/Utilities/:日本語のテキスト.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["é./x/**/*.json","x"],"ok":["/Applications/é./x/**/*.json.app","/Applications/Utilities/é./x/**/*.json.app","/Applications/JetBrains Toolbox/é./x/**/*.json.app","/System/Applications/é./x/**/*.json.app","/System/Applications/Utilities/é./x/**/*.json.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["ns:key.path",0],"ok":["/Applications/ns:key.path.app","/Applications/Utilities/ns:key.path.app","/Applications/JetBrains Toolbox/ns:key.path.app","/System/Applications/ns:key.path.app","/System/Applications/Utilities/ns:key.path.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["tab\tseparated",{"a":{"b":"c"}}],"ok":["/Applications/tab\tseparated.app","/Applications/Utilities/tab\tseparated.app","/Applications/JetBrains Toolbox/tab\tseparated.app","/System/Applications/tab\tseparated.app","/System/Applications/Utilities/tab\tseparated.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":[":",{"a":"b"}],"ok":["/Applications/:.app","/Applications/Utilities/:.app","/Applications/JetBrains Toolbox/:.app","/System/Applications/:.app","/System/Applications/Utilities/:.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["line1\nline2",true],"ok":["/Applications/line1\nline2.app","/Applications/Utilities/line1\nline2.app","/Applications/JetBrains Toolbox/line1\nline2.app","/System/Applications/line1\nline2.app","/System/Applications/Utilities/line1\nline2.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["src/a/b.tstab\tseparated",0],"ok":["/Applications/src/a/b.tstab\tseparated.app","/Applications/Utilities/src/a/b.tstab\tseparated.app","/Applications/JetBrains Toolbox/src/a/b.tstab\tseparated.app","/System/Applications/src/a/b.tstab\tseparated.app","/System/Applications/Utilities/src/a/b.tstab\tseparated.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["ab","x"],"ok":["/Applications/ab.app","/Applications/Utilities/ab.app","/Applications/JetBrains Toolbox/ab.app","/System/Applications/ab.app","/System/Applications/Utilities/ab.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["{name} has {count} items",[]],"ok":["/Applications/{name} has {count} items.app","/Applications/Utilities/{name} has {count} items.app","/Applications/JetBrains Toolbox/{name} has {count} items.app","/System/Applications/{name} has {count} items.app","/System/Applications/Utilities/{name} has {count} items.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["a.b.ca:b:c",["a",1]],"ok":["/Applications/a.b.ca:b:c.app","/Applications/Utilities/a.b.ca:b:c.app","/Applications/JetBrains Toolbox/a.b.ca:b:c.app","/System/Applications/a.b.ca:b:c.app","/System/Applications/Utilities/a.b.ca:b:c.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["tab\tseparated","x"],"ok":["/Applications/tab\tseparated.app","/Applications/Utilities/tab\tseparated.app","/Applications/JetBrains Toolbox/tab\tseparated.app","/System/Applications/tab\tseparated.app","/System/Applications/Utilities/tab\tseparated.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["a.leading",["a",1]],"ok":["/Applications/a.leading.app","/Applications/Utilities/a.leading.app","/Applications/JetBrains Toolbox/a.leading.app","/System/Applications/a.leading.app","/System/Applications/Utilities/a.leading.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["HELLO",{"a":{"b":"c"}}],"ok":["/Applications/HELLO.app","/Applications/Utilities/HELLO.app","/Applications/JetBrains Toolbox/HELLO.app","/System/Applications/HELLO.app","/System/Applications/Utilities/HELLO.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["line1\nline2",[]],"ok":["/Applications/line1\nline2.app","/Applications/Utilities/line1\nline2.app","/Applications/JetBrains Toolbox/line1\nline2.app","/System/Applications/line1\nline2.app","/System/Applications/Utilities/line1\nline2.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["src/a/b.ts",null],"error":"Cannot read properties of null (reading 'HOME')"}
+{"fn":"resolveMacApplicationSearchPaths","args":[".leadingİstanbul","x"],"ok":["/Applications/.leadingİstanbul.app","/Applications/Utilities/.leadingİstanbul.app","/Applications/JetBrains Toolbox/.leadingİstanbul.app","/System/Applications/.leadingİstanbul.app","/System/Applications/Utilities/.leadingİstanbul.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":[".leadinga..b",{"a":"b"}],"ok":["/Applications/.leadinga..b.app","/Applications/Utilities/.leadinga..b.app","/Applications/JetBrains Toolbox/.leadinga..b.app","/System/Applications/.leadinga..b.app","/System/Applications/Utilities/.leadinga..b.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["ΣΊΣΥΦΟΣ",["a",1]],"ok":["/Applications/ΣΊΣΥΦΟΣ.app","/Applications/Utilities/ΣΊΣΥΦΟΣ.app","/Applications/JetBrains Toolbox/ΣΊΣΥΦΟΣ.app","/System/Applications/ΣΊΣΥΦΟΣ.app","/System/Applications/Utilities/ΣΊΣΥΦΟΣ.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["a..b",null],"error":"Cannot read properties of null (reading 'HOME')"}
+{"fn":"resolveMacApplicationSearchPaths","args":["line1\nline2",null],"error":"Cannot read properties of null (reading 'HOME')"}
+{"fn":"resolveMacApplicationSearchPaths","args":["straße",{"a":{"b":"c"}}],"ok":["/Applications/straße.app","/Applications/Utilities/straße.app","/Applications/JetBrains Toolbox/straße.app","/System/Applications/straße.app","/System/Applications/Utilities/straße.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["İstanbul","x"],"ok":["/Applications/İstanbul.app","/Applications/Utilities/İstanbul.app","/Applications/JetBrains Toolbox/İstanbul.app","/System/Applications/İstanbul.app","/System/Applications/Utilities/İstanbul.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["a😀b😀c","x"],"ok":["/Applications/a😀b😀c.app","/Applications/Utilities/a😀b😀c.app","/Applications/JetBrains Toolbox/a😀b😀c.app","/System/Applications/a😀b😀c.app","/System/Applications/Utilities/a😀b😀c.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["é",true],"ok":["/Applications/é.app","/Applications/Utilities/é.app","/Applications/JetBrains Toolbox/é.app","/System/Applications/é.app","/System/Applications/Utilities/é.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["ab{name} has {count} items",{"a":"b"}],"ok":["/Applications/ab{name} has {count} items.app","/Applications/Utilities/ab{name} has {count} items.app","/Applications/JetBrains Toolbox/ab{name} has {count} items.app","/System/Applications/ab{name} has {count} items.app","/System/Applications/Utilities/ab{name} has {count} items.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["﻿bom./x/**/*.json",["a",1]],"ok":["/Applications/﻿bom./x/**/*.json.app","/Applications/Utilities/﻿bom./x/**/*.json.app","/Applications/JetBrains Toolbox/﻿bom./x/**/*.json.app","/System/Applications/﻿bom./x/**/*.json.app","/System/Applications/Utilities/﻿bom./x/**/*.json.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["ΣΊΣΥΦΟΣ﻿bom",{"a":{"b":"c"}}],"ok":["/Applications/ΣΊΣΥΦΟΣ﻿bom.app","/Applications/Utilities/ΣΊΣΥΦΟΣ﻿bom.app","/Applications/JetBrains Toolbox/ΣΊΣΥΦΟΣ﻿bom.app","/System/Applications/ΣΊΣΥΦΟΣ﻿bom.app","/System/Applications/Utilities/ΣΊΣΥΦΟΣ﻿bom.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["ns:key.path","x"],"ok":["/Applications/ns:key.path.app","/Applications/Utilities/ns:key.path.app","/Applications/JetBrains Toolbox/ns:key.path.app","/System/Applications/ns:key.path.app","/System/Applications/Utilities/ns:key.path.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["HELLO",{"a":"b"}],"ok":["/Applications/HELLO.app","/Applications/Utilities/HELLO.app","/Applications/JetBrains Toolbox/HELLO.app","/System/Applications/HELLO.app","/System/Applications/Utilities/HELLO.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["a:b:c",{"a":"b"}],"ok":["/Applications/a:b:c.app","/Applications/Utilities/a:b:c.app","/Applications/JetBrains Toolbox/a:b:c.app","/System/Applications/a:b:c.app","/System/Applications/Utilities/a:b:c.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":[".leading",["a",1]],"ok":["/Applications/.leading.app","/Applications/Utilities/.leading.app","/Applications/JetBrains Toolbox/.leading.app","/System/Applications/.leading.app","/System/Applications/Utilities/.leading.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["emoji 👍🏽 mix",["a",1]],"ok":["/Applications/emoji 👍🏽 mix.app","/Applications/Utilities/emoji 👍🏽 mix.app","/Applications/JetBrains Toolbox/emoji 👍🏽 mix.app","/System/Applications/emoji 👍🏽 mix.app","/System/Applications/Utilities/emoji 👍🏽 mix.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["a😀b😀cabc",["a",1]],"ok":["/Applications/a😀b😀cabc.app","/Applications/Utilities/a😀b😀cabc.app","/Applications/JetBrains Toolbox/a😀b😀cabc.app","/System/Applications/a😀b😀cabc.app","/System/Applications/Utilities/a😀b😀cabc.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["abc",null],"error":"Cannot read properties of null (reading 'HOME')"}
+{"fn":"resolveMacApplicationSearchPaths","args":["  padded  ",null],"error":"Cannot read properties of null (reading 'HOME')"}
+{"fn":"resolveMacApplicationSearchPaths","args":["a.b.c",{}],"ok":["/Applications/a.b.c.app","/Applications/Utilities/a.b.c.app","/Applications/JetBrains Toolbox/a.b.c.app","/System/Applications/a.b.c.app","/System/Applications/Utilities/a.b.c.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":[":",":"],"ok":["/Applications/:.app","/Applications/Utilities/:.app","/Applications/JetBrains Toolbox/:.app","/System/Applications/:.app","/System/Applications/Utilities/:.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":[".leading",[]],"ok":["/Applications/.leading.app","/Applications/Utilities/.leading.app","/Applications/JetBrains Toolbox/.leading.app","/System/Applications/.leading.app","/System/Applications/Utilities/.leading.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["",0],"ok":["/Applications/.app","/Applications/Utilities/.app","/Applications/JetBrains Toolbox/.app","/System/Applications/.app","/System/Applications/Utilities/.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["ab.leading",[]],"ok":["/Applications/ab.leading.app","/Applications/Utilities/ab.leading.app","/Applications/JetBrains Toolbox/ab.leading.app","/System/Applications/ab.leading.app","/System/Applications/Utilities/ab.leading.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["İstanbul",{"a":{"b":"c"}}],"ok":["/Applications/İstanbul.app","/Applications/Utilities/İstanbul.app","/Applications/JetBrains Toolbox/İstanbul.app","/System/Applications/İstanbul.app","/System/Applications/Utilities/İstanbul.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["line1\nline2",{}],"ok":["/Applications/line1\nline2.app","/Applications/Utilities/line1\nline2.app","/Applications/JetBrains Toolbox/line1\nline2.app","/System/Applications/line1\nline2.app","/System/Applications/Utilities/line1\nline2.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["a..b",0],"ok":["/Applications/a..b.app","/Applications/Utilities/a..b.app","/Applications/JetBrains Toolbox/a..b.app","/System/Applications/a..b.app","/System/Applications/Utilities/a..b.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["a.b.c","x"],"ok":["/Applications/a.b.c.app","/Applications/Utilities/a.b.c.app","/Applications/JetBrains Toolbox/a.b.c.app","/System/Applications/a.b.c.app","/System/Applications/Utilities/a.b.c.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["ΣΊΣΥΦΟΣ",{"a":"b"}],"ok":["/Applications/ΣΊΣΥΦΟΣ.app","/Applications/Utilities/ΣΊΣΥΦΟΣ.app","/Applications/JetBrains Toolbox/ΣΊΣΥΦΟΣ.app","/System/Applications/ΣΊΣΥΦΟΣ.app","/System/Applications/Utilities/ΣΊΣΥΦΟΣ.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["a..b",{"a":"b"}],"ok":["/Applications/a..b.app","/Applications/Utilities/a..b.app","/Applications/JetBrains Toolbox/a..b.app","/System/Applications/a..b.app","/System/Applications/Utilities/a..b.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["a",{"a":{"b":"c"}}],"ok":["/Applications/a.app","/Applications/Utilities/a.app","/Applications/JetBrains Toolbox/a.app","/System/Applications/a.app","/System/Applications/Utilities/a.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["abca..b",{"a":{"b":"c"}}],"ok":["/Applications/abca..b.app","/Applications/Utilities/abca..b.app","/Applications/JetBrains Toolbox/abca..b.app","/System/Applications/abca..b.app","/System/Applications/Utilities/abca..b.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["HELLO",[]],"ok":["/Applications/HELLO.app","/Applications/Utilities/HELLO.app","/Applications/JetBrains Toolbox/HELLO.app","/System/Applications/HELLO.app","/System/Applications/Utilities/HELLO.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["tab\tseparated﻿bom",true],"ok":["/Applications/tab\tseparated﻿bom.app","/Applications/Utilities/tab\tseparated﻿bom.app","/Applications/JetBrains Toolbox/tab\tseparated﻿bom.app","/System/Applications/tab\tseparated﻿bom.app","/System/Applications/Utilities/tab\tseparated﻿bom.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["  padded  ",true],"ok":["/Applications/  padded  .app","/Applications/Utilities/  padded  .app","/Applications/JetBrains Toolbox/  padded  .app","/System/Applications/  padded  .app","/System/Applications/Utilities/  padded  .app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["a😀b😀ckey_name-1",true],"ok":["/Applications/a😀b😀ckey_name-1.app","/Applications/Utilities/a😀b😀ckey_name-1.app","/Applications/JetBrains Toolbox/a😀b😀ckey_name-1.app","/System/Applications/a😀b😀ckey_name-1.app","/System/Applications/Utilities/a😀b😀ckey_name-1.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["ünïcödé","x"],"ok":["/Applications/ünïcödé.app","/Applications/Utilities/ünïcödé.app","/Applications/JetBrains Toolbox/ünïcödé.app","/System/Applications/ünïcödé.app","/System/Applications/Utilities/ünïcödé.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["abc",{"a":{"b":"c"}}],"ok":["/Applications/abc.app","/Applications/Utilities/abc.app","/Applications/JetBrains Toolbox/abc.app","/System/Applications/abc.app","/System/Applications/Utilities/abc.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["é","x"],"ok":["/Applications/é.app","/Applications/Utilities/é.app","/Applications/JetBrains Toolbox/é.app","/System/Applications/é.app","/System/Applications/Utilities/é.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["hello world﻿bom","x"],"ok":["/Applications/hello world﻿bom.app","/Applications/Utilities/hello world﻿bom.app","/Applications/JetBrains Toolbox/hello world﻿bom.app","/System/Applications/hello world﻿bom.app","/System/Applications/Utilities/hello world﻿bom.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["","x"],"ok":["/Applications/.app","/Applications/Utilities/.app","/Applications/JetBrains Toolbox/.app","/System/Applications/.app","/System/Applications/Utilities/.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["key_name-1",["a",1]],"ok":["/Applications/key_name-1.app","/Applications/Utilities/key_name-1.app","/Applications/JetBrains Toolbox/key_name-1.app","/System/Applications/key_name-1.app","/System/Applications/Utilities/key_name-1.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["X","x"],"ok":["/Applications/X.app","/Applications/Utilities/X.app","/Applications/JetBrains Toolbox/X.app","/System/Applications/X.app","/System/Applications/Utilities/X.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["héllo wörld",[]],"ok":["/Applications/héllo wörld.app","/Applications/Utilities/héllo wörld.app","/Applications/JetBrains Toolbox/héllo wörld.app","/System/Applications/héllo wörld.app","/System/Applications/Utilities/héllo wörld.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["👍🏽 thumbs",[]],"ok":["/Applications/👍🏽 thumbs.app","/Applications/Utilities/👍🏽 thumbs.app","/Applications/JetBrains Toolbox/👍🏽 thumbs.app","/System/Applications/👍🏽 thumbs.app","/System/Applications/Utilities/👍🏽 thumbs.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["日本語",[]],"ok":["/Applications/日本語.app","/Applications/Utilities/日本語.app","/Applications/JetBrains Toolbox/日本語.app","/System/Applications/日本語.app","/System/Applications/Utilities/日本語.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["",[]],"ok":["/Applications/.app","/Applications/Utilities/.app","/Applications/JetBrains Toolbox/.app","/System/Applications/.app","/System/Applications/Utilities/.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["İstanbul",[]],"ok":["/Applications/İstanbul.app","/Applications/Utilities/İstanbul.app","/Applications/JetBrains Toolbox/İstanbul.app","/System/Applications/İstanbul.app","/System/Applications/Utilities/İstanbul.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["straße",[]],"ok":["/Applications/straße.app","/Applications/Utilities/straße.app","/Applications/JetBrains Toolbox/straße.app","/System/Applications/straße.app","/System/Applications/Utilities/straße.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["ılık ırmak",[]],"ok":["/Applications/ılık ırmak.app","/Applications/Utilities/ılık ırmak.app","/Applications/JetBrains Toolbox/ılık ırmak.app","/System/Applications/ılık ırmak.app","/System/Applications/Utilities/ılık ırmak.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["👨‍👩‍👧 family",[]],"ok":["/Applications/👨‍👩‍👧 family.app","/Applications/Utilities/👨‍👩‍👧 family.app","/Applications/JetBrains Toolbox/👨‍👩‍👧 family.app","/System/Applications/👨‍👩‍👧 family.app","/System/Applications/Utilities/👨‍👩‍👧 family.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["a b",[]],"ok":["/Applications/a b.app","/Applications/Utilities/a b.app","/Applications/JetBrains Toolbox/a b.app","/System/Applications/a b.app","/System/Applications/Utilities/a b.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["ΣΊΣΥΦΟΣ",[]],"ok":["/Applications/ΣΊΣΥΦΟΣ.app","/Applications/Utilities/ΣΊΣΥΦΟΣ.app","/Applications/JetBrains Toolbox/ΣΊΣΥΦΟΣ.app","/System/Applications/ΣΊΣΥΦΟΣ.app","/System/Applications/Utilities/ΣΊΣΥΦΟΣ.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["a😀b",[]],"ok":["/Applications/a😀b.app","/Applications/Utilities/a😀b.app","/Applications/JetBrains Toolbox/a😀b.app","/System/Applications/a😀b.app","/System/Applications/Utilities/a😀b.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["a²b x½ y①",[]],"ok":["/Applications/a²b x½ y①.app","/Applications/Utilities/a²b x½ y①.app","/Applications/JetBrains Toolbox/a²b x½ y①.app","/System/Applications/a²b x½ y①.app","/System/Applications/Utilities/a²b x½ y①.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["aⅠb Ⅻ",[]],"ok":["/Applications/aⅠb Ⅻ.app","/Applications/Utilities/aⅠb Ⅻ.app","/Applications/JetBrains Toolbox/aⅠb Ⅻ.app","/System/Applications/aⅠb Ⅻ.app","/System/Applications/Utilities/aⅠb Ⅻ.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["a𐐀b 𝐀bc",[]],"ok":["/Applications/a𐐀b 𝐀bc.app","/Applications/Utilities/a𐐀b 𝐀bc.app","/Applications/JetBrains Toolbox/a𐐀b 𝐀bc.app","/System/Applications/a𐐀b 𝐀bc.app","/System/Applications/Utilities/a𐐀b 𝐀bc.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["कि ٣٤",[]],"ok":["/Applications/कि ٣٤.app","/Applications/Utilities/कि ٣٤.app","/Applications/JetBrains Toolbox/कि ٣٤.app","/System/Applications/कि ٣٤.app","/System/Applications/Utilities/कि ٣٤.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["Iı İi",[]],"ok":["/Applications/Iı İi.app","/Applications/Utilities/Iı İi.app","/Applications/JetBrains Toolbox/Iı İi.app","/System/Applications/Iı İi.app","/System/Applications/Utilities/Iı İi.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["K K k",[]],"ok":["/Applications/K K k.app","/Applications/Utilities/K K k.app","/Applications/JetBrains Toolbox/K K k.app","/System/Applications/K K k.app","/System/Applications/Utilities/K K k.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["ſ s S",[]],"ok":["/Applications/ſ s S.app","/Applications/Utilities/ſ s S.app","/Applications/JetBrains Toolbox/ſ s S.app","/System/Applications/ſ s S.app","/System/Applications/Utilities/ſ s S.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["x‍y 👨‍👩‍👧",[]],"ok":["/Applications/x‍y 👨‍👩‍👧.app","/Applications/Utilities/x‍y 👨‍👩‍👧.app","/Applications/JetBrains Toolbox/x‍y 👨‍👩‍👧.app","/System/Applications/x‍y 👨‍👩‍👧.app","/System/Applications/Utilities/x‍y 👨‍👩‍👧.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["a b c　d",[]],"ok":["/Applications/a b c　d.app","/Applications/Utilities/a b c　d.app","/Applications/JetBrains Toolbox/a b c　d.app","/System/Applications/a b c　d.app","/System/Applications/Utilities/a b c　d.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["١٢٣ ٤٥",[]],"ok":["/Applications/١٢٣ ٤٥.app","/Applications/Utilities/١٢٣ ٤٥.app","/Applications/JetBrains Toolbox/١٢٣ ٤٥.app","/System/Applications/١٢٣ ٤٥.app","/System/Applications/Utilities/١٢٣ ٤٥.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["𝟘𝟙 ²³",[]],"ok":["/Applications/𝟘𝟙 ²³.app","/Applications/Utilities/𝟘𝟙 ²³.app","/Applications/JetBrains Toolbox/𝟘𝟙 ²³.app","/System/Applications/𝟘𝟙 ²³.app","/System/Applications/Utilities/𝟘𝟙 ²³.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["snake_case foo-bar o'neil",[]],"ok":["/Applications/snake_case foo-bar o'neil.app","/Applications/Utilities/snake_case foo-bar o'neil.app","/Applications/JetBrains Toolbox/snake_case foo-bar o'neil.app","/System/Applications/snake_case foo-bar o'neil.app","/System/Applications/Utilities/snake_case foo-bar o'neil.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["ǅungla Ǆ",[]],"ok":["/Applications/ǅungla Ǆ.app","/Applications/Utilities/ǅungla Ǆ.app","/Applications/JetBrains Toolbox/ǅungla Ǆ.app","/System/Applications/ǅungla Ǆ.app","/System/Applications/Utilities/ǅungla Ǆ.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["one\r\ntwo threefour",[]],"ok":["/Applications/one\r\ntwo threefour.app","/Applications/Utilities/one\r\ntwo threefour.app","/Applications/JetBrains Toolbox/one\r\ntwo threefour.app","/System/Applications/one\r\ntwo threefour.app","/System/Applications/Utilities/one\r\ntwo threefour.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["café café",[]],"ok":["/Applications/café café.app","/Applications/Utilities/café café.app","/Applications/JetBrains Toolbox/café café.app","/System/Applications/café café.app","/System/Applications/Utilities/café café.app"]}
+{"fn":"resolveMacApplicationSearchPaths","args":["ΣΑΣ σας ς",[]],"ok":["/Applications/ΣΑΣ σας ς.app","/Applications/Utilities/ΣΑΣ σας ς.app","/Applications/JetBrains Toolbox/ΣΑΣ σας ς.app","/System/Applications/ΣΑΣ σας ς.app","/System/Applications/Utilities/ΣΑΣ σας ς.app"]}
+{"fn":"resolveMacApplicationBundlePath","args":[["a:b:c","{name} has {count} itemsé","日本語のテキスト"],null,[]],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["ahello","a"],{},[]],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[{"$undefined":true},[],null],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["日本語のテキスト","ünïcödé"],{"a":"b"},null],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[[],0,{"a":{"b":"c"}}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[[],{"a":{"b":"c"}},{"a":{"b":"c"}}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["./x/**/*.json","trailing.","a:b:c"],null,true],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["src/a/b.ts","src/a/b.ts"],{"a":"b"},"x"],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["key_name-1","日本語のテキスト","日本語のテキスト"],{"a":"b"},["a",1]],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["﻿bom"],{},{}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["ns:key.path"],{"a":{"b":"c"}},["a",1]],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[{"$undefined":true},{},[]],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["a😀b😀c"],[],[]],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[{"$undefined":true},{"a":"b"},["a",1]],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["hello world","straße","HELLO"],"x",{}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["","  padded  "],0,0],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["  padded  "],"x",0],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[[],true,"x"],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["trailing.  padded  ","ΣΊΣΥΦΟΣ","ns:key.path"],0,{}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[[],["a",1],0],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[[":"],"x",[]],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[[],["a",1],{}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["ns:key.path"],{"a":"b"},0],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[[""],0,{"a":{"b":"c"}}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["é","Hello World"],"x",{"a":"b"}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[{"$undefined":true},["a",1],{}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[{"$undefined":true},{},0],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["abca..b","a..b"],[],{}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[{"$undefined":true},["a",1],0],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[{"$undefined":true},null,{}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["a.b.cns:key.path","line1\nline2"],["a",1],null],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["a..b","line1\nline2"],{"a":{"b":"c"}},0],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[[],[],null],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["a:b:c","hello worlda..b","HELLOab"],true,[]],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["line1\nline2","","key_name-1"],0,"x"],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[[],0,true],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["line1\nline2","tab\tseparated"],["a",1],{"a":"b"}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["tab\tseparatedHello World"],{"a":{"b":"c"}},"x"],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[{"$undefined":true},{"a":{"b":"c"}},[]],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["hello world","Hello Worldab","é"],{"a":"b"},true],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["ünïcödéé","line1\nline2","HELLO"],{},"x"],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["src/a/b.ts"],"x",{"a":{"b":"c"}}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[{"$undefined":true},0,true],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[[":","ab"],["a",1],null],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[{"$undefined":true},[],[]],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["abc","ΣΊΣΥΦΟΣ﻿bom"],[],{}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["hello","a.b.c"],true,"x"],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[{"$undefined":true},null,{"a":"b"}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["hello world日本語のテキスト","line1\nline2"],{"a":{"b":"c"}},null],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[{"$undefined":true},true,{}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["  padded  ","ΣΊΣΥΦΟΣ"],[],{}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[{"$undefined":true},"x",{"a":{"b":"c"}}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["ünïcödéHello World",":","a:b:c"],true,null],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["helloHELLO","emoji 👍🏽 mix","a:b:cstraße"],{},{"a":{"b":"c"}}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["é","İstanbulΣΊΣΥΦΟΣ"],["a",1],{"a":{"b":"c"}}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["a😀b😀c","  padded  ","line1\nline2😀"],{"a":"b"},{"a":"b"}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[{"$undefined":true},{},{}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[{"$undefined":true},"x",0],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[{"$undefined":true},"x",{}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[{"$undefined":true},"x",["a",1]],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["é","İstanbul.leading",""],"x","x"],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[{"$undefined":true},[],"x"],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["a:b:c","a:b:c"],{"a":{"b":"c"}},{"a":"b"}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["tab\tseparated","  padded  ","a:b:c"],{},"x"],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[[":","key_name-1","﻿bom"],true,[]],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["key_name-1","hello world","😀.leading"],[],{}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[[],{"a":"b"},[]],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["a..btrailing."],null,{"a":"b"}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[{"$undefined":true},null,"x"],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["日本語のテキスト","ünïcödé"],{"a":{"b":"c"}},{"a":"b"}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["straße","a"],true,true],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["line1\nline2"],"x",null],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["trailing.","trailing."],null,{}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["﻿bom","ns:key.path"],["a",1],["a",1]],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[[],null,null],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[[".leadinghello world","﻿bom","a😀b😀ca.b.c"],[],["a",1]],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[[],null,[]],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["trailing."],[],["a",1]],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["😀","﻿bomemoji 👍🏽 mix","a:b:c"],["a",1],{}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["hello world","","ab"],[],"x"],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[{"$undefined":true},null,["a",1]],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["ab﻿bom"],["a",1],["a",1]],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["abc","é","aabc"],0,{"a":{"b":"c"}}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["  padded  "],{"a":{"b":"c"}},["a",1]],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[[],[],"x"],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[{"$undefined":true},{"a":"b"},{}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["emoji 👍🏽 mix"],["a",1],true],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[{"$undefined":true},{"a":{"b":"c"}},0],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["  padded  ","emoji 👍🏽 mixabc","hello"],{"a":{"b":"c"}},{"a":{"b":"c"}}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[{"$undefined":true},["a",1],{"a":{"b":"c"}}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[[],true,true],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[{"$undefined":true},"x",[]],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["abca:b:c","﻿bomHELLO"],[],"x"],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["","日本語のテキスト"],["a",1],"x"],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[[],["a",1],{"a":{"b":"c"}}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["a..bemoji 👍🏽 mix","a:","aHELLO"],["a",1],null],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["😀","./x/**/*.jsonHello World","tab\tseparated"],null,{"a":"b"}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["./x/**/*.json","a..b","abc"],["a",1],{"a":"b"}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["a:b:cemoji 👍🏽 mix","emoji 👍🏽 mix"],[],{"a":"b"}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["line1\nline2"],{"a":{"b":"c"}},["a",1]],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["é","a",":"],["a",1],0],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["a..b"],0,{"a":"b"}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[{"$undefined":true},{"a":{"b":"c"}},{"a":"b"}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["İstanbul"],0,{"a":"b"}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["ab"],["a",1],true],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[{"$undefined":true},"x",null],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["tab\tseparated","hello world"],["a",1],{"a":{"b":"c"}}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[{"$undefined":true},"x","x"],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[{"$undefined":true},"x",{"a":"b"}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[[],[],{"a":{"b":"c"}}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[{"$undefined":true},0,0],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["ns:key.path"],["a",1],null],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[[],{"a":{"b":"c"}},true],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["ΣΊΣΥΦΟΣ"],["a",1],true],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["HELLO"],[],{"a":{"b":"c"}}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[[],{"a":"b"},{}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[[],null,{"a":{"b":"c"}}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["İstanbul",":","😀﻿bom"],{},true],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[[":","ΣΊΣΥΦΟΣ","é"],true,true],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["😀a😀b😀c","HELLO","HELLO"],["a",1],null],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["Hello World","日本語のテキスト"],{"a":{"b":"c"}},[]],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[{"$undefined":true},{},{"a":{"b":"c"}}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["ΣΊΣΥΦΟΣns:key.path","HELLO"],0,["a",1]],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[{"$undefined":true},["a",1],[]],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["a😀b😀c"],null,{"a":"b"}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[[":"],{},null],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["a😀b😀c"],[],true],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[[],{"a":"b"},{"a":{"b":"c"}}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["a😀b😀c"],{"a":"b"},null],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["key_name-1","HELLO"],null,0],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[[":"],{},{}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[[],true,{}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["hello world"],[],{}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["ünïcödé"],{},{}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["日本語のテキスト"],"x",null],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["./x/**/*.json"],0,{}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[[],{"a":{"b":"c"}},null],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[{"$undefined":true},["a",1],"x"],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["a.b.cΣΊΣΥΦΟΣ","é"],{},{}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["  padded  ","src/a/b.ts"],"x",true],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[{"$undefined":true},{"a":{"b":"c"}},{}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["ΣΊΣΥΦΟΣ"],[],true],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[{"$undefined":true},null,true],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[{"$undefined":true},{"a":{"b":"c"}},{"a":{"b":"c"}}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["HELLO","a.b.c","key_name-1"],[],true],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["a..b","a😀b😀c"],0,{"a":{"b":"c"}}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[[],[],0],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["hello","ab","hello world"],{},[]],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[{"$undefined":true},[],{}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["emoji 👍🏽 mix"],["a",1],["a",1]],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[{"$undefined":true},{"a":{"b":"c"}},null],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[[],0,{}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[{"$undefined":true},true,"x"],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["src/a/b.ts","﻿bomΣΊΣΥΦΟΣ"],0,[]],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["key_name-1","straßeİstanbul"],{},[]],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["😀","a"],[],{"a":{"b":"c"}}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["😀"],{"a":"b"},[]],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["line1\nline2","{name} has {count} items","trailing."],null,["a",1]],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["  padded  "],"x",{"a":"b"}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["﻿bom","ΣΊΣΥΦΟΣ:"],{"a":{"b":"c"}},{"a":"b"}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["a:b:c","﻿bom"],"x",0],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["hello world",""],{"a":{"b":"c"}},[]],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["Hello World","a","src/a/b.ts"],0,"x"],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["hello","tab\tseparatedtab\tseparated","a..b"],null,"x"],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["a😀b😀c","Hello World","abc"],{"a":{"b":"c"}},{"a":{"b":"c"}}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["HELLO","./x/**/*.json"],{"a":"b"},["a",1]],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[[],"x",0],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["a","ünïcödé","Hello Worlda.b.c"],"x",{"a":"b"}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[{"$undefined":true},true,[]],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[[],["a",1],["a",1]],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["a.b.c"],{"a":"b"},0],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[[],0,{"a":"b"}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["HELLOabc","ns:key.path日本語のテキスト"],{"a":"b"},{}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["ünïcödé","","src/a/b.ts"],true,true],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["é"],{"a":{"b":"c"}},"x"],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["line1\nline2abc"],true,["a",1]],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["ΣΊΣΥΦΟΣ","ünïcödé","trailing."],{"a":{"b":"c"}},{"a":{"b":"c"}}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[{"$undefined":true},{},{"a":"b"}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[[],"x",true],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["Hello World"],0,{"a":"b"}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["abc日本語のテキスト"],{},{"a":{"b":"c"}}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["abc","a","hello"],0,{}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["😀"],"x",0],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["ab","é","straße"],[],["a",1]],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["a","éhello"],{"a":{"b":"c"}},0],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["tab\tseparated","emoji 👍🏽 mix","line1\nline2a"],"x","x"],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["trailing."],[],{"a":"b"}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[{"$undefined":true},0,{"a":{"b":"c"}}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["﻿bom"],[],0],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[{"$undefined":true},{},true],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["HELLO","  padded  "],{"a":"b"},null],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["😀","a","ünïcödé"],["a",1],["a",1]],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["ns:key.path","a..b","ünïcödé"],null,true],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[[],"x","x"],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["hello"],null,0],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[[".leading"],[],null],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["Hello World"],"x",{"a":{"b":"c"}}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["a:b:c","tab\tseparated","é"],{},{}],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["emoji 👍🏽 mix","  padded  "],[],null],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[[":"],[],["a",1]],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[{"$undefined":true},null,[]],"ok":null}
+{"fn":"resolveMacApplicationBundlePath","args":[["b","a","B","é","10","9","a"],null,[]],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[[],"x",null],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[[],{"a":{"b":"c"}},{}],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["ab","tab\tseparated"],[],{"a":"b"}],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[{"$undefined":true},true,true],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["a","é"],"x",{"a":{"b":"c"}}],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[[],{},{"a":"b"}],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["  padded  é","ns:key.patha:b:c"],{"a":{"b":"c"}},0],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["","😀","src/a/b.ts"],["a",1],{"a":{"b":"c"}}],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["a:b:c","İstanbulline1\nline2","abcns:key.path"],null,{"a":"b"}],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["abc","tab\tseparated","Hello World"],true,true],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[{"$undefined":true},0,0],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["a","{name} has {count} items"],{"a":"b"},0],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["line1\nline2straße"],["a",1],["a",1]],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["hello world","a..b"],{"a":"b"},true],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["line1\nline2","hello"],{},null],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["./x/**/*.json"],{"a":{"b":"c"}},null],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["日本語のテキスト","﻿bom",".leadingé"],true,0],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[[],{"a":{"b":"c"}},{"a":"b"}],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[{"$undefined":true},{"a":{"b":"c"}},{"a":"b"}],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["  padded  ./x/**/*.json"],{"a":{"b":"c"}},true],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[[],{},null],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[{"$undefined":true},"x",[]],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[{"$undefined":true},{"a":{"b":"c"}},["a",1]],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["tab\tseparated"],[],{}],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[[],"x",[]],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["line1\nline2",":"],["a",1],{"a":"b"}],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[[],{"a":"b"},{"a":"b"}],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[[],null,"x"],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[[],["a",1],true],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[[".leading",""],"x",[]],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["emoji 👍🏽 mixline1\nline2","./x/**/*.json"],[],{"a":{"b":"c"}}],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["a..b"],{"a":{"b":"c"}},["a",1]],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[[],{"a":"b"},{"a":{"b":"c"}}],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["ΣΊΣΥΦΟΣ","line1\nline2","😀"],0,true],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["a:b:cstraße","{name} has {count} items{name} has {count} items",".leading"],[],["a",1]],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["./x/**/*.json{name} has {count} items","😀"],0,["a",1]],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["abc","{name} has {count} items","line1\nline2"],{},{}],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["ΣΊΣΥΦΟΣ","src/a/b.ts"],{},null],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["a.b.c","src/a/b.ts","a"],{},null],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[[],"x","x"],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[[".leading","trailing."],"x",0],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["﻿bom","","a"],{"a":"b"},null],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[[],true,true],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["ns:key.path","a"],{"a":{"b":"c"}},["a",1]],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[{"$undefined":true},{"a":"b"},"x"],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["{name} has {count} items","straßens:key.path"],{"a":{"b":"c"}},null],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["a..b","./x/**/*.json","key_name-1"],"x",0],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[[],[],null],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[{"$undefined":true},0,null],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["line1\nline2","src/a/b.tsΣΊΣΥΦΟΣ","Hello World"],{"a":{"b":"c"}},["a",1]],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[[],true,"x"],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[[],{"a":{"b":"c"}},null],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["Hello World","a.b.c"],[],{"a":"b"}],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[[],0,0],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["é","ns:key.path","emoji 👍🏽 mix"],[],true],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[[],{"a":{"b":"c"}},[]],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["key_name-1","trailing.emoji 👍🏽 mix",""],{},true],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[[],"x",["a",1]],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[{"$undefined":true},{"a":"b"},{"a":"b"}],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["é","a","trailing."],null,true],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[[".leading"],0,{"a":"b"}],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["a.b.c","src/a/b.ts"],["a",1],"x"],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[[],0,{"a":"b"}],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[[],{"a":{"b":"c"}},true],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["{name} has {count} items"],{},{"a":"b"}],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["😀","a.b.c","Hello World:"],true,[]],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["./x/**/*.json","hello","line1\nline2"],null,0],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["日本語のテキスト"],{},[]],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["./x/**/*.json","line1\nline2","emoji 👍🏽 mixİstanbul"],{"a":{"b":"c"}},"x"],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["trailing.","ns:key.path"],[],{}],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["a.b.c"],{"a":"b"},"x"],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["a😀b😀c"],[],["a",1]],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[[":","./x/**/*.json","﻿bom"],"x",[]],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["a😀b😀c","a..babc","abc"],{"a":{"b":"c"}},true],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[{"$undefined":true},true,{"a":"b"}],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["日本語のテキスト"],null,[]],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["{name} has {count} items","Hello Worldkey_name-1"],true,["a",1]],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[[],{},["a",1]],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["helloünïcödé","ab"],"x",null],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["a","hello"],{},{}],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[{"$undefined":true},{"a":{"b":"c"}},null],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[[],"x",{}],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[[],true,0],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["日本語のテキストabc","İstanbul"],{"a":"b"},{"a":"b"}],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["hello","HELLO"],0,true],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[{"$undefined":true},null,{"a":"b"}],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["ünïcödé","./x/**/*.jsona:b:c","a..b"],{"a":"b"},true],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["ns:key.path","key_name-1"],{"a":"b"},{"a":{"b":"c"}}],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[{"$undefined":true},null,{}],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[{"$undefined":true},{"a":"b"},0],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["straße","key_name-1","HELLOa"],[],["a",1]],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[{"$undefined":true},"x",{}],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[{"$undefined":true},{"a":"b"},[]],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["ns:key.path"],{},["a",1]],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[[":","hello world","a.b.c"],true,{"a":"b"}],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[{"$undefined":true},null,["a",1]],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["","emoji 👍🏽 mix","abc"],{},{}],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["ΣΊΣΥΦΟΣ"],true,{}],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[{"$undefined":true},[],null],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["é","trailing."],0,"x"],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["a.b.c"],true,{"a":{"b":"c"}}],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["abc"],["a",1],"x"],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[[],0,["a",1]],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["İstanbula.b.c","é","hello world"],["a",1],null],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[{"$undefined":true},[],[]],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[[],true,{"a":"b"}],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["﻿bom","straße","İstanbul"],{"a":{"b":"c"}},"x"],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[{"$undefined":true},{},null],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[{"$undefined":true},["a",1],{"a":{"b":"c"}}],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[[],0,[]],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[[":"],0,"x"],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[{"$undefined":true},null,0],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[[],0,{}],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["a"],[],["a",1]],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[{"$undefined":true},["a",1],["a",1]],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[[],true,null],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[{"$undefined":true},0,"x"],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[[],{},[]],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["ünïcödé","日本語のテキスト",""],[],0],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["a.b.c","a.b.c"],{},{"a":"b"}],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["hello world"],"x",{"a":"b"}],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[[".leading","a"],"x",true],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["{name} has {count} itemssrc/a/b.ts","./x/**/*.jsonns:key.path"],0,{"a":"b"}],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[{"$undefined":true},[],0],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["hello","İstanbul"],{"a":"b"},[]],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["  padded  "],{"a":"b"},0],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["hello world","ΣΊΣΥΦΟΣ","line1\nline2"],{"a":"b"},0],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["a😀b😀c","abc"],["a",1],0],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[[],{"a":"b"},0],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["emoji 👍🏽 mix﻿bom","key_name-1","😀"],{"a":"b"},{"a":{"b":"c"}}],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["a..b","a😀b😀c","trailing."],["a",1],{"a":"b"}],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[[],"x",{"a":{"b":"c"}}],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["tab\tseparated","./x/**/*.json","ünïcödéünïcödé"],{"a":{"b":"c"}},true],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["a"],{},true],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[[],{"a":"b"},{}],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["trailing."],{},"x"],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["ΣΊΣΥΦΟΣ","ΣΊΣΥΦΟΣ"],true,[]],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["a..b","./x/**/*.json"],[],{}],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["HELLO","straße"],[],"x"],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[[],null,["a",1]],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["hello","key_name-1tab\tseparated"],null,["a",1]],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["src/a/b.ts  padded  ","src/a/b.ts"],true,{"a":{"b":"c"}}],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[[],null,{}],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["src/a/b.ts./x/**/*.json","hello worldabc"],null,0],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[{"$undefined":true},[],true],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["a","  padded  "],0,{}],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["tab\tseparatedstraße","hello","a.b.ctab\tseparated"],"x",[]],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[[],{"a":{"b":"c"}},0],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["a:b:c","é"],"x",{"a":{"b":"c"}}],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["line1\nline2","tab\tseparated"],["a",1],[]],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[{"$undefined":true},null,{"a":{"b":"c"}}],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["tab\tseparated"],true,{}],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[[".leading","abc","hello world"],0,"x"],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[{"$undefined":true},{},{}],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["a:b:ca"],{"a":{"b":"c"}},{}],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[[":","src/a/b.ts","tab\tseparatedns:key.path"],0,[]],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[{"$undefined":true},{"a":{"b":"c"}},true],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["abc"],null,{"a":"b"}],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[[],0,"x"],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["İstanbul"],{},"x"],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["hello","./x/**/*.json日本語のテキスト"],{},null],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[{"$undefined":true},{},[]],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["ab","  padded  "],{"a":{"b":"c"}},{}],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["HELLO","src/a/b.tsé"],["a",1],{}],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[[],[],["a",1]],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["a:b:c","é","a.b.c  padded  "],{"a":"b"},{"a":{"b":"c"}}],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["src/a/b.ts","line1\nline2","😀"],null,{}],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["﻿bom","﻿bom"],[],{}],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["é","日本語のテキスト","ab"],{"a":{"b":"c"}},{"a":"b"}],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[{"$undefined":true},[],"x"],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[{"$undefined":true},null,[]],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["HELLO","ab","日本語のテキスト"],{"a":"b"},0],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["{name} has {count} items"],["a",1],[]],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["﻿bom"],true,{"a":{"b":"c"}}],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["abcHello World","hello"],"x","x"],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["trailing.","straßesrc/a/b.ts"],null,["a",1]],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["ns:key.path","😀"],["a",1],"x"],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[{"$undefined":true},{"a":{"b":"c"}},{}],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["ünïcödé"],{"a":"b"},{}],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["日本語のテキスト","é"],[],{}],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["Hello World","Hello World"],true,0],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["😀","key_name-1","{name} has {count} items{name} has {count} items"],{"a":{"b":"c"}},true],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[{"$undefined":true},["a",1],[]],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["{name} has {count} items","😀trailing.","ΣΊΣΥΦΟΣ"],{},[]],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[{"$undefined":true},[],{"a":"b"}],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[{"$undefined":true},true,{}],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[{"$undefined":true},{"a":"b"},{}],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[[".leading",".leading","./x/**/*.json"],true,{"a":"b"}],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["a😀b😀c","HELLO"],["a",1],0],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[[":"],["a",1],["a",1]],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["./x/**/*.jsonns:key.path","line1\nline2İstanbul"],true,0],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["HELLO"],[],{"a":{"b":"c"}}],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["hello world","./x/**/*.json","hello world"],true,0],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[{"$undefined":true},{},{"a":"b"}],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["./x/**/*.json",".leading日本語のテキスト"],{},{"a":{"b":"c"}}],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["./x/**/*.jsonünïcödé"],["a",1],null],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[{"$undefined":true},["a",1],null],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["./x/**/*.json","HELLO","emoji 👍🏽 mix"],["a",1],{"a":{"b":"c"}}],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["ns:key.path"],0,{}],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[{"$undefined":true},"x",{"a":"b"}],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[{"$undefined":true},"x",null],"ok":null}
+{"fn":"resolveAvailableMacApplication","args":[["b","a","B","é","10","9","a"],"x",null],"ok":null}
+{"fn":"clearWindowsStorePackageDiscoveryCache","args":[],"ok":{"$undefined":true}}

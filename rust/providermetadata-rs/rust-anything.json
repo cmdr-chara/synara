@@ -1,0 +1,30 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/providerMetadata.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "providermetadata-rs",
+  "exports": [
+    {
+      "name": "providerSupportsNativeTurnSteering",
+      "file": "packages/shared/src/providerMetadata.ts",
+      "line": 151,
+      "params": [
+        {
+          "name": "kind",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

@@ -1,0 +1,240 @@
+{"fn":"providerSupportsNativeTurnSteering","args":["emoji 👍🏽 mixHELLO"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":[":"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["emoji 👍🏽 mix"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["./x/**/*.jsonİstanbul"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["line1\nline2"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["hello"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["é"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["key_name-1"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["﻿bomab"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["﻿bom"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["src/a/b.ts﻿bom"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["straße"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["😀"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["./x/**/*.json"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["Hello World"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["  padded  "],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":[""],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["a"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["hello world"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["日本語のテキストünïcödé"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["ünïcödé"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["İstanbul"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["ab"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["HELLO"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["a:b:c"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":[":hello world"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["tab\tseparated"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["😀a"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["a..b"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["a..bhello world"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["a😀b😀c"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["﻿bomns:key.path"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["{name} has {count} items"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["src/a/b.ts"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["{name} has {count} items.leading"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["日本語のテキスト"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":[".leading"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["ns:key.pathHello World"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["ns:key.path"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["a..bhello"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["aünïcödé"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["./x/**/*.jsonkey_name-1"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["src/a/b.tsHELLO"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["日本語のテキスト:"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["abc"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["trailing."],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["src/a/b.tskey_name-1"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["ab{name} has {count} items"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["a:b:cİstanbul"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["./x/**/*.jsonabc"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["HELLO﻿bom"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["a.b.c"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["atab\tseparated"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["abchello world"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["a.b.c﻿bom"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["a:b:cHello World"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["src/a/b.tsa..b"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["a😀b😀cabc"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["abc😀"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["a..bHello World"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["astraße"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["ahello"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":[".leading:"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["./x/**/*.jsonab"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["key_name-1a..b"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["  padded  .leading"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["HELLO:"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["İstanbulhello"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["a😀b😀cünïcödé"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["{name} has {count} itemsünïcödé"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["HELLOİstanbul"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["İstanbulline1\nline2"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["ab  padded  "],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["HELLOline1\nline2"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["é.leading"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["abc﻿bom"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["helloa.b.c"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["hello.leading"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["abünïcödé"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["emoji 👍🏽 mixkey_name-1"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["trailing.key_name-1"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["﻿bomHello World"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["Hello Worldtab\tseparated"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["tab\tseparateda..b"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["ΣΊΣΥΦΟΣkey_name-1"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["a.b.c.leading"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["straßetrailing."],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":[".leadingΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["日本語のテキストns:key.path"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["hello world{name} has {count} items"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["Hello World日本語のテキスト"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["emoji 👍🏽 mixtab\tseparated"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["a:b:ca"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["tab\tseparatedsrc/a/b.ts"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["a:b:ckey_name-1"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["a..btrailing."],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["ns:key.pathHELLO"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["./x/**/*.jsonünïcödé"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["  padded  ünïcödé"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["éünïcödé"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["hello worlda.b.c"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["absrc/a/b.ts"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["src/a/b.tsns:key.path"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["Hello World😀"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["a..bemoji 👍🏽 mix"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["aba"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["éé"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["src/a/b.tsa.b.c"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["emoji 👍🏽 mix./x/**/*.json"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["a:b:c😀"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["﻿bom{name} has {count} items"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["İstanbulhello world"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["hello world.leading"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["a..bline1\nline2"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["abca:b:c"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["src/a/b.ts日本語のテキスト"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["İstanbulHELLO"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["./x/**/*.jsona.b.c"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["ünïcödéhello world"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":[":a"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["hellokey_name-1"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["aa"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["abab"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["﻿bomünïcödé"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["key_name-1  padded  "],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["a😀b😀cns:key.path"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["abtrailing."],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["a.b.cé"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["a😀b😀chello"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["helloa..b"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["ΣΊΣΥΦΟΣemoji 👍🏽 mix"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["aé"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["./x/**/*.jsonHello World"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["abca😀b😀c"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["abc  padded  "],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":[":HELLO"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":[":src/a/b.ts"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["ünïcödéemoji 👍🏽 mix"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["hello worldkey_name-1"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":[":hello"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":[".leading./x/**/*.json"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["  padded  HELLO"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["trailing.a.b.c"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["ünïcödéİstanbul"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["line1\nline2:"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["emoji 👍🏽 mixa😀b😀c"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["aa😀b😀c"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["a😀b😀cab"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["emoji 👍🏽 mixemoji 👍🏽 mix"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["éHELLO"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["日本語のテキストabc"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["line1\nline2hello world"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["emoji 👍🏽 mixİstanbul"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["key_name-1HELLO"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["Hello World./x/**/*.json"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["line1\nline2a"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["aline1\nline2"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["ΣΊΣΥΦΟΣa..b"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["line1\nline2a.b.c"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["hello worldtrailing."],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["tab\tseparatedns:key.path"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["straßea:b:c"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["straßeünïcödé"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["ns:key.path日本語のテキスト"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["atrailing."],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["﻿boma"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["a:b:c{name} has {count} items"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["日本語のテキストab"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["😀ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["a.b.cstraße"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["emoji 👍🏽 mixa"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["src/a/b.tsΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":[":./x/**/*.json"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["é﻿bom"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["a..bstraße"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["﻿bom:"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["😀😀"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["tab\tseparateda.b.c"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["a..bünïcödé"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["./x/**/*.jsonsrc/a/b.ts"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["./x/**/*.json﻿bom"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["Hello World{name} has {count} items"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["a.b.cHELLO"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["{name} has {count} items./x/**/*.json"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":[":{name} has {count} items"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["😀ab"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["éa😀b😀c"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["abchello"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["a😀b😀ca😀b😀c"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["a.b.ckey_name-1"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["ünïcödétrailing."],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["hello{name} has {count} items"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["Hello Worldünïcödé"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["İstanbulkey_name-1"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["straßehello world"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["éİstanbul"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["İstanbula.b.c"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["./x/**/*.jsonΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["😀ünïcödé"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["héllo wörld"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["👍🏽 thumbs"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["日本語"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["ılık ırmak"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["👨‍👩‍👧 family"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["a b"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["a😀b"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["a²b x½ y①"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["aⅠb Ⅻ"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["a𐐀b 𝐀bc"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["कि ٣٤"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["codex"],"ok":true}
+{"fn":"providerSupportsNativeTurnSteering","args":["claudeAgent"],"ok":true}
+{"fn":"providerSupportsNativeTurnSteering","args":["pi"],"ok":true}
+{"fn":"providerSupportsNativeTurnSteering","args":["cursor"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["antigravity"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["grok"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["droid"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["opencode"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["devin"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["omp"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":[""],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["Codex"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["codex "],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":[" codex"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["CODEX"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["claude"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["claude-agent"],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":[123],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":[null],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":[true],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":[{}],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":[[]],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":[["codex"]],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":[{"kind":"codex"}],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":[0],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":[-1],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":[1.5],"ok":false}
+{"fn":"providerSupportsNativeTurnSteering","args":["codex","extra"],"ok":true}
+{"fn":"providerSupportsNativeTurnSteering","args":[],"ok":false}

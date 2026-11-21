@@ -1,0 +1,901 @@
+{"fn":"isProviderKind","args":["  padded  "],"ok":false}
+{"fn":"isProviderKind","args":["a"],"ok":false}
+{"fn":"isProviderKind","args":["abc"],"ok":false}
+{"fn":"isProviderKind","args":["日本語のテキスト"],"ok":false}
+{"fn":"isProviderKind","args":["İstanbul"],"ok":false}
+{"fn":"isProviderKind","args":["😀"],"ok":false}
+{"fn":"isProviderKind","args":["a😀b😀c"],"ok":false}
+{"fn":"isProviderKind","args":["abckey_name-1"],"ok":false}
+{"fn":"isProviderKind","args":["src/a/b.ts"],"ok":false}
+{"fn":"isProviderKind","args":["ünïcödé"],"ok":false}
+{"fn":"isProviderKind","args":["ns:key.path"],"ok":false}
+{"fn":"isProviderKind","args":["hello world"],"ok":false}
+{"fn":"isProviderKind","args":[""],"ok":false}
+{"fn":"isProviderKind","args":["ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isProviderKind","args":["straße"],"ok":false}
+{"fn":"isProviderKind","args":["é"],"ok":false}
+{"fn":"isProviderKind","args":["a.b.c"],"ok":false}
+{"fn":"isProviderKind","args":["tab\tseparated"],"ok":false}
+{"fn":"isProviderKind","args":["HELLOa"],"ok":false}
+{"fn":"isProviderKind","args":["Hello World"],"ok":false}
+{"fn":"isProviderKind","args":["key_name-1"],"ok":false}
+{"fn":"isProviderKind","args":["ab"],"ok":false}
+{"fn":"isProviderKind","args":["src/a/b.tsabc"],"ok":false}
+{"fn":"isProviderKind","args":["emoji 👍🏽 mix"],"ok":false}
+{"fn":"isProviderKind","args":["line1\nline2"],"ok":false}
+{"fn":"isProviderKind","args":["a..b"],"ok":false}
+{"fn":"isProviderKind","args":["trailing."],"ok":false}
+{"fn":"isProviderKind","args":["emoji 👍🏽 mixΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isProviderKind","args":["abca"],"ok":false}
+{"fn":"isProviderKind","args":["hello"],"ok":false}
+{"fn":"isProviderKind","args":["﻿bom"],"ok":false}
+{"fn":"isProviderKind","args":["a..bkey_name-1"],"ok":false}
+{"fn":"isProviderKind","args":["HELLO"],"ok":false}
+{"fn":"isProviderKind","args":["a:b:c"],"ok":false}
+{"fn":"isProviderKind","args":[":"],"ok":false}
+{"fn":"isProviderKind","args":["{name} has {count} items"],"ok":false}
+{"fn":"isProviderKind","args":[":abc"],"ok":false}
+{"fn":"isProviderKind","args":["src/a/b.tsns:key.path"],"ok":false}
+{"fn":"isProviderKind","args":["straßesrc/a/b.ts"],"ok":false}
+{"fn":"isProviderKind","args":[".leading"],"ok":false}
+{"fn":"isProviderKind","args":["key_name-1ab"],"ok":false}
+{"fn":"isProviderKind","args":["İstanbul﻿bom"],"ok":false}
+{"fn":"isProviderKind","args":["ns:key.pathabc"],"ok":false}
+{"fn":"isProviderKind","args":["./x/**/*.json"],"ok":false}
+{"fn":"isProviderKind","args":["./x/**/*.json  padded  "],"ok":false}
+{"fn":"isProviderKind","args":["é😀"],"ok":false}
+{"fn":"isProviderKind","args":["a..ba:b:c"],"ok":false}
+{"fn":"isProviderKind","args":["日本語のテキストab"],"ok":false}
+{"fn":"isProviderKind","args":["İstanbulİstanbul"],"ok":false}
+{"fn":"isProviderKind","args":["helloemoji 👍🏽 mix"],"ok":false}
+{"fn":"isProviderKind","args":["hello worldHELLO"],"ok":false}
+{"fn":"isProviderKind","args":["﻿bomé"],"ok":false}
+{"fn":"isProviderKind","args":["tab\tseparated:"],"ok":false}
+{"fn":"isProviderKind","args":["key_name-1emoji 👍🏽 mix"],"ok":false}
+{"fn":"isProviderKind","args":["a😀b😀cé"],"ok":false}
+{"fn":"isProviderKind","args":["Hello Worldé"],"ok":false}
+{"fn":"isProviderKind","args":["日本語のテキスト日本語のテキスト"],"ok":false}
+{"fn":"isProviderKind","args":["Hello World日本語のテキスト"],"ok":false}
+{"fn":"isProviderKind","args":["emoji 👍🏽 mix.leading"],"ok":false}
+{"fn":"isProviderKind","args":[":İstanbul"],"ok":false}
+{"fn":"isProviderKind","args":["a😀b😀csrc/a/b.ts"],"ok":false}
+{"fn":"isProviderKind","args":["line1\nline2ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isProviderKind","args":["Hello Worldİstanbul"],"ok":false}
+{"fn":"isProviderKind","args":["hello worldemoji 👍🏽 mix"],"ok":false}
+{"fn":"isProviderKind","args":["abctrailing."],"ok":false}
+{"fn":"isProviderKind","args":["line1\nline2Hello World"],"ok":false}
+{"fn":"isProviderKind","args":["abemoji 👍🏽 mix"],"ok":false}
+{"fn":"isProviderKind","args":["./x/**/*.jsona😀b😀c"],"ok":false}
+{"fn":"isProviderKind","args":["key_name-1HELLO"],"ok":false}
+{"fn":"isProviderKind","args":["😀./x/**/*.json"],"ok":false}
+{"fn":"isProviderKind","args":["helloHello World"],"ok":false}
+{"fn":"isProviderKind","args":["hello worldline1\nline2"],"ok":false}
+{"fn":"isProviderKind","args":["a.b.cns:key.path"],"ok":false}
+{"fn":"isProviderKind","args":["hello worlda😀b😀c"],"ok":false}
+{"fn":"isProviderKind","args":["日本語のテキストa.b.c"],"ok":false}
+{"fn":"isProviderKind","args":["straßestraße"],"ok":false}
+{"fn":"isProviderKind","args":["a:b:ca"],"ok":false}
+{"fn":"isProviderKind","args":["ünïcödéemoji 👍🏽 mix"],"ok":false}
+{"fn":"isProviderKind","args":["aHello World"],"ok":false}
+{"fn":"isProviderKind","args":["hello worldtrailing."],"ok":false}
+{"fn":"isProviderKind","args":["aline1\nline2"],"ok":false}
+{"fn":"isProviderKind","args":["line1\nline2tab\tseparated"],"ok":false}
+{"fn":"isProviderKind","args":["😀abc"],"ok":false}
+{"fn":"isProviderKind","args":["a..bHello World"],"ok":false}
+{"fn":"isProviderKind","args":["{name} has {count} items.leading"],"ok":false}
+{"fn":"isProviderKind","args":["a.b.c.leading"],"ok":false}
+{"fn":"isProviderKind","args":["a:b:csrc/a/b.ts"],"ok":false}
+{"fn":"isProviderKind","args":[":ns:key.path"],"ok":false}
+{"fn":"isProviderKind","args":["  padded  tab\tseparated"],"ok":false}
+{"fn":"isProviderKind","args":["hello worldtab\tseparated"],"ok":false}
+{"fn":"isProviderKind","args":["ΣΊΣΥΦΟΣa:b:c"],"ok":false}
+{"fn":"isProviderKind","args":["é﻿bom"],"ok":false}
+{"fn":"isProviderKind","args":["﻿boma.b.c"],"ok":false}
+{"fn":"isProviderKind","args":["hello world日本語のテキスト"],"ok":false}
+{"fn":"isProviderKind","args":["ΣΊΣΥΦΟΣemoji 👍🏽 mix"],"ok":false}
+{"fn":"isProviderKind","args":["﻿bomkey_name-1"],"ok":false}
+{"fn":"isProviderKind","args":["line1\nline2a"],"ok":false}
+{"fn":"isProviderKind","args":["{name} has {count} items{name} has {count} items"],"ok":false}
+{"fn":"isProviderKind","args":["key_name-1./x/**/*.json"],"ok":false}
+{"fn":"isProviderKind","args":["{name} has {count} items😀"],"ok":false}
+{"fn":"isProviderKind","args":["ns:key.pathline1\nline2"],"ok":false}
+{"fn":"isProviderKind","args":[":./x/**/*.json"],"ok":false}
+{"fn":"isProviderKind","args":["emoji 👍🏽 mixİstanbul"],"ok":false}
+{"fn":"isProviderKind","args":["ΣΊΣΥΦΟΣhello world"],"ok":false}
+{"fn":"isProviderKind","args":["étrailing."],"ok":false}
+{"fn":"isProviderKind","args":["::"],"ok":false}
+{"fn":"isProviderKind","args":["﻿bom{name} has {count} items"],"ok":false}
+{"fn":"isProviderKind","args":["a😀b😀cİstanbul"],"ok":false}
+{"fn":"isProviderKind","args":["abkey_name-1"],"ok":false}
+{"fn":"isProviderKind","args":["a..b日本語のテキスト"],"ok":false}
+{"fn":"isProviderKind","args":["😀😀"],"ok":false}
+{"fn":"isProviderKind","args":["😀{name} has {count} items"],"ok":false}
+{"fn":"isProviderKind","args":["日本語のテキスト😀"],"ok":false}
+{"fn":"isProviderKind","args":["ΣΊΣΥΦΟΣa😀b😀c"],"ok":false}
+{"fn":"isProviderKind","args":["abtrailing."],"ok":false}
+{"fn":"isProviderKind","args":["key_name-1trailing."],"ok":false}
+{"fn":"isProviderKind","args":["  padded  emoji 👍🏽 mix"],"ok":false}
+{"fn":"isProviderKind","args":["line1\nline2ab"],"ok":false}
+{"fn":"isProviderKind","args":[":src/a/b.ts"],"ok":false}
+{"fn":"isProviderKind","args":["line1\nline2﻿bom"],"ok":false}
+{"fn":"isProviderKind","args":["aa😀b😀c"],"ok":false}
+{"fn":"isProviderKind","args":["😀ab"],"ok":false}
+{"fn":"isProviderKind","args":["a.b.c  padded  "],"ok":false}
+{"fn":"isProviderKind","args":["HELLO  padded  "],"ok":false}
+{"fn":"isProviderKind","args":["hello:"],"ok":false}
+{"fn":"isProviderKind","args":["aba"],"ok":false}
+{"fn":"isProviderKind","args":["emoji 👍🏽 mix﻿bom"],"ok":false}
+{"fn":"isProviderKind","args":["  padded  a:b:c"],"ok":false}
+{"fn":"isProviderKind","args":["tab\tseparated./x/**/*.json"],"ok":false}
+{"fn":"isProviderKind","args":["key_name-1ns:key.path"],"ok":false}
+{"fn":"isProviderKind","args":["abc  padded  "],"ok":false}
+{"fn":"isProviderKind","args":["日本語のテキストtab\tseparated"],"ok":false}
+{"fn":"isProviderKind","args":["Hello Worldhello world"],"ok":false}
+{"fn":"isProviderKind","args":[".leadingHello World"],"ok":false}
+{"fn":"isProviderKind","args":["straßeemoji 👍🏽 mix"],"ok":false}
+{"fn":"isProviderKind","args":["abstraße"],"ok":false}
+{"fn":"isProviderKind","args":[":a:b:c"],"ok":false}
+{"fn":"isProviderKind","args":["{name} has {count} itemsé"],"ok":false}
+{"fn":"isProviderKind","args":["trailing.tab\tseparated"],"ok":false}
+{"fn":"isProviderKind","args":["./x/**/*.jsonİstanbul"],"ok":false}
+{"fn":"isProviderKind","args":["HELLOtrailing."],"ok":false}
+{"fn":"isProviderKind","args":["日本語のテキストabc"],"ok":false}
+{"fn":"isProviderKind","args":["Hello World😀"],"ok":false}
+{"fn":"isProviderKind","args":["aİstanbul"],"ok":false}
+{"fn":"isProviderKind","args":["İstanbula"],"ok":false}
+{"fn":"isProviderKind","args":["./x/**/*.jsonns:key.path"],"ok":false}
+{"fn":"isProviderKind","args":["İstanbul./x/**/*.json"],"ok":false}
+{"fn":"isProviderKind","args":["éns:key.path"],"ok":false}
+{"fn":"isProviderKind","args":["a.b.cline1\nline2"],"ok":false}
+{"fn":"isProviderKind","args":["key_name-1日本語のテキスト"],"ok":false}
+{"fn":"isProviderKind","args":["straße日本語のテキスト"],"ok":false}
+{"fn":"isProviderKind","args":[".leadingab"],"ok":false}
+{"fn":"isProviderKind","args":["./x/**/*.jsona"],"ok":false}
+{"fn":"isProviderKind","args":["aba😀b😀c"],"ok":false}
+{"fn":"isProviderKind","args":["İstanbultab\tseparated"],"ok":false}
+{"fn":"isProviderKind","args":["éé"],"ok":false}
+{"fn":"isProviderKind","args":["emoji 👍🏽 mixstraße"],"ok":false}
+{"fn":"isProviderKind","args":["{name} has {count} itemsΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isProviderKind","args":["trailing.HELLO"],"ok":false}
+{"fn":"isProviderKind","args":["a.b.ca"],"ok":false}
+{"fn":"isProviderKind","args":["hello worlda.b.c"],"ok":false}
+{"fn":"isProviderKind","args":["HELLOé"],"ok":false}
+{"fn":"isProviderKind","args":["trailing.a"],"ok":false}
+{"fn":"isProviderKind","args":["./x/**/*.jsona:b:c"],"ok":false}
+{"fn":"isProviderKind","args":["ns:key.pathΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isProviderKind","args":["İstanbulHELLO"],"ok":false}
+{"fn":"isProviderKind","args":["emoji 👍🏽 mixsrc/a/b.ts"],"ok":false}
+{"fn":"isProviderKind","args":["ns:key.pathHELLO"],"ok":false}
+{"fn":"isProviderKind","args":["key_name-1﻿bom"],"ok":false}
+{"fn":"isProviderKind","args":["abcns:key.path"],"ok":false}
+{"fn":"isProviderKind","args":["emoji 👍🏽 mixé"],"ok":false}
+{"fn":"isProviderKind","args":["{name} has {count} itemsns:key.path"],"ok":false}
+{"fn":"isProviderKind","args":["😀:"],"ok":false}
+{"fn":"isProviderKind","args":["İstanbulabc"],"ok":false}
+{"fn":"isProviderKind","args":[":Hello World"],"ok":false}
+{"fn":"isProviderKind","args":["ns:key.pathemoji 👍🏽 mix"],"ok":false}
+{"fn":"isProviderKind","args":["abHELLO"],"ok":false}
+{"fn":"isProviderKind","args":["a😀b😀c{name} has {count} items"],"ok":false}
+{"fn":"isProviderKind","args":["a..ba..b"],"ok":false}
+{"fn":"isProviderKind","args":["tab\tseparatedtab\tseparated"],"ok":false}
+{"fn":"isProviderKind","args":["ns:key.patha..b"],"ok":false}
+{"fn":"isProviderKind","args":["日本語のテキストΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isProviderKind","args":["a:b:c{name} has {count} items"],"ok":false}
+{"fn":"isProviderKind","args":["src/a/b.tsa..b"],"ok":false}
+{"fn":"isProviderKind","args":["{name} has {count} itemskey_name-1"],"ok":false}
+{"fn":"isProviderKind","args":["ΣΊΣΥΦΟΣ{name} has {count} items"],"ok":false}
+{"fn":"isProviderKind","args":["a:b:cns:key.path"],"ok":false}
+{"fn":"isProviderKind","args":["😀src/a/b.ts"],"ok":false}
+{"fn":"isProviderKind","args":["abca😀b😀c"],"ok":false}
+{"fn":"isProviderKind","args":["ΣΊΣΥΦΟΣa.b.c"],"ok":false}
+{"fn":"isProviderKind","args":["日本語のテキストİstanbul"],"ok":false}
+{"fn":"isProviderKind","args":["./x/**/*.jsonhello"],"ok":false}
+{"fn":"isProviderKind","args":["a.b.c﻿bom"],"ok":false}
+{"fn":"isProviderKind","args":["tab\tseparatedline1\nline2"],"ok":false}
+{"fn":"isProviderKind","args":["abc.leading"],"ok":false}
+{"fn":"isProviderKind","args":["tab\tseparatedhello world"],"ok":false}
+{"fn":"isProviderKind","args":["日本語のテキストHello World"],"ok":false}
+{"fn":"isProviderKind","args":[".leading.leading"],"ok":false}
+{"fn":"isProviderKind","args":["HELLOhello world"],"ok":false}
+{"fn":"isProviderKind","args":["éa:b:c"],"ok":false}
+{"fn":"isProviderKind","args":["héllo wörld"],"ok":false}
+{"fn":"isProviderKind","args":["👍🏽 thumbs"],"ok":false}
+{"fn":"isProviderKind","args":["日本語"],"ok":false}
+{"fn":"isProviderKind","args":["ılık ırmak"],"ok":false}
+{"fn":"isProviderKind","args":["👨‍👩‍👧 family"],"ok":false}
+{"fn":"isProviderKind","args":["a b"],"ok":false}
+{"fn":"isProviderKind","args":["a😀b"],"ok":false}
+{"fn":"isProviderKind","args":["a²b x½ y①"],"ok":false}
+{"fn":"isProviderKind","args":["aⅠb Ⅻ"],"ok":false}
+{"fn":"isProviderKind","args":["a𐐀b 𝐀bc"],"ok":false}
+{"fn":"isProviderKind","args":["कि ٣٤"],"ok":false}
+{"fn":"normalizeHiddenProviders","args":[[".leading"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["{name} has {count} items","ΣΊΣΥΦΟΣ","straße"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["HELLO","﻿bomHello World"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[[]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["./x/**/*.json"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["tab\tseparateda..b"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["src/a/b.ts","a"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["a","hello world"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["straßekey_name-1","straße"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["日本語のテキスト"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["ns:key.path","a😀b😀c"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["a😀b😀c","{name} has {count} items./x/**/*.json","  padded  "]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["Hello World","éHELLO","😀"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["ünïcödéstraße"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["ab","hello worlda"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["{name} has {count} items"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["","./x/**/*.json"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[[".leading","é  padded  ","a..b"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["😀"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["ns:key.pathHELLO"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["﻿bom","Hello World","  padded  "]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["﻿bom"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["a:b:c","key_name-1"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["a:b:c","ΣΊΣΥΦΟΣ"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["HELLO","{name} has {count} items"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["trailing.","hello world","a.b.ca:b:c"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["﻿bom","src/a/b.ts.leading"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["İstanbul","a"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["a.b.c"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["a😀b😀c"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["😀","a:b:c"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["a:b:c","a😀b😀c"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["trailing."]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["abc","日本語のテキスト","a"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["hello😀","./x/**/*.json","straße"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["tab\tseparated"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["日本語のテキスト","./x/**/*.json","﻿bom"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["ΣΊΣΥΦΟΣ","ab",":"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["key_name-1"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["hello","emoji 👍🏽 mix","straße"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["HELLO","ΣΊΣΥΦΟΣ"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["ΣΊΣΥΦΟΣ","Hello World","ünïcödé"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["straße"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["a..b"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["é"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["src/a/b.ts"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["  padded  ","{name} has {count} items"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[[".leading","straße"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["{name} has {count} items","ab"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["straße",":日本語のテキスト"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["a.b.c","a..b",":hello"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["ünïcödé","emoji 👍🏽 mix"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["  padded  key_name-1"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["abc","{name} has {count} items","a.b.c"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["hello"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[[".leading","ns:key.pathHello World"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["日本語のテキストemoji 👍🏽 mix","hellotab\tseparated","a:b:cab"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["ünïcödé","straße",""]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["key_name-1  padded  "]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["日本語のテキスト","hello world"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["日本語のテキスト","straßeab"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["HELLO","./x/**/*.json"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[[".leading.leading","straße"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["a.b.c","  padded  "]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["line1\nline2","﻿bom","é﻿bom"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["src/a/b.ts","tab\tseparatedünïcödé","line1\nline2"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["straßeİstanbul","a.b.c"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["éİstanbul"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["Hello World","a:b:c"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["line1\nline2trailing.","é"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["line1\nline2"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["tab\tseparated","ns:key.path",".leading"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["a😀b😀c","key_name-1"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["./x/**/*.json","İstanbul"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["ünïcödé","日本語のテキスト"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["a..b",".leading","straße"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["a","","{name} has {count} items"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["trailing.","a","key_name-1"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["","line1\nline2"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["straße","tab\tseparated.leading"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["  padded  ns:key.path","abc","  padded  "]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["Hello World"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["a.b.c","ab"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["HELLO","hello world","HELLO"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[[".leadingkey_name-1"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[[""]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["src/a/b.tsstraße","a..b:"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["./x/**/*.json","emoji 👍🏽 mixİstanbul"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["ünïcödé"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["HELLO","İstanbul"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["İstanbul","emoji 👍🏽 mix"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["ns:key.path","日本語のテキスト","é"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["a"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["﻿bom{name} has {count} items","a:b:c","emoji 👍🏽 mix"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["hello world","ns:key.path","ΣΊΣΥΦΟΣ"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["abc","﻿bom"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["ns:key.path"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["a..b",":"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["﻿bom﻿bom"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["","hello"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["ab:","ab"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["./x/**/*.json","a.b.c","aa"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["a","ünïcödé","﻿bom"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["İstanbul"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["src/a/b.ts","abc"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["abc","src/a/b.tsa","  padded  "]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["  padded  "]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["trailing.","aİstanbul"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["key_name-1","trailing."]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["日本語のテキストabc"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["{name} has {count} items","a:b:c"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["a.b.c","İstanbul","line1\nline2"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["emoji 👍🏽 mix{name} has {count} items","straße","hello world"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["﻿bom","straße"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["trailing.","line1\nline2","Hello World"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["ns:key.path","a..b"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["a..b","line1\nline2","Hello World"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["İstanbul","tab\tseparated","key_name-1"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["key_name-1tab\tseparated","a:b:c"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["straße","{name} has {count} itemsa:b:c","tab\tseparated"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["HELLO","tab\tseparated"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["Hello World","ab","src/a/b.ts"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["tab\tseparated","hello","straße😀"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["hello worldΣΊΣΥΦΟΣ","a😀b😀c","a..b"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["{name} has {count} items","日本語のテキスト","ünïcödé"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["﻿bom","a😀b😀c","a😀b😀c"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["İstanbul","a:b:c"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["a..b./x/**/*.json","trailing.",":"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["a","日本語のテキスト","a..b"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["a:b:c","İstanbul"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["tab\tseparated","line1\nline2","hellohello world"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["./x/**/*.json","ΣΊΣΥΦΟΣ"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["﻿bom","line1\nline2ns:key.path","hello"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["hello world","HELLO","line1\nline2ns:key.path"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["","key_name-1","😀"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["hellokey_name-1","a😀b😀c",".leading"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["tab\tseparated",".leadingkey_name-1","ünïcödé"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["a","日本語のテキスト","tab\tseparated"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["./x/**/*.json","abc"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["ab"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["HELLOünïcödé","hello worlda.b.c","line1\nline2"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["hello","a..bHELLO"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["{name} has {count} items","tab\tseparated","a"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["{name} has {count} itemsa..b"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["aabc"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["ns:key.path",".leading"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["😀","  padded  hello world","a.b.c"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["key_name-1é","","a"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["a😀b😀ca..b","a:b:c","emoji 👍🏽 mix"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[[":","key_name-1"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["﻿bom日本語のテキスト","abc","hello world"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["ab","HELLO",":"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["{name} has {count} items","line1\nline2"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["trailing.","ünïcödéhello"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["İstanbul","hello","abc"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["ünïcödé","ΣΊΣΥΦΟΣ"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["a.b.c","straße","src/a/b.ts"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[[":",":a😀b😀c"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["ns:key.pathHELLO","emoji 👍🏽 mix"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["tab\tseparatedİstanbul"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["./x/**/*.json",".leading","😀"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[[":","  padded  "]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["ΣΊΣΥΦΟΣ😀","é"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["{name} has {count} items","atrailing."]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["HELLOHELLO","ab","  padded  "]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["  padded  é","😀src/a/b.ts","hello"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[[":","{name} has {count} items","tab\tseparated"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["hello worldé","hello world","straße"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["trailing.a😀b😀c","key_name-1","ns:key.path"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["a..b","","src/a/b.ts"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["é.leading"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["emoji 👍🏽 mix"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["日本語のテキストns:key.path","a.b.c","ab"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["﻿bom","./x/**/*.json","Hello World"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["HELLO","a:b:c","a..b"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["﻿bom","hello"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["emoji 👍🏽 mix","a:b:c"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["﻿bom",".leading"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["ns:key.pathtrailing.","hello","﻿boma.b.c"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["abc","./x/**/*.json","İstanbulΣΊΣΥΦΟΣ"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["trailing.","trailing."]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["line1\nline2tab\tseparated","line1\nline2","ab"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["ΣΊΣΥΦΟΣ","tab\tseparated","{name} has {count} items"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["src/a/b.tstab\tseparated","ünïcödé"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["abc","straßeemoji 👍🏽 mix","ab"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["src/a/b.ts😀","abc","abcline1\nline2"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[[".leading","emoji 👍🏽 mix"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["a😀b😀cHello World"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["a:b:c"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["日本語のテキスト./x/**/*.json"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["src/a/b.ts","trailing.","hello"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["straße","a","hello"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["{name} has {count} items","Hello WorldHello World","src/a/b.ts"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["İstanbulemoji 👍🏽 mix"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["trailing.","HELLO","src/a/b.ts"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["hello worldline1\nline2"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["a","ns:key.path","ns:key.path"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["ns:key.path","trailing."]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["a.b.ca:b:c","./x/**/*.json"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["a:b:c","ünïcödé","ΣΊΣΥΦΟΣ"]],"ok":[]}
+{"fn":"normalizeHiddenProviders","args":[["b","a","B","é","10","9","a"]],"ok":[]}
+{"fn":"normalizeProviderOrder","args":[["İstanbul{name} has {count} items"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["😀src/a/b.ts","abc","emoji 👍🏽 mix"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[[":tab\tseparated","line1\nline2","a"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["straße","ns:key.path","trailing."]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["","hello","﻿bom"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["line1\nline2","key_name-1"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["a..bHELLO","😀"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[[":","İstanbul"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["abckey_name-1",":","ΣΊΣΥΦΟΣ"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["./x/**/*.json","ns:key.path","﻿bom"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["😀"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["tab\tseparated"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["HELLO","","Hello World"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["./x/**/*.json","ab","trailing."]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[[]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["a😀b😀c"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["é"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["İstanbul","aHELLO"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["key_name-1"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["Hello World","straße","abc"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["ab","trailing."]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["﻿bom","tab\tseparated","a:b:cemoji 👍🏽 mix"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["ünïcödéünïcödé","","ΣΊΣΥΦΟΣ"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["aa","ünïcödé"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["﻿bom","日本語のテキスト"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["é","abc"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["tab\tseparatedHELLO","straße","straße"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["a:b:c","abc"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["﻿bom","ab"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["éstraße"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["ab","😀straße","straße"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["😀","emoji 👍🏽 mix","a😀b😀c"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["ns:key.pathsrc/a/b.ts","😀"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["ab","a","İstanbul"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["abc"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["src/a/b.ts","src/a/b.tssrc/a/b.ts","ns:key.path"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["a..ba:b:c"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["日本語のテキスト","ΣΊΣΥΦΟΣ"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["aünïcödé","line1\nline2","emoji 👍🏽 mix"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["ünïcödé","hello","key_name-1"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["a","key_name-1"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["key_name-1","ab","a..b"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["😀","a.b.c","ΣΊΣΥΦΟΣ"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["trailing.","line1\nline2","line1\nline2😀"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[[":","  padded  "]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["ab","HELLO","日本語のテキスト"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[[""]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[[":"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["./x/**/*.json"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["Hello World"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["a:b:c","😀"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["﻿bom"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["abc","﻿bom"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["😀",":{name} has {count} items","hello worlda..b"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["{name} has {count} items","日本語のテキスト"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["a😀b😀ca","HELLO"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["straße"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["ab","{name} has {count} items","a"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["a:b:c","trailing.trailing.","emoji 👍🏽 mix"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["a😀b😀c","aline1\nline2"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[[":","straße","line1\nline2"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[[":","a..b","tab\tseparated"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["ns:key.path","emoji 👍🏽 mix"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["ab"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["ab","tab\tseparated"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["abc","é","a.b.c"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["ünïcödéHELLO"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["ΣΊΣΥΦΟΣ","日本語のテキスト"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["a..b",".leading","a..b"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["a..b"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["Hello WorldHELLO","﻿bomabc"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["日本語のテキスト",".leading","日本語のテキスト"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["a.b.c","İstanbul","straßea"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["ünïcödé","hello world"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["hello","ünïcödé"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["ünïcödékey_name-1","a..b"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["abc","日本語のテキスト","hello日本語のテキスト"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[[":","hello"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["emoji 👍🏽 mixkey_name-1"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["hello","hello","abc:"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["hello world","straße"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["hello"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["ab",".leading","abc"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["HELLO"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["İstanbul","HELLO日本語のテキスト"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["a😀b😀cHELLO","src/a/b.tsa:b:c","ΣΊΣΥΦΟΣ"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["src/a/b.ts","src/a/b.ts"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["line1\nline2line1\nline2"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["abc","日本語のテキスト","abemoji 👍🏽 mix"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["Hello World","﻿bom"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["日本語のテキスト","hello world","Hello World"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["trailing.","hello","a😀b😀c"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["line1\nline2","a.b.c"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["a😀b😀c","é"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["trailing."]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["a.b.c"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["{name} has {count} items","hello worlda:b:c"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["a.b.c","a:b:cİstanbul",":"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["a"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["key_name-1","src/a/b.ts","{name} has {count} itemsa:b:c"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["ns:key.path","key_name-1😀"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["ΣΊΣΥΦΟΣa.b.c","aba.b.c"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["İstanbul","emoji 👍🏽 mix😀"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[[".leading﻿bom"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["﻿bom","ab",".leading日本語のテキスト"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["ΣΊΣΥΦΟΣ"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["ünïcödéhello world","straße","a..bline1\nline2"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["Hello World","  padded  straße","{name} has {count} items"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["straße","tab\tseparated","é"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["./x/**/*.jsona","Hello World"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["key_name-1:","ab"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["./x/**/*.json","trailing."]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["a:b:c"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["a:b:c","emoji 👍🏽 mixab","日本語のテキスト"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["日本語のテキストHello World","a","a:b:c./x/**/*.json"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["Hello World","a"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["tab\tseparated","ünïcödé","key_name-1ns:key.path"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["a😀b😀c","a..b"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["ns:key.path","./x/**/*.json","hello"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["src/a/b.tsa"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["hello","  padded  "]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[[".leading","hello"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["tab\tseparated","emoji 👍🏽 mix","src/a/b.ts"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["é😀","😀",".leading"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["é",".leading"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["  padded  ","{name} has {count} items","ns:key.path"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["😀./x/**/*.json","😀","﻿bom"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["a😀b😀ca.b.c"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["é","hello"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["hello world"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[[".leading","ns:key.path"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["é","ab","ab"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["hello world","Hello World","﻿bom"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["key_name-1","emoji 👍🏽 mixstraße"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["😀emoji 👍🏽 mix","İstanbul"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["src/a/b.ts","abc"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["  padded  "]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["key_name-1","﻿bom","emoji 👍🏽 mix日本語のテキスト"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["key_name-1﻿bom","Hello World😀","a"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["hello","hellons:key.path","Hello World"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["Hello World","é","  padded  "]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["é","  padded  "]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["﻿bomé","emoji 👍🏽 mix","./x/**/*.json"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["éİstanbul","ünïcödé"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["line1\nline2","./x/**/*.json","./x/**/*.json"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["日本語のテキスト","ünïcödé"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["key_name-1","hello"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[[".leading","tab\tseparated","a😀b😀c"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["tab\tseparated",".leading"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["hello","straße"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["﻿bom","HELLO"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["line1\nline2straße"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["ΣΊΣΥΦΟΣ","ünïcödé","abc"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["emoji 👍🏽 mix","trailing.","./x/**/*.json"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["😀","src/a/b.ts"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["ns:key.path","{name} has {count} items"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["line1\nline2"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["a:b:ctrailing.","😀","hello"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["straße","key_name-1"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["ünïcödéhello","ab"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["{name} has {count} items","a:b:c","a.b.c"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["hello","Hello World","line1\nline2"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["a",":"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["a😀b😀cab","{name} has {count} items","a..b"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["{name} has {count} items","  padded  ","hello world"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["abchello world","日本語のテキスト"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["Hello World","a..b","line1\nline2"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["ünïcödé"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["tab\tseparatedns:key.path","a😀b😀c日本語のテキスト","tab\tseparated"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["emoji 👍🏽 mix"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["HELLO",":","ab"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["日本語のテキスト",":Hello World"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["日本語のテキスト"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["日本語のテキスト  padded  ",""]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["abc","trailing.","emoji 👍🏽 mix"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["a..b","😀",".leadingkey_name-1"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["﻿bom","line1\nline2"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["ns:key.path","a.b.c"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["abcHELLO","tab\tseparatedstraße","hello worlda:b:c"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["key_name-1","astraße"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["  padded  HELLO"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["😀İstanbul","é"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["tab\tseparateda","a","{name} has {count} items"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["Hello World","😀"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["ünïcödé","./x/**/*.json","straße"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["ns:key.path"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["a..b","ns:key.path","a:b:c"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["ns:key.path","Hello World"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["{name} has {count} items","trailing."]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[[".leading"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["line1\nline2a"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["﻿bom","a..b"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["﻿bom","hello world","tab\tseparated"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["ΣΊΣΥΦΟΣ","a😀b😀c"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["ΣΊΣΥΦΟΣİstanbul","a😀b😀cünïcödé","a:b:c"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["abc","emoji 👍🏽 mix","a😀b😀c"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["a.b.c","ünïcödé","tab\tseparated"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["a","a😀b😀chello world","İstanbula..b"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["key_name-1","straße","hello"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["ünïcödé","ab"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"normalizeProviderOrder","args":[["b","a","B","é","10","9","a"]],"ok":["codex","claudeAgent","cursor","antigravity","grok","droid","opencode","pi","devin","omp"]}
+{"fn":"sameProviderOrder","args":[true,{"a":{"b":"c"}}],"error":"left.every is not a function"}
+{"fn":"sameProviderOrder","args":[{"a":"b"},0],"error":"left.every is not a function"}
+{"fn":"sameProviderOrder","args":["x",0],"ok":false}
+{"fn":"sameProviderOrder","args":[null,true],"error":"Cannot read properties of null (reading 'length')"}
+{"fn":"sameProviderOrder","args":[["a",1],[]],"ok":false}
+{"fn":"sameProviderOrder","args":[true,[]],"ok":false}
+{"fn":"sameProviderOrder","args":[{"a":"b"},["a",1]],"ok":false}
+{"fn":"sameProviderOrder","args":[true,0],"error":"left.every is not a function"}
+{"fn":"sameProviderOrder","args":[{"a":{"b":"c"}},{"a":"b"}],"error":"left.every is not a function"}
+{"fn":"sameProviderOrder","args":[{"a":{"b":"c"}},{}],"error":"left.every is not a function"}
+{"fn":"sameProviderOrder","args":[{"a":{"b":"c"}},true],"error":"left.every is not a function"}
+{"fn":"sameProviderOrder","args":[["a",1],null],"error":"Cannot read properties of null (reading 'length')"}
+{"fn":"sameProviderOrder","args":["x","x"],"error":"left.every is not a function"}
+{"fn":"sameProviderOrder","args":[{"a":{"b":"c"}},[]],"ok":false}
+{"fn":"sameProviderOrder","args":[{},{"a":{"b":"c"}}],"error":"left.every is not a function"}
+{"fn":"sameProviderOrder","args":[0,"x"],"ok":false}
+{"fn":"sameProviderOrder","args":[null,[]],"error":"Cannot read properties of null (reading 'length')"}
+{"fn":"sameProviderOrder","args":[0,0],"error":"left.every is not a function"}
+{"fn":"sameProviderOrder","args":[null,null],"error":"Cannot read properties of null (reading 'length')"}
+{"fn":"sameProviderOrder","args":[null,["a",1]],"error":"Cannot read properties of null (reading 'length')"}
+{"fn":"sameProviderOrder","args":["x",true],"ok":false}
+{"fn":"sameProviderOrder","args":[["a",1],"x"],"ok":false}
+{"fn":"sameProviderOrder","args":[[],[]],"ok":true}
+{"fn":"sameProviderOrder","args":[{},null],"error":"Cannot read properties of null (reading 'length')"}
+{"fn":"sameProviderOrder","args":[{"a":"b"},true],"error":"left.every is not a function"}
+{"fn":"sameProviderOrder","args":[null,{"a":{"b":"c"}}],"error":"Cannot read properties of null (reading 'length')"}
+{"fn":"sameProviderOrder","args":[0,{"a":"b"}],"error":"left.every is not a function"}
+{"fn":"sameProviderOrder","args":[{"a":"b"},null],"error":"Cannot read properties of null (reading 'length')"}
+{"fn":"sameProviderOrder","args":[["a",1],{"a":"b"}],"ok":false}
+{"fn":"sameProviderOrder","args":[0,[]],"ok":false}
+{"fn":"sameProviderOrder","args":[true,["a",1]],"ok":false}
+{"fn":"sameProviderOrder","args":[{},["a",1]],"ok":false}
+{"fn":"sameProviderOrder","args":[true,null],"error":"Cannot read properties of null (reading 'length')"}
+{"fn":"sameProviderOrder","args":[true,{}],"error":"left.every is not a function"}
+{"fn":"sameProviderOrder","args":[{"a":"b"},{"a":"b"}],"error":"left.every is not a function"}
+{"fn":"sameProviderOrder","args":[{"a":{"b":"c"}},["a",1]],"ok":false}
+{"fn":"sameProviderOrder","args":[{"a":{"b":"c"}},{"a":{"b":"c"}}],"error":"left.every is not a function"}
+{"fn":"sameProviderOrder","args":[true,"x"],"ok":false}
+{"fn":"sameProviderOrder","args":["x",[]],"ok":false}
+{"fn":"sameProviderOrder","args":[[],"x"],"ok":false}
+{"fn":"sameProviderOrder","args":[0,{"a":{"b":"c"}}],"error":"left.every is not a function"}
+{"fn":"sameProviderOrder","args":[true,true],"error":"left.every is not a function"}
+{"fn":"sameProviderOrder","args":[[],["a",1]],"ok":false}
+{"fn":"sameProviderOrder","args":[[],true],"ok":false}
+{"fn":"sameProviderOrder","args":[["a",1],true],"ok":false}
+{"fn":"sameProviderOrder","args":[{"a":"b"},{"a":{"b":"c"}}],"error":"left.every is not a function"}
+{"fn":"sameProviderOrder","args":[{"a":"b"},"x"],"ok":false}
+{"fn":"sameProviderOrder","args":[{},{"a":"b"}],"error":"left.every is not a function"}
+{"fn":"sameProviderOrder","args":[["a",1],{}],"ok":false}
+{"fn":"sameProviderOrder","args":[["a",1],0],"ok":false}
+{"fn":"sameProviderOrder","args":[[],{}],"ok":false}
+{"fn":"sameProviderOrder","args":[{},true],"error":"left.every is not a function"}
+{"fn":"sameProviderOrder","args":["x",{"a":"b"}],"ok":false}
+{"fn":"sameProviderOrder","args":[["a",1],["a",1]],"ok":true}
+{"fn":"sameProviderOrder","args":[0,{}],"error":"left.every is not a function"}
+{"fn":"sameProviderOrder","args":[{},[]],"ok":false}
+{"fn":"sameProviderOrder","args":[[],{"a":"b"}],"ok":false}
+{"fn":"sameProviderOrder","args":[null,{"a":"b"}],"error":"Cannot read properties of null (reading 'length')"}
+{"fn":"sameProviderOrder","args":[[],0],"ok":false}
+{"fn":"sameProviderOrder","args":[true,{"a":"b"}],"error":"left.every is not a function"}
+{"fn":"sameProviderOrder","args":[{},"x"],"ok":false}
+{"fn":"sameProviderOrder","args":[{"a":{"b":"c"}},"x"],"ok":false}
+{"fn":"sameProviderOrder","args":["x",null],"error":"Cannot read properties of null (reading 'length')"}
+{"fn":"sameProviderOrder","args":[["a",1],{"a":{"b":"c"}}],"ok":false}
+{"fn":"sameProviderOrder","args":["x",{}],"ok":false}
+{"fn":"sameProviderOrder","args":[{"a":{"b":"c"}},0],"error":"left.every is not a function"}
+{"fn":"sameProviderOrder","args":[{"a":{"b":"c"}},null],"error":"Cannot read properties of null (reading 'length')"}
+{"fn":"sameProviderOrder","args":[0,null],"error":"Cannot read properties of null (reading 'length')"}
+{"fn":"sameProviderOrder","args":[null,0],"error":"Cannot read properties of null (reading 'length')"}
+{"fn":"sameProviderOrder","args":[{},{}],"error":"left.every is not a function"}
+{"fn":"sameProviderOrder","args":["x",["a",1]],"ok":false}
+{"fn":"sameProviderOrder","args":[[],{"a":{"b":"c"}}],"ok":false}
+{"fn":"sameProviderOrder","args":[null,"x"],"error":"Cannot read properties of null (reading 'length')"}
+{"fn":"sameProviderOrder","args":[[],null],"error":"Cannot read properties of null (reading 'length')"}
+{"fn":"sameProviderOrder","args":[{"a":"b"},{}],"error":"left.every is not a function"}
+{"fn":"sameProviderOrder","args":[0,["a",1]],"ok":false}
+{"fn":"sameProviderOrder","args":[null,{}],"error":"Cannot read properties of null (reading 'length')"}
+{"fn":"sameProviderOrder","args":["x",{"a":{"b":"c"}}],"ok":false}
+{"fn":"sameProviderOrder","args":[{},0],"error":"left.every is not a function"}
+{"fn":"sameProviderOrder","args":[{"a":"b"},[]],"ok":false}
+{"fn":"sameProviderOrder","args":[0,true],"error":"left.every is not a function"}
+{"fn":"sameProviderOrder","args":["X","x"],"error":"left.every is not a function"}
+{"fn":"sameProviderOrder","args":["x","X"],"error":"left.every is not a function"}
+{"fn":"compareProvidersByOrder","args":[{"a":{"b":"c"}},{"a":{"b":"c"}},"x"],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[null,0,0],"error":"Cannot read properties of null (reading 'indexOf')"}
+{"fn":"compareProvidersByOrder","args":[[],{"a":"b"},["a",1]],"ok":0}
+{"fn":"compareProvidersByOrder","args":[{"a":{"b":"c"}},[],[]],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":["x",true,{"a":{"b":"c"}}],"ok":0}
+{"fn":"compareProvidersByOrder","args":[0,{"a":{"b":"c"}},null],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[{"a":{"b":"c"}},["a",1],"x"],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[{"a":{"b":"c"}},true,true],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[{},["a",1],["a",1]],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[true,0,{"a":{"b":"c"}}],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[{},["a",1],"x"],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[{"a":{"b":"c"}},[],["a",1]],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[[],0,[]],"ok":0}
+{"fn":"compareProvidersByOrder","args":[null,{},{"a":{"b":"c"}}],"error":"Cannot read properties of null (reading 'indexOf')"}
+{"fn":"compareProvidersByOrder","args":["x",{"a":{"b":"c"}},["a",1]],"ok":0}
+{"fn":"compareProvidersByOrder","args":[null,{},["a",1]],"error":"Cannot read properties of null (reading 'indexOf')"}
+{"fn":"compareProvidersByOrder","args":["x",null,0],"ok":0}
+{"fn":"compareProvidersByOrder","args":["x",null,{}],"ok":0}
+{"fn":"compareProvidersByOrder","args":[[],true,null],"ok":0}
+{"fn":"compareProvidersByOrder","args":[{"a":{"b":"c"}},0,true],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[true,{"a":"b"},0],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[{"a":"b"},{"a":"b"},{"a":{"b":"c"}}],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[{},null,null],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[["a",1],["a",1],["a",1]],"ok":0}
+{"fn":"compareProvidersByOrder","args":[{},["a",1],true],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[{"a":"b"},0,["a",1]],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[[],{"a":{"b":"c"}},0],"ok":0}
+{"fn":"compareProvidersByOrder","args":[{},"x",{"a":"b"}],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":["x","x",{}],"ok":0}
+{"fn":"compareProvidersByOrder","args":[["a",1],[],null],"ok":0}
+{"fn":"compareProvidersByOrder","args":["x",true,["a",1]],"ok":0}
+{"fn":"compareProvidersByOrder","args":[{"a":"b"},{"a":{"b":"c"}},{}],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[["a",1],0,null],"ok":0}
+{"fn":"compareProvidersByOrder","args":[{"a":{"b":"c"}},{"a":"b"},{}],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[[],null,{}],"ok":0}
+{"fn":"compareProvidersByOrder","args":[["a",1],["a",1],0],"ok":0}
+{"fn":"compareProvidersByOrder","args":[{},null,"x"],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[0,[],true],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[{},"x",[]],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":["x",true,0],"ok":0}
+{"fn":"compareProvidersByOrder","args":[0,true,true],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[{"a":"b"},{"a":"b"},null],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[["a",1],null,{"a":{"b":"c"}}],"ok":0}
+{"fn":"compareProvidersByOrder","args":[{},true,{"a":{"b":"c"}}],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[true,[],{"a":"b"}],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[{"a":{"b":"c"}},0,{}],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[["a",1],[],[]],"ok":0}
+{"fn":"compareProvidersByOrder","args":[0,{"a":"b"},{"a":"b"}],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[["a",1],["a",1],{"a":{"b":"c"}}],"ok":0}
+{"fn":"compareProvidersByOrder","args":[[],{},{"a":{"b":"c"}}],"ok":0}
+{"fn":"compareProvidersByOrder","args":[{},0,{"a":{"b":"c"}}],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[{"a":{"b":"c"}},{},["a",1]],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[[],{"a":"b"},"x"],"ok":0}
+{"fn":"compareProvidersByOrder","args":[0,["a",1],null],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[{"a":"b"},0,{}],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[{"a":{"b":"c"}},{"a":{"b":"c"}},[]],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[{"a":{"b":"c"}},["a",1],{}],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[true,{"a":{"b":"c"}},{"a":{"b":"c"}}],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[{},{"a":"b"},null],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[{"a":{"b":"c"}},{},0],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[null,[],{"a":{"b":"c"}}],"error":"Cannot read properties of null (reading 'indexOf')"}
+{"fn":"compareProvidersByOrder","args":["x",0,"x"],"ok":0}
+{"fn":"compareProvidersByOrder","args":[true,[],0],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[{},true,[]],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[{},[],["a",1]],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[["a",1],["a",1],{}],"ok":0}
+{"fn":"compareProvidersByOrder","args":[["a",1],0,{}],"ok":0}
+{"fn":"compareProvidersByOrder","args":[{},true,null],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[[],true,"x"],"ok":0}
+{"fn":"compareProvidersByOrder","args":[null,[],true],"error":"Cannot read properties of null (reading 'indexOf')"}
+{"fn":"compareProvidersByOrder","args":["x",[],{"a":{"b":"c"}}],"ok":0}
+{"fn":"compareProvidersByOrder","args":[[],null,0],"ok":0}
+{"fn":"compareProvidersByOrder","args":[0,true,null],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[true,{"a":{"b":"c"}},{}],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[[],0,{"a":{"b":"c"}}],"ok":0}
+{"fn":"compareProvidersByOrder","args":[true,true,null],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[{},true,"x"],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[true,0,"x"],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[true,true,{"a":"b"}],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[{"a":{"b":"c"}},true,[]],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[[],true,{}],"ok":0}
+{"fn":"compareProvidersByOrder","args":[true,[],["a",1]],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[0,[],0],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[null,{},null],"error":"Cannot read properties of null (reading 'indexOf')"}
+{"fn":"compareProvidersByOrder","args":[null,0,null],"error":"Cannot read properties of null (reading 'indexOf')"}
+{"fn":"compareProvidersByOrder","args":[{},{},"x"],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[true,{"a":"b"},{"a":"b"}],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[{"a":{"b":"c"}},0,["a",1]],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[[],["a",1],[]],"ok":0}
+{"fn":"compareProvidersByOrder","args":[["a",1],true,[]],"ok":0}
+{"fn":"compareProvidersByOrder","args":[{},{"a":"b"},{"a":{"b":"c"}}],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[[],{},{"a":"b"}],"ok":0}
+{"fn":"compareProvidersByOrder","args":[{"a":{"b":"c"}},"x",["a",1]],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":["x",{},{"a":{"b":"c"}}],"ok":0}
+{"fn":"compareProvidersByOrder","args":[["a",1],{"a":{"b":"c"}},0],"ok":0}
+{"fn":"compareProvidersByOrder","args":[["a",1],null,{}],"ok":0}
+{"fn":"compareProvidersByOrder","args":["x",{"a":{"b":"c"}},0],"ok":0}
+{"fn":"compareProvidersByOrder","args":[{"a":"b"},{},{"a":{"b":"c"}}],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[0,true,"x"],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[{"a":"b"},true,["a",1]],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[[],{},0],"ok":0}
+{"fn":"compareProvidersByOrder","args":[{},{},{"a":"b"}],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[{},["a",1],null],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[0,null,true],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[{},{},0],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":["x",{},true],"ok":0}
+{"fn":"compareProvidersByOrder","args":[{"a":"b"},0,0],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[{"a":{"b":"c"}},{"a":"b"},{"a":"b"}],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[0,{"a":{"b":"c"}},{}],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[{"a":"b"},0,true],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[[],["a",1],"x"],"ok":0}
+{"fn":"compareProvidersByOrder","args":[null,{},0],"error":"Cannot read properties of null (reading 'indexOf')"}
+{"fn":"compareProvidersByOrder","args":[{},"x",true],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[[],"x",[]],"ok":0}
+{"fn":"compareProvidersByOrder","args":[true,[],null],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":["x",{"a":{"b":"c"}},null],"ok":0}
+{"fn":"compareProvidersByOrder","args":[null,["a",1],null],"error":"Cannot read properties of null (reading 'indexOf')"}
+{"fn":"compareProvidersByOrder","args":[{"a":{"b":"c"}},null,{}],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[0,["a",1],0],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":["x",{"a":{"b":"c"}},[]],"ok":0}
+{"fn":"compareProvidersByOrder","args":[true,{"a":"b"},{"a":{"b":"c"}}],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":["x",true,[]],"ok":0}
+{"fn":"compareProvidersByOrder","args":[0,0,[]],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[{},[],0],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[{"a":"b"},{"a":{"b":"c"}},{"a":{"b":"c"}}],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[null,null,{"a":{"b":"c"}}],"error":"Cannot read properties of null (reading 'indexOf')"}
+{"fn":"compareProvidersByOrder","args":["x",null,"x"],"ok":0}
+{"fn":"compareProvidersByOrder","args":[null,"x",{"a":{"b":"c"}}],"error":"Cannot read properties of null (reading 'indexOf')"}
+{"fn":"compareProvidersByOrder","args":[["a",1],"x","x"],"ok":0}
+{"fn":"compareProvidersByOrder","args":[{},{"a":"b"},{}],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[[],[],["a",1]],"ok":0}
+{"fn":"compareProvidersByOrder","args":[["a",1],0,["a",1]],"ok":0}
+{"fn":"compareProvidersByOrder","args":[null,0,{"a":"b"}],"error":"Cannot read properties of null (reading 'indexOf')"}
+{"fn":"compareProvidersByOrder","args":[true,{"a":{"b":"c"}},"x"],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[null,0,[]],"error":"Cannot read properties of null (reading 'indexOf')"}
+{"fn":"compareProvidersByOrder","args":[{"a":{"b":"c"}},[],null],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":["x",{},{}],"ok":0}
+{"fn":"compareProvidersByOrder","args":["x",{},["a",1]],"ok":0}
+{"fn":"compareProvidersByOrder","args":[[],[],{"a":{"b":"c"}}],"ok":0}
+{"fn":"compareProvidersByOrder","args":[{"a":"b"},"x",{"a":{"b":"c"}}],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":["x",["a",1],{"a":"b"}],"ok":0}
+{"fn":"compareProvidersByOrder","args":[["a",1],{"a":{"b":"c"}},"x"],"ok":0}
+{"fn":"compareProvidersByOrder","args":[0,{"a":"b"},{"a":{"b":"c"}}],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[true,null,0],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[{"a":"b"},["a",1],{"a":"b"}],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[[],true,true],"ok":0}
+{"fn":"compareProvidersByOrder","args":[{"a":"b"},{"a":{"b":"c"}},null],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[{},{"a":{"b":"c"}},{}],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[0,{"a":{"b":"c"}},"x"],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[null,[],0],"error":"Cannot read properties of null (reading 'indexOf')"}
+{"fn":"compareProvidersByOrder","args":[null,null,[]],"error":"Cannot read properties of null (reading 'indexOf')"}
+{"fn":"compareProvidersByOrder","args":[[],true,{"a":{"b":"c"}}],"ok":0}
+{"fn":"compareProvidersByOrder","args":["x","x",null],"ok":0}
+{"fn":"compareProvidersByOrder","args":[null,[],"x"],"error":"Cannot read properties of null (reading 'indexOf')"}
+{"fn":"compareProvidersByOrder","args":[{"a":{"b":"c"}},"x","x"],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[[],{"a":"b"},{"a":{"b":"c"}}],"ok":0}
+{"fn":"compareProvidersByOrder","args":[{"a":{"b":"c"}},{},null],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[null,{},{}],"error":"Cannot read properties of null (reading 'indexOf')"}
+{"fn":"compareProvidersByOrder","args":[0,0,{}],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[0,{"a":{"b":"c"}},{"a":{"b":"c"}}],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[{},true,0],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[0,[],{"a":{"b":"c"}}],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[0,"x",null],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[{},{},{}],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[{"a":{"b":"c"}},{"a":{"b":"c"}},null],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[true,["a",1],null],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[{"a":{"b":"c"}},{"a":"b"},{"a":{"b":"c"}}],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[null,null,["a",1]],"error":"Cannot read properties of null (reading 'indexOf')"}
+{"fn":"compareProvidersByOrder","args":[null,true,["a",1]],"error":"Cannot read properties of null (reading 'indexOf')"}
+{"fn":"compareProvidersByOrder","args":[null,null,null],"error":"Cannot read properties of null (reading 'indexOf')"}
+{"fn":"compareProvidersByOrder","args":[[],true,[]],"ok":0}
+{"fn":"compareProvidersByOrder","args":[{"a":"b"},["a",1],[]],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":["x",0,{}],"ok":0}
+{"fn":"compareProvidersByOrder","args":["x",{"a":"b"},null],"ok":0}
+{"fn":"compareProvidersByOrder","args":[{"a":{"b":"c"}},{"a":{"b":"c"}},{"a":{"b":"c"}}],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[[],null,null],"ok":0}
+{"fn":"compareProvidersByOrder","args":[null,"x",true],"error":"Cannot read properties of null (reading 'indexOf')"}
+{"fn":"compareProvidersByOrder","args":[{"a":"b"},{"a":"b"},0],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":["x",0,0],"ok":0}
+{"fn":"compareProvidersByOrder","args":["x",null,true],"ok":0}
+{"fn":"compareProvidersByOrder","args":[{"a":"b"},"x",null],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[{"a":"b"},null,{"a":"b"}],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[["a",1],true,"x"],"ok":0}
+{"fn":"compareProvidersByOrder","args":["x",null,null],"ok":0}
+{"fn":"compareProvidersByOrder","args":[["a",1],null,true],"ok":0}
+{"fn":"compareProvidersByOrder","args":[{"a":{"b":"c"}},"x",null],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[{},["a",1],0],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[true,null,{"a":{"b":"c"}}],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[null,["a",1],{"a":{"b":"c"}}],"error":"Cannot read properties of null (reading 'indexOf')"}
+{"fn":"compareProvidersByOrder","args":[{},["a",1],{"a":{"b":"c"}}],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":["x",{"a":{"b":"c"}},{"a":{"b":"c"}}],"ok":0}
+{"fn":"compareProvidersByOrder","args":[{"a":"b"},[],{"a":{"b":"c"}}],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[{"a":{"b":"c"}},true,{"a":{"b":"c"}}],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[{},[],{"a":"b"}],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[null,{"a":"b"},0],"error":"Cannot read properties of null (reading 'indexOf')"}
+{"fn":"compareProvidersByOrder","args":[0,{"a":{"b":"c"}},0],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[{},true,{}],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[{},"x",{"a":{"b":"c"}}],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[true,{},[]],"error":"providerOrder.indexOf is not a function"}
+{"fn":"compareProvidersByOrder","args":[true,{},{"a":"b"}],"error":"providerOrder.indexOf is not a function"}
+{"fn":"isProviderKind","args":["pi"],"ok":true}
+{"fn":"normalizeProviderOrder","args":[["pi","codex"]],"ok":["pi","codex","claudeAgent","cursor","antigravity","grok","droid","opencode","devin","omp"]}
+{"fn":"isProviderKind","args":["codex"],"ok":true}
+{"fn":"normalizeHiddenProviders","args":[["bogus","pi","pi"]],"ok":["pi"]}
+{"fn":"isProviderKind","args":["bogus"],"ok":false}

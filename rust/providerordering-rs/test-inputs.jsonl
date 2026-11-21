@@ -1,0 +1,5 @@
+{"fn":"isProviderKind","args":["pi"]}
+{"fn":"normalizeProviderOrder","args":[["pi","codex"]]}
+{"fn":"isProviderKind","args":["codex"]}
+{"fn":"normalizeHiddenProviders","args":[["bogus","pi","pi"]]}
+{"fn":"isProviderKind","args":["bogus"]}

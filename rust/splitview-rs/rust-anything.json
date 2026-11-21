@@ -1,0 +1,336 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/splitView.logic.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "splitview-rs",
+  "exports": [
+    {
+      "name": "findPaneById",
+      "file": "apps/web/src/splitView.logic.ts",
+      "line": 18,
+      "params": [
+        {
+          "name": "root",
+          "ts_type": "(LeafPane | SplitNode)",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "paneId",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(LeafPane | SplitNode) | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "findLeafPaneById",
+      "file": "apps/web/src/splitView.logic.ts",
+      "line": 28,
+      "params": [
+        {
+          "name": "root",
+          "ts_type": "(LeafPane | SplitNode)",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "paneId",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "LeafPane | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "findSplitNodeById",
+      "file": "apps/web/src/splitView.logic.ts",
+      "line": 33,
+      "params": [
+        {
+          "name": "root",
+          "ts_type": "(LeafPane | SplitNode)",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "paneId",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "SplitNode | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "findParentSplitNode",
+      "file": "apps/web/src/splitView.logic.ts",
+      "line": 39,
+      "params": [
+        {
+          "name": "root",
+          "ts_type": "(LeafPane | SplitNode)",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "paneId",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "SplitNode | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "findPaneDepth",
+      "file": "apps/web/src/splitView.logic.ts",
+      "line": 49,
+      "params": [
+        {
+          "name": "root",
+          "ts_type": "(LeafPane | SplitNode)",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "paneId",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "number | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "collectLeaves",
+      "file": "apps/web/src/splitView.logic.ts",
+      "line": 64,
+      "params": [
+        {
+          "name": "root",
+          "ts_type": "(LeafPane | SplitNode)",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "LeafPane[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "layoutSplitPanes",
+      "file": "apps/web/src/splitView.logic.ts",
+      "line": 91,
+      "params": [
+        {
+          "name": "root",
+          "ts_type": "(LeafPane | SplitNode)",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "SplitPaneLayout",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "replacePaneInTree",
+      "file": "apps/web/src/splitView.logic.ts",
+      "line": 124,
+      "params": [
+        {
+          "name": "root",
+          "ts_type": "(LeafPane | SplitNode)",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "paneId",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "replacement",
+          "ts_type": "(LeafPane | SplitNode)",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(LeafPane | SplitNode)",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "removeLeafByThreadId",
+      "file": "apps/web/src/splitView.logic.ts",
+      "line": 146,
+      "params": [
+        {
+          "name": "root",
+          "ts_type": "(LeafPane | SplitNode)",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "threadId",
+          "ts_type": "typeof typeof typeof typeof ThreadId.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "RemoveLeafResult",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "removeLeafByPaneId",
+      "file": "apps/web/src/splitView.logic.ts",
+      "line": 179,
+      "params": [
+        {
+          "name": "root",
+          "ts_type": "(LeafPane | SplitNode)",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "paneId",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "RemoveLeafResult",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "canSubdivide",
+      "file": "apps/web/src/splitView.logic.ts",
+      "line": 215,
+      "params": [
+        {
+          "name": "parentDirection",
+          "ts_type": "(\"horizontal\" | \"vertical\") | null",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "requestedDirection",
+          "ts_type": "(\"horizontal\" | \"vertical\")",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "canSubdividePane",
+      "file": "apps/web/src/splitView.logic.ts",
+      "line": 225,
+      "params": [
+        {
+          "name": "root",
+          "ts_type": "(LeafPane | SplitNode)",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "targetPaneId",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "requestedDirection",
+          "ts_type": "(\"horizontal\" | \"vertical\")",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveDefaultFocusLeafId",
+      "file": "apps/web/src/splitView.logic.ts",
+      "line": 242,
+      "params": [
+        {
+          "name": "root",
+          "ts_type": "(LeafPane | SplitNode)",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isLegacySplitViewLike",
+      "file": "apps/web/src/splitView.logic.ts",
+      "line": 263,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "value is LegacySplitViewLike",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

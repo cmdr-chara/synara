@@ -1,0 +1,72 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/sidechatThread.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "sidechatthread-rs",
+  "exports": [
+    {
+      "name": "isSidechatThread",
+      "file": "packages/shared/src/sidechatThread.ts",
+      "line": 17,
+      "params": [
+        {
+          "name": "thread",
+          "ts_type": "SidechatIdentityFields",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isStandaloneSidechatThread",
+      "file": "packages/shared/src/sidechatThread.ts",
+      "line": 22,
+      "params": [
+        {
+          "name": "thread",
+          "ts_type": "SidechatIdentityFields",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "sidechatContextMatchesGitHubItem",
+      "file": "packages/shared/src/sidechatThread.ts",
+      "line": 27,
+      "params": [
+        {
+          "name": "context",
+          "ts_type": "typeof typeof typeof typeof ThreadSidechatContext.Type.Type.Type.Type | null | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "item",
+          "ts_type": "{ readonly repository: string; readonly number: number }",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

@@ -1,0 +1,17 @@
+{
+  "unit": "packages/shared/src/sidechatThread.ts",
+  "files": 1,
+  "fingerprint": "74f164bd9ced111e",
+  "coverage": {
+    "lines": 32,
+    "reached": 32,
+    "files": [
+      {
+        "file": "packages/shared/src/sidechatThread.ts",
+        "lines": 32,
+        "reached": 32,
+        "missed": ""
+      }
+    ]
+  }
+}

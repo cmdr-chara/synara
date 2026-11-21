@@ -1,0 +1,29 @@
+{
+  "unit": "apps/server/src/betaUsageSnapshot.ts",
+  "files": 1,
+  "fingerprint": "a873fecb5a45cf06",
+  "coverage": {
+    "lines": 408,
+    "reached": 82,
+    "files": [
+      {
+        "file": "apps/server/src/atomicWrite.ts",
+        "lines": 172,
+        "reached": 27,
+        "missed": "15-74, 76-86, 89-95, 97-111, 113-118, 121-138, 142-147, 149-153, 166-171, 173-183"
+      },
+      {
+        "file": "apps/server/src/betaUsageSnapshot.ts",
+        "lines": 59,
+        "reached": 30,
+        "missed": "28-30, 32-47, 56-65"
+      },
+      {
+        "file": "apps/server/src/privatePathPermissions.ts",
+        "lines": 177,
+        "reached": 25,
+        "missed": "20-25, 28-35, 38-44, 46-62, 65-86, 89-101, 103-119, 122-148, 155-158, 160-188, 190-191"
+      }
+    ]
+  }
+}

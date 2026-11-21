@@ -1,0 +1,17 @@
+{
+  "unit": "packages/shared/src/mcpConnectors.ts",
+  "files": 1,
+  "fingerprint": "b98a2c7021f83da5",
+  "coverage": {
+    "lines": 317,
+    "reached": 304,
+    "files": [
+      {
+        "file": "packages/shared/src/mcpConnectors.ts",
+        "lines": 317,
+        "reached": 304,
+        "missed": "238-239, 260-265, 267-270, 314"
+      }
+    ]
+  }
+}

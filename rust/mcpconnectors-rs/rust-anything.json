@@ -1,0 +1,192 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/mcpConnectors.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "mcpconnectors-rs",
+  "exports": [
+    {
+      "name": "findMcpConnectorPreset",
+      "file": "packages/shared/src/mcpConnectors.ts",
+      "line": 195,
+      "params": [
+        {
+          "name": "id",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "McpConnectorPreset | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isMcpLoopbackHostname",
+      "file": "packages/shared/src/mcpConnectors.ts",
+      "line": 227,
+      "params": [
+        {
+          "name": "hostname",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "normalizeMcpConnectorUrl",
+      "file": "packages/shared/src/mcpConnectors.ts",
+      "line": 234,
+      "params": [
+        {
+          "name": "raw",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(| { readonly ok: true; readonly url: string }\n  | {\n      readonly ok: false;\n      readonly reason: string;\n      readonly reasonCode?: (| \"required\"\n  | \"too-long\"\n  | \"invalid\"\n  | \"https-required\"\n  | \"credentials\"\n  | \"public-host\");\n    })",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "defaultMcpConnectorName",
+      "file": "packages/shared/src/mcpConnectors.ts",
+      "line": 274,
+      "params": [
+        {
+          "name": "url",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "mcpConnectorSlug",
+      "file": "packages/shared/src/mcpConnectors.ts",
+      "line": 284,
+      "params": [
+        {
+          "name": "name",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "mcpConnectorServerName",
+      "file": "packages/shared/src/mcpConnectors.ts",
+      "line": 296,
+      "params": [
+        {
+          "name": "slug",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "mcpConnectorMentionPath",
+      "file": "packages/shared/src/mcpConnectors.ts",
+      "line": 303,
+      "params": [
+        {
+          "name": "serverName",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isMcpConnectorMentionPath",
+      "file": "packages/shared/src/mcpConnectors.ts",
+      "line": 307,
+      "params": [
+        {
+          "name": "path",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "serverNameFromMcpConnectorMentionPath",
+      "file": "packages/shared/src/mcpConnectors.ts",
+      "line": 312,
+      "params": [
+        {
+          "name": "path",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "providerSupportsMcpConnectors",
+      "file": "packages/shared/src/mcpConnectors.ts",
+      "line": 335,
+      "params": [
+        {
+          "name": "provider",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

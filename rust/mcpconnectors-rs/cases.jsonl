@@ -1,0 +1,2230 @@
+{"fn":"findMcpConnectorPreset","args":["line1\nline2"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["src/a/b.ts"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":[".leadingHELLO"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["  padded  "],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["a.b.ca:b:c"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["a:b:c"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["İstanbul"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["😀ab"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["straße"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["a"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["tab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["tab\tseparated.leading"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["trailing."],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["key_name-1"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["trailing.ünïcödé"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["trailing.:"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["😀"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["{name} has {count} itemsa😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":[""],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["abc"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["a😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["é"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["HELLO"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["﻿bom"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["HELLOline1\nline2"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["ünïcödé"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["ab"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["a..b{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["ns:key.path"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["helloline1\nline2"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":[".leading"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":[":"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["  padded  ./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["a.b.c"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["ΣΊΣΥΦΟΣsrc/a/b.ts"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["ΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["src/a/b.tsns:key.path"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["{name} has {count} itemsabc"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["a..b"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["ékey_name-1"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["emoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["😀a..b"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":[":a.b.c"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["key_name-1trailing."],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["line1\nline2a"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["a./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["helloa😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["a.b.ctab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["hello"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["helloa.b.c"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["tab\tseparateda😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["hello world"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["日本語のテキスト﻿bom"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["line1\nline2HELLO"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":[":a😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":[".leadingabc"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["a:b:cline1\nline2"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["aa.b.c"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["a😀b😀cns:key.path"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":[".leading.leading"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["éa..b"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["a.b.ca.b.c"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["😀日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["a.b.ca"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["{name} has {count} items.leading"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["trailing.a"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["﻿bom  padded  "],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["ns:key.pathline1\nline2"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["tab\tseparated😀"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":[":a"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["{name} has {count} itemsemoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["a:b:chello world"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["HELLOhello"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["aünïcödé"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["Hello World"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["trailing.src/a/b.ts"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["😀  padded  "],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["abline1\nline2"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["ΣΊΣΥΦΟΣa.b.c"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["abcünïcödé"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["emoji 👍🏽 mixa:b:c"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["  padded  a:b:c"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["helloHELLO"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["abc  padded  "],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["  padded  ΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["a😀b😀cHello World"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["Hello World{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["HELLOa..b"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["trailing.line1\nline2"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["{name} has {count} itemsΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["a😀b😀cİstanbul"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["HELLOemoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["😀ünïcödé"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["HELLOİstanbul"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":[".leading{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["line1\nline2é"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["  padded  :"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["abcé"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["straßeemoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["trailing.ΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["tab\tseparateda..b"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["aΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["😀HELLO"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["key_name-1straße"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["abtrailing."],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["abca.b.c"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["astraße"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["hello worldtrailing."],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["emoji 👍🏽 mixünïcödé"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["a..bab"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["ünïcödéabc"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":[":tab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["emoji 👍🏽 mix﻿bom"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":[":emoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["ns:key.path.leading"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["{name} has {count} itemsé"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["a.b.cabc"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["ns:key.pathabc"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":[":﻿bom"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["İstanbultrailing."],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["hello world.leading"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["src/a/b.tsΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["./x/**/*.jsona..b"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["aba.b.c"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["ünïcödéa😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["a.b.cab"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["hello worldemoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["ΣΊΣΥΦΟΣa"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["a.b.chello world"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["./x/**/*.json😀"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["src/a/b.tsemoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["étab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["straßeabc"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["helloa:b:c"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["😀a"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["  padded  a😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["  padded  abc"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["HELLO  padded  "],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["trailing.key_name-1"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["ünïcödéemoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["abHello World"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["emoji 👍🏽 mixa..b"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["./x/**/*.jsonstraße"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["ns:key.path./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["hellosrc/a/b.ts"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["a.b.c:"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["ünïcödé😀"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["a:b:c  padded  "],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["a:b:c﻿bom"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["a..bkey_name-1"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["a:b:ca😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":[":straße"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["straße﻿bom"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["a..babc"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":[".leadingünïcödé"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["😀tab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["abİstanbul"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["{name} has {count} items{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["a😀b😀cHELLO"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["a..b.leading"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["日本語のテキストabc"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["éhello"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["a😀b😀cé"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["abé"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["hello worldsrc/a/b.ts"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["😀ns:key.path"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["é.leading"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["İstanbulab"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["straße日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["ns:key.pathİstanbul"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["hello😀"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["ns:key.pathΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["trailing../x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["ünïcödéΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["hellohello"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["😀a.b.c"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["src/a/b.tsa..b"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["a😀b😀cünïcödé"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["straße😀"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["src/a/b.tsa.b.c"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["src/a/b.tshello"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["😀é"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["hellohello world"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["a.b.cemoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["line1\nline2a.b.c"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["a😀"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["emoji 👍🏽 mixtab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["﻿bom:"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["a.b.ca..b"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["ünïcödéa..b"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["src/a/b.tsa"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["a😀b😀c😀"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["ns:key.pathtab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["abab"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["tab\tseparatedİstanbul"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["trailing.{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["straßetrailing."],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["héllo wörld"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["👍🏽 thumbs"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["日本語"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["ılık ırmak"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["👨‍👩‍👧 family"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["a b"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["a😀b"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["a²b x½ y①"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["aⅠb Ⅻ"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["a𐐀b 𝐀bc"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["कि ٣٤"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["Iı İi"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["K K k"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["ſ s S"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["x‍y 👨‍👩‍👧"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["a b c　d"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["١٢٣ ٤٥"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["𝟘𝟙 ²³"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["snake_case foo-bar o'neil"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["ǅungla Ǆ"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["one\r\ntwo threefour"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["café café"],"ok":{"$undefined":true}}
+{"fn":"findMcpConnectorPreset","args":["ΣΑΣ σας ς"],"ok":{"$undefined":true}}
+{"fn":"isMcpLoopbackHostname","args":["tab\tseparated"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["﻿bom"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["a:b:c"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":[".leading"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["ab"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["é"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":[":"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["line1\nline2"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["src/a/b.ts"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["emoji 👍🏽 mix"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["{name} has {count} items"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["HELLO"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["ünïcödé"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["ns:key.path"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["😀"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["日本語のテキスト"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["İstanbul"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["abcHello World"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["trailing."],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["straße"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["日本語のテキストa.b.c"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["abc"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["a.b.cé"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["src/a/b.tsa"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["a"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["a.b.c"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["﻿bomΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["  padded  "],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["hello"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["😀.leading"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["abchello"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["hello world"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["straße﻿bom"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["Hello Worldemoji 👍🏽 mix"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["İstanbula"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["tab\tseparatedtrailing."],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["a😀b😀cHELLO"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["a😀b😀c"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["﻿bomstraße"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["ΣΊΣΥΦΟΣΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":[""],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["Hello World"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["key_name-1"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["😀a.b.c"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["  padded  line1\nline2"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["﻿bomünïcödé"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["straßeHello World"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["ns:key.pathab"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["./x/**/*.json"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["emoji 👍🏽 mixünïcödé"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["src/a/b.tsé"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["a😀b😀cline1\nline2"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["abkey_name-1"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["ns:key.path.leading"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["helloHELLO"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["src/a/b.tsstraße"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["a..b"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["hello worldHELLO"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["a..b./x/**/*.json"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["é  padded  "],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["a.leading"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["ünïcödétab\tseparated"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["﻿bom😀"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["ünïcödéns:key.path"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["abca.b.c"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["abΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["ünïcödéstraße"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["ünïcödéabc"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["trailing.hello world"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["  padded  src/a/b.ts"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":[":trailing."],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":[":ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":[".leading﻿bom"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":[".leadingsrc/a/b.ts"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["line1\nline2﻿bom"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["İstanbultrailing."],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["﻿bom{name} has {count} items"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["日本語のテキスト日本語のテキスト"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["{name} has {count} items{name} has {count} items"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["﻿bomHELLO"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["éa..b"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["a..b:"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["Hello Worlda"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["line1\nline2é"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["helloab"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["ΣΊΣΥΦΟΣé"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["éHello World"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["  padded  é"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["emoji 👍🏽 mix  padded  "],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":[":hello world"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["line1\nline2😀"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["  padded  .leading"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["﻿bomtrailing."],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["Hello WorldHello World"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":[".leading日本語のテキスト"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["Hello Worldhello world"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["helloΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["aline1\nline2"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["line1\nline2tab\tseparated"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["a:b:c  padded  "],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["tab\tseparatedab"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["Hello Worldkey_name-1"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["﻿boma.b.c"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["ns:key.pathns:key.path"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["Hello Worldünïcödé"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["trailing.straße"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["hello worldtab\tseparated"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["😀😀"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["./x/**/*.json😀"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":[":ünïcödé"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["  padded  HELLO"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["a..b.leading"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["./x/**/*.jsonhello world"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["helloa..b"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["İstanbulΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["key_name-1tab\tseparated"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["a:b:cünïcödé"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["a..bünïcödé"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["ab日本語のテキスト"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["./x/**/*.jsonünïcödé"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["ünïcödéa:b:c"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["😀key_name-1"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["日本語のテキストhello"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["a..btrailing."],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":[".leadingİstanbul"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":[".leadingns:key.path"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["trailing.ab"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["./x/**/*.jsonabc"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["a..bsrc/a/b.ts"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":[":Hello World"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["trailing.a..b"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["a.b.cHELLO"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":[":src/a/b.ts"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":[".leading{name} has {count} items"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["a😀b😀chello world"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["HELLOns:key.path"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["a:b:cstraße"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["{name} has {count} items./x/**/*.json"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["a.b.ca:b:c"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["  padded  a..b"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["emoji 👍🏽 mixé"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["Hello WorldΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["a😀b😀cHello World"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["key_name-1hello world"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["a.b.cns:key.path"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["a.b.cab"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["key_name-1a:b:c"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["İstanbula..b"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["ünïcödétrailing."],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["abca..b"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["a:b:cé"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["src/a/b.tsa😀b😀c"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["key_name-1ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["a😀b😀c:"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["abc{name} has {count} items"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["tab\tseparatedHELLO"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["😀é"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["a..ba..b"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["HELLOsrc/a/b.ts"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["  padded  straße"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["emoji 👍🏽 mix./x/**/*.json"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["line1\nline2abc"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["a:b:c{name} has {count} items"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["a😀b😀chello"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["src/a/b.tshello world"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["key_name-1HELLO"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["İstanbul😀"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["İstanbulline1\nline2"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["İstanbulab"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["a😀b😀c😀"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["﻿bomkey_name-1"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["ΣΊΣΥΦΟΣ.leading"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["a:"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["trailing.src/a/b.ts"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["İstanbula.b.c"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["HELLOHello World"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["a..bhello world"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["éhello"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["a..bhello"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["a:b:cab"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["{name} has {count} itemshello world"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["ünïcödé:"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["a..bline1\nline2"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["HELLO:"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["😀src/a/b.ts"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["ns:key.path./x/**/*.json"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["a.b.ca..b"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["./x/**/*.jsona..b"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["emoji 👍🏽 mixİstanbul"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["日本語のテキストab"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["key_name-1Hello World"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["日本語のテキストHELLO"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["abckey_name-1"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["日本語のテキストİstanbul"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":[":İstanbul"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["a:b:cline1\nline2"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["key_name-1emoji 👍🏽 mix"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["  padded  ./x/**/*.json"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["ΣΊΣΥΦΟΣ日本語のテキスト"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["héllo wörld"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["👍🏽 thumbs"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["日本語"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["ılık ırmak"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["👨‍👩‍👧 family"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["a b"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["a😀b"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["a²b x½ y①"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["aⅠb Ⅻ"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["a𐐀b 𝐀bc"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["कि ٣٤"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["Iı İi"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["K K k"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["ſ s S"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["x‍y 👨‍👩‍👧"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["a b c　d"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["١٢٣ ٤٥"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["𝟘𝟙 ²³"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["snake_case foo-bar o'neil"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["ǅungla Ǆ"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["one\r\ntwo threefour"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["café café"],"ok":false}
+{"fn":"isMcpLoopbackHostname","args":["ΣΑΣ σας ς"],"ok":false}
+{"fn":"normalizeMcpConnectorUrl","args":["emoji 👍🏽 mix"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["abc"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["a😀b😀c"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["straße"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["tab\tseparated"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["hello:"],"ok":{"ok":false,"reason":"Use https:// for public servers. HTTP is allowed only for loopback hosts (localhost, 127.0.0.0/8, or ::1).","reasonCode":"https-required"}}
+{"fn":"normalizeMcpConnectorUrl","args":["a"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":[":"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["hello world"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["ab"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["HELLOab"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["trailing.ab"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["{name} has {count} items"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["emoji 👍🏽 mixHello World"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["é"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["HELLO"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["trailing."],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["😀"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["  padded  "],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["ünïcödé"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":[".leading"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["abcemoji 👍🏽 mix"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":[":ünïcödé"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["line1\nline2"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["日本語のテキストa"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["日本語のテキスト"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["line1\nline2Hello World"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["hello"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["./x/**/*.json"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["{name} has {count} itemshello"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["src/a/b.ts"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["ΣΊΣΥΦΟΣ"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["日本語のテキストstraße"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["Hello Worldabc"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["a😀b😀ckey_name-1"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["key_name-1"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["İstanbul"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["{name} has {count} itemssrc/a/b.ts"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["aünïcödé"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["aa:b:c"],"ok":{"ok":false,"reason":"Use https:// for public servers. HTTP is allowed only for loopback hosts (localhost, 127.0.0.0/8, or ::1).","reasonCode":"https-required"}}
+{"fn":"normalizeMcpConnectorUrl","args":["ns:key.path"],"ok":{"ok":false,"reason":"Use https:// for public servers. HTTP is allowed only for loopback hosts (localhost, 127.0.0.0/8, or ::1).","reasonCode":"https-required"}}
+{"fn":"normalizeMcpConnectorUrl","args":["emoji 👍🏽 mix.leading"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["a.b.c"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":[":a"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":[""],"ok":{"ok":false,"reason":"Enter the server URL.","reasonCode":"required"}}
+{"fn":"normalizeMcpConnectorUrl","args":["a:b:c"],"ok":{"ok":false,"reason":"Use https:// for public servers. HTTP is allowed only for loopback hosts (localhost, 127.0.0.0/8, or ::1).","reasonCode":"https-required"}}
+{"fn":"normalizeMcpConnectorUrl","args":["hello worldkey_name-1"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["日本語のテキストa..b"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["tab\tseparatedé"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["﻿bom"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["Hello World"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["key_name-1ab"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["aa😀b😀c"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["{name} has {count} itemsa"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["HELLOhello"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["key_name-1{name} has {count} items"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["helloa"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["key_name-1😀"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["a.b.c😀"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["ΣΊΣΥΦΟΣé"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["{name} has {count} itemsa:b:c"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["a﻿bom"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["éİstanbul"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["a..b"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["{name} has {count} itemsabc"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["étrailing."],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["src/a/b.tsab"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["trailing.é"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["éa.b.c"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["line1\nline2emoji 👍🏽 mix"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["HELLOtrailing."],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["./x/**/*.json{name} has {count} items"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["key_name-1﻿bom"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":[".leading:"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["key_name-1emoji 👍🏽 mix"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["{name} has {count} itemsemoji 👍🏽 mix"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["abca"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["trailing.hello"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["ns:key.path{name} has {count} items"],"ok":{"ok":false,"reason":"Use https:// for public servers. HTTP is allowed only for loopback hosts (localhost, 127.0.0.0/8, or ::1).","reasonCode":"https-required"}}
+{"fn":"normalizeMcpConnectorUrl","args":["a..bHELLO"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["./x/**/*.jsontrailing."],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["key_name-1é"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["straßea.b.c"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["helloé"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["src/a/b.tstrailing."],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["a.b.ckey_name-1"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["HELLOline1\nline2"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["a:b:chello world"],"ok":{"ok":false,"reason":"Use https:// for public servers. HTTP is allowed only for loopback hosts (localhost, 127.0.0.0/8, or ::1).","reasonCode":"https-required"}}
+{"fn":"normalizeMcpConnectorUrl","args":["😀a"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["tab\tseparateda😀b😀c"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["line1\nline2é"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["İstanbulünïcödé"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["./x/**/*.json﻿bom"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["a.b.ca:b:c"],"ok":{"ok":false,"reason":"Use https:// for public servers. HTTP is allowed only for loopback hosts (localhost, 127.0.0.0/8, or ::1).","reasonCode":"https-required"}}
+{"fn":"normalizeMcpConnectorUrl","args":["{name} has {count} items:"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["😀.leading"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["Hello Worldhello world"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["{name} has {count} itemsünïcödé"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["aé"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["{name} has {count} itemsns:key.path"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["日本語のテキストHello World"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["aba:b:c"],"ok":{"ok":false,"reason":"Use https:// for public servers. HTTP is allowed only for loopback hosts (localhost, 127.0.0.0/8, or ::1).","reasonCode":"https-required"}}
+{"fn":"normalizeMcpConnectorUrl","args":["hello worldhello"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["ünïcödéline1\nline2"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["a.b.ca😀b😀c"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["src/a/b.tsΣΊΣΥΦΟΣ"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["{name} has {count} itemsa.b.c"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":[".leading./x/**/*.json"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["emoji 👍🏽 mixkey_name-1"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["a😀b😀chello world"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["éstraße"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["./x/**/*.jsonns:key.path"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":[":  padded  "],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["ünïcödéa..b"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["emoji 👍🏽 mixΣΊΣΥΦΟΣ"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["src/a/b.ts.leading"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["hello world{name} has {count} items"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["日本語のテキストns:key.path"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["emoji 👍🏽 mixns:key.path"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["emoji 👍🏽 mixHELLO"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["ΣΊΣΥΦΟΣ😀"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["  padded  straße"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["helloa:b:c"],"ok":{"ok":false,"reason":"Use https:// for public servers. HTTP is allowed only for loopback hosts (localhost, 127.0.0.0/8, or ::1).","reasonCode":"https-required"}}
+{"fn":"normalizeMcpConnectorUrl","args":["ünïcödéabc"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["日本語のテキストkey_name-1"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["tab\tseparatedline1\nline2"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["a..ba😀b😀c"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["  padded    padded  "],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["straßeabc"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["src/a/b.tsHELLO"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["aba..b"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["::"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["ΣΊΣΥΦΟΣa:b:c"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["ünïcödétrailing."],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["abtab\tseparated"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["key_name-1trailing."],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["😀ab"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["straßeé"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["HELLO  padded  "],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["tab\tseparated{name} has {count} items"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["helloHELLO"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["key_name-1Hello World"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["ahello world"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["./x/**/*.json日本語のテキスト"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":[".leadinga:b:c"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["﻿bomab"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["key_name-1straße"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["trailing.İstanbul"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["ünïcödéHello World"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["asrc/a/b.ts"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["{name} has {count} items😀"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["emoji 👍🏽 mix﻿bom"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["  padded  😀"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["a  padded  "],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["line1\nline2line1\nline2"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["abcΣΊΣΥΦΟΣ"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["😀ns:key.path"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["a😀b😀chello"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["😀ΣΊΣΥΦΟΣ"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["./x/**/*.jsona.b.c"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["﻿bomhello"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["a:b:cab"],"ok":{"ok":false,"reason":"Use https:// for public servers. HTTP is allowed only for loopback hosts (localhost, 127.0.0.0/8, or ::1).","reasonCode":"https-required"}}
+{"fn":"normalizeMcpConnectorUrl","args":["abc:"],"ok":{"ok":false,"reason":"Use https:// for public servers. HTTP is allowed only for loopback hosts (localhost, 127.0.0.0/8, or ::1).","reasonCode":"https-required"}}
+{"fn":"normalizeMcpConnectorUrl","args":["key_name-1ns:key.path"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["straßea..b"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["straßestraße"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["abcns:key.path"],"ok":{"ok":false,"reason":"Use https:// for public servers. HTTP is allowed only for loopback hosts (localhost, 127.0.0.0/8, or ::1).","reasonCode":"https-required"}}
+{"fn":"normalizeMcpConnectorUrl","args":["日本語のテキストab"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["key_name-1a..b"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["{name} has {count} items.leading"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["line1\nline2😀"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["  padded  é"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["tab\tseparatedHello World"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["abline1\nline2"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["abc{name} has {count} items"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["İstanbulab"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["a..bline1\nline2"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["tab\tseparatedΣΊΣΥΦΟΣ"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["İstanbul日本語のテキスト"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["ΣΊΣΥΦΟΣHello World"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["{name} has {count} itemsa😀b😀c"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["ns:key.pathHello World"],"ok":{"ok":false,"reason":"Use https:// for public servers. HTTP is allowed only for loopback hosts (localhost, 127.0.0.0/8, or ::1).","reasonCode":"https-required"}}
+{"fn":"normalizeMcpConnectorUrl","args":[":a:b:c"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["Hello World  padded  "],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["İstanbul./x/**/*.json"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["a😀b😀c日本語のテキスト"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["emoji 👍🏽 mixa.b.c"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["HELLO日本語のテキスト"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["﻿bom  padded  "],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["a.b.cemoji 👍🏽 mix"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["İstanbulΣΊΣΥΦΟΣ"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["a.b.csrc/a/b.ts"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":[".leading😀"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["  padded  trailing."],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["ΣΊΣΥΦΟΣhello"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["a:b:cé"],"ok":{"ok":false,"reason":"Use https:// for public servers. HTTP is allowed only for loopback hosts (localhost, 127.0.0.0/8, or ::1).","reasonCode":"https-required"}}
+{"fn":"normalizeMcpConnectorUrl","args":["  padded  日本語のテキスト"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["HELLOa😀b😀c"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":[".leadingİstanbul"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["ünïcödé.leading"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["héllo wörld"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["👍🏽 thumbs"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["日本語"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["ılık ırmak"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["👨‍👩‍👧 family"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["a b"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["a😀b"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["a²b x½ y①"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["aⅠb Ⅻ"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["a𐐀b 𝐀bc"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["कि ٣٤"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["Iı İi"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["K K k"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["ſ s S"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["x‍y 👨‍👩‍👧"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["a b c　d"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["١٢٣ ٤٥"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["𝟘𝟙 ²³"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["snake_case foo-bar o'neil"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["ǅungla Ǆ"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["one\r\ntwo threefour"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["café café"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"normalizeMcpConnectorUrl","args":["ΣΑΣ σας ς"],"ok":{"ok":false,"reason":"Enter a full URL, like https://mcp.example.com/mcp.","reasonCode":"invalid"}}
+{"fn":"defaultMcpConnectorName","args":["İstanbul{name} has {count} items"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":[".leading"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["﻿bom"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["{name} has {count} items"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["İstanbul"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["ΣΊΣΥΦΟΣ"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["trailing."],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["emoji 👍🏽 mix"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["src/a/b.ts"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["日本語のテキスト"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["ünïcödé"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["line1\nline2"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["é  padded  "],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["a"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["a..babc"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["HELLO"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["tab\tseparated﻿bom"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["éab"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["hello"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["a😀b😀c"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["ns:key.path"],"ok":""}
+{"fn":"defaultMcpConnectorName","args":["a.b.c"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["ab"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["😀emoji 👍🏽 mix"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["a..b"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["./x/**/*.json"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["HELLOünïcödé"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["a:b:c"],"ok":""}
+{"fn":"defaultMcpConnectorName","args":["ns:key.path日本語のテキスト"],"ok":""}
+{"fn":"defaultMcpConnectorName","args":["日本語のテキスト日本語のテキスト"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["ΣΊΣΥΦΟΣa..b"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["😀"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["hello world"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["Hello World"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["a😀b😀ca"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["key_name-1"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":[":"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["tab\tseparated"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["é"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["hello worldé"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["trailing.ünïcödé"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["a😀b😀ctab\tseparated"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["straße"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["éa"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":[":straße"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["  padded  a:b:c"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":[""],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["İstanbultab\tseparated"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["  padded  key_name-1"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["a..ba.b.c"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["./x/**/*.jsona😀b😀c"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["abc"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["﻿bomünïcödé"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["abckey_name-1"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["😀src/a/b.ts"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["emoji 👍🏽 mixkey_name-1"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["a😀b😀ca😀b😀c"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":[":line1\nline2"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["  padded  "],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["ns:key.pathé"],"ok":""}
+{"fn":"defaultMcpConnectorName","args":["src/a/b.ts.leading"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["straße{name} has {count} items"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["a😀b😀chello"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["./x/**/*.jsontab\tseparated"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["日本語のテキスト{name} has {count} items"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["line1\nline2src/a/b.ts"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["😀a😀b😀c"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["a.b.c.leading"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["{name} has {count} itemsabc"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["straßea:b:c"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["{name} has {count} itemsns:key.path"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["ns:key.patha"],"ok":""}
+{"fn":"defaultMcpConnectorName","args":["  padded  hello world"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["trailing.Hello World"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["trailing.é"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["emoji 👍🏽 mixtab\tseparated"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":[":ünïcödé"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["a:b:cline1\nline2"],"ok":""}
+{"fn":"defaultMcpConnectorName","args":["İstanbula"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["ΣΊΣΥΦΟΣünïcödé"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["HELLOHello World"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["src/a/b.tsabc"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["é日本語のテキスト"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["éHELLO"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["éhello"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["ünïcödéHello World"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["./x/**/*.jsonhello"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["Hello Worldtab\tseparated"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["HELLO  padded  "],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":[".leadingns:key.path"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["😀ünïcödé"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":[".leadinghello world"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["helloΣΊΣΥΦΟΣ"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["ΣΊΣΥΦΟΣstraße"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["  padded  .leading"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["tab\tseparatedstraße"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["hello worldab"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["﻿boma.b.c"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["straßeab"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["﻿boma:b:c"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":[":tab\tseparated"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":[".leadingΣΊΣΥΦΟΣ"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["key_name-1ΣΊΣΥΦΟΣ"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["{name} has {count} items:"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["tab\tseparatedhello"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["İstanbulstraße"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["trailing.trailing."],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["ΣΊΣΥΦΟΣ:"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["a😀b😀ca..b"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["hello world😀"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["ünïcödéns:key.path"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["a:b:c./x/**/*.json"],"ok":""}
+{"fn":"defaultMcpConnectorName","args":["HELLO日本語のテキスト"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["line1\nline2a😀b😀c"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["é./x/**/*.json"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["😀a.b.c"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["emoji 👍🏽 mixabc"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["straßens:key.path"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["trailing.ΣΊΣΥΦΟΣ"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["HELLOé"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["emoji 👍🏽 mixhello"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["tab\tseparatedabc"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["key_name-1a"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["{name} has {count} itemssrc/a/b.ts"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["İstanbul日本語のテキスト"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["a:b:chello"],"ok":""}
+{"fn":"defaultMcpConnectorName","args":["hellokey_name-1"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["helloa"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["éé"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["hello worldstraße"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["Hello Worldns:key.path"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":[":日本語のテキスト"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["日本語のテキストİstanbul"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["./x/**/*.jsoné"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":[".leadinga"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":[":a"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["{name} has {count} itemsa..b"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["HELLOa..b"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["ΣΊΣΥΦΟΣab"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["tab\tseparatedemoji 👍🏽 mix"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["ns:key.patha😀b😀c"],"ok":""}
+{"fn":"defaultMcpConnectorName","args":["abc:"],"ok":""}
+{"fn":"defaultMcpConnectorName","args":["ns:key.patha.b.c"],"ok":""}
+{"fn":"defaultMcpConnectorName","args":["a﻿bom"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["HELLOabc"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["line1\nline2a"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["a..bemoji 👍🏽 mix"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["abchello"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["😀a:b:c"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":[".leadingHello World"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":[":﻿bom"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["ab日本語のテキスト"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["İstanbulé"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["Hello Worlda😀b😀c"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["😀key_name-1"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":[":  padded  "],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["key_name-1line1\nline2"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["ΣΊΣΥΦΟΣhello world"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["line1\nline2é"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["İstanbulab"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["a..bHELLO"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["İstanbul:"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["a😀"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["日本語のテキスト:"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":[":{name} has {count} items"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["a😀b😀cstraße"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["﻿bomkey_name-1"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["ünïcödé./x/**/*.json"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["Hello Worldhello world"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["src/a/b.tstab\tseparated"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["ΣΊΣΥΦΟΣa"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["a.b.ctrailing."],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["{name} has {count} itemsemoji 👍🏽 mix"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["éa.b.c"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["ns:key.pathhello world"],"ok":""}
+{"fn":"defaultMcpConnectorName","args":["a..bé"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["tab\tseparated  padded  "],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":[".leading  padded  "],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["a:b:cünïcödé"],"ok":""}
+{"fn":"defaultMcpConnectorName","args":["key_name-1trailing."],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["HELLOa:b:c"],"ok":""}
+{"fn":"defaultMcpConnectorName","args":["emoji 👍🏽 mix{name} has {count} items"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["straßeemoji 👍🏽 mix"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["a.b.ca:b:c"],"ok":""}
+{"fn":"defaultMcpConnectorName","args":["a😀b😀cé"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["aünïcödé"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["emoji 👍🏽 mix.leading"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["straße./x/**/*.json"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["emoji 👍🏽 mixns:key.path"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["::"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["key_name-1abc"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["./x/**/*.jsona"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["abcünïcödé"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["😀{name} has {count} items"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["./x/**/*.jsonünïcödé"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["a:b:chello world"],"ok":""}
+{"fn":"defaultMcpConnectorName","args":[":src/a/b.ts"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":[".leadingİstanbul"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["a  padded  "],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["hellohello world"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["héllo wörld"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["👍🏽 thumbs"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["日本語"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["ılık ırmak"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["👨‍👩‍👧 family"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["a b"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["a😀b"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["a²b x½ y①"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["aⅠb Ⅻ"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["a𐐀b 𝐀bc"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["कि ٣٤"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["Iı İi"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["K K k"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["ſ s S"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["x‍y 👨‍👩‍👧"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["a b c　d"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["١٢٣ ٤٥"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["𝟘𝟙 ²³"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["snake_case foo-bar o'neil"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["ǅungla Ǆ"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["one\r\ntwo threefour"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["café café"],"error":"Invalid URL"}
+{"fn":"defaultMcpConnectorName","args":["ΣΑΣ σας ς"],"error":"Invalid URL"}
+{"fn":"mcpConnectorSlug","args":[":"],"ok":"mcp"}
+{"fn":"mcpConnectorSlug","args":[".leading"],"ok":"leading"}
+{"fn":"mcpConnectorSlug","args":["./x/**/*.json"],"ok":"x_json"}
+{"fn":"mcpConnectorSlug","args":["emoji 👍🏽 mix"],"ok":"emoji_mix"}
+{"fn":"mcpConnectorSlug","args":["Hello World"],"ok":"hello_world"}
+{"fn":"mcpConnectorSlug","args":["key_name-1"],"ok":"key_name_1"}
+{"fn":"mcpConnectorSlug","args":["line1\nline2"],"ok":"line1_line2"}
+{"fn":"mcpConnectorSlug","args":["tab\tseparated"],"ok":"tab_separated"}
+{"fn":"mcpConnectorSlug","args":["日本語のテキスト"],"ok":"mcp"}
+{"fn":"mcpConnectorSlug","args":["src/a/b.ts"],"ok":"src_a_b_ts"}
+{"fn":"mcpConnectorSlug","args":["ünïcödétrailing."],"ok":"u_ni_co_de_trailing"}
+{"fn":"mcpConnectorSlug","args":["straße"],"ok":"stra_e"}
+{"fn":"mcpConnectorSlug","args":["trailing."],"ok":"trailing"}
+{"fn":"mcpConnectorSlug","args":["😀"],"ok":"mcp"}
+{"fn":"mcpConnectorSlug","args":["key_name-1ns:key.path"],"ok":"key_name_1ns_key_path"}
+{"fn":"mcpConnectorSlug","args":[""],"ok":"mcp"}
+{"fn":"mcpConnectorSlug","args":["a:b:c"],"ok":"a_b_c"}
+{"fn":"mcpConnectorSlug","args":["./x/**/*.jsona..b"],"ok":"x_jsona_b"}
+{"fn":"mcpConnectorSlug","args":["a"],"ok":"a"}
+{"fn":"mcpConnectorSlug","args":["HELLO"],"ok":"hello"}
+{"fn":"mcpConnectorSlug","args":["  padded  "],"ok":"padded"}
+{"fn":"mcpConnectorSlug","args":["ünïcödé"],"ok":"u_ni_co_de"}
+{"fn":"mcpConnectorSlug","args":["ns:key.path"],"ok":"ns_key_path"}
+{"fn":"mcpConnectorSlug","args":[":abc"],"ok":"abc"}
+{"fn":"mcpConnectorSlug","args":["a..b"],"ok":"a_b"}
+{"fn":"mcpConnectorSlug","args":["hello"],"ok":"hello"}
+{"fn":"mcpConnectorSlug","args":["ΣΊΣΥΦΟΣ"],"ok":"mcp"}
+{"fn":"mcpConnectorSlug","args":["ab"],"ok":"ab"}
+{"fn":"mcpConnectorSlug","args":["{name} has {count} items"],"ok":"name_has_count_items"}
+{"fn":"mcpConnectorSlug","args":["éHello World"],"ok":"e_hello_world"}
+{"fn":"mcpConnectorSlug","args":["İstanbul"],"ok":"i_stanbul"}
+{"fn":"mcpConnectorSlug","args":[":  padded  "],"ok":"padded"}
+{"fn":"mcpConnectorSlug","args":["a😀b😀c"],"ok":"a_b_c"}
+{"fn":"mcpConnectorSlug","args":["abcHELLO"],"ok":"abchello"}
+{"fn":"mcpConnectorSlug","args":["{name} has {count} items.leading"],"ok":"name_has_count_items_lea"}
+{"fn":"mcpConnectorSlug","args":["éİstanbul"],"ok":"e_i_stanbul"}
+{"fn":"mcpConnectorSlug","args":["hello world"],"ok":"hello_world"}
+{"fn":"mcpConnectorSlug","args":["abc"],"ok":"abc"}
+{"fn":"mcpConnectorSlug","args":["ünïcödéa"],"ok":"u_ni_co_de_a"}
+{"fn":"mcpConnectorSlug","args":["﻿bom"],"ok":"bom"}
+{"fn":"mcpConnectorSlug","args":["key_name-1key_name-1"],"ok":"key_name_1key_name_1"}
+{"fn":"mcpConnectorSlug","args":["a.b.c"],"ok":"a_b_c"}
+{"fn":"mcpConnectorSlug","args":["a😀b😀chello world"],"ok":"a_b_chello_world"}
+{"fn":"mcpConnectorSlug","args":["é"],"ok":"e"}
+{"fn":"mcpConnectorSlug","args":["straßea😀b😀c"],"ok":"stra_ea_b_c"}
+{"fn":"mcpConnectorSlug","args":["İstanbul.leading"],"ok":"i_stanbul_leading"}
+{"fn":"mcpConnectorSlug","args":["a.b.cHello World"],"ok":"a_b_chello_world"}
+{"fn":"mcpConnectorSlug","args":["src/a/b.ts  padded  "],"ok":"src_a_b_ts_padded"}
+{"fn":"mcpConnectorSlug","args":["HELLOsrc/a/b.ts"],"ok":"hellosrc_a_b_ts"}
+{"fn":"mcpConnectorSlug","args":["İstanbula😀b😀c"],"ok":"i_stanbula_b_c"}
+{"fn":"mcpConnectorSlug","args":["HELLOa:b:c"],"ok":"helloa_b_c"}
+{"fn":"mcpConnectorSlug","args":["emoji 👍🏽 mix😀"],"ok":"emoji_mix"}
+{"fn":"mcpConnectorSlug","args":["😀./x/**/*.json"],"ok":"x_json"}
+{"fn":"mcpConnectorSlug","args":["  padded  src/a/b.ts"],"ok":"padded_src_a_b_ts"}
+{"fn":"mcpConnectorSlug","args":["ab日本語のテキスト"],"ok":"ab"}
+{"fn":"mcpConnectorSlug","args":["  padded  key_name-1"],"ok":"padded_key_name_1"}
+{"fn":"mcpConnectorSlug","args":["a:b:c./x/**/*.json"],"ok":"a_b_c_x_json"}
+{"fn":"mcpConnectorSlug","args":["straße:"],"ok":"stra_e"}
+{"fn":"mcpConnectorSlug","args":["straße{name} has {count} items"],"ok":"stra_e_name_has_count_it"}
+{"fn":"mcpConnectorSlug","args":["emoji 👍🏽 mixabc"],"ok":"emoji_mixabc"}
+{"fn":"mcpConnectorSlug","args":["key_name-1é"],"ok":"key_name_1e"}
+{"fn":"mcpConnectorSlug","args":["éa..b"],"ok":"e_a_b"}
+{"fn":"mcpConnectorSlug","args":["straße😀"],"ok":"stra_e"}
+{"fn":"mcpConnectorSlug","args":["./x/**/*.jsontrailing."],"ok":"x_jsontrailing"}
+{"fn":"mcpConnectorSlug","args":["abc😀"],"ok":"abc"}
+{"fn":"mcpConnectorSlug","args":[".leadingline1\nline2"],"ok":"leadingline1_line2"}
+{"fn":"mcpConnectorSlug","args":["./x/**/*.jsonHELLO"],"ok":"x_jsonhello"}
+{"fn":"mcpConnectorSlug","args":["😀é"],"ok":"e"}
+{"fn":"mcpConnectorSlug","args":["emoji 👍🏽 mix./x/**/*.json"],"ok":"emoji_mix_x_json"}
+{"fn":"mcpConnectorSlug","args":["abc﻿bom"],"ok":"abc_bom"}
+{"fn":"mcpConnectorSlug","args":["abca.b.c"],"ok":"abca_b_c"}
+{"fn":"mcpConnectorSlug","args":["﻿boma"],"ok":"boma"}
+{"fn":"mcpConnectorSlug","args":["a..b😀"],"ok":"a_b"}
+{"fn":"mcpConnectorSlug","args":["emoji 👍🏽 mixİstanbul"],"ok":"emoji_mixi_stanbul"}
+{"fn":"mcpConnectorSlug","args":["hellotrailing."],"ok":"hellotrailing"}
+{"fn":"mcpConnectorSlug","args":["﻿boma..b"],"ok":"boma_b"}
+{"fn":"mcpConnectorSlug","args":["ns:key.pathtrailing."],"ok":"ns_key_pathtrailing"}
+{"fn":"mcpConnectorSlug","args":["😀straße"],"ok":"stra_e"}
+{"fn":"mcpConnectorSlug","args":["ab😀"],"ok":"ab"}
+{"fn":"mcpConnectorSlug","args":["./x/**/*.json  padded  "],"ok":"x_json_padded"}
+{"fn":"mcpConnectorSlug","args":["İstanbultab\tseparated"],"ok":"i_stanbultab_separated"}
+{"fn":"mcpConnectorSlug","args":["src/a/b.tshello world"],"ok":"src_a_b_tshello_world"}
+{"fn":"mcpConnectorSlug","args":["﻿bomΣΊΣΥΦΟΣ"],"ok":"bom"}
+{"fn":"mcpConnectorSlug","args":["straßeab"],"ok":"stra_eab"}
+{"fn":"mcpConnectorSlug","args":["a:b:cstraße"],"ok":"a_b_cstra_e"}
+{"fn":"mcpConnectorSlug","args":["line1\nline2a😀b😀c"],"ok":"line1_line2a_b_c"}
+{"fn":"mcpConnectorSlug","args":["a.b.ctrailing."],"ok":"a_b_ctrailing"}
+{"fn":"mcpConnectorSlug","args":["HELLO./x/**/*.json"],"ok":"hello_x_json"}
+{"fn":"mcpConnectorSlug","args":["hello worldsrc/a/b.ts"],"ok":"hello_worldsrc_a_b_ts"}
+{"fn":"mcpConnectorSlug","args":["abc日本語のテキスト"],"ok":"abc"}
+{"fn":"mcpConnectorSlug","args":["a..b.leading"],"ok":"a_b_leading"}
+{"fn":"mcpConnectorSlug","args":["abcabc"],"ok":"abcabc"}
+{"fn":"mcpConnectorSlug","args":[".leadingHELLO"],"ok":"leadinghello"}
+{"fn":"mcpConnectorSlug","args":["tab\tseparatedtab\tseparated"],"ok":"tab_separatedtab_separat"}
+{"fn":"mcpConnectorSlug","args":["src/a/b.ts./x/**/*.json"],"ok":"src_a_b_ts_x_json"}
+{"fn":"mcpConnectorSlug","args":["abcİstanbul"],"ok":"abci_stanbul"}
+{"fn":"mcpConnectorSlug","args":["ans:key.path"],"ok":"ans_key_path"}
+{"fn":"mcpConnectorSlug","args":["a..ba"],"ok":"a_ba"}
+{"fn":"mcpConnectorSlug","args":["abtrailing."],"ok":"abtrailing"}
+{"fn":"mcpConnectorSlug","args":["trailing.key_name-1"],"ok":"trailing_key_name_1"}
+{"fn":"mcpConnectorSlug","args":["./x/**/*.json.leading"],"ok":"x_json_leading"}
+{"fn":"mcpConnectorSlug","args":["line1\nline2straße"],"ok":"line1_line2stra_e"}
+{"fn":"mcpConnectorSlug","args":["a:b:csrc/a/b.ts"],"ok":"a_b_csrc_a_b_ts"}
+{"fn":"mcpConnectorSlug","args":["a😀b😀ca😀b😀c"],"ok":"a_b_ca_b_c"}
+{"fn":"mcpConnectorSlug","args":["Hello World:"],"ok":"hello_world"}
+{"fn":"mcpConnectorSlug","args":["src/a/b.tstab\tseparated"],"ok":"src_a_b_tstab_separated"}
+{"fn":"mcpConnectorSlug","args":["trailing.a😀b😀c"],"ok":"trailing_a_b_c"}
+{"fn":"mcpConnectorSlug","args":["é﻿bom"],"ok":"e_bom"}
+{"fn":"mcpConnectorSlug","args":["﻿bomhello"],"ok":"bomhello"}
+{"fn":"mcpConnectorSlug","args":["ünïcödétab\tseparated"],"ok":"u_ni_co_de_tab_separated"}
+{"fn":"mcpConnectorSlug","args":["a:b:cé"],"ok":"a_b_ce"}
+{"fn":"mcpConnectorSlug","args":["src/a/b.ts.leading"],"ok":"src_a_b_ts_leading"}
+{"fn":"mcpConnectorSlug","args":[".leadinga..b"],"ok":"leadinga_b"}
+{"fn":"mcpConnectorSlug","args":["😀a.b.c"],"ok":"a_b_c"}
+{"fn":"mcpConnectorSlug","args":["{name} has {count} itemsa"],"ok":"name_has_count_itemsa"}
+{"fn":"mcpConnectorSlug","args":["﻿bom  padded  "],"ok":"bom_padded"}
+{"fn":"mcpConnectorSlug","args":["tab\tseparateda😀b😀c"],"ok":"tab_separateda_b_c"}
+{"fn":"mcpConnectorSlug","args":["src/a/b.tsemoji 👍🏽 mix"],"ok":"src_a_b_tsemoji_mix"}
+{"fn":"mcpConnectorSlug","args":["a😀b😀cabc"],"ok":"a_b_cabc"}
+{"fn":"mcpConnectorSlug","args":["./x/**/*.json./x/**/*.json"],"ok":"x_json_x_json"}
+{"fn":"mcpConnectorSlug","args":["key_name-1a😀b😀c"],"ok":"key_name_1a_b_c"}
+{"fn":"mcpConnectorSlug","args":["HELLOstraße"],"ok":"hellostra_e"}
+{"fn":"mcpConnectorSlug","args":["straßeline1\nline2"],"ok":"stra_eline1_line2"}
+{"fn":"mcpConnectorSlug","args":["﻿bomtab\tseparated"],"ok":"bomtab_separated"}
+{"fn":"mcpConnectorSlug","args":["key_name-1日本語のテキスト"],"ok":"key_name_1"}
+{"fn":"mcpConnectorSlug","args":["日本語のテキストa"],"ok":"a"}
+{"fn":"mcpConnectorSlug","args":["ns:key.path.leading"],"ok":"ns_key_path_leading"}
+{"fn":"mcpConnectorSlug","args":["a:b:cns:key.path"],"ok":"a_b_cns_key_path"}
+{"fn":"mcpConnectorSlug","args":["tab\tseparatedΣΊΣΥΦΟΣ"],"ok":"tab_separated"}
+{"fn":"mcpConnectorSlug","args":["trailing.abc"],"ok":"trailing_abc"}
+{"fn":"mcpConnectorSlug","args":["helloΣΊΣΥΦΟΣ"],"ok":"hello"}
+{"fn":"mcpConnectorSlug","args":["😀{name} has {count} items"],"ok":"name_has_count_items"}
+{"fn":"mcpConnectorSlug","args":["HELLOΣΊΣΥΦΟΣ"],"ok":"hello"}
+{"fn":"mcpConnectorSlug","args":["a.b.cemoji 👍🏽 mix"],"ok":"a_b_cemoji_mix"}
+{"fn":"mcpConnectorSlug","args":["emoji 👍🏽 mixemoji 👍🏽 mix"],"ok":"emoji_mixemoji_mix"}
+{"fn":"mcpConnectorSlug","args":["ΣΊΣΥΦΟΣa:b:c"],"ok":"a_b_c"}
+{"fn":"mcpConnectorSlug","args":["emoji 👍🏽 mix{name} has {count} items"],"ok":"emoji_mix_name_has_count"}
+{"fn":"mcpConnectorSlug","args":["ns:key.patha:b:c"],"ok":"ns_key_patha_b_c"}
+{"fn":"mcpConnectorSlug","args":["trailing.hello"],"ok":"trailing_hello"}
+{"fn":"mcpConnectorSlug","args":["é😀"],"ok":"e"}
+{"fn":"mcpConnectorSlug","args":["straßetrailing."],"ok":"stra_etrailing"}
+{"fn":"mcpConnectorSlug","args":["src/a/b.tssrc/a/b.ts"],"ok":"src_a_b_tssrc_a_b_ts"}
+{"fn":"mcpConnectorSlug","args":["İstanbulstraße"],"ok":"i_stanbulstra_e"}
+{"fn":"mcpConnectorSlug","args":[":a😀b😀c"],"ok":"a_b_c"}
+{"fn":"mcpConnectorSlug","args":["abctrailing."],"ok":"abctrailing"}
+{"fn":"mcpConnectorSlug","args":["./x/**/*.jsona:b:c"],"ok":"x_jsona_b_c"}
+{"fn":"mcpConnectorSlug","args":["helloHELLO"],"ok":"hellohello"}
+{"fn":"mcpConnectorSlug","args":["a﻿bom"],"ok":"a_bom"}
+{"fn":"mcpConnectorSlug","args":["straße  padded  "],"ok":"stra_e_padded"}
+{"fn":"mcpConnectorSlug","args":["HELLO日本語のテキスト"],"ok":"hello"}
+{"fn":"mcpConnectorSlug","args":["aba:b:c"],"ok":"aba_b_c"}
+{"fn":"mcpConnectorSlug","args":["Hello WorldHello World"],"ok":"hello_worldhello_world"}
+{"fn":"mcpConnectorSlug","args":["a😀b😀csrc/a/b.ts"],"ok":"a_b_csrc_a_b_ts"}
+{"fn":"mcpConnectorSlug","args":["straßeHello World"],"ok":"stra_ehello_world"}
+{"fn":"mcpConnectorSlug","args":[".leadingΣΊΣΥΦΟΣ"],"ok":"leading"}
+{"fn":"mcpConnectorSlug","args":["tab\tseparatedhello"],"ok":"tab_separatedhello"}
+{"fn":"mcpConnectorSlug","args":["日本語のテキストİstanbul"],"ok":"i_stanbul"}
+{"fn":"mcpConnectorSlug","args":["ns:key.patha.b.c"],"ok":"ns_key_patha_b_c"}
+{"fn":"mcpConnectorSlug","args":["😀İstanbul"],"ok":"i_stanbul"}
+{"fn":"mcpConnectorSlug","args":["key_name-1  padded  "],"ok":"key_name_1_padded"}
+{"fn":"mcpConnectorSlug","args":["日本語のテキスト./x/**/*.json"],"ok":"x_json"}
+{"fn":"mcpConnectorSlug","args":["a..ba😀b😀c"],"ok":"a_ba_b_c"}
+{"fn":"mcpConnectorSlug","args":["﻿boma.b.c"],"ok":"boma_b_c"}
+{"fn":"mcpConnectorSlug","args":["ΣΊΣΥΦΟΣhello world"],"ok":"hello_world"}
+{"fn":"mcpConnectorSlug","args":["key_name-1ab"],"ok":"key_name_1ab"}
+{"fn":"mcpConnectorSlug","args":["a..b{name} has {count} items"],"ok":"a_b_name_has_count_items"}
+{"fn":"mcpConnectorSlug","args":["éHELLO"],"ok":"e_hello"}
+{"fn":"mcpConnectorSlug","args":["İstanbulabc"],"ok":"i_stanbulabc"}
+{"fn":"mcpConnectorSlug","args":["hellostraße"],"ok":"hellostra_e"}
+{"fn":"mcpConnectorSlug","args":["key_name-1Hello World"],"ok":"key_name_1hello_world"}
+{"fn":"mcpConnectorSlug","args":["a..b  padded  "],"ok":"a_b_padded"}
+{"fn":"mcpConnectorSlug","args":["trailing.{name} has {count} items"],"ok":"trailing_name_has_count"}
+{"fn":"mcpConnectorSlug","args":["./x/**/*.jsonΣΊΣΥΦΟΣ"],"ok":"x_json"}
+{"fn":"mcpConnectorSlug","args":["{name} has {count} itemsemoji 👍🏽 mix"],"ok":"name_has_count_itemsemoj"}
+{"fn":"mcpConnectorSlug","args":["日本語のテキストHELLO"],"ok":"hello"}
+{"fn":"mcpConnectorSlug","args":["ns:key.pathsrc/a/b.ts"],"ok":"ns_key_pathsrc_a_b_ts"}
+{"fn":"mcpConnectorSlug","args":["trailing.😀"],"ok":"trailing"}
+{"fn":"mcpConnectorSlug","args":["emoji 👍🏽 mixHello World"],"ok":"emoji_mixhello_world"}
+{"fn":"mcpConnectorSlug","args":["ΣΊΣΥΦΟΣHello World"],"ok":"hello_world"}
+{"fn":"mcpConnectorSlug","args":["ünïcödéemoji 👍🏽 mix"],"ok":"u_ni_co_de_emoji_mix"}
+{"fn":"mcpConnectorSlug","args":["日本語のテキスト.leading"],"ok":"leading"}
+{"fn":"mcpConnectorSlug","args":["HELLOline1\nline2"],"ok":"helloline1_line2"}
+{"fn":"mcpConnectorSlug","args":["ünïcödé{name} has {count} items"],"ok":"u_ni_co_de_name_has_coun"}
+{"fn":"mcpConnectorSlug","args":["line1\nline2ns:key.path"],"ok":"line1_line2ns_key_path"}
+{"fn":"mcpConnectorSlug","args":["a:b:c:"],"ok":"a_b_c"}
+{"fn":"mcpConnectorSlug","args":["ΣΊΣΥΦΟΣtrailing."],"ok":"trailing"}
+{"fn":"mcpConnectorSlug","args":["a:b:c😀"],"ok":"a_b_c"}
+{"fn":"mcpConnectorSlug","args":["emoji 👍🏽 mixa:b:c"],"ok":"emoji_mixa_b_c"}
+{"fn":"mcpConnectorSlug","args":["a.b.c./x/**/*.json"],"ok":"a_b_c_x_json"}
+{"fn":"mcpConnectorSlug","args":["emoji 👍🏽 mixtab\tseparated"],"ok":"emoji_mixtab_separated"}
+{"fn":"mcpConnectorSlug","args":["ns:key.patha"],"ok":"ns_key_patha"}
+{"fn":"mcpConnectorSlug","args":["ahello world"],"ok":"ahello_world"}
+{"fn":"mcpConnectorSlug","args":["éé"],"ok":"e_e"}
+{"fn":"mcpConnectorSlug","args":["  padded  a"],"ok":"padded_a"}
+{"fn":"mcpConnectorSlug","args":["Hello Worldsrc/a/b.ts"],"ok":"hello_worldsrc_a_b_ts"}
+{"fn":"mcpConnectorSlug","args":["abcé"],"ok":"abce"}
+{"fn":"mcpConnectorSlug","args":["src/a/b.tsabc"],"ok":"src_a_b_tsabc"}
+{"fn":"mcpConnectorSlug","args":["😀hello world"],"ok":"hello_world"}
+{"fn":"mcpConnectorSlug","args":["😀emoji 👍🏽 mix"],"ok":"emoji_mix"}
+{"fn":"mcpConnectorSlug","args":["./x/**/*.jsonhello world"],"ok":"x_jsonhello_world"}
+{"fn":"mcpConnectorSlug","args":["héllo wörld"],"ok":"he_llo_wo_rld"}
+{"fn":"mcpConnectorSlug","args":["👍🏽 thumbs"],"ok":"thumbs"}
+{"fn":"mcpConnectorSlug","args":["日本語"],"ok":"mcp"}
+{"fn":"mcpConnectorSlug","args":["ılık ırmak"],"ok":"l_k_rmak"}
+{"fn":"mcpConnectorSlug","args":["👨‍👩‍👧 family"],"ok":"family"}
+{"fn":"mcpConnectorSlug","args":["a b"],"ok":"a_b"}
+{"fn":"mcpConnectorSlug","args":["a😀b"],"ok":"a_b"}
+{"fn":"mcpConnectorSlug","args":["a²b x½ y①"],"ok":"a2b_x1_2_y1"}
+{"fn":"mcpConnectorSlug","args":["aⅠb Ⅻ"],"ok":"aib_xii"}
+{"fn":"mcpConnectorSlug","args":["a𐐀b 𝐀bc"],"ok":"a_b_abc"}
+{"fn":"mcpConnectorSlug","args":["कि ٣٤"],"ok":"mcp"}
+{"fn":"mcpConnectorSlug","args":["Iı İi"],"ok":"i_i_i"}
+{"fn":"mcpConnectorSlug","args":["K K k"],"ok":"k_k_k"}
+{"fn":"mcpConnectorSlug","args":["ſ s S"],"ok":"s_s_s"}
+{"fn":"mcpConnectorSlug","args":["x‍y 👨‍👩‍👧"],"ok":"x_y"}
+{"fn":"mcpConnectorSlug","args":["a b c　d"],"ok":"a_b_c_d"}
+{"fn":"mcpConnectorSlug","args":["١٢٣ ٤٥"],"ok":"mcp"}
+{"fn":"mcpConnectorSlug","args":["𝟘𝟙 ²³"],"ok":"mcp_01_23"}
+{"fn":"mcpConnectorSlug","args":["snake_case foo-bar o'neil"],"ok":"snake_case_foo_bar_o_nei"}
+{"fn":"mcpConnectorSlug","args":["ǅungla Ǆ"],"ok":"dz_ungla_dz"}
+{"fn":"mcpConnectorSlug","args":["one\r\ntwo threefour"],"ok":"one_two_three_four"}
+{"fn":"mcpConnectorSlug","args":["café café"],"ok":"cafe_cafe"}
+{"fn":"mcpConnectorSlug","args":["ΣΑΣ σας ς"],"ok":"mcp"}
+{"fn":"mcpConnectorServerName","args":["tab\tseparated"],"ok":"tab\tseparated_connector"}
+{"fn":"mcpConnectorServerName","args":["a😀b😀c"],"ok":"a😀b😀c_connector"}
+{"fn":"mcpConnectorServerName","args":["Hello World"],"ok":"Hello World_connector"}
+{"fn":"mcpConnectorServerName","args":["emoji 👍🏽 mix"],"ok":"emoji 👍🏽 mix_connector"}
+{"fn":"mcpConnectorServerName","args":["a.b.c"],"ok":"a.b.c_connector"}
+{"fn":"mcpConnectorServerName","args":["日本語のテキスト"],"ok":"日本語のテキスト_connector"}
+{"fn":"mcpConnectorServerName","args":["ns:key.path"],"ok":"ns:key.path_connector"}
+{"fn":"mcpConnectorServerName","args":["  padded  a😀b😀c"],"ok":"  padded  a😀b😀c_connector"}
+{"fn":"mcpConnectorServerName","args":[":"],"ok":":_connector"}
+{"fn":"mcpConnectorServerName","args":["src/a/b.ts"],"ok":"src/a/b.ts_connector"}
+{"fn":"mcpConnectorServerName","args":["ab"],"ok":"ab_connector"}
+{"fn":"mcpConnectorServerName","args":["ünïcödé.leading"],"ok":"ünïcödé.leading_connector"}
+{"fn":"mcpConnectorServerName","args":["  padded  "],"ok":"  padded  _connector"}
+{"fn":"mcpConnectorServerName","args":["a"],"ok":"a_connector"}
+{"fn":"mcpConnectorServerName","args":["😀"],"ok":"😀_connector"}
+{"fn":"mcpConnectorServerName","args":["{name} has {count} items.leading"],"ok":"{name} has {count} items.leading_connector"}
+{"fn":"mcpConnectorServerName","args":["hello"],"ok":"hello_connector"}
+{"fn":"mcpConnectorServerName","args":["﻿bom"],"ok":"﻿bom_connector"}
+{"fn":"mcpConnectorServerName","args":["a:b:cab"],"ok":"a:b:cab_connector"}
+{"fn":"mcpConnectorServerName","args":[""],"ok":"_connector"}
+{"fn":"mcpConnectorServerName","args":["line1\nline2"],"ok":"line1\nline2_connector"}
+{"fn":"mcpConnectorServerName","args":["ünïcödé"],"ok":"ünïcödé_connector"}
+{"fn":"mcpConnectorServerName","args":["İstanbultab\tseparated"],"ok":"İstanbultab\tseparated_connector"}
+{"fn":"mcpConnectorServerName","args":["key_name-1./x/**/*.json"],"ok":"key_name-1./x/**/*.json_connector"}
+{"fn":"mcpConnectorServerName","args":["a..b"],"ok":"a..b_connector"}
+{"fn":"mcpConnectorServerName","args":["atrailing."],"ok":"atrailing._connector"}
+{"fn":"mcpConnectorServerName","args":["abc"],"ok":"abc_connector"}
+{"fn":"mcpConnectorServerName","args":["trailing.hello world"],"ok":"trailing.hello world_connector"}
+{"fn":"mcpConnectorServerName","args":[".leading"],"ok":".leading_connector"}
+{"fn":"mcpConnectorServerName","args":["trailing."],"ok":"trailing._connector"}
+{"fn":"mcpConnectorServerName","args":["straße"],"ok":"straße_connector"}
+{"fn":"mcpConnectorServerName","args":["é"],"ok":"é_connector"}
+{"fn":"mcpConnectorServerName","args":["HELLOa.b.c"],"ok":"HELLOa.b.c_connector"}
+{"fn":"mcpConnectorServerName","args":["./x/**/*.jsonkey_name-1"],"ok":"./x/**/*.jsonkey_name-1_connector"}
+{"fn":"mcpConnectorServerName","args":[".leading  padded  "],"ok":".leading  padded  _connector"}
+{"fn":"mcpConnectorServerName","args":["HELLO"],"ok":"HELLO_connector"}
+{"fn":"mcpConnectorServerName","args":["{name} has {count} items"],"ok":"{name} has {count} items_connector"}
+{"fn":"mcpConnectorServerName","args":["key_name-1"],"ok":"key_name-1_connector"}
+{"fn":"mcpConnectorServerName","args":["a.b.c😀"],"ok":"a.b.c😀_connector"}
+{"fn":"mcpConnectorServerName","args":["İstanbula:b:c"],"ok":"İstanbula:b:c_connector"}
+{"fn":"mcpConnectorServerName","args":["İstanbul"],"ok":"İstanbul_connector"}
+{"fn":"mcpConnectorServerName","args":[".leadingé"],"ok":".leadingé_connector"}
+{"fn":"mcpConnectorServerName","args":["a:b:c"],"ok":"a:b:c_connector"}
+{"fn":"mcpConnectorServerName","args":[".leadingtrailing."],"ok":".leadingtrailing._connector"}
+{"fn":"mcpConnectorServerName","args":["ΣΊΣΥΦΟΣé"],"ok":"ΣΊΣΥΦΟΣé_connector"}
+{"fn":"mcpConnectorServerName","args":["./x/**/*.json"],"ok":"./x/**/*.json_connector"}
+{"fn":"mcpConnectorServerName","args":["İstanbul  padded  "],"ok":"İstanbul  padded  _connector"}
+{"fn":"mcpConnectorServerName","args":["abcline1\nline2"],"ok":"abcline1\nline2_connector"}
+{"fn":"mcpConnectorServerName","args":["HELLOhello"],"ok":"HELLOhello_connector"}
+{"fn":"mcpConnectorServerName","args":["日本語のテキストé"],"ok":"日本語のテキストé_connector"}
+{"fn":"mcpConnectorServerName","args":["Hello World./x/**/*.json"],"ok":"Hello World./x/**/*.json_connector"}
+{"fn":"mcpConnectorServerName","args":["key_name-1日本語のテキスト"],"ok":"key_name-1日本語のテキスト_connector"}
+{"fn":"mcpConnectorServerName","args":["straßeΣΊΣΥΦΟΣ"],"ok":"straßeΣΊΣΥΦΟΣ_connector"}
+{"fn":"mcpConnectorServerName","args":["akey_name-1"],"ok":"akey_name-1_connector"}
+{"fn":"mcpConnectorServerName","args":["ns:key.patha"],"ok":"ns:key.patha_connector"}
+{"fn":"mcpConnectorServerName","args":["emoji 👍🏽 mixline1\nline2"],"ok":"emoji 👍🏽 mixline1\nline2_connector"}
+{"fn":"mcpConnectorServerName","args":["hello.leading"],"ok":"hello.leading_connector"}
+{"fn":"mcpConnectorServerName","args":["key_name-1ΣΊΣΥΦΟΣ"],"ok":"key_name-1ΣΊΣΥΦΟΣ_connector"}
+{"fn":"mcpConnectorServerName","args":["日本語のテキスト日本語のテキスト"],"ok":"日本語のテキスト日本語のテキスト_connector"}
+{"fn":"mcpConnectorServerName","args":["straßeünïcödé"],"ok":"straßeünïcödé_connector"}
+{"fn":"mcpConnectorServerName","args":["ΣΊΣΥΦΟΣ"],"ok":"ΣΊΣΥΦΟΣ_connector"}
+{"fn":"mcpConnectorServerName","args":["hello world"],"ok":"hello world_connector"}
+{"fn":"mcpConnectorServerName","args":["trailing.emoji 👍🏽 mix"],"ok":"trailing.emoji 👍🏽 mix_connector"}
+{"fn":"mcpConnectorServerName","args":["aba.b.c"],"ok":"aba.b.c_connector"}
+{"fn":"mcpConnectorServerName","args":["é./x/**/*.json"],"ok":"é./x/**/*.json_connector"}
+{"fn":"mcpConnectorServerName","args":["a.b.ctrailing."],"ok":"a.b.ctrailing._connector"}
+{"fn":"mcpConnectorServerName","args":["straßea😀b😀c"],"ok":"straßea😀b😀c_connector"}
+{"fn":"mcpConnectorServerName","args":["straßeline1\nline2"],"ok":"straßeline1\nline2_connector"}
+{"fn":"mcpConnectorServerName","args":["日本語のテキストa"],"ok":"日本語のテキストa_connector"}
+{"fn":"mcpConnectorServerName","args":["Hello Worlda..b"],"ok":"Hello Worlda..b_connector"}
+{"fn":"mcpConnectorServerName","args":["hello worldünïcödé"],"ok":"hello worldünïcödé_connector"}
+{"fn":"mcpConnectorServerName","args":["ünïcödéHELLO"],"ok":"ünïcödéHELLO_connector"}
+{"fn":"mcpConnectorServerName","args":["a:b:csrc/a/b.ts"],"ok":"a:b:csrc/a/b.ts_connector"}
+{"fn":"mcpConnectorServerName","args":["﻿bomΣΊΣΥΦΟΣ"],"ok":"﻿bomΣΊΣΥΦΟΣ_connector"}
+{"fn":"mcpConnectorServerName","args":["tab\tseparatedΣΊΣΥΦΟΣ"],"ok":"tab\tseparatedΣΊΣΥΦΟΣ_connector"}
+{"fn":"mcpConnectorServerName","args":["İstanbulkey_name-1"],"ok":"İstanbulkey_name-1_connector"}
+{"fn":"mcpConnectorServerName","args":["éa..b"],"ok":"éa..b_connector"}
+{"fn":"mcpConnectorServerName","args":["line1\nline2ns:key.path"],"ok":"line1\nline2ns:key.path_connector"}
+{"fn":"mcpConnectorServerName","args":["ans:key.path"],"ok":"ans:key.path_connector"}
+{"fn":"mcpConnectorServerName","args":["emoji 👍🏽 mix:"],"ok":"emoji 👍🏽 mix:_connector"}
+{"fn":"mcpConnectorServerName","args":["emoji 👍🏽 mixé"],"ok":"emoji 👍🏽 mixé_connector"}
+{"fn":"mcpConnectorServerName","args":["😀line1\nline2"],"ok":"😀line1\nline2_connector"}
+{"fn":"mcpConnectorServerName","args":["straße{name} has {count} items"],"ok":"straße{name} has {count} items_connector"}
+{"fn":"mcpConnectorServerName","args":[":日本語のテキスト"],"ok":":日本語のテキスト_connector"}
+{"fn":"mcpConnectorServerName","args":["é{name} has {count} items"],"ok":"é{name} has {count} items_connector"}
+{"fn":"mcpConnectorServerName","args":["abcstraße"],"ok":"abcstraße_connector"}
+{"fn":"mcpConnectorServerName","args":["emoji 👍🏽 mixa"],"ok":"emoji 👍🏽 mixa_connector"}
+{"fn":"mcpConnectorServerName","args":["abcİstanbul"],"ok":"abcİstanbul_connector"}
+{"fn":"mcpConnectorServerName","args":["  padded  line1\nline2"],"ok":"  padded  line1\nline2_connector"}
+{"fn":"mcpConnectorServerName","args":["trailing.ünïcödé"],"ok":"trailing.ünïcödé_connector"}
+{"fn":"mcpConnectorServerName","args":["ünïcödéΣΊΣΥΦΟΣ"],"ok":"ünïcödéΣΊΣΥΦΟΣ_connector"}
+{"fn":"mcpConnectorServerName","args":["a😀b😀csrc/a/b.ts"],"ok":"a😀b😀csrc/a/b.ts_connector"}
+{"fn":"mcpConnectorServerName","args":["helloHELLO"],"ok":"helloHELLO_connector"}
+{"fn":"mcpConnectorServerName","args":["HELLOemoji 👍🏽 mix"],"ok":"HELLOemoji 👍🏽 mix_connector"}
+{"fn":"mcpConnectorServerName","args":["ΣΊΣΥΦΟΣ./x/**/*.json"],"ok":"ΣΊΣΥΦΟΣ./x/**/*.json_connector"}
+{"fn":"mcpConnectorServerName","args":["hello worldHELLO"],"ok":"hello worldHELLO_connector"}
+{"fn":"mcpConnectorServerName","args":["😀ab"],"ok":"😀ab_connector"}
+{"fn":"mcpConnectorServerName","args":["tab\tseparatedİstanbul"],"ok":"tab\tseparatedİstanbul_connector"}
+{"fn":"mcpConnectorServerName","args":["key_name-1  padded  "],"ok":"key_name-1  padded  _connector"}
+{"fn":"mcpConnectorServerName","args":["aabc"],"ok":"aabc_connector"}
+{"fn":"mcpConnectorServerName","args":["HELLOsrc/a/b.ts"],"ok":"HELLOsrc/a/b.ts_connector"}
+{"fn":"mcpConnectorServerName","args":[":a😀b😀c"],"ok":":a😀b😀c_connector"}
+{"fn":"mcpConnectorServerName","args":[".leadinga.b.c"],"ok":".leadinga.b.c_connector"}
+{"fn":"mcpConnectorServerName","args":["./x/**/*.json日本語のテキスト"],"ok":"./x/**/*.json日本語のテキスト_connector"}
+{"fn":"mcpConnectorServerName","args":["line1\nline2a:b:c"],"ok":"line1\nline2a:b:c_connector"}
+{"fn":"mcpConnectorServerName","args":["a😀b😀c日本語のテキスト"],"ok":"a😀b😀c日本語のテキスト_connector"}
+{"fn":"mcpConnectorServerName","args":["hello world.leading"],"ok":"hello world.leading_connector"}
+{"fn":"mcpConnectorServerName","args":["src/a/b.tshello world"],"ok":"src/a/b.tshello world_connector"}
+{"fn":"mcpConnectorServerName","args":["HELLOHello World"],"ok":"HELLOHello World_connector"}
+{"fn":"mcpConnectorServerName","args":["日本語のテキスト:"],"ok":"日本語のテキスト:_connector"}
+{"fn":"mcpConnectorServerName","args":["abtrailing."],"ok":"abtrailing._connector"}
+{"fn":"mcpConnectorServerName","args":["straßehello world"],"ok":"straßehello world_connector"}
+{"fn":"mcpConnectorServerName","args":[".leadinga:b:c"],"ok":".leadinga:b:c_connector"}
+{"fn":"mcpConnectorServerName","args":["ünïcödé:"],"ok":"ünïcödé:_connector"}
+{"fn":"mcpConnectorServerName","args":["a:b:c日本語のテキスト"],"ok":"a:b:c日本語のテキスト_connector"}
+{"fn":"mcpConnectorServerName","args":["Hello Worldhello world"],"ok":"Hello Worldhello world_connector"}
+{"fn":"mcpConnectorServerName","args":["aa😀b😀c"],"ok":"aa😀b😀c_connector"}
+{"fn":"mcpConnectorServerName","args":["key_name-1line1\nline2"],"ok":"key_name-1line1\nline2_connector"}
+{"fn":"mcpConnectorServerName","args":[".leadinga..b"],"ok":".leadinga..b_connector"}
+{"fn":"mcpConnectorServerName","args":["abcünïcödé"],"ok":"abcünïcödé_connector"}
+{"fn":"mcpConnectorServerName","args":["straßestraße"],"ok":"straßestraße_connector"}
+{"fn":"mcpConnectorServerName","args":["trailing..leading"],"ok":"trailing..leading_connector"}
+{"fn":"mcpConnectorServerName","args":["trailing.tab\tseparated"],"ok":"trailing.tab\tseparated_connector"}
+{"fn":"mcpConnectorServerName","args":["./x/**/*.json  padded  "],"ok":"./x/**/*.json  padded  _connector"}
+{"fn":"mcpConnectorServerName","args":["HELLO﻿bom"],"ok":"HELLO﻿bom_connector"}
+{"fn":"mcpConnectorServerName","args":["line1\nline2  padded  "],"ok":"line1\nline2  padded  _connector"}
+{"fn":"mcpConnectorServerName","args":["ahello"],"ok":"ahello_connector"}
+{"fn":"mcpConnectorServerName","args":["key_name-1abc"],"ok":"key_name-1abc_connector"}
+{"fn":"mcpConnectorServerName","args":[".leadingHELLO"],"ok":".leadingHELLO_connector"}
+{"fn":"mcpConnectorServerName","args":["hellosrc/a/b.ts"],"ok":"hellosrc/a/b.ts_connector"}
+{"fn":"mcpConnectorServerName","args":["emoji 👍🏽 mix日本語のテキスト"],"ok":"emoji 👍🏽 mix日本語のテキスト_connector"}
+{"fn":"mcpConnectorServerName","args":["a:b:cabc"],"ok":"a:b:cabc_connector"}
+{"fn":"mcpConnectorServerName","args":["﻿bomİstanbul"],"ok":"﻿bomİstanbul_connector"}
+{"fn":"mcpConnectorServerName","args":["helloa:b:c"],"ok":"helloa:b:c_connector"}
+{"fn":"mcpConnectorServerName","args":["ünïcödéline1\nline2"],"ok":"ünïcödéline1\nline2_connector"}
+{"fn":"mcpConnectorServerName","args":["ns:key.patha:b:c"],"ok":"ns:key.patha:b:c_connector"}
+{"fn":"mcpConnectorServerName","args":["a:b:ca.b.c"],"ok":"a:b:ca.b.c_connector"}
+{"fn":"mcpConnectorServerName","args":["tab\tseparatedemoji 👍🏽 mix"],"ok":"tab\tseparatedemoji 👍🏽 mix_connector"}
+{"fn":"mcpConnectorServerName","args":["abc./x/**/*.json"],"ok":"abc./x/**/*.json_connector"}
+{"fn":"mcpConnectorServerName","args":["😀﻿bom"],"ok":"😀﻿bom_connector"}
+{"fn":"mcpConnectorServerName","args":["﻿bomhello"],"ok":"﻿bomhello_connector"}
+{"fn":"mcpConnectorServerName","args":["tab\tseparatedkey_name-1"],"ok":"tab\tseparatedkey_name-1_connector"}
+{"fn":"mcpConnectorServerName","args":["Hello World  padded  "],"ok":"Hello World  padded  _connector"}
+{"fn":"mcpConnectorServerName","args":["a.b.ca😀b😀c"],"ok":"a.b.ca😀b😀c_connector"}
+{"fn":"mcpConnectorServerName","args":["ababc"],"ok":"ababc_connector"}
+{"fn":"mcpConnectorServerName","args":[":ab"],"ok":":ab_connector"}
+{"fn":"mcpConnectorServerName","args":["a..bline1\nline2"],"ok":"a..bline1\nline2_connector"}
+{"fn":"mcpConnectorServerName","args":["İstanbulns:key.path"],"ok":"İstanbulns:key.path_connector"}
+{"fn":"mcpConnectorServerName","args":["ΣΊΣΥΦΟΣab"],"ok":"ΣΊΣΥΦΟΣab_connector"}
+{"fn":"mcpConnectorServerName","args":["src/a/b.tsstraße"],"ok":"src/a/b.tsstraße_connector"}
+{"fn":"mcpConnectorServerName","args":["ns:key.pathHello World"],"ok":"ns:key.pathHello World_connector"}
+{"fn":"mcpConnectorServerName","args":[":hello world"],"ok":":hello world_connector"}
+{"fn":"mcpConnectorServerName","args":["日本語のテキスト﻿bom"],"ok":"日本語のテキスト﻿bom_connector"}
+{"fn":"mcpConnectorServerName","args":["İstanbula"],"ok":"İstanbula_connector"}
+{"fn":"mcpConnectorServerName","args":["src/a/b.tsa😀b😀c"],"ok":"src/a/b.tsa😀b😀c_connector"}
+{"fn":"mcpConnectorServerName","args":["éΣΊΣΥΦΟΣ"],"ok":"éΣΊΣΥΦΟΣ_connector"}
+{"fn":"mcpConnectorServerName","args":["{name} has {count} itemsé"],"ok":"{name} has {count} itemsé_connector"}
+{"fn":"mcpConnectorServerName","args":["😀a"],"ok":"😀a_connector"}
+{"fn":"mcpConnectorServerName","args":["ünïcödé﻿bom"],"ok":"ünïcödé﻿bom_connector"}
+{"fn":"mcpConnectorServerName","args":["helloline1\nline2"],"ok":"helloline1\nline2_connector"}
+{"fn":"mcpConnectorServerName","args":[":😀"],"ok":":😀_connector"}
+{"fn":"mcpConnectorServerName","args":["tab\tseparatedHello World"],"ok":"tab\tseparatedHello World_connector"}
+{"fn":"mcpConnectorServerName","args":["a😀b😀chello world"],"ok":"a😀b😀chello world_connector"}
+{"fn":"mcpConnectorServerName","args":["line1\nline2src/a/b.ts"],"ok":"line1\nline2src/a/b.ts_connector"}
+{"fn":"mcpConnectorServerName","args":["./x/**/*.jsona😀b😀c"],"ok":"./x/**/*.jsona😀b😀c_connector"}
+{"fn":"mcpConnectorServerName","args":["straßeab"],"ok":"straßeab_connector"}
+{"fn":"mcpConnectorServerName","args":["a:b:cHELLO"],"ok":"a:b:cHELLO_connector"}
+{"fn":"mcpConnectorServerName","args":["éemoji 👍🏽 mix"],"ok":"éemoji 👍🏽 mix_connector"}
+{"fn":"mcpConnectorServerName","args":["ΣΊΣΥΦΟΣa:b:c"],"ok":"ΣΊΣΥΦΟΣa:b:c_connector"}
+{"fn":"mcpConnectorServerName","args":["Hello World.leading"],"ok":"Hello World.leading_connector"}
+{"fn":"mcpConnectorServerName","args":["emoji 👍🏽 mixhello world"],"ok":"emoji 👍🏽 mixhello world_connector"}
+{"fn":"mcpConnectorServerName","args":["src/a/b.tsHELLO"],"ok":"src/a/b.tsHELLO_connector"}
+{"fn":"mcpConnectorServerName","args":["line1\nline2:"],"ok":"line1\nline2:_connector"}
+{"fn":"mcpConnectorServerName","args":["a:b:ctrailing."],"ok":"a:b:ctrailing._connector"}
+{"fn":"mcpConnectorServerName","args":["a:b:ca..b"],"ok":"a:b:ca..b_connector"}
+{"fn":"mcpConnectorServerName","args":["日本語のテキストa😀b😀c"],"ok":"日本語のテキストa😀b😀c_connector"}
+{"fn":"mcpConnectorServerName","args":["straßehello"],"ok":"straßehello_connector"}
+{"fn":"mcpConnectorServerName","args":["  padded  a.b.c"],"ok":"  padded  a.b.c_connector"}
+{"fn":"mcpConnectorServerName","args":["trailing.a😀b😀c"],"ok":"trailing.a😀b😀c_connector"}
+{"fn":"mcpConnectorServerName","args":["﻿bom:"],"ok":"﻿bom:_connector"}
+{"fn":"mcpConnectorServerName","args":["hello worldhello"],"ok":"hello worldhello_connector"}
+{"fn":"mcpConnectorServerName","args":["aa..b"],"ok":"aa..b_connector"}
+{"fn":"mcpConnectorServerName","args":["a..bstraße"],"ok":"a..bstraße_connector"}
+{"fn":"mcpConnectorServerName","args":["trailing.a..b"],"ok":"trailing.a..b_connector"}
+{"fn":"mcpConnectorServerName","args":["a..btab\tseparated"],"ok":"a..btab\tseparated_connector"}
+{"fn":"mcpConnectorServerName","args":["hello world﻿bom"],"ok":"hello world﻿bom_connector"}
+{"fn":"mcpConnectorServerName","args":["ab日本語のテキスト"],"ok":"ab日本語のテキスト_connector"}
+{"fn":"mcpConnectorServerName","args":["a😀b😀cemoji 👍🏽 mix"],"ok":"a😀b😀cemoji 👍🏽 mix_connector"}
+{"fn":"mcpConnectorServerName","args":["./x/**/*.jsonsrc/a/b.ts"],"ok":"./x/**/*.jsonsrc/a/b.ts_connector"}
+{"fn":"mcpConnectorServerName","args":["key_name-1hello"],"ok":"key_name-1hello_connector"}
+{"fn":"mcpConnectorServerName","args":["{name} has {count} itemsabc"],"ok":"{name} has {count} itemsabc_connector"}
+{"fn":"mcpConnectorServerName","args":["日本語のテキストkey_name-1"],"ok":"日本語のテキストkey_name-1_connector"}
+{"fn":"mcpConnectorServerName","args":[":ns:key.path"],"ok":":ns:key.path_connector"}
+{"fn":"mcpConnectorServerName","args":["ünïcödéHello World"],"ok":"ünïcödéHello World_connector"}
+{"fn":"mcpConnectorServerName","args":["日本語のテキストhello"],"ok":"日本語のテキストhello_connector"}
+{"fn":"mcpConnectorServerName","args":["﻿bomline1\nline2"],"ok":"﻿bomline1\nline2_connector"}
+{"fn":"mcpConnectorServerName","args":[":ΣΊΣΥΦΟΣ"],"ok":":ΣΊΣΥΦΟΣ_connector"}
+{"fn":"mcpConnectorServerName","args":["abcsrc/a/b.ts"],"ok":"abcsrc/a/b.ts_connector"}
+{"fn":"mcpConnectorServerName","args":["😀é"],"ok":"😀é_connector"}
+{"fn":"mcpConnectorServerName","args":["emoji 👍🏽 mixünïcödé"],"ok":"emoji 👍🏽 mixünïcödé_connector"}
+{"fn":"mcpConnectorServerName","args":["héllo wörld"],"ok":"héllo wörld_connector"}
+{"fn":"mcpConnectorServerName","args":["👍🏽 thumbs"],"ok":"👍🏽 thumbs_connector"}
+{"fn":"mcpConnectorServerName","args":["日本語"],"ok":"日本語_connector"}
+{"fn":"mcpConnectorServerName","args":["ılık ırmak"],"ok":"ılık ırmak_connector"}
+{"fn":"mcpConnectorServerName","args":["👨‍👩‍👧 family"],"ok":"👨‍👩‍👧 family_connector"}
+{"fn":"mcpConnectorServerName","args":["a b"],"ok":"a b_connector"}
+{"fn":"mcpConnectorServerName","args":["a😀b"],"ok":"a😀b_connector"}
+{"fn":"mcpConnectorServerName","args":["a²b x½ y①"],"ok":"a²b x½ y①_connector"}
+{"fn":"mcpConnectorServerName","args":["aⅠb Ⅻ"],"ok":"aⅠb Ⅻ_connector"}
+{"fn":"mcpConnectorServerName","args":["a𐐀b 𝐀bc"],"ok":"a𐐀b 𝐀bc_connector"}
+{"fn":"mcpConnectorServerName","args":["कि ٣٤"],"ok":"कि ٣٤_connector"}
+{"fn":"mcpConnectorServerName","args":["Iı İi"],"ok":"Iı İi_connector"}
+{"fn":"mcpConnectorServerName","args":["K K k"],"ok":"K K k_connector"}
+{"fn":"mcpConnectorServerName","args":["ſ s S"],"ok":"ſ s S_connector"}
+{"fn":"mcpConnectorServerName","args":["x‍y 👨‍👩‍👧"],"ok":"x‍y 👨‍👩‍👧_connector"}
+{"fn":"mcpConnectorServerName","args":["a b c　d"],"ok":"a b c　d_connector"}
+{"fn":"mcpConnectorServerName","args":["١٢٣ ٤٥"],"ok":"١٢٣ ٤٥_connector"}
+{"fn":"mcpConnectorServerName","args":["𝟘𝟙 ²³"],"ok":"𝟘𝟙 ²³_connector"}
+{"fn":"mcpConnectorServerName","args":["snake_case foo-bar o'neil"],"ok":"snake_case foo-bar o'neil_connector"}
+{"fn":"mcpConnectorServerName","args":["ǅungla Ǆ"],"ok":"ǅungla Ǆ_connector"}
+{"fn":"mcpConnectorServerName","args":["one\r\ntwo threefour"],"ok":"one\r\ntwo threefour_connector"}
+{"fn":"mcpConnectorServerName","args":["café café"],"ok":"café café_connector"}
+{"fn":"mcpConnectorServerName","args":["ΣΑΣ σας ς"],"ok":"ΣΑΣ σας ς_connector"}
+{"fn":"mcpConnectorMentionPath","args":["emoji 👍🏽 mix"],"ok":"connector://emoji 👍🏽 mix"}
+{"fn":"mcpConnectorMentionPath","args":["ns:key.path"],"ok":"connector://ns:key.path"}
+{"fn":"mcpConnectorMentionPath","args":["ΣΊΣΥΦΟΣ"],"ok":"connector://ΣΊΣΥΦΟΣ"}
+{"fn":"mcpConnectorMentionPath","args":["  padded  :"],"ok":"connector://  padded  :"}
+{"fn":"mcpConnectorMentionPath","args":["tab\tseparated"],"ok":"connector://tab\tseparated"}
+{"fn":"mcpConnectorMentionPath","args":["key_name-1"],"ok":"connector://key_name-1"}
+{"fn":"mcpConnectorMentionPath","args":[""],"ok":"connector://"}
+{"fn":"mcpConnectorMentionPath","args":["Hello World"],"ok":"connector://Hello World"}
+{"fn":"mcpConnectorMentionPath","args":["日本語のテキスト"],"ok":"connector://日本語のテキスト"}
+{"fn":"mcpConnectorMentionPath","args":["straße"],"ok":"connector://straße"}
+{"fn":"mcpConnectorMentionPath","args":["{name} has {count} items"],"ok":"connector://{name} has {count} items"}
+{"fn":"mcpConnectorMentionPath","args":["a.b.cstraße"],"ok":"connector://a.b.cstraße"}
+{"fn":"mcpConnectorMentionPath","args":[":"],"ok":"connector://:"}
+{"fn":"mcpConnectorMentionPath","args":["./x/**/*.jsona.b.c"],"ok":"connector://./x/**/*.jsona.b.c"}
+{"fn":"mcpConnectorMentionPath","args":["emoji 👍🏽 mixemoji 👍🏽 mix"],"ok":"connector://emoji 👍🏽 mixemoji 👍🏽 mix"}
+{"fn":"mcpConnectorMentionPath","args":["hello"],"ok":"connector://hello"}
+{"fn":"mcpConnectorMentionPath","args":["line1\nline2"],"ok":"connector://line1\nline2"}
+{"fn":"mcpConnectorMentionPath","args":["éa😀b😀c"],"ok":"connector://éa😀b😀c"}
+{"fn":"mcpConnectorMentionPath","args":["./x/**/*.json"],"ok":"connector://./x/**/*.json"}
+{"fn":"mcpConnectorMentionPath","args":["  padded  line1\nline2"],"ok":"connector://  padded  line1\nline2"}
+{"fn":"mcpConnectorMentionPath","args":["src/a/b.ts"],"ok":"connector://src/a/b.ts"}
+{"fn":"mcpConnectorMentionPath","args":["a.b.c"],"ok":"connector://a.b.c"}
+{"fn":"mcpConnectorMentionPath","args":["ΣΊΣΥΦΟΣtrailing."],"ok":"connector://ΣΊΣΥΦΟΣtrailing."}
+{"fn":"mcpConnectorMentionPath","args":["./x/**/*.jsonsrc/a/b.ts"],"ok":"connector://./x/**/*.jsonsrc/a/b.ts"}
+{"fn":"mcpConnectorMentionPath","args":["a..b"],"ok":"connector://a..b"}
+{"fn":"mcpConnectorMentionPath","args":["a.b.cé"],"ok":"connector://a.b.cé"}
+{"fn":"mcpConnectorMentionPath","args":["a..bline1\nline2"],"ok":"connector://a..bline1\nline2"}
+{"fn":"mcpConnectorMentionPath","args":["a:b:c"],"ok":"connector://a:b:c"}
+{"fn":"mcpConnectorMentionPath","args":["a..b😀"],"ok":"connector://a..b😀"}
+{"fn":"mcpConnectorMentionPath","args":["HELLOkey_name-1"],"ok":"connector://HELLOkey_name-1"}
+{"fn":"mcpConnectorMentionPath","args":["😀"],"ok":"connector://😀"}
+{"fn":"mcpConnectorMentionPath","args":["a😀b😀c"],"ok":"connector://a😀b😀c"}
+{"fn":"mcpConnectorMentionPath","args":["ΣΊΣΥΦΟΣa:b:c"],"ok":"connector://ΣΊΣΥΦΟΣa:b:c"}
+{"fn":"mcpConnectorMentionPath","args":["  padded  emoji 👍🏽 mix"],"ok":"connector://  padded  emoji 👍🏽 mix"}
+{"fn":"mcpConnectorMentionPath","args":[":日本語のテキスト"],"ok":"connector://:日本語のテキスト"}
+{"fn":"mcpConnectorMentionPath","args":["é"],"ok":"connector://é"}
+{"fn":"mcpConnectorMentionPath","args":["﻿bom"],"ok":"connector://﻿bom"}
+{"fn":"mcpConnectorMentionPath","args":["abc"],"ok":"connector://abc"}
+{"fn":"mcpConnectorMentionPath","args":["{name} has {count} itemssrc/a/b.ts"],"ok":"connector://{name} has {count} itemssrc/a/b.ts"}
+{"fn":"mcpConnectorMentionPath","args":["hello worldns:key.path"],"ok":"connector://hello worldns:key.path"}
+{"fn":"mcpConnectorMentionPath","args":["İstanbul"],"ok":"connector://İstanbul"}
+{"fn":"mcpConnectorMentionPath","args":["a:b:cabc"],"ok":"connector://a:b:cabc"}
+{"fn":"mcpConnectorMentionPath","args":["helloa:b:c"],"ok":"connector://helloa:b:c"}
+{"fn":"mcpConnectorMentionPath","args":[".leading"],"ok":"connector://.leading"}
+{"fn":"mcpConnectorMentionPath","args":["emoji 👍🏽 mixa:b:c"],"ok":"connector://emoji 👍🏽 mixa:b:c"}
+{"fn":"mcpConnectorMentionPath","args":["ab"],"ok":"connector://ab"}
+{"fn":"mcpConnectorMentionPath","args":["  padded  "],"ok":"connector://  padded  "}
+{"fn":"mcpConnectorMentionPath","args":["Hello Worlda"],"ok":"connector://Hello Worlda"}
+{"fn":"mcpConnectorMentionPath","args":["tab\tseparatedabc"],"ok":"connector://tab\tseparatedabc"}
+{"fn":"mcpConnectorMentionPath","args":["HELLO"],"ok":"connector://HELLO"}
+{"fn":"mcpConnectorMentionPath","args":["aé"],"ok":"connector://aé"}
+{"fn":"mcpConnectorMentionPath","args":["ünïcödé"],"ok":"connector://ünïcödé"}
+{"fn":"mcpConnectorMentionPath","args":["ns:key.pathsrc/a/b.ts"],"ok":"connector://ns:key.pathsrc/a/b.ts"}
+{"fn":"mcpConnectorMentionPath","args":["﻿bomns:key.path"],"ok":"connector://﻿bomns:key.path"}
+{"fn":"mcpConnectorMentionPath","args":["straße日本語のテキスト"],"ok":"connector://straße日本語のテキスト"}
+{"fn":"mcpConnectorMentionPath","args":["ΣΊΣΥΦΟΣ日本語のテキスト"],"ok":"connector://ΣΊΣΥΦΟΣ日本語のテキスト"}
+{"fn":"mcpConnectorMentionPath","args":["straßea..b"],"ok":"connector://straßea..b"}
+{"fn":"mcpConnectorMentionPath","args":["hello world日本語のテキスト"],"ok":"connector://hello world日本語のテキスト"}
+{"fn":"mcpConnectorMentionPath","args":["a:b:ckey_name-1"],"ok":"connector://a:b:ckey_name-1"}
+{"fn":"mcpConnectorMentionPath","args":["ünïcödétab\tseparated"],"ok":"connector://ünïcödétab\tseparated"}
+{"fn":"mcpConnectorMentionPath","args":["trailing."],"ok":"connector://trailing."}
+{"fn":"mcpConnectorMentionPath","args":["{name} has {count} itemsemoji 👍🏽 mix"],"ok":"connector://{name} has {count} itemsemoji 👍🏽 mix"}
+{"fn":"mcpConnectorMentionPath","args":["hello world"],"ok":"connector://hello world"}
+{"fn":"mcpConnectorMentionPath","args":["a:b:ctrailing."],"ok":"connector://a:b:ctrailing."}
+{"fn":"mcpConnectorMentionPath","args":["hello worlda..b"],"ok":"connector://hello worlda..b"}
+{"fn":"mcpConnectorMentionPath","args":["😀ünïcödé"],"ok":"connector://😀ünïcödé"}
+{"fn":"mcpConnectorMentionPath","args":["abstraße"],"ok":"connector://abstraße"}
+{"fn":"mcpConnectorMentionPath","args":["{name} has {count} itemsa"],"ok":"connector://{name} has {count} itemsa"}
+{"fn":"mcpConnectorMentionPath","args":["abc日本語のテキスト"],"ok":"connector://abc日本語のテキスト"}
+{"fn":"mcpConnectorMentionPath","args":["tab\tseparateda😀b😀c"],"ok":"connector://tab\tseparateda😀b😀c"}
+{"fn":"mcpConnectorMentionPath","args":["trailing.:"],"ok":"connector://trailing.:"}
+{"fn":"mcpConnectorMentionPath","args":["a"],"ok":"connector://a"}
+{"fn":"mcpConnectorMentionPath","args":["ΣΊΣΥΦΟΣΣΊΣΥΦΟΣ"],"ok":"connector://ΣΊΣΥΦΟΣΣΊΣΥΦΟΣ"}
+{"fn":"mcpConnectorMentionPath","args":["日本語のテキストtab\tseparated"],"ok":"connector://日本語のテキストtab\tseparated"}
+{"fn":"mcpConnectorMentionPath","args":["a😀b😀c./x/**/*.json"],"ok":"connector://a😀b😀c./x/**/*.json"}
+{"fn":"mcpConnectorMentionPath","args":["  padded  a😀b😀c"],"ok":"connector://  padded  a😀b😀c"}
+{"fn":"mcpConnectorMentionPath","args":["abtab\tseparated"],"ok":"connector://abtab\tseparated"}
+{"fn":"mcpConnectorMentionPath","args":["😀😀"],"ok":"connector://😀😀"}
+{"fn":"mcpConnectorMentionPath","args":["a😀b😀c﻿bom"],"ok":"connector://a😀b😀c﻿bom"}
+{"fn":"mcpConnectorMentionPath","args":["İstanbul😀"],"ok":"connector://İstanbul😀"}
+{"fn":"mcpConnectorMentionPath","args":["  padded  abc"],"ok":"connector://  padded  abc"}
+{"fn":"mcpConnectorMentionPath","args":["trailing.hello"],"ok":"connector://trailing.hello"}
+{"fn":"mcpConnectorMentionPath","args":["src/a/b.tshello"],"ok":"connector://src/a/b.tshello"}
+{"fn":"mcpConnectorMentionPath","args":["src/a/b.tsünïcödé"],"ok":"connector://src/a/b.tsünïcödé"}
+{"fn":"mcpConnectorMentionPath","args":[".leading:"],"ok":"connector://.leading:"}
+{"fn":"mcpConnectorMentionPath","args":["line1\nline2İstanbul"],"ok":"connector://line1\nline2İstanbul"}
+{"fn":"mcpConnectorMentionPath","args":["日本語のテキストabc"],"ok":"connector://日本語のテキストabc"}
+{"fn":"mcpConnectorMentionPath","args":["a:b:cHELLO"],"ok":"connector://a:b:cHELLO"}
+{"fn":"mcpConnectorMentionPath","args":["ns:key.pathkey_name-1"],"ok":"connector://ns:key.pathkey_name-1"}
+{"fn":"mcpConnectorMentionPath","args":["a😀b😀cabc"],"ok":"connector://a😀b😀cabc"}
+{"fn":"mcpConnectorMentionPath","args":["﻿bomİstanbul"],"ok":"connector://﻿bomİstanbul"}
+{"fn":"mcpConnectorMentionPath","args":["éhello world"],"ok":"connector://éhello world"}
+{"fn":"mcpConnectorMentionPath","args":["straße  padded  "],"ok":"connector://straße  padded  "}
+{"fn":"mcpConnectorMentionPath","args":[".leadinga.b.c"],"ok":"connector://.leadinga.b.c"}
+{"fn":"mcpConnectorMentionPath","args":["日本語のテキストa..b"],"ok":"connector://日本語のテキストa..b"}
+{"fn":"mcpConnectorMentionPath","args":["line1\nline2😀"],"ok":"connector://line1\nline2😀"}
+{"fn":"mcpConnectorMentionPath","args":["a😀b😀cstraße"],"ok":"connector://a😀b😀cstraße"}
+{"fn":"mcpConnectorMentionPath","args":["ünïcödéa:b:c"],"ok":"connector://ünïcödéa:b:c"}
+{"fn":"mcpConnectorMentionPath","args":["ns:key.pathHELLO"],"ok":"connector://ns:key.pathHELLO"}
+{"fn":"mcpConnectorMentionPath","args":["a😀b😀cünïcödé"],"ok":"connector://a😀b😀cünïcödé"}
+{"fn":"mcpConnectorMentionPath","args":["  padded  .leading"],"ok":"connector://  padded  .leading"}
+{"fn":"mcpConnectorMentionPath","args":["key_name-1tab\tseparated"],"ok":"connector://key_name-1tab\tseparated"}
+{"fn":"mcpConnectorMentionPath","args":["src/a/b.ts  padded  "],"ok":"connector://src/a/b.ts  padded  "}
+{"fn":"mcpConnectorMentionPath","args":["tab\tseparatedHELLO"],"ok":"connector://tab\tseparatedHELLO"}
+{"fn":"mcpConnectorMentionPath","args":["ΣΊΣΥΦΟΣkey_name-1"],"ok":"connector://ΣΊΣΥΦΟΣkey_name-1"}
+{"fn":"mcpConnectorMentionPath","args":["日本語のテキスト😀"],"ok":"connector://日本語のテキスト😀"}
+{"fn":"mcpConnectorMentionPath","args":["abca:b:c"],"ok":"connector://abca:b:c"}
+{"fn":"mcpConnectorMentionPath","args":["src/a/b.tsstraße"],"ok":"connector://src/a/b.tsstraße"}
+{"fn":"mcpConnectorMentionPath","args":["hello  padded  "],"ok":"connector://hello  padded  "}
+{"fn":"mcpConnectorMentionPath","args":["key_name-1hello"],"ok":"connector://key_name-1hello"}
+{"fn":"mcpConnectorMentionPath","args":["emoji 👍🏽 mixhello"],"ok":"connector://emoji 👍🏽 mixhello"}
+{"fn":"mcpConnectorMentionPath","args":["hello worldé"],"ok":"connector://hello worldé"}
+{"fn":"mcpConnectorMentionPath","args":["a:b:c./x/**/*.json"],"ok":"connector://a:b:c./x/**/*.json"}
+{"fn":"mcpConnectorMentionPath","args":["ns:key.patha:b:c"],"ok":"connector://ns:key.patha:b:c"}
+{"fn":"mcpConnectorMentionPath","args":["line1\nline2src/a/b.ts"],"ok":"connector://line1\nline2src/a/b.ts"}
+{"fn":"mcpConnectorMentionPath","args":["HELLOtrailing."],"ok":"connector://HELLOtrailing."}
+{"fn":"mcpConnectorMentionPath","args":["./x/**/*.json日本語のテキスト"],"ok":"connector://./x/**/*.json日本語のテキスト"}
+{"fn":"mcpConnectorMentionPath","args":["ünïcödéé"],"ok":"connector://ünïcödéé"}
+{"fn":"mcpConnectorMentionPath","args":["src/a/b.tsΣΊΣΥΦΟΣ"],"ok":"connector://src/a/b.tsΣΊΣΥΦΟΣ"}
+{"fn":"mcpConnectorMentionPath","args":["trailing.{name} has {count} items"],"ok":"connector://trailing.{name} has {count} items"}
+{"fn":"mcpConnectorMentionPath","args":["trailing.😀"],"ok":"connector://trailing.😀"}
+{"fn":"mcpConnectorMentionPath","args":["abckey_name-1"],"ok":"connector://abckey_name-1"}
+{"fn":"mcpConnectorMentionPath","args":["ΣΊΣΥΦΟΣhello"],"ok":"connector://ΣΊΣΥΦΟΣhello"}
+{"fn":"mcpConnectorMentionPath","args":["İstanbul  padded  "],"ok":"connector://İstanbul  padded  "}
+{"fn":"mcpConnectorMentionPath","args":["HELLOa.b.c"],"ok":"connector://HELLOa.b.c"}
+{"fn":"mcpConnectorMentionPath","args":["key_name-1a😀b😀c"],"ok":"connector://key_name-1a😀b😀c"}
+{"fn":"mcpConnectorMentionPath","args":["line1\nline2HELLO"],"ok":"connector://line1\nline2HELLO"}
+{"fn":"mcpConnectorMentionPath","args":["{name} has {count} items﻿bom"],"ok":"connector://{name} has {count} items﻿bom"}
+{"fn":"mcpConnectorMentionPath","args":["a:b:cns:key.path"],"ok":"connector://a:b:cns:key.path"}
+{"fn":"mcpConnectorMentionPath","args":["aa.b.c"],"ok":"connector://aa.b.c"}
+{"fn":"mcpConnectorMentionPath","args":[".leadingstraße"],"ok":"connector://.leadingstraße"}
+{"fn":"mcpConnectorMentionPath","args":["﻿bomsrc/a/b.ts"],"ok":"connector://﻿bomsrc/a/b.ts"}
+{"fn":"mcpConnectorMentionPath","args":[".leadinga😀b😀c"],"ok":"connector://.leadinga😀b😀c"}
+{"fn":"mcpConnectorMentionPath","args":["﻿bomé"],"ok":"connector://﻿bomé"}
+{"fn":"mcpConnectorMentionPath","args":["a😀b😀cns:key.path"],"ok":"connector://a😀b😀cns:key.path"}
+{"fn":"mcpConnectorMentionPath","args":["😀a:b:c"],"ok":"connector://😀a:b:c"}
+{"fn":"mcpConnectorMentionPath","args":["a😀b😀ca.b.c"],"ok":"connector://a😀b😀ca.b.c"}
+{"fn":"mcpConnectorMentionPath","args":["Hello Worldé"],"ok":"connector://Hello Worldé"}
+{"fn":"mcpConnectorMentionPath","args":[":abc"],"ok":"connector://:abc"}
+{"fn":"mcpConnectorMentionPath","args":["日本語のテキストemoji 👍🏽 mix"],"ok":"connector://日本語のテキストemoji 👍🏽 mix"}
+{"fn":"mcpConnectorMentionPath","args":["a:b:cstraße"],"ok":"connector://a:b:cstraße"}
+{"fn":"mcpConnectorMentionPath","args":["ans:key.path"],"ok":"connector://ans:key.path"}
+{"fn":"mcpConnectorMentionPath","args":["Hello World  padded  "],"ok":"connector://Hello World  padded  "}
+{"fn":"mcpConnectorMentionPath","args":["line1\nline2  padded  "],"ok":"connector://line1\nline2  padded  "}
+{"fn":"mcpConnectorMentionPath","args":["a  padded  "],"ok":"connector://a  padded  "}
+{"fn":"mcpConnectorMentionPath","args":["trailing.a😀b😀c"],"ok":"connector://trailing.a😀b😀c"}
+{"fn":"mcpConnectorMentionPath","args":["a:b:cline1\nline2"],"ok":"connector://a:b:cline1\nline2"}
+{"fn":"mcpConnectorMentionPath","args":["ékey_name-1"],"ok":"connector://ékey_name-1"}
+{"fn":"mcpConnectorMentionPath","args":["hello worlda.b.c"],"ok":"connector://hello worlda.b.c"}
+{"fn":"mcpConnectorMentionPath","args":["😀ab"],"ok":"connector://😀ab"}
+{"fn":"mcpConnectorMentionPath","args":["aa"],"ok":"connector://aa"}
+{"fn":"mcpConnectorMentionPath","args":["hello worldsrc/a/b.ts"],"ok":"connector://hello worldsrc/a/b.ts"}
+{"fn":"mcpConnectorMentionPath","args":["ns:key.pathİstanbul"],"ok":"connector://ns:key.pathİstanbul"}
+{"fn":"mcpConnectorMentionPath","args":["tab\tseparateda..b"],"ok":"connector://tab\tseparateda..b"}
+{"fn":"mcpConnectorMentionPath","args":["a😀b😀chello"],"ok":"connector://a😀b😀chello"}
+{"fn":"mcpConnectorMentionPath","args":["éünïcödé"],"ok":"connector://éünïcödé"}
+{"fn":"mcpConnectorMentionPath","args":["a.b.csrc/a/b.ts"],"ok":"connector://a.b.csrc/a/b.ts"}
+{"fn":"mcpConnectorMentionPath","args":["hellostraße"],"ok":"connector://hellostraße"}
+{"fn":"mcpConnectorMentionPath","args":["emoji 👍🏽 mixa"],"ok":"connector://emoji 👍🏽 mixa"}
+{"fn":"mcpConnectorMentionPath","args":["helloünïcödé"],"ok":"connector://helloünïcödé"}
+{"fn":"mcpConnectorMentionPath","args":["{name} has {count} itemsa..b"],"ok":"connector://{name} has {count} itemsa..b"}
+{"fn":"mcpConnectorMentionPath","args":["ΣΊΣΥΦΟΣ﻿bom"],"ok":"connector://ΣΊΣΥΦΟΣ﻿bom"}
+{"fn":"mcpConnectorMentionPath","args":["./x/**/*.json  padded  "],"ok":"connector://./x/**/*.json  padded  "}
+{"fn":"mcpConnectorMentionPath","args":["trailing.line1\nline2"],"ok":"connector://trailing.line1\nline2"}
+{"fn":"mcpConnectorMentionPath","args":["HELLO  padded  "],"ok":"connector://HELLO  padded  "}
+{"fn":"mcpConnectorMentionPath","args":["ΣΊΣΥΦΟΣemoji 👍🏽 mix"],"ok":"connector://ΣΊΣΥΦΟΣemoji 👍🏽 mix"}
+{"fn":"mcpConnectorMentionPath","args":["tab\tseparated.leading"],"ok":"connector://tab\tseparated.leading"}
+{"fn":"mcpConnectorMentionPath","args":["Hello World{name} has {count} items"],"ok":"connector://Hello World{name} has {count} items"}
+{"fn":"mcpConnectorMentionPath","args":["hello worldtab\tseparated"],"ok":"connector://hello worldtab\tseparated"}
+{"fn":"mcpConnectorMentionPath","args":["ünïcödékey_name-1"],"ok":"connector://ünïcödékey_name-1"}
+{"fn":"mcpConnectorMentionPath","args":["trailing.ns:key.path"],"ok":"connector://trailing.ns:key.path"}
+{"fn":"mcpConnectorMentionPath","args":["abctab\tseparated"],"ok":"connector://abctab\tseparated"}
+{"fn":"mcpConnectorMentionPath","args":["line1\nline2key_name-1"],"ok":"connector://line1\nline2key_name-1"}
+{"fn":"mcpConnectorMentionPath","args":["日本語のテキストa.b.c"],"ok":"connector://日本語のテキストa.b.c"}
+{"fn":"mcpConnectorMentionPath","args":["Hello Worldemoji 👍🏽 mix"],"ok":"connector://Hello Worldemoji 👍🏽 mix"}
+{"fn":"mcpConnectorMentionPath","args":["a😀b😀ca:b:c"],"ok":"connector://a😀b😀ca:b:c"}
+{"fn":"mcpConnectorMentionPath","args":[":ΣΊΣΥΦΟΣ"],"ok":"connector://:ΣΊΣΥΦΟΣ"}
+{"fn":"mcpConnectorMentionPath","args":["trailing.trailing."],"ok":"connector://trailing.trailing."}
+{"fn":"mcpConnectorMentionPath","args":["straße:"],"ok":"connector://straße:"}
+{"fn":"mcpConnectorMentionPath","args":["  padded  日本語のテキスト"],"ok":"connector://  padded  日本語のテキスト"}
+{"fn":"mcpConnectorMentionPath","args":["straßehello"],"ok":"connector://straßehello"}
+{"fn":"mcpConnectorMentionPath","args":["a:b:cemoji 👍🏽 mix"],"ok":"connector://a:b:cemoji 👍🏽 mix"}
+{"fn":"mcpConnectorMentionPath","args":["HELLOa:b:c"],"ok":"connector://HELLOa:b:c"}
+{"fn":"mcpConnectorMentionPath","args":["ünïcödé﻿bom"],"ok":"connector://ünïcödé﻿bom"}
+{"fn":"mcpConnectorMentionPath","args":["ünïcödé日本語のテキスト"],"ok":"connector://ünïcödé日本語のテキスト"}
+{"fn":"mcpConnectorMentionPath","args":["ab﻿bom"],"ok":"connector://ab﻿bom"}
+{"fn":"mcpConnectorMentionPath","args":["é./x/**/*.json"],"ok":"connector://é./x/**/*.json"}
+{"fn":"mcpConnectorMentionPath","args":["a.b.c./x/**/*.json"],"ok":"connector://a.b.c./x/**/*.json"}
+{"fn":"mcpConnectorMentionPath","args":["hello worldkey_name-1"],"ok":"connector://hello worldkey_name-1"}
+{"fn":"mcpConnectorMentionPath","args":["{name} has {count} items{name} has {count} items"],"ok":"connector://{name} has {count} items{name} has {count} items"}
+{"fn":"mcpConnectorMentionPath","args":["./x/**/*.jsonHELLO"],"ok":"connector://./x/**/*.jsonHELLO"}
+{"fn":"mcpConnectorMentionPath","args":["Hello Worlda😀b😀c"],"ok":"connector://Hello Worlda😀b😀c"}
+{"fn":"mcpConnectorMentionPath","args":["﻿bom日本語のテキスト"],"ok":"connector://﻿bom日本語のテキスト"}
+{"fn":"mcpConnectorMentionPath","args":["a.b.ca😀b😀c"],"ok":"connector://a.b.ca😀b😀c"}
+{"fn":"mcpConnectorMentionPath","args":["./x/**/*.jsona"],"ok":"connector://./x/**/*.jsona"}
+{"fn":"mcpConnectorMentionPath","args":["ΣΊΣΥΦΟΣ./x/**/*.json"],"ok":"connector://ΣΊΣΥΦΟΣ./x/**/*.json"}
+{"fn":"mcpConnectorMentionPath","args":["😀abc"],"ok":"connector://😀abc"}
+{"fn":"mcpConnectorMentionPath","args":[":./x/**/*.json"],"ok":"connector://:./x/**/*.json"}
+{"fn":"mcpConnectorMentionPath","args":["ns:key.path{name} has {count} items"],"ok":"connector://ns:key.path{name} has {count} items"}
+{"fn":"mcpConnectorMentionPath","args":["key_name-1😀"],"ok":"connector://key_name-1😀"}
+{"fn":"mcpConnectorMentionPath","args":["héllo wörld"],"ok":"connector://héllo wörld"}
+{"fn":"mcpConnectorMentionPath","args":["👍🏽 thumbs"],"ok":"connector://👍🏽 thumbs"}
+{"fn":"mcpConnectorMentionPath","args":["日本語"],"ok":"connector://日本語"}
+{"fn":"mcpConnectorMentionPath","args":["ılık ırmak"],"ok":"connector://ılık ırmak"}
+{"fn":"mcpConnectorMentionPath","args":["👨‍👩‍👧 family"],"ok":"connector://👨‍👩‍👧 family"}
+{"fn":"mcpConnectorMentionPath","args":["a b"],"ok":"connector://a b"}
+{"fn":"mcpConnectorMentionPath","args":["a😀b"],"ok":"connector://a😀b"}
+{"fn":"mcpConnectorMentionPath","args":["a²b x½ y①"],"ok":"connector://a²b x½ y①"}
+{"fn":"mcpConnectorMentionPath","args":["aⅠb Ⅻ"],"ok":"connector://aⅠb Ⅻ"}
+{"fn":"mcpConnectorMentionPath","args":["a𐐀b 𝐀bc"],"ok":"connector://a𐐀b 𝐀bc"}
+{"fn":"mcpConnectorMentionPath","args":["कि ٣٤"],"ok":"connector://कि ٣٤"}
+{"fn":"mcpConnectorMentionPath","args":["Iı İi"],"ok":"connector://Iı İi"}
+{"fn":"mcpConnectorMentionPath","args":["K K k"],"ok":"connector://K K k"}
+{"fn":"mcpConnectorMentionPath","args":["ſ s S"],"ok":"connector://ſ s S"}
+{"fn":"mcpConnectorMentionPath","args":["x‍y 👨‍👩‍👧"],"ok":"connector://x‍y 👨‍👩‍👧"}
+{"fn":"mcpConnectorMentionPath","args":["a b c　d"],"ok":"connector://a b c　d"}
+{"fn":"mcpConnectorMentionPath","args":["١٢٣ ٤٥"],"ok":"connector://١٢٣ ٤٥"}
+{"fn":"mcpConnectorMentionPath","args":["𝟘𝟙 ²³"],"ok":"connector://𝟘𝟙 ²³"}
+{"fn":"mcpConnectorMentionPath","args":["snake_case foo-bar o'neil"],"ok":"connector://snake_case foo-bar o'neil"}
+{"fn":"mcpConnectorMentionPath","args":["ǅungla Ǆ"],"ok":"connector://ǅungla Ǆ"}
+{"fn":"mcpConnectorMentionPath","args":["one\r\ntwo threefour"],"ok":"connector://one\r\ntwo threefour"}
+{"fn":"mcpConnectorMentionPath","args":["café café"],"ok":"connector://café café"}
+{"fn":"mcpConnectorMentionPath","args":["ΣΑΣ σας ς"],"ok":"connector://ΣΑΣ σας ς"}
+{"fn":"isMcpConnectorMentionPath","args":["a.b.c"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["éa:b:c"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["./x/**/*.json😀"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["a:b:c"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["src/a/b.ts"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["trailing."],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["./x/**/*.json"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["ab"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["ünïcödé"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["İstanbul"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["line1\nline2日本語のテキスト"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["İstanbulHello World"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["./x/**/*.jsonemoji 👍🏽 mix"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["a"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["hellohello world"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["é"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["日本語のテキスト"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["key_name-1"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":[".leading"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["ns:key.path"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["abc"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["emoji 👍🏽 mix"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["./x/**/*.jsonkey_name-1"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["a..b"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":[""],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["😀"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["src/a/b.tsabc"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["a..ba.b.c"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":[":"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["HELLO"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["{name} has {count} items"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["hello world"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["emoji 👍🏽 mixab"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["  padded  a..b"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["﻿bom"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["line1\nline2"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["Hello World"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["{name} has {count} itemsabc"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["HELLO.leading"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["helloünïcödé"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["日本語のテキストa"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["trailing.tab\tseparated"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["hello worldstraße"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["Hello World./x/**/*.json"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["hello"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["a.b.chello world"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["trailing.﻿bom"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["trailing.{name} has {count} items"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["  padded  "],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["straße"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["tab\tseparated"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["a😀b😀c"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["a..btab\tseparated"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["ünïcödéa.b.c"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["ünïcödésrc/a/b.ts"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["trailing.a:b:c"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["ΣΊΣΥΦΟΣ  padded  "],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["a:b:csrc/a/b.ts"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["hello worldline1\nline2"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["./x/**/*.jsonstraße"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["ΣΊΣΥΦΟΣé"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["emoji 👍🏽 mixa..b"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["😀  padded  "],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":[":a:b:c"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["tab\tseparateda..b"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["日本語のテキストkey_name-1"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["hellokey_name-1"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["trailing.ns:key.path"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["line1\nline2a.b.c"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["﻿bomé"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["helloa:b:c"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["ab﻿bom"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["é  padded  "],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["a..b.leading"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":[".leadinga"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["a😀"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["line1\nline2İstanbul"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["日本語のテキスト﻿bom"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["tab\tseparatedé"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["ns:key.path﻿bom"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["HELLOİstanbul"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["key_name-1ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["HELLO:"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["ésrc/a/b.ts"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["ΣΊΣΥΦΟΣ😀"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["ΣΊΣΥΦΟΣHELLO"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["ünïcödéİstanbul"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":[":é"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["Hello Worlda:b:c"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["İstanbula:b:c"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["straße:"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["ünïcödéstraße"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["HELLO./x/**/*.json"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["aabc"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["a😀b😀ca😀b😀c"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["aba😀b😀c"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["helloemoji 👍🏽 mix"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["emoji 👍🏽 mixa.b.c"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["﻿bomsrc/a/b.ts"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":[".leadingstraße"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["ünïcödétrailing."],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["a:b:c😀"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["abhello"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["trailing.emoji 👍🏽 mix"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["a.b.cHELLO"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["Hello World﻿bom"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["trailing.trailing."],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["  padded  line1\nline2"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":[":hello"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["😀./x/**/*.json"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["日本語のテキストemoji 👍🏽 mix"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["ns:key.pathab"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["straße﻿bom"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["./x/**/*.jsona😀b😀c"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["trailing..leading"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":[":ab"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["trailing.😀"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["emoji 👍🏽 mixemoji 👍🏽 mix"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["ababc"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["😀tab\tseparated"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["line1\nline2Hello World"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["helloé"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["ns:key.pathkey_name-1"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["ns:key.pathhello world"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["src/a/b.tsa.b.c"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["éhello world"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["a😀b😀cstraße"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["éabc"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["tab\tseparated{name} has {count} items"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["{name} has {count} itemskey_name-1"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["a😀b😀cHELLO"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["a😀b😀chello"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["a😀b😀cabc"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["straßeab"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["aba:b:c"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["hello worldab"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["Hello WorldΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["hello worldns:key.path"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["straßehello"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["src/a/b.tssrc/a/b.ts"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["ΣΊΣΥΦΟΣHello World"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["İstanbul﻿bom"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["日本語のテキストünïcödé"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["ΣΊΣΥΦΟΣΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["./x/**/*.jsonhello world"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["tab\tseparateda:b:c"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["abcstraße"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["ns:key.pathHello World"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["hello﻿bom"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["tab\tseparatedkey_name-1"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["ns:key.pathHELLO"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["İstanbulünïcödé"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["İstanbul日本語のテキスト"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["HELLOkey_name-1"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["line1\nline2src/a/b.ts"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["ns:key.path./x/**/*.json"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["{name} has {count} itemsé"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["abHELLO"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["éHELLO"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["HELLOab"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["helloa"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["trailing.İstanbul"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["src/a/b.ts😀"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["ünïcödéhello"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["hello.leading"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["trailing.src/a/b.ts"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["straßetab\tseparated"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["İstanbul:"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["﻿bomHELLO"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["ΣΊΣΥΦΟΣtab\tseparated"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["emoji 👍🏽 mixİstanbul"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["İstanbul😀"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["日本語のテキストHELLO"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["hello world﻿bom"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["tab\tseparatedab"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["straßeHELLO"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["a..bHello World"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["ahello world"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["a😀b😀cline1\nline2"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["abctrailing."],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["emoji 👍🏽 mix😀"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["line1\nline2abc"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["é日本語のテキスト"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["hello world.leading"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["hello worldsrc/a/b.ts"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["a..btrailing."],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["trailing.ünïcödé"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["{name} has {count} itemstrailing."],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["HELLOhello world"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["😀ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["abhello world"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["straßekey_name-1"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["Hello Worldtrailing."],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["Hello Worldab"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["tab\tseparatedİstanbul"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["abemoji 👍🏽 mix"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["a..bsrc/a/b.ts"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["abcİstanbul"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["a😀b😀ckey_name-1"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["héllo wörld"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["👍🏽 thumbs"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["日本語"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["ılık ırmak"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["👨‍👩‍👧 family"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["a b"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["a😀b"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["a²b x½ y①"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["aⅠb Ⅻ"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["a𐐀b 𝐀bc"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["कि ٣٤"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["Iı İi"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["K K k"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["ſ s S"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["x‍y 👨‍👩‍👧"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["a b c　d"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["١٢٣ ٤٥"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["𝟘𝟙 ²³"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["snake_case foo-bar o'neil"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["ǅungla Ǆ"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["one\r\ntwo threefour"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["café café"],"ok":false}
+{"fn":"isMcpConnectorMentionPath","args":["ΣΑΣ σας ς"],"ok":false}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["ünïcödé"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["hello world"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["日本語のテキスト"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["ünïcödé  padded  "],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["ΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["Hello World"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["{name} has {count} items"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["﻿bomünïcödé"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["hellons:key.path"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["abc  padded  "],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["a:b:c"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":[""],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["a.b.c"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["ns:key.path"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["a"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["hello./x/**/*.json"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["😀"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["./x/**/*.json"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["line1\nline2"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["a..b"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":[":"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["straßestraße"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["emoji 👍🏽 mix"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["HELLO"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["key_name-1"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["a😀b😀c"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["a:b:cé"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["abc"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["ab"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["HELLOΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":[":a😀b😀c"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["﻿bomΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["  padded  "],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["hello worldİstanbul"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["a.b.cab"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["emoji 👍🏽 mixé"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["tab\tseparatedtrailing."],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":[".leading"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["hello"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["﻿bom"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["trailing."],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["éa.b.c"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":[".leadingtrailing."],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["é😀"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":[":a.b.c"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["a..bemoji 👍🏽 mix"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["é"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["src/a/b.ts"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["./x/**/*.jsonİstanbul"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["tab\tseparated"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["  padded  a"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["aba:b:c"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["key_name-1ns:key.path"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["helloa😀b😀c"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["日本語のテキスト😀"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["abca:b:c"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["a😀b😀c﻿bom"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["hellotrailing."],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["ΣΊΣΥΦΟΣHELLO"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["a.b.ca.b.c"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["İstanbul"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["key_name-1  padded  "],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":[".leadingé"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["İstanbula:b:c"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["a.b.c./x/**/*.json"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["hellotab\tseparated"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["hello worlda.b.c"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["emoji 👍🏽 mixab"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["straße"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["😀Hello World"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["Hello Worldhello world"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["src/a/b.tsé"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["日本語のテキストHello World"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["a:b:c😀"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["İstanbul:"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":[".leadingkey_name-1"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["hello worldstraße"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["éa😀b😀c"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["line1\nline2hello world"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["a.b.c😀"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["a😀b😀c.leading"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":[":emoji 👍🏽 mix"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":[".leading{name} has {count} items"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["a.b.ctrailing."],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["emoji 👍🏽 mixHELLO"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["a  padded  "],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["a:b:ca😀b😀c"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["emoji 👍🏽 mixsrc/a/b.ts"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["  padded  tab\tseparated"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["éa..b"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["😀é"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["Hello World{name} has {count} items"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":[":Hello World"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["abcHELLO"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["a:b:cΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["Hello Worldab"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["{name} has {count} items日本語のテキスト"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["  padded  İstanbul"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["trailing.hello world"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["İstanbulstraße"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["ünïcödéabc"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["  padded  ns:key.path"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["﻿bomstraße"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["HELLOHELLO"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["😀a:b:c"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["日本語のテキストabc"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["a:b:c{name} has {count} items"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["a.b.cHello World"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["key_name-1src/a/b.ts"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["aline1\nline2"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["key_name-1hello world"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["src/a/b.tsa"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["{name} has {count} items﻿bom"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["ns:key.path.leading"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["emoji 👍🏽 mixtrailing."],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["a..b﻿bom"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["./x/**/*.jsonhello"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["line1\nline2ab"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":[".leadingtab\tseparated"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["😀hello world"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["line1\nline2﻿bom"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["ünïcödéİstanbul"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["😀{name} has {count} items"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["é  padded  "],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["{name} has {count} itemsünïcödé"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["./x/**/*.json.leading"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["😀emoji 👍🏽 mix"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":[":.leading"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["line1\nline2trailing."],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["line1\nline2😀"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["line1\nline2a😀b😀c"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["  padded  a..b"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["emoji 👍🏽 mix﻿bom"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["﻿bomé"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["akey_name-1"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["a..b日本語のテキスト"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["hello worlda:b:c"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["a..b:"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":[":a"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["Hello World:"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["{name} has {count} itemsé"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["tab\tseparateda:b:c"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["straßea😀b😀c"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["key_name-1key_name-1"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["key_name-1日本語のテキスト"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["a😀b😀c:"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["Hello Worldtrailing."],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["﻿bom﻿bom"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["HELLOa"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["abcline1\nline2"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["ahello"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["tab\tseparateda.b.c"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["abcabc"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":[":😀"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["key_name-1Hello World"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["a.leading"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["./x/**/*.jsona"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["a:b:cab"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["a😀b😀csrc/a/b.ts"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["a:b:c日本語のテキスト"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["helloa..b"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["hello worldkey_name-1"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["a..bünïcödé"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["HELLOabc"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["key_name-1hello"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["😀日本語のテキスト"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["abcé"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["﻿bomtab\tseparated"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["emoji 👍🏽 mix{name} has {count} items"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["hello  padded  "],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["😀./x/**/*.json"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["abcemoji 👍🏽 mix"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["ns:key.pathstraße"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["😀ns:key.path"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["日本語のテキスト.leading"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["{name} has {count} itemsstraße"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["İstanbul./x/**/*.json"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["a.b.cİstanbul"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["ΣΊΣΥΦΟΣstraße"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["a😀b😀cΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["abcab"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["HELLOa:b:c"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["key_name-1ΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["tab\tseparatedİstanbul"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["İstanbula"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["./x/**/*.jsonünïcödé"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["a.b.cünïcödé"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["trailing.İstanbul"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["abkey_name-1"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["line1\nline2straße"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["a:b:chello"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":[".leadinga..b"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["emoji 👍🏽 mix:"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["😀a"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["src/a/b.ts😀"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["ns:key.pathHello World"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["  padded  :"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["a:b:c.leading"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["😀ΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["a😀b😀cHELLO"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["héllo wörld"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["👍🏽 thumbs"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["日本語"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["ılık ırmak"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["👨‍👩‍👧 family"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["a b"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["a😀b"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["a²b x½ y①"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["aⅠb Ⅻ"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["a𐐀b 𝐀bc"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["कि ٣٤"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["Iı İi"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["K K k"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["ſ s S"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["x‍y 👨‍👩‍👧"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["a b c　d"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["١٢٣ ٤٥"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["𝟘𝟙 ²³"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["snake_case foo-bar o'neil"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["ǅungla Ǆ"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["one\r\ntwo threefour"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["café café"],"ok":null}
+{"fn":"serverNameFromMcpConnectorMentionPath","args":["ΣΑΣ σας ς"],"ok":null}
+{"fn":"providerSupportsMcpConnectors","args":["a😀b😀ctrailing."],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["HELLOHELLO"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["ab"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["Hello World"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["  padded  "],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":[":"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["abc"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["日本語のテキスト"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["{name} has {count} items"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["a日本語のテキスト"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["hello world"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["ns:key.path"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["a..b"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["emoji 👍🏽 mix"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":[""],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["hello"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["a"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["trailing."],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["a😀b😀c"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["./x/**/*.json"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["straßea.b.c"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":[".leading"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["key_name-1"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["line1\nline2"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["a..bab"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["abchello world"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["a:b:c"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["straße"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["src/a/b.ts"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["tab\tseparated"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":[":straße"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["é"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["a./x/**/*.json"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["a.b.c"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["ns:key.pathΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["./x/**/*.json  padded  "],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["ünïcödé"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":[":a😀b😀c"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["tab\tseparatedsrc/a/b.ts"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["é:"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["﻿bom"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["astraße"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["abünïcödé"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["ünïcödéns:key.path"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["helloab"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["straßeabc"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["﻿boma"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["  padded  a.b.c"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["{name} has {count} itemsa😀b😀c"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["key_name-1./x/**/*.json"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["HELLO"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["İstanbul"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":[":  padded  "],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["abcemoji 👍🏽 mix"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["😀"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["key_name-1é"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":[":abc"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["./x/**/*.jsonİstanbul"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["a😀b😀c:"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["{name} has {count} itemsns:key.path"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["  padded  😀"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["ünïcödétab\tseparated"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["{name} has {count} itemsé"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["line1\nline2key_name-1"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["abcabc"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["﻿bomİstanbul"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["﻿bom日本語のテキスト"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["atab\tseparated"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":[".leading:"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["ékey_name-1"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["./x/**/*.jsontab\tseparated"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["İstanbulsrc/a/b.ts"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["ns:key.pathline1\nline2"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["emoji 👍🏽 mixa:b:c"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["a😀b😀c{name} has {count} items"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["日本語のテキストemoji 👍🏽 mix"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["﻿bom﻿bom"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["abc﻿bom"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":[".leading.leading"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["ahello"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["key_name-1emoji 👍🏽 mix"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["src/a/b.tsline1\nline2"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["İstanbulemoji 👍🏽 mix"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["  padded  abc"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["Hello Worldns:key.path"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["ünïcödétrailing."],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["hello worldHELLO"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["a:b:cünïcödé"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["HELLO./x/**/*.json"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":[".leading😀"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["ns:key.pathkey_name-1"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["ΣΊΣΥΦΟΣ:"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":[":😀"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["a..b﻿bom"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["a.b.c日本語のテキスト"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["Hello World😀"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["{name} has {count} itemstrailing."],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["日本語のテキストhello"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":[".leadinga..b"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["a.b.cHello World"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["straße  padded  "],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["日本語のテキストtab\tseparated"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["emoji 👍🏽 mix:"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["日本語のテキスト.leading"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["line1\nline2é"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["İstanbula😀b😀c"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["hello worlda"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["HELLO日本語のテキスト"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["aemoji 👍🏽 mix"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["./x/**/*.jsontrailing."],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["a😀b😀cline1\nline2"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["key_name-1hello"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["😀a:b:c"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["src/a/b.tsé"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":[":é"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["hello worldhello"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["straßeHELLO"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["abhello"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["😀ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["line1\nline2ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["src/a/b.ts  padded  "],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["tab\tseparatedhello world"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["éa..b"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["hello worldns:key.path"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["HELLOa.b.c"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["trailing.😀"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["a.b.cΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["tab\tseparatedab"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["a..b.leading"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["ünïcödéé"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["Hello World﻿bom"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["emoji 👍🏽 mixhello"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":[":tab\tseparated"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["Hello Worlda.b.c"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["日本語のテキストa.b.c"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["Hello World{name} has {count} items"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["a😀b😀ca.b.c"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["hellostraße"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["ünïcödéHELLO"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["﻿bomabc"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["abcHello World"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["ünïcödéline1\nline2"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["a:"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["abstraße"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["a.b.ca"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["a﻿bom"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":[".leadinga:b:c"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["src/a/b.tsstraße"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["hello world.leading"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["hello world./x/**/*.json"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["hello  padded  "],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["HELLO😀"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["a.b.chello"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["日本語のテキスト😀"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["ΣΊΣΥΦΟΣline1\nline2"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["a😀b😀c./x/**/*.json"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["straßea"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["a:b:cİstanbul"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["HELLOline1\nline2"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["ünïcödéhello world"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["src/a/b.ts{name} has {count} items"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["a.b.c😀"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["İstanbultab\tseparated"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":[".leadingΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["é日本語のテキスト"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["src/a/b.ts:"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":[".leading./x/**/*.json"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["a..b日本語のテキスト"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["ns:key.pathünïcödé"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["a:b:cstraße"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["tab\tseparatedé"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["Hello Worlda😀b😀c"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["😀trailing."],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["日本語のテキスト:"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["abc{name} has {count} items"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["étrailing."],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["Hello WorldHello World"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["hello worldkey_name-1"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["İstanbulé"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["ns:key.path.leading"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["{name} has {count} itemsab"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["a..bİstanbul"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["straßeΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["a..btrailing."],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["line1\nline2line1\nline2"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["HELLOemoji 👍🏽 mix"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["ünïcödéİstanbul"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["ΣΊΣΥΦΟΣHello World"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["emoji 👍🏽 mixsrc/a/b.ts"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["ab.leading"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["emoji 👍🏽 mixa"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["{name} has {count} itemsHello World"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["trailing.  padded  "],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["ns:key.patha"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["HELLOtab\tseparated"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["straße﻿bom"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["﻿boma.b.c"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["ns:key.pathemoji 👍🏽 mix"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["ns:key.path:"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["héllo wörld"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["👍🏽 thumbs"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["日本語"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["ılık ırmak"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["👨‍👩‍👧 family"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["a b"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["a😀b"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["a²b x½ y①"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["aⅠb Ⅻ"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["a𐐀b 𝐀bc"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["कि ٣٤"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["Iı İi"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["K K k"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["ſ s S"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["x‍y 👨‍👩‍👧"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["a b c　d"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["١٢٣ ٤٥"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["𝟘𝟙 ²³"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["snake_case foo-bar o'neil"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["ǅungla Ǆ"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["one\r\ntwo threefour"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["café café"],"ok":false}
+{"fn":"providerSupportsMcpConnectors","args":["ΣΑΣ σας ς"],"ok":false}

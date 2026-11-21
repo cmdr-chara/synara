@@ -1,0 +1,17 @@
+{
+  "unit": "apps/server/src/codexServiceTier.ts",
+  "files": 1,
+  "fingerprint": "84ffb65f53c8f4d8",
+  "coverage": {
+    "lines": 11,
+    "reached": 11,
+    "files": [
+      {
+        "file": "apps/server/src/codexServiceTier.ts",
+        "lines": 11,
+        "reached": 11,
+        "missed": ""
+      }
+    ]
+  }
+}

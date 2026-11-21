@@ -1,0 +1,30 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/jwtClaims.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "jwtclaims-rs",
+  "exports": [
+    {
+      "name": "decodeJwtClaims",
+      "file": "apps/server/src/jwtClaims.ts",
+      "line": 9,
+      "params": [
+        {
+          "name": "jwt",
+          "ts_type": "string | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Record<string, unknown> | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

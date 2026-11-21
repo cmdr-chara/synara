@@ -1,0 +1,218 @@
+{"fn":"decodeJwtClaims","args":[],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":[{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":[".leading"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["a.b.c"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["ünïcödé"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["hello world"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["İstanbul"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["trailing.a.b.c"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["ΣΊΣΥΦΟΣa.b.c"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["😀a"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":[""],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["emoji 👍🏽 mixns:key.path"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["ΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["ns:key.path"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["a:b:csrc/a/b.ts"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["hello"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["aİstanbul"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["HELLO"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["a:b:c"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["é"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["ns:key.path﻿bom"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["src/a/b.ts:"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["  padded  "],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["ünïcödéa😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["a😀b😀chello world"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["src/a/b.ts"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["{name} has {count} itemsİstanbul"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["key_name-1"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["abc"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["Hello World"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["日本語のテキストé"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["a..b"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["straße"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["ab"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["  padded  key_name-1"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["ünïcödéabc"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["line1\nline2"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["tab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["hello world{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["  padded  a😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["a😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["tab\tseparatedstraße"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["aline1\nline2"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["a"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":[".leadingkey_name-1"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["hello./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["ns:key.pathé"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["abcHello World"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["Hello Worlda😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["﻿bom"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["hello worldtab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["éab"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["trailing."],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["emoji 👍🏽 mixtab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["😀"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["ünïcödéΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":[":"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["😀a:b:c"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["日本語のテキストΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["ΣΊΣΥΦΟΣemoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["key_name-1😀"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":[".leadinga"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["emoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["日本語のテキストab"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["ΣΊΣΥΦΟΣkey_name-1"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["İstanbulsrc/a/b.ts"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["Hello World﻿bom"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["./x/**/*.jsonline1\nline2"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["abctrailing."],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["😀ns:key.path"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["Hello Worldhello"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["emoji 👍🏽 mixa:b:c"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["hello worldhello"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["é  padded  "],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["ns:key.path:"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["éΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["a:"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["ΣΊΣΥΦΟΣtrailing."],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["line1\nline2./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["é😀"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["emoji 👍🏽 mixa..b"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["./x/**/*.jsonİstanbul"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["日本語のテキスト😀"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["﻿bom﻿bom"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["{name} has {count} itemsa..b"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["Hello Worldtab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["./x/**/*.jsonHello World"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["a..bİstanbul"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["ab./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["a..bΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["a:b:c.leading"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["emoji 👍🏽 mixa.b.c"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["a日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["emoji 👍🏽 mixhello world"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["Hello Worlda..b"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["é日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["abHELLO"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["ns:key.path日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["﻿boma😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["key_name-1emoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["Hello Worldkey_name-1"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["a..b﻿bom"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["emoji 👍🏽 mixa😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["ns:key.patha😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":[".leadingHello World"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["line1\nline2a"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["ünïcödéa:b:c"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["src/a/b.tsİstanbul"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["line1\nline2Hello World"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["{name} has {count} itemsé"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["﻿bom{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["a..bé"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["ΣΊΣΥΦΟΣ😀"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["tab\tseparated.leading"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["😀:"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":[".leadinga😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["😀ab"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["abchello world"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["éstraße"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["{name} has {count} itemsHello World"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["ahello world"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["a.b.ca:b:c"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["line1\nline2abc"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["{name} has {count} itemsns:key.path"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["a:b:cHELLO"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["abcé"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["hellons:key.path"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["﻿bom:"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["a😀b😀cns:key.path"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["abcünïcödé"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["hello worldabc"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["Hello Worldstraße"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["key_name-1tab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["😀line1\nline2"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["./x/**/*.json  padded  "],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["İstanbulé"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["😀ünïcödé"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["{name} has {count} items😀"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["a:b:cline1\nline2"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["src/a/b.ts😀"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["ns:key.path./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["trailing.HELLO"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["éİstanbul"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["a:b:ca"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["hellosrc/a/b.ts"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["aΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":[":straße"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["Hello World{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["日本語のテキスト{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["ns:key.path😀"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["emoji 👍🏽 mixabc"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["aemoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["src/a/b.tstab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["a😀b😀c:"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["a.b.ctab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["hello worldstraße"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["a..b.leading"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["aab"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["日本語のテキスト./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["straßeé"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["key_name-1hello"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["src/a/b.tstrailing."],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["abünïcödé"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["ns:key.pathsrc/a/b.ts"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["aba:b:c"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["😀straße"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["a😀b😀c日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["hello worldline1\nline2"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["ns:key.pathHello World"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["﻿boma:b:c"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["a..bhello world"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["ns:key.pathab"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["tab\tseparatedHello World"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["日本語のテキスト  padded  "],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["helloHello World"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["Hello World./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["tab\tseparatedabc"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["{name} has {count} itemsa😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["é./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["a😀b😀cabc"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["tab\tseparatedtrailing."],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":[".leadingünïcödé"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["ns:key.pathünïcödé"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["日本語のテキスト.leading"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["ékey_name-1"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["straßea"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["abstraße"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["straßea😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":[".leadingΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["abca.b.c"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["  padded  tab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["éHello World"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["line1\nline2tab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["tab\tseparatedsrc/a/b.ts"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["  padded  é"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["a😀b😀c.leading"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["﻿bomHello World"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiAidXNlci0xIiwgImV4cCI6IDE4OTM0NTYwMDAsICJpYXQiOiAxNzAwMDAwMDAwLCAibmFtZSI6ICJKXHUwMGZjcmdlbiIsICJhZG1pbiI6IHRydWUsICJyb2xlcyI6IFsiYSIsICJiIl0sICJuZXN0ZWQiOiB7IngiOiAxLjV9fQ.c2ln"],"ok":{"sub":"user-1","exp":1893456000,"iat":1700000000,"name":"Jürgen","admin":true,"roles":["a","b"],"nested":{"x":1.5}}}
+{"fn":"decodeJwtClaims","args":["eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.c2ln"],"ok":{}}
+{"fn":"decodeJwtClaims","args":["eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOiAiMTg5MzQ1NjAwMCJ9.c2ln"],"ok":{"exp":"1893456000"}}
+{"fn":"decodeJwtClaims","args":["eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOiAidG9tb3Jyb3cifQ.c2ln"],"ok":{"iat":"tomorrow"}}
+{"fn":"decodeJwtClaims","args":["eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYmYiOiBudWxsfQ.c2ln"],"ok":{"nbf":null}}
+{"fn":"decodeJwtClaims","args":["aaa.bbb"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["a.b.c.d"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["a.b.c.d.e"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["e30.WzEsMl0.eA"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["e30.NQ.eA"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["e30.bnVsbA.eA"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["e30.InN0ciI.eA"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["e30.bm90IGpzb257.eA"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["e30.!!!.eA"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["e30..eA"],"ok":{"$undefined":true}}
+{"fn":"decodeJwtClaims","args":["eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiAieCJ9.c2l"],"ok":{"sub":"x"}}
+{"fn":"decodeJwtClaims","args":["  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhIjogMX0.c2ln  "],"ok":{"a":1}}
+{"fn":"decodeJwtClaims","args":["eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjdXN0b20iOiB7ImVtb2ppIjogIlx1ZDgzZFx1ZGUwMCIsICJhcnIiOiBbbnVsbCwgdHJ1ZSwgLTMuMjVdfX0.c2ln"],"ok":{"custom":{"emoji":"😀","arr":[null,true,-3.25]}}}

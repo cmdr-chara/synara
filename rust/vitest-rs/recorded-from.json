@@ -1,0 +1,17 @@
+{
+  "unit": "vitest.shards.ts",
+  "files": 1,
+  "fingerprint": "c2925a4aa081422d",
+  "coverage": {
+    "lines": 22,
+    "reached": 9,
+    "files": [
+      {
+        "file": "vitest.shards.ts",
+        "lines": 22,
+        "reached": 9,
+        "missed": "9-13, 15-22"
+      }
+    ]
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "vitest.shards.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "vitest-rs",
+  "exports": [
+    {
+      "name": "createPinnedShardSequencer",
+      "file": "vitest.shards.ts",
+      "line": 4,
+      "params": [
+        {
+          "name": "pinsByCount",
+          "ts_type": "Readonly<Record<number, Readonly<Record<string, number>>>>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof BaseSequencer",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

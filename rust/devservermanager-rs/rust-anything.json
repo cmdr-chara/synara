@@ -1,0 +1,37 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/devServerManager.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "devservermanager-rs",
+  "exports": [
+    {
+      "name": "findProjectDevServerForLocalServer",
+      "file": "apps/server/src/devServerManager.ts",
+      "line": 47,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  localServer: typeof typeof typeof typeof ServerLocalServerProcess.Type.Type.Type.Type;\n  devServers: readonly typeof typeof typeof typeof ProjectDevServer.Type.Type.Type.Type[];\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ProjectDevServer.Type.Type.Type.Type | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "DevServerManager",
+      "file": "apps/server/src/devServerManager.ts",
+      "line": 72,
+      "reason": "class: extends another class"
+    }
+  ]
+}

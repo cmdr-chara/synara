@@ -1,0 +1,9 @@
+{"fn":"findProjectDevServerForLocalServer","args":[["a",1]],"error":"undefined is not an object (evaluating 'devServer of input.devServers')"}
+{"fn":"findProjectDevServerForLocalServer","args":[{"a":"b"}],"error":"undefined is not an object (evaluating 'devServer of input.devServers')"}
+{"fn":"findProjectDevServerForLocalServer","args":[{"a":{"b":"c"}}],"error":"undefined is not an object (evaluating 'devServer of input.devServers')"}
+{"fn":"findProjectDevServerForLocalServer","args":[[]],"error":"undefined is not an object (evaluating 'devServer of input.devServers')"}
+{"fn":"findProjectDevServerForLocalServer","args":[null],"error":"null is not an object (evaluating 'input.devServers')"}
+{"fn":"findProjectDevServerForLocalServer","args":[true],"error":"undefined is not an object (evaluating 'devServer of input.devServers')"}
+{"fn":"findProjectDevServerForLocalServer","args":[0],"error":"undefined is not an object (evaluating 'devServer of input.devServers')"}
+{"fn":"findProjectDevServerForLocalServer","args":["x"],"error":"undefined is not an object (evaluating 'devServer of input.devServers')"}
+{"fn":"findProjectDevServerForLocalServer","args":[{}],"error":"undefined is not an object (evaluating 'devServer of input.devServers')"}

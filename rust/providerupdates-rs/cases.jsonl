@@ -1,0 +1,72 @@
+{"fn":"isProviderUpdateActive","args":[null],"error":"Cannot read properties of null (reading 'updateState')"}
+{"fn":"isProviderUpdateActive","args":[{}],"ok":false}
+{"fn":"isProviderUpdateActive","args":[{"a":"b"}],"ok":false}
+{"fn":"isProviderUpdateActive","args":["x"],"ok":false}
+{"fn":"isProviderUpdateActive","args":[[]],"ok":false}
+{"fn":"isProviderUpdateActive","args":[0],"ok":false}
+{"fn":"isProviderUpdateActive","args":[true],"ok":false}
+{"fn":"isProviderUpdateActive","args":[{"a":{"b":"c"}}],"ok":false}
+{"fn":"isProviderUpdateActive","args":[["a",1]],"ok":false}
+{"fn":"isProviderLatestVersionKnowable","args":[0],"ok":true}
+{"fn":"isProviderLatestVersionKnowable","args":[{"a":{"b":"c"}}],"ok":true}
+{"fn":"isProviderLatestVersionKnowable","args":[{"a":"b"}],"ok":true}
+{"fn":"isProviderLatestVersionKnowable","args":[[]],"ok":true}
+{"fn":"isProviderLatestVersionKnowable","args":[{}],"ok":true}
+{"fn":"isProviderLatestVersionKnowable","args":[null],"error":"Cannot read properties of null (reading 'versionAdvisory')"}
+{"fn":"isProviderLatestVersionKnowable","args":[true],"ok":true}
+{"fn":"isProviderLatestVersionKnowable","args":["x"],"ok":true}
+{"fn":"isProviderLatestVersionKnowable","args":[["a",1]],"ok":true}
+{"fn":"shouldOfferProviderUpdateAction","args":[["a",1]],"ok":false}
+{"fn":"shouldOfferProviderUpdateAction","args":[{"a":"b"}],"ok":false}
+{"fn":"shouldOfferProviderUpdateAction","args":[null],"error":"Cannot read properties of null (reading 'versionAdvisory')"}
+{"fn":"shouldOfferProviderUpdateAction","args":["x"],"ok":false}
+{"fn":"shouldOfferProviderUpdateAction","args":[{"a":{"b":"c"}}],"ok":false}
+{"fn":"shouldOfferProviderUpdateAction","args":[{}],"ok":false}
+{"fn":"shouldOfferProviderUpdateAction","args":[true],"ok":false}
+{"fn":"shouldOfferProviderUpdateAction","args":[[]],"ok":false}
+{"fn":"shouldOfferProviderUpdateAction","args":[0],"ok":false}
+{"fn":"shouldPromptProviderUpdate","args":[{}],"ok":false}
+{"fn":"shouldPromptProviderUpdate","args":["x"],"ok":false}
+{"fn":"shouldPromptProviderUpdate","args":[["a",1]],"ok":false}
+{"fn":"shouldPromptProviderUpdate","args":[{"a":{"b":"c"}}],"ok":false}
+{"fn":"shouldPromptProviderUpdate","args":[null],"error":"Cannot read properties of null (reading 'versionAdvisory')"}
+{"fn":"shouldPromptProviderUpdate","args":[[]],"ok":false}
+{"fn":"shouldPromptProviderUpdate","args":[0],"ok":false}
+{"fn":"shouldPromptProviderUpdate","args":[true],"ok":false}
+{"fn":"shouldPromptProviderUpdate","args":[{"a":"b"}],"ok":false}
+{"fn":"shouldShowProviderUpdateStatus","args":[{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'versionAdvisory')"}
+{"fn":"shouldShowProviderUpdateStatus","args":[{"a":"b"}],"error":"Cannot read properties of undefined (reading 'versionAdvisory')"}
+{"fn":"shouldShowProviderUpdateStatus","args":["x"],"error":"Cannot read properties of undefined (reading 'versionAdvisory')"}
+{"fn":"shouldShowProviderUpdateStatus","args":[{}],"error":"Cannot read properties of undefined (reading 'versionAdvisory')"}
+{"fn":"shouldShowProviderUpdateStatus","args":[null],"error":"Cannot read properties of null (reading 'provider')"}
+{"fn":"shouldShowProviderUpdateStatus","args":[0],"error":"Cannot read properties of undefined (reading 'versionAdvisory')"}
+{"fn":"shouldShowProviderUpdateStatus","args":[true],"error":"Cannot read properties of undefined (reading 'versionAdvisory')"}
+{"fn":"shouldShowProviderUpdateStatus","args":[["a",1]],"error":"Cannot read properties of undefined (reading 'versionAdvisory')"}
+{"fn":"shouldShowProviderUpdateStatus","args":[[]],"error":"Cannot read properties of undefined (reading 'versionAdvisory')"}
+{"fn":"getVisibleProviderUpdateStatuses","args":[{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'filter')"}
+{"fn":"getVisibleProviderUpdateStatuses","args":[0],"error":"Cannot read properties of undefined (reading 'filter')"}
+{"fn":"getVisibleProviderUpdateStatuses","args":[{"a":"b"}],"error":"Cannot read properties of undefined (reading 'filter')"}
+{"fn":"getVisibleProviderUpdateStatuses","args":[[]],"error":"Cannot read properties of undefined (reading 'filter')"}
+{"fn":"getVisibleProviderUpdateStatuses","args":[["a",1]],"error":"Cannot read properties of undefined (reading 'filter')"}
+{"fn":"getVisibleProviderUpdateStatuses","args":[null],"error":"Cannot read properties of null (reading 'hiddenProviders')"}
+{"fn":"getVisibleProviderUpdateStatuses","args":[true],"error":"Cannot read properties of undefined (reading 'filter')"}
+{"fn":"getVisibleProviderUpdateStatuses","args":[{}],"error":"Cannot read properties of undefined (reading 'filter')"}
+{"fn":"getVisibleProviderUpdateStatuses","args":["x"],"error":"Cannot read properties of undefined (reading 'filter')"}
+{"fn":"getNotifiableProviderUpdateStatuses","args":[[]],"ok":[]}
+{"fn":"getNotifiableProviderUpdateStatuses","args":[0],"ok":[]}
+{"fn":"getNotifiableProviderUpdateStatuses","args":[null],"error":"Cannot read properties of null (reading 'liveVersionCheckCompleted')"}
+{"fn":"getNotifiableProviderUpdateStatuses","args":[{"a":{"b":"c"}}],"ok":[]}
+{"fn":"getNotifiableProviderUpdateStatuses","args":[["a",1]],"ok":[]}
+{"fn":"getNotifiableProviderUpdateStatuses","args":[{"a":"b"}],"ok":[]}
+{"fn":"getNotifiableProviderUpdateStatuses","args":["x"],"ok":[]}
+{"fn":"getNotifiableProviderUpdateStatuses","args":[true],"ok":[]}
+{"fn":"getNotifiableProviderUpdateStatuses","args":[{}],"ok":[]}
+{"fn":"providerUpdateNotificationKey","args":[true],"error":"providers.map is not a function"}
+{"fn":"providerUpdateNotificationKey","args":[{"a":"b"}],"error":"providers.map is not a function"}
+{"fn":"providerUpdateNotificationKey","args":[null],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"providerUpdateNotificationKey","args":[0],"error":"providers.map is not a function"}
+{"fn":"providerUpdateNotificationKey","args":[{}],"error":"providers.map is not a function"}
+{"fn":"providerUpdateNotificationKey","args":[["a",1]],"ok":":unknown|:unknown"}
+{"fn":"providerUpdateNotificationKey","args":[[]],"ok":null}
+{"fn":"providerUpdateNotificationKey","args":[{"a":{"b":"c"}}],"error":"providers.map is not a function"}
+{"fn":"providerUpdateNotificationKey","args":["x"],"error":"providers.map is not a function"}

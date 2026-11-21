@@ -1,0 +1,100 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/desktop/src/backendSupervisionPolicy.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "backendsupervisionpolicy-rs",
+  "exports": [
+    {
+      "name": "backendRestartDelayMs",
+      "file": "apps/desktop/src/backendSupervisionPolicy.ts",
+      "line": 28,
+      "params": [
+        {
+          "name": "attempt",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "number",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "summarizeBackendFailureOutput",
+      "file": "apps/desktop/src/backendSupervisionPolicy.ts",
+      "line": 168,
+      "params": [
+        {
+          "name": "output",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "maxLines",
+          "ts_type": "number",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [
+    {
+      "name": "BackendOutputTailDetector",
+      "file": "apps/desktop/src/backendSupervisionPolicy.ts",
+      "line": 121,
+      "constructor": [],
+      "methods": [
+        {
+          "name": "push",
+          "file": "apps/desktop/src/backendSupervisionPolicy.ts",
+          "line": 128,
+          "params": [
+            {
+              "name": "chunk",
+              "ts_type": "unknown",
+              "optional": false,
+              "rest": false
+            }
+          ],
+          "returns": "void",
+          "is_async": false,
+          "is_generator": false,
+          "type_params": [],
+          "uses_instanceof": false
+        },
+        {
+          "name": "read",
+          "file": "apps/desktop/src/backendSupervisionPolicy.ts",
+          "line": 156,
+          "params": [],
+          "returns": "string",
+          "is_async": false,
+          "is_generator": false,
+          "type_params": [],
+          "uses_instanceof": false
+        }
+      ],
+      "blocker": null
+    }
+  ],
+  "js_only": [
+    {
+      "name": "BackendSupervisionPolicy",
+      "file": "apps/desktop/src/backendSupervisionPolicy.ts",
+      "line": 60,
+      "reason": "class: accessor `consecutiveFailures`, accessor `hasGivenUp`, accessor `hasPromptedMigrationRecovery`"
+    }
+  ]
+}

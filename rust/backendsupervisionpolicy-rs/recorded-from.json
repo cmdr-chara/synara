@@ -1,0 +1,17 @@
+{
+  "unit": "apps/desktop/src/backendSupervisionPolicy.ts",
+  "files": 1,
+  "fingerprint": "90513e4f9881afd5",
+  "coverage": {
+    "lines": 169,
+    "reached": 109,
+    "files": [
+      {
+        "file": "apps/desktop/src/backendSupervisionPolicy.ts",
+        "lines": 169,
+        "reached": 109,
+        "missed": "62-64, 67-69, 71-73, 75-77, 80-83, 86-88, 90-93, 95-100, 102-104, 106-110, 112-117, 133-137, 145-149, 151-153, 159, 185-187"
+      }
+    ]
+  }
+}

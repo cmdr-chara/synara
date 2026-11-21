@@ -1,0 +1,29 @@
+{
+  "unit": "apps/server/src/attachmentStore.ts",
+  "files": 1,
+  "fingerprint": "b3c53e2746b19695",
+  "coverage": {
+    "lines": 207,
+    "reached": 150,
+    "files": [
+      {
+        "file": "apps/server/src/attachmentPaths.ts",
+        "lines": 32,
+        "reached": 26,
+        "missed": "16-17, 27-28, 33-34"
+      },
+      {
+        "file": "apps/server/src/attachmentStore.ts",
+        "lines": 112,
+        "reached": 94,
+        "missed": "62-77, 105-106"
+      },
+      {
+        "file": "apps/server/src/imageMime.ts",
+        "lines": 63,
+        "reached": 30,
+        "missed": "33-39, 41-44, 46-51, 53-54, 57-64, 66-69, 71-72"
+      }
+    ]
+  }
+}

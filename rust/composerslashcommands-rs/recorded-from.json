@@ -1,0 +1,17 @@
+{
+  "unit": "packages/shared/src/composerSlashCommands.ts",
+  "files": 1,
+  "fingerprint": "efad755aebe6d278",
+  "coverage": {
+    "lines": 17,
+    "reached": 17,
+    "files": [
+      {
+        "file": "packages/shared/src/composerSlashCommands.ts",
+        "lines": 17,
+        "reached": 17,
+        "missed": ""
+      }
+    ]
+  }
+}

@@ -1,0 +1,283 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/appRail.logic.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "apprail-rs",
+  "exports": [
+    {
+      "name": "isRailOrderableItemId",
+      "file": "apps/web/src/appRail.logic.ts",
+      "line": 53,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "value is (typeof RAIL_ORDERABLE_ITEM_IDS)[number]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "railItemCanHide",
+      "file": "apps/web/src/appRail.logic.ts",
+      "line": 58,
+      "params": [
+        {
+          "name": "id",
+          "ts_type": "(typeof RAIL_ORDERABLE_ITEM_IDS)[number]",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "normalizeRailItemOrder",
+      "file": "apps/web/src/appRail.logic.ts",
+      "line": 62,
+      "params": [
+        {
+          "name": "order",
+          "ts_type": "readonly string[]",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(typeof RAIL_ORDERABLE_ITEM_IDS)[number][]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "normalizeHiddenRailItems",
+      "file": "apps/web/src/appRail.logic.ts",
+      "line": 68,
+      "params": [
+        {
+          "name": "hidden",
+          "ts_type": "readonly string[]",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(typeof RAIL_ORDERABLE_ITEM_IDS)[number][]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isRailItemAvailable",
+      "file": "apps/web/src/appRail.logic.ts",
+      "line": 80,
+      "params": [
+        {
+          "name": "id",
+          "ts_type": "(typeof RAIL_ORDERABLE_ITEM_IDS)[number]",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "availability",
+          "ts_type": "RailAvailability",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "buildRailItemOrder",
+      "file": "apps/web/src/appRail.logic.ts",
+      "line": 90,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n    order: readonly (typeof RAIL_ORDERABLE_ITEM_IDS)[number][];\n    hidden: ReadonlySet<(typeof RAIL_ORDERABLE_ITEM_IDS)[number]>;\n    activeItem: ((typeof RAIL_PANEL_ITEM_IDS)[number] | (Exclude<(typeof SIDEBAR_NAV_ITEM_IDS)[number], \"newThread\"> | \"studio\" | \"settings\"));\n  } & RailAvailability",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(typeof RAIL_ORDERABLE_ITEM_IDS)[number][]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "railSpaceShortcutKey",
+      "file": "apps/web/src/appRail.logic.ts",
+      "line": 110,
+      "params": [
+        {
+          "name": "spaceId",
+          "ts_type": "typeof typeof typeof typeof SpaceId.Type.Type.Type.Type | null",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "railProjectShortcutKey",
+      "file": "apps/web/src/appRail.logic.ts",
+      "line": 114,
+      "params": [
+        {
+          "name": "projectId",
+          "ts_type": "typeof typeof typeof typeof ProjectId.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveRailShortcuts",
+      "file": "apps/web/src/appRail.logic.ts",
+      "line": 122,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  keys: readonly string[];\n  spaceIds: ReadonlySet<typeof typeof typeof typeof SpaceId.Type.Type.Type.Type>;\n  projectIds: ReadonlySet<typeof typeof typeof typeof ProjectId.Type.Type.Type.Type>;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(| { readonly kind: \"space\"; readonly key: string; readonly spaceId: typeof typeof typeof SpaceId.Type.Type.Type | null }\n  | { readonly kind: \"project\"; readonly key: string; readonly projectId: typeof typeof typeof ProjectId.Type.Type.Type })[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "toggleRailShortcutKey",
+      "file": "apps/web/src/appRail.logic.ts",
+      "line": 148,
+      "params": [
+        {
+          "name": "keys",
+          "ts_type": "readonly string[]",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "key",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveActiveRailShortcutKey",
+      "file": "apps/web/src/appRail.logic.ts",
+      "line": 156,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  activeItem: ((typeof RAIL_PANEL_ITEM_IDS)[number] | (Exclude<(typeof SIDEBAR_NAV_ITEM_IDS)[number], \"newThread\"> | \"studio\" | \"settings\"));\n  activeSpaceId: typeof typeof typeof typeof SpaceId.Type.Type.Type.Type | null;\n  spacesProjectId: typeof typeof typeof typeof ProjectId.Type.Type.Type.Type | null;\n  shortcuts: readonly (| { readonly kind: \"space\"; readonly key: string; readonly spaceId: typeof typeof typeof SpaceId.Type.Type.Type | null }\n  | { readonly kind: \"project\"; readonly key: string; readonly projectId: typeof typeof typeof ProjectId.Type.Type.Type })[];\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "railItemShowsPanel",
+      "file": "apps/web/src/appRail.logic.ts",
+      "line": 187,
+      "params": [
+        {
+          "name": "id",
+          "ts_type": "((typeof RAIL_PANEL_ITEM_IDS)[number] | (Exclude<(typeof SIDEBAR_NAV_ITEM_IDS)[number], \"newThread\"> | \"studio\" | \"settings\"))",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "railItemForPathname",
+      "file": "apps/web/src/appRail.logic.ts",
+      "line": 196,
+      "params": [
+        {
+          "name": "pathname",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(Exclude<(typeof SIDEBAR_NAV_ITEM_IDS)[number], \"newThread\"> | \"studio\" | \"settings\") | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "reconcileActiveRailItem",
+      "file": "apps/web/src/appRail.logic.ts",
+      "line": 219,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  current: ((typeof RAIL_PANEL_ITEM_IDS)[number] | (Exclude<(typeof SIDEBAR_NAV_ITEM_IDS)[number], \"newThread\"> | \"studio\" | \"settings\"));\n  pathname: string;\n  onStudioSurface: boolean;\n  panelView: (typeof RAIL_PANEL_ITEM_IDS)[number];\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "((typeof RAIL_PANEL_ITEM_IDS)[number] | (Exclude<(typeof SIDEBAR_NAV_ITEM_IDS)[number], \"newThread\"> | \"studio\" | \"settings\"))",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "buildRailSpacesSections",
+      "file": "apps/web/src/appRail.logic.ts",
+      "line": 243,
+      "reason": "takes or returns a function"
+    }
+  ]
+}

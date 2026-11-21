@@ -1,0 +1,17 @@
+{
+  "unit": "apps/server/src/transcriptUsageParsers.ts",
+  "files": 1,
+  "fingerprint": "8df8781cfc3fe123",
+  "coverage": {
+    "lines": 290,
+    "reached": 181,
+    "files": [
+      {
+        "file": "apps/server/src/transcriptUsageParsers.ts",
+        "lines": 290,
+        "reached": 181,
+        "missed": "74, 78-80, 82-84, 88, 113-124, 132-143, 145-146, 149-150, 153-156, 229-234, 248, 250-261, 263-276, 278, 285-287, 289-295, 297-308, 310-322"
+      }
+    ]
+  }
+}

@@ -1,0 +1,137 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/transcriptUsageParsers.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "transcriptusageparsers-rs",
+  "exports": [
+    {
+      "name": "transcriptTokenTotal",
+      "file": "apps/server/src/transcriptUsageParsers.ts",
+      "line": 57,
+      "params": [
+        {
+          "name": "tokens",
+          "ts_type": "TranscriptTokenCounts",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "number",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "transcriptPromptTokens",
+      "file": "apps/server/src/transcriptUsageParsers.ts",
+      "line": 68,
+      "params": [
+        {
+          "name": "tokens",
+          "ts_type": "TranscriptTokenCounts",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "number",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "claudeLineMightMatter",
+      "file": "apps/server/src/transcriptUsageParsers.ts",
+      "line": 107,
+      "params": [
+        {
+          "name": "line",
+          "ts_type": "Buffer",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "parseClaudeTranscriptLine",
+      "file": "apps/server/src/transcriptUsageParsers.ts",
+      "line": 127,
+      "params": [
+        {
+          "name": "line",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(| {\n      readonly kind: \"usage\";\n      readonly provider: (\"claudeAgent\" | \"codex\");\n      readonly timestampMs: number;\n      readonly model: string;\n      /** Working directory of the session, for project attribution. */\n      readonly cwd: string;\n      readonly tokens: TranscriptTokenCounts;\n      /** A cost written in the session file itself; null when there is none. */\n      readonly reportedCostUsd: number | null;\n      /** Claude fast mode, billed at a model-specific multiple. */\n      readonly fast: boolean;\n      /** True for a request that ended in an API error instead of a response. */\n      readonly failed: boolean;\n      /**\n       * Claude repeats one response's usage on every content block, and resumed\n       * sessions copy earlier responses into new files: records with the same key\n       * are one response. Null when the record is unique.\n       */\n      readonly dedupeKey: string | null;\n    }\n  | {\n      readonly kind: \"turn\";\n      readonly provider: (\"claudeAgent\" | \"codex\");\n      readonly timestampMs: number;\n      readonly model: string;\n      readonly cwd: string;\n      /** Resumed and forked sessions copy earlier turns; one key is one turn. */\n      readonly dedupeKey: string;\n    }) | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "initialCodexTranscriptState",
+      "file": "apps/server/src/transcriptUsageParsers.ts",
+      "line": 203,
+      "params": [],
+      "returns": "CodexTranscriptState",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "codexLineMightMatter",
+      "file": "apps/server/src/transcriptUsageParsers.ts",
+      "line": 221,
+      "params": [
+        {
+          "name": "line",
+          "ts_type": "Buffer",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "parseCodexTranscriptLine",
+      "file": "apps/server/src/transcriptUsageParsers.ts",
+      "line": 241,
+      "params": [
+        {
+          "name": "line",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "state",
+          "ts_type": "CodexTranscriptState",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(| {\n      readonly kind: \"usage\";\n      readonly provider: (\"claudeAgent\" | \"codex\");\n      readonly timestampMs: number;\n      readonly model: string;\n      /** Working directory of the session, for project attribution. */\n      readonly cwd: string;\n      readonly tokens: TranscriptTokenCounts;\n      /** A cost written in the session file itself; null when there is none. */\n      readonly reportedCostUsd: number | null;\n      /** Claude fast mode, billed at a model-specific multiple. */\n      readonly fast: boolean;\n      /** True for a request that ended in an API error instead of a response. */\n      readonly failed: boolean;\n      /**\n       * Claude repeats one response's usage on every content block, and resumed\n       * sessions copy earlier responses into new files: records with the same key\n       * are one response. Null when the record is unique.\n       */\n      readonly dedupeKey: string | null;\n    }\n  | {\n      readonly kind: \"turn\";\n      readonly provider: (\"claudeAgent\" | \"codex\");\n      readonly timestampMs: number;\n      readonly model: string;\n      readonly cwd: string;\n      /** Resumed and forked sessions copy earlier turns; one key is one turn. */\n      readonly dedupeKey: string;\n    }) | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

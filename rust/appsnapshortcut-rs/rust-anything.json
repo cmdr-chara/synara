@@ -1,0 +1,198 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/appSnapShortcut.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "appsnapshortcut-rs",
+  "exports": [
+    {
+      "name": "isAppSnapShortcutModifier",
+      "file": "packages/shared/src/appSnapShortcut.ts",
+      "line": 111,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "value is (\"command\" | \"control\" | \"option\" | \"shift\")",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isAppSnapShortcutKey",
+      "file": "packages/shared/src/appSnapShortcut.ts",
+      "line": 115,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "value is string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isAppSnapShortcut",
+      "file": "packages/shared/src/appSnapShortcut.ts",
+      "line": 119,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "value is ({ kind: \"both-option-keys\" } | DesktopAppSnapKeyChord)",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "appSnapModifierFromEventCode",
+      "file": "packages/shared/src/appSnapShortcut.ts",
+      "line": 130,
+      "params": [
+        {
+          "name": "code",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(\"command\" | \"control\" | \"option\" | \"shift\") | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "appSnapShortcutSystemConflict",
+      "file": "packages/shared/src/appSnapShortcut.ts",
+      "line": 139,
+      "params": [
+        {
+          "name": "chord",
+          "ts_type": "DesktopAppSnapKeyChord",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "appSnapShortcutLabels",
+      "file": "packages/shared/src/appSnapShortcut.ts",
+      "line": 155,
+      "params": [
+        {
+          "name": "shortcut",
+          "ts_type": "({ kind: \"both-option-keys\" } | DesktopAppSnapKeyChord)",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "readonly [string, string]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "appSnapShortcutModifierLabel",
+      "file": "packages/shared/src/appSnapShortcut.ts",
+      "line": 160,
+      "params": [
+        {
+          "name": "modifier",
+          "ts_type": "(\"command\" | \"control\" | \"option\" | \"shift\")",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "appSnapShortcutKeyLabel",
+      "file": "packages/shared/src/appSnapShortcut.ts",
+      "line": 164,
+      "params": [
+        {
+          "name": "code",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "appSnapShortcutAccelerator",
+      "file": "packages/shared/src/appSnapShortcut.ts",
+      "line": 170,
+      "params": [
+        {
+          "name": "shortcut",
+          "ts_type": "DesktopAppSnapKeyChord",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "sameAppSnapShortcut",
+      "file": "packages/shared/src/appSnapShortcut.ts",
+      "line": 179,
+      "params": [
+        {
+          "name": "left",
+          "ts_type": "({ kind: \"both-option-keys\" } | DesktopAppSnapKeyChord)",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "right",
+          "ts_type": "({ kind: \"both-option-keys\" } | DesktopAppSnapKeyChord)",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

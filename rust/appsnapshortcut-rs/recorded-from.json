@@ -1,0 +1,17 @@
+{
+  "unit": "packages/shared/src/appSnapShortcut.ts",
+  "files": 1,
+  "fingerprint": "ad87af6e0ffe3217",
+  "coverage": {
+    "lines": 164,
+    "reached": 162,
+    "files": [
+      {
+        "file": "packages/shared/src/appSnapShortcut.ts",
+        "lines": 164,
+        "reached": 162,
+        "missed": "125-126"
+      }
+    ]
+  }
+}

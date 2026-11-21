@@ -1,0 +1,1505 @@
+{"fn":"isAppSnapShortcutModifier","args":[[]],"ok":false}
+{"fn":"isAppSnapShortcutModifier","args":[["a",1]],"ok":false}
+{"fn":"isAppSnapShortcutModifier","args":[{"a":"b"}],"ok":false}
+{"fn":"isAppSnapShortcutModifier","args":[0],"ok":false}
+{"fn":"isAppSnapShortcutModifier","args":[{"a":{"b":"c"}}],"ok":false}
+{"fn":"isAppSnapShortcutModifier","args":[true],"ok":false}
+{"fn":"isAppSnapShortcutModifier","args":[{}],"ok":false}
+{"fn":"isAppSnapShortcutModifier","args":["x"],"ok":false}
+{"fn":"isAppSnapShortcutModifier","args":[null],"ok":false}
+{"fn":"isAppSnapShortcutModifier","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6}],"ok":false}
+{"fn":"isAppSnapShortcutModifier","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7}],"ok":false}
+{"fn":"isAppSnapShortcutModifier","args":[[3,1,2]],"ok":false}
+{"fn":"isAppSnapShortcutKey","args":[[]],"ok":false}
+{"fn":"isAppSnapShortcutKey","args":[{}],"ok":false}
+{"fn":"isAppSnapShortcutKey","args":[["a",1]],"ok":false}
+{"fn":"isAppSnapShortcutKey","args":["x"],"ok":false}
+{"fn":"isAppSnapShortcutKey","args":[{"a":{"b":"c"}}],"ok":false}
+{"fn":"isAppSnapShortcutKey","args":[null],"ok":false}
+{"fn":"isAppSnapShortcutKey","args":[0],"ok":false}
+{"fn":"isAppSnapShortcutKey","args":[true],"ok":false}
+{"fn":"isAppSnapShortcutKey","args":[{"a":"b"}],"ok":false}
+{"fn":"isAppSnapShortcutKey","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6}],"ok":false}
+{"fn":"isAppSnapShortcutKey","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7}],"ok":false}
+{"fn":"isAppSnapShortcutKey","args":[[3,1,2]],"ok":false}
+{"fn":"isAppSnapShortcut","args":[0],"ok":false}
+{"fn":"isAppSnapShortcut","args":["x"],"ok":false}
+{"fn":"isAppSnapShortcut","args":[true],"ok":false}
+{"fn":"isAppSnapShortcut","args":[{"a":"b"}],"ok":false}
+{"fn":"isAppSnapShortcut","args":[[]],"ok":false}
+{"fn":"isAppSnapShortcut","args":[["a",1]],"ok":false}
+{"fn":"isAppSnapShortcut","args":[null],"ok":false}
+{"fn":"isAppSnapShortcut","args":[{"a":{"b":"c"}}],"ok":false}
+{"fn":"isAppSnapShortcut","args":[{}],"ok":false}
+{"fn":"isAppSnapShortcut","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6}],"ok":false}
+{"fn":"isAppSnapShortcut","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7}],"ok":false}
+{"fn":"isAppSnapShortcut","args":[[3,1,2]],"ok":false}
+{"fn":"appSnapModifierFromEventCode","args":["a..bns:key.path"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["İstanbulline1\nline2"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["ab"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["éİstanbul"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["ΣΊΣΥΦΟΣHELLO"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":[".leading"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["straße"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["a😀b😀c"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["😀"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["Hello World"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["emoji 👍🏽 mix"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["ns:key.path"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["hello world"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["line1\nline2"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":[":İstanbul"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["a:b:c"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["key_name-1"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["helloHello World"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["a..b"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["﻿bom"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["İstanbul"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["é"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["line1\nline2hello world"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["日本語のテキスト"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["a.b.c"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["src/a/b.ts"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["aHELLO"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["ΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["hello"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["abc"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["ünïcödé"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["emoji 👍🏽 mixline1\nline2"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["emoji 👍🏽 mixabc"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["a.b.cab"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["{name} has {count} itemsns:key.path"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["trailing.é"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["straße😀"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":[".leadingé"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["a"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["tab\tseparated"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["line1\nline2key_name-1"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["line1\nline2{name} has {count} items"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["straße日本語のテキスト"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["😀abc"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":[":"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["ns:key.pathab"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["HELLO"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["trailing."],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["  padded  "],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["line1\nline2ab"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["line1\nline2é"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["{name} has {count} items"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["line1\nline2emoji 👍🏽 mix"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["ünïcödéünïcödé"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["a.b.ctab\tseparated"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["a..b{name} has {count} items"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["./x/**/*.json"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["İstanbulabc"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["hellosrc/a/b.ts"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["hello world日本語のテキスト"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["./x/**/*.jsona"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["./x/**/*.jsona😀b😀c"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["ünïcödéHello World"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["hello worlda"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["hello{name} has {count} items"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":[".leadingabc"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":[":hello"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["  padded  src/a/b.ts"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":[""],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["a:b:cline1\nline2"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["a😀b😀c😀"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["ünïcödé﻿bom"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["a..bHELLO"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["éhello"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["İstanbulHELLO"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["a:b:cstraße"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["src/a/b.ts./x/**/*.json"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":[":trailing."],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["trailing.a:b:c"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["  padded  key_name-1"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["trailing.hello"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["key_name-1ab"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":[":line1\nline2"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["emoji 👍🏽 mixİstanbul"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["emoji 👍🏽 mix:"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["key_name-1a"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["emoji 👍🏽 mix﻿bom"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["./x/**/*.json日本語のテキスト"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["{name} has {count} itemsa:b:c"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["a:b:cİstanbul"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["straßeab"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":[":straße"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["tab\tseparatedHello World"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["ab./x/**/*.json"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["./x/**/*.json{name} has {count} items"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["éa"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["abc😀"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["a.b.cHELLO"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["éa.b.c"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["./x/**/*.json:"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["./x/**/*.json﻿bom"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["./x/**/*.jsonİstanbul"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["ΣΊΣΥΦΟΣkey_name-1"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["a..bünïcödé"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["ns:key.pathΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["{name} has {count} itemsa..b"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["﻿bomİstanbul"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["{name} has {count} items.leading"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["trailing.a..b"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":[".leadingtrailing."],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["line1\nline2HELLO"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["a:b:ca.b.c"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["a.b.ca😀b😀c"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["straße  padded  "],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["trailing.ns:key.path"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["trailing.ünïcödé"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["  padded  ./x/**/*.json"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["a😀b😀cİstanbul"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["Hello Worlda:b:c"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["key_name-1ΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["a..bkey_name-1"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["helloa..b"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["ünïcödéline1\nline2"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["﻿bomns:key.path"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["Hello Worldsrc/a/b.ts"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["😀hello"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["aemoji 👍🏽 mix"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["日本語のテキストstraße"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["abc.leading"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["ns:key.path.leading"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["key_name-1:"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["abab"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["ΣΊΣΥΦΟΣtrailing."],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["abcHello World"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["İstanbulΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["hello:"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["straße{name} has {count} items"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["./x/**/*.jsonhello world"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["a😀b😀c./x/**/*.json"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["abckey_name-1"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["﻿bomline1\nline2"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["ünïcödéHELLO"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["ünïcödéhello world"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["key_name-1a:b:c"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["﻿bomhello"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["﻿bomHELLO"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["HELLO./x/**/*.json"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["hello worldab"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["é日本語のテキスト"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["é{name} has {count} items"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["aa..b"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["src/a/b.tskey_name-1"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["  padded  {name} has {count} items"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["line1\nline2hello"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["emoji 👍🏽 mixHello World"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":[":😀"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["a😀b😀ca.b.c"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["{name} has {count} itemsΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["abİstanbul"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["./x/**/*.jsontab\tseparated"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["abchello"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["HELLO{name} has {count} items"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["{name} has {count} itemsünïcödé"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["src/a/b.tshello world"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["﻿bomstraße"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["abc日本語のテキスト"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["abline1\nline2"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["tab\tseparated.leading"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["./x/**/*.json.leading"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["﻿bomΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["日本語のテキスト😀"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["ns:key.pathünïcödé"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["a:b:cabc"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["😀hello world"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["line1\nline2line1\nline2"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["{name} has {count} itemsab"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["abc./x/**/*.json"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["日本語のテキストé"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["Hello World{name} has {count} items"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["straßea.b.c"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["straßeline1\nline2"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["key_name-1straße"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["a:b:c:"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["a😀b😀cΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["a:b:csrc/a/b.ts"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["src/a/b.tsé"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["ΣΊΣΥΦΟΣa😀b😀c"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["a..b.leading"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["key_name-1./x/**/*.json"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["aHello World"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["a.b.ctrailing."],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["src/a/b.ts  padded  "],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["İstanbulİstanbul"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["éHELLO"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["日本語のテキストabc"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["aline1\nline2"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["a.b.c{name} has {count} items"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["HELLOa😀b😀c"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":[":a.b.c"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["a😀b😀ca😀b😀c"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["héllo wörld"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["👍🏽 thumbs"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["日本語"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["ılık ırmak"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["👨‍👩‍👧 family"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["a b"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["a😀b"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["a²b x½ y①"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["aⅠb Ⅻ"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["a𐐀b 𝐀bc"],"ok":null}
+{"fn":"appSnapModifierFromEventCode","args":["कि ٣٤"],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"shift","key":"straße:"}],"ok":"⇧ combinations are used for typing and text selection — combine with ⌘, ⌃ or ⌥ instead."}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"command","key":"emoji 👍🏽 mixhello world"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"option","key":".leading"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"control","key":"src/a/b.ts"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"option","key":"tab\tseparated"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"a":"b"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"option","key":"  padded  line1\nline2"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"option","key":"{name} has {count} items"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"option","key":"a"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"control","key":"é"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"option","key":"hello world"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"control","key":"hello"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"shift","key":"key_name-1"}],"ok":"⇧ combinations are used for typing and text selection — combine with ⌘, ⌃ or ⌥ instead."}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"shift","key":"tab\tseparated"}],"ok":"⇧ combinations are used for typing and text selection — combine with ⌘, ⌃ or ⌥ instead."}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"shift","key":":a"}],"ok":"⇧ combinations are used for typing and text selection — combine with ⌘, ⌃ or ⌥ instead."}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"control","key":"aab"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"control","key":"ΣΊΣΥΦΟΣ"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"control","key":"{name} has {count} itemsHello World"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"shift","key":"HELLOns:key.path"}],"ok":"⇧ combinations are used for typing and text selection — combine with ⌘, ⌃ or ⌥ instead."}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"control","key":"abc"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"option","key":"abc"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"control","key":"日本語のテキスト"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"shift","key":"日本語のテキストhello"}],"ok":"⇧ combinations are used for typing and text selection — combine with ⌘, ⌃ or ⌥ instead."}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"shift","key":"😀ünïcödé"}],"ok":"⇧ combinations are used for typing and text selection — combine with ⌘, ⌃ or ⌥ instead."}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"shift","key":"ΣΊΣΥΦΟΣ"}],"ok":"⇧ combinations are used for typing and text selection — combine with ⌘, ⌃ or ⌥ instead."}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"control","key":"Hello World"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"command","key":"a..b"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"shift","key":"hello world"}],"ok":"⇧ combinations are used for typing and text selection — combine with ⌘, ⌃ or ⌥ instead."}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"control","key":"ns:key.path"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[0],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"option","key":"ns:key.patha:b:c"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"control","key":"a😀b😀c"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"a":{"b":"c"}}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"shift","key":"hello worldstraße"}],"ok":"⇧ combinations are used for typing and text selection — combine with ⌘, ⌃ or ⌥ instead."}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"control","key":"İstanbul"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"shift","key":"{name} has {count} items"}],"ok":"⇧ combinations are used for typing and text selection — combine with ⌘, ⌃ or ⌥ instead."}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"command","key":"é"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"command","key":"ΣΊΣΥΦΟΣ"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"command","key":"HELLO"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"control","key":"key_name-1"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"command","key":"😀"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"shift","key":"hello world﻿bom"}],"ok":"⇧ combinations are used for typing and text selection — combine with ⌘, ⌃ or ⌥ instead."}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"command","key":"abünïcödé"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"command","key":"a😀b😀cΣΊΣΥΦΟΣ"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"option","key":"﻿bom"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"control","key":"tab\tseparated"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"option","key":"./x/**/*.json"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"shift","key":"😀"}],"ok":"⇧ combinations are used for typing and text selection — combine with ⌘, ⌃ or ⌥ instead."}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"control","key":".leading"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"command","key":"﻿boma.b.c"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"control","key":"a😀b😀cstraße"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"command","key":"abc"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"shift","key":"日本語のテキスト"}],"ok":"⇧ combinations are used for typing and text selection — combine with ⌘, ⌃ or ⌥ instead."}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"control","key":"﻿bom"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"shift","key":"trailing."}],"ok":"⇧ combinations are used for typing and text selection — combine with ⌘, ⌃ or ⌥ instead."}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"command","key":"line1\nline2"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"command","key":"{name} has {count} items"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"control","key":"😀"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[true],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"option","key":":straße"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"control","key":"ab"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"option","key":"😀"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[["a",1]],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[null],"error":"Cannot read properties of null (reading 'modifier')"}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"option","key":"./x/**/*.json日本語のテキスト"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"command","key":"src/a/b.ts"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"shift","key":"straßea.b.c"}],"ok":"⇧ combinations are used for typing and text selection — combine with ⌘, ⌃ or ⌥ instead."}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"command","key":"hello"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"control","key":"{name} has {count} items"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"command","key":"ünïcödé"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"command","key":"hello world"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"command","key":"Hello World"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"control","key":"hello world"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"control","key":""}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"shift","key":"src/a/b.ts.leading"}],"ok":"⇧ combinations are used for typing and text selection — combine with ⌘, ⌃ or ⌥ instead."}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"option","key":"tab\tseparateda"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"option","key":"﻿bom:"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"control","key":"abhello"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"shift","key":"HELLO"}],"ok":"⇧ combinations are used for typing and text selection — combine with ⌘, ⌃ or ⌥ instead."}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"shift","key":"ΣΊΣΥΦΟΣHELLO"}],"ok":"⇧ combinations are used for typing and text selection — combine with ⌘, ⌃ or ⌥ instead."}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"shift","key":"é"}],"ok":"⇧ combinations are used for typing and text selection — combine with ⌘, ⌃ or ⌥ instead."}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"control","key":"ünïcödé"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[[]],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"shift","key":"ns:key.path"}],"ok":"⇧ combinations are used for typing and text selection — combine with ⌘, ⌃ or ⌥ instead."}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"option","key":"trailing."}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"shift","key":"İstanbul"}],"ok":"⇧ combinations are used for typing and text selection — combine with ⌘, ⌃ or ⌥ instead."}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"option","key":"Hello World"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"command","key":"﻿bom"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"control","key":"éa😀b😀c"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"control","key":"line1\nline2"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"command","key":"  padded  "}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"command","key":"trailing."}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"command","key":"emoji 👍🏽 mix"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"command","key":"a😀b😀c"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"shift","key":"HELLOtab\tseparated"}],"ok":"⇧ combinations are used for typing and text selection — combine with ⌘, ⌃ or ⌥ instead."}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"option","key":"İstanbul"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"command","key":"ns:key.pathé"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"command","key":":"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"option","key":"日本語のテキストkey_name-1"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"command","key":"ns:key.path"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"control","key":"./x/**/*.json"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":["x"],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"option","key":"ünïcödétab\tseparated"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"shift","key":"ünïcödé"}],"ok":"⇧ combinations are used for typing and text selection — combine with ⌘, ⌃ or ⌥ instead."}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"shift","key":"line1\nline2"}],"ok":"⇧ combinations are used for typing and text selection — combine with ⌘, ⌃ or ⌥ instead."}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"shift","key":"HELLOabc"}],"ok":"⇧ combinations are used for typing and text selection — combine with ⌘, ⌃ or ⌥ instead."}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"option","key":""}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"control","key":"a.b.c"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"control","key":".leadingns:key.path"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"command","key":"{name} has {count} itemshello"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"shift","key":".leading"}],"ok":"⇧ combinations are used for typing and text selection — combine with ⌘, ⌃ or ⌥ instead."}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"command","key":"emoji 👍🏽 mixünïcödé"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"option","key":"line1\nline2"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"command","key":"tab\tseparatedΣΊΣΥΦΟΣ"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"option","key":"atrailing."}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"option","key":"a..bİstanbul"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"control","key":"abhello world"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"shift","key":"﻿bom日本語のテキスト"}],"ok":"⇧ combinations are used for typing and text selection — combine with ⌘, ⌃ or ⌥ instead."}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"command","key":"ünïcödéΣΊΣΥΦΟΣ"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"option","key":"a.b.c﻿bom"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"shift","key":"emoji 👍🏽 mix"}],"ok":"⇧ combinations are used for typing and text selection — combine with ⌘, ⌃ or ⌥ instead."}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"control","key":"日本語のテキスト  padded  "}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"shift","key":"Hello Worlda.b.c"}],"ok":"⇧ combinations are used for typing and text selection — combine with ⌘, ⌃ or ⌥ instead."}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"command","key":""}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"option","key":"a./x/**/*.json"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"option","key":"  padded  "}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"shift","key":"straße"}],"ok":"⇧ combinations are used for typing and text selection — combine with ⌘, ⌃ or ⌥ instead."}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"shift","key":"ab"}],"ok":"⇧ combinations are used for typing and text selection — combine with ⌘, ⌃ or ⌥ instead."}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"command","key":"a:b:c"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"control","key":":"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"control","key":"./x/**/*.jsonhello"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"shift","key":"abhello world"}],"ok":"⇧ combinations are used for typing and text selection — combine with ⌘, ⌃ or ⌥ instead."}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"command","key":"a"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"command","key":".leading﻿bom"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"control","key":"atrailing."}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"command","key":"ab"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"control","key":"trailing."}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"shift","key":":a😀b😀c"}],"ok":"⇧ combinations are used for typing and text selection — combine with ⌘, ⌃ or ⌥ instead."}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"command","key":".leading"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"command","key":"straße"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"option","key":"a  padded  "}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"option","key":"straße"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"control","key":"key_name-1ünïcödé"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"shift","key":"hello"}],"ok":"⇧ combinations are used for typing and text selection — combine with ⌘, ⌃ or ⌥ instead."}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"option","key":"hello"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"option","key":"ünïcödé"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"option","key":"日本語のテキスト"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"control","key":"a:b:c./x/**/*.json"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"command","key":"straßeabc"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"command","key":"aİstanbul"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"shift","key":"  padded  a:b:c"}],"ok":"⇧ combinations are used for typing and text selection — combine with ⌘, ⌃ or ⌥ instead."}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"shift","key":"./x/**/*.json"}],"ok":"⇧ combinations are used for typing and text selection — combine with ⌘, ⌃ or ⌥ instead."}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"control","key":"./x/**/*.json日本語のテキスト"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"shift","key":"straßeHello World"}],"ok":"⇧ combinations are used for typing and text selection — combine with ⌘, ⌃ or ⌥ instead."}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"command","key":"abcabc"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"control","key":"key_name-1abc"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"option","key":"HELLO"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"shift","key":":"}],"ok":"⇧ combinations are used for typing and text selection — combine with ⌘, ⌃ or ⌥ instead."}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"option","key":"a.b.c"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"control","key":"helloé"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"command","key":"İstanbul"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"shift","key":"Hello World"}],"ok":"⇧ combinations are used for typing and text selection — combine with ⌘, ⌃ or ⌥ instead."}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"control","key":"a"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"control","key":".leadinga.b.c"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"option","key":"ΣΊΣΥΦΟΣ"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"command","key":"İstanbula..b"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"option","key":"helloa😀b😀c"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"option","key":":"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"shift","key":"{name} has {count} itemsemoji 👍🏽 mix"}],"ok":"⇧ combinations are used for typing and text selection — combine with ⌘, ⌃ or ⌥ instead."}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"command","key":"key_name-1"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"control","key":"straße"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"option","key":"emoji 👍🏽 mix"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"shift","key":"abc"}],"ok":"⇧ combinations are used for typing and text selection — combine with ⌘, ⌃ or ⌥ instead."}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"option","key":"a😀b😀c"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"control","key":"emoji 👍🏽 mix😀"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"command","key":"tab\tseparatedHELLO"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"command","key":"abcHELLO"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"shift","key":"ns:key.path:"}],"ok":"⇧ combinations are used for typing and text selection — combine with ⌘, ⌃ or ⌥ instead."}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"shift","key":"abca.b.c"}],"ok":"⇧ combinations are used for typing and text selection — combine with ⌘, ⌃ or ⌥ instead."}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"command","key":"tab\tseparated"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"shift","key":"éHELLO"}],"ok":"⇧ combinations are used for typing and text selection — combine with ⌘, ⌃ or ⌥ instead."}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"option","key":".leadinga..b"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"command","key":".leading  padded  "}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"command","key":"日本語のテキスト"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"option","key":"ünïcödéstraße"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"shift","key":"abcns:key.path"}],"ok":"⇧ combinations are used for typing and text selection — combine with ⌘, ⌃ or ⌥ instead."}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"option","key":"é"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"command","key":"hello worlda😀b😀c"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"option","key":"a:b:cHELLO"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"shift","key":"a"}],"ok":"⇧ combinations are used for typing and text selection — combine with ⌘, ⌃ or ⌥ instead."}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"command","key":"aΣΊΣΥΦΟΣ"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"control","key":"éa.b.c"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"shift","key":"straße日本語のテキスト"}],"ok":"⇧ combinations are used for typing and text selection — combine with ⌘, ⌃ or ⌥ instead."}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"shift","key":"src/a/b.ts"}],"ok":"⇧ combinations are used for typing and text selection — combine with ⌘, ⌃ or ⌥ instead."}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"option","key":"line1\nline2ns:key.path"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"command","key":"a.b.c"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"command","key":"Hello WorldHello World"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"command","key":"﻿bomstraße"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"control","key":"Hello Worldemoji 👍🏽 mix"}],"ok":null}
+{"fn":"appSnapShortcutLabels","args":[null],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"option","key":"  padded  "}],"ok":["⌥ Option","  padded  "]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"both-option-keys"}],"ok":["⌥ left","⌥ right"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"option","key":"a"}],"ok":["⌥ Option","a"]}
+{"fn":"appSnapShortcutLabels","args":[0],"error":"Cannot read properties of undefined (reading 'startsWith')"}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"control","key":"İstanbul"}],"ok":["⌃ Control","İstanbul"]}
+{"fn":"appSnapShortcutLabels","args":[[]],"error":"Cannot read properties of undefined (reading 'startsWith')"}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"control","key":"emoji 👍🏽 mix"}],"ok":["⌃ Control","emoji 👍🏽 mix"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"command","key":":Hello World"}],"ok":["⌘ Command",":Hello World"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"option","key":"hello world"}],"ok":["⌥ Option","hello world"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"option","key":"straße"}],"ok":["⌥ Option","straße"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"shift","key":"./x/**/*.json"}],"ok":["⇧ Shift","./x/**/*.json"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"command","key":""}],"ok":["⌘ Command",""]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"shift","key":"abc"}],"ok":["⇧ Shift","abc"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"shift","key":"trailing."}],"ok":["⇧ Shift","trailing."]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"command","key":"ns:key.path"}],"ok":["⌘ Command","ns:key.path"]}
+{"fn":"appSnapShortcutLabels","args":[true],"error":"Cannot read properties of undefined (reading 'startsWith')"}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"control","key":"ΣΊΣΥΦΟΣ"}],"ok":["⌃ Control","ΣΊΣΥΦΟΣ"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"shift","key":"éab"}],"ok":["⇧ Shift","éab"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"command","key":"İstanbul"}],"ok":["⌘ Command","İstanbul"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"control","key":"key_name-1"}],"ok":["⌃ Control","key_name-1"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"command","key":"ns:key.pathkey_name-1"}],"ok":["⌘ Command","ns:key.pathkey_name-1"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"command","key":"😀"}],"ok":["⌘ Command","😀"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"control","key":"ns:key.pathünïcödé"}],"ok":["⌃ Control","ns:key.pathünïcödé"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"option","key":".leading😀"}],"ok":["⌥ Option",".leading😀"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"option","key":"a:b:c"}],"ok":["⌥ Option","a:b:c"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"shift","key":"key_name-1"}],"ok":["⇧ Shift","key_name-1"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"shift","key":"日本語のテキスト"}],"ok":["⇧ Shift","日本語のテキスト"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"shift","key":"Hello World"}],"ok":["⇧ Shift","Hello World"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"option","key":"./x/**/*.json"}],"ok":["⌥ Option","./x/**/*.json"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"shift","key":"straßeline1\nline2"}],"ok":["⇧ Shift","straßeline1\nline2"]}
+{"fn":"appSnapShortcutLabels","args":[{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'startsWith')"}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"option","key":"ns:key.pathé"}],"ok":["⌥ Option","ns:key.pathé"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"command","key":"﻿boma:b:c"}],"ok":["⌘ Command","﻿boma:b:c"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"option","key":""}],"ok":["⌥ Option",""]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"control","key":"tab\tseparated"}],"ok":["⌃ Control","tab\tseparated"]}
+{"fn":"appSnapShortcutLabels","args":[{}],"error":"Cannot read properties of undefined (reading 'startsWith')"}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"control","key":"./x/**/*.json"}],"ok":["⌃ Control","./x/**/*.json"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"control","key":"😀"}],"ok":["⌃ Control","😀"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"option","key":"ünïcödéünïcödé"}],"ok":["⌥ Option","ünïcödéünïcödé"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"shift","key":"ahello world"}],"ok":["⇧ Shift","ahello world"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"command","key":"key_name-1a.b.c"}],"ok":["⌘ Command","key_name-1a.b.c"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"option","key":"{name} has {count} items"}],"ok":["⌥ Option","{name} has {count} items"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"command","key":"ünïcödé"}],"ok":["⌘ Command","ünïcödé"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"shift","key":"{name} has {count} itemstab\tseparated"}],"ok":["⇧ Shift","{name} has {count} itemstab\tseparated"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"shift","key":"ab"}],"ok":["⇧ Shift","ab"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"option","key":"key_name-1"}],"ok":["⌥ Option","key_name-1"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"option","key":"İstanbul"}],"ok":["⌥ Option","İstanbul"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"command","key":"tab\tseparated"}],"ok":["⌘ Command","tab\tseparated"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"control","key":"trailing."}],"ok":["⌃ Control","trailing."]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"control","key":"line1\nline2"}],"ok":["⌃ Control","line1\nline2"]}
+{"fn":"appSnapShortcutLabels","args":[{"a":"b"}],"error":"Cannot read properties of undefined (reading 'startsWith')"}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"shift","key":"tab\tseparated"}],"ok":["⇧ Shift","tab\tseparated"]}
+{"fn":"appSnapShortcutLabels","args":[["a",1]],"error":"Cannot read properties of undefined (reading 'startsWith')"}
+{"fn":"appSnapShortcutLabels","args":["x"],"error":"Cannot read properties of undefined (reading 'startsWith')"}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"command","key":"a"}],"ok":["⌘ Command","a"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"shift","key":"hello world"}],"ok":["⇧ Shift","hello world"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"command","key":"﻿boma..b"}],"ok":["⌘ Command","﻿boma..b"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"shift","key":"  padded  "}],"ok":["⇧ Shift","  padded  "]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"control","key":"a.b.c"}],"ok":["⌃ Control","a.b.c"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"shift","key":"a..bline1\nline2"}],"ok":["⇧ Shift","a..bline1\nline2"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"option","key":":ab"}],"ok":["⌥ Option",":ab"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"shift","key":"a:b:cab"}],"ok":["⇧ Shift","a:b:cab"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"command","key":".leading"}],"ok":["⌘ Command",".leading"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"option","key":"日本語のテキスト"}],"ok":["⌥ Option","日本語のテキスト"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"command","key":"a.b.c"}],"ok":["⌘ Command","a.b.c"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"command","key":"ahello"}],"ok":["⌘ Command","ahello"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"control","key":"src/a/b.ts"}],"ok":["⌃ Control","src/a/b.ts"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"shift","key":"﻿bom"}],"ok":["⇧ Shift","﻿bom"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"command","key":"ab"}],"ok":["⌘ Command","ab"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"shift","key":"hello"}],"ok":["⇧ Shift","hello"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"command","key":"a😀b😀c"}],"ok":["⌘ Command","a😀b😀c"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"control","key":"éa😀b😀c"}],"ok":["⌃ Control","éa😀b😀c"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"shift","key":"ΣΊΣΥΦΟΣkey_name-1"}],"ok":["⇧ Shift","ΣΊΣΥΦΟΣkey_name-1"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"control","key":"hello"}],"ok":["⌃ Control","hello"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"shift","key":"ünïcödé"}],"ok":["⇧ Shift","ünïcödé"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"shift","key":"emoji 👍🏽 mix./x/**/*.json"}],"ok":["⇧ Shift","emoji 👍🏽 mix./x/**/*.json"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"command","key":"straße"}],"ok":["⌘ Command","straße"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"shift","key":"{name} has {count} items"}],"ok":["⇧ Shift","{name} has {count} items"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"shift","key":"emoji 👍🏽 mix"}],"ok":["⇧ Shift","emoji 👍🏽 mix"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"command","key":"./x/**/*.json"}],"ok":["⌘ Command","./x/**/*.json"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"option","key":"trailing."}],"ok":["⌥ Option","trailing."]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"control","key":"ünïcödé"}],"ok":["⌃ Control","ünïcödé"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"shift","key":".leading"}],"ok":["⇧ Shift",".leading"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"shift","key":"line1\nline2"}],"ok":["⇧ Shift","line1\nline2"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"control","key":"a"}],"ok":["⌃ Control","a"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"shift","key":"ünïcödé./x/**/*.json"}],"ok":["⇧ Shift","ünïcödé./x/**/*.json"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"control","key":"﻿bom"}],"ok":["⌃ Control","﻿bom"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"control","key":"{name} has {count} items"}],"ok":["⌃ Control","{name} has {count} items"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"command","key":":ünïcödé"}],"ok":["⌘ Command",":ünïcödé"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"option","key":".leadingünïcödé"}],"ok":["⌥ Option",".leadingünïcödé"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"control","key":"abc"}],"ok":["⌃ Control","abc"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"control","key":"Hello World"}],"ok":["⌃ Control","Hello World"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"shift","key":"a.b.c"}],"ok":["⇧ Shift","a.b.c"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"option","key":":"}],"ok":["⌥ Option",":"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"command","key":"a..b日本語のテキスト"}],"ok":["⌘ Command","a..b日本語のテキスト"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"shift","key":"😀"}],"ok":["⇧ Shift","😀"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"command","key":"é"}],"ok":["⌘ Command","é"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"control","key":"ns:key.path"}],"ok":["⌃ Control","ns:key.path"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"option","key":"a..b"}],"ok":["⌥ Option","a..b"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"command","key":"abc"}],"ok":["⌘ Command","abc"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"command","key":"line1\nline2"}],"ok":["⌘ Command","line1\nline2"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"option","key":"a😀b😀c"}],"ok":["⌥ Option","a😀b😀c"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"control","key":"  padded  ünïcödé"}],"ok":["⌃ Control","  padded  ünïcödé"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"control","key":"  padded  "}],"ok":["⌃ Control","  padded  "]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"command","key":":a..b"}],"ok":["⌘ Command",":a..b"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"command","key":"ünïcödétab\tseparated"}],"ok":["⌘ Command","ünïcödétab\tseparated"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"option","key":"emoji 👍🏽 mix"}],"ok":["⌥ Option","emoji 👍🏽 mix"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"command","key":"Hello World"}],"ok":["⌘ Command","Hello World"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"shift","key":"é"}],"ok":["⇧ Shift","é"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"command","key":"hello"}],"ok":["⌘ Command","hello"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"shift","key":"İstanbul"}],"ok":["⇧ Shift","İstanbul"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"command","key":"trailing."}],"ok":["⌘ Command","trailing."]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"option","key":"﻿bom"}],"ok":["⌥ Option","﻿bom"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"command","key":"a..b"}],"ok":["⌘ Command","a..b"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"control","key":"Hello World﻿bom"}],"ok":["⌃ Control","Hello World﻿bom"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"command","key":"﻿bom﻿bom"}],"ok":["⌘ Command","﻿bom﻿bom"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"option","key":"line1\nline2"}],"ok":["⌥ Option","line1\nline2"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"shift","key":"src/a/b.ts"}],"ok":["⇧ Shift","src/a/b.ts"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"shift","key":"straße"}],"ok":["⇧ Shift","straße"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"option","key":"  padded  a..b"}],"ok":["⌥ Option","  padded  a..b"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"shift","key":":"}],"ok":["⇧ Shift",":"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"option","key":"ab"}],"ok":["⌥ Option","ab"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"shift","key":"HELLOa..b"}],"ok":["⇧ Shift","HELLOa..b"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"option","key":"Hello World"}],"ok":["⌥ Option","Hello World"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"option","key":"tab\tseparated"}],"ok":["⌥ Option","tab\tseparated"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"option","key":"abc"}],"ok":["⌥ Option","abc"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"command","key":"a😀b😀ctrailing."}],"ok":["⌘ Command","a😀b😀ctrailing."]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"control","key":"a..b"}],"ok":["⌃ Control","a..b"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"option","key":"abc﻿bom"}],"ok":["⌥ Option","abc﻿bom"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"option","key":"a.b.c"}],"ok":["⌥ Option","a.b.c"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"shift","key":"😀İstanbul"}],"ok":["⇧ Shift","😀İstanbul"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"shift","key":"key_name-1ns:key.path"}],"ok":["⇧ Shift","key_name-1ns:key.path"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"control","key":".leading"}],"ok":["⌃ Control",".leading"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"option","key":"src/a/b.ts"}],"ok":["⌥ Option","src/a/b.ts"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"shift","key":"ΣΊΣΥΦΟΣ"}],"ok":["⇧ Shift","ΣΊΣΥΦΟΣ"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"command","key":"hello world"}],"ok":["⌘ Command","hello world"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"command","key":"src/a/b.ts"}],"ok":["⌘ Command","src/a/b.ts"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"command","key":"key_name-1"}],"ok":["⌘ Command","key_name-1"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"control","key":"trailing.abc"}],"ok":["⌃ Control","trailing.abc"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"control","key":"a:b:c"}],"ok":["⌃ Control","a:b:c"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"command","key":"abc:"}],"ok":["⌘ Command","abc:"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"shift","key":"hello{name} has {count} items"}],"ok":["⇧ Shift","hello{name} has {count} items"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"option","key":"😀ΣΊΣΥΦΟΣ"}],"ok":["⌥ Option","😀ΣΊΣΥΦΟΣ"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"command","key":"trailing.Hello World"}],"ok":["⌘ Command","trailing.Hello World"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"option","key":"ΣΊΣΥΦΟΣa:b:c"}],"ok":["⌥ Option","ΣΊΣΥΦΟΣa:b:c"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"control","key":"日本語のテキスト"}],"ok":["⌃ Control","日本語のテキスト"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"control","key":"😀ünïcödé"}],"ok":["⌃ Control","😀ünïcödé"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"control","key":"ab"}],"ok":["⌃ Control","ab"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"control","key":"abc./x/**/*.json"}],"ok":["⌃ Control","abc./x/**/*.json"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"control","key":"é"}],"ok":["⌃ Control","é"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"shift","key":"hello worlda:b:c"}],"ok":["⇧ Shift","hello worlda:b:c"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"command","key":"{name} has {count} items😀"}],"ok":["⌘ Command","{name} has {count} items😀"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"shift","key":"😀emoji 👍🏽 mix"}],"ok":["⇧ Shift","😀emoji 👍🏽 mix"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"shift","key":"ns:key.pathHello World"}],"ok":["⇧ Shift","ns:key.pathHello World"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"control","key":"helloİstanbul"}],"ok":["⌃ Control","helloİstanbul"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"control","key":"trailing.é"}],"ok":["⌃ Control","trailing.é"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"control","key":"straße"}],"ok":["⌃ Control","straße"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"control","key":"hello{name} has {count} items"}],"ok":["⌃ Control","hello{name} has {count} items"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"option","key":"ns:key.path"}],"ok":["⌥ Option","ns:key.path"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"option","key":"line1\nline2./x/**/*.json"}],"ok":["⌥ Option","line1\nline2./x/**/*.json"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"command","key":"emoji 👍🏽 mixkey_name-1"}],"ok":["⌘ Command","emoji 👍🏽 mixkey_name-1"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"option","key":"ékey_name-1"}],"ok":["⌥ Option","ékey_name-1"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"command","key":"ns:key.pathhello world"}],"ok":["⌘ Command","ns:key.pathhello world"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"control","key":"a😀b😀c"}],"ok":["⌃ Control","a😀b😀c"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"command","key":"﻿bom.leading"}],"ok":["⌘ Command","﻿bom.leading"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"option","key":"./x/**/*.json  padded  "}],"ok":["⌥ Option","./x/**/*.json  padded  "]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"command","key":"😀tab\tseparated"}],"ok":["⌘ Command","😀tab\tseparated"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"command","key":"a😀b😀c😀"}],"ok":["⌘ Command","a😀b😀c😀"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"shift","key":"HELLO"}],"ok":["⇧ Shift","HELLO"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"shift","key":"ns:key.path"}],"ok":["⇧ Shift","ns:key.path"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"shift","key":"a:b:c"}],"ok":["⇧ Shift","a:b:c"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"control","key":"İstanbul  padded  "}],"ok":["⌃ Control","İstanbul  padded  "]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"option","key":".leading"}],"ok":["⌥ Option",".leading"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"option","key":"abcab"}],"ok":["⌥ Option","abcab"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"option","key":"hello"}],"ok":["⌥ Option","hello"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"command","key":"HELLO"}],"ok":["⌘ Command","HELLO"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"command","key":"{name} has {count} items"}],"ok":["⌘ Command","{name} has {count} items"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"control","key":"HELLO"}],"ok":["⌃ Control","HELLO"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"option","key":"key_name-1  padded  "}],"ok":["⌥ Option","key_name-1  padded  "]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"option","key":"😀"}],"ok":["⌥ Option","😀"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"control","key":"İstanbulHello World"}],"ok":["⌃ Control","İstanbulHello World"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"command","key":"emoji 👍🏽 mix"}],"ok":["⌘ Command","emoji 👍🏽 mix"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"option","key":"﻿bomline1\nline2"}],"ok":["⌥ Option","﻿bomline1\nline2"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"control","key":""}],"ok":["⌃ Control",""]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"control","key":"a./x/**/*.json"}],"ok":["⌃ Control","a./x/**/*.json"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"shift","key":"  padded  straße"}],"ok":["⇧ Shift","  padded  straße"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"option","key":"Hello Worldline1\nline2"}],"ok":["⌥ Option","Hello Worldline1\nline2"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"option","key":"./x/**/*.json.leading"}],"ok":["⌥ Option","./x/**/*.json.leading"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"option","key":"İstanbulstraße"}],"ok":["⌥ Option","İstanbulstraße"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"command","key":"straßea"}],"ok":["⌘ Command","straßea"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"command","key":"a:b:c"}],"ok":["⌘ Command","a:b:c"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"shift","key":"a"}],"ok":["⇧ Shift","a"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"control","key":"straßeé"}],"ok":["⌃ Control","straßeé"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"shift","key":"a😀b😀c"}],"ok":["⇧ Shift","a😀b😀c"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"shift","key":":日本語のテキスト"}],"ok":["⇧ Shift",":日本語のテキスト"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"option","key":"key_name-1{name} has {count} items"}],"ok":["⌥ Option","key_name-1{name} has {count} items"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"command","key":"﻿bom"}],"ok":["⌘ Command","﻿bom"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"option","key":"  padded  Hello World"}],"ok":["⌥ Option","  padded  Hello World"]}
+{"fn":"appSnapShortcutLabels","args":[{"kind":"key-chord","modifier":"option","key":"ΣΊΣΥΦΟΣ"}],"ok":["⌥ Option","ΣΊΣΥΦΟΣ"]}
+{"fn":"appSnapShortcutModifierLabel","args":["ΣΊΣΥΦΟΣhello world"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["é"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["a..b"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["emoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["İstanbula:b:c"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":[".leading"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["trailing."],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":[".leadinga"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["src/a/b.ts"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":[""],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["😀hello"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["ab"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["straße"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["tab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["İstanbulemoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["a"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":[":"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":[".leadinga..b"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["Hello World"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["﻿bom"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":[":line1\nline2"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["ünïcödé"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["ns:key.path"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["ΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["trailing.ab"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["key_name-1a:b:c"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["😀"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["hello world"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["emoji 👍🏽 mixa:b:c"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["İstanbul"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["ékey_name-1"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["ΣΊΣΥΦΟΣa"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["abc"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["a😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["İstanbulstraße"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["a.b.c日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["ünïcödéline1\nline2"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["a:b:c"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["  padded  "],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":[".leading:"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["HELLO"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["﻿boma:b:c"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["HELLOa😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["ΣΊΣΥΦΟΣtrailing."],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["key_name-1"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["﻿bomé"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["abHELLO"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["line1\nline2.leading"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["hello"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["abc./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["éa..b"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["İstanbulabc"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["hello worldİstanbul"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["a.b.c"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["a😀b😀cline1\nline2"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["aba..b"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["abc  padded  "],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["{name} has {count} itemsa:b:c"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["a😀b😀cns:key.path"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["line1\nline2"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["abctrailing."],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["😀.leading"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["ünïcödé😀"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":[".leadingtab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["straßea😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["﻿bomhello"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["trailing.😀"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["hello worldΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["ünïcödéHello World"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["{name} has {count} itemsns:key.path"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["﻿bom:"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["a:"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["abcline1\nline2"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["a..bΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["ünïcödétrailing."],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["{name} has {count} itemskey_name-1"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["./x/**/*.jsonΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["ab﻿bom"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["src/a/b.tsab"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["ΣΊΣΥΦΟΣns:key.path"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["a.b.cΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["﻿bomhello world"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":[".leading日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["abc😀"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["straße{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["İstanbul{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["line1\nline2ünïcödé"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["emoji 👍🏽 mixab"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["tab\tseparated日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["straßetab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["日本語のテキスト{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["HELLOline1\nline2"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["  padded  hello"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["Hello Worldİstanbul"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["./x/**/*.jsonünïcödé"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["helloİstanbul"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["emoji 👍🏽 mix:"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["  padded  ﻿bom"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["line1\nline2a😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["日本語のテキストemoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["éline1\nline2"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["😀HELLO"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["﻿bomsrc/a/b.ts"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["日本語のテキストns:key.path"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["ünïcödéabc"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["﻿boma"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["trailing.:"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["emoji 👍🏽 mix  padded  "],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["./x/**/*.json.leading"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["hello world😀"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["a😀b😀cΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["ΣΊΣΥΦΟΣ:"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["line1\nline2a..b"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["ns:key.path😀"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["ns:key.path:"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["日本語のテキストhello world"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["emoji 👍🏽 mixİstanbul"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["src/a/b.ts.leading"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["a😀b😀cemoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":[":key_name-1"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["a:b:ca:b:c"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["trailing.é"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["aa.b.c"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["hello{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["trailing.  padded  "],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["😀{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["a😀b😀cünïcödé"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["日本語のテキストkey_name-1"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["key_name-1ünïcödé"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["﻿bomemoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["a:b:ctab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["HELLO./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["emoji 👍🏽 mixhello"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["hello worldabc"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["abca"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["helloemoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["abc﻿bom"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["straßehello world"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["a..bHELLO"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["./x/**/*.jsonns:key.path"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["emoji 👍🏽 mixtrailing."],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["aa😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["line1\nline2  padded  "],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["﻿bomabc"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["{name} has {count} itemshello"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["﻿bomİstanbul"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["line1\nline2hello"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["ahello world"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":[":a.b.c"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["straßeİstanbul"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["ns:key.pathhello world"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["emoji 👍🏽 mix😀"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":[":  padded  "],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["😀  padded  "],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["İstanbulΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["日本語のテキストa"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["😀é"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["abcHello World"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["src/a/b.tsa.b.c"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["abns:key.path"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["trailing.﻿bom"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["tab\tseparated.leading"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["  padded  :"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["key_name-1straße"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["helloa.b.c"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["aHello World"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["helloa..b"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["absrc/a/b.ts"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["a:b:cemoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["abtab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["aünïcödé"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["﻿boma..b"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["  padded  a..b"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["a..b./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["./x/**/*.jsonHELLO"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["😀a😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["  padded  line1\nline2"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["{name} has {count} itemshello world"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["abcHELLO"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["abé"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":[".leadingünïcödé"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["src/a/b.ts﻿bom"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["😀İstanbul"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["./x/**/*.jsonHello World"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["tab\tseparateda..b"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["a..bhello world"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["emoji 👍🏽 mix./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["src/a/b.tsHello World"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["ünïcödéHELLO"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["ΣΊΣΥΦΟΣkey_name-1"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["  padded  tab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["hello worlda"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":[".leadingsrc/a/b.ts"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["日本語のテキスト./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["{name} has {count} itemsHELLO"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["aΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["straße  padded  "],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["héllo wörld"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["👍🏽 thumbs"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["日本語"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["ılık ırmak"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["👨‍👩‍👧 family"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["a b"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["a😀b"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["a²b x½ y①"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["aⅠb Ⅻ"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["a𐐀b 𝐀bc"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutModifierLabel","args":["कि ٣٤"],"ok":{"$undefined":true}}
+{"fn":"appSnapShortcutKeyLabel","args":["HELLO"],"ok":"HELLO"}
+{"fn":"appSnapShortcutKeyLabel","args":["tab\tseparatedé"],"ok":"tab\tseparatedé"}
+{"fn":"appSnapShortcutKeyLabel","args":["İstanbul"],"ok":"İstanbul"}
+{"fn":"appSnapShortcutKeyLabel","args":["a.b.c"],"ok":"a.b.c"}
+{"fn":"appSnapShortcutKeyLabel","args":["a:b:c"],"ok":"a:b:c"}
+{"fn":"appSnapShortcutKeyLabel","args":["Hello World"],"ok":"Hello World"}
+{"fn":"appSnapShortcutKeyLabel","args":["aabc"],"ok":"aabc"}
+{"fn":"appSnapShortcutKeyLabel","args":["﻿bom"],"ok":"﻿bom"}
+{"fn":"appSnapShortcutKeyLabel","args":["﻿bomtab\tseparated"],"ok":"﻿bomtab\tseparated"}
+{"fn":"appSnapShortcutKeyLabel","args":["é"],"ok":"é"}
+{"fn":"appSnapShortcutKeyLabel","args":[".leading"],"ok":".leading"}
+{"fn":"appSnapShortcutKeyLabel","args":["abc"],"ok":"abc"}
+{"fn":"appSnapShortcutKeyLabel","args":["key_name-1"],"ok":"key_name-1"}
+{"fn":"appSnapShortcutKeyLabel","args":["ns:key.path./x/**/*.json"],"ok":"ns:key.path./x/**/*.json"}
+{"fn":"appSnapShortcutKeyLabel","args":["a..b"],"ok":"a..b"}
+{"fn":"appSnapShortcutKeyLabel","args":["ab"],"ok":"ab"}
+{"fn":"appSnapShortcutKeyLabel","args":["hello world"],"ok":"hello world"}
+{"fn":"appSnapShortcutKeyLabel","args":["a"],"ok":"a"}
+{"fn":"appSnapShortcutKeyLabel","args":["straße"],"ok":"straße"}
+{"fn":"appSnapShortcutKeyLabel","args":["trailing."],"ok":"trailing."}
+{"fn":"appSnapShortcutKeyLabel","args":["a😀b😀c"],"ok":"a😀b😀c"}
+{"fn":"appSnapShortcutKeyLabel","args":["{name} has {count} items"],"ok":"{name} has {count} items"}
+{"fn":"appSnapShortcutKeyLabel","args":["{name} has {count} itemsHello World"],"ok":"{name} has {count} itemsHello World"}
+{"fn":"appSnapShortcutKeyLabel","args":["aba😀b😀c"],"ok":"aba😀b😀c"}
+{"fn":"appSnapShortcutKeyLabel","args":["line1\nline2"],"ok":"line1\nline2"}
+{"fn":"appSnapShortcutKeyLabel","args":["emoji 👍🏽 mix"],"ok":"emoji 👍🏽 mix"}
+{"fn":"appSnapShortcutKeyLabel","args":[""],"ok":""}
+{"fn":"appSnapShortcutKeyLabel","args":["line1\nline2key_name-1"],"ok":"line1\nline2key_name-1"}
+{"fn":"appSnapShortcutKeyLabel","args":["key_name-1😀"],"ok":"key_name-1😀"}
+{"fn":"appSnapShortcutKeyLabel","args":["line1\nline2a..b"],"ok":"line1\nline2a..b"}
+{"fn":"appSnapShortcutKeyLabel","args":["{name} has {count} items:"],"ok":"{name} has {count} items:"}
+{"fn":"appSnapShortcutKeyLabel","args":["./x/**/*.json"],"ok":"./x/**/*.json"}
+{"fn":"appSnapShortcutKeyLabel","args":["😀"],"ok":"😀"}
+{"fn":"appSnapShortcutKeyLabel","args":["hello"],"ok":"hello"}
+{"fn":"appSnapShortcutKeyLabel","args":["ΣΊΣΥΦΟΣ"],"ok":"ΣΊΣΥΦΟΣ"}
+{"fn":"appSnapShortcutKeyLabel","args":["日本語のテキスト"],"ok":"日本語のテキスト"}
+{"fn":"appSnapShortcutKeyLabel","args":["line1\nline2a"],"ok":"line1\nline2a"}
+{"fn":"appSnapShortcutKeyLabel","args":["tab\tseparated"],"ok":"tab\tseparated"}
+{"fn":"appSnapShortcutKeyLabel","args":["ünïcödé"],"ok":"ünïcödé"}
+{"fn":"appSnapShortcutKeyLabel","args":["line1\nline2﻿bom"],"ok":"line1\nline2﻿bom"}
+{"fn":"appSnapShortcutKeyLabel","args":[":"],"ok":":"}
+{"fn":"appSnapShortcutKeyLabel","args":["src/a/b.ts"],"ok":"src/a/b.ts"}
+{"fn":"appSnapShortcutKeyLabel","args":["a:b:cΣΊΣΥΦΟΣ"],"ok":"a:b:cΣΊΣΥΦΟΣ"}
+{"fn":"appSnapShortcutKeyLabel","args":["ns:key.pathline1\nline2"],"ok":"ns:key.pathline1\nline2"}
+{"fn":"appSnapShortcutKeyLabel","args":["  padded  "],"ok":"  padded  "}
+{"fn":"appSnapShortcutKeyLabel","args":[":emoji 👍🏽 mix"],"ok":":emoji 👍🏽 mix"}
+{"fn":"appSnapShortcutKeyLabel","args":["日本語のテキストa:b:c"],"ok":"日本語のテキストa:b:c"}
+{"fn":"appSnapShortcutKeyLabel","args":["ΣΊΣΥΦΟΣİstanbul"],"ok":"ΣΊΣΥΦΟΣİstanbul"}
+{"fn":"appSnapShortcutKeyLabel","args":["helloa"],"ok":"helloa"}
+{"fn":"appSnapShortcutKeyLabel","args":["😀  padded  "],"ok":"😀  padded  "}
+{"fn":"appSnapShortcutKeyLabel","args":[".leadingline1\nline2"],"ok":".leadingline1\nline2"}
+{"fn":"appSnapShortcutKeyLabel","args":["tab\tseparated😀"],"ok":"tab\tseparated😀"}
+{"fn":"appSnapShortcutKeyLabel","args":["hello worldkey_name-1"],"ok":"hello worldkey_name-1"}
+{"fn":"appSnapShortcutKeyLabel","args":["HELLO.leading"],"ok":"HELLO.leading"}
+{"fn":"appSnapShortcutKeyLabel","args":["ünïcödéns:key.path"],"ok":"ünïcödéns:key.path"}
+{"fn":"appSnapShortcutKeyLabel","args":["﻿bom.leading"],"ok":"﻿bom.leading"}
+{"fn":"appSnapShortcutKeyLabel","args":["ns:key.path"],"ok":"ns:key.path"}
+{"fn":"appSnapShortcutKeyLabel","args":["a.b.chello world"],"ok":"a.b.chello world"}
+{"fn":"appSnapShortcutKeyLabel","args":["a.b.ca..b"],"ok":"a.b.ca..b"}
+{"fn":"appSnapShortcutKeyLabel","args":["helloa.b.c"],"ok":"helloa.b.c"}
+{"fn":"appSnapShortcutKeyLabel","args":["aab"],"ok":"aab"}
+{"fn":"appSnapShortcutKeyLabel","args":[":a.b.c"],"ok":":a.b.c"}
+{"fn":"appSnapShortcutKeyLabel","args":["İstanbulstraße"],"ok":"İstanbulstraße"}
+{"fn":"appSnapShortcutKeyLabel","args":[".leadingé"],"ok":".leadingé"}
+{"fn":"appSnapShortcutKeyLabel","args":["ΣΊΣΥΦΟΣa:b:c"],"ok":"ΣΊΣΥΦΟΣa:b:c"}
+{"fn":"appSnapShortcutKeyLabel","args":["a..bns:key.path"],"ok":"a..bns:key.path"}
+{"fn":"appSnapShortcutKeyLabel","args":["﻿bomünïcödé"],"ok":"﻿bomünïcödé"}
+{"fn":"appSnapShortcutKeyLabel","args":["emoji 👍🏽 mixa.b.c"],"ok":"emoji 👍🏽 mixa.b.c"}
+{"fn":"appSnapShortcutKeyLabel","args":["straße😀"],"ok":"straße😀"}
+{"fn":"appSnapShortcutKeyLabel","args":["ns:key.patha"],"ok":"ns:key.patha"}
+{"fn":"appSnapShortcutKeyLabel","args":["ns:key.pathkey_name-1"],"ok":"ns:key.pathkey_name-1"}
+{"fn":"appSnapShortcutKeyLabel","args":["ünïcödé.leading"],"ok":"ünïcödé.leading"}
+{"fn":"appSnapShortcutKeyLabel","args":["a😀b😀ctab\tseparated"],"ok":"a😀b😀ctab\tseparated"}
+{"fn":"appSnapShortcutKeyLabel","args":["hello world:"],"ok":"hello world:"}
+{"fn":"appSnapShortcutKeyLabel","args":["abctab\tseparated"],"ok":"abctab\tseparated"}
+{"fn":"appSnapShortcutKeyLabel","args":["tab\tseparatedHello World"],"ok":"tab\tseparatedHello World"}
+{"fn":"appSnapShortcutKeyLabel","args":["a😀b😀c日本語のテキスト"],"ok":"a😀b😀c日本語のテキスト"}
+{"fn":"appSnapShortcutKeyLabel","args":["ΣΊΣΥΦΟΣa😀b😀c"],"ok":"ΣΊΣΥΦΟΣa😀b😀c"}
+{"fn":"appSnapShortcutKeyLabel","args":["./x/**/*.jsonsrc/a/b.ts"],"ok":"./x/**/*.jsonsrc/a/b.ts"}
+{"fn":"appSnapShortcutKeyLabel","args":["ns:key.pathhello"],"ok":"ns:key.pathhello"}
+{"fn":"appSnapShortcutKeyLabel","args":[":  padded  "],"ok":":  padded  "}
+{"fn":"appSnapShortcutKeyLabel","args":["{name} has {count} itemsabc"],"ok":"{name} has {count} itemsabc"}
+{"fn":"appSnapShortcutKeyLabel","args":["Hello World😀"],"ok":"Hello World😀"}
+{"fn":"appSnapShortcutKeyLabel","args":["a.b.cé"],"ok":"a.b.cé"}
+{"fn":"appSnapShortcutKeyLabel","args":["aba..b"],"ok":"aba..b"}
+{"fn":"appSnapShortcutKeyLabel","args":[":HELLO"],"ok":":HELLO"}
+{"fn":"appSnapShortcutKeyLabel","args":["ünïcödéHello World"],"ok":"ünïcödéHello World"}
+{"fn":"appSnapShortcutKeyLabel","args":["﻿boma.b.c"],"ok":"﻿boma.b.c"}
+{"fn":"appSnapShortcutKeyLabel","args":["HELLO  padded  "],"ok":"HELLO  padded  "}
+{"fn":"appSnapShortcutKeyLabel","args":["akey_name-1"],"ok":"akey_name-1"}
+{"fn":"appSnapShortcutKeyLabel","args":["helloa..b"],"ok":"helloa..b"}
+{"fn":"appSnapShortcutKeyLabel","args":["  padded  ünïcödé"],"ok":"  padded  ünïcödé"}
+{"fn":"appSnapShortcutKeyLabel","args":["abckey_name-1"],"ok":"abckey_name-1"}
+{"fn":"appSnapShortcutKeyLabel","args":["a./x/**/*.json"],"ok":"a./x/**/*.json"}
+{"fn":"appSnapShortcutKeyLabel","args":["😀hello"],"ok":"😀hello"}
+{"fn":"appSnapShortcutKeyLabel","args":["abc﻿bom"],"ok":"abc﻿bom"}
+{"fn":"appSnapShortcutKeyLabel","args":["line1\nline2😀"],"ok":"line1\nline2😀"}
+{"fn":"appSnapShortcutKeyLabel","args":["line1\nline2a😀b😀c"],"ok":"line1\nline2a😀b😀c"}
+{"fn":"appSnapShortcutKeyLabel","args":["hellotab\tseparated"],"ok":"hellotab\tseparated"}
+{"fn":"appSnapShortcutKeyLabel","args":["éHello World"],"ok":"éHello World"}
+{"fn":"appSnapShortcutKeyLabel","args":[":tab\tseparated"],"ok":":tab\tseparated"}
+{"fn":"appSnapShortcutKeyLabel","args":["İstanbula😀b😀c"],"ok":"İstanbula😀b😀c"}
+{"fn":"appSnapShortcutKeyLabel","args":["  padded  a..b"],"ok":"  padded  a..b"}
+{"fn":"appSnapShortcutKeyLabel","args":["a..ba.b.c"],"ok":"a..ba.b.c"}
+{"fn":"appSnapShortcutKeyLabel","args":["a.b.ca.b.c"],"ok":"a.b.ca.b.c"}
+{"fn":"appSnapShortcutKeyLabel","args":["a:b:ca😀b😀c"],"ok":"a:b:ca😀b😀c"}
+{"fn":"appSnapShortcutKeyLabel","args":["trailing.line1\nline2"],"ok":"trailing.line1\nline2"}
+{"fn":"appSnapShortcutKeyLabel","args":["line1\nline2ΣΊΣΥΦΟΣ"],"ok":"line1\nline2ΣΊΣΥΦΟΣ"}
+{"fn":"appSnapShortcutKeyLabel","args":["ΣΊΣΥΦΟΣΣΊΣΥΦΟΣ"],"ok":"ΣΊΣΥΦΟΣΣΊΣΥΦΟΣ"}
+{"fn":"appSnapShortcutKeyLabel","args":["hello:"],"ok":"hello:"}
+{"fn":"appSnapShortcutKeyLabel","args":["trailing.a..b"],"ok":"trailing.a..b"}
+{"fn":"appSnapShortcutKeyLabel","args":["ns:key.path{name} has {count} items"],"ok":"ns:key.path{name} has {count} items"}
+{"fn":"appSnapShortcutKeyLabel","args":["a😀"],"ok":"a😀"}
+{"fn":"appSnapShortcutKeyLabel","args":["ns:key.pathtrailing."],"ok":"ns:key.pathtrailing."}
+{"fn":"appSnapShortcutKeyLabel","args":["abé"],"ok":"abé"}
+{"fn":"appSnapShortcutKeyLabel","args":["hello worldΣΊΣΥΦΟΣ"],"ok":"hello worldΣΊΣΥΦΟΣ"}
+{"fn":"appSnapShortcutKeyLabel","args":["日本語のテキストhello"],"ok":"日本語のテキストhello"}
+{"fn":"appSnapShortcutKeyLabel","args":["key_name-1:"],"ok":"key_name-1:"}
+{"fn":"appSnapShortcutKeyLabel","args":["日本語のテキスト😀"],"ok":"日本語のテキスト😀"}
+{"fn":"appSnapShortcutKeyLabel","args":["tab\tseparated:"],"ok":"tab\tseparated:"}
+{"fn":"appSnapShortcutKeyLabel","args":["abcΣΊΣΥΦΟΣ"],"ok":"abcΣΊΣΥΦΟΣ"}
+{"fn":"appSnapShortcutKeyLabel","args":["tab\tseparateda.b.c"],"ok":"tab\tseparateda.b.c"}
+{"fn":"appSnapShortcutKeyLabel","args":["Hello World./x/**/*.json"],"ok":"Hello World./x/**/*.json"}
+{"fn":"appSnapShortcutKeyLabel","args":["straßeemoji 👍🏽 mix"],"ok":"straßeemoji 👍🏽 mix"}
+{"fn":"appSnapShortcutKeyLabel","args":["éİstanbul"],"ok":"éİstanbul"}
+{"fn":"appSnapShortcutKeyLabel","args":["trailing.a"],"ok":"trailing.a"}
+{"fn":"appSnapShortcutKeyLabel","args":["abca😀b😀c"],"ok":"abca😀b😀c"}
+{"fn":"appSnapShortcutKeyLabel","args":["a.b.c{name} has {count} items"],"ok":"a.b.c{name} has {count} items"}
+{"fn":"appSnapShortcutKeyLabel","args":["HELLOünïcödé"],"ok":"HELLOünïcödé"}
+{"fn":"appSnapShortcutKeyLabel","args":["hello worldHello World"],"ok":"hello worldHello World"}
+{"fn":"appSnapShortcutKeyLabel","args":["ΣΊΣΥΦΟΣünïcödé"],"ok":"ΣΊΣΥΦΟΣünïcödé"}
+{"fn":"appSnapShortcutKeyLabel","args":["tab\tseparated{name} has {count} items"],"ok":"tab\tseparated{name} has {count} items"}
+{"fn":"appSnapShortcutKeyLabel","args":["./x/**/*.json  padded  "],"ok":"./x/**/*.json  padded  "}
+{"fn":"appSnapShortcutKeyLabel","args":[":abc"],"ok":":abc"}
+{"fn":"appSnapShortcutKeyLabel","args":["abemoji 👍🏽 mix"],"ok":"abemoji 👍🏽 mix"}
+{"fn":"appSnapShortcutKeyLabel","args":["ünïcödéstraße"],"ok":"ünïcödéstraße"}
+{"fn":"appSnapShortcutKeyLabel","args":["hello worldİstanbul"],"ok":"hello worldİstanbul"}
+{"fn":"appSnapShortcutKeyLabel","args":["src/a/b.ts  padded  "],"ok":"src/a/b.ts  padded  "}
+{"fn":"appSnapShortcutKeyLabel","args":["helloabc"],"ok":"helloabc"}
+{"fn":"appSnapShortcutKeyLabel","args":[".leading./x/**/*.json"],"ok":".leading./x/**/*.json"}
+{"fn":"appSnapShortcutKeyLabel","args":["trailing.  padded  "],"ok":"trailing.  padded  "}
+{"fn":"appSnapShortcutKeyLabel","args":[".leading:"],"ok":".leading:"}
+{"fn":"appSnapShortcutKeyLabel","args":[":a😀b😀c"],"ok":":a😀b😀c"}
+{"fn":"appSnapShortcutKeyLabel","args":["trailing.ΣΊΣΥΦΟΣ"],"ok":"trailing.ΣΊΣΥΦΟΣ"}
+{"fn":"appSnapShortcutKeyLabel","args":["日本語のテキストab"],"ok":"日本語のテキストab"}
+{"fn":"appSnapShortcutKeyLabel","args":["{name} has {count} items  padded  "],"ok":"{name} has {count} items  padded  "}
+{"fn":"appSnapShortcutKeyLabel","args":["日本語のテキストtrailing."],"ok":"日本語のテキストtrailing."}
+{"fn":"appSnapShortcutKeyLabel","args":["abtab\tseparated"],"ok":"abtab\tseparated"}
+{"fn":"appSnapShortcutKeyLabel","args":["{name} has {count} items日本語のテキスト"],"ok":"{name} has {count} items日本語のテキスト"}
+{"fn":"appSnapShortcutKeyLabel","args":["src/a/b.ts.leading"],"ok":"src/a/b.ts.leading"}
+{"fn":"appSnapShortcutKeyLabel","args":["hello worldemoji 👍🏽 mix"],"ok":"hello worldemoji 👍🏽 mix"}
+{"fn":"appSnapShortcutKeyLabel","args":["ns:key.pathhello world"],"ok":"ns:key.pathhello world"}
+{"fn":"appSnapShortcutKeyLabel","args":[":İstanbul"],"ok":":İstanbul"}
+{"fn":"appSnapShortcutKeyLabel","args":["a..bΣΊΣΥΦΟΣ"],"ok":"a..bΣΊΣΥΦΟΣ"}
+{"fn":"appSnapShortcutKeyLabel","args":["trailing.﻿bom"],"ok":"trailing.﻿bom"}
+{"fn":"appSnapShortcutKeyLabel","args":["key_name-1hello world"],"ok":"key_name-1hello world"}
+{"fn":"appSnapShortcutKeyLabel","args":["日本語のテキストa"],"ok":"日本語のテキストa"}
+{"fn":"appSnapShortcutKeyLabel","args":["éabc"],"ok":"éabc"}
+{"fn":"appSnapShortcutKeyLabel","args":["﻿bomsrc/a/b.ts"],"ok":"﻿bomsrc/a/b.ts"}
+{"fn":"appSnapShortcutKeyLabel","args":["ünïcödékey_name-1"],"ok":"ünïcödékey_name-1"}
+{"fn":"appSnapShortcutKeyLabel","args":["éΣΊΣΥΦΟΣ"],"ok":"éΣΊΣΥΦΟΣ"}
+{"fn":"appSnapShortcutKeyLabel","args":["{name} has {count} itemsΣΊΣΥΦΟΣ"],"ok":"{name} has {count} itemsΣΊΣΥΦΟΣ"}
+{"fn":"appSnapShortcutKeyLabel","args":["src/a/b.tsΣΊΣΥΦΟΣ"],"ok":"src/a/b.tsΣΊΣΥΦΟΣ"}
+{"fn":"appSnapShortcutKeyLabel","args":["é日本語のテキスト"],"ok":"é日本語のテキスト"}
+{"fn":"appSnapShortcutKeyLabel","args":["a.b.cHELLO"],"ok":"a.b.cHELLO"}
+{"fn":"appSnapShortcutKeyLabel","args":["tab\tseparatedİstanbul"],"ok":"tab\tseparatedİstanbul"}
+{"fn":"appSnapShortcutKeyLabel","args":["Hello Worldab"],"ok":"Hello Worldab"}
+{"fn":"appSnapShortcutKeyLabel","args":["trailing.key_name-1"],"ok":"trailing.key_name-1"}
+{"fn":"appSnapShortcutKeyLabel","args":["./x/**/*.jsonemoji 👍🏽 mix"],"ok":"./x/**/*.jsonemoji 👍🏽 mix"}
+{"fn":"appSnapShortcutKeyLabel","args":["İstanbulns:key.path"],"ok":"İstanbulns:key.path"}
+{"fn":"appSnapShortcutKeyLabel","args":[":ΣΊΣΥΦΟΣ"],"ok":":ΣΊΣΥΦΟΣ"}
+{"fn":"appSnapShortcutKeyLabel","args":["a:b:csrc/a/b.ts"],"ok":"a:b:csrc/a/b.ts"}
+{"fn":"appSnapShortcutKeyLabel","args":["ns:key.pathHELLO"],"ok":"ns:key.pathHELLO"}
+{"fn":"appSnapShortcutKeyLabel","args":["﻿bomHello World"],"ok":"﻿bomHello World"}
+{"fn":"appSnapShortcutKeyLabel","args":["İstanbulhello world"],"ok":"İstanbulhello world"}
+{"fn":"appSnapShortcutKeyLabel","args":["emoji 👍🏽 mixhello world"],"ok":"emoji 👍🏽 mixhello world"}
+{"fn":"appSnapShortcutKeyLabel","args":["hello  padded  "],"ok":"hello  padded  "}
+{"fn":"appSnapShortcutKeyLabel","args":["./x/**/*.json:"],"ok":"./x/**/*.json:"}
+{"fn":"appSnapShortcutKeyLabel","args":["straße﻿bom"],"ok":"straße﻿bom"}
+{"fn":"appSnapShortcutKeyLabel","args":["{name} has {count} items{name} has {count} items"],"ok":"{name} has {count} items{name} has {count} items"}
+{"fn":"appSnapShortcutKeyLabel","args":[":straße"],"ok":":straße"}
+{"fn":"appSnapShortcutKeyLabel","args":["key_name-1ab"],"ok":"key_name-1ab"}
+{"fn":"appSnapShortcutKeyLabel","args":["abcHELLO"],"ok":"abcHELLO"}
+{"fn":"appSnapShortcutKeyLabel","args":["{name} has {count} itemsns:key.path"],"ok":"{name} has {count} itemsns:key.path"}
+{"fn":"appSnapShortcutKeyLabel","args":[":é"],"ok":":é"}
+{"fn":"appSnapShortcutKeyLabel","args":["İstanbultab\tseparated"],"ok":"İstanbultab\tseparated"}
+{"fn":"appSnapShortcutKeyLabel","args":["atab\tseparated"],"ok":"atab\tseparated"}
+{"fn":"appSnapShortcutKeyLabel","args":["a..bİstanbul"],"ok":"a..bİstanbul"}
+{"fn":"appSnapShortcutKeyLabel","args":["a.b.cabc"],"ok":"a.b.cabc"}
+{"fn":"appSnapShortcutKeyLabel","args":["emoji 👍🏽 mix./x/**/*.json"],"ok":"emoji 👍🏽 mix./x/**/*.json"}
+{"fn":"appSnapShortcutKeyLabel","args":[".leadingkey_name-1"],"ok":".leadingkey_name-1"}
+{"fn":"appSnapShortcutKeyLabel","args":["key_name-1a"],"ok":"key_name-1a"}
+{"fn":"appSnapShortcutKeyLabel","args":["İstanbul.leading"],"ok":"İstanbul.leading"}
+{"fn":"appSnapShortcutKeyLabel","args":["﻿bomhello world"],"ok":"﻿bomhello world"}
+{"fn":"appSnapShortcutKeyLabel","args":["Hello Worlda..b"],"ok":"Hello Worlda..b"}
+{"fn":"appSnapShortcutKeyLabel","args":["a.b.ckey_name-1"],"ok":"a.b.ckey_name-1"}
+{"fn":"appSnapShortcutKeyLabel","args":["a:b:c  padded  "],"ok":"a:b:c  padded  "}
+{"fn":"appSnapShortcutKeyLabel","args":[".leadingHello World"],"ok":".leadingHello World"}
+{"fn":"appSnapShortcutKeyLabel","args":["emoji 👍🏽 mixkey_name-1"],"ok":"emoji 👍🏽 mixkey_name-1"}
+{"fn":"appSnapShortcutKeyLabel","args":[".leading{name} has {count} items"],"ok":".leading{name} has {count} items"}
+{"fn":"appSnapShortcutKeyLabel","args":["héllo wörld"],"ok":"héllo wörld"}
+{"fn":"appSnapShortcutKeyLabel","args":["👍🏽 thumbs"],"ok":"👍🏽 thumbs"}
+{"fn":"appSnapShortcutKeyLabel","args":["日本語"],"ok":"日本語"}
+{"fn":"appSnapShortcutKeyLabel","args":["ılık ırmak"],"ok":"ılık ırmak"}
+{"fn":"appSnapShortcutKeyLabel","args":["👨‍👩‍👧 family"],"ok":"👨‍👩‍👧 family"}
+{"fn":"appSnapShortcutKeyLabel","args":["a b"],"ok":"a b"}
+{"fn":"appSnapShortcutKeyLabel","args":["a😀b"],"ok":"a😀b"}
+{"fn":"appSnapShortcutKeyLabel","args":["a²b x½ y①"],"ok":"a²b x½ y①"}
+{"fn":"appSnapShortcutKeyLabel","args":["aⅠb Ⅻ"],"ok":"aⅠb Ⅻ"}
+{"fn":"appSnapShortcutKeyLabel","args":["a𐐀b 𝐀bc"],"ok":"a𐐀b 𝐀bc"}
+{"fn":"appSnapShortcutKeyLabel","args":["कि ٣٤"],"ok":"कि ٣٤"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"command","key":"a.b.c"}],"ok":"Command+a.b.c"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"control","key":".leading"}],"ok":"Control+.leading"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"command","key":"straße"}],"ok":"Command+straße"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"option","key":"  padded  "}],"ok":"Alt+  padded  "}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"command","key":"line1\nline2é"}],"ok":"Command+line1\nline2é"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"option","key":"é"}],"ok":"Alt+é"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"shift","key":"key_name-1HELLO"}],"ok":"Shift+key_name-1HELLO"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"control","key":"日本語のテキスト"}],"ok":"Control+日本語のテキスト"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"control","key":"Hello World"}],"ok":"Control+Hello World"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"shift","key":"straße"}],"ok":"Shift+straße"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"command","key":"ünïcödé"}],"ok":"Command+ünïcödé"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"option","key":"trailing."}],"ok":"Alt+trailing."}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"command","key":"{name} has {count} items  padded  "}],"ok":"Command+{name} has {count} items  padded  "}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"command","key":"abline1\nline2"}],"ok":"Command+abline1\nline2"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"option","key":".leading"}],"ok":"Alt+.leading"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"option","key":"Hello World"}],"ok":"Alt+Hello World"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"control","key":"﻿bom"}],"ok":"Control+﻿bom"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"option","key":"{name} has {count} items"}],"ok":"Alt+{name} has {count} items"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"control","key":"ΣΊΣΥΦΟΣ"}],"ok":"Control+ΣΊΣΥΦΟΣ"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"option","key":""}],"ok":"Alt+"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"shift","key":"a"}],"ok":"Shift+a"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"shift","key":"trailing."}],"ok":"Shift+trailing."}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"command","key":"ΣΊΣΥΦΟΣ"}],"ok":"Command+ΣΊΣΥΦΟΣ"}
+{"fn":"appSnapShortcutAccelerator","args":[null],"error":"Cannot read properties of null (reading 'key')"}
+{"fn":"appSnapShortcutAccelerator","args":[{}],"error":"Cannot read properties of undefined (reading 'startsWith')"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"command","key":"ns:key.path"}],"ok":"Command+ns:key.path"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"control","key":"ünïcödéemoji 👍🏽 mix"}],"ok":"Control+ünïcödéemoji 👍🏽 mix"}
+{"fn":"appSnapShortcutAccelerator","args":[{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'startsWith')"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"shift","key":"  padded  "}],"ok":"Shift+  padded  "}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"command","key":"HELLO"}],"ok":"Command+HELLO"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"command","key":"  padded  "}],"ok":"Command+  padded  "}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"shift","key":"ΣΊΣΥΦΟΣ"}],"ok":"Shift+ΣΊΣΥΦΟΣ"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"control","key":"a"}],"ok":"Control+a"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"option","key":"a.b.c"}],"ok":"Alt+a.b.c"}
+{"fn":"appSnapShortcutAccelerator","args":[true],"error":"Cannot read properties of undefined (reading 'startsWith')"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"command","key":"ab﻿bom"}],"ok":"Command+ab﻿bom"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"shift","key":"key_name-1"}],"ok":"Shift+key_name-1"}
+{"fn":"appSnapShortcutAccelerator","args":[["a",1]],"error":"Cannot read properties of undefined (reading 'startsWith')"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"option","key":"tab\tseparatedline1\nline2"}],"ok":"Alt+tab\tseparatedline1\nline2"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"command","key":"emoji 👍🏽 mix"}],"ok":"Command+emoji 👍🏽 mix"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"control","key":"trailing."}],"ok":"Control+trailing."}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"shift","key":"line1\nline2"}],"ok":"Shift+line1\nline2"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"command","key":".leading"}],"ok":"Command+.leading"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"shift","key":""}],"ok":"Shift+"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"shift","key":"a.b.c😀"}],"ok":"Shift+a.b.c😀"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"command","key":"éhello"}],"ok":"Command+éhello"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"command","key":"a:b:c"}],"ok":"Command+a:b:c"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"control","key":"ünïcödé"}],"ok":"Control+ünïcödé"}
+{"fn":"appSnapShortcutAccelerator","args":[[]],"error":"Cannot read properties of undefined (reading 'startsWith')"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"control","key":"😀"}],"ok":"Control+😀"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"command","key":"ab"}],"ok":"Command+ab"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"shift","key":"src/a/b.ts"}],"ok":"Shift+src/a/b.ts"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"shift","key":"emoji 👍🏽 mix"}],"ok":"Shift+emoji 👍🏽 mix"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"option","key":"ünïcödé"}],"ok":"Alt+ünïcödé"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"control","key":""}],"ok":"Control+"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"option","key":"HELLOa😀b😀c"}],"ok":"Alt+HELLOa😀b😀c"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"option","key":":"}],"ok":"Alt+:"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"control","key":"line1\nline2"}],"ok":"Control+line1\nline2"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"shift","key":"日本語のテキスト"}],"ok":"Shift+日本語のテキスト"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"command","key":"hello"}],"ok":"Command+hello"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"control","key":"hello world"}],"ok":"Control+hello world"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"command","key":"﻿bomΣΊΣΥΦΟΣ"}],"ok":"Command+﻿bomΣΊΣΥΦΟΣ"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"command","key":"line1\nline2"}],"ok":"Command+line1\nline2"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"control","key":"éΣΊΣΥΦΟΣ"}],"ok":"Control+éΣΊΣΥΦΟΣ"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"command","key":"ünïcödésrc/a/b.ts"}],"ok":"Command+ünïcödésrc/a/b.ts"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"shift","key":"ns:key.path"}],"ok":"Shift+ns:key.path"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"control","key":"İstanbul"}],"ok":"Control+İstanbul"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"command","key":"abcé"}],"ok":"Command+abcé"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"option","key":"a..bHELLO"}],"ok":"Alt+a..bHELLO"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"control","key":"key_name-1"}],"ok":"Control+key_name-1"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"command","key":"a😀b😀c"}],"ok":"Command+a😀b😀c"}
+{"fn":"appSnapShortcutAccelerator","args":[{"a":"b"}],"error":"Cannot read properties of undefined (reading 'startsWith')"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"shift","key":"./x/**/*.json"}],"ok":"Shift+./x/**/*.json"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"shift","key":"a..bünïcödé"}],"ok":"Shift+a..bünïcödé"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"option","key":"İstanbul"}],"ok":"Alt+İstanbul"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"control","key":"straße"}],"ok":"Control+straße"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"control","key":"a😀b😀c"}],"ok":"Control+a😀b😀c"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"shift","key":"Hello World"}],"ok":"Shift+Hello World"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"shift","key":"tab\tseparated"}],"ok":"Shift+tab\tseparated"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"option","key":"HELLO"}],"ok":"Alt+HELLO"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"command","key":"日本語のテキスト"}],"ok":"Command+日本語のテキスト"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"control","key":"abstraße"}],"ok":"Control+abstraße"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"option","key":"straßeünïcödé"}],"ok":"Alt+straßeünïcödé"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"shift","key":"a.b.ca😀b😀c"}],"ok":"Shift+a.b.ca😀b😀c"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"control","key":"a.b.c"}],"ok":"Control+a.b.c"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"option","key":"﻿bom﻿bom"}],"ok":"Alt+﻿bom﻿bom"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"option","key":"😀"}],"ok":"Alt+😀"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"option","key":".leadingHELLO"}],"ok":"Alt+.leadingHELLO"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"option","key":"line1\nline2emoji 👍🏽 mix"}],"ok":"Alt+line1\nline2emoji 👍🏽 mix"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"command","key":"trailing."}],"ok":"Command+trailing."}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"command","key":"😀:"}],"ok":"Command+😀:"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"control","key":"a..b"}],"ok":"Control+a..b"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"command","key":"./x/**/*.json"}],"ok":"Command+./x/**/*.json"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"control","key":"{name} has {count} items"}],"ok":"Control+{name} has {count} items"}
+{"fn":"appSnapShortcutAccelerator","args":[0],"error":"Cannot read properties of undefined (reading 'startsWith')"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"option","key":"ΣΊΣΥΦΟΣ"}],"ok":"Alt+ΣΊΣΥΦΟΣ"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"command","key":":"}],"ok":"Command+:"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"command","key":"a"}],"ok":"Command+a"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"control","key":"src/a/b.ts"}],"ok":"Control+src/a/b.ts"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"shift","key":"emoji 👍🏽 mix./x/**/*.json"}],"ok":"Shift+emoji 👍🏽 mix./x/**/*.json"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"control","key":"ab"}],"ok":"Control+ab"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"control","key":"tab\tseparated"}],"ok":"Control+tab\tseparated"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"control","key":"abc"}],"ok":"Control+abc"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"shift","key":"é"}],"ok":"Shift+é"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"shift","key":"a.b.c"}],"ok":"Shift+a.b.c"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"option","key":":./x/**/*.json"}],"ok":"Alt+:./x/**/*.json"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"shift","key":"😀"}],"ok":"Shift+😀"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"shift","key":"{name} has {count} itemshello world"}],"ok":"Shift+{name} has {count} itemshello world"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"shift","key":"HELLO"}],"ok":"Shift+HELLO"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"control","key":"a:b:c"}],"ok":"Control+a:b:c"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"option","key":"ns:key.pathemoji 👍🏽 mix"}],"ok":"Alt+ns:key.pathemoji 👍🏽 mix"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"control","key":"emoji 👍🏽 mixa..b"}],"ok":"Control+emoji 👍🏽 mixa..b"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"option","key":"emoji 👍🏽 mix"}],"ok":"Alt+emoji 👍🏽 mix"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"option","key":"a"}],"ok":"Alt+a"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"control","key":"{name} has {count} itemsHELLO"}],"ok":"Control+{name} has {count} itemsHELLO"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"command","key":"abHello World"}],"ok":"Command+abHello World"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"command","key":"İstanbul"}],"ok":"Command+İstanbul"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"shift","key":"a😀b😀c"}],"ok":"Shift+a😀b😀c"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"shift","key":"straßeünïcödé"}],"ok":"Shift+straßeünïcödé"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"control","key":"  padded  "}],"ok":"Control+  padded  "}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"shift","key":"﻿bom"}],"ok":"Shift+﻿bom"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"option","key":"abc"}],"ok":"Alt+abc"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"control","key":"éstraße"}],"ok":"Control+éstraße"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"option","key":"./x/**/*.json"}],"ok":"Alt+./x/**/*.json"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"shift","key":"ns:key.pathhello world"}],"ok":"Shift+ns:key.pathhello world"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"shift","key":"key_name-1a:b:c"}],"ok":"Shift+key_name-1a:b:c"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"control","key":"é"}],"ok":"Control+é"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"option","key":"abcHello World"}],"ok":"Alt+abcHello World"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"shift","key":"İstanbul"}],"ok":"Shift+İstanbul"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"command","key":"Hello World"}],"ok":"Command+Hello World"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"option","key":"tab\tseparated"}],"ok":"Alt+tab\tseparated"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"control","key":"hello"}],"ok":"Control+hello"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"option","key":":a"}],"ok":"Alt+:a"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"option","key":"a😀b😀c"}],"ok":"Alt+a😀b😀c"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"shift","key":"src/a/b.tsa.b.c"}],"ok":"Shift+src/a/b.tsa.b.c"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"control","key":"HELLO"}],"ok":"Control+HELLO"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"shift","key":"ab"}],"ok":"Shift+ab"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"option","key":"src/a/b.tsns:key.path"}],"ok":"Alt+src/a/b.tsns:key.path"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"shift","key":".leadinga😀b😀c"}],"ok":"Shift+.leadinga😀b😀c"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"option","key":"a..b"}],"ok":"Alt+a..b"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"shift","key":"ünïcödé"}],"ok":"Shift+ünïcödé"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"command","key":"src/a/b.ts"}],"ok":"Command+src/a/b.ts"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"command","key":"abc"}],"ok":"Command+abc"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"command","key":"HELLO{name} has {count} items"}],"ok":"Command+HELLO{name} has {count} items"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"control","key":"HELLOhello"}],"ok":"Control+HELLOhello"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"option","key":"line1\nline2"}],"ok":"Alt+line1\nline2"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"command","key":""}],"ok":"Command+"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"option","key":"emoji 👍🏽 mix./x/**/*.json"}],"ok":"Alt+emoji 👍🏽 mix./x/**/*.json"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"command","key":"key_name-1"}],"ok":"Command+key_name-1"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"command","key":"😀"}],"ok":"Command+😀"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"shift","key":"straße﻿bom"}],"ok":"Shift+straße﻿bom"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"command","key":"tab\tseparated"}],"ok":"Command+tab\tseparated"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"control","key":"HELLOtab\tseparated"}],"ok":"Control+HELLOtab\tseparated"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"control","key":"abca:b:c"}],"ok":"Control+abca:b:c"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"option","key":"ab"}],"ok":"Alt+ab"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"shift","key":"abc"}],"ok":"Shift+abc"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"shift","key":"{name} has {count} items"}],"ok":"Shift+{name} has {count} items"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"control","key":"ns:key.path"}],"ok":"Control+ns:key.path"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"command","key":"﻿bom"}],"ok":"Command+﻿bom"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"shift","key":"日本語のテキスト:"}],"ok":"Shift+日本語のテキスト:"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"command","key":"src/a/b.tskey_name-1"}],"ok":"Command+src/a/b.tskey_name-1"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"shift","key":"a:b:c"}],"ok":"Shift+a:b:c"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"option","key":"ns:key.path"}],"ok":"Alt+ns:key.path"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"shift","key":"hello"}],"ok":"Shift+hello"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"option","key":"a:"}],"ok":"Alt+a:"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"option","key":"hello world"}],"ok":"Alt+hello world"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"option","key":"line1\nline2key_name-1"}],"ok":"Alt+line1\nline2key_name-1"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"shift","key":"日本語のテキストİstanbul"}],"ok":"Shift+日本語のテキストİstanbul"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"shift","key":"straße😀"}],"ok":"Shift+straße😀"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"option","key":"ns:key.pathns:key.path"}],"ok":"Alt+ns:key.pathns:key.path"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"shift","key":"a..b"}],"ok":"Shift+a..b"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"option","key":"key_name-1"}],"ok":"Alt+key_name-1"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"control","key":"ésrc/a/b.ts"}],"ok":"Control+ésrc/a/b.ts"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"command","key":"ΣΊΣΥΦΟΣa"}],"ok":"Command+ΣΊΣΥΦΟΣa"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"control","key":"İstanbulabc"}],"ok":"Control+İstanbulabc"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"shift","key":".leading"}],"ok":"Shift+.leading"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"option","key":"HELLOstraße"}],"ok":"Alt+HELLOstraße"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"control","key":"a  padded  "}],"ok":"Control+a  padded  "}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"shift","key":"./x/**/*.json﻿bom"}],"ok":"Shift+./x/**/*.json﻿bom"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"shift","key":"hello world"}],"ok":"Shift+hello world"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"shift","key":"😀tab\tseparated"}],"ok":"Shift+😀tab\tseparated"}
+{"fn":"appSnapShortcutAccelerator","args":["x"],"error":"Cannot read properties of undefined (reading 'startsWith')"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"control","key":"abHELLO"}],"ok":"Control+abHELLO"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"control","key":"./x/**/*.jsona.b.c"}],"ok":"Control+./x/**/*.jsona.b.c"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"control","key":"straßehello"}],"ok":"Control+straßehello"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"shift","key":":"}],"ok":"Shift+:"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"option","key":"ns:key.patha..b"}],"ok":"Alt+ns:key.patha..b"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"command","key":"﻿bomé"}],"ok":"Command+﻿bomé"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"shift","key":"abc﻿bom"}],"ok":"Shift+abc﻿bom"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"command","key":".leading:"}],"ok":"Command+.leading:"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"shift","key":"日本語のテキストé"}],"ok":"Shift+日本語のテキストé"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"command","key":"abcİstanbul"}],"ok":"Command+abcİstanbul"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"command","key":"日本語のテキストstraße"}],"ok":"Command+日本語のテキストstraße"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"command","key":"ab日本語のテキスト"}],"ok":"Command+ab日本語のテキスト"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"shift","key":"﻿bomkey_name-1"}],"ok":"Shift+﻿bomkey_name-1"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"shift","key":"İstanbulhello world"}],"ok":"Shift+İstanbulhello world"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"shift","key":"a..ba"}],"ok":"Shift+a..ba"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"shift","key":"hello worldkey_name-1"}],"ok":"Shift+hello worldkey_name-1"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"command","key":"日本語のテキストé"}],"ok":"Command+日本語のテキストé"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"control","key":":"}],"ok":"Control+:"}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"control","key":"a:b:c"},{"kind":"both-option-keys"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"control","key":"aHELLO"},{"kind":"key-chord","modifier":"option","key":"src/a/b.ts"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"both-option-keys"},0],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"both-option-keys"},{"kind":"key-chord","modifier":"shift","key":"a"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"a":{"b":"c"}},{"kind":"key-chord","modifier":"shift","key":"ns:key.path"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"both-option-keys"},{"kind":"both-option-keys"}],"ok":true}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"option","key":"{name} has {count} items"},{"kind":"both-option-keys"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"a":{"b":"c"}},{"kind":"key-chord","modifier":"command","key":"é"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"shift","key":"./x/**/*.json"},{"kind":"both-option-keys"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"control","key":"a.b.c"},{"kind":"both-option-keys"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"shift","key":"{name} has {count} items"},null],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"sameAppSnapShortcut","args":["x",{"a":{"b":"c"}}],"ok":true}
+{"fn":"sameAppSnapShortcut","args":[[],{"kind":"key-chord","modifier":"command","key":"line1\nline2"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[0,{"kind":"both-option-keys"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"control","key":"Hello World"},{"kind":"both-option-keys"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[[],{"kind":"both-option-keys"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"control","key":"HELLO"},{"kind":"key-chord","modifier":"shift","key":"ünïcödé"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"shift","key":"日本語のテキスト"},{"kind":"both-option-keys"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"option","key":"﻿bomHello World"},{"kind":"key-chord","modifier":"shift","key":"a:b:c"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"shift","key":"key_name-1"},{"kind":"key-chord","modifier":"control","key":"tab\tseparatedab"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"shift","key":"a😀b😀c"},{"kind":"key-chord","modifier":"option","key":"trailing."}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"control","key":"ns:key.path"},{"kind":"both-option-keys"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"both-option-keys"},{"kind":"key-chord","modifier":"shift","key":"aba.b.c"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"option","key":"src/a/b.ts"},{"kind":"key-chord","modifier":"command","key":"Hello World"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"both-option-keys"},["a",1]],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{},{"kind":"key-chord","modifier":"option","key":"straße./x/**/*.json"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{},{"kind":"both-option-keys"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{},0],"ok":true}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"command","key":"trailing.a:b:c"},{"kind":"key-chord","modifier":"shift","key":"Hello World"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"shift","key":".leading"},{"kind":"key-chord","modifier":"command","key":"hello world"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"a":"b"},{"kind":"key-chord","modifier":"shift","key":"a😀b😀c"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"option","key":"HELLOHello World"},{"kind":"both-option-keys"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"shift","key":"./x/**/*.json"},{"kind":"key-chord","modifier":"option","key":"😀"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"both-option-keys"},{"kind":"key-chord","modifier":"option","key":"straße"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"both-option-keys"},{"kind":"key-chord","modifier":"option","key":"😀"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"command","key":"src/a/b.ts"},{"kind":"key-chord","modifier":"shift","key":"ns:key.path"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"shift","key":"a"},true],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"option","key":"ünïcödé"},{"kind":"both-option-keys"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"both-option-keys"},{"a":{"b":"c"}}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"both-option-keys"},{"kind":"key-chord","modifier":"command","key":"a😀b😀c"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"a":"b"},{"kind":"key-chord","modifier":"option","key":"hello"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"both-option-keys"},{}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"shift","key":"straße"},{"a":{"b":"c"}}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"both-option-keys"},{"kind":"key-chord","modifier":"shift","key":""}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"shift","key":"Hello World"},{"kind":"both-option-keys"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"control","key":":emoji 👍🏽 mix"},{"kind":"key-chord","modifier":"command","key":":"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"both-option-keys"},{"kind":"key-chord","modifier":"command","key":"ΣΊΣΥΦΟΣ"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"command","key":"﻿bom"},{"kind":"both-option-keys"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"command","key":"a.b.c"},{"kind":"key-chord","modifier":"option","key":""}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[["a",1],{"kind":"both-option-keys"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"both-option-keys"},{"kind":"key-chord","modifier":"command","key":"trailing."}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"control","key":"abc"},{"a":"b"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"a":"b"},{"kind":"both-option-keys"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"control","key":"emoji 👍🏽 mixa:b:c"},true],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"option","key":".leadingab"},{"kind":"key-chord","modifier":"command","key":"{name} has {count} itemsünïcödé"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"a":{"b":"c"}},{"kind":"both-option-keys"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"a":{"b":"c"}},{"kind":"key-chord","modifier":"command","key":"src/a/b.ts"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"both-option-keys"},{"kind":"key-chord","modifier":"option","key":"İstanbul"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"both-option-keys"},{"kind":"key-chord","modifier":"control","key":"HELLO"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"both-option-keys"},{"kind":"key-chord","modifier":"option","key":"ab"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"shift","key":"trailing.key_name-1"},{"kind":"both-option-keys"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[0,{"kind":"key-chord","modifier":"control","key":"aa.b.c"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":["x",{"kind":"both-option-keys"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"both-option-keys"},{"kind":"key-chord","modifier":"control","key":"hello"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"shift","key":"a"},{"kind":"both-option-keys"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"command","key":"a"},{"kind":"key-chord","modifier":"option","key":"tab\tseparated"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"command","key":"./x/**/*.json"},[]],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"option","key":"HELLO"},{"kind":"both-option-keys"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"both-option-keys"},{"kind":"key-chord","modifier":"shift","key":"﻿bom"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"command","key":"{name} has {count} items"},{"kind":"key-chord","modifier":"control","key":"a"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"shift","key":"HELLO"},{"kind":"both-option-keys"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{},null],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"command","key":"😀"},{"kind":"both-option-keys"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"both-option-keys"},{"kind":"key-chord","modifier":"option","key":"日本語のテキスト"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"control","key":"HELLO"},{"kind":"both-option-keys"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"both-option-keys"},true],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[true,{"kind":"key-chord","modifier":"shift","key":"Hello World"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"option","key":"HELLO"},{"kind":"key-chord","modifier":"control","key":"hello world"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"control","key":"a..b"},{"kind":"both-option-keys"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"shift","key":"ab"},{"kind":"key-chord","modifier":"option","key":"HELLO"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"both-option-keys"},"x"],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"command","key":"é"},{"kind":"both-option-keys"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"command","key":"./x/**/*.jsona..b"},{"kind":"both-option-keys"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"command","key":"line1\nline2"},0],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"shift","key":"a😀b😀c"},{"kind":"key-chord","modifier":"shift","key":"tab\tseparated"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"shift","key":"Hello World"},{"kind":"key-chord","modifier":"command","key":"line1\nline2"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"both-option-keys"},{"kind":"key-chord","modifier":"shift","key":"emoji 👍🏽 mix"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[null,{"kind":"key-chord","modifier":"command","key":"日本語のテキスト"}],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"shift","key":"src/a/b.ts"},{"kind":"both-option-keys"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"shift","key":"trailing."},{"kind":"both-option-keys"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"command","key":"straßeHELLO"},{"kind":"both-option-keys"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"command","key":"src/a/b.ts"},{"kind":"both-option-keys"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"shift","key":"é"},{"kind":"key-chord","modifier":"shift","key":"{name} has {count} items"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"command","key":"é﻿bom"},{"kind":"both-option-keys"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[null,{"a":"b"}],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"both-option-keys"},{"kind":"key-chord","modifier":"command","key":".leading"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"shift","key":""},{"a":{"b":"c"}}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{},"x"],"ok":true}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"command","key":"abc"},{"kind":"both-option-keys"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"command","key":"HELLO"},{"kind":"key-chord","modifier":"control","key":"😀é"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"both-option-keys"},{"kind":"key-chord","modifier":"option","key":"emoji 👍🏽 mix"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"both-option-keys"},{"kind":"key-chord","modifier":"shift","key":"abc"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"both-option-keys"},{"kind":"key-chord","modifier":"option","key":"Hello World"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"command","key":"key_name-1"},{"kind":"key-chord","modifier":"control","key":"a:b:c"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"command","key":":"},["a",1]],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"command","key":"a😀b😀c"},{"kind":"key-chord","modifier":"command","key":"a.b.c"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"both-option-keys"},{"kind":"key-chord","modifier":"option","key":"{name} has {count} items"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"shift","key":"😀"},["a",1]],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"control","key":"﻿bom"},{"kind":"both-option-keys"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"command","key":"a..b"},{"a":"b"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"command","key":"Hello World"},{"kind":"both-option-keys"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"both-option-keys"},{"kind":"key-chord","modifier":"shift","key":"a😀b😀c"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"option","key":"ΣΊΣΥΦΟΣ"},{"kind":"both-option-keys"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"control","key":":"},{"kind":"key-chord","modifier":"option","key":"hello world"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"shift","key":"emoji 👍🏽 mix"},{"kind":"both-option-keys"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"control","key":"hello world"},"x"],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"command","key":"trailing."},{"kind":"both-option-keys"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"shift","key":"key_name-1﻿bom"},{"kind":"both-option-keys"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"option","key":"é"},{"kind":"both-option-keys"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[true,{"kind":"both-option-keys"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"both-option-keys"},{"kind":"key-chord","modifier":"command","key":"é"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[["a",1],[]],"ok":true}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"both-option-keys"},{"kind":"key-chord","modifier":"command","key":"tab\tseparated"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"option","key":""},0],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"command","key":"İstanbul"},{"kind":"both-option-keys"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"option","key":"HELLO"},true],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[null,{"kind":"both-option-keys"}],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"both-option-keys"},[]],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"shift","key":"straße"},{"kind":"key-chord","modifier":"command","key":"a.b.c"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"control","key":"./x/**/*.jsonab"},{"kind":"key-chord","modifier":"shift","key":".leading"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"both-option-keys"},{"kind":"key-chord","modifier":"command","key":"ab"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"both-option-keys"},{"kind":"key-chord","modifier":"control","key":"./x/**/*.json"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"shift","key":".leading"},null],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"option","key":"a..b"},{"kind":"key-chord","modifier":"shift","key":"trailing."}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"both-option-keys"},{"kind":"key-chord","modifier":"command","key":"./x/**/*.json"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"control","key":"é"},true],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"both-option-keys"},{"a":"b"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"shift","key":"tab\tseparated"},{"kind":"key-chord","modifier":"shift","key":"a"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"both-option-keys"},{"kind":"key-chord","modifier":"command","key":"hello world"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"command","key":"emoji 👍🏽 mix"},{"kind":"both-option-keys"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"option","key":"line1\nline2"},null],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"command","key":"日本語のテキスト"},{"kind":"key-chord","modifier":"option","key":"hello"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"command","key":"ns:key.patha:b:c"},{"kind":"key-chord","modifier":"option","key":"key_name-1a..b"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"both-option-keys"},{"kind":"key-chord","modifier":"command","key":"HELLO"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"a":{"b":"c"}},{"kind":"key-chord","modifier":"control","key":"ab"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"shift","key":"abc"},{"kind":"key-chord","modifier":"option","key":"abc"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[["a",1],{"a":"b"}],"ok":true}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"control","key":"é"},{"kind":"both-option-keys"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":["x",{"kind":"key-chord","modifier":"command","key":"ünïcödé"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"both-option-keys"},{"kind":"key-chord","modifier":"command","key":""}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"shift","key":"﻿bom"},{"kind":"key-chord","modifier":"option","key":"straße"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"command","key":"./x/**/*.json"},{"kind":"key-chord","modifier":"option","key":"a"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"control","key":"ünïcödéhello"},{"kind":"key-chord","modifier":"control","key":"a😀b😀c"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"shift","key":"  padded  "},{"kind":"key-chord","modifier":"shift","key":"a.b.ca.b.c"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"both-option-keys"},{"kind":"key-chord","modifier":"option","key":"line1\nline2"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"control","key":"a..b"},{"kind":"key-chord","modifier":"shift","key":"ns:key.path"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"option","key":"a"},{"kind":"both-option-keys"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"control","key":"İstanbul.leading"},{"kind":"both-option-keys"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[["a",1],{"kind":"key-chord","modifier":"control","key":".leading﻿bom"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[true,{"kind":"key-chord","modifier":"control","key":"HELLO"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"option","key":"abHello World"},{"kind":"key-chord","modifier":"option","key":"aba..b"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"control","key":"./x/**/*.json"},{"kind":"both-option-keys"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"option","key":"trailing."},{"kind":"both-option-keys"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"a":{"b":"c"}},{"kind":"key-chord","modifier":"command","key":"key_name-1"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"shift","key":"ns:key.path"},{"kind":"key-chord","modifier":"control","key":"{name} has {count} items"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"command","key":"ΣΊΣΥΦΟΣ"},{"kind":"key-chord","modifier":"command","key":"aa"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"command","key":"a:b:c"},{"kind":"both-option-keys"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"shift","key":"emoji 👍🏽 mixtrailing."},{"kind":"both-option-keys"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"control","key":"  padded  "},{"kind":"key-chord","modifier":"shift","key":"HELLOline1\nline2"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"a":{"b":"c"}},{"a":"b"}],"ok":true}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"both-option-keys"},{"kind":"key-chord","modifier":"command","key":"a.b.c"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"option","key":"ab"},{"kind":"key-chord","modifier":"option","key":"{name} has {count} items"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"both-option-keys"},{"kind":"key-chord","modifier":"command","key":":a:b:c"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[["a",1],{"kind":"key-chord","modifier":"control","key":"Hello Worldline1\nline2"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"command","key":"a😀b😀c"},{}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"control","key":"a😀b😀c"},{"kind":"key-chord","modifier":"shift","key":""}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"control","key":"a"},{"kind":"key-chord","modifier":"shift","key":"ünïcödé"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"option","key":":"},{"kind":"both-option-keys"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"option","key":"a..b"},{"kind":"both-option-keys"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"shift","key":"ΣΊΣΥΦΟΣ"},{"kind":"both-option-keys"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"shift","key":"a.b.c./x/**/*.json"},{"kind":"key-chord","modifier":"command","key":"{name} has {count} items"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"both-option-keys"},{"kind":"key-chord","modifier":"command","key":"src/a/b.ts  padded  "}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"both-option-keys"},{"kind":"key-chord","modifier":"option","key":"tab\tseparated"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":["x",null],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"option","key":"straße"},{"kind":"both-option-keys"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"shift","key":"straßehello world"},{}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"option","key":"src/a/b.ts"},{"kind":"both-option-keys"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"control","key":"{name} has {count} items"},{"kind":"both-option-keys"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"a":{"b":"c"}},{"kind":"key-chord","modifier":"option","key":"ünïcödé{name} has {count} items"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[0,{"kind":"key-chord","modifier":"control","key":"ns:key.path"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"option","key":"trailing."},{"kind":"key-chord","modifier":"command","key":"./x/**/*.json"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"control","key":"HELLO./x/**/*.json"},{"kind":"both-option-keys"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"control","key":"日本語のテキスト"},{"kind":"key-chord","modifier":"shift","key":"İstanbul"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"shift","key":"line1\nline2"},{"kind":"key-chord","modifier":"command","key":"ΣΊΣΥΦΟΣ"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"both-option-keys"},{"kind":"key-chord","modifier":"control","key":"Hello World"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"option","key":"line1\nline2"},{"kind":"key-chord","modifier":"control","key":"a"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"command","key":"😀"},{"kind":"key-chord","modifier":"control","key":".leading"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"option","key":"line1\nline2a😀b😀c"},{"kind":"key-chord","modifier":"option","key":"HELLO"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"both-option-keys"},{"kind":"key-chord","modifier":"option","key":"hello world"}],"ok":false}
+{"fn":"sameAppSnapShortcut","args":[{"kind":"key-chord","modifier":"control","key":"a😀b😀ca😀b😀c"},{"kind":"key-chord","modifier":"option","key":"abc"}],"ok":false}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"x","modifier":"shift","key":"a"}],"ok":"⇧ combinations are used for typing and text selection — combine with ⌘, ⌃ or ⌥ instead."}
+{"fn":"appSnapShortcutSystemConflict","args":[{"modifier":"shift","key":"a"}],"ok":"⇧ combinations are used for typing and text selection — combine with ⌘, ⌃ or ⌥ instead."}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"x","modifier":"command","key":"KeyA"}],"ok":"⌘ A is Select All in almost every app."}
+{"fn":"appSnapShortcutSystemConflict","args":[{"modifier":"command","key":"KeyA"}],"ok":"⌘ A is Select All in almost every app."}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"command","key":" "}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"shift","key":"Tab"}],"ok":"⇧ combinations are used for typing and text selection — combine with ⌘, ⌃ or ⌥ instead."}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"shift","key":"Space"}],"ok":"⇧ combinations are used for typing and text selection — combine with ⌘, ⌃ or ⌥ instead."}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"shift","key":"ArrowLeft"}],"ok":"⇧ combinations are used for typing and text selection — combine with ⌘, ⌃ or ⌥ instead."}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"command","key":"Backslash"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"command","key":"Slash"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"command","key":"Minus"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"command","key":"Equal"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"command","key":"Period"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"command","key":"Semicolon"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"command","key":"Quote"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"command","key":"BracketLeft"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"command","key":"BracketRight"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"command","key":"IntlBackslash"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"command","key":"key"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"option","key":"Space"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"control","key":"KeyA"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":"command","key":null}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":null,"key":"a"}],"ok":null}
+{"fn":"appSnapShortcutSystemConflict","args":[{"kind":"key-chord","modifier":5,"key":"a"}],"ok":null}
+{"fn":"isAppSnapShortcutKey","args":["IntlBackslash"],"ok":false}
+{"fn":"isAppSnapShortcutKey","args":["NumpadEnter"],"ok":false}
+{"fn":"isAppSnapShortcutKey","args":["ShiftLeft"],"ok":false}
+{"fn":"isAppSnapShortcutKey","args":["MetaRight"],"ok":false}
+{"fn":"appSnapShortcutKeyLabel","args":["F12"],"ok":"F12"}
+{"fn":"appSnapShortcutKeyLabel","args":["Command"],"ok":"Command"}
+{"fn":"appSnapShortcutKeyLabel","args":["OSLeft"],"ok":"OSLeft"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"command","key":"Key"}],"ok":"Command+"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"command","key":"Digit"}],"ok":"Command+"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"command","key":"Key1"}],"ok":"Command+1"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"command","key":"Keys"}],"ok":"Command+s"}
+{"fn":"appSnapShortcutAccelerator","args":[{"kind":"key-chord","modifier":"command","key":"DigitX"}],"ok":"Command+X"}

@@ -1,0 +1,43 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/desktop/src/linuxEscapeKillSwitchMonitor.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "linuxescapekillswitchmonitor-rs",
+  "exports": [
+    {
+      "name": "linuxEscapeSession",
+      "file": "apps/desktop/src/linuxEscapeKillSwitchMonitor.ts",
+      "line": 12,
+      "params": [
+        {
+          "name": "ozonePlatform",
+          "ts_type": "string",
+          "optional": true,
+          "rest": false
+        },
+        {
+          "name": "environment",
+          "ts_type": "NodeJS.ProcessEnv",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "(\"x11\" | \"wayland\" | \"unknown\")",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "LinuxEscapeKillSwitchMonitor",
+      "file": "apps/desktop/src/linuxEscapeKillSwitchMonitor.ts",
+      "line": 44,
+      "reason": "class: accessor `state`"
+    }
+  ]
+}

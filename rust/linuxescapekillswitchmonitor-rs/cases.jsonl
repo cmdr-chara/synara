@@ -1,0 +1,215 @@
+{"fn":"linuxEscapeSession","args":["./x/**/*.json",null],"error":"Cannot read properties of null (reading 'XDG_SESSION_TYPE')"}
+{"fn":"linuxEscapeSession","args":["trailing.",null],"error":"Cannot read properties of null (reading 'XDG_SESSION_TYPE')"}
+{"fn":"linuxEscapeSession","args":[{"$undefined":true}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["ΣΊΣΥΦΟΣ",{"a":"b"}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["trailing.",{}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["a.b.c"],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["😀"],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["tab\tseparated",{"a":"b"}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["a😀b😀c",{"$undefined":true}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["é",0],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["key_name-1",{"$undefined":true}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":[{"$undefined":true},[]],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":[{"$undefined":true},{"$undefined":true}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["a",[]],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["é  padded  ",true],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["ab",true],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["aa😀b😀c",{"a":"b"}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":[{"$undefined":true},null],"error":"Cannot read properties of null (reading 'XDG_SESSION_TYPE')"}
+{"fn":"linuxEscapeSession","args":["﻿bom","bo"],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["HELLO",{"a":"b"}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":[{"$undefined":true},"x"],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["hello",true],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["emoji 👍🏽 mix",[]],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["HELLO"],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["key_name-1"],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["./x/**/*.json😀","x"],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["ünïcödé",{"$undefined":true}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":[{"$undefined":true},{"a":"b"}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["ΣΊΣΥΦΟΣemoji 👍🏽 mix",{"a":{"b":"c"}}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":[{"$undefined":true},["a",1]],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":[{"$undefined":true},{}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["{name} has {count} items",{}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["Hello World",{"a":{"b":"c"}}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["a.b.c",[]],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["abstraße",true],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["İstanbul",["a",1]],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["{name} has {count} items",{"a":"b"}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["ΣΊΣΥΦΟΣ",null],"error":"Cannot read properties of null (reading 'XDG_SESSION_TYPE')"}
+{"fn":"linuxEscapeSession","args":["line1\nline2",{"a":"b"}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["emoji 👍🏽 mix",null],"error":"Cannot read properties of null (reading 'XDG_SESSION_TYPE')"}
+{"fn":"linuxEscapeSession","args":["{name} has {count} itemsİstanbul",{"a":"b"}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["line1\nline2",{"a":{"b":"c"}}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["trailing.line1\nline2",0],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["abc",[]],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["src/a/b.ts"],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":[{"$undefined":true},0],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["./x/**/*.json",{"a":"b"}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["İstanbul",{"a":"b"}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["line1\nline2",[]],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["hello world",{}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["ΣΊΣΥΦΟΣ",true],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["ΣΊΣΥΦΟΣ",["a",1]],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":[],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["{name} has {count} itemsİstanbul",{"a":{"b":"c"}}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["﻿bom",0],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["{name} has {count} items",null],"error":"Cannot read properties of null (reading 'XDG_SESSION_TYPE')"}
+{"fn":"linuxEscapeSession","args":["é",[]],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["İstanbul",{"a":{"b":"c"}}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["ns:key.path"],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["ΣΊΣΥΦΟΣ",[]],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["ns:key.path",{"a":"b"}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["Hello World","x"],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["abcΣΊΣΥΦΟΣ",{"$undefined":true}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["hello worldns:key.path",{"a":{"b":"c"}}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["src/a/b.ts{name} has {count} items",{"a":{"b":"c"}}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":[":",{"$undefined":true}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["HELLO",0],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["emoji 👍🏽 mix﻿bom",{"$undefined":true}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["a..b",{}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["tab\tseparated",{"$undefined":true}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["trailing.:",true],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":[{"$undefined":true},{"a":{"b":"c"}}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["﻿bom",["a",1]],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["a..b  padded  ",{"a":{"b":"c"}}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["src/a/b.ts😀",{"a":"b"}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["line1\nline2:",0],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["{name} has {count} items",{"$undefined":true}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["a..b",null],"error":"Cannot read properties of null (reading 'XDG_SESSION_TYPE')"}
+{"fn":"linuxEscapeSession","args":[{"$undefined":true},true],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["a😀b😀c",null],"error":"Cannot read properties of null (reading 'XDG_SESSION_TYPE')"}
+{"fn":"linuxEscapeSession","args":["😀",[]],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["a..ba..b",0],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["﻿bom",null],"error":"Cannot read properties of null (reading 'XDG_SESSION_TYPE')"}
+{"fn":"linuxEscapeSession","args":["{name} has {count} itemsa:b:c",{"a":{"b":"c"}}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["日本語のテキスト",{"a":"b"}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["abckey_name-1","x"],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":[".leading",null],"error":"Cannot read properties of null (reading 'XDG_SESSION_TYPE')"}
+{"fn":"linuxEscapeSession","args":["abcline1\nline2",{"a":"b"}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["ab",{"a":{"b":"c"}}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":[".leading",{"a":"b"}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["abkey_name-1",["a",1]],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["a:b:c",null],"error":"Cannot read properties of null (reading 'XDG_SESSION_TYPE')"}
+{"fn":"linuxEscapeSession","args":["ünïcödé",["a",1]],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["",[]],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["😀",["a",1]],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["emoji 👍🏽 mix",0],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["abc","bc"],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["line1\nline2"],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["abc",{"a":{"b":"c"}}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":[":",null],"error":"Cannot read properties of null (reading 'XDG_SESSION_TYPE')"}
+{"fn":"linuxEscapeSession","args":[""],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["hello",{"a":"b"}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["é","x"],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["﻿bom",true],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["ünïcödé",[]],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["a.b.c",{"$undefined":true}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["hello",[]],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["",{"a":{"b":"c"}}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["  padded  ",0],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["ΣΊΣΥΦΟΣ",0],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["Hello World"],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["trailing.",0],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["Hello World",{"a":"b"}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["a..b",{"a":{"b":"c"}}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["hello",0],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["src/a/b.ts","x"],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["a.b.c😀","x"],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["HELLO./x/**/*.json",{"a":{"b":"c"}}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["tab\tseparated{name} has {count} items",null],"error":"Cannot read properties of null (reading 'XDG_SESSION_TYPE')"}
+{"fn":"linuxEscapeSession","args":["Hello Worldtrailing.",{"a":{"b":"c"}}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["  padded  ",{"a":{"b":"c"}}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["ns:key.path:",{"$undefined":true}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":[":",true],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["src/a/b.ts","s"],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["ünïcödé"],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["src/a/b.ts",{"$undefined":true}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["a..bhello world","x"],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["a..b",["a",1]],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["tab\tseparated",{}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["tab\tseparated😀","x"],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["a","x"],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["key_name-1",[]],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["key_name-1",true],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["ab"],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["étrailing.",[]],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["{name} has {count} itemsa😀b😀c"],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["emoji 👍🏽 mix","x"],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["src/a/b.ts",{"a":"b"}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["ns:key.path",{"$undefined":true}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["emoji 👍🏽 mix",["a",1]],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["é"],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["hello world",[]],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["line1\nline2",{}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["tab\tseparated",{"a":{"b":"c"}}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["key_name-1key_name-1",{"$undefined":true}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["日本語のテキスト",{"a":{"b":"c"}}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["a😀b😀c",{"a":{"b":"c"}}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["😀",null],"error":"Cannot read properties of null (reading 'XDG_SESSION_TYPE')"}
+{"fn":"linuxEscapeSession","args":["hello worlda..b",["a",1]],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["key_name-1emoji 👍🏽 mix"],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["a",true],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["﻿bomsrc/a/b.ts",[]],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["é",{"a":{"b":"c"}}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["hello world",{"$undefined":true}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["İstanbul",{"$undefined":true}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["a.b.c",0],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["a",["a",1]],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["hello world",true],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":[".leading",true],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["",{}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["./x/**/*.json",[]],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["hello","he"],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["line1\nline2straße","x"],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["abctab\tseparated",{"a":{"b":"c"}}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["Hello World",0],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["abkey_name-1",{"a":"b"}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["﻿bom",{"a":"b"}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["straßekey_name-1",{"$undefined":true}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["a",{"a":"b"}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["hello"],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["a:b:c"],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["trailing.",true],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["src/a/b.ts",{}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["a..b","x"],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["ns:key.path",["a",1]],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["a..b",{"a":"b"}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["emoji 👍🏽 mixtab\tseparated","👍🏽 mixtab\tsepa"],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["日本語のテキストa.b.c",0],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["a.b.c",null],"error":"Cannot read properties of null (reading 'XDG_SESSION_TYPE')"}
+{"fn":"linuxEscapeSession","args":["a..b",0],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["﻿bom",[]],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["ab",0],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["src/a/b.tsé",true],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["a",{"$undefined":true}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["aba:b:c",null],"error":"Cannot read properties of null (reading 'XDG_SESSION_TYPE')"}
+{"fn":"linuxEscapeSession","args":["src/a/b.ts",0],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["{name} has {count} items","x"],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["a😀b😀c",0],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["straße",true],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["key_name-1.leading",0],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["a",0],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["trailing.",[]],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["./x/**/*.json",{"a":{"b":"c"}}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["emoji 👍🏽 mixtab\tseparated",null],"error":"Cannot read properties of null (reading 'XDG_SESSION_TYPE')"}
+{"fn":"linuxEscapeSession","args":["./x/**/*.json",{"$undefined":true}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["é",{"a":"b"}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["a..b"],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["😀",{}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["ns:key.path",{"a":{"b":"c"}}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":[".leading",{"$undefined":true}],"ok":"unknown"}
+{"fn":"linuxEscapeSession","args":["héllo wörld",null],"error":"Cannot read properties of null (reading 'XDG_SESSION_TYPE')"}
+{"fn":"linuxEscapeSession","args":["👍🏽 thumbs",null],"error":"Cannot read properties of null (reading 'XDG_SESSION_TYPE')"}
+{"fn":"linuxEscapeSession","args":["日本語",null],"error":"Cannot read properties of null (reading 'XDG_SESSION_TYPE')"}
+{"fn":"linuxEscapeSession","args":["",null],"error":"Cannot read properties of null (reading 'XDG_SESSION_TYPE')"}
+{"fn":"linuxEscapeSession","args":["é",null],"error":"Cannot read properties of null (reading 'XDG_SESSION_TYPE')"}
+{"fn":"linuxEscapeSession","args":["İstanbul",null],"error":"Cannot read properties of null (reading 'XDG_SESSION_TYPE')"}
+{"fn":"linuxEscapeSession","args":["straße",null],"error":"Cannot read properties of null (reading 'XDG_SESSION_TYPE')"}
+{"fn":"linuxEscapeSession","args":["ılık ırmak",null],"error":"Cannot read properties of null (reading 'XDG_SESSION_TYPE')"}
+{"fn":"linuxEscapeSession","args":["👨‍👩‍👧 family",null],"error":"Cannot read properties of null (reading 'XDG_SESSION_TYPE')"}
+{"fn":"linuxEscapeSession","args":["a b",null],"error":"Cannot read properties of null (reading 'XDG_SESSION_TYPE')"}
+{"fn":"linuxEscapeSession","args":["a😀b",null],"error":"Cannot read properties of null (reading 'XDG_SESSION_TYPE')"}
+{"fn":"linuxEscapeSession","args":["a²b x½ y①",null],"error":"Cannot read properties of null (reading 'XDG_SESSION_TYPE')"}
+{"fn":"linuxEscapeSession","args":["aⅠb Ⅻ",null],"error":"Cannot read properties of null (reading 'XDG_SESSION_TYPE')"}
+{"fn":"linuxEscapeSession","args":["a𐐀b 𝐀bc",null],"error":"Cannot read properties of null (reading 'XDG_SESSION_TYPE')"}
+{"fn":"linuxEscapeSession","args":["कि ٣٤",null],"error":"Cannot read properties of null (reading 'XDG_SESSION_TYPE')"}

@@ -1,0 +1,17 @@
+{
+  "unit": "apps/desktop/src/linuxEscapeKillSwitchMonitor.ts",
+  "files": 1,
+  "fingerprint": "52c2e9baded23238",
+  "coverage": {
+    "lines": 159,
+    "reached": 40,
+    "files": [
+      {
+        "file": "apps/desktop/src/linuxEscapeKillSwitchMonitor.ts",
+        "lines": 159,
+        "reached": 40,
+        "missed": "20, 45-49, 52-54, 56-70, 72-75, 77-137, 139-144, 146-159, 161-165, 167-171"
+      }
+    ]
+  }
+}

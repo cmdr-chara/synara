@@ -1,0 +1,102 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/trustedOrigins.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "trustedorigins-rs",
+  "exports": [
+    {
+      "name": "normalizeCorsOrigin",
+      "file": "apps/server/src/trustedOrigins.ts",
+      "line": 27,
+      "params": [
+        {
+          "name": "rawOrigin",
+          "ts_type": "string | ReadonlyArray<string> | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isTrustedAppOrigin",
+      "file": "apps/server/src/trustedOrigins.ts",
+      "line": 78,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly origin: string | null;\n  readonly requestOrigin: string;\n  readonly config: ServerConfigShape;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "shouldRejectUntrustedRequestOrigin",
+      "file": "apps/server/src/trustedOrigins.ts",
+      "line": 96,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly rawOrigin: string | ReadonlyArray<string> | undefined;\n  readonly requestOrigin: string;\n  readonly config: ServerConfigShape;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "shouldRejectAuthMutationOrigin",
+      "file": "apps/server/src/trustedOrigins.ts",
+      "line": 115,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly rawOrigin: string | ReadonlyArray<string> | undefined;\n  readonly requestOrigin: string;\n  readonly config: ServerConfigShape;\n  readonly credentialSource: \"bearer\" | \"cookie\";\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "requiresWebSocketAuthentication",
+      "file": "apps/server/src/trustedOrigins.ts",
+      "line": 128,
+      "params": [
+        {
+          "name": "config",
+          "ts_type": "Pick<ServerConfigShape, \"authToken\" | \"host\" | \"publicUrl\" | \"sshForwardPort\">",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

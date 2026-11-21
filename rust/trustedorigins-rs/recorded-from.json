@@ -1,0 +1,23 @@
+{
+  "unit": "apps/server/src/trustedOrigins.ts",
+  "files": 1,
+  "fingerprint": "76b5471f675e8013",
+  "coverage": {
+    "lines": 153,
+    "reached": 120,
+    "files": [
+      {
+        "file": "apps/server/src/startupAccess.ts",
+        "lines": 20,
+        "reached": 11,
+        "missed": "14-22"
+      },
+      {
+        "file": "apps/server/src/trustedOrigins.ts",
+        "lines": 133,
+        "reached": 109,
+        "missed": "38-39, 48-50, 56-57, 64-75, 107-111"
+      }
+    ]
+  }
+}

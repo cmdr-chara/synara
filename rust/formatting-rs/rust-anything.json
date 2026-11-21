@@ -1,0 +1,222 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/profile-ui/src/formatting.ts",
+  "language": "ts",
+  "kind": "wasm",
+  "crate_name": "formatting-rs",
+  "exports": [
+    {
+      "name": "formatCompact",
+      "file": "packages/profile-ui/src/formatting.ts",
+      "line": 9,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "number | null | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "locale",
+          "ts_type": "string",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "formatNumber",
+      "file": "packages/profile-ui/src/formatting.ts",
+      "line": 34,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "number | null | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "locale",
+          "ts_type": "string",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "formatDays",
+      "file": "packages/profile-ui/src/formatting.ts",
+      "line": 41,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "locale",
+          "ts_type": "string",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "toDisplayName",
+      "file": "packages/profile-ui/src/formatting.ts",
+      "line": 46,
+      "params": [
+        {
+          "name": "basename",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "normalizeHandle",
+      "file": "packages/profile-ui/src/formatting.ts",
+      "line": 60,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "formatShortDate",
+      "file": "packages/profile-ui/src/formatting.ts",
+      "line": 71,
+      "params": [
+        {
+          "name": "day",
+          "ts_type": "string | null",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "locale",
+          "ts_type": "string",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "formatHourLabel",
+      "file": "packages/profile-ui/src/formatting.ts",
+      "line": 88,
+      "params": [
+        {
+          "name": "hour",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "locale",
+          "ts_type": "string",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "formatProviderLabel",
+      "file": "packages/profile-ui/src/formatting.ts",
+      "line": 100,
+      "params": [
+        {
+          "name": "provider",
+          "ts_type": "ProviderKind",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "formatProfileUsageBasis",
+      "file": "packages/profile-ui/src/formatting.ts",
+      "line": 125,
+      "params": [
+        {
+          "name": "metric",
+          "ts_type": "\"tokens\" | \"turns\"",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "deriveInitials",
+      "file": "packages/profile-ui/src/formatting.ts",
+      "line": 134,
+      "params": [
+        {
+          "name": "name",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

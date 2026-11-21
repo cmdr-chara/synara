@@ -1,0 +1,17 @@
+{
+  "unit": "packages/profile-ui/src/formatting.ts",
+  "files": 1,
+  "fingerprint": "1cde6c2d33dd5673",
+  "coverage": {
+    "lines": 129,
+    "reached": 129,
+    "files": [
+      {
+        "file": "packages/profile-ui/src/formatting.ts",
+        "lines": 129,
+        "reached": 129,
+        "missed": ""
+      }
+    ]
+  }
+}

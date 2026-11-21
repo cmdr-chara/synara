@@ -1,0 +1,54 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/chat-scroll.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "chat-scroll-rs",
+  "exports": [
+    {
+      "name": "getScrollContainerDistanceFromBottom",
+      "file": "apps/web/src/chat-scroll.ts",
+      "line": 9,
+      "params": [
+        {
+          "name": "position",
+          "ts_type": "ScrollPosition",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "number",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isScrollContainerNearBottom",
+      "file": "apps/web/src/chat-scroll.ts",
+      "line": 18,
+      "params": [
+        {
+          "name": "position",
+          "ts_type": "ScrollPosition",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "thresholdPx",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

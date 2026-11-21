@@ -1,0 +1,17 @@
+{
+  "unit": "apps/web/src/chat-scroll.ts",
+  "files": 1,
+  "fingerprint": "16d1afb34e9b2c99",
+  "coverage": {
+    "lines": 22,
+    "reached": 22,
+    "files": [
+      {
+        "file": "apps/web/src/chat-scroll.ts",
+        "lines": 22,
+        "reached": 22,
+        "missed": ""
+      }
+    ]
+  }
+}

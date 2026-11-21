@@ -1,0 +1,48 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/wsRequestClass.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "wsrequestclass-rs",
+  "exports": [
+    {
+      "name": "classifyWsRequest",
+      "file": "packages/shared/src/wsRequestClass.ts",
+      "line": 84,
+      "params": [
+        {
+          "name": "method",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(\"control\" | \"standard\" | \"expensive-read\")",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "makeWsRequestCapacityError",
+      "file": "packages/shared/src/wsRequestClass.ts",
+      "line": 98,
+      "params": [
+        {
+          "name": "requestClass",
+          "ts_type": "(\"control\" | \"standard\" | \"expensive-read\")",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "WsRpcError",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

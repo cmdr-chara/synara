@@ -1,0 +1,9 @@
+{"fn":"classifyWsRequest","args":["orchestration.dispatchCommand"]}
+{"fn":"classifyWsRequest","args":["orchestration.listProviderDeliveryBlockers"]}
+{"fn":"classifyWsRequest","args":["orchestration.reconcileProviderDelivery"]}
+{"fn":"classifyWsRequest","args":["orchestration.replayEvents"]}
+{"fn":"classifyWsRequest","args":["stats.getUsageAnalytics"]}
+{"fn":"classifyWsRequest","args":["git.listBranches"]}
+{"fn":"makeWsRequestCapacityError","args":["expensive-read"]}
+{"fn":"makeWsRequestCapacityError","args":["standard"]}
+{"fn":"makeWsRequestCapacityError","args":["control"]}

@@ -1,0 +1,1314 @@
+{"fn":"classifyWsRequest","args":["trailing."],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["İstanbul"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["straße"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["abc"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["é"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a:b:cΣΊΣΥΦΟΣ"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["line1\nline2"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":[":"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["{name} has {count} items"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["hello"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["ab"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["hello world"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":[":key_name-1"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a..b"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["./x/**/*.json"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["  padded  a.b.c"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["Hello Worldünïcödé"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["  padded  "],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["ns:key.path"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a:b:c"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["éab"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["emoji 👍🏽 mix"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["src/a/b.ts"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["﻿bom"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":[""],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["ΣΊΣΥΦΟΣ"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["ΣΊΣΥΦΟΣa"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["line1\nline2é"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["helloa😀b😀c"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["key_name-1"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["😀"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a.b.c"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a:b:ctab\tseparated"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["Hello World"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["tab\tseparated"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["日本語のテキスト"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["ünïcödé"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["İstanbul:"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["key_name-1a:b:c"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a😀b😀c"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["./x/**/*.jsonabc"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["ns:key.path{name} has {count} items"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["key_name-1:"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["HELLO"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":[".leading"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":[":a..b"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["trailing..leading"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["﻿bomİstanbul"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a:b:c日本語のテキスト"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["HELLO😀"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["emoji 👍🏽 mixstraße"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["日本語のテキストünïcödé"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a😀"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["ns:key.patha"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a😀b😀ca.b.c"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["😀{name} has {count} items"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["  padded  trailing."],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["hello worldemoji 👍🏽 mix"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["ünïcödé﻿bom"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":[".leadingemoji 👍🏽 mix"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["日本語のテキストab"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["emoji 👍🏽 mixkey_name-1"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["src/a/b.tsHELLO"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a:b:ckey_name-1"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["helloHello World"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["Hello WorldHello World"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["ns:key.path./x/**/*.json"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["HELLOa😀b😀c"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["ΣΊΣΥΦΟΣline1\nline2"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["emoji 👍🏽 mix﻿bom"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":[":trailing."],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["helloHELLO"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["HELLOhello world"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a😀b😀ctab\tseparated"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["﻿boma.b.c"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["İstanbulΣΊΣΥΦΟΣ"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["  padded  line1\nline2"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a.b.ca..b"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a😀b😀csrc/a/b.ts"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["ünïcödéhello world"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["{name} has {count} itemshello world"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["straße😀"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["hellokey_name-1"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["ΣΊΣΥΦΟΣhello"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["hello worldHELLO"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["😀:"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["日本語のテキストa..b"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["ns:key.path﻿bom"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["😀hello world"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["﻿bomns:key.path"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":[".leadingHello World"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a..btab\tseparated"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["﻿bomsrc/a/b.ts"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":[":a.b.c"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":[".leading./x/**/*.json"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["日本語のテキストemoji 👍🏽 mix"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["line1\nline2😀"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["﻿bom﻿bom"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a日本語のテキスト"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["  padded  hello world"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["HELLOtrailing."],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["key_name-1tab\tseparated"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["trailing.  padded  "],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["😀日本語のテキスト"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["abemoji 👍🏽 mix"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["hello.leading"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["src/a/b.tssrc/a/b.ts"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["straßekey_name-1"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["ΣΊΣΥΦΟΣa..b"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["  padded  key_name-1"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["  padded  ΣΊΣΥΦΟΣ"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a:b:c  padded  "],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["tab\tseparatedkey_name-1"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a.b.ctab\tseparated"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["key_name-1a.b.c"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["line1\nline2src/a/b.ts"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["./x/**/*.jsontrailing."],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["abca.b.c"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a..bünïcödé"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["key_name-1😀"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["ünïcödéΣΊΣΥΦΟΣ"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["ΣΊΣΥΦΟΣa:b:c"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["emoji 👍🏽 mixemoji 👍🏽 mix"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":[":a😀b😀c"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a..bstraße"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["src/a/b.tsa😀b😀c"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["abcab"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["ünïcödétab\tseparated"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["abcemoji 👍🏽 mix"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["HELLOkey_name-1"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["﻿boma..b"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["line1\nline2{name} has {count} items"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":[".leadingtab\tseparated"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["emoji 👍🏽 mix  padded  "],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a:b:c😀"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["日本語のテキストline1\nline2"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["key_name-1ns:key.path"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a.b.cline1\nline2"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["é{name} has {count} items"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a.b.c😀"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["  padded  HELLO"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["src/a/b.tskey_name-1"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a.b.cé"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["hellostraße"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a😀b😀ca😀b😀c"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a.b.c{name} has {count} items"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["HELLOa"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["tab\tseparated😀"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["éns:key.path"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["atrailing."],"ok":"standard"}
+{"fn":"classifyWsRequest","args":[".leadingtrailing."],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["helloΣΊΣΥΦΟΣ"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["emoji 👍🏽 mixa.b.c"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["trailing.ns:key.path"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["straße./x/**/*.json"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["é:"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["key_name-1é"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a.b.c﻿bom"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["﻿bomHELLO"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["src/a/b.ts日本語のテキスト"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["{name} has {count} itemsa..b"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["Hello Worldsrc/a/b.ts"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a😀b😀cabc"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["hello worldsrc/a/b.ts"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["abtab\tseparated"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["  padded  a😀b😀c"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["emoji 👍🏽 mixtab\tseparated"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["ünïcödéab"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["trailing../x/**/*.json"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a.b.cünïcödé"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["éhello world"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["src/a/b.tstrailing."],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["İstanbulab"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["éHello World"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["tab\tseparatedHello World"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["😀a"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a..b./x/**/*.json"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["src/a/b.tsemoji 👍🏽 mix"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["﻿bom  padded  "],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["hello worlda:b:c"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["key_name-1abc"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["ab:"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["tab\tseparatedhello"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a..bHello World"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["ünïcödé./x/**/*.json"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["tab\tseparatedhello world"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["  padded  ab"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["ésrc/a/b.ts"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["trailing.a:b:c"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a..ba.b.c"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["./x/**/*.jsonİstanbul"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["ΣΊΣΥΦΟΣ{name} has {count} items"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["hello./x/**/*.json"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["İstanbultab\tseparated"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["{name} has {count} itemsab"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a:b:cemoji 👍🏽 mix"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a.b.cstraße"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["trailing.straße"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["😀key_name-1"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["héllo wörld"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["👍🏽 thumbs"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["日本語"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["ılık ırmak"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["👨‍👩‍👧 family"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a b"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a😀b"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a²b x½ y①"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["aⅠb Ⅻ"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a𐐀b 𝐀bc"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["कि ٣٤"],"ok":"standard"}
+{"fn":"makeWsRequestCapacityError","args":["a"],"ok":{"$error":"WebSocket a request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["emoji 👍🏽 mix"],"ok":{"$error":"WebSocket emoji 👍🏽 mix request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["src/a/b.ts"],"ok":{"$error":"WebSocket src/a/b.ts request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["emoji 👍🏽 mixabc"],"ok":{"$error":"WebSocket emoji 👍🏽 mixabc request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":[".leading"],"ok":{"$error":"WebSocket .leading request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["trailing."],"ok":{"$error":"WebSocket trailing. request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["./x/**/*.json"],"ok":{"$error":"WebSocket ./x/**/*.json request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["ünïcödé"],"ok":{"$error":"WebSocket ünïcödé request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["😀"],"ok":{"$error":"WebSocket 😀 request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":[":"],"ok":{"$error":"WebSocket : request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["﻿bom"],"ok":{"$error":"WebSocket ﻿bom request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["tab\tseparated"],"ok":{"$error":"WebSocket tab\tseparated request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["ns:key.path"],"ok":{"$error":"WebSocket ns:key.path request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["  padded  ünïcödé"],"ok":{"$error":"WebSocket   padded  ünïcödé request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a:b:c"],"ok":{"$error":"WebSocket a:b:c request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":[":emoji 👍🏽 mix"],"ok":{"$error":"WebSocket :emoji 👍🏽 mix request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["straßehello world"],"ok":{"$error":"WebSocket straßehello world request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a..b"],"ok":{"$error":"WebSocket a..b request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a😀b😀ckey_name-1"],"ok":{"$error":"WebSocket a😀b😀ckey_name-1 request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["  padded  "],"ok":{"$error":"WebSocket   padded   request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["ΣΊΣΥΦΟΣ"],"ok":{"$error":"WebSocket ΣΊΣΥΦΟΣ request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["abc"],"ok":{"$error":"WebSocket abc request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["Hello Worldline1\nline2"],"ok":{"$error":"WebSocket Hello Worldline1\nline2 request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["日本語のテキスト"],"ok":{"$error":"WebSocket 日本語のテキスト request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["{name} has {count} items"],"ok":{"$error":"WebSocket {name} has {count} items request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["İstanbul"],"ok":{"$error":"WebSocket İstanbul request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["ns:key.pathΣΊΣΥΦΟΣ"],"ok":{"$error":"WebSocket ns:key.pathΣΊΣΥΦΟΣ request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["Hello World"],"ok":{"$error":"WebSocket Hello World request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["ab"],"ok":{"$error":"WebSocket ab request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["emoji 👍🏽 mix日本語のテキスト"],"ok":{"$error":"WebSocket emoji 👍🏽 mix日本語のテキスト request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["straßens:key.path"],"ok":{"$error":"WebSocket straßens:key.path request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["HELLO"],"ok":{"$error":"WebSocket HELLO request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a..b{name} has {count} items"],"ok":{"$error":"WebSocket a..b{name} has {count} items request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["line1\nline2HELLO"],"ok":{"$error":"WebSocket line1\nline2HELLO request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["line1\nline2"],"ok":{"$error":"WebSocket line1\nline2 request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["﻿bomΣΊΣΥΦΟΣ"],"ok":{"$error":"WebSocket ﻿bomΣΊΣΥΦΟΣ request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["hello world"],"ok":{"$error":"WebSocket hello world request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["hello"],"ok":{"$error":"WebSocket hello request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["HELLOhello"],"ok":{"$error":"WebSocket HELLOhello request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["abcline1\nline2"],"ok":{"$error":"WebSocket abcline1\nline2 request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a.b.c"],"ok":{"$error":"WebSocket a.b.c request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":[""],"ok":{"$error":"WebSocket  request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["straße"],"ok":{"$error":"WebSocket straße request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["é"],"ok":{"$error":"WebSocket é request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a😀b😀c"],"ok":{"$error":"WebSocket a😀b😀c request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["trailing.straße"],"ok":{"$error":"WebSocket trailing.straße request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":[".leadingns:key.path"],"ok":{"$error":"WebSocket .leadingns:key.path request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a:b:cemoji 👍🏽 mix"],"ok":{"$error":"WebSocket a:b:cemoji 👍🏽 mix request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["src/a/b.tsa"],"ok":{"$error":"WebSocket src/a/b.tsa request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["key_name-1"],"ok":{"$error":"WebSocket key_name-1 request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a..bé"],"ok":{"$error":"WebSocket a..bé request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a..b  padded  "],"ok":{"$error":"WebSocket a..b  padded   request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a:b:ca.b.c"],"ok":{"$error":"WebSocket a:b:ca.b.c request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["éHELLO"],"ok":{"$error":"WebSocket éHELLO request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["hello worldab"],"ok":{"$error":"WebSocket hello worldab request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["emoji 👍🏽 mix:"],"ok":{"$error":"WebSocket emoji 👍🏽 mix: request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["😀hello world"],"ok":{"$error":"WebSocket 😀hello world request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["HELLOΣΊΣΥΦΟΣ"],"ok":{"$error":"WebSocket HELLOΣΊΣΥΦΟΣ request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["straßesrc/a/b.ts"],"ok":{"$error":"WebSocket straßesrc/a/b.ts request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["tab\tseparatedİstanbul"],"ok":{"$error":"WebSocket tab\tseparatedİstanbul request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["İstanbula..b"],"ok":{"$error":"WebSocket İstanbula..b request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["éab"],"ok":{"$error":"WebSocket éab request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["Hello Worldé"],"ok":{"$error":"WebSocket Hello Worldé request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["./x/**/*.jsona"],"ok":{"$error":"WebSocket ./x/**/*.jsona request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a😀b😀ctrailing."],"ok":{"$error":"WebSocket a😀b😀ctrailing. request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a./x/**/*.json"],"ok":{"$error":"WebSocket a./x/**/*.json request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a.b.ca.b.c"],"ok":{"$error":"WebSocket a.b.ca.b.c request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["ab./x/**/*.json"],"ok":{"$error":"WebSocket ab./x/**/*.json request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["aab"],"ok":{"$error":"WebSocket aab request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["ΣΊΣΥΦΟΣΣΊΣΥΦΟΣ"],"ok":{"$error":"WebSocket ΣΊΣΥΦΟΣΣΊΣΥΦΟΣ request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["tab\tseparatedkey_name-1"],"ok":{"$error":"WebSocket tab\tseparatedkey_name-1 request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["src/a/b.tshello"],"ok":{"$error":"WebSocket src/a/b.tshello request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["line1\nline2İstanbul"],"ok":{"$error":"WebSocket line1\nline2İstanbul request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["src/a/b.ts{name} has {count} items"],"ok":{"$error":"WebSocket src/a/b.ts{name} has {count} items request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["hello world😀"],"ok":{"$error":"WebSocket hello world😀 request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["  padded  a.b.c"],"ok":{"$error":"WebSocket   padded  a.b.c request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["hello worldkey_name-1"],"ok":{"$error":"WebSocket hello worldkey_name-1 request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["src/a/b.tsns:key.path"],"ok":{"$error":"WebSocket src/a/b.tsns:key.path request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a﻿bom"],"ok":{"$error":"WebSocket a﻿bom request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["Hello Worldns:key.path"],"ok":{"$error":"WebSocket Hello Worldns:key.path request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["emoji 👍🏽 mixİstanbul"],"ok":{"$error":"WebSocket emoji 👍🏽 mixİstanbul request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["straßeİstanbul"],"ok":{"$error":"WebSocket straßeİstanbul request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["İstanbulemoji 👍🏽 mix"],"ok":{"$error":"WebSocket İstanbulemoji 👍🏽 mix request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["aemoji 👍🏽 mix"],"ok":{"$error":"WebSocket aemoji 👍🏽 mix request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["éemoji 👍🏽 mix"],"ok":{"$error":"WebSocket éemoji 👍🏽 mix request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["abünïcödé"],"ok":{"$error":"WebSocket abünïcödé request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["ünïcödékey_name-1"],"ok":{"$error":"WebSocket ünïcödékey_name-1 request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a..ba"],"ok":{"$error":"WebSocket a..ba request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["ns:key.pathkey_name-1"],"ok":{"$error":"WebSocket ns:key.pathkey_name-1 request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a😀b😀cns:key.path"],"ok":{"$error":"WebSocket a😀b😀cns:key.path request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a:b:cİstanbul"],"ok":{"$error":"WebSocket a:b:cİstanbul request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["abca:b:c"],"ok":{"$error":"WebSocket abca:b:c request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["line1\nline2ΣΊΣΥΦΟΣ"],"ok":{"$error":"WebSocket line1\nline2ΣΊΣΥΦΟΣ request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a:b:cünïcödé"],"ok":{"$error":"WebSocket a:b:cünïcödé request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["Hello Worldsrc/a/b.ts"],"ok":{"$error":"WebSocket Hello Worldsrc/a/b.ts request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["ünïcödéline1\nline2"],"ok":{"$error":"WebSocket ünïcödéline1\nline2 request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["emoji 👍🏽 mixtrailing."],"ok":{"$error":"WebSocket emoji 👍🏽 mixtrailing. request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["hello worldtab\tseparated"],"ok":{"$error":"WebSocket hello worldtab\tseparated request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["😀a.b.c"],"ok":{"$error":"WebSocket 😀a.b.c request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["hello worldΣΊΣΥΦΟΣ"],"ok":{"$error":"WebSocket hello worldΣΊΣΥΦΟΣ request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["ahello world"],"ok":{"$error":"WebSocket ahello world request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a.b.ctrailing."],"ok":{"$error":"WebSocket a.b.ctrailing. request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["atab\tseparated"],"ok":{"$error":"WebSocket atab\tseparated request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a:b:c./x/**/*.json"],"ok":{"$error":"WebSocket a:b:c./x/**/*.json request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["ΣΊΣΥΦΟΣabc"],"ok":{"$error":"WebSocket ΣΊΣΥΦΟΣabc request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["  padded  ﻿bom"],"ok":{"$error":"WebSocket   padded  ﻿bom request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["straßeHello World"],"ok":{"$error":"WebSocket straßeHello World request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["ns:key.patha:b:c"],"ok":{"$error":"WebSocket ns:key.patha:b:c request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["helloabc"],"ok":{"$error":"WebSocket helloabc request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["  padded  a😀b😀c"],"ok":{"$error":"WebSocket   padded  a😀b😀c request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["line1\nline2straße"],"ok":{"$error":"WebSocket line1\nline2straße request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["{name} has {count} itemsé"],"ok":{"$error":"WebSocket {name} has {count} itemsé request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["ünïcödé./x/**/*.json"],"ok":{"$error":"WebSocket ünïcödé./x/**/*.json request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["abchello world"],"ok":{"$error":"WebSocket abchello world request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["helloa..b"],"ok":{"$error":"WebSocket helloa..b request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["{name} has {count} itemsİstanbul"],"ok":{"$error":"WebSocket {name} has {count} itemsİstanbul request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["straße:"],"ok":{"$error":"WebSocket straße: request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a😀b😀chello world"],"ok":{"$error":"WebSocket a😀b😀chello world request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["é﻿bom"],"ok":{"$error":"WebSocket é﻿bom request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["tab\tseparated﻿bom"],"ok":{"$error":"WebSocket tab\tseparated﻿bom request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["hello worldhello world"],"ok":{"$error":"WebSocket hello worldhello world request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["Hello Worldab"],"ok":{"$error":"WebSocket Hello Worldab request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a.leading"],"ok":{"$error":"WebSocket a.leading request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["😀.leading"],"ok":{"$error":"WebSocket 😀.leading request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":[".leadingİstanbul"],"ok":{"$error":"WebSocket .leadingİstanbul request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["{name} has {count} itemsa😀b😀c"],"ok":{"$error":"WebSocket {name} has {count} itemsa😀b😀c request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a:b:cns:key.path"],"ok":{"$error":"WebSocket a:b:cns:key.path request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["  padded  ΣΊΣΥΦΟΣ"],"ok":{"$error":"WebSocket   padded  ΣΊΣΥΦΟΣ request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["﻿bomsrc/a/b.ts"],"ok":{"$error":"WebSocket ﻿bomsrc/a/b.ts request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["src/a/b.tsé"],"ok":{"$error":"WebSocket src/a/b.tsé request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a.b.c日本語のテキスト"],"ok":{"$error":"WebSocket a.b.c日本語のテキスト request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a😀b😀c﻿bom"],"ok":{"$error":"WebSocket a😀b😀c﻿bom request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["astraße"],"ok":{"$error":"WebSocket astraße request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":[".leadingünïcödé"],"ok":{"$error":"WebSocket .leadingünïcödé request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["straßetab\tseparated"],"ok":{"$error":"WebSocket straßetab\tseparated request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["éİstanbul"],"ok":{"$error":"WebSocket éİstanbul request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["hello  padded  "],"ok":{"$error":"WebSocket hello  padded   request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["aünïcödé"],"ok":{"$error":"WebSocket aünïcödé request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["key_name-1a"],"ok":{"$error":"WebSocket key_name-1a request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["trailing.İstanbul"],"ok":{"$error":"WebSocket trailing.İstanbul request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["😀日本語のテキスト"],"ok":{"$error":"WebSocket 😀日本語のテキスト request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["Hello Worlda.b.c"],"ok":{"$error":"WebSocket Hello Worlda.b.c request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["  padded  a"],"ok":{"$error":"WebSocket   padded  a request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["ünïcödé{name} has {count} items"],"ok":{"$error":"WebSocket ünïcödé{name} has {count} items request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a:b:ca😀b😀c"],"ok":{"$error":"WebSocket a:b:ca😀b😀c request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["line1\nline2{name} has {count} items"],"ok":{"$error":"WebSocket line1\nline2{name} has {count} items request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":[":src/a/b.ts"],"ok":{"$error":"WebSocket :src/a/b.ts request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["İstanbula😀b😀c"],"ok":{"$error":"WebSocket İstanbula😀b😀c request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a:b:cΣΊΣΥΦΟΣ"],"ok":{"$error":"WebSocket a:b:cΣΊΣΥΦΟΣ request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["trailing../x/**/*.json"],"ok":{"$error":"WebSocket trailing../x/**/*.json request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":[".leadingΣΊΣΥΦΟΣ"],"ok":{"$error":"WebSocket .leadingΣΊΣΥΦΟΣ request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["src/a/b.tsa.b.c"],"ok":{"$error":"WebSocket src/a/b.tsa.b.c request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":[":日本語のテキスト"],"ok":{"$error":"WebSocket :日本語のテキスト request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a..bHELLO"],"ok":{"$error":"WebSocket a..bHELLO request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["Hello Worldtab\tseparated"],"ok":{"$error":"WebSocket Hello Worldtab\tseparated request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":[":hello world"],"ok":{"$error":"WebSocket :hello world request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["helloemoji 👍🏽 mix"],"ok":{"$error":"WebSocket helloemoji 👍🏽 mix request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["straße./x/**/*.json"],"ok":{"$error":"WebSocket straße./x/**/*.json request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a.b.c😀"],"ok":{"$error":"WebSocket a.b.c😀 request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["﻿boma"],"ok":{"$error":"WebSocket ﻿boma request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["  padded  İstanbul"],"ok":{"$error":"WebSocket   padded  İstanbul request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["ünïcödéstraße"],"ok":{"$error":"WebSocket ünïcödéstraße request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":[":é"],"ok":{"$error":"WebSocket :é request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["ünïcödéİstanbul"],"ok":{"$error":"WebSocket ünïcödéİstanbul request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["ns:key.patha"],"ok":{"$error":"WebSocket ns:key.patha request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["emoji 👍🏽 mixkey_name-1"],"ok":{"$error":"WebSocket emoji 👍🏽 mixkey_name-1 request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["Hello World{name} has {count} items"],"ok":{"$error":"WebSocket Hello World{name} has {count} items request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["line1\nline2a😀b😀c"],"ok":{"$error":"WebSocket line1\nline2a😀b😀c request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["  padded  .leading"],"ok":{"$error":"WebSocket   padded  .leading request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["😀😀"],"ok":{"$error":"WebSocket 😀😀 request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["ünïcödéünïcödé"],"ok":{"$error":"WebSocket ünïcödéünïcödé request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["﻿bomabc"],"ok":{"$error":"WebSocket ﻿bomabc request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["src/a/b.ts﻿bom"],"ok":{"$error":"WebSocket src/a/b.ts﻿bom request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["hello{name} has {count} items"],"ok":{"$error":"WebSocket hello{name} has {count} items request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["ünïcödéHello World"],"ok":{"$error":"WebSocket ünïcödéHello World request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["ΣΊΣΥΦΟΣ日本語のテキスト"],"ok":{"$error":"WebSocket ΣΊΣΥΦΟΣ日本語のテキスト request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["abcabc"],"ok":{"$error":"WebSocket abcabc request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["trailing.emoji 👍🏽 mix"],"ok":{"$error":"WebSocket trailing.emoji 👍🏽 mix request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["  padded  hello world"],"ok":{"$error":"WebSocket   padded  hello world request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["{name} has {count} itemshello world"],"ok":{"$error":"WebSocket {name} has {count} itemshello world request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":[":ns:key.path"],"ok":{"$error":"WebSocket :ns:key.path request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["emoji 👍🏽 mixa"],"ok":{"$error":"WebSocket emoji 👍🏽 mixa request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["hellostraße"],"ok":{"$error":"WebSocket hellostraße request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["line1\nline2ns:key.path"],"ok":{"$error":"WebSocket line1\nline2ns:key.path request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["key_name-1trailing."],"ok":{"$error":"WebSocket key_name-1trailing. request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["  padded  src/a/b.ts"],"ok":{"$error":"WebSocket   padded  src/a/b.ts request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a😀b😀cab"],"ok":{"$error":"WebSocket a😀b😀cab request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a.b.chello world"],"ok":{"$error":"WebSocket a.b.chello world request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["Hello Worldİstanbul"],"ok":{"$error":"WebSocket Hello Worldİstanbul request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["日本語のテキスト:"],"ok":{"$error":"WebSocket 日本語のテキスト: request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["tab\tseparatedΣΊΣΥΦΟΣ"],"ok":{"$error":"WebSocket tab\tseparatedΣΊΣΥΦΟΣ request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["ababc"],"ok":{"$error":"WebSocket ababc request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["İstanbul﻿bom"],"ok":{"$error":"WebSocket İstanbul﻿bom request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["abc😀"],"ok":{"$error":"WebSocket abc😀 request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["ΣΊΣΥΦΟΣHELLO"],"ok":{"$error":"WebSocket ΣΊΣΥΦΟΣHELLO request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a..b😀"],"ok":{"$error":"WebSocket a..b😀 request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["﻿bom{name} has {count} items"],"ok":{"$error":"WebSocket ﻿bom{name} has {count} items request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":[".leadinga😀b😀c"],"ok":{"$error":"WebSocket .leadinga😀b😀c request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["﻿bom:"],"ok":{"$error":"WebSocket ﻿bom: request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["日本語のテキストİstanbul"],"ok":{"$error":"WebSocket 日本語のテキストİstanbul request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["héllo wörld"],"ok":{"$error":"WebSocket héllo wörld request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["👍🏽 thumbs"],"ok":{"$error":"WebSocket 👍🏽 thumbs request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["日本語"],"ok":{"$error":"WebSocket 日本語 request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["ılık ırmak"],"ok":{"$error":"WebSocket ılık ırmak request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["👨‍👩‍👧 family"],"ok":{"$error":"WebSocket 👨‍👩‍👧 family request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a b"],"ok":{"$error":"WebSocket a b request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a😀b"],"ok":{"$error":"WebSocket a😀b request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a²b x½ y①"],"ok":{"$error":"WebSocket a²b x½ y① request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["aⅠb Ⅻ"],"ok":{"$error":"WebSocket aⅠb Ⅻ request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a𐐀b 𝐀bc"],"ok":{"$error":"WebSocket a𐐀b 𝐀bc request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["कि ٣٤"],"ok":{"$error":"WebSocket कि ٣٤ request capacity exceeded."}}
+{"fn":"classifyWsRequest","args":["trailing."],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["İstanbul"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["straße"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["abc"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["é"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a:b:cΣΊΣΥΦΟΣ"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["line1\nline2"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":[":"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["{name} has {count} items"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["hello"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["ab"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["hello world"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":[":key_name-1"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a..b"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["./x/**/*.json"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["  padded  a.b.c"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["Hello Worldünïcödé"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["  padded  "],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["ns:key.path"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a:b:c"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["éab"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["emoji 👍🏽 mix"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["src/a/b.ts"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["﻿bom"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":[""],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["ΣΊΣΥΦΟΣ"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["ΣΊΣΥΦΟΣa"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["line1\nline2é"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["helloa😀b😀c"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["key_name-1"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["😀"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a.b.c"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a:b:ctab\tseparated"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["Hello World"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["tab\tseparated"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["日本語のテキスト"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["ünïcödé"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["İstanbul:"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["key_name-1a:b:c"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a😀b😀c"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["./x/**/*.jsonabc"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["ns:key.path{name} has {count} items"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["key_name-1:"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["HELLO"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":[".leading"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":[":a..b"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["trailing..leading"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["﻿bomİstanbul"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a:b:c日本語のテキスト"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["HELLO😀"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["emoji 👍🏽 mixstraße"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["日本語のテキストünïcödé"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a😀"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["ns:key.patha"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a😀b😀ca.b.c"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["😀{name} has {count} items"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["  padded  trailing."],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["hello worldemoji 👍🏽 mix"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["ünïcödé﻿bom"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":[".leadingemoji 👍🏽 mix"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["日本語のテキストab"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["emoji 👍🏽 mixkey_name-1"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["src/a/b.tsHELLO"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a:b:ckey_name-1"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["helloHello World"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["Hello WorldHello World"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["ns:key.path./x/**/*.json"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["HELLOa😀b😀c"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["ΣΊΣΥΦΟΣline1\nline2"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["emoji 👍🏽 mix﻿bom"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":[":trailing."],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["helloHELLO"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["HELLOhello world"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a😀b😀ctab\tseparated"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["﻿boma.b.c"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["İstanbulΣΊΣΥΦΟΣ"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["  padded  line1\nline2"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a.b.ca..b"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a😀b😀csrc/a/b.ts"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["ünïcödéhello world"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["{name} has {count} itemshello world"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["straße😀"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["hellokey_name-1"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["ΣΊΣΥΦΟΣhello"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["hello worldHELLO"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["😀:"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["日本語のテキストa..b"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["ns:key.path﻿bom"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["😀hello world"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["﻿bomns:key.path"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":[".leadingHello World"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a..btab\tseparated"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["﻿bomsrc/a/b.ts"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":[":a.b.c"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":[".leading./x/**/*.json"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["日本語のテキストemoji 👍🏽 mix"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["line1\nline2😀"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["﻿bom﻿bom"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a日本語のテキスト"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["  padded  hello world"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["HELLOtrailing."],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["key_name-1tab\tseparated"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["trailing.  padded  "],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["😀日本語のテキスト"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["abemoji 👍🏽 mix"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["hello.leading"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["src/a/b.tssrc/a/b.ts"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["straßekey_name-1"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["ΣΊΣΥΦΟΣa..b"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["  padded  key_name-1"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["  padded  ΣΊΣΥΦΟΣ"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a:b:c  padded  "],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["tab\tseparatedkey_name-1"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a.b.ctab\tseparated"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["key_name-1a.b.c"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["line1\nline2src/a/b.ts"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["./x/**/*.jsontrailing."],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["abca.b.c"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a..bünïcödé"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["key_name-1😀"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["ünïcödéΣΊΣΥΦΟΣ"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["ΣΊΣΥΦΟΣa:b:c"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["emoji 👍🏽 mixemoji 👍🏽 mix"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":[":a😀b😀c"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a..bstraße"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["src/a/b.tsa😀b😀c"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["abcab"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["ünïcödétab\tseparated"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["abcemoji 👍🏽 mix"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["HELLOkey_name-1"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["﻿boma..b"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["line1\nline2{name} has {count} items"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":[".leadingtab\tseparated"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["emoji 👍🏽 mix  padded  "],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a:b:c😀"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["日本語のテキストline1\nline2"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["key_name-1ns:key.path"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a.b.cline1\nline2"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["é{name} has {count} items"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a.b.c😀"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["  padded  HELLO"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["src/a/b.tskey_name-1"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a.b.cé"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["hellostraße"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a😀b😀ca😀b😀c"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a.b.c{name} has {count} items"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["HELLOa"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["tab\tseparated😀"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["éns:key.path"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["atrailing."],"ok":"standard"}
+{"fn":"classifyWsRequest","args":[".leadingtrailing."],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["helloΣΊΣΥΦΟΣ"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["emoji 👍🏽 mixa.b.c"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["trailing.ns:key.path"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["straße./x/**/*.json"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["é:"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["key_name-1é"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a.b.c﻿bom"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["﻿bomHELLO"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["src/a/b.ts日本語のテキスト"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["{name} has {count} itemsa..b"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["Hello Worldsrc/a/b.ts"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a😀b😀cabc"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["hello worldsrc/a/b.ts"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["abtab\tseparated"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["  padded  a😀b😀c"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["emoji 👍🏽 mixtab\tseparated"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["ünïcödéab"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["trailing../x/**/*.json"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a.b.cünïcödé"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["éhello world"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["src/a/b.tstrailing."],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["İstanbulab"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["éHello World"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["tab\tseparatedHello World"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["😀a"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a..b./x/**/*.json"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["src/a/b.tsemoji 👍🏽 mix"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["﻿bom  padded  "],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["hello worlda:b:c"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["key_name-1abc"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["ab:"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["tab\tseparatedhello"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a..bHello World"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["ünïcödé./x/**/*.json"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["tab\tseparatedhello world"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["  padded  ab"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["ésrc/a/b.ts"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["trailing.a:b:c"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a..ba.b.c"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["./x/**/*.jsonİstanbul"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["ΣΊΣΥΦΟΣ{name} has {count} items"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["hello./x/**/*.json"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["İstanbultab\tseparated"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["{name} has {count} itemsab"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a:b:cemoji 👍🏽 mix"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a.b.cstraße"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["trailing.straße"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["😀key_name-1"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["héllo wörld"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["👍🏽 thumbs"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["日本語"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["ılık ırmak"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["👨‍👩‍👧 family"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a b"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a😀b"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a²b x½ y①"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["aⅠb Ⅻ"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a𐐀b 𝐀bc"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["कि ٣٤"],"ok":"standard"}
+{"fn":"makeWsRequestCapacityError","args":["a"],"ok":{"$error":"WebSocket a request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["emoji 👍🏽 mix"],"ok":{"$error":"WebSocket emoji 👍🏽 mix request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["src/a/b.ts"],"ok":{"$error":"WebSocket src/a/b.ts request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["emoji 👍🏽 mixabc"],"ok":{"$error":"WebSocket emoji 👍🏽 mixabc request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":[".leading"],"ok":{"$error":"WebSocket .leading request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["trailing."],"ok":{"$error":"WebSocket trailing. request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["./x/**/*.json"],"ok":{"$error":"WebSocket ./x/**/*.json request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["ünïcödé"],"ok":{"$error":"WebSocket ünïcödé request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["😀"],"ok":{"$error":"WebSocket 😀 request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":[":"],"ok":{"$error":"WebSocket : request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["﻿bom"],"ok":{"$error":"WebSocket ﻿bom request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["tab\tseparated"],"ok":{"$error":"WebSocket tab\tseparated request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["ns:key.path"],"ok":{"$error":"WebSocket ns:key.path request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["  padded  ünïcödé"],"ok":{"$error":"WebSocket   padded  ünïcödé request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a:b:c"],"ok":{"$error":"WebSocket a:b:c request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":[":emoji 👍🏽 mix"],"ok":{"$error":"WebSocket :emoji 👍🏽 mix request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["straßehello world"],"ok":{"$error":"WebSocket straßehello world request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a..b"],"ok":{"$error":"WebSocket a..b request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a😀b😀ckey_name-1"],"ok":{"$error":"WebSocket a😀b😀ckey_name-1 request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["  padded  "],"ok":{"$error":"WebSocket   padded   request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["ΣΊΣΥΦΟΣ"],"ok":{"$error":"WebSocket ΣΊΣΥΦΟΣ request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["abc"],"ok":{"$error":"WebSocket abc request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["Hello Worldline1\nline2"],"ok":{"$error":"WebSocket Hello Worldline1\nline2 request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["日本語のテキスト"],"ok":{"$error":"WebSocket 日本語のテキスト request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["{name} has {count} items"],"ok":{"$error":"WebSocket {name} has {count} items request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["İstanbul"],"ok":{"$error":"WebSocket İstanbul request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["ns:key.pathΣΊΣΥΦΟΣ"],"ok":{"$error":"WebSocket ns:key.pathΣΊΣΥΦΟΣ request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["Hello World"],"ok":{"$error":"WebSocket Hello World request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["ab"],"ok":{"$error":"WebSocket ab request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["emoji 👍🏽 mix日本語のテキスト"],"ok":{"$error":"WebSocket emoji 👍🏽 mix日本語のテキスト request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["straßens:key.path"],"ok":{"$error":"WebSocket straßens:key.path request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["HELLO"],"ok":{"$error":"WebSocket HELLO request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a..b{name} has {count} items"],"ok":{"$error":"WebSocket a..b{name} has {count} items request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["line1\nline2HELLO"],"ok":{"$error":"WebSocket line1\nline2HELLO request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["line1\nline2"],"ok":{"$error":"WebSocket line1\nline2 request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["﻿bomΣΊΣΥΦΟΣ"],"ok":{"$error":"WebSocket ﻿bomΣΊΣΥΦΟΣ request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["hello world"],"ok":{"$error":"WebSocket hello world request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["hello"],"ok":{"$error":"WebSocket hello request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["HELLOhello"],"ok":{"$error":"WebSocket HELLOhello request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["abcline1\nline2"],"ok":{"$error":"WebSocket abcline1\nline2 request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a.b.c"],"ok":{"$error":"WebSocket a.b.c request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":[""],"ok":{"$error":"WebSocket  request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["straße"],"ok":{"$error":"WebSocket straße request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["é"],"ok":{"$error":"WebSocket é request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a😀b😀c"],"ok":{"$error":"WebSocket a😀b😀c request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["trailing.straße"],"ok":{"$error":"WebSocket trailing.straße request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":[".leadingns:key.path"],"ok":{"$error":"WebSocket .leadingns:key.path request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a:b:cemoji 👍🏽 mix"],"ok":{"$error":"WebSocket a:b:cemoji 👍🏽 mix request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["src/a/b.tsa"],"ok":{"$error":"WebSocket src/a/b.tsa request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["key_name-1"],"ok":{"$error":"WebSocket key_name-1 request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a..bé"],"ok":{"$error":"WebSocket a..bé request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a..b  padded  "],"ok":{"$error":"WebSocket a..b  padded   request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a:b:ca.b.c"],"ok":{"$error":"WebSocket a:b:ca.b.c request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["éHELLO"],"ok":{"$error":"WebSocket éHELLO request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["hello worldab"],"ok":{"$error":"WebSocket hello worldab request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["emoji 👍🏽 mix:"],"ok":{"$error":"WebSocket emoji 👍🏽 mix: request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["😀hello world"],"ok":{"$error":"WebSocket 😀hello world request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["HELLOΣΊΣΥΦΟΣ"],"ok":{"$error":"WebSocket HELLOΣΊΣΥΦΟΣ request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["straßesrc/a/b.ts"],"ok":{"$error":"WebSocket straßesrc/a/b.ts request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["tab\tseparatedİstanbul"],"ok":{"$error":"WebSocket tab\tseparatedİstanbul request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["İstanbula..b"],"ok":{"$error":"WebSocket İstanbula..b request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["éab"],"ok":{"$error":"WebSocket éab request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["Hello Worldé"],"ok":{"$error":"WebSocket Hello Worldé request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["./x/**/*.jsona"],"ok":{"$error":"WebSocket ./x/**/*.jsona request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a😀b😀ctrailing."],"ok":{"$error":"WebSocket a😀b😀ctrailing. request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a./x/**/*.json"],"ok":{"$error":"WebSocket a./x/**/*.json request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a.b.ca.b.c"],"ok":{"$error":"WebSocket a.b.ca.b.c request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["ab./x/**/*.json"],"ok":{"$error":"WebSocket ab./x/**/*.json request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["aab"],"ok":{"$error":"WebSocket aab request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["ΣΊΣΥΦΟΣΣΊΣΥΦΟΣ"],"ok":{"$error":"WebSocket ΣΊΣΥΦΟΣΣΊΣΥΦΟΣ request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["tab\tseparatedkey_name-1"],"ok":{"$error":"WebSocket tab\tseparatedkey_name-1 request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["src/a/b.tshello"],"ok":{"$error":"WebSocket src/a/b.tshello request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["line1\nline2İstanbul"],"ok":{"$error":"WebSocket line1\nline2İstanbul request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["src/a/b.ts{name} has {count} items"],"ok":{"$error":"WebSocket src/a/b.ts{name} has {count} items request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["hello world😀"],"ok":{"$error":"WebSocket hello world😀 request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["  padded  a.b.c"],"ok":{"$error":"WebSocket   padded  a.b.c request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["hello worldkey_name-1"],"ok":{"$error":"WebSocket hello worldkey_name-1 request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["src/a/b.tsns:key.path"],"ok":{"$error":"WebSocket src/a/b.tsns:key.path request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a﻿bom"],"ok":{"$error":"WebSocket a﻿bom request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["Hello Worldns:key.path"],"ok":{"$error":"WebSocket Hello Worldns:key.path request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["emoji 👍🏽 mixİstanbul"],"ok":{"$error":"WebSocket emoji 👍🏽 mixİstanbul request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["straßeİstanbul"],"ok":{"$error":"WebSocket straßeİstanbul request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["İstanbulemoji 👍🏽 mix"],"ok":{"$error":"WebSocket İstanbulemoji 👍🏽 mix request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["aemoji 👍🏽 mix"],"ok":{"$error":"WebSocket aemoji 👍🏽 mix request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["éemoji 👍🏽 mix"],"ok":{"$error":"WebSocket éemoji 👍🏽 mix request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["abünïcödé"],"ok":{"$error":"WebSocket abünïcödé request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["ünïcödékey_name-1"],"ok":{"$error":"WebSocket ünïcödékey_name-1 request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a..ba"],"ok":{"$error":"WebSocket a..ba request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["ns:key.pathkey_name-1"],"ok":{"$error":"WebSocket ns:key.pathkey_name-1 request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a😀b😀cns:key.path"],"ok":{"$error":"WebSocket a😀b😀cns:key.path request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a:b:cİstanbul"],"ok":{"$error":"WebSocket a:b:cİstanbul request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["abca:b:c"],"ok":{"$error":"WebSocket abca:b:c request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["line1\nline2ΣΊΣΥΦΟΣ"],"ok":{"$error":"WebSocket line1\nline2ΣΊΣΥΦΟΣ request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a:b:cünïcödé"],"ok":{"$error":"WebSocket a:b:cünïcödé request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["Hello Worldsrc/a/b.ts"],"ok":{"$error":"WebSocket Hello Worldsrc/a/b.ts request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["ünïcödéline1\nline2"],"ok":{"$error":"WebSocket ünïcödéline1\nline2 request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["emoji 👍🏽 mixtrailing."],"ok":{"$error":"WebSocket emoji 👍🏽 mixtrailing. request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["hello worldtab\tseparated"],"ok":{"$error":"WebSocket hello worldtab\tseparated request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["😀a.b.c"],"ok":{"$error":"WebSocket 😀a.b.c request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["hello worldΣΊΣΥΦΟΣ"],"ok":{"$error":"WebSocket hello worldΣΊΣΥΦΟΣ request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["ahello world"],"ok":{"$error":"WebSocket ahello world request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a.b.ctrailing."],"ok":{"$error":"WebSocket a.b.ctrailing. request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["atab\tseparated"],"ok":{"$error":"WebSocket atab\tseparated request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a:b:c./x/**/*.json"],"ok":{"$error":"WebSocket a:b:c./x/**/*.json request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["ΣΊΣΥΦΟΣabc"],"ok":{"$error":"WebSocket ΣΊΣΥΦΟΣabc request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["  padded  ﻿bom"],"ok":{"$error":"WebSocket   padded  ﻿bom request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["straßeHello World"],"ok":{"$error":"WebSocket straßeHello World request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["ns:key.patha:b:c"],"ok":{"$error":"WebSocket ns:key.patha:b:c request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["helloabc"],"ok":{"$error":"WebSocket helloabc request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["  padded  a😀b😀c"],"ok":{"$error":"WebSocket   padded  a😀b😀c request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["line1\nline2straße"],"ok":{"$error":"WebSocket line1\nline2straße request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["{name} has {count} itemsé"],"ok":{"$error":"WebSocket {name} has {count} itemsé request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["ünïcödé./x/**/*.json"],"ok":{"$error":"WebSocket ünïcödé./x/**/*.json request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["abchello world"],"ok":{"$error":"WebSocket abchello world request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["helloa..b"],"ok":{"$error":"WebSocket helloa..b request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["{name} has {count} itemsİstanbul"],"ok":{"$error":"WebSocket {name} has {count} itemsİstanbul request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["straße:"],"ok":{"$error":"WebSocket straße: request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a😀b😀chello world"],"ok":{"$error":"WebSocket a😀b😀chello world request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["é﻿bom"],"ok":{"$error":"WebSocket é﻿bom request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["tab\tseparated﻿bom"],"ok":{"$error":"WebSocket tab\tseparated﻿bom request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["hello worldhello world"],"ok":{"$error":"WebSocket hello worldhello world request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["Hello Worldab"],"ok":{"$error":"WebSocket Hello Worldab request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a.leading"],"ok":{"$error":"WebSocket a.leading request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["😀.leading"],"ok":{"$error":"WebSocket 😀.leading request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":[".leadingİstanbul"],"ok":{"$error":"WebSocket .leadingİstanbul request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["{name} has {count} itemsa😀b😀c"],"ok":{"$error":"WebSocket {name} has {count} itemsa😀b😀c request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a:b:cns:key.path"],"ok":{"$error":"WebSocket a:b:cns:key.path request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["  padded  ΣΊΣΥΦΟΣ"],"ok":{"$error":"WebSocket   padded  ΣΊΣΥΦΟΣ request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["﻿bomsrc/a/b.ts"],"ok":{"$error":"WebSocket ﻿bomsrc/a/b.ts request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["src/a/b.tsé"],"ok":{"$error":"WebSocket src/a/b.tsé request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a.b.c日本語のテキスト"],"ok":{"$error":"WebSocket a.b.c日本語のテキスト request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a😀b😀c﻿bom"],"ok":{"$error":"WebSocket a😀b😀c﻿bom request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["astraße"],"ok":{"$error":"WebSocket astraße request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":[".leadingünïcödé"],"ok":{"$error":"WebSocket .leadingünïcödé request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["straßetab\tseparated"],"ok":{"$error":"WebSocket straßetab\tseparated request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["éİstanbul"],"ok":{"$error":"WebSocket éİstanbul request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["hello  padded  "],"ok":{"$error":"WebSocket hello  padded   request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["aünïcödé"],"ok":{"$error":"WebSocket aünïcödé request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["key_name-1a"],"ok":{"$error":"WebSocket key_name-1a request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["trailing.İstanbul"],"ok":{"$error":"WebSocket trailing.İstanbul request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["😀日本語のテキスト"],"ok":{"$error":"WebSocket 😀日本語のテキスト request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["Hello Worlda.b.c"],"ok":{"$error":"WebSocket Hello Worlda.b.c request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["  padded  a"],"ok":{"$error":"WebSocket   padded  a request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["ünïcödé{name} has {count} items"],"ok":{"$error":"WebSocket ünïcödé{name} has {count} items request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a:b:ca😀b😀c"],"ok":{"$error":"WebSocket a:b:ca😀b😀c request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["line1\nline2{name} has {count} items"],"ok":{"$error":"WebSocket line1\nline2{name} has {count} items request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":[":src/a/b.ts"],"ok":{"$error":"WebSocket :src/a/b.ts request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["İstanbula😀b😀c"],"ok":{"$error":"WebSocket İstanbula😀b😀c request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a:b:cΣΊΣΥΦΟΣ"],"ok":{"$error":"WebSocket a:b:cΣΊΣΥΦΟΣ request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["trailing../x/**/*.json"],"ok":{"$error":"WebSocket trailing../x/**/*.json request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":[".leadingΣΊΣΥΦΟΣ"],"ok":{"$error":"WebSocket .leadingΣΊΣΥΦΟΣ request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["src/a/b.tsa.b.c"],"ok":{"$error":"WebSocket src/a/b.tsa.b.c request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":[":日本語のテキスト"],"ok":{"$error":"WebSocket :日本語のテキスト request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a..bHELLO"],"ok":{"$error":"WebSocket a..bHELLO request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["Hello Worldtab\tseparated"],"ok":{"$error":"WebSocket Hello Worldtab\tseparated request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":[":hello world"],"ok":{"$error":"WebSocket :hello world request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["helloemoji 👍🏽 mix"],"ok":{"$error":"WebSocket helloemoji 👍🏽 mix request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["straße./x/**/*.json"],"ok":{"$error":"WebSocket straße./x/**/*.json request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a.b.c😀"],"ok":{"$error":"WebSocket a.b.c😀 request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["﻿boma"],"ok":{"$error":"WebSocket ﻿boma request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["  padded  İstanbul"],"ok":{"$error":"WebSocket   padded  İstanbul request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["ünïcödéstraße"],"ok":{"$error":"WebSocket ünïcödéstraße request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":[":é"],"ok":{"$error":"WebSocket :é request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["ünïcödéİstanbul"],"ok":{"$error":"WebSocket ünïcödéİstanbul request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["ns:key.patha"],"ok":{"$error":"WebSocket ns:key.patha request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["emoji 👍🏽 mixkey_name-1"],"ok":{"$error":"WebSocket emoji 👍🏽 mixkey_name-1 request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["Hello World{name} has {count} items"],"ok":{"$error":"WebSocket Hello World{name} has {count} items request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["line1\nline2a😀b😀c"],"ok":{"$error":"WebSocket line1\nline2a😀b😀c request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["  padded  .leading"],"ok":{"$error":"WebSocket   padded  .leading request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["😀😀"],"ok":{"$error":"WebSocket 😀😀 request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["ünïcödéünïcödé"],"ok":{"$error":"WebSocket ünïcödéünïcödé request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["﻿bomabc"],"ok":{"$error":"WebSocket ﻿bomabc request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["src/a/b.ts﻿bom"],"ok":{"$error":"WebSocket src/a/b.ts﻿bom request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["hello{name} has {count} items"],"ok":{"$error":"WebSocket hello{name} has {count} items request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["ünïcödéHello World"],"ok":{"$error":"WebSocket ünïcödéHello World request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["ΣΊΣΥΦΟΣ日本語のテキスト"],"ok":{"$error":"WebSocket ΣΊΣΥΦΟΣ日本語のテキスト request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["abcabc"],"ok":{"$error":"WebSocket abcabc request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["trailing.emoji 👍🏽 mix"],"ok":{"$error":"WebSocket trailing.emoji 👍🏽 mix request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["  padded  hello world"],"ok":{"$error":"WebSocket   padded  hello world request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["{name} has {count} itemshello world"],"ok":{"$error":"WebSocket {name} has {count} itemshello world request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":[":ns:key.path"],"ok":{"$error":"WebSocket :ns:key.path request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["emoji 👍🏽 mixa"],"ok":{"$error":"WebSocket emoji 👍🏽 mixa request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["hellostraße"],"ok":{"$error":"WebSocket hellostraße request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["line1\nline2ns:key.path"],"ok":{"$error":"WebSocket line1\nline2ns:key.path request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["key_name-1trailing."],"ok":{"$error":"WebSocket key_name-1trailing. request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["  padded  src/a/b.ts"],"ok":{"$error":"WebSocket   padded  src/a/b.ts request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a😀b😀cab"],"ok":{"$error":"WebSocket a😀b😀cab request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a.b.chello world"],"ok":{"$error":"WebSocket a.b.chello world request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["Hello Worldİstanbul"],"ok":{"$error":"WebSocket Hello Worldİstanbul request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["日本語のテキスト:"],"ok":{"$error":"WebSocket 日本語のテキスト: request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["tab\tseparatedΣΊΣΥΦΟΣ"],"ok":{"$error":"WebSocket tab\tseparatedΣΊΣΥΦΟΣ request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["ababc"],"ok":{"$error":"WebSocket ababc request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["İstanbul﻿bom"],"ok":{"$error":"WebSocket İstanbul﻿bom request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["abc😀"],"ok":{"$error":"WebSocket abc😀 request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["ΣΊΣΥΦΟΣHELLO"],"ok":{"$error":"WebSocket ΣΊΣΥΦΟΣHELLO request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a..b😀"],"ok":{"$error":"WebSocket a..b😀 request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["﻿bom{name} has {count} items"],"ok":{"$error":"WebSocket ﻿bom{name} has {count} items request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":[".leadinga😀b😀c"],"ok":{"$error":"WebSocket .leadinga😀b😀c request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["﻿bom:"],"ok":{"$error":"WebSocket ﻿bom: request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["日本語のテキストİstanbul"],"ok":{"$error":"WebSocket 日本語のテキストİstanbul request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["héllo wörld"],"ok":{"$error":"WebSocket héllo wörld request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["👍🏽 thumbs"],"ok":{"$error":"WebSocket 👍🏽 thumbs request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["日本語"],"ok":{"$error":"WebSocket 日本語 request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["ılık ırmak"],"ok":{"$error":"WebSocket ılık ırmak request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["👨‍👩‍👧 family"],"ok":{"$error":"WebSocket 👨‍👩‍👧 family request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a b"],"ok":{"$error":"WebSocket a b request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a😀b"],"ok":{"$error":"WebSocket a😀b request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a²b x½ y①"],"ok":{"$error":"WebSocket a²b x½ y① request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["aⅠb Ⅻ"],"ok":{"$error":"WebSocket aⅠb Ⅻ request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a𐐀b 𝐀bc"],"ok":{"$error":"WebSocket a𐐀b 𝐀bc request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["कि ٣٤"],"ok":{"$error":"WebSocket कि ٣٤ request capacity exceeded."}}
+{"fn":"classifyWsRequest","args":[{"url":"/api/ws"}],"ok":"standard"}
+{"fn":"classifyWsRequest","args":[{"url":"/ws"}],"ok":"standard"}
+{"fn":"classifyWsRequest","args":[{"url":"/api/ws?token=abc"}],"ok":"standard"}
+{"fn":"classifyWsRequest","args":[{"url":"/orchestration"}],"ok":"standard"}
+{"fn":"classifyWsRequest","args":[{}],"ok":"standard"}
+{"fn":"classifyWsRequest","args":[null],"ok":"standard"}
+{"fn":"classifyWsRequest","args":[{"url":""}],"ok":"standard"}
+{"fn":"classifyWsRequest","args":[{"url":5}],"ok":"standard"}
+{"fn":"makeWsRequestCapacityError","args":[{"url":"/api/ws"}],"ok":{"$error":"WebSocket [object Object] request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":[{}],"ok":{"$error":"WebSocket [object Object] request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":[null],"ok":{"$error":"WebSocket null request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["x"],"ok":{"$error":"WebSocket x request capacity exceeded."}}
+{"fn":"classifyWsRequest","args":["trailing."],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["İstanbul"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["straße"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["abc"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["é"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a:b:cΣΊΣΥΦΟΣ"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["line1\nline2"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":[":"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["{name} has {count} items"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["hello"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["ab"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["hello world"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":[":key_name-1"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a..b"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["./x/**/*.json"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["  padded  a.b.c"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["Hello Worldünïcödé"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["  padded  "],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["ns:key.path"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a:b:c"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["éab"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["emoji 👍🏽 mix"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["src/a/b.ts"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["﻿bom"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":[""],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["ΣΊΣΥΦΟΣ"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["ΣΊΣΥΦΟΣa"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["line1\nline2é"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["helloa😀b😀c"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["key_name-1"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["😀"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a.b.c"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a:b:ctab\tseparated"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["Hello World"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["tab\tseparated"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["日本語のテキスト"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["ünïcödé"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["İstanbul:"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["key_name-1a:b:c"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a😀b😀c"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["./x/**/*.jsonabc"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["ns:key.path{name} has {count} items"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["key_name-1:"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["HELLO"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":[".leading"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":[":a..b"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["trailing..leading"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["﻿bomİstanbul"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a:b:c日本語のテキスト"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["HELLO😀"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["emoji 👍🏽 mixstraße"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["日本語のテキストünïcödé"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a😀"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["ns:key.patha"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a😀b😀ca.b.c"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["😀{name} has {count} items"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["  padded  trailing."],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["hello worldemoji 👍🏽 mix"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["ünïcödé﻿bom"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":[".leadingemoji 👍🏽 mix"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["日本語のテキストab"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["emoji 👍🏽 mixkey_name-1"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["src/a/b.tsHELLO"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a:b:ckey_name-1"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["helloHello World"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["Hello WorldHello World"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["ns:key.path./x/**/*.json"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["HELLOa😀b😀c"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["ΣΊΣΥΦΟΣline1\nline2"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["emoji 👍🏽 mix﻿bom"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":[":trailing."],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["helloHELLO"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["HELLOhello world"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a😀b😀ctab\tseparated"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["﻿boma.b.c"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["İstanbulΣΊΣΥΦΟΣ"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["  padded  line1\nline2"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a.b.ca..b"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a😀b😀csrc/a/b.ts"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["ünïcödéhello world"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["{name} has {count} itemshello world"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["straße😀"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["hellokey_name-1"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["ΣΊΣΥΦΟΣhello"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["hello worldHELLO"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["😀:"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["日本語のテキストa..b"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["ns:key.path﻿bom"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["😀hello world"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["﻿bomns:key.path"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":[".leadingHello World"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a..btab\tseparated"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["﻿bomsrc/a/b.ts"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":[":a.b.c"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":[".leading./x/**/*.json"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["日本語のテキストemoji 👍🏽 mix"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["line1\nline2😀"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["﻿bom﻿bom"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a日本語のテキスト"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["  padded  hello world"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["HELLOtrailing."],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["key_name-1tab\tseparated"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["trailing.  padded  "],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["😀日本語のテキスト"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["abemoji 👍🏽 mix"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["hello.leading"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["src/a/b.tssrc/a/b.ts"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["straßekey_name-1"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["ΣΊΣΥΦΟΣa..b"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["  padded  key_name-1"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["  padded  ΣΊΣΥΦΟΣ"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a:b:c  padded  "],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["tab\tseparatedkey_name-1"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a.b.ctab\tseparated"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["key_name-1a.b.c"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["line1\nline2src/a/b.ts"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["./x/**/*.jsontrailing."],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["abca.b.c"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a..bünïcödé"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["key_name-1😀"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["ünïcödéΣΊΣΥΦΟΣ"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["ΣΊΣΥΦΟΣa:b:c"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["emoji 👍🏽 mixemoji 👍🏽 mix"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":[":a😀b😀c"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a..bstraße"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["src/a/b.tsa😀b😀c"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["abcab"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["ünïcödétab\tseparated"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["abcemoji 👍🏽 mix"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["HELLOkey_name-1"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["﻿boma..b"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["line1\nline2{name} has {count} items"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":[".leadingtab\tseparated"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["emoji 👍🏽 mix  padded  "],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a:b:c😀"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["日本語のテキストline1\nline2"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["key_name-1ns:key.path"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a.b.cline1\nline2"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["é{name} has {count} items"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a.b.c😀"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["  padded  HELLO"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["src/a/b.tskey_name-1"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a.b.cé"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["hellostraße"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a😀b😀ca😀b😀c"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a.b.c{name} has {count} items"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["HELLOa"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["tab\tseparated😀"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["éns:key.path"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["atrailing."],"ok":"standard"}
+{"fn":"classifyWsRequest","args":[".leadingtrailing."],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["helloΣΊΣΥΦΟΣ"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["emoji 👍🏽 mixa.b.c"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["trailing.ns:key.path"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["straße./x/**/*.json"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["é:"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["key_name-1é"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a.b.c﻿bom"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["﻿bomHELLO"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["src/a/b.ts日本語のテキスト"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["{name} has {count} itemsa..b"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["Hello Worldsrc/a/b.ts"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a😀b😀cabc"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["hello worldsrc/a/b.ts"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["abtab\tseparated"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["  padded  a😀b😀c"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["emoji 👍🏽 mixtab\tseparated"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["ünïcödéab"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["trailing../x/**/*.json"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a.b.cünïcödé"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["éhello world"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["src/a/b.tstrailing."],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["İstanbulab"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["éHello World"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["tab\tseparatedHello World"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["😀a"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a..b./x/**/*.json"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["src/a/b.tsemoji 👍🏽 mix"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["﻿bom  padded  "],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["hello worlda:b:c"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["key_name-1abc"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["ab:"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["tab\tseparatedhello"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a..bHello World"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["ünïcödé./x/**/*.json"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["tab\tseparatedhello world"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["  padded  ab"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["ésrc/a/b.ts"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["trailing.a:b:c"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a..ba.b.c"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["./x/**/*.jsonİstanbul"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["ΣΊΣΥΦΟΣ{name} has {count} items"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["hello./x/**/*.json"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["İstanbultab\tseparated"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["{name} has {count} itemsab"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a:b:cemoji 👍🏽 mix"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a.b.cstraße"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["trailing.straße"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["😀key_name-1"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["héllo wörld"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["👍🏽 thumbs"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["日本語"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["ılık ırmak"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["👨‍👩‍👧 family"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a b"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a😀b"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a²b x½ y①"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["aⅠb Ⅻ"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["a𐐀b 𝐀bc"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["कि ٣٤"],"ok":"standard"}
+{"fn":"makeWsRequestCapacityError","args":["a"],"ok":{"$error":"WebSocket a request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["emoji 👍🏽 mix"],"ok":{"$error":"WebSocket emoji 👍🏽 mix request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["src/a/b.ts"],"ok":{"$error":"WebSocket src/a/b.ts request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["emoji 👍🏽 mixabc"],"ok":{"$error":"WebSocket emoji 👍🏽 mixabc request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":[".leading"],"ok":{"$error":"WebSocket .leading request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["trailing."],"ok":{"$error":"WebSocket trailing. request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["./x/**/*.json"],"ok":{"$error":"WebSocket ./x/**/*.json request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["ünïcödé"],"ok":{"$error":"WebSocket ünïcödé request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["😀"],"ok":{"$error":"WebSocket 😀 request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":[":"],"ok":{"$error":"WebSocket : request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["﻿bom"],"ok":{"$error":"WebSocket ﻿bom request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["tab\tseparated"],"ok":{"$error":"WebSocket tab\tseparated request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["ns:key.path"],"ok":{"$error":"WebSocket ns:key.path request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["  padded  ünïcödé"],"ok":{"$error":"WebSocket   padded  ünïcödé request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a:b:c"],"ok":{"$error":"WebSocket a:b:c request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":[":emoji 👍🏽 mix"],"ok":{"$error":"WebSocket :emoji 👍🏽 mix request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["straßehello world"],"ok":{"$error":"WebSocket straßehello world request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a..b"],"ok":{"$error":"WebSocket a..b request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a😀b😀ckey_name-1"],"ok":{"$error":"WebSocket a😀b😀ckey_name-1 request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["  padded  "],"ok":{"$error":"WebSocket   padded   request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["ΣΊΣΥΦΟΣ"],"ok":{"$error":"WebSocket ΣΊΣΥΦΟΣ request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["abc"],"ok":{"$error":"WebSocket abc request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["Hello Worldline1\nline2"],"ok":{"$error":"WebSocket Hello Worldline1\nline2 request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["日本語のテキスト"],"ok":{"$error":"WebSocket 日本語のテキスト request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["{name} has {count} items"],"ok":{"$error":"WebSocket {name} has {count} items request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["İstanbul"],"ok":{"$error":"WebSocket İstanbul request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["ns:key.pathΣΊΣΥΦΟΣ"],"ok":{"$error":"WebSocket ns:key.pathΣΊΣΥΦΟΣ request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["Hello World"],"ok":{"$error":"WebSocket Hello World request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["ab"],"ok":{"$error":"WebSocket ab request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["emoji 👍🏽 mix日本語のテキスト"],"ok":{"$error":"WebSocket emoji 👍🏽 mix日本語のテキスト request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["straßens:key.path"],"ok":{"$error":"WebSocket straßens:key.path request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["HELLO"],"ok":{"$error":"WebSocket HELLO request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a..b{name} has {count} items"],"ok":{"$error":"WebSocket a..b{name} has {count} items request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["line1\nline2HELLO"],"ok":{"$error":"WebSocket line1\nline2HELLO request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["line1\nline2"],"ok":{"$error":"WebSocket line1\nline2 request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["﻿bomΣΊΣΥΦΟΣ"],"ok":{"$error":"WebSocket ﻿bomΣΊΣΥΦΟΣ request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["hello world"],"ok":{"$error":"WebSocket hello world request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["hello"],"ok":{"$error":"WebSocket hello request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["HELLOhello"],"ok":{"$error":"WebSocket HELLOhello request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["abcline1\nline2"],"ok":{"$error":"WebSocket abcline1\nline2 request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a.b.c"],"ok":{"$error":"WebSocket a.b.c request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":[""],"ok":{"$error":"WebSocket  request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["straße"],"ok":{"$error":"WebSocket straße request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["é"],"ok":{"$error":"WebSocket é request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a😀b😀c"],"ok":{"$error":"WebSocket a😀b😀c request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["trailing.straße"],"ok":{"$error":"WebSocket trailing.straße request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":[".leadingns:key.path"],"ok":{"$error":"WebSocket .leadingns:key.path request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a:b:cemoji 👍🏽 mix"],"ok":{"$error":"WebSocket a:b:cemoji 👍🏽 mix request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["src/a/b.tsa"],"ok":{"$error":"WebSocket src/a/b.tsa request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["key_name-1"],"ok":{"$error":"WebSocket key_name-1 request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a..bé"],"ok":{"$error":"WebSocket a..bé request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a..b  padded  "],"ok":{"$error":"WebSocket a..b  padded   request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a:b:ca.b.c"],"ok":{"$error":"WebSocket a:b:ca.b.c request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["éHELLO"],"ok":{"$error":"WebSocket éHELLO request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["hello worldab"],"ok":{"$error":"WebSocket hello worldab request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["emoji 👍🏽 mix:"],"ok":{"$error":"WebSocket emoji 👍🏽 mix: request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["😀hello world"],"ok":{"$error":"WebSocket 😀hello world request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["HELLOΣΊΣΥΦΟΣ"],"ok":{"$error":"WebSocket HELLOΣΊΣΥΦΟΣ request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["straßesrc/a/b.ts"],"ok":{"$error":"WebSocket straßesrc/a/b.ts request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["tab\tseparatedİstanbul"],"ok":{"$error":"WebSocket tab\tseparatedİstanbul request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["İstanbula..b"],"ok":{"$error":"WebSocket İstanbula..b request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["éab"],"ok":{"$error":"WebSocket éab request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["Hello Worldé"],"ok":{"$error":"WebSocket Hello Worldé request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["./x/**/*.jsona"],"ok":{"$error":"WebSocket ./x/**/*.jsona request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a😀b😀ctrailing."],"ok":{"$error":"WebSocket a😀b😀ctrailing. request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a./x/**/*.json"],"ok":{"$error":"WebSocket a./x/**/*.json request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a.b.ca.b.c"],"ok":{"$error":"WebSocket a.b.ca.b.c request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["ab./x/**/*.json"],"ok":{"$error":"WebSocket ab./x/**/*.json request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["aab"],"ok":{"$error":"WebSocket aab request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["ΣΊΣΥΦΟΣΣΊΣΥΦΟΣ"],"ok":{"$error":"WebSocket ΣΊΣΥΦΟΣΣΊΣΥΦΟΣ request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["tab\tseparatedkey_name-1"],"ok":{"$error":"WebSocket tab\tseparatedkey_name-1 request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["src/a/b.tshello"],"ok":{"$error":"WebSocket src/a/b.tshello request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["line1\nline2İstanbul"],"ok":{"$error":"WebSocket line1\nline2İstanbul request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["src/a/b.ts{name} has {count} items"],"ok":{"$error":"WebSocket src/a/b.ts{name} has {count} items request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["hello world😀"],"ok":{"$error":"WebSocket hello world😀 request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["  padded  a.b.c"],"ok":{"$error":"WebSocket   padded  a.b.c request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["hello worldkey_name-1"],"ok":{"$error":"WebSocket hello worldkey_name-1 request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["src/a/b.tsns:key.path"],"ok":{"$error":"WebSocket src/a/b.tsns:key.path request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a﻿bom"],"ok":{"$error":"WebSocket a﻿bom request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["Hello Worldns:key.path"],"ok":{"$error":"WebSocket Hello Worldns:key.path request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["emoji 👍🏽 mixİstanbul"],"ok":{"$error":"WebSocket emoji 👍🏽 mixİstanbul request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["straßeİstanbul"],"ok":{"$error":"WebSocket straßeİstanbul request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["İstanbulemoji 👍🏽 mix"],"ok":{"$error":"WebSocket İstanbulemoji 👍🏽 mix request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["aemoji 👍🏽 mix"],"ok":{"$error":"WebSocket aemoji 👍🏽 mix request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["éemoji 👍🏽 mix"],"ok":{"$error":"WebSocket éemoji 👍🏽 mix request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["abünïcödé"],"ok":{"$error":"WebSocket abünïcödé request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["ünïcödékey_name-1"],"ok":{"$error":"WebSocket ünïcödékey_name-1 request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a..ba"],"ok":{"$error":"WebSocket a..ba request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["ns:key.pathkey_name-1"],"ok":{"$error":"WebSocket ns:key.pathkey_name-1 request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a😀b😀cns:key.path"],"ok":{"$error":"WebSocket a😀b😀cns:key.path request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a:b:cİstanbul"],"ok":{"$error":"WebSocket a:b:cİstanbul request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["abca:b:c"],"ok":{"$error":"WebSocket abca:b:c request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["line1\nline2ΣΊΣΥΦΟΣ"],"ok":{"$error":"WebSocket line1\nline2ΣΊΣΥΦΟΣ request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a:b:cünïcödé"],"ok":{"$error":"WebSocket a:b:cünïcödé request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["Hello Worldsrc/a/b.ts"],"ok":{"$error":"WebSocket Hello Worldsrc/a/b.ts request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["ünïcödéline1\nline2"],"ok":{"$error":"WebSocket ünïcödéline1\nline2 request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["emoji 👍🏽 mixtrailing."],"ok":{"$error":"WebSocket emoji 👍🏽 mixtrailing. request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["hello worldtab\tseparated"],"ok":{"$error":"WebSocket hello worldtab\tseparated request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["😀a.b.c"],"ok":{"$error":"WebSocket 😀a.b.c request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["hello worldΣΊΣΥΦΟΣ"],"ok":{"$error":"WebSocket hello worldΣΊΣΥΦΟΣ request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["ahello world"],"ok":{"$error":"WebSocket ahello world request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a.b.ctrailing."],"ok":{"$error":"WebSocket a.b.ctrailing. request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["atab\tseparated"],"ok":{"$error":"WebSocket atab\tseparated request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a:b:c./x/**/*.json"],"ok":{"$error":"WebSocket a:b:c./x/**/*.json request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["ΣΊΣΥΦΟΣabc"],"ok":{"$error":"WebSocket ΣΊΣΥΦΟΣabc request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["  padded  ﻿bom"],"ok":{"$error":"WebSocket   padded  ﻿bom request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["straßeHello World"],"ok":{"$error":"WebSocket straßeHello World request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["ns:key.patha:b:c"],"ok":{"$error":"WebSocket ns:key.patha:b:c request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["helloabc"],"ok":{"$error":"WebSocket helloabc request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["  padded  a😀b😀c"],"ok":{"$error":"WebSocket   padded  a😀b😀c request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["line1\nline2straße"],"ok":{"$error":"WebSocket line1\nline2straße request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["{name} has {count} itemsé"],"ok":{"$error":"WebSocket {name} has {count} itemsé request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["ünïcödé./x/**/*.json"],"ok":{"$error":"WebSocket ünïcödé./x/**/*.json request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["abchello world"],"ok":{"$error":"WebSocket abchello world request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["helloa..b"],"ok":{"$error":"WebSocket helloa..b request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["{name} has {count} itemsİstanbul"],"ok":{"$error":"WebSocket {name} has {count} itemsİstanbul request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["straße:"],"ok":{"$error":"WebSocket straße: request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a😀b😀chello world"],"ok":{"$error":"WebSocket a😀b😀chello world request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["é﻿bom"],"ok":{"$error":"WebSocket é﻿bom request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["tab\tseparated﻿bom"],"ok":{"$error":"WebSocket tab\tseparated﻿bom request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["hello worldhello world"],"ok":{"$error":"WebSocket hello worldhello world request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["Hello Worldab"],"ok":{"$error":"WebSocket Hello Worldab request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a.leading"],"ok":{"$error":"WebSocket a.leading request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["😀.leading"],"ok":{"$error":"WebSocket 😀.leading request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":[".leadingİstanbul"],"ok":{"$error":"WebSocket .leadingİstanbul request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["{name} has {count} itemsa😀b😀c"],"ok":{"$error":"WebSocket {name} has {count} itemsa😀b😀c request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a:b:cns:key.path"],"ok":{"$error":"WebSocket a:b:cns:key.path request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["  padded  ΣΊΣΥΦΟΣ"],"ok":{"$error":"WebSocket   padded  ΣΊΣΥΦΟΣ request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["﻿bomsrc/a/b.ts"],"ok":{"$error":"WebSocket ﻿bomsrc/a/b.ts request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["src/a/b.tsé"],"ok":{"$error":"WebSocket src/a/b.tsé request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a.b.c日本語のテキスト"],"ok":{"$error":"WebSocket a.b.c日本語のテキスト request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a😀b😀c﻿bom"],"ok":{"$error":"WebSocket a😀b😀c﻿bom request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["astraße"],"ok":{"$error":"WebSocket astraße request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":[".leadingünïcödé"],"ok":{"$error":"WebSocket .leadingünïcödé request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["straßetab\tseparated"],"ok":{"$error":"WebSocket straßetab\tseparated request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["éİstanbul"],"ok":{"$error":"WebSocket éİstanbul request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["hello  padded  "],"ok":{"$error":"WebSocket hello  padded   request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["aünïcödé"],"ok":{"$error":"WebSocket aünïcödé request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["key_name-1a"],"ok":{"$error":"WebSocket key_name-1a request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["trailing.İstanbul"],"ok":{"$error":"WebSocket trailing.İstanbul request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["😀日本語のテキスト"],"ok":{"$error":"WebSocket 😀日本語のテキスト request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["Hello Worlda.b.c"],"ok":{"$error":"WebSocket Hello Worlda.b.c request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["  padded  a"],"ok":{"$error":"WebSocket   padded  a request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["ünïcödé{name} has {count} items"],"ok":{"$error":"WebSocket ünïcödé{name} has {count} items request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a:b:ca😀b😀c"],"ok":{"$error":"WebSocket a:b:ca😀b😀c request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["line1\nline2{name} has {count} items"],"ok":{"$error":"WebSocket line1\nline2{name} has {count} items request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":[":src/a/b.ts"],"ok":{"$error":"WebSocket :src/a/b.ts request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["İstanbula😀b😀c"],"ok":{"$error":"WebSocket İstanbula😀b😀c request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a:b:cΣΊΣΥΦΟΣ"],"ok":{"$error":"WebSocket a:b:cΣΊΣΥΦΟΣ request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["trailing../x/**/*.json"],"ok":{"$error":"WebSocket trailing../x/**/*.json request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":[".leadingΣΊΣΥΦΟΣ"],"ok":{"$error":"WebSocket .leadingΣΊΣΥΦΟΣ request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["src/a/b.tsa.b.c"],"ok":{"$error":"WebSocket src/a/b.tsa.b.c request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":[":日本語のテキスト"],"ok":{"$error":"WebSocket :日本語のテキスト request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a..bHELLO"],"ok":{"$error":"WebSocket a..bHELLO request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["Hello Worldtab\tseparated"],"ok":{"$error":"WebSocket Hello Worldtab\tseparated request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":[":hello world"],"ok":{"$error":"WebSocket :hello world request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["helloemoji 👍🏽 mix"],"ok":{"$error":"WebSocket helloemoji 👍🏽 mix request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["straße./x/**/*.json"],"ok":{"$error":"WebSocket straße./x/**/*.json request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a.b.c😀"],"ok":{"$error":"WebSocket a.b.c😀 request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["﻿boma"],"ok":{"$error":"WebSocket ﻿boma request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["  padded  İstanbul"],"ok":{"$error":"WebSocket   padded  İstanbul request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["ünïcödéstraße"],"ok":{"$error":"WebSocket ünïcödéstraße request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":[":é"],"ok":{"$error":"WebSocket :é request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["ünïcödéİstanbul"],"ok":{"$error":"WebSocket ünïcödéİstanbul request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["ns:key.patha"],"ok":{"$error":"WebSocket ns:key.patha request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["emoji 👍🏽 mixkey_name-1"],"ok":{"$error":"WebSocket emoji 👍🏽 mixkey_name-1 request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["Hello World{name} has {count} items"],"ok":{"$error":"WebSocket Hello World{name} has {count} items request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["line1\nline2a😀b😀c"],"ok":{"$error":"WebSocket line1\nline2a😀b😀c request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["  padded  .leading"],"ok":{"$error":"WebSocket   padded  .leading request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["😀😀"],"ok":{"$error":"WebSocket 😀😀 request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["ünïcödéünïcödé"],"ok":{"$error":"WebSocket ünïcödéünïcödé request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["﻿bomabc"],"ok":{"$error":"WebSocket ﻿bomabc request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["src/a/b.ts﻿bom"],"ok":{"$error":"WebSocket src/a/b.ts﻿bom request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["hello{name} has {count} items"],"ok":{"$error":"WebSocket hello{name} has {count} items request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["ünïcödéHello World"],"ok":{"$error":"WebSocket ünïcödéHello World request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["ΣΊΣΥΦΟΣ日本語のテキスト"],"ok":{"$error":"WebSocket ΣΊΣΥΦΟΣ日本語のテキスト request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["abcabc"],"ok":{"$error":"WebSocket abcabc request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["trailing.emoji 👍🏽 mix"],"ok":{"$error":"WebSocket trailing.emoji 👍🏽 mix request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["  padded  hello world"],"ok":{"$error":"WebSocket   padded  hello world request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["{name} has {count} itemshello world"],"ok":{"$error":"WebSocket {name} has {count} itemshello world request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":[":ns:key.path"],"ok":{"$error":"WebSocket :ns:key.path request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["emoji 👍🏽 mixa"],"ok":{"$error":"WebSocket emoji 👍🏽 mixa request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["hellostraße"],"ok":{"$error":"WebSocket hellostraße request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["line1\nline2ns:key.path"],"ok":{"$error":"WebSocket line1\nline2ns:key.path request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["key_name-1trailing."],"ok":{"$error":"WebSocket key_name-1trailing. request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["  padded  src/a/b.ts"],"ok":{"$error":"WebSocket   padded  src/a/b.ts request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a😀b😀cab"],"ok":{"$error":"WebSocket a😀b😀cab request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a.b.chello world"],"ok":{"$error":"WebSocket a.b.chello world request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["Hello Worldİstanbul"],"ok":{"$error":"WebSocket Hello Worldİstanbul request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["日本語のテキスト:"],"ok":{"$error":"WebSocket 日本語のテキスト: request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["tab\tseparatedΣΊΣΥΦΟΣ"],"ok":{"$error":"WebSocket tab\tseparatedΣΊΣΥΦΟΣ request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["ababc"],"ok":{"$error":"WebSocket ababc request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["İstanbul﻿bom"],"ok":{"$error":"WebSocket İstanbul﻿bom request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["abc😀"],"ok":{"$error":"WebSocket abc😀 request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["ΣΊΣΥΦΟΣHELLO"],"ok":{"$error":"WebSocket ΣΊΣΥΦΟΣHELLO request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a..b😀"],"ok":{"$error":"WebSocket a..b😀 request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["﻿bom{name} has {count} items"],"ok":{"$error":"WebSocket ﻿bom{name} has {count} items request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":[".leadinga😀b😀c"],"ok":{"$error":"WebSocket .leadinga😀b😀c request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["﻿bom:"],"ok":{"$error":"WebSocket ﻿bom: request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["日本語のテキストİstanbul"],"ok":{"$error":"WebSocket 日本語のテキストİstanbul request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["héllo wörld"],"ok":{"$error":"WebSocket héllo wörld request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["👍🏽 thumbs"],"ok":{"$error":"WebSocket 👍🏽 thumbs request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["日本語"],"ok":{"$error":"WebSocket 日本語 request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["ılık ırmak"],"ok":{"$error":"WebSocket ılık ırmak request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["👨‍👩‍👧 family"],"ok":{"$error":"WebSocket 👨‍👩‍👧 family request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a b"],"ok":{"$error":"WebSocket a b request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a😀b"],"ok":{"$error":"WebSocket a😀b request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a²b x½ y①"],"ok":{"$error":"WebSocket a²b x½ y① request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["aⅠb Ⅻ"],"ok":{"$error":"WebSocket aⅠb Ⅻ request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["a𐐀b 𝐀bc"],"ok":{"$error":"WebSocket a𐐀b 𝐀bc request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["कि ٣٤"],"ok":{"$error":"WebSocket कि ٣٤ request capacity exceeded."}}
+{"fn":"classifyWsRequest","args":["orchestration.dispatchCommand"],"ok":"control"}
+{"fn":"classifyWsRequest","args":["orchestration.listProviderDeliveryBlockers"],"ok":"control"}
+{"fn":"classifyWsRequest","args":["orchestration.reconcileProviderDelivery"],"ok":"control"}
+{"fn":"classifyWsRequest","args":["orchestration.replayEvents"],"ok":"expensive-read"}
+{"fn":"classifyWsRequest","args":["stats.getUsageAnalytics"],"ok":"expensive-read"}
+{"fn":"classifyWsRequest","args":["git.listBranches"],"ok":"standard"}
+{"fn":"makeWsRequestCapacityError","args":["expensive-read"],"ok":{"$error":"WebSocket expensive-read request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["standard"],"ok":{"$error":"WebSocket standard request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":["control"],"ok":{"$error":"WebSocket control request capacity exceeded."}}
+{"fn":"classifyWsRequest","args":["orchestration.getSnapshot"],"ok":"expensive-read"}
+{"fn":"classifyWsRequest","args":["orchestration.getEvents"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["orchestration.listThreads"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["orchestration.dispatch"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["orchestration.replay"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["orchestration.replayEvent"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["orchestration.reconcile"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["orchestration.listBlockers"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["orchestration.subscribe"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["orchestration.unsubscribe"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["stats.get"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["stats.getAnalytics"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["stats.getUsage"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["stats.getUsageAnalyticsX"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["stats.listUsage"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["Orchestration.dispatchCommand"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["orchestration.dispatchCommandX"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["orchestration"],"ok":"standard"}
+{"fn":"classifyWsRequest","args":["stats.getUsageAnalytics "],"ok":"standard"}
+{"fn":"classifyWsRequest","args":[5],"ok":"standard"}
+{"fn":"classifyWsRequest","args":[true],"ok":"standard"}
+{"fn":"makeWsRequestCapacityError","args":[[]],"ok":{"$error":"WebSocket  request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":[[1,2]],"ok":{"$error":"WebSocket 1,2 request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":[true],"ok":{"$error":"WebSocket true request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":[5],"ok":{"$error":"WebSocket 5 request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":[["a","b"]],"ok":{"$error":"WebSocket a,b request capacity exceeded."}}
+{"fn":"makeWsRequestCapacityError","args":[{"a":1}],"ok":{"$error":"WebSocket [object Object] request capacity exceeded."}}

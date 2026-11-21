@@ -1,0 +1,43 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/deviceFrame.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "deviceframe-rs",
+  "exports": [
+    {
+      "name": "decodeDeviceFrame",
+      "file": "packages/shared/src/deviceFrame.ts",
+      "line": 59,
+      "params": [
+        {
+          "name": "bytes",
+          "ts_type": "Uint8Array",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(| { readonly ok: true; readonly frame: DeviceFrame }\n  | { readonly ok: false; readonly reason: typeof typeof typeof DeviceFrameDecodeErrorReason.Type.Type.Type })",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "DeviceFrameEncodeError",
+      "file": "packages/shared/src/deviceFrame.ts",
+      "line": 24,
+      "reason": "class: extends another class"
+    },
+    {
+      "name": "encodeDeviceFrame",
+      "file": "packages/shared/src/deviceFrame.ts",
+      "line": 38,
+      "reason": "checks `instanceof`: class identity does not survive the bridge"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{"fn":"requireUsageAnalyticsAccess","args":[null],"ok":{"~effect/Effect/args":{"$undefined":true}}}
+{"fn":"requireUsageAnalyticsAccess","args":[["a",1]],"ok":{"~effect/Effect/args":{"$undefined":true}}}
+{"fn":"requireUsageAnalyticsAccess","args":["x"],"ok":{"~effect/Effect/args":{"$undefined":true}}}
+{"fn":"requireUsageAnalyticsAccess","args":[[]],"ok":{"~effect/Effect/args":{"$undefined":true}}}
+{"fn":"requireUsageAnalyticsAccess","args":[true],"ok":{"~effect/Effect/args":{"$undefined":true}}}
+{"fn":"requireUsageAnalyticsAccess","args":[{"a":"b"}],"ok":{"~effect/Effect/args":{"$undefined":true}}}
+{"fn":"requireUsageAnalyticsAccess","args":[0],"ok":{"~effect/Effect/args":{"$undefined":true}}}
+{"fn":"requireUsageAnalyticsAccess","args":[{"a":{"b":"c"}}],"ok":{"~effect/Effect/args":{"$undefined":true}}}
+{"fn":"requireUsageAnalyticsAccess","args":[{}],"ok":{"~effect/Effect/args":{"$undefined":true}}}
+{"fn":"requireUsageAnalyticsAccess","args":["mac"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"requireUsageAnalyticsAccess","args":["windows"],"ok":{"~effect/Effect/args":{"$undefined":true}}}
+{"fn":"requireUsageAnalyticsAccess","args":[null],"ok":{"~effect/Effect/args":{"$undefined":true}}}

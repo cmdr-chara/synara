@@ -1,0 +1,30 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/wsOwnerAuthorization.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "wsownerauthorization-rs",
+  "exports": [
+    {
+      "name": "requireUsageAnalyticsAccess",
+      "file": "apps/server/src/wsOwnerAuthorization.ts",
+      "line": 16,
+      "params": [
+        {
+          "name": "scope",
+          "ts_type": "typeof typeof typeof typeof StatsUsageAnalyticsScope.Type.Type.Type.Type | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

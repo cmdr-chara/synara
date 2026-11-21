@@ -1,0 +1,17 @@
+{
+  "unit": "apps/web/src/storageOriginMigration.ts",
+  "files": 1,
+  "fingerprint": "6113d25df41c17a8",
+  "coverage": {
+    "lines": 62,
+    "reached": 47,
+    "files": [
+      {
+        "file": "apps/web/src/storageOriginMigration.ts",
+        "lines": 62,
+        "reached": 47,
+        "missed": "19-20, 41-43, 49-50, 53-54, 61-62, 64-65, 67-68"
+      }
+    ]
+  }
+}

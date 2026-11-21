@@ -1,0 +1,47 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/storageOriginMigration.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "storageoriginmigration-rs",
+  "exports": [
+    {
+      "name": "importSynaraStorageSnapshot",
+      "file": "apps/web/src/storageOriginMigration.ts",
+      "line": 23,
+      "params": [
+        {
+          "name": "snapshot",
+          "ts_type": "SynaraStorageSnapshot | null",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "storage",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "bootstrapSynaraStorageOriginMigration",
+      "file": "apps/web/src/storageOriginMigration.ts",
+      "line": 57,
+      "params": [],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

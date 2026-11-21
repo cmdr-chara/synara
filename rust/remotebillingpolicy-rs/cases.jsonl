@@ -1,0 +1,244 @@
+{"fn":"recordRemoteBillingPolicyHint","args":["ïcödé","ünïcödé",false,true,{"$num":"-Infinity"}],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":[":","a:b:c",true,null,2147483648],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["ab","é",true,["a",1],42],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["hello worldİstanbul","./x/**/*.json",false,[],1],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["key_name-1","﻿bomhello",true,[],1000000],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["ΣΊΣΥΦΟΣ","./x/**/*.json",true,"x",3],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":[".leadinga😀b😀c","Hello World",false,["a",1],2],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["HELLO","😀",false,true,3],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["👍🏽 mi","emoji 👍🏽 mix",false,"x",{"$num":"Infinity"}],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["é","Hello World",true,true,{"$num":"-0"}],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":[".leading","line1\nline2",true,{},3],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["key_name-1","a.b.c",false,true,1000],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["","a😀b😀ca.b.c",true,{"$undefined":true},{"$num":"-0"}],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["key_name-1","  padded  ",true,{"$undefined":true},{"$num":"-Infinity"}],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["  padded  ","﻿bom",true,{}],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["abc","a",false,0,100],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["日本語のテキスト","a..b",false,"x",10],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["﻿bom","key_name-1",true,{"$undefined":true},1000],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["a.b.ctrailing.","日本語のテキストstraße",false,"x",2],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["ΣΊΣΥΦΟΣ","hello world",false,{"a":"b"},{"$num":"Infinity"}],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":[".leading","hello",false,"x",0],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["a..b","line1\nline2",false,{},3],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["key_name-1","line1\nline2",false,{"a":"b"},-1],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["éstraße",":",true,[],{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["trailing.ns:key.path","abc",false,{"$undefined":true},{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":[" mix","emoji 👍🏽 mix",true,{},0.5],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["tab\tseparated","te",false,true,0],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["straße","﻿bomünïcödé",true,{"$undefined":true},100],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["tab\tseparated","a..ba",true,{"$undefined":true},100],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["  padded  ","ünïcödé",true,{"$undefined":true},{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":[".leading  padded  ","./x/**/*.json",false,0,{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["a..b",":abc",false,[],42],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["","trailing.",false,{}],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["ΣΊΣΥΦΟΣ","ΣΊ",false,{"$undefined":true},{"$num":"NaN"}],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["tab\tseparated","ab",false,true],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["a.b.ctrailing.","emoji 👍🏽 mix",true,{"$undefined":true},1],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["src/a/b.ts","Hello World",false,{"$undefined":true},0],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["ΣΊΣΥΦΟΣ","a:b:c",true,0,1000000],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["HELLOns:key.path",".leading",true,{},2],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["ünïcödé","ünïcödé",true,{"a":"b"},{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["HELLOhello","😀",false,{"a":{"b":"c"}},{"$undefined":true}],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["﻿bom","😀",true,0,{"$num":"-0"}],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["straße","src/a/b.tsstraße",false,{"$undefined":true},1],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["","straße",true,0],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":[".leading","﻿bom",false,{"a":"b"},{"$num":"NaN"}],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["x","İstanbul",false,"x",10],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["  padded  ","trailing.",false,true,1],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":[":","a",true,["a",1]],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["日本語のテキスト","./x/**/*.jsonİstanbul",false,{"$undefined":true},42],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["hello world","ns:key.path",true,0,42],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["hello","  padded  ΣΊΣΥΦΟΣ",true,["a",1],1000],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["日本語のテキスト","HELLO",false,["a",1],100],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["😀","İstanbul",true,{},100],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["hello world","O ",false,{"$undefined":true},42],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["straße","😀",true,{"$undefined":true},{"$num":"-Infinity"}],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["u","İstanbul",true,[],2147483648],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["a","a..b",true,["a",1],42],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["Hello World",":",false,null,{"$num":"NaN"}],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["a😀b😀c","a.b.cns:key.path",false,{},{"$num":"NaN"}],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["abc","a:b:c",true,{"a":{"b":"c"}},1000000],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["js","ünïcödé./x/**/*.json",false,{"a":{"b":"c"}},{"$undefined":true}],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":[".leading","{name} has {count} itemsab",true,{"$undefined":true},0],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["trailing.﻿bom","key_name-1",false,0,{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["éhello world","HELLO W",true,null,3],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["a.b.c","straße",false],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["  padded  ","d ",false,0,100],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["Hello World",".leading",false,{"$undefined":true},42],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["﻿bom","ΣΊΣΥΦΟΣ",false,0,1],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["key_name-1","İstanbulİstanbul",false,0,3],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["a","ns:key.path",true,{"a":"b"},1000000],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["Hello World","é",false,{"$undefined":true},0.5],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["e","aé",false,{"a":"b"},3],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["abtab\tseparated","parated",true,null,9007199254740992],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["ns:key.patha:b:c","a.b.c😀",true,true,42],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["HELLO","HELLO",false,{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["a..b","key_name-1",false,{},9007199254740992],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["a..b","a",true,true,2147483648],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["İstanbul","NBU",false,{"$undefined":true},9007199254740992],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["{name} has {count} items日本語のテキスト","ME} HAS",false,{"$undefined":true},100],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["line1\nline2","😀",true,"x"],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["ED","  padded  ",false,{"$undefined":true},-2.5],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["a","A",false,[]],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["tab\tseparated","😀",false,{"a":{"b":"c"}},1000000],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["hello worldab","hello",true,{"$undefined":true},0.5],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["a.b.c","{name} has {count} items",false,{"$undefined":true},1],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["src/a/b.tsHello World","emoji 👍🏽 mix",false,{"$undefined":true},0.5],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["﻿bom","{name} has {count} items{name} has {count} items",true,0,100],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["abc",".leadingabc",false,{"$undefined":true},{"$num":"-0"}],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["a😀b😀ckey_name-1","name-1",false,0,{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["😀","Hello World",true,{"a":"b"},{"$num":"-Infinity"}],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["日本語のテキスト","line1\nline2",false,["a",1],9007199254740992],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["İstanbul","B",true,null,1000000],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":[":","emoji 👍🏽 mix",false,{"a":{"b":"c"}},{"$undefined":true}],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["tab\tseparated","a.b.c",true,null],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["ΣΊΣΥΦΟΣ","HELLO",false,true,{"$undefined":true}],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["é","a..b",false,["a",1],1000000],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["ns:key.path","HELLO",false,{},{"$num":"-0"}],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["key_name-1","abc",true,{"a":{"b":"c"}},1000000],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["emoji 👍🏽 mixsrc/a/b.ts","emoji 👍🏽 mix",false,0,2147483648],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":[":",":",false,{"$undefined":true},9007199254740992],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["HELLO","ab",false,0,{"$num":"NaN"}],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["line1\nline2","src/a/b.ts",true,["a",1],{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["trailing.","日本語のテキスト",false,"x",2],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["STANBU","helloİstanbul",true,null,{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["hello worldhello world","src/a/b.tshello",false,{}],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["a:b:c","ns:key.path",false,[],{"$num":"NaN"}],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["😀","ünïcödé",false,null,{"$num":"-0"}],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["hello worlda..b","ab",false,0,-1],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["{name} has {count} items","HELLO",false,{"$undefined":true},{"$num":"-0"}],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["a😀b😀c","hello",true,["a",1],{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["b😀cl","a😀b😀cline1\nline2",false,["a",1],1],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["a","ünïcödéİstanbul",true,{"a":{"b":"c"}},{"$num":"NaN"}],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["src/a/b.ts",".leading",true,{"$undefined":true},2],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["a","a.b.c",true,true,3],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["ünïcödé","src/a/b.ts",true,{"a":{"b":"c"}},0.5],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["a😀b😀cİstanbul","hello worldemoji 👍🏽 mix",true],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["a",":",true,":",{"$num":"-Infinity"}],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["abc","ünïcödé",true,"x",2147483648],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["tab\tseparated","abc",false,[],{"$num":"-0"}],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["a:b:c","Hello World",false,null,{"$num":"Infinity"}],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["Hello World","rl",true,{"$undefined":true},{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["","key_name-1",false,0,42],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["straße","key_name-1",true,{"a":{"b":"c"}},{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["tab\tseparatedline1\nline2","tab\tseparated",true,{"a":{"b":"c"}},0],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["a.b.c","  padded  ",false,["a",1],{"$undefined":true}],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["line1\nline2","é",true,{"$undefined":true},{"$num":"Infinity"}],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["abc","key_name-1abc",true,true,{"$num":"-Infinity"}],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["line1\nline2","hello",false,null,100],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["emoji 👍🏽 mix","﻿bom",true,[]],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["src/a/b.tsHELLO","trailing.",true,{"$undefined":true},{"$num":"NaN"}],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["Hello World","orl",true,{"$undefined":true},2147483648],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["line1\nline2","ΣΊΣΥΦΟΣ",true,{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["日本語のテキスト","é",false,{"$undefined":true},9007199254740992],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["src/a/b.ts","ΣΊΣΥΦΟΣhello",true,null],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["  padded  ","abc",true,true,{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["😀","key_name-1src/a/b.ts",true,[],{"$num":"NaN"}],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["a..b",".",true,{"$undefined":true},-2.5],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["abcHELLO",".leading",false,{"$undefined":true},9007199254740992],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["","  padded  ",true,{"$undefined":true},-1],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["tab\tseparated",".leadingab",true,{"a":"b"},10],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["İstanbul","hello world",true,0,10],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["ns:key.path","a.b.chello",false,null,-2.5],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["r","trailing.",false,"x",0.5],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["Σ","ΣΊΣΥΦΟΣ",false,{}],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["straßekey_name-1","{name} has {count} items",false,{},{"$num":"-Infinity"}],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["HELLOhello","日本語のテキストİstanbul",false,true,42],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["hello","o",true,{"a":{"b":"c"}},{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["{name} has {count} itemssrc/a/b.ts","T} ITEMSSRC/",true,0,42],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["Hello World","日本語のテキスト",false,{}],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":[":","a:b:c",false,{"a":{"b":"c"}},-2.5],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["l","İstanbul",false,{"a":"b"},1],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["trailing.","straßeHELLO",false,["a",1],-1],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["./x/**/*.json","é",false,[],1],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["x","a:",false,"x",{"$undefined":true}],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["line1\nline2","straße",false,[],100],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["a..b",".leading",true,[],10],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["ab",":",false,true,0.5],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["a..b","abc",false,{"a":{"b":"c"}},-2.5],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["﻿bom","hello world",false,null,2147483648],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["ΣΊΣΥΦΟΣ","😀",false,[],3],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["emoji 👍🏽 mix","ΣΊΣΥΦΟΣ",false,null],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["ΣΊΣΥΦΟΣ","﻿bom",false,[],{"$num":"-Infinity"}],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["tab\tseparated","a:b:ca..b",true,"x",{"$num":"Infinity"}],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["emoji 👍🏽 mix","İstanbul",false,true,{"$undefined":true}],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["a😀b😀c",".leading",false,{"$undefined":true},1000000],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["ΣΊΣΥΦΟΣ","Σ",false,"x",{"$undefined":true}],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":[".leading","emoji 👍🏽 mixabc",false,0,9007199254740992],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["a:b:c","{name} has {count} items{name} has {count} items",true,{},{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["日本語のテキスト","a..b",true,true,0.5],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["ünïcödéa😀b😀c","é",false,{"$undefined":true},{"$num":"-Infinity"}],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["abcİstanbul","a:b:c",true,"x",-1],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["llo w","hello worldab",false,[],{"$num":"Infinity"}],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["li","line1\nline2",true,{},1000],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["é","straße",true,["a",1],10],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["é","ab",true,["a",1],1000],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":[":","﻿bom",false,["a",1],0],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["trailing.","line1\nline2line1\nline2",false,{},10],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["a..b","./x/**/*.json",false,"x",9007199254740992],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["line1\nline2","i",true,{"$undefined":true},0],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["a","  padded  {name} has {count} items",true,["a",1]],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["İstanbulsrc/a/b.ts","日本語のテキスト",true,{"a":{"b":"c"}},{"$num":"Infinity"}],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["ing",".leading",true,true,0.5],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["﻿bom:","Hello World",true,{"a":"b"},0],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["ünïcödé:","a😀",false,true,42],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["src/a/b.ts","rc/a/b.",true,{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["","./x/**/*.json",false],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["{name} has {count} itemsemoji 👍🏽 mix","Hello World",false,{},-2.5],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["emoji 👍🏽 mix","I ",false,{"$undefined":true},1000],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["ünïcödé","İstanbul",false,[],{"$num":"-0"}],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["Hello Worlda😀b😀c","a..b",false,"x",{"$num":"-Infinity"}],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["abchello world","abc",false,true,{"$num":"-Infinity"}],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["{name} has {count} items",".leading",true,null,1000000],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["﻿bom😀","ΣΊΣΥΦΟΣ",true,{},{"$num":"Infinity"}],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["abca","trailing.",true,true,1],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["é","́",false,["a",1],1],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["key_name-1","",true,true],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["trailing.","i",true,[],{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["a.b.c",".leading",true,"x",{"$num":"-Infinity"}],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["./x/**/*.json","",true,{"$undefined":true},-1],"ok":{"$undefined":true}}
+{"fn":"recordRemoteBillingPolicyHint","args":["src/a/b.tsab","hello worldsrc/a/b.ts",false,null,{"$num":"-0"}],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["héllo wörld","ünïcödé",false,true,{"$num":"-Infinity"}],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["👍🏽 thumbs","ünïcödé",false,true,{"$num":"-Infinity"}],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["日本語","ünïcödé",false,true,{"$num":"-Infinity"}],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["","ünïcödé",false,true,{"$num":"-Infinity"}],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["é","ünïcödé",false,true,{"$num":"-Infinity"}],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["İstanbul","ünïcödé",false,true,{"$num":"-Infinity"}],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["straße","ünïcödé",false,true,{"$num":"-Infinity"}],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["ılık ırmak","ünïcödé",false,true,{"$num":"-Infinity"}],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["👨‍👩‍👧 family","ünïcödé",false,true,{"$num":"-Infinity"}],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["a b","ünïcödé",false,true,{"$num":"-Infinity"}],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["ΣΊΣΥΦΟΣ","ünïcödé",false,true,{"$num":"-Infinity"}],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["a😀b","ünïcödé",false,true,{"$num":"-Infinity"}],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["﻿bom","ünïcödé",false,true,{"$num":"-Infinity"}],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["a²b x½ y①","ünïcödé",false,true,{"$num":"-Infinity"}],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["aⅠb Ⅻ","ünïcödé",false,true,{"$num":"-Infinity"}],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["a𐐀b 𝐀bc","ünïcödé",false,true,{"$num":"-Infinity"}],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["कि ٣٤","ünïcödé",false,true,{"$num":"-Infinity"}],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["ïcödé","héllo wörld",false,true,{"$num":"-Infinity"}],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["ïcödé","👍🏽 thumbs",false,true,{"$num":"-Infinity"}],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["ïcödé","日本語",false,true,{"$num":"-Infinity"}],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["ïcödé","",false,true,{"$num":"-Infinity"}],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["ïcödé","é",false,true,{"$num":"-Infinity"}],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["ïcödé","İstanbul",false,true,{"$num":"-Infinity"}],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["ïcödé","straße",false,true,{"$num":"-Infinity"}],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["ïcödé","ılık ırmak",false,true,{"$num":"-Infinity"}],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["ïcödé","👨‍👩‍👧 family",false,true,{"$num":"-Infinity"}],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["ïcödé","a b",false,true,{"$num":"-Infinity"}],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["ïcödé","ΣΊΣΥΦΟΣ",false,true,{"$num":"-Infinity"}],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["ïcödé","a😀b",false,true,{"$num":"-Infinity"}],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["ïcödé","﻿bom",false,true,{"$num":"-Infinity"}],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["ïcödé","a²b x½ y①",false,true,{"$num":"-Infinity"}],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["ïcödé","aⅠb Ⅻ",false,true,{"$num":"-Infinity"}],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["ïcödé","a𐐀b 𝐀bc",false,true,{"$num":"-Infinity"}],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["ïcödé","कि ٣٤",false,true,{"$num":"-Infinity"}],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["ïcödé","ünïcödé",false,true,{"$undefined":true}],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["ïcödé","ünïcödé",false,true,-7.5],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["ïcödé","ünïcödé",false,true,0.1],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["ïcödé","ünïcödé",false,true,0.30000000000000004],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["ïcödé","ünïcödé",false,true,1e+21],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["ïcödé","ünïcödé",false,true,1e-7],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["ïcödé","ünïcödé",false,true,5e-324],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["ïcödé","ünïcödé",false,true,1.7976931348623157e+308],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["ïcödé","ünïcödé",false,true,9007199254740992],"error":"A disabled remote billing policy requires a valid clock"}
+{"fn":"recordRemoteBillingPolicyHint","args":["ïcödé","ünïcödé",false,true,{"$num":"-0"}],"error":"A disabled remote billing policy requires a valid clock"}

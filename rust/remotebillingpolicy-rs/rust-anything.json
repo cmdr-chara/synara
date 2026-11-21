@@ -1,0 +1,61 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/remoteBillingPolicy.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "remotebillingpolicy-rs",
+  "exports": [
+    {
+      "name": "recordRemoteBillingPolicyHint",
+      "file": "apps/server/src/remoteBillingPolicy.ts",
+      "line": 57,
+      "params": [
+        {
+          "name": "stateDir",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "accountUrl",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "enforced",
+          "ts_type": "boolean",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "checkedAt",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        },
+        {
+          "name": "requestedAt",
+          "ts_type": "number",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<void>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "startRemoteBillingPolicy",
+      "file": "apps/server/src/remoteBillingPolicy.ts",
+      "line": 99,
+      "reason": "uses `RemoteBillingPolicyOptions`, which has function members"
+    }
+  ]
+}

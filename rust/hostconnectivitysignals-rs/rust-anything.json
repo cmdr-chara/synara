@@ -1,0 +1,47 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/hostConnectivitySignals.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "hostconnectivitysignals-rs",
+  "exports": [
+    {
+      "name": "noteRemoteAccessGranted",
+      "file": "apps/server/src/hostConnectivitySignals.ts",
+      "line": 19,
+      "params": [],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "nudgeHostAuthorization",
+      "file": "apps/server/src/hostConnectivitySignals.ts",
+      "line": 39,
+      "params": [],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "registerRemoteAccessGrantedWake",
+      "file": "apps/server/src/hostConnectivitySignals.ts",
+      "line": 14,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "registerHostAuthorizationNudge",
+      "file": "apps/server/src/hostConnectivitySignals.ts",
+      "line": 28,
+      "reason": "takes or returns a function"
+    }
+  ]
+}

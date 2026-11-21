@@ -1,0 +1,17 @@
+{
+  "unit": "apps/server/src/hostConnectivitySignals.ts",
+  "files": 1,
+  "fingerprint": "59a21d81a042245b",
+  "coverage": {
+    "lines": 40,
+    "reached": 29,
+    "files": [
+      {
+        "file": "apps/server/src/hostConnectivitySignals.ts",
+        "lines": 40,
+        "reached": 29,
+        "missed": "15-16, 23-24, 29-33, 43-44"
+      }
+    ]
+  }
+}

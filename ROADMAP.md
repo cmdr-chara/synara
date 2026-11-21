@@ -67,11 +67,15 @@ Full generated plan with every unit, wave, readiness score and risk: [rust/plan.
 
 ## Status
 
-| Phase                | State                                           |
-| -------------------- | ----------------------------------------------- |
-| 0 — Analysis         | done — 881 units planned                        |
-| 1 — Decisions        | next (effect/zustand/electron are the big ADRs) |
-| 2 — Record           | pending                                         |
-| 3 — Front door       | pending                                         |
-| 4 — Port (881 units) | pending — start: `toolOutputSummary.ts`         |
-| 5 — Lift             | pending                                         |
+| Phase                | State                                                          |
+| -------------------- | -------------------------------------------------------------- |
+| 0 — Analysis         | done — 881 units planned                                       |
+| 1 — Decisions        | done — ADR-001 clean-room, ADR-002 T3 cases-only rule          |
+| 2 — Record           | in progress — cases recorded per bridged unit                  |
+| 3 — Front door       | pending                                                        |
+| 4 — Port (789 units) | in progress — 399 ported+gate-green; ~45% units unbridgeable   |
+| 5 — Lift             | pending                                                        |
+
+## Provenance (T3Code audit)
+
+`rust/T3CODE-PROVENANCE.md`: deep audit vs pingdotgg/t3code @ `d15210cd`. All committed ports pass clean-room checks except 6 line-derived crates scheduled for cases-only rewrite (worklog, storeeventreducer, keybindingrules, shell, terminal-links, markdown-links). trycua/cua-derived code is accepted as-is per operator decision.

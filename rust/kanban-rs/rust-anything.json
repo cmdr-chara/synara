@@ -1,0 +1,156 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/kanban.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "kanban-rs",
+  "exports": [
+    {
+      "name": "isKanbanTurnSettled",
+      "file": "packages/shared/src/kanban.ts",
+      "line": 96,
+      "params": [
+        {
+          "name": "t",
+          "ts_type": "Pick<KanbanThreadDerivationInput, \"latestTurn\" | \"session\">",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "hasKanbanLiveLatestTurn",
+      "file": "packages/shared/src/kanban.ts",
+      "line": 119,
+      "params": [
+        {
+          "name": "t",
+          "ts_type": "Pick<KanbanThreadDerivationInput, \"latestTurn\" | \"session\">",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "hasKanbanLiveWork",
+      "file": "packages/shared/src/kanban.ts",
+      "line": 129,
+      "params": [
+        {
+          "name": "t",
+          "ts_type": "KanbanThreadDerivationInput",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "kanbanHeartbeatTimestampMs",
+      "file": "packages/shared/src/kanban.ts",
+      "line": 152,
+      "params": [
+        {
+          "name": "t",
+          "ts_type": "Pick<KanbanThreadDerivationInput, \"session\" | \"threadUpdatedAt\" | \"lastActivityTimestampMs\">",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "number | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "deriveKanbanAwaitingYouReason",
+      "file": "packages/shared/src/kanban.ts",
+      "line": 197,
+      "params": [
+        {
+          "name": "t",
+          "ts_type": "KanbanThreadDerivationInput",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "opts",
+          "ts_type": "{ now: number }",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(\"pending-approval\" | \"pending-input\" | \"failed\" | \"stuck\") | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "deriveKanbanColumnV2",
+      "file": "packages/shared/src/kanban.ts",
+      "line": 229,
+      "params": [
+        {
+          "name": "t",
+          "ts_type": "KanbanThreadDerivationInput",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "opts",
+          "ts_type": "{ now?: number }",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "(\"draft\" | \"inProgress\" | \"awaitingYou\" | \"done\")",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "deriveKanbanAttention",
+      "file": "packages/shared/src/kanban.ts",
+      "line": 252,
+      "params": [
+        {
+          "name": "t",
+          "ts_type": "KanbanThreadDerivationInput",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "opts",
+          "ts_type": "{ now: number; needsReview?: boolean }",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(| \"failed\"\n  | \"stuck\"\n  | \"awaiting-approval\"\n  | \"awaiting-input\"\n  | \"needs-review\")[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

@@ -1,0 +1,17 @@
+{
+  "unit": "packages/shared/src/kanban.ts",
+  "files": 1,
+  "fingerprint": "84f73e1116345d69",
+  "coverage": {
+    "lines": 256,
+    "reached": 252,
+    "files": [
+      {
+        "file": "packages/shared/src/kanban.ts",
+        "lines": 256,
+        "reached": 252,
+        "missed": "113-114, 146-147"
+      }
+    ]
+  }
+}

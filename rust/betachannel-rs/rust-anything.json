@@ -1,0 +1,265 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/desktop/src/betaChannel.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "betachannel-rs",
+  "exports": [
+    {
+      "name": "spawnDetached",
+      "file": "apps/desktop/src/betaChannel.ts",
+      "line": 109,
+      "params": [
+        {
+          "name": "command",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "env",
+          "ts_type": "NodeJS.ProcessEnv",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<void>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "betaLaunchEnvironment",
+      "file": "apps/desktop/src/betaChannel.ts",
+      "line": 143,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly env?: NodeJS.ProcessEnv;\n  readonly betaHomeDir: string;\n  readonly betaUserDataDir?: string | undefined;\n  readonly stableExecutablePath?: string | undefined;\n  readonly stableHomeDir?: string | undefined;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "NodeJS.ProcessEnv",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "stableLaunchEnvironment",
+      "file": "apps/desktop/src/betaChannel.ts",
+      "line": 163,
+      "params": [
+        {
+          "name": "env",
+          "ts_type": "NodeJS.ProcessEnv",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "NodeJS.ProcessEnv",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "detectStableExecutable",
+      "file": "apps/desktop/src/betaChannel.ts",
+      "line": 174,
+      "params": [
+        {
+          "name": "platform",
+          "ts_type": "NodeJS.Platform",
+          "optional": true,
+          "rest": false
+        },
+        {
+          "name": "homeDir",
+          "ts_type": "string",
+          "optional": true,
+          "rest": false
+        },
+        {
+          "name": "env",
+          "ts_type": "NodeJS.ProcessEnv",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "betaMacInstallDirs",
+      "file": "apps/desktop/src/betaChannel.ts",
+      "line": 205,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly homeDir?: string;\n  readonly env?: NodeJS.ProcessEnv;\n}",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "detectBetaInstall",
+      "file": "apps/desktop/src/betaChannel.ts",
+      "line": 233,
+      "params": [
+        {
+          "name": "platform",
+          "ts_type": "NodeJS.Platform",
+          "optional": true,
+          "rest": false
+        },
+        {
+          "name": "homeDir",
+          "ts_type": "string",
+          "optional": true,
+          "rest": false
+        },
+        {
+          "name": "env",
+          "ts_type": "NodeJS.ProcessEnv",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "BetaInstallDetection",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isBetaServerRunning",
+      "file": "apps/desktop/src/betaChannel.ts",
+      "line": 337,
+      "params": [
+        {
+          "name": "betaHomeDir",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "readBetaImportResult",
+      "file": "apps/desktop/src/betaChannel.ts",
+      "line": 353,
+      "params": [
+        {
+          "name": "betaHomeDir",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof BetaImportResult.Type.Type.Type.Type | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "writeBetaImportRequest",
+      "file": "apps/desktop/src/betaChannel.ts",
+      "line": 373,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly betaHomeDir: string;\n  readonly sourceHomeDir: string;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "launchBetaInstall",
+      "file": "apps/desktop/src/betaChannel.ts",
+      "line": 398,
+      "params": [
+        {
+          "name": "detection",
+          "ts_type": "BetaInstallDetection",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "platform",
+          "ts_type": "NodeJS.Platform",
+          "optional": true,
+          "rest": false
+        },
+        {
+          "name": "env",
+          "ts_type": "NodeJS.ProcessEnv",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<void>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveBetaHomeDir",
+      "file": "apps/desktop/src/betaChannel.ts",
+      "line": 620,
+      "params": [
+        {
+          "name": "homeDir",
+          "ts_type": "string",
+          "optional": true,
+          "rest": false
+        },
+        {
+          "name": "env",
+          "ts_type": "NodeJS.ProcessEnv",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "DesktopBetaChannel",
+      "file": "apps/desktop/src/betaChannel.ts",
+      "line": 423,
+      "reason": "class: async or generator method `leave`, async or generator method `launch`, async or generator method `install`, async or generator method `importAndLaunch`"
+    }
+  ]
+}

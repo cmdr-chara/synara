@@ -1,0 +1,4 @@
+{"fn":"desktopOperationContext","args":[],"ok":{"$undefined":true}}
+{"fn":"desktopOperationSignal","args":[],"ok":{"$undefined":true}}
+{"fn":"assertDesktopOperationActive","args":[],"ok":{"$undefined":true}}
+{"fn":"desktopDeliveryMode","args":[],"ok":"background"}

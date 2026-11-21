@@ -1,0 +1,81 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/desktopOperationQueue.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "desktopoperationqueue-rs",
+  "exports": [
+    {
+      "name": "desktopOperationContext",
+      "file": "packages/shared/src/desktopOperationQueue.ts",
+      "line": 12,
+      "params": [],
+      "returns": "DesktopOperationContext | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "desktopOperationSignal",
+      "file": "packages/shared/src/desktopOperationQueue.ts",
+      "line": 16,
+      "params": [],
+      "returns": "AbortSignal | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "assertDesktopOperationActive",
+      "file": "packages/shared/src/desktopOperationQueue.ts",
+      "line": 34,
+      "params": [],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "desktopDeliveryMode",
+      "file": "packages/shared/src/desktopOperationQueue.ts",
+      "line": 43,
+      "params": [],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "DesktopOperationQueue",
+      "file": "packages/shared/src/desktopOperationQueue.ts",
+      "line": 58,
+      "reason": "class: async or generator method `close`"
+    },
+    {
+      "name": "withDesktopOperationSignal",
+      "file": "packages/shared/src/desktopOperationQueue.ts",
+      "line": 21,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "withoutDesktopCancellation",
+      "file": "packages/shared/src/desktopOperationQueue.ts",
+      "line": 38,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "withDesktopDeliveryMode",
+      "file": "packages/shared/src/desktopOperationQueue.ts",
+      "line": 44,
+      "reason": "takes or returns a function"
+    }
+  ]
+}

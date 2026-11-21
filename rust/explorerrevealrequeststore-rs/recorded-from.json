@@ -1,0 +1,17 @@
+{
+  "unit": "apps/web/src/explorerRevealRequestStore.ts",
+  "files": 1,
+  "fingerprint": "c688c1a6882d0796",
+  "coverage": {
+    "lines": 45,
+    "reached": 45,
+    "files": [
+      {
+        "file": "apps/web/src/explorerRevealRequestStore.ts",
+        "lines": 45,
+        "reached": 45,
+        "missed": ""
+      }
+    ]
+  }
+}

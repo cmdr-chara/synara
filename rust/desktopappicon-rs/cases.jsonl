@@ -1,0 +1,583 @@
+{"fn":"writeDesktopAppIconPreference","args":["é",null],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received null"}
+{"fn":"writeDesktopAppIconPreference","args":["日本語のテキスト",null],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received null"}
+{"fn":"writeDesktopAppIconPreference","args":["ab","x"],"ok":{"$undefined":true}}
+{"fn":"writeDesktopAppIconPreference","args":["trailing.a:b:c",true],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received type boolean (true)"}
+{"fn":"writeDesktopAppIconPreference","args":["é",{"a":{"b":"c"}}],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Object"}
+{"fn":"writeDesktopAppIconPreference","args":["  padded  ",["a",1]],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Array"}
+{"fn":"writeDesktopAppIconPreference","args":["ahello",["a",1]],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Array"}
+{"fn":"writeDesktopAppIconPreference","args":["a..b",["a",1]],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Array"}
+{"fn":"writeDesktopAppIconPreference","args":["😀",{"a":{"b":"c"}}],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Object"}
+{"fn":"writeDesktopAppIconPreference","args":["éa😀b😀c",[]],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Array"}
+{"fn":"writeDesktopAppIconPreference","args":["./x/**/*.json",0],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received type number (0)"}
+{"fn":"writeDesktopAppIconPreference","args":["Hello World",true],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received type boolean (true)"}
+{"fn":"writeDesktopAppIconPreference","args":["é",0],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received type number (0)"}
+{"fn":"writeDesktopAppIconPreference","args":[".leading",null],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received null"}
+{"fn":"writeDesktopAppIconPreference","args":["İstanbul",{"a":"b"}],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Object"}
+{"fn":"writeDesktopAppIconPreference","args":["a😀b😀c","x"],"ok":{"$undefined":true}}
+{"fn":"writeDesktopAppIconPreference","args":["HELLO",{}],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Object"}
+{"fn":"writeDesktopAppIconPreference","args":["a😀b😀c",{"a":{"b":"c"}}],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Object"}
+{"fn":"writeDesktopAppIconPreference","args":["src/a/b.ts",0],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received type number (0)"}
+{"fn":"writeDesktopAppIconPreference","args":["ünïcödé",0],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received type number (0)"}
+{"fn":"writeDesktopAppIconPreference","args":["hello",{}],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Object"}
+{"fn":"writeDesktopAppIconPreference","args":["é","x"],"ok":{"$undefined":true}}
+{"fn":"writeDesktopAppIconPreference","args":[":",true],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received type boolean (true)"}
+{"fn":"writeDesktopAppIconPreference","args":[".leading",{"a":"b"}],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Object"}
+{"fn":"writeDesktopAppIconPreference","args":["  padded  ",{"a":"b"}],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Object"}
+{"fn":"writeDesktopAppIconPreference","args":["line1\nline2a😀b😀c","x"],"ok":{"$undefined":true}}
+{"fn":"writeDesktopAppIconPreference","args":[".leadingé",null],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received null"}
+{"fn":"writeDesktopAppIconPreference","args":["İstanbul",["a",1]],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Array"}
+{"fn":"writeDesktopAppIconPreference","args":["a😀b😀c",0],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received type number (0)"}
+{"fn":"writeDesktopAppIconPreference","args":[":",[]],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Array"}
+{"fn":"writeDesktopAppIconPreference","args":["x","x"],"error":"EISDIR: illegal operation on a directory, open 'x'"}
+{"fn":"writeDesktopAppIconPreference","args":["trailing.",{}],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Object"}
+{"fn":"writeDesktopAppIconPreference","args":["a.b.c",null],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received null"}
+{"fn":"writeDesktopAppIconPreference","args":["日本語のテキスト",[]],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Array"}
+{"fn":"writeDesktopAppIconPreference","args":["hello world",{"a":{"b":"c"}}],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Object"}
+{"fn":"writeDesktopAppIconPreference","args":["src/a/b.ts",["a",1]],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Array"}
+{"fn":"writeDesktopAppIconPreference","args":["﻿bom",0],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received type number (0)"}
+{"fn":"writeDesktopAppIconPreference","args":["a:b:c.leading","x"],"ok":{"$undefined":true}}
+{"fn":"writeDesktopAppIconPreference","args":["emoji 👍🏽 mix",["a",1]],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Array"}
+{"fn":"writeDesktopAppIconPreference","args":["a:b:c./x/**/*.json",0],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received type number (0)"}
+{"fn":"writeDesktopAppIconPreference","args":["emoji 👍🏽 mix",{"a":"b"}],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Object"}
+{"fn":"writeDesktopAppIconPreference","args":["  padded  ",{}],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Object"}
+{"fn":"writeDesktopAppIconPreference","args":["line1\nline2日本語のテキスト",{"a":{"b":"c"}}],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Object"}
+{"fn":"writeDesktopAppIconPreference","args":["a",true],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received type boolean (true)"}
+{"fn":"writeDesktopAppIconPreference","args":["src/a/b.ts",null],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received null"}
+{"fn":"writeDesktopAppIconPreference","args":["ns:key.path",["a",1]],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Array"}
+{"fn":"writeDesktopAppIconPreference","args":["tab\tseparated",{}],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Object"}
+{"fn":"writeDesktopAppIconPreference","args":["{name} has {count} itemsemoji 👍🏽 mix",null],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received null"}
+{"fn":"writeDesktopAppIconPreference","args":["﻿bom",{}],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Object"}
+{"fn":"writeDesktopAppIconPreference","args":["./x/**/*.json",{"a":"b"}],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Object"}
+{"fn":"writeDesktopAppIconPreference","args":["{name} has {count} items",["a",1]],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Array"}
+{"fn":"writeDesktopAppIconPreference","args":["ΣΊΣΥΦΟΣline1\nline2",0],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received type number (0)"}
+{"fn":"writeDesktopAppIconPreference","args":["line1\nline2",0],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received type number (0)"}
+{"fn":"writeDesktopAppIconPreference","args":["line1\nline2",{"a":"b"}],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Object"}
+{"fn":"writeDesktopAppIconPreference","args":["src/a/b.ts",{"a":{"b":"c"}}],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Object"}
+{"fn":"writeDesktopAppIconPreference","args":["straßens:key.path",[]],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Array"}
+{"fn":"writeDesktopAppIconPreference","args":["line1\nline2","N"],"ok":{"$undefined":true}}
+{"fn":"writeDesktopAppIconPreference","args":["straße﻿bom",true],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received type boolean (true)"}
+{"fn":"writeDesktopAppIconPreference","args":["key_name-1",{}],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Object"}
+{"fn":"writeDesktopAppIconPreference","args":["a..b",{"a":{"b":"c"}}],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Object"}
+{"fn":"writeDesktopAppIconPreference","args":["HELLOHELLO",{"a":"b"}],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Object"}
+{"fn":"writeDesktopAppIconPreference","args":["ΣΊΣΥΦΟΣ","x"],"ok":{"$undefined":true}}
+{"fn":"writeDesktopAppIconPreference","args":["a..b",null],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received null"}
+{"fn":"writeDesktopAppIconPreference","args":[".leading",[]],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Array"}
+{"fn":"writeDesktopAppIconPreference","args":["﻿bom",{"a":{"b":"c"}}],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Object"}
+{"fn":"writeDesktopAppIconPreference","args":["İstanbul",0],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received type number (0)"}
+{"fn":"writeDesktopAppIconPreference","args":["ünïcödé",true],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received type boolean (true)"}
+{"fn":"writeDesktopAppIconPreference","args":["😀é",[]],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Array"}
+{"fn":"writeDesktopAppIconPreference","args":["Hello World",{"a":"b"}],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Object"}
+{"fn":"writeDesktopAppIconPreference","args":["abc",["a",1]],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Array"}
+{"fn":"writeDesktopAppIconPreference","args":["hello world",{}],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Object"}
+{"fn":"writeDesktopAppIconPreference","args":["hello",0],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received type number (0)"}
+{"fn":"writeDesktopAppIconPreference","args":["é",{}],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Object"}
+{"fn":"writeDesktopAppIconPreference","args":["hello",null],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received null"}
+{"fn":"writeDesktopAppIconPreference","args":["é",[]],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Array"}
+{"fn":"writeDesktopAppIconPreference","args":["hello world",0],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received type number (0)"}
+{"fn":"writeDesktopAppIconPreference","args":["Hello Worldtrailing.",["a",1]],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Array"}
+{"fn":"writeDesktopAppIconPreference","args":[":",{"a":"b"}],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Object"}
+{"fn":"writeDesktopAppIconPreference","args":["日本語のテキスト",0],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received type number (0)"}
+{"fn":"writeDesktopAppIconPreference","args":["hello",["a",1]],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Array"}
+{"fn":"writeDesktopAppIconPreference","args":["{name} has {count} items",{"a":{"b":"c"}}],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Object"}
+{"fn":"writeDesktopAppIconPreference","args":["emoji 👍🏽 mix",null],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received null"}
+{"fn":"writeDesktopAppIconPreference","args":[":trailing.",{"a":{"b":"c"}}],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Object"}
+{"fn":"writeDesktopAppIconPreference","args":["ΣΊΣΥΦΟΣ",{"a":{"b":"c"}}],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Object"}
+{"fn":"writeDesktopAppIconPreference","args":["😀",true],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received type boolean (true)"}
+{"fn":"writeDesktopAppIconPreference","args":["Hello World",["a",1]],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Array"}
+{"fn":"writeDesktopAppIconPreference","args":["  padded  .leading","x"],"ok":{"$undefined":true}}
+{"fn":"writeDesktopAppIconPreference","args":["  padded  HELLO",null],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received null"}
+{"fn":"writeDesktopAppIconPreference","args":["./x/**/*.json",{"a":{"b":"c"}}],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Object"}
+{"fn":"writeDesktopAppIconPreference","args":["",0],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received type number (0)"}
+{"fn":"writeDesktopAppIconPreference","args":[".leading","x"],"ok":{"$undefined":true}}
+{"fn":"writeDesktopAppIconPreference","args":["ünïcödé",null],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received null"}
+{"fn":"writeDesktopAppIconPreference","args":["日本語のテキスト","x"],"ok":{"$undefined":true}}
+{"fn":"writeDesktopAppIconPreference","args":["ΣΊΣΥΦΟΣ",["a",1]],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Array"}
+{"fn":"writeDesktopAppIconPreference","args":["tab\tseparated",["a",1]],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Array"}
+{"fn":"writeDesktopAppIconPreference","args":["a😀b😀c",{"a":"b"}],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Object"}
+{"fn":"writeDesktopAppIconPreference","args":[":a😀b😀c","x"],"ok":{"$undefined":true}}
+{"fn":"writeDesktopAppIconPreference","args":["a:b:c",["a",1]],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Array"}
+{"fn":"writeDesktopAppIconPreference","args":["trailing.",["a",1]],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Array"}
+{"fn":"writeDesktopAppIconPreference","args":["ns:key.path",0],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received type number (0)"}
+{"fn":"writeDesktopAppIconPreference","args":["ns:key.path",{"a":"b"}],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Object"}
+{"fn":"writeDesktopAppIconPreference","args":["hello world",{"a":"b"}],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Object"}
+{"fn":"writeDesktopAppIconPreference","args":["HELLO",null],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received null"}
+{"fn":"writeDesktopAppIconPreference","args":["abHELLO",null],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received null"}
+{"fn":"writeDesktopAppIconPreference","args":["Hello World",[]],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Array"}
+{"fn":"writeDesktopAppIconPreference","args":["a:b:c",{}],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Object"}
+{"fn":"writeDesktopAppIconPreference","args":["😀","x"],"ok":{"$undefined":true}}
+{"fn":"writeDesktopAppIconPreference","args":["a",{"a":"b"}],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Object"}
+{"fn":"writeDesktopAppIconPreference","args":[":",{}],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Object"}
+{"fn":"writeDesktopAppIconPreference","args":["straße","RASSE"],"ok":{"$undefined":true}}
+{"fn":"writeDesktopAppIconPreference","args":["tab\tseparated",0],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received type number (0)"}
+{"fn":"writeDesktopAppIconPreference","args":["a",null],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received null"}
+{"fn":"writeDesktopAppIconPreference","args":["emoji 👍🏽 mix","x"],"ok":{"$undefined":true}}
+{"fn":"writeDesktopAppIconPreference","args":["İstanbul",[]],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Array"}
+{"fn":"writeDesktopAppIconPreference","args":["ΣΊΣΥΦΟΣ",0],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received type number (0)"}
+{"fn":"writeDesktopAppIconPreference","args":["  padded  ",true],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received type boolean (true)"}
+{"fn":"writeDesktopAppIconPreference","args":["a",{"a":{"b":"c"}}],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Object"}
+{"fn":"writeDesktopAppIconPreference","args":["a:b:c",{"a":"b"}],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Object"}
+{"fn":"writeDesktopAppIconPreference","args":["straße  padded  ",{}],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Object"}
+{"fn":"writeDesktopAppIconPreference","args":["ab",[]],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Array"}
+{"fn":"writeDesktopAppIconPreference","args":["ünïcödé",{}],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Object"}
+{"fn":"writeDesktopAppIconPreference","args":["{name} has {count} itemsab",["a",1]],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Array"}
+{"fn":"writeDesktopAppIconPreference","args":["ab",null],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received null"}
+{"fn":"writeDesktopAppIconPreference","args":["﻿boma.b.c",true],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received type boolean (true)"}
+{"fn":"writeDesktopAppIconPreference","args":["﻿bom",["a",1]],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Array"}
+{"fn":"writeDesktopAppIconPreference","args":["line1\nline2ΣΊΣΥΦΟΣ",[]],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Array"}
+{"fn":"writeDesktopAppIconPreference","args":["key_name-1",true],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received type boolean (true)"}
+{"fn":"writeDesktopAppIconPreference","args":["ünïcödé😀",null],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received null"}
+{"fn":"writeDesktopAppIconPreference","args":["ΣΊΣΥΦΟΣtrailing.",{"a":"b"}],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Object"}
+{"fn":"writeDesktopAppIconPreference","args":["ΣΊΣΥΦΟΣ﻿bom",{"a":{"b":"c"}}],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Object"}
+{"fn":"writeDesktopAppIconPreference","args":["",{"a":{"b":"c"}}],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Object"}
+{"fn":"writeDesktopAppIconPreference","args":["./x/**/*.json",[]],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Array"}
+{"fn":"writeDesktopAppIconPreference","args":["hello world",[]],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Array"}
+{"fn":"writeDesktopAppIconPreference","args":["a:b:c",0],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received type number (0)"}
+{"fn":"writeDesktopAppIconPreference","args":["abc",0],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received type number (0)"}
+{"fn":"writeDesktopAppIconPreference","args":["ünïcödé",[]],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Array"}
+{"fn":"writeDesktopAppIconPreference","args":["",null],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received null"}
+{"fn":"writeDesktopAppIconPreference","args":["ns:key.path",[]],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Array"}
+{"fn":"writeDesktopAppIconPreference","args":["straße",["a",1]],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Array"}
+{"fn":"writeDesktopAppIconPreference","args":["straße",null],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received null"}
+{"fn":"writeDesktopAppIconPreference","args":["abc","x"],"ok":{"$undefined":true}}
+{"fn":"writeDesktopAppIconPreference","args":["abc",true],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received type boolean (true)"}
+{"fn":"writeDesktopAppIconPreference","args":["hello world",null],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received null"}
+{"fn":"writeDesktopAppIconPreference","args":["straße",0],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received type number (0)"}
+{"fn":"writeDesktopAppIconPreference","args":["Hello World","x"],"ok":{"$undefined":true}}
+{"fn":"writeDesktopAppIconPreference","args":["{name} has {count} items","x"],"ok":{"$undefined":true}}
+{"fn":"writeDesktopAppIconPreference","args":["a:b:c",null],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received null"}
+{"fn":"writeDesktopAppIconPreference","args":["aba😀b😀c",null],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received null"}
+{"fn":"writeDesktopAppIconPreference","args":["straßetab\tseparated",true],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received type boolean (true)"}
+{"fn":"writeDesktopAppIconPreference","args":["HELLOünïcödé",["a",1]],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Array"}
+{"fn":"writeDesktopAppIconPreference","args":["a😀b😀c😀",{}],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Object"}
+{"fn":"writeDesktopAppIconPreference","args":["ΣΊΣΥΦΟΣ",true],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received type boolean (true)"}
+{"fn":"writeDesktopAppIconPreference","args":[".leading",["a",1]],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Array"}
+{"fn":"writeDesktopAppIconPreference","args":[":",["a",1]],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Array"}
+{"fn":"writeDesktopAppIconPreference","args":["HELLO",[]],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Array"}
+{"fn":"writeDesktopAppIconPreference","args":["src/a/b.tsa",["a",1]],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Array"}
+{"fn":"writeDesktopAppIconPreference","args":["Hello Worldhello world",{"a":"b"}],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Object"}
+{"fn":"writeDesktopAppIconPreference","args":["﻿bom",[]],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Array"}
+{"fn":"writeDesktopAppIconPreference","args":["a.b.c",{"a":{"b":"c"}}],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Object"}
+{"fn":"writeDesktopAppIconPreference","args":[":ns:key.path",[]],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Array"}
+{"fn":"writeDesktopAppIconPreference","args":["a😀b😀ca😀b😀c","a😀b"],"ok":{"$undefined":true}}
+{"fn":"writeDesktopAppIconPreference","args":["ünïcödéa..b",["a",1]],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Array"}
+{"fn":"writeDesktopAppIconPreference","args":["abcΣΊΣΥΦΟΣ",["a",1]],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Array"}
+{"fn":"writeDesktopAppIconPreference","args":["日本語のテキスト",{}],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Object"}
+{"fn":"writeDesktopAppIconPreference","args":["😀straße",{"a":"b"}],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Object"}
+{"fn":"writeDesktopAppIconPreference","args":["",[]],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Array"}
+{"fn":"writeDesktopAppIconPreference","args":[".leading",true],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received type boolean (true)"}
+{"fn":"writeDesktopAppIconPreference","args":["a.b.c",{}],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Object"}
+{"fn":"writeDesktopAppIconPreference","args":["ns:key.path","x"],"ok":{"$undefined":true}}
+{"fn":"writeDesktopAppIconPreference","args":["line1\nline2",["a",1]],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Array"}
+{"fn":"writeDesktopAppIconPreference","args":["Hello World"," Wor"],"ok":{"$undefined":true}}
+{"fn":"writeDesktopAppIconPreference","args":["abc﻿bom",[]],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Array"}
+{"fn":"writeDesktopAppIconPreference","args":[".leading",{"a":{"b":"c"}}],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Object"}
+{"fn":"writeDesktopAppIconPreference","args":["ésrc/a/b.ts",["a",1]],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Array"}
+{"fn":"writeDesktopAppIconPreference","args":["a.b.c",0],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received type number (0)"}
+{"fn":"writeDesktopAppIconPreference","args":["﻿bom","x"],"ok":{"$undefined":true}}
+{"fn":"writeDesktopAppIconPreference","args":["src/a/b.ts","x"],"ok":{"$undefined":true}}
+{"fn":"writeDesktopAppIconPreference","args":["a:b:c","b:c"],"ok":{"$undefined":true}}
+{"fn":"writeDesktopAppIconPreference","args":["ab",0],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received type number (0)"}
+{"fn":"writeDesktopAppIconPreference","args":["a😀b😀chello",true],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received type boolean (true)"}
+{"fn":"writeDesktopAppIconPreference","args":["a..b",{"a":"b"}],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Object"}
+{"fn":"writeDesktopAppIconPreference","args":["hello worldns:key.path","th"],"ok":{"$undefined":true}}
+{"fn":"writeDesktopAppIconPreference","args":["a:b:c",[]],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Array"}
+{"fn":"writeDesktopAppIconPreference","args":["key_name-1","-"],"ok":{"$undefined":true}}
+{"fn":"writeDesktopAppIconPreference","args":["﻿bom",{"a":"b"}],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Object"}
+{"fn":"writeDesktopAppIconPreference","args":["./x/**/*.json",null],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received null"}
+{"fn":"writeDesktopAppIconPreference","args":["line1\nline2src/a/b.ts",{"a":"b"}],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Object"}
+{"fn":"writeDesktopAppIconPreference","args":["hello world:",["a",1]],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Array"}
+{"fn":"writeDesktopAppIconPreference","args":["trailing..leading",{}],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Object"}
+{"fn":"writeDesktopAppIconPreference","args":["ΣΊΣΥΦΟΣ",null],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received null"}
+{"fn":"writeDesktopAppIconPreference","args":["İstanbul",{"a":{"b":"c"}}],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Object"}
+{"fn":"writeDesktopAppIconPreference","args":["a.b.cstraße",{"a":"b"}],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Object"}
+{"fn":"writeDesktopAppIconPreference","args":["a","A"],"ok":{"$undefined":true}}
+{"fn":"writeDesktopAppIconPreference","args":["line1\nline2",[]],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Array"}
+{"fn":"writeDesktopAppIconPreference","args":["hellons:key.path",{"a":"b"}],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Object"}
+{"fn":"writeDesktopAppIconPreference","args":["a.b.c",{"a":"b"}],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Object"}
+{"fn":"writeDesktopAppIconPreference","args":["{name} has {count} items",true],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received type boolean (true)"}
+{"fn":"writeDesktopAppIconPreference","args":["",{"a":"b"}],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Object"}
+{"fn":"writeDesktopAppIconPreference","args":["HELLO",["a",1]],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Array"}
+{"fn":"writeDesktopAppIconPreference","args":["İstanbulab",{"a":"b"}],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Object"}
+{"fn":"writeDesktopAppIconPreference","args":["héllo wörld",null],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received null"}
+{"fn":"writeDesktopAppIconPreference","args":["👍🏽 thumbs",null],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received null"}
+{"fn":"writeDesktopAppIconPreference","args":["日本語",null],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received null"}
+{"fn":"writeDesktopAppIconPreference","args":["İstanbul",null],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received null"}
+{"fn":"writeDesktopAppIconPreference","args":["ılık ırmak",null],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received null"}
+{"fn":"writeDesktopAppIconPreference","args":["👨‍👩‍👧 family",null],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received null"}
+{"fn":"writeDesktopAppIconPreference","args":["a b",null],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received null"}
+{"fn":"writeDesktopAppIconPreference","args":["a😀b",null],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received null"}
+{"fn":"writeDesktopAppIconPreference","args":["﻿bom",null],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received null"}
+{"fn":"writeDesktopAppIconPreference","args":["a²b x½ y①",null],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received null"}
+{"fn":"writeDesktopAppIconPreference","args":["aⅠb Ⅻ",null],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received null"}
+{"fn":"writeDesktopAppIconPreference","args":["a𐐀b 𝐀bc",null],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received null"}
+{"fn":"writeDesktopAppIconPreference","args":["कि ٣٤",null],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received null"}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":null,"platform":"darwin","usesLegacyDockIcon":true,"isBetaFlavor":true}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":{"a":"b"},"platform":"linux","usesLegacyDockIcon":true,"isBetaFlavor":false}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[0],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":0,"platform":"linux","usesLegacyDockIcon":true,"isBetaFlavor":false}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":"x","platform":"linux","usesLegacyDockIcon":false,"isBetaFlavor":false}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":0,"platform":"linux","usesLegacyDockIcon":true,"isBetaFlavor":true}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":{},"platform":"darwin","usesLegacyDockIcon":false,"isBetaFlavor":true}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":["a",1],"platform":"darwin","usesLegacyDockIcon":true,"isBetaFlavor":false}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":["a",1],"platform":"win32","usesLegacyDockIcon":false,"isBetaFlavor":true}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":0,"platform":"win32","usesLegacyDockIcon":true,"isBetaFlavor":true}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":0,"platform":"win32","usesLegacyDockIcon":false,"isBetaFlavor":true}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":{"a":{"b":"c"}},"platform":"win32","usesLegacyDockIcon":true,"isBetaFlavor":false}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":"x","platform":"win32","usesLegacyDockIcon":false,"isBetaFlavor":true}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":true,"platform":"win32","usesLegacyDockIcon":false,"isBetaFlavor":false}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":{},"platform":"linux","usesLegacyDockIcon":false,"isBetaFlavor":false}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":true,"platform":"win32","usesLegacyDockIcon":false,"isBetaFlavor":true}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":true,"platform":"linux","usesLegacyDockIcon":true,"isBetaFlavor":true}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":0,"platform":"darwin","usesLegacyDockIcon":true,"isBetaFlavor":true}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":{},"platform":"linux","usesLegacyDockIcon":true,"isBetaFlavor":true}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":0,"platform":"darwin","usesLegacyDockIcon":false,"isBetaFlavor":true}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":true,"platform":"linux","usesLegacyDockIcon":false,"isBetaFlavor":false}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":"x","platform":"darwin","usesLegacyDockIcon":false,"isBetaFlavor":false}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":true,"platform":"darwin","usesLegacyDockIcon":true,"isBetaFlavor":true}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":["a",1],"platform":"darwin","usesLegacyDockIcon":true,"isBetaFlavor":true}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":{"a":"b"},"platform":"linux","usesLegacyDockIcon":false,"isBetaFlavor":true}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":[],"platform":"linux","usesLegacyDockIcon":true,"isBetaFlavor":false}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":[],"platform":"win32","usesLegacyDockIcon":true,"isBetaFlavor":false}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":{"a":{"b":"c"}},"platform":"linux","usesLegacyDockIcon":true,"isBetaFlavor":false}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":[],"platform":"win32","usesLegacyDockIcon":true,"isBetaFlavor":true}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":["a",1],"platform":"linux","usesLegacyDockIcon":false,"isBetaFlavor":true}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":0,"platform":"darwin","usesLegacyDockIcon":false,"isBetaFlavor":false}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":true,"platform":"linux","usesLegacyDockIcon":false,"isBetaFlavor":true}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":true,"platform":"darwin","usesLegacyDockIcon":false,"isBetaFlavor":true}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":[],"platform":"linux","usesLegacyDockIcon":true,"isBetaFlavor":true}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":"x","platform":"win32","usesLegacyDockIcon":false,"isBetaFlavor":false}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":["a",1],"platform":"linux","usesLegacyDockIcon":true,"isBetaFlavor":true}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":{"a":"b"},"platform":"darwin","usesLegacyDockIcon":false,"isBetaFlavor":false}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":null,"platform":"win32","usesLegacyDockIcon":true,"isBetaFlavor":true}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[[]],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":["a",1],"platform":"win32","usesLegacyDockIcon":false,"isBetaFlavor":false}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":0,"platform":"linux","usesLegacyDockIcon":false,"isBetaFlavor":false}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":{},"platform":"win32","usesLegacyDockIcon":true,"isBetaFlavor":true}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":{},"platform":"win32","usesLegacyDockIcon":false,"isBetaFlavor":false}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":["a",1],"platform":"win32","usesLegacyDockIcon":true,"isBetaFlavor":false}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":true,"platform":"darwin","usesLegacyDockIcon":false,"isBetaFlavor":false}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":"x","platform":"darwin","usesLegacyDockIcon":false,"isBetaFlavor":true}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":"x","platform":"win32","usesLegacyDockIcon":true,"isBetaFlavor":false}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[["a",1]],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"a":"b"}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":{},"platform":"linux","usesLegacyDockIcon":false,"isBetaFlavor":true}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":{"a":"b"},"platform":"linux","usesLegacyDockIcon":true,"isBetaFlavor":true}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"a":{"b":"c"}}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":{"a":{"b":"c"}},"platform":"darwin","usesLegacyDockIcon":true,"isBetaFlavor":true}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":null,"platform":"darwin","usesLegacyDockIcon":false,"isBetaFlavor":true}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":0,"platform":"win32","usesLegacyDockIcon":true,"isBetaFlavor":false}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":[],"platform":"darwin","usesLegacyDockIcon":false,"isBetaFlavor":true}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":{"a":{"b":"c"}},"platform":"darwin","usesLegacyDockIcon":true,"isBetaFlavor":false}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[true],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":{"a":{"b":"c"}},"platform":"darwin","usesLegacyDockIcon":false,"isBetaFlavor":false}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":{"a":"b"},"platform":"darwin","usesLegacyDockIcon":true,"isBetaFlavor":true}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":["a",1],"platform":"darwin","usesLegacyDockIcon":false,"isBetaFlavor":true}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":{"a":{"b":"c"}},"platform":"linux","usesLegacyDockIcon":true,"isBetaFlavor":true}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":{"a":{"b":"c"}},"platform":"darwin","usesLegacyDockIcon":false,"isBetaFlavor":true}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":true,"platform":"linux","usesLegacyDockIcon":true,"isBetaFlavor":false}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":true,"platform":"win32","usesLegacyDockIcon":true,"isBetaFlavor":false}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":"x","platform":"darwin","usesLegacyDockIcon":true,"isBetaFlavor":false}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":null,"platform":"win32","usesLegacyDockIcon":true,"isBetaFlavor":false}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":0,"platform":"win32","usesLegacyDockIcon":false,"isBetaFlavor":false}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":[],"platform":"win32","usesLegacyDockIcon":false,"isBetaFlavor":true}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":null,"platform":"win32","usesLegacyDockIcon":false,"isBetaFlavor":false}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":null,"platform":"win32","usesLegacyDockIcon":false,"isBetaFlavor":true}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":{},"platform":"linux","usesLegacyDockIcon":true,"isBetaFlavor":false}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":["a",1],"platform":"linux","usesLegacyDockIcon":true,"isBetaFlavor":false}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":{"a":"b"},"platform":"linux","usesLegacyDockIcon":false,"isBetaFlavor":false}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":null,"platform":"darwin","usesLegacyDockIcon":false,"isBetaFlavor":false}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":0,"platform":"linux","usesLegacyDockIcon":false,"isBetaFlavor":true}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":{"a":"b"},"platform":"win32","usesLegacyDockIcon":true,"isBetaFlavor":false}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":[],"platform":"win32","usesLegacyDockIcon":false,"isBetaFlavor":false}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":[],"platform":"darwin","usesLegacyDockIcon":false,"isBetaFlavor":false}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":["a",1],"platform":"linux","usesLegacyDockIcon":false,"isBetaFlavor":false}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":{},"platform":"darwin","usesLegacyDockIcon":true,"isBetaFlavor":true}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":{"a":"b"},"platform":"darwin","usesLegacyDockIcon":true,"isBetaFlavor":false}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":"x","platform":"linux","usesLegacyDockIcon":true,"isBetaFlavor":false}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":null,"platform":"darwin","usesLegacyDockIcon":true,"isBetaFlavor":false}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":null,"platform":"linux","usesLegacyDockIcon":true,"isBetaFlavor":false}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":{"a":{"b":"c"}},"platform":"win32","usesLegacyDockIcon":false,"isBetaFlavor":false}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":{"a":"b"},"platform":"win32","usesLegacyDockIcon":false,"isBetaFlavor":true}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":true,"platform":"win32","usesLegacyDockIcon":true,"isBetaFlavor":true}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":["x"],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":{"a":{"b":"c"}},"platform":"win32","usesLegacyDockIcon":true,"isBetaFlavor":true}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":null,"platform":"linux","usesLegacyDockIcon":true,"isBetaFlavor":true}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":true,"platform":"darwin","usesLegacyDockIcon":true,"isBetaFlavor":false}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":[],"platform":"linux","usesLegacyDockIcon":false,"isBetaFlavor":true}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[null],"error":"Cannot read properties of null (reading 'platform')"}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":{},"platform":"win32","usesLegacyDockIcon":true,"isBetaFlavor":false}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":"x","platform":"win32","usesLegacyDockIcon":true,"isBetaFlavor":true}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":{"a":"b"},"platform":"darwin","usesLegacyDockIcon":false,"isBetaFlavor":true}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":0,"platform":"darwin","usesLegacyDockIcon":true,"isBetaFlavor":false}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":null,"platform":"linux","usesLegacyDockIcon":false,"isBetaFlavor":false}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":[],"platform":"linux","usesLegacyDockIcon":false,"isBetaFlavor":false}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":["a",1],"platform":"darwin","usesLegacyDockIcon":false,"isBetaFlavor":false}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":{"a":"b"},"platform":"win32","usesLegacyDockIcon":false,"isBetaFlavor":false}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":[],"platform":"darwin","usesLegacyDockIcon":true,"isBetaFlavor":false}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":"x","platform":"linux","usesLegacyDockIcon":true,"isBetaFlavor":true}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":null,"platform":"linux","usesLegacyDockIcon":false,"isBetaFlavor":true}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":{},"platform":"win32","usesLegacyDockIcon":false,"isBetaFlavor":true}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":[],"platform":"darwin","usesLegacyDockIcon":true,"isBetaFlavor":true}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":{},"platform":"darwin","usesLegacyDockIcon":false,"isBetaFlavor":false}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":{},"platform":"darwin","usesLegacyDockIcon":true,"isBetaFlavor":false}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":["a",1],"platform":"win32","usesLegacyDockIcon":true,"isBetaFlavor":true}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":{"a":{"b":"c"}},"platform":"linux","usesLegacyDockIcon":false,"isBetaFlavor":false}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":{"a":{"b":"c"}},"platform":"linux","usesLegacyDockIcon":false,"isBetaFlavor":true}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":{"a":{"b":"c"}},"platform":"win32","usesLegacyDockIcon":false,"isBetaFlavor":true}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":"x","platform":"linux","usesLegacyDockIcon":false,"isBetaFlavor":true}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":{"a":"b"},"platform":"win32","usesLegacyDockIcon":true,"isBetaFlavor":true}],"ok":false}
+{"fn":"usesMacBundleAppIcon","args":[{"icon":"x","platform":"darwin","usesLegacyDockIcon":true,"isBetaFlavor":true}],"ok":false}
+{"fn":"shouldUpdateDesktopAppIcon","args":[null,true],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":[0,["a",1]],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":[{"a":"b"},"x"],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":["x",{"a":{"b":"c"}}],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":[true,0],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":["x","x"],"ok":false}
+{"fn":"shouldUpdateDesktopAppIcon","args":[{"a":"b"},{}],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":[[],null],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":["x",[]],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":[null,{"a":{"b":"c"}}],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":[[],true],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":[{"a":{"b":"c"}},{"a":{"b":"c"}}],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":[true,{"a":{"b":"c"}}],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":[{"a":"b"},{"a":"b"}],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":["x",{"a":"b"}],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":[["a",1],{"a":"b"}],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":[{"a":{"b":"c"}},null],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":[{"a":{"b":"c"}},true],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":[null,{}],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":[{},true],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":[{},{"a":{"b":"c"}}],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":[["a",1],0],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":[null,[]],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":[{"a":"b"},{"a":{"b":"c"}}],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":[0,{}],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":[{"a":"b"},true],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":[true,true],"ok":false}
+{"fn":"shouldUpdateDesktopAppIcon","args":[[],{"a":"b"}],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":[true,{"a":"b"}],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":[{},{}],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":[[],{"a":{"b":"c"}}],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":[{"a":{"b":"c"}},{}],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":[0,null],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":[["a",1],{}],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":[{},{"a":"b"}],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":[0,0],"ok":false}
+{"fn":"shouldUpdateDesktopAppIcon","args":["x",null],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":[["a",1],{"a":{"b":"c"}}],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":[["a",1],["a",1]],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":[true,["a",1]],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":[{"a":{"b":"c"}},"x"],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":[{},null],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":[{"a":"b"},0],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":[0,"x"],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":[0,{"a":{"b":"c"}}],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":["x",0],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":["x",{}],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":[{},0],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":[["a",1],true],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":[null,null],"ok":false}
+{"fn":"shouldUpdateDesktopAppIcon","args":[{"a":{"b":"c"}},["a",1]],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":["x",["a",1]],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":[null,{"a":"b"}],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":[[],"x"],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":[{"a":{"b":"c"}},0],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":[["a",1],null],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":[true,"x"],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":[null,0],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":[0,true],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":[["a",1],[]],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":[{"a":{"b":"c"}},[]],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":[{},[]],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":[{"a":"b"},null],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":["x",true],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":[true,[]],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":[{"a":"b"},["a",1]],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":[[],[]],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":[{"a":"b"},[]],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":[{},"x"],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":[{},["a",1]],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":[{"a":{"b":"c"}},{"a":"b"}],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":[true,null],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":[0,[]],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":[[],["a",1]],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":[0,{"a":"b"}],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":[[],0],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":[["a",1],"x"],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":[null,"x"],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":[null,["a",1]],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":[true,{}],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":[[],{}],"ok":true}
+{"fn":"shouldUpdateDesktopAppIcon","args":["x","X"],"ok":true}
+{"fn":"desktopAppIconResourceName","args":[{"icon":{},"platform":"darwin","isDarkAppearance":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":{"a":{"b":"c"}},"platform":"linux","isDarkAppearance":false,"isBetaFlavor":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":{},"platform":"linux","isDarkAppearance":false,"isBetaFlavor":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":{"a":{"b":"c"}},"platform":"win32","isDarkAppearance":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":0,"platform":"darwin","isDarkAppearance":false,"isBetaFlavor":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[0],"error":"Cannot read properties of undefined (reading 'undefined')"}
+{"fn":"desktopAppIconResourceName","args":[{"icon":"x","platform":"win32","isDarkAppearance":false,"isBetaFlavor":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":{"a":{"b":"c"}},"platform":"darwin","isDarkAppearance":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":{"a":"b"},"platform":"darwin","isDarkAppearance":true,"isBetaFlavor":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":{},"platform":"darwin","isDarkAppearance":false,"isBetaFlavor":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":0,"platform":"darwin","isDarkAppearance":true,"isBetaFlavor":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[["a",1]],"error":"Cannot read properties of undefined (reading 'undefined')"}
+{"fn":"desktopAppIconResourceName","args":[{"icon":["a",1],"platform":"darwin","isDarkAppearance":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":["a",1],"platform":"linux","isDarkAppearance":false,"isBetaFlavor":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":true,"platform":"win32","isDarkAppearance":true,"isBetaFlavor":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":{"a":{"b":"c"}},"platform":"win32","isDarkAppearance":false,"isBetaFlavor":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":{"a":{"b":"c"}},"platform":"linux","isDarkAppearance":false,"isBetaFlavor":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":[],"platform":"darwin","isDarkAppearance":false,"isBetaFlavor":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":{},"platform":"win32","isDarkAppearance":false,"isBetaFlavor":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":true,"platform":"linux","isDarkAppearance":false,"isBetaFlavor":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":null,"platform":"linux","isDarkAppearance":true,"isBetaFlavor":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":null,"platform":"darwin","isDarkAppearance":false,"isBetaFlavor":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":"x","platform":"win32","isDarkAppearance":true,"isBetaFlavor":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":["x"],"error":"Cannot read properties of undefined (reading 'undefined')"}
+{"fn":"desktopAppIconResourceName","args":[{"icon":true,"platform":"linux","isDarkAppearance":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":{"a":{"b":"c"}},"platform":"win32","isDarkAppearance":true,"isBetaFlavor":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":true,"platform":"darwin","isDarkAppearance":false,"isBetaFlavor":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":[],"platform":"darwin","isDarkAppearance":false,"isBetaFlavor":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":{"a":"b"},"platform":"win32","isDarkAppearance":true,"isBetaFlavor":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":"x","platform":"darwin","isDarkAppearance":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[[]],"error":"Cannot read properties of undefined (reading 'undefined')"}
+{"fn":"desktopAppIconResourceName","args":[{"icon":true,"platform":"win32","isDarkAppearance":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":["a",1],"platform":"darwin","isDarkAppearance":false,"isBetaFlavor":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":"x","platform":"darwin","isDarkAppearance":false,"isBetaFlavor":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":null,"platform":"linux","isDarkAppearance":false,"isBetaFlavor":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":[],"platform":"darwin","isDarkAppearance":true,"isBetaFlavor":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[true],"error":"Cannot read properties of undefined (reading 'undefined')"}
+{"fn":"desktopAppIconResourceName","args":[{"icon":{},"platform":"darwin","isDarkAppearance":false,"isBetaFlavor":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":true,"platform":"win32","isDarkAppearance":true,"isBetaFlavor":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":{"a":"b"},"platform":"win32","isDarkAppearance":false,"isBetaFlavor":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":null,"platform":"linux","isDarkAppearance":true,"isBetaFlavor":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":{"a":"b"},"platform":"linux","isDarkAppearance":false,"isBetaFlavor":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[null],"error":"Cannot read properties of null (reading 'isBetaFlavor')"}
+{"fn":"desktopAppIconResourceName","args":[{"icon":{"a":{"b":"c"}},"platform":"linux","isDarkAppearance":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":null,"platform":"darwin","isDarkAppearance":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":{"a":"b"},"platform":"darwin","isDarkAppearance":true,"isBetaFlavor":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":true,"platform":"darwin","isDarkAppearance":true,"isBetaFlavor":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":["a",1],"platform":"linux","isDarkAppearance":true,"isBetaFlavor":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":["a",1],"platform":"darwin","isDarkAppearance":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":{"a":{"b":"c"}},"platform":"linux","isDarkAppearance":true,"isBetaFlavor":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":"x","platform":"linux","isDarkAppearance":true,"isBetaFlavor":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":{"a":"b"},"platform":"linux","isDarkAppearance":true,"isBetaFlavor":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":null,"platform":"linux","isDarkAppearance":false,"isBetaFlavor":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":0,"platform":"win32","isDarkAppearance":false,"isBetaFlavor":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":0,"platform":"linux","isDarkAppearance":false,"isBetaFlavor":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":{"a":"b"},"platform":"darwin","isDarkAppearance":false,"isBetaFlavor":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":{},"platform":"linux","isDarkAppearance":true,"isBetaFlavor":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":0,"platform":"darwin","isDarkAppearance":true,"isBetaFlavor":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":0,"platform":"win32","isDarkAppearance":true,"isBetaFlavor":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":null,"platform":"darwin","isDarkAppearance":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":{"a":{"b":"c"}},"platform":"darwin","isDarkAppearance":true,"isBetaFlavor":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":{},"platform":"win32","isDarkAppearance":true,"isBetaFlavor":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":true,"platform":"linux","isDarkAppearance":false,"isBetaFlavor":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":null,"platform":"darwin","isDarkAppearance":true,"isBetaFlavor":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{}],"error":"Cannot read properties of undefined (reading 'undefined')"}
+{"fn":"desktopAppIconResourceName","args":[{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'undefined')"}
+{"fn":"desktopAppIconResourceName","args":[{"icon":"x","platform":"linux","isDarkAppearance":true,"isBetaFlavor":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":true,"platform":"linux","isDarkAppearance":true,"isBetaFlavor":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":[],"platform":"linux","isDarkAppearance":true,"isBetaFlavor":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":null,"platform":"win32","isDarkAppearance":false,"isBetaFlavor":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":["a",1],"platform":"win32","isDarkAppearance":true,"isBetaFlavor":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":["a",1],"platform":"darwin","isDarkAppearance":false,"isBetaFlavor":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":{"a":{"b":"c"}},"platform":"win32","isDarkAppearance":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":0,"platform":"linux","isDarkAppearance":false,"isBetaFlavor":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":{"a":"b"},"platform":"darwin","isDarkAppearance":false,"isBetaFlavor":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"a":"b"}],"error":"Cannot read properties of undefined (reading 'undefined')"}
+{"fn":"desktopAppIconResourceName","args":[{"icon":{"a":"b"},"platform":"win32","isDarkAppearance":false,"isBetaFlavor":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":{"a":{"b":"c"}},"platform":"win32","isDarkAppearance":true,"isBetaFlavor":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":["a",1],"platform":"linux","isDarkAppearance":true,"isBetaFlavor":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":"x","platform":"darwin","isDarkAppearance":false,"isBetaFlavor":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":true,"platform":"linux","isDarkAppearance":true,"isBetaFlavor":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":{"a":"b"},"platform":"linux","isDarkAppearance":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":{"a":"b"},"platform":"win32","isDarkAppearance":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":[],"platform":"linux","isDarkAppearance":false,"isBetaFlavor":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":["a",1],"platform":"darwin","isDarkAppearance":true,"isBetaFlavor":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":[],"platform":"darwin","isDarkAppearance":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":{},"platform":"linux","isDarkAppearance":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":null,"platform":"win32","isDarkAppearance":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":{"a":"b"},"platform":"win32","isDarkAppearance":true,"isBetaFlavor":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":[],"platform":"win32","isDarkAppearance":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":{"a":{"b":"c"}},"platform":"linux","isDarkAppearance":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":{"a":"b"},"platform":"linux","isDarkAppearance":false,"isBetaFlavor":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":{"a":"b"},"platform":"linux","isDarkAppearance":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":"x","platform":"linux","isDarkAppearance":false,"isBetaFlavor":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":[],"platform":"darwin","isDarkAppearance":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":"x","platform":"linux","isDarkAppearance":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":0,"platform":"linux","isDarkAppearance":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":true,"platform":"darwin","isDarkAppearance":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":"x","platform":"linux","isDarkAppearance":false,"isBetaFlavor":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":true,"platform":"darwin","isDarkAppearance":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":null,"platform":"win32","isDarkAppearance":false,"isBetaFlavor":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":["a",1],"platform":"linux","isDarkAppearance":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":0,"platform":"darwin","isDarkAppearance":false,"isBetaFlavor":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":[],"platform":"win32","isDarkAppearance":false,"isBetaFlavor":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":["a",1],"platform":"darwin","isDarkAppearance":true,"isBetaFlavor":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":{},"platform":"darwin","isDarkAppearance":true,"isBetaFlavor":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":{"a":{"b":"c"}},"platform":"darwin","isDarkAppearance":false,"isBetaFlavor":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":[],"platform":"darwin","isDarkAppearance":true,"isBetaFlavor":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":[],"platform":"win32","isDarkAppearance":true,"isBetaFlavor":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":0,"platform":"win32","isDarkAppearance":false,"isBetaFlavor":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":{},"platform":"win32","isDarkAppearance":true,"isBetaFlavor":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":{},"platform":"linux","isDarkAppearance":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":"x","platform":"win32","isDarkAppearance":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":"x","platform":"win32","isDarkAppearance":false,"isBetaFlavor":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":"x","platform":"linux","isDarkAppearance":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":{"a":{"b":"c"}},"platform":"darwin","isDarkAppearance":true,"isBetaFlavor":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":0,"platform":"linux","isDarkAppearance":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":null,"platform":"win32","isDarkAppearance":true,"isBetaFlavor":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":null,"platform":"linux","isDarkAppearance":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":0,"platform":"win32","isDarkAppearance":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":0,"platform":"darwin","isDarkAppearance":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":true,"platform":"linux","isDarkAppearance":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":true,"platform":"darwin","isDarkAppearance":true,"isBetaFlavor":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":null,"platform":"darwin","isDarkAppearance":false,"isBetaFlavor":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":{},"platform":"linux","isDarkAppearance":true,"isBetaFlavor":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":"x","platform":"win32","isDarkAppearance":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":0,"platform":"linux","isDarkAppearance":true,"isBetaFlavor":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":{},"platform":"win32","isDarkAppearance":false,"isBetaFlavor":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":["a",1],"platform":"win32","isDarkAppearance":true,"isBetaFlavor":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":[],"platform":"linux","isDarkAppearance":true,"isBetaFlavor":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":0,"platform":"linux","isDarkAppearance":true,"isBetaFlavor":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":["a",1],"platform":"win32","isDarkAppearance":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":{},"platform":"darwin","isDarkAppearance":true,"isBetaFlavor":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":{"a":{"b":"c"}},"platform":"darwin","isDarkAppearance":false,"isBetaFlavor":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":{"a":{"b":"c"}},"platform":"linux","isDarkAppearance":true,"isBetaFlavor":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":true,"platform":"darwin","isDarkAppearance":false,"isBetaFlavor":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":["a",1],"platform":"win32","isDarkAppearance":false,"isBetaFlavor":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":["a",1],"platform":"linux","isDarkAppearance":false,"isBetaFlavor":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":{"a":{"b":"c"}},"platform":"win32","isDarkAppearance":false,"isBetaFlavor":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":{},"platform":"linux","isDarkAppearance":false,"isBetaFlavor":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":{"a":"b"},"platform":"darwin","isDarkAppearance":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":0,"platform":"win32","isDarkAppearance":true,"isBetaFlavor":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":0,"platform":"darwin","isDarkAppearance":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":"x","platform":"darwin","isDarkAppearance":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":[],"platform":"win32","isDarkAppearance":false,"isBetaFlavor":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":true,"platform":"win32","isDarkAppearance":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":[],"platform":"linux","isDarkAppearance":false,"isBetaFlavor":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":"x","platform":"win32","isDarkAppearance":true,"isBetaFlavor":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":"x","platform":"darwin","isDarkAppearance":true,"isBetaFlavor":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":"x","platform":"darwin","isDarkAppearance":true,"isBetaFlavor":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":["a",1],"platform":"win32","isDarkAppearance":false,"isBetaFlavor":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":["a",1],"platform":"win32","isDarkAppearance":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":[],"platform":"win32","isDarkAppearance":true,"isBetaFlavor":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":null,"platform":"win32","isDarkAppearance":true,"isBetaFlavor":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":["a",1],"platform":"linux","isDarkAppearance":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":[],"platform":"win32","isDarkAppearance":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":true,"platform":"win32","isDarkAppearance":false,"isBetaFlavor":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":{},"platform":"darwin","isDarkAppearance":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":0,"platform":"win32","isDarkAppearance":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":{},"platform":"win32","isDarkAppearance":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":null,"platform":"linux","isDarkAppearance":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":{"a":"b"},"platform":"win32","isDarkAppearance":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":{"a":{"b":"c"}},"platform":"darwin","isDarkAppearance":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":[],"platform":"linux","isDarkAppearance":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":{"a":"b"},"platform":"linux","isDarkAppearance":true,"isBetaFlavor":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":true,"platform":"win32","isDarkAppearance":false,"isBetaFlavor":false}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":{"a":"b"},"platform":"darwin","isDarkAppearance":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":[],"platform":"linux","isDarkAppearance":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":null,"platform":"darwin","isDarkAppearance":true,"isBetaFlavor":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":null,"platform":"win32","isDarkAppearance":true}],"ok":{"$undefined":true}}
+{"fn":"desktopAppIconResourceName","args":[{"icon":{},"platform":"win32","isDarkAppearance":true}],"ok":{"$undefined":true}}

@@ -1,0 +1,103 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/desktop/src/desktopAppIcon.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "desktopappicon-rs",
+  "exports": [
+    {
+      "name": "writeDesktopAppIconPreference",
+      "file": "apps/desktop/src/desktopAppIcon.ts",
+      "line": 45,
+      "params": [
+        {
+          "name": "filePath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "icon",
+          "ts_type": "typeof typeof typeof typeof DesktopAppIcon.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "usesMacBundleAppIcon",
+      "file": "apps/desktop/src/desktopAppIcon.ts",
+      "line": 89,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "MacBundleAppIconInput",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "shouldUpdateDesktopAppIcon",
+      "file": "apps/desktop/src/desktopAppIcon.ts",
+      "line": 97,
+      "params": [
+        {
+          "name": "currentIcon",
+          "ts_type": "typeof typeof typeof typeof DesktopAppIcon.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "requestedIcon",
+          "ts_type": "typeof typeof typeof typeof DesktopAppIcon.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "desktopAppIconResourceName",
+      "file": "apps/desktop/src/desktopAppIcon.ts",
+      "line": 104,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "DesktopAppIconResourceInput",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "readDesktopAppIconPreference",
+      "file": "apps/desktop/src/desktopAppIcon.ts",
+      "line": 52,
+      "reason": "takes or returns a function"
+    }
+  ]
+}

@@ -39,11 +39,11 @@ fn normalize(path: &str) -> String {
             continue;
         }
         if seg == ".." {
-            if let Some(&last) = parts.last() {
-                if last != ".." {
-                    parts.pop();
-                    continue;
-                }
+            if let Some(&last) = parts.last()
+                && last != ".."
+            {
+                parts.pop();
+                continue;
             }
             if !absolute {
                 parts.push("..");

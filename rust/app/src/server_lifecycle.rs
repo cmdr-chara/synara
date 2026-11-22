@@ -70,6 +70,31 @@ pub fn snapshot_events() -> Vec<Value> {
     ]
 }
 
+/// `server.getConfig` — static paths, merged keybindings config (+ issues),
+/// editors resolvable on this host, and provider statuses ([] until the
+/// provider matrix is ported).
+pub fn get_config() -> Value {
+    let w = welcome_payload();
+    let state = std::path::PathBuf::from(crate::todo::state_dir());
+    let base = state.parent().unwrap_or(state.as_path()).to_path_buf();
+    let kb = crate::server_keybindings::config_state();
+    json!({
+        "cwd": w.get("cwd").cloned().unwrap_or(Value::Null),
+        "homeDir": w.get("homeDir").cloned().unwrap_or(Value::Null),
+        "chatWorkspaceRoot": w.get("chatWorkspaceRoot").cloned().unwrap_or(Value::Null),
+        "studioWorkspaceRoot": w.get("studioWorkspaceRoot").cloned().unwrap_or(Value::Null),
+        "groupsWorkspaceRoot": w.get("groupsWorkspaceRoot").cloned().unwrap_or(Value::Null),
+        "worktreesDir": realpath_nearest_existing(&base.join("worktrees")).to_string_lossy(),
+        "keybindingsConfigPath": realpath_nearest_existing(&state.join("keybindings.json"))
+            .to_string_lossy(),
+        "keybindings": kb.get("keybindings").cloned().unwrap_or(Value::Array(vec![])),
+        "defaultKeybindings": crate::server_keybindings::default_resolved(),
+        "issues": kb.get("issues").cloned().unwrap_or(Value::Array(vec![])),
+        "providers": [],
+        "availableEditors": crate::shell_editor::available_editors(),
+    })
+}
+
 /// `ServerKeepAwakeState`: the native server can keep the OS awake via the
 /// platform power assertion (available on every desktop OS we ship on), is
 /// driven by `keepAwakeMode`, and starts inactive because no agent turn is

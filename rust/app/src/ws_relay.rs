@@ -102,6 +102,7 @@ fn intercept_todo(
         && !text.contains("server.getDiagnostics")
         && !text.contains("server.desktopUpdateStatus")
         && !text.contains("server.desktopUpdate")
+        && !text.contains("server.getConfig")
         && !text.contains("server.getSettings")
         && !text.contains("server.updateSettings")
         && !text.contains("server.subscribeSettings")
@@ -147,6 +148,7 @@ fn intercept_todo(
         && tag != "server.getDiagnostics"
         && tag != "server.desktopUpdateStatus"
         && tag != "server.desktopUpdate"
+        && tag != "server.getConfig"
         && tag != "server.getSettings"
         && tag != "server.updateSettings"
         && tag != "server.subscribeSettings"
@@ -417,6 +419,8 @@ fn intercept_todo(
         crate::server_desktop_update::desktop_update(&payload)
             .map(Some)
             .map_err(error_json)
+    } else if tag == "server.getConfig" {
+        Ok(Some(crate::server_lifecycle::get_config()))
     } else if tag.starts_with("stats.") {
         crate::stats::handle(tag, &payload)
             .map(Some)

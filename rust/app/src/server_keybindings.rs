@@ -241,6 +241,54 @@ fn apply_reset(rules: &mut Vec<Value>, command: Option<&str>) -> Result<(), WsEr
     Ok(())
 }
 
+/// Compiled default rules — the `DEFAULT_RESOLVED_KEYBINDINGS` equivalent.
+pub fn default_resolved() -> Vec<Value> {
+    resolved(&default_rules())
+}
+
+/// `keybindings.loadConfigState` equivalent: merged resolved rules plus
+/// non-fatal issues (malformed file, or entries that fail to compile).
+pub fn config_state() -> Value {
+    let raw = std::fs::read_to_string(rules_path());
+    match raw {
+        Ok(text) => match serde_json::from_str::<Vec<Value>>(&text) {
+            Ok(rules) => {
+                let mut merged = default_rules();
+                let mut issues = Vec::new();
+                for (i, rule) in rules.iter().enumerate() {
+                    let id = rule_identity(rule).ok().flatten();
+                    if check_rule(rule).is_err() || id.is_none() {
+                        issues.push(json!({
+                            "kind": "keybindings.invalid-entry",
+                            "index": i,
+                            "message": "Invalid keybindings configuration."
+                        }));
+                    } else {
+                        let id = id.unwrap();
+                        merged.retain(|d| {
+                            rule_identity(d)
+                                .ok()
+                                .flatten()
+                                .map(|x| x != id)
+                                .unwrap_or(true)
+                        });
+                        merged.push(rule.clone());
+                    }
+                }
+                json!({ "keybindings": resolved(&merged), "issues": issues })
+            }
+            Err(_) => json!({
+                "keybindings": resolved(&default_rules()),
+                "issues": [{
+                    "kind": "keybindings.malformed-config",
+                    "message": "Invalid keybindings configuration."
+                }]
+            }),
+        },
+        Err(_) => json!({ "keybindings": resolved(&default_rules()), "issues": [] }),
+    }
+}
+
 pub fn upsert_keybinding(payload: &Value) -> Result<Value, WsErr> {
     let rule = payload
         .get("rule")

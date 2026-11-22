@@ -51,6 +51,23 @@ fn on_path(cmd: &str) -> Option<String> {
     None
 }
 
+/// `resolveAvailableEditors` — ids of known editors found on PATH or installed
+/// as macOS apps, plus `file-manager` on unix (`open`/`xdg-open` always exist).
+pub fn available_editors() -> Vec<String> {
+    let mut out: Vec<String> = Vec::new();
+    for e in EDITORS {
+        if e.commands.iter().any(|c| on_path(c).is_some())
+            || (cfg!(target_os = "macos")
+                && std::path::Path::new(&format!("/Applications/{}.app", e.mac_app)).exists())
+        {
+            out.push(e.id.to_string());
+        }
+    }
+    #[cfg(unix)]
+    out.push("file-manager".to_string());
+    out
+}
+
 fn spawn_detached(command: &str, args: &[String]) -> Result<(), String> {
     std::process::Command::new(command)
         .args(args)

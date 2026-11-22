@@ -31,6 +31,7 @@ mod server_local_servers;
 mod server_settings;
 mod shell_editor;
 mod stats;
+mod studio;
 mod terminal;
 mod todo;
 mod units;

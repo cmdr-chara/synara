@@ -71,7 +71,7 @@ fn intercept_todo(
         std::sync::Mutex<std::collections::HashMap<String, tokio::task::JoinHandle<()>>>,
     >,
 ) -> Option<Option<ClientMessage>> {
-    if !text.contains("\"todo.") && !text.contains("\"server.get") && !text.contains("\"shell.openInEditor\"") {
+    if !text.contains("\"todo.") && !text.contains("\"server.get") && !text.contains("\"shell.openInEditor\"") && !text.contains("\"git.") {
         return None;
     }
     let msg: serde_json::Value = serde_json::from_str(text).ok()?;
@@ -83,6 +83,7 @@ fn intercept_todo(
         && tag != "server.getEnvironment"
         && tag != "server.getRuntimeStatus"
         && tag != "shell.openInEditor"
+        && !crate::git_domain::handles(tag)
     {
         return None;
     }
@@ -119,18 +120,31 @@ fn intercept_todo(
         }
         return Some(None);
     }
-    let exit = match if tag == "server.getEnvironment" {
+    let outcome = if crate::git_domain::handles(tag) {
+        match crate::git_domain::handle(tag, &payload) {
+            Ok(value) => Ok(value),
+            Err(e) => Err(error_json(e)),
+        }
+    } else if tag == "server.getEnvironment" {
         crate::server_env::get_environment(&crate::todo::state_dir())
             .map_err(crate::todo::err_pub)
+            .map(Some)
             .map_err(error_json)
     } else if tag == "server.getRuntimeStatus" {
-        Ok(crate::runtime_status::get_runtime_status())
+        Ok(Some(crate::runtime_status::get_runtime_status()))
     } else if tag == "shell.openInEditor" {
-        crate::shell_editor::open_in_editor(&payload).map_err(error_json)
+        crate::shell_editor::open_in_editor(&payload)
+            .map(Some)
+            .map_err(error_json)
     } else {
-        todos.handle(tag, payload).map_err(error_json)
-    } {
-        Ok(value) => serde_json::json!({"_tag": "Success", "value": value}),
+        todos.handle(tag, payload).map(Some).map_err(error_json)
+    };
+    let exit = match outcome {
+        // `Schema.Void` successes encode without a `value` key.
+        Ok(value) => match value {
+            Some(value) => serde_json::json!({"_tag": "Success", "value": value}),
+            None => serde_json::json!({"_tag": "Success"}),
+        },
         Err(error) => serde_json::json!({
             "_tag": "Failure",
             "cause": [{

@@ -1,3 +1,4 @@
+mod git_domain;
 mod native_ws;
 mod runtime_status;
 mod server_env;

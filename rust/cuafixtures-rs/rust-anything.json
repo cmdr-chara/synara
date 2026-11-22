@@ -1,0 +1,103 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/desktop/src/cuaFixtures/",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "cuafixtures-rs",
+  "exports": [
+    {
+      "name": "parseFocusProbeLine",
+      "file": "apps/desktop/src/cuaFixtures/focusProbe.ts",
+      "line": 165,
+      "params": [
+        {
+          "name": "line",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(| { kind: \"meta\"; meta: FocusProbeMeta }\n  | { kind: \"sample\"; sample: FocusProbeSample }\n  | { kind: \"done\"; done: FocusProbeDone }) | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "analyzeFocusSamples",
+      "file": "apps/desktop/src/cuaFixtures/focusProbe.ts",
+      "line": 285,
+      "params": [
+        {
+          "name": "allSamples",
+          "ts_type": "FocusProbeSample[]",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "options",
+          "ts_type": "FocusProbeAnalyzeOptions",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "FocusProbeReport",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "runLiveFixture",
+      "file": "apps/desktop/src/cuaFixtures/live.ts",
+      "line": 15,
+      "params": [
+        {
+          "name": "directory",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "binaryPath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "runCancellationFixture",
+      "file": "apps/desktop/src/cuaFixtures/cancellation.ts",
+      "line": 11,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "startFocusProbe",
+      "file": "apps/desktop/src/cuaFixtures/focusProbe.ts",
+      "line": 450,
+      "reason": "uses `FocusProbeSession`, which has function members"
+    },
+    {
+      "name": "runGatewayFixture",
+      "file": "apps/desktop/src/cuaFixtures/gateway.ts",
+      "line": 15,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "runNativeFixture",
+      "file": "apps/desktop/src/cuaFixtures/native.ts",
+      "line": 25,
+      "reason": "checks `instanceof`: class identity does not survive the bridge"
+    }
+  ]
+}

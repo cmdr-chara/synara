@@ -1,0 +1,17 @@
+{
+  "unit": "apps/desktop/src/cuaFixtures/",
+  "files": 7,
+  "fingerprint": "0070f3e12c416b82",
+  "coverage": {
+    "lines": 476,
+    "reached": 367,
+    "files": [
+      {
+        "file": "apps/desktop/src/cuaFixtures/focusProbe.ts",
+        "lines": 476,
+        "reached": 367,
+        "missed": "174-218, 248-249, 272, 451-511"
+      }
+    ]
+  }
+}

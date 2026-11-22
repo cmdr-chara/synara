@@ -1,0 +1,229 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/auth/",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "auth-rs",
+  "exports": [
+    {
+      "name": "makeEffectAuthRequest",
+      "file": "apps/server/src/auth/effectHttp.ts",
+      "line": 5,
+      "params": [
+        {
+          "name": "request",
+          "ts_type": "HttpServerRequest.HttpServerRequest",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "AuthRequest",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "authErrorResponse",
+      "file": "apps/server/src/auth/effectHttp.ts",
+      "line": 18,
+      "params": [
+        {
+          "name": "error",
+          "ts_type": "AuthError",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isTrustedLocalServerToken",
+      "file": "apps/server/src/auth/remoteAccess.ts",
+      "line": 9,
+      "params": [
+        {
+          "name": "config",
+          "ts_type": "Pick<ServerConfigShape, \"authToken\" | \"host\" | \"publicUrl\">",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "token",
+          "ts_type": "string | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "requireRemoteSessionAdmission",
+      "file": "apps/server/src/auth/remoteAccess.ts",
+      "line": 38,
+      "params": [
+        {
+          "name": "registry",
+          "ts_type": "RemoteSessionRegistry",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "session",
+          "ts_type": "(Pick<AuthenticatedSession, \"accessOrigin\">)",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Effect.Effect<(Pick<AuthenticatedSession, \"accessOrigin\">), AuthError>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveSessionCookieName",
+      "file": "apps/server/src/auth/utils.ts",
+      "line": 6,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly mode: \"web\" | \"desktop\";\n  readonly port: number;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "base64UrlEncode",
+      "file": "apps/server/src/auth/utils.ts",
+      "line": 13,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "string | Uint8Array",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "base64UrlDecodeUtf8",
+      "file": "apps/server/src/auth/utils.ts",
+      "line": 18,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "signPayload",
+      "file": "apps/server/src/auth/utils.ts",
+      "line": 22,
+      "params": [
+        {
+          "name": "payload",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "secret",
+          "ts_type": "Uint8Array",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "timingSafeEqualBase64Url",
+      "file": "apps/server/src/auth/utils.ts",
+      "line": 26,
+      "params": [
+        {
+          "name": "left",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "right",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "deriveAuthClientMetadata",
+      "file": "apps/server/src/auth/utils.ts",
+      "line": 76,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly headers: Record<string, string | undefined>;\n  readonly remoteAddress?: string | null;\n  readonly label?: string;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof AuthClientMetadata.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "decideWithBillingPolicy",
+      "file": "apps/server/src/auth/remoteAccess.ts",
+      "line": 26,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "runWithRemoteAdmission",
+      "file": "apps/server/src/auth/remoteAccess.ts",
+      "line": 53,
+      "reason": "generic over `A`: values of any shape, functions included"
+    }
+  ]
+}

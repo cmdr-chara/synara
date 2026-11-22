@@ -1,0 +1,41 @@
+{
+  "unit": "apps/server/src/auth/",
+  "files": 24,
+  "fingerprint": "93dd3d2cd28f2194",
+  "coverage": {
+    "lines": 274,
+    "reached": 207,
+    "files": [
+      {
+        "file": "apps/server/src/auth/Services/ServerAuth.ts",
+        "lines": 87,
+        "reached": 87,
+        "missed": ""
+      },
+      {
+        "file": "apps/server/src/auth/effectHttp.ts",
+        "lines": 17,
+        "reached": 12,
+        "missed": "9-13"
+      },
+      {
+        "file": "apps/server/src/auth/remoteAccess.ts",
+        "lines": 69,
+        "reached": 34,
+        "missed": "15-17, 27-35, 45-46, 54-74"
+      },
+      {
+        "file": "apps/server/src/auth/utils.ts",
+        "lines": 81,
+        "reached": 66,
+        "missed": "47-50, 56-59, 62, 68-73"
+      },
+      {
+        "file": "apps/server/src/startupAccess.ts",
+        "lines": 20,
+        "reached": 8,
+        "missed": "5-7, 14-22"
+      }
+    ]
+  }
+}

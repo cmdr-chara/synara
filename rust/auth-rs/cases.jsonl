@@ -1,0 +1,1451 @@
+{"fn":"makeEffectAuthRequest","args":[0],"error":"Cannot read properties of undefined (reading 'host')"}
+{"fn":"makeEffectAuthRequest","args":[{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'host')"}
+{"fn":"makeEffectAuthRequest","args":["x"],"error":"Cannot read properties of undefined (reading 'host')"}
+{"fn":"makeEffectAuthRequest","args":[{}],"error":"Cannot read properties of undefined (reading 'host')"}
+{"fn":"makeEffectAuthRequest","args":[[]],"error":"Cannot read properties of undefined (reading 'host')"}
+{"fn":"makeEffectAuthRequest","args":[true],"error":"Cannot read properties of undefined (reading 'host')"}
+{"fn":"makeEffectAuthRequest","args":[null],"error":"Cannot read properties of null (reading 'headers')"}
+{"fn":"makeEffectAuthRequest","args":[["a",1]],"error":"Cannot read properties of undefined (reading 'host')"}
+{"fn":"makeEffectAuthRequest","args":[{"a":"b"}],"error":"Cannot read properties of undefined (reading 'host')"}
+{"fn":"authErrorResponse","args":[null],"error":"Cannot read properties of null (reading 'message')"}
+{"fn":"authErrorResponse","args":[{}],"ok":{"status":500,"statusText":{"$undefined":true},"cookies":{"cookies":{}},"body":{"~effect/http/HttpBody":"~effect/http/HttpBody","_tag":"Uint8Array","body":{"$bytes":[123,125]},"contentType":"application/json","contentLength":2},"headers":{"content-type":"application/json","content-length":"2"}}}
+{"fn":"authErrorResponse","args":[true],"ok":{"status":500,"statusText":{"$undefined":true},"cookies":{"cookies":{}},"body":{"~effect/http/HttpBody":"~effect/http/HttpBody","_tag":"Uint8Array","body":{"$bytes":[123,125]},"contentType":"application/json","contentLength":2},"headers":{"content-type":"application/json","content-length":"2"}}}
+{"fn":"authErrorResponse","args":[0],"ok":{"status":500,"statusText":{"$undefined":true},"cookies":{"cookies":{}},"body":{"~effect/http/HttpBody":"~effect/http/HttpBody","_tag":"Uint8Array","body":{"$bytes":[123,125]},"contentType":"application/json","contentLength":2},"headers":{"content-type":"application/json","content-length":"2"}}}
+{"fn":"authErrorResponse","args":["x"],"ok":{"status":500,"statusText":{"$undefined":true},"cookies":{"cookies":{}},"body":{"~effect/http/HttpBody":"~effect/http/HttpBody","_tag":"Uint8Array","body":{"$bytes":[123,125]},"contentType":"application/json","contentLength":2},"headers":{"content-type":"application/json","content-length":"2"}}}
+{"fn":"authErrorResponse","args":[[]],"ok":{"status":500,"statusText":{"$undefined":true},"cookies":{"cookies":{}},"body":{"~effect/http/HttpBody":"~effect/http/HttpBody","_tag":"Uint8Array","body":{"$bytes":[123,125]},"contentType":"application/json","contentLength":2},"headers":{"content-type":"application/json","content-length":"2"}}}
+{"fn":"authErrorResponse","args":[{"a":"b"}],"ok":{"status":500,"statusText":{"$undefined":true},"cookies":{"cookies":{}},"body":{"~effect/http/HttpBody":"~effect/http/HttpBody","_tag":"Uint8Array","body":{"$bytes":[123,125]},"contentType":"application/json","contentLength":2},"headers":{"content-type":"application/json","content-length":"2"}}}
+{"fn":"authErrorResponse","args":[["a",1]],"ok":{"status":500,"statusText":{"$undefined":true},"cookies":{"cookies":{}},"body":{"~effect/http/HttpBody":"~effect/http/HttpBody","_tag":"Uint8Array","body":{"$bytes":[123,125]},"contentType":"application/json","contentLength":2},"headers":{"content-type":"application/json","content-length":"2"}}}
+{"fn":"authErrorResponse","args":[{"a":{"b":"c"}}],"ok":{"status":500,"statusText":{"$undefined":true},"cookies":{"cookies":{}},"body":{"~effect/http/HttpBody":"~effect/http/HttpBody","_tag":"Uint8Array","body":{"$bytes":[123,125]},"contentType":"application/json","contentLength":2},"headers":{"content-type":"application/json","content-length":"2"}}}
+{"fn":"isTrustedLocalServerToken","args":[0],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[{}],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[{"a":"b"},{"$undefined":true}],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[null,""],"error":"Cannot read properties of null (reading 'authToken')"}
+{"fn":"isTrustedLocalServerToken","args":[true,"a"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[true,""],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[[],"HELLO"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[true,"tab\tseparated"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[{"a":{"b":"c"}},"trailing."],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":["x","straße"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[{},"ab"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[0,{"$undefined":true}],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[true,"ünïcödé"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[{},"abc"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[["a",1],"tab\tseparatedkey_name-1"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[["a",1]],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":["x","ΣΊΣΥΦΟΣtrailing."],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[{},"  padded  "],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[true,"İstanbul"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[[],"日本語のテキスト"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[[],"ünïcödé"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[null],"error":"Cannot read properties of null (reading 'authToken')"}
+{"fn":"isTrustedLocalServerToken","args":[["a",1],".leading"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[{"a":{"b":"c"}},"key_name-1"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[null,{"$undefined":true}],"error":"Cannot read properties of null (reading 'authToken')"}
+{"fn":"isTrustedLocalServerToken","args":[0,"Hello World"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[{},"key_name-1é"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[{},":"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[{"a":{"b":"c"}},"src/a/b.ts"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[null,"hello"],"error":"Cannot read properties of null (reading 'authToken')"}
+{"fn":"isTrustedLocalServerToken","args":[null,"trailing."],"error":"Cannot read properties of null (reading 'authToken')"}
+{"fn":"isTrustedLocalServerToken","args":[["a",1],"a😀b😀c"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[0,"a:b:c"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[{},"straße"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[["a",1],"straße"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":["x","tab\tseparated"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[null,"key_name-1"],"error":"Cannot read properties of null (reading 'authToken')"}
+{"fn":"isTrustedLocalServerToken","args":[[],"hello"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[true],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[["a",1],"日本語のテキスト"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[{},"ünïcödé"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":["x",{"$undefined":true}],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[[],"é"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[null,"tab\tseparated"],"error":"Cannot read properties of null (reading 'authToken')"}
+{"fn":"isTrustedLocalServerToken","args":[[],""],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[{},"./x/**/*.json"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[0,"a..b"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[[],":"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[{"a":{"b":"c"}},{"$undefined":true}],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[{"a":"b"},"a😀b😀c"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[{},{"$undefined":true}],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[{"a":"b"},"./x/**/*.json"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[[],{"$undefined":true}],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":["キ","ns:key.path日本語のテキスト"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[0,":"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[null,"a:b:cé"],"error":"Cannot read properties of null (reading 'authToken')"}
+{"fn":"isTrustedLocalServerToken","args":["x","x"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[0,"a..b日本語のテキスト"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[null,"a😀b😀c"],"error":"Cannot read properties of null (reading 'authToken')"}
+{"fn":"isTrustedLocalServerToken","args":[[]],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[{"a":"b"},"tab\tseparated"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[{"a":{"b":"c"}},"ünïcödéé"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[{"a":"b"}],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":["x","X"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[null,"src/a/b.tskey_name-1"],"error":"Cannot read properties of null (reading 'authToken')"}
+{"fn":"isTrustedLocalServerToken","args":[null,"line1\nline2"],"error":"Cannot read properties of null (reading 'authToken')"}
+{"fn":"isTrustedLocalServerToken","args":[["a",1],":"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[null,"﻿bom"],"error":"Cannot read properties of null (reading 'authToken')"}
+{"fn":"isTrustedLocalServerToken","args":["x","Hello World"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[{},"a..b:"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[{"a":"b"},"ab"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[0,"src/a/b.ts"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":["x",".leading"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[true,"😀a..b"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[["a",1],"line1\nline2"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[0,"./x/**/*.json"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[[],"line1\nline2"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[[],"ünïcödé  padded  "],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":["x",".leadinga"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[{"a":"b"},"﻿bom"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[{"a":"b"},"  padded  "],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[true,"HELLO"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[null,"./x/**/*.json"],"error":"Cannot read properties of null (reading 'authToken')"}
+{"fn":"isTrustedLocalServerToken","args":[0,"hello world"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[{"a":"b"},"key_name-1"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[{"a":"b"},"src/a/b.ts"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":["x","HELLO"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[true,"Hello World"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[{"a":"b"},":"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":["x","abc"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[null,"İstanbul"],"error":"Cannot read properties of null (reading 'authToken')"}
+{"fn":"isTrustedLocalServerToken","args":[{},"HELLO"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[{},"ns:key.path"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[{"a":"b"},"hello"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[{"a":{"b":"c"}},"./x/**/*.json"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[{},"a😀b😀cabc"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[true,"ns:key.pathline1\nline2"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[["a",1],"src/a/b.tsns:key.path"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[{"a":{"b":"c"}},"abc"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[true,"{name} has {count} items"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[true,"trailing.ns:key.path"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[{"a":{"b":"c"}},"line1\nline2"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[{},""],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[["a",1],{"$undefined":true}],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[{"a":"b"},"emoji 👍🏽 mix"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":["x",":"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":["x"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[[],"a"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[{},"{name} has {count} items"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[{"a":{"b":"c"}},":"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[true,"ns:key.path"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[0,"😀"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[{},"key_name-1"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[true,"😀key_name-1"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[{"a":"b"},"ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[{"a":"b"},"trailing.line1\nline2"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[{"a":"b"},"hello world"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[true,".leadingab"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[true,"./x/**/*.json"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[[],"tab\tseparated"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[true,":"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[true,":a:b:c"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[{"a":{"b":"c"}},"hello"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[true,"hello"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[null,"straße"],"error":"Cannot read properties of null (reading 'authToken')"}
+{"fn":"isTrustedLocalServerToken","args":[["a",1],"hello"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[{"a":"b"},"ünïcödésrc/a/b.ts"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[true,"😀"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":["x","emoji 👍🏽 mix"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[{},"a😀b😀c"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[{},"a:b:c"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[["a",1],"HELLO"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[["a",1],"hellons:key.path"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[null,"HELLO"],"error":"Cannot read properties of null (reading 'authToken')"}
+{"fn":"isTrustedLocalServerToken","args":[null,"a..ba..b"],"error":"Cannot read properties of null (reading 'authToken')"}
+{"fn":"isTrustedLocalServerToken","args":[["a",1],":key_name-1"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[[],"a:b:chello world"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[{"a":{"b":"c"}}],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[{"a":{"b":"c"}},"./x/**/*.jsona😀b😀c"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[{"a":"b"},".leading"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[{},"line1\nline2"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[{},"hello world"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[{},"{name} has {count} itemsHELLO"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[[],"{name} has {count} items"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[{"a":"b"},"ünïcödé"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":["x","﻿bom"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[{"a":{"b":"c"}},"{name} has {count} items"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[0,"trailing."],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[{},".leadingns:key.path"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[[],"trailing."],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[null,"a:b:c"],"error":"Cannot read properties of null (reading 'authToken')"}
+{"fn":"isTrustedLocalServerToken","args":["x","ans:key.path"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[true,"日本語のテキスト"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[0,"﻿bom"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[{"a":{"b":"c"}},"😀"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[[],"./x/**/*.json"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[true,".leadingkey_name-1"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[true,"ab﻿bom"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[{"a":{"b":"c"}},"日本語のテキスト"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[{"a":"b"},"{name} has {count} itemsab"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[0,"a😀b😀c"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[{},"ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[null,"ünïcödé"],"error":"Cannot read properties of null (reading 'authToken')"}
+{"fn":"isTrustedLocalServerToken","args":[["a",1],"hello world"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":["x","a:b:c"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[["a",1],"ésrc/a/b.ts"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[[],"😀"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[["a",1],""],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[":",":"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[["a",1],"a"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[["a",1],"日本語のテキストa"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[[],"hello world"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[null,"😀"],"error":"Cannot read properties of null (reading 'authToken')"}
+{"fn":"isTrustedLocalServerToken","args":["é","é"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[{},"日本語のテキスト"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[{"a":"b"},"ns:key.pathHELLO"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[{},"src/a/b.ts"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[[],".leading"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[{},".leading"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[true,"😀a"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[{},"hello"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":["x","a..b"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[null,"HELLOa:b:c"],"error":"Cannot read properties of null (reading 'authToken')"}
+{"fn":"isTrustedLocalServerToken","args":["x","ab"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[null,"ns:key.path"],"error":"Cannot read properties of null (reading 'authToken')"}
+{"fn":"isTrustedLocalServerToken","args":[null,"a😀b😀c日本語のテキスト"],"error":"Cannot read properties of null (reading 'authToken')"}
+{"fn":"isTrustedLocalServerToken","args":[0,"a.b.c"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[["a",1],"😀Hello World"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[{"a":"b"},"straße"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[[],"abc"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[{"a":{"b":"c"}},"a.b.c"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[{"a":{"b":"c"}},"tab\tseparated"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[{},"😀"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[true,"ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[{"a":"b"},"a😀b😀cab"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[[],"ab"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[null,"日本語のテキスト"],"error":"Cannot read properties of null (reading 'authToken')"}
+{"fn":"isTrustedLocalServerToken","args":[{"a":"b"},".leadingline1\nline2"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":["x","line1\nline2"],"ok":false}
+{"fn":"isTrustedLocalServerToken","args":[true,"a😀b😀c"],"ok":false}
+{"fn":"requireRemoteSessionAdmission","args":[{"a":"b"},"x"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"requireRemoteSessionAdmission","args":["x",null],"error":"Cannot read properties of null (reading 'accessOrigin')"}
+{"fn":"requireRemoteSessionAdmission","args":[[],[]],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"requireRemoteSessionAdmission","args":[[],{"a":"b"}],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"requireRemoteSessionAdmission","args":[{"a":{"b":"c"}},{"a":"b"}],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"requireRemoteSessionAdmission","args":[["a",1],{"a":"b"}],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"requireRemoteSessionAdmission","args":[{"a":"b"},true],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"requireRemoteSessionAdmission","args":[["a",1],"x"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"requireRemoteSessionAdmission","args":[{},null],"error":"Cannot read properties of null (reading 'accessOrigin')"}
+{"fn":"requireRemoteSessionAdmission","args":[{"a":{"b":"c"}},["a",1]],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"requireRemoteSessionAdmission","args":[["a",1],null],"error":"Cannot read properties of null (reading 'accessOrigin')"}
+{"fn":"requireRemoteSessionAdmission","args":[{},{}],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"requireRemoteSessionAdmission","args":[{"a":"b"},0],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"requireRemoteSessionAdmission","args":[0,["a",1]],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"requireRemoteSessionAdmission","args":[null,0],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"requireRemoteSessionAdmission","args":[{},{"a":{"b":"c"}}],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"requireRemoteSessionAdmission","args":[null,[]],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"requireRemoteSessionAdmission","args":[true,true],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"requireRemoteSessionAdmission","args":[{"a":{"b":"c"}},{"a":{"b":"c"}}],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"requireRemoteSessionAdmission","args":[{"a":"b"},["a",1]],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"requireRemoteSessionAdmission","args":[true,[]],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"requireRemoteSessionAdmission","args":[true,{}],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"requireRemoteSessionAdmission","args":[["a",1],["a",1]],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"requireRemoteSessionAdmission","args":[[],"x"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"requireRemoteSessionAdmission","args":[null,{"a":{"b":"c"}}],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"requireRemoteSessionAdmission","args":[null,null],"error":"Cannot read properties of null (reading 'accessOrigin')"}
+{"fn":"requireRemoteSessionAdmission","args":[{"a":"b"},{}],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"requireRemoteSessionAdmission","args":[true,"x"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"requireRemoteSessionAdmission","args":[{"a":"b"},null],"error":"Cannot read properties of null (reading 'accessOrigin')"}
+{"fn":"requireRemoteSessionAdmission","args":[{},[]],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"requireRemoteSessionAdmission","args":[[],{}],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"requireRemoteSessionAdmission","args":[0,0],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"requireRemoteSessionAdmission","args":[["a",1],0],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"requireRemoteSessionAdmission","args":[true,["a",1]],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"requireRemoteSessionAdmission","args":[0,"x"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"requireRemoteSessionAdmission","args":[null,["a",1]],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"requireRemoteSessionAdmission","args":[0,{"a":{"b":"c"}}],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"requireRemoteSessionAdmission","args":[{"a":{"b":"c"}},[]],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"requireRemoteSessionAdmission","args":[{"a":{"b":"c"}},"x"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"requireRemoteSessionAdmission","args":[{"a":{"b":"c"}},true],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"requireRemoteSessionAdmission","args":[{"a":"b"},{"a":{"b":"c"}}],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"requireRemoteSessionAdmission","args":[[],null],"error":"Cannot read properties of null (reading 'accessOrigin')"}
+{"fn":"requireRemoteSessionAdmission","args":[null,{"a":"b"}],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"requireRemoteSessionAdmission","args":["x",{}],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"requireRemoteSessionAdmission","args":[[],{"a":{"b":"c"}}],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"requireRemoteSessionAdmission","args":[0,true],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"requireRemoteSessionAdmission","args":[["a",1],true],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"requireRemoteSessionAdmission","args":["x",{"a":{"b":"c"}}],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"requireRemoteSessionAdmission","args":[{},"x"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"requireRemoteSessionAdmission","args":[[],0],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"requireRemoteSessionAdmission","args":["x",{"a":"b"}],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"requireRemoteSessionAdmission","args":[{},["a",1]],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"requireRemoteSessionAdmission","args":["x","x"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"requireRemoteSessionAdmission","args":[0,{}],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"requireRemoteSessionAdmission","args":[[],true],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"requireRemoteSessionAdmission","args":[0,[]],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"requireRemoteSessionAdmission","args":[{},{"a":"b"}],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"requireRemoteSessionAdmission","args":[{"a":"b"},[]],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"requireRemoteSessionAdmission","args":[{"a":{"b":"c"}},null],"error":"Cannot read properties of null (reading 'accessOrigin')"}
+{"fn":"requireRemoteSessionAdmission","args":[null,"x"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"requireRemoteSessionAdmission","args":[{},true],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"requireRemoteSessionAdmission","args":[{"a":{"b":"c"}},0],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"requireRemoteSessionAdmission","args":["x",["a",1]],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"requireRemoteSessionAdmission","args":[true,0],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"requireRemoteSessionAdmission","args":[true,{"a":"b"}],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"requireRemoteSessionAdmission","args":["x",[]],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"requireRemoteSessionAdmission","args":[[],["a",1]],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"requireRemoteSessionAdmission","args":[0,{"a":"b"}],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"requireRemoteSessionAdmission","args":[["a",1],{"a":{"b":"c"}}],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"requireRemoteSessionAdmission","args":[0,null],"error":"Cannot read properties of null (reading 'accessOrigin')"}
+{"fn":"requireRemoteSessionAdmission","args":["x",0],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"requireRemoteSessionAdmission","args":[true,null],"error":"Cannot read properties of null (reading 'accessOrigin')"}
+{"fn":"requireRemoteSessionAdmission","args":[{"a":{"b":"c"}},{}],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"requireRemoteSessionAdmission","args":[["a",1],{}],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"requireRemoteSessionAdmission","args":["x",true],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"requireRemoteSessionAdmission","args":[null,true],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"requireRemoteSessionAdmission","args":[["a",1],[]],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"requireRemoteSessionAdmission","args":[null,{}],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"requireRemoteSessionAdmission","args":[{"a":"b"},{"a":"b"}],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"requireRemoteSessionAdmission","args":[{},0],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"requireRemoteSessionAdmission","args":[true,{"a":{"b":"c"}}],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"requireRemoteSessionAdmission","args":["x","X"],"ok":{"~effect/Effect/args":{"~effect/Effect/args":{"0":{"$function":""},"1":false}},"~effect/Effect/successCont":{"$function":""}}}
+{"fn":"resolveSessionCookieName","args":[null],"error":"Cannot read properties of null (reading 'mode')"}
+{"fn":"resolveSessionCookieName","args":["x"],"ok":"synara_session"}
+{"fn":"resolveSessionCookieName","args":[{"mode":"web","port":3}],"ok":"synara_session"}
+{"fn":"resolveSessionCookieName","args":[{"mode":"desktop","port":10}],"ok":"synara_session_10"}
+{"fn":"resolveSessionCookieName","args":[{"mode":"desktop","port":0.5}],"ok":"synara_session_0.5"}
+{"fn":"resolveSessionCookieName","args":[0],"ok":"synara_session"}
+{"fn":"resolveSessionCookieName","args":[{"mode":"desktop","port":3}],"ok":"synara_session_3"}
+{"fn":"resolveSessionCookieName","args":[{"mode":"desktop","port":2}],"ok":"synara_session_2"}
+{"fn":"resolveSessionCookieName","args":[{"mode":"web","port":2147483648}],"ok":"synara_session"}
+{"fn":"resolveSessionCookieName","args":[{"mode":"web","port":42}],"ok":"synara_session"}
+{"fn":"resolveSessionCookieName","args":[{"mode":"desktop","port":{"$num":"-Infinity"}}],"ok":"synara_session_-Infinity"}
+{"fn":"resolveSessionCookieName","args":[{"mode":"desktop","port":{"$num":"Infinity"}}],"ok":"synara_session_Infinity"}
+{"fn":"resolveSessionCookieName","args":[["a",1]],"ok":"synara_session"}
+{"fn":"resolveSessionCookieName","args":[{"mode":"web","port":1000}],"ok":"synara_session"}
+{"fn":"resolveSessionCookieName","args":[{"mode":"desktop","port":1}],"ok":"synara_session_1"}
+{"fn":"resolveSessionCookieName","args":[[]],"ok":"synara_session"}
+{"fn":"resolveSessionCookieName","args":[{"mode":"web","port":10}],"ok":"synara_session"}
+{"fn":"resolveSessionCookieName","args":[{"mode":"web","port":1}],"ok":"synara_session"}
+{"fn":"resolveSessionCookieName","args":[{"mode":"desktop","port":-2.5}],"ok":"synara_session_-2.5"}
+{"fn":"resolveSessionCookieName","args":[{"mode":"web","port":9007199254740992}],"ok":"synara_session"}
+{"fn":"resolveSessionCookieName","args":[{"mode":"web","port":{"$num":"-Infinity"}}],"ok":"synara_session"}
+{"fn":"resolveSessionCookieName","args":[{"mode":"desktop","port":{"$num":"-0"}}],"ok":"synara_session_0"}
+{"fn":"resolveSessionCookieName","args":[{"mode":"desktop","port":2147483648}],"ok":"synara_session_2147483648"}
+{"fn":"resolveSessionCookieName","args":[{}],"ok":"synara_session"}
+{"fn":"resolveSessionCookieName","args":[{"mode":"desktop","port":{"$num":"NaN"}}],"ok":"synara_session_NaN"}
+{"fn":"resolveSessionCookieName","args":[{"mode":"web","port":{"$num":"NaN"}}],"ok":"synara_session"}
+{"fn":"resolveSessionCookieName","args":[{"mode":"web","port":100}],"ok":"synara_session"}
+{"fn":"resolveSessionCookieName","args":[{"mode":"desktop","port":-1}],"ok":"synara_session_-1"}
+{"fn":"resolveSessionCookieName","args":[{"mode":"desktop","port":100}],"ok":"synara_session_100"}
+{"fn":"resolveSessionCookieName","args":[true],"ok":"synara_session"}
+{"fn":"resolveSessionCookieName","args":[{"mode":"desktop","port":0}],"ok":"synara_session_0"}
+{"fn":"resolveSessionCookieName","args":[{"mode":"web","port":{"$num":"Infinity"}}],"ok":"synara_session"}
+{"fn":"resolveSessionCookieName","args":[{"mode":"web","port":2}],"ok":"synara_session"}
+{"fn":"resolveSessionCookieName","args":[{"mode":"web","port":0}],"ok":"synara_session"}
+{"fn":"resolveSessionCookieName","args":[{"mode":"web","port":{"$num":"-0"}}],"ok":"synara_session"}
+{"fn":"resolveSessionCookieName","args":[{"mode":"desktop","port":1000}],"ok":"synara_session_1000"}
+{"fn":"resolveSessionCookieName","args":[{"mode":"desktop","port":1000000}],"ok":"synara_session_1000000"}
+{"fn":"resolveSessionCookieName","args":[{"mode":"web","port":-2.5}],"ok":"synara_session"}
+{"fn":"resolveSessionCookieName","args":[{"mode":"web","port":-1}],"ok":"synara_session"}
+{"fn":"resolveSessionCookieName","args":[{"mode":"desktop","port":9007199254740992}],"ok":"synara_session_9007199254740992"}
+{"fn":"resolveSessionCookieName","args":[{"mode":"web","port":0.5}],"ok":"synara_session"}
+{"fn":"resolveSessionCookieName","args":[{"mode":"desktop","port":42}],"ok":"synara_session_42"}
+{"fn":"resolveSessionCookieName","args":[{"a":"b"}],"ok":"synara_session"}
+{"fn":"resolveSessionCookieName","args":[{"a":{"b":"c"}}],"ok":"synara_session"}
+{"fn":"resolveSessionCookieName","args":[{"mode":"web","port":1000000}],"ok":"synara_session"}
+{"fn":"base64UrlEncode","args":[null],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received null"}
+{"fn":"base64UrlEncode","args":[["a",1]],"ok":"AAE"}
+{"fn":"base64UrlEncode","args":[0],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received type number (0)"}
+{"fn":"base64UrlEncode","args":[{}],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"base64UrlEncode","args":["a.b.c"],"ok":"YS5iLmM"}
+{"fn":"base64UrlEncode","args":["emoji 👍🏽 mixa..b"],"ok":"ZW1vamkg8J-RjfCfj70gbWl4YS4uYg"}
+{"fn":"base64UrlEncode","args":[{"a":{"b":"c"}}],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"base64UrlEncode","args":[[]],"ok":""}
+{"fn":"base64UrlEncode","args":["ünïcödé"],"ok":"w7xuw69jw7Zkw6k"}
+{"fn":"base64UrlEncode","args":["abc"],"ok":"YWJj"}
+{"fn":"base64UrlEncode","args":["key_name-1"],"ok":"a2V5X25hbWUtMQ"}
+{"fn":"base64UrlEncode","args":[true],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received type boolean (true)"}
+{"fn":"base64UrlEncode","args":["日本語のテキスト"],"ok":"5pel5pys6Kqe44Gu44OG44Kt44K544OI"}
+{"fn":"base64UrlEncode","args":["HELLO"],"ok":"SEVMTE8"}
+{"fn":"base64UrlEncode","args":["{name} has {count} items"],"ok":"e25hbWV9IGhhcyB7Y291bnR9IGl0ZW1z"}
+{"fn":"base64UrlEncode","args":["hello world"],"ok":"aGVsbG8gd29ybGQ"}
+{"fn":"base64UrlEncode","args":[""],"ok":""}
+{"fn":"base64UrlEncode","args":["x"],"ok":"eA"}
+{"fn":"base64UrlEncode","args":["é"],"ok":"ZcyB"}
+{"fn":"base64UrlEncode","args":["key_name-1é"],"ok":"a2V5X25hbWUtMWXMgQ"}
+{"fn":"base64UrlEncode","args":["Hello World"],"ok":"SGVsbG8gV29ybGQ"}
+{"fn":"base64UrlEncode","args":[{"a":"b"}],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"base64UrlEncode","args":["emoji 👍🏽 mixemoji 👍🏽 mix"],"ok":"ZW1vamkg8J-RjfCfj70gbWl4ZW1vamkg8J-RjfCfj70gbWl4"}
+{"fn":"base64UrlEncode","args":["  padded  "],"ok":"ICBwYWRkZWQgIA"}
+{"fn":"base64UrlEncode","args":["İstanbul"],"ok":"xLBzdGFuYnVs"}
+{"fn":"base64UrlEncode","args":["a..b"],"ok":"YS4uYg"}
+{"fn":"base64UrlEncode","args":["src/a/b.ts"],"ok":"c3JjL2EvYi50cw"}
+{"fn":"base64UrlEncode","args":["tab\tseparated"],"ok":"dGFiCXNlcGFyYXRlZA"}
+{"fn":"base64UrlEncode","args":[":"],"ok":"Og"}
+{"fn":"base64UrlEncode","args":["./x/**/*.json  padded  "],"ok":"Li94LyoqLyouanNvbiAgcGFkZGVkICA"}
+{"fn":"base64UrlEncode","args":["./x/**/*.json"],"ok":"Li94LyoqLyouanNvbg"}
+{"fn":"base64UrlEncode","args":["trailing."],"ok":"dHJhaWxpbmcu"}
+{"fn":"base64UrlEncode","args":["﻿bom"],"ok":"77u_Ym9t"}
+{"fn":"base64UrlEncode","args":["emoji 👍🏽 mix"],"ok":"ZW1vamkg8J-RjfCfj70gbWl4"}
+{"fn":"base64UrlEncode","args":["😀src/a/b.ts"],"ok":"8J-YgHNyYy9hL2IudHM"}
+{"fn":"base64UrlEncode","args":["trailing.ab"],"ok":"dHJhaWxpbmcuYWI"}
+{"fn":"base64UrlEncode","args":["ΣΊΣΥΦΟΣ"],"ok":"zqPOis6jzqXOps6fzqM"}
+{"fn":"base64UrlEncode","args":["a:b:c"],"ok":"YTpiOmM"}
+{"fn":"base64UrlEncode","args":["ab"],"ok":"YWI"}
+{"fn":"base64UrlEncode","args":["abline1\nline2"],"ok":"YWJsaW5lMQpsaW5lMg"}
+{"fn":"base64UrlEncode","args":["a😀b😀c"],"ok":"YfCfmIBi8J-YgGM"}
+{"fn":"base64UrlEncode","args":["a😀b😀ckey_name-1"],"ok":"YfCfmIBi8J-YgGNrZXlfbmFtZS0x"}
+{"fn":"base64UrlEncode","args":["ns:key.path"],"ok":"bnM6a2V5LnBhdGg"}
+{"fn":"base64UrlEncode","args":["hello"],"ok":"aGVsbG8"}
+{"fn":"base64UrlEncode","args":["line1\nline2"],"ok":"bGluZTEKbGluZTI"}
+{"fn":"base64UrlEncode","args":["emoji 👍🏽 mix﻿bom"],"ok":"ZW1vamkg8J-RjfCfj70gbWl477u_Ym9t"}
+{"fn":"base64UrlEncode","args":["a"],"ok":"YQ"}
+{"fn":"base64UrlEncode","args":["Hello Worldünïcödé"],"ok":"SGVsbG8gV29ybGTDvG7Dr2PDtmTDqQ"}
+{"fn":"base64UrlEncode","args":["ünïcödéünïcödé"],"ok":"w7xuw69jw7Zkw6nDvG7Dr2PDtmTDqQ"}
+{"fn":"base64UrlEncode","args":["😀"],"ok":"8J-YgA"}
+{"fn":"base64UrlEncode","args":[".leading"],"ok":"LmxlYWRpbmc"}
+{"fn":"base64UrlEncode","args":["hellohello"],"ok":"aGVsbG9oZWxsbw"}
+{"fn":"base64UrlEncode","args":["straße{name} has {count} items"],"ok":"c3RyYcOfZXtuYW1lfSBoYXMge2NvdW50fSBpdGVtcw"}
+{"fn":"base64UrlEncode","args":["é  padded  "],"ok":"ZcyBICBwYWRkZWQgIA"}
+{"fn":"base64UrlEncode","args":[".leadinga"],"ok":"LmxlYWRpbmdh"}
+{"fn":"base64UrlEncode","args":["İstanbul😀"],"ok":"xLBzdGFuYnVs8J-YgA"}
+{"fn":"base64UrlEncode","args":["éns:key.path"],"ok":"ZcyBbnM6a2V5LnBhdGg"}
+{"fn":"base64UrlEncode","args":["a:b:cns:key.path"],"ok":"YTpiOmNuczprZXkucGF0aA"}
+{"fn":"base64UrlEncode","args":["HELLOab"],"ok":"SEVMTE9hYg"}
+{"fn":"base64UrlEncode","args":["aünïcödé"],"ok":"YcO8bsOvY8O2ZMOp"}
+{"fn":"base64UrlEncode","args":["a:b:c  padded  "],"ok":"YTpiOmMgIHBhZGRlZCAg"}
+{"fn":"base64UrlEncode","args":["hello worldtrailing."],"ok":"aGVsbG8gd29ybGR0cmFpbGluZy4"}
+{"fn":"base64UrlEncode","args":[".leadinga.b.c"],"ok":"LmxlYWRpbmdhLmIuYw"}
+{"fn":"base64UrlEncode","args":["trailing.a.b.c"],"ok":"dHJhaWxpbmcuYS5iLmM"}
+{"fn":"base64UrlEncode","args":[":hello"],"ok":"OmhlbGxv"}
+{"fn":"base64UrlEncode","args":["straße"],"ok":"c3RyYcOfZQ"}
+{"fn":"base64UrlEncode","args":["  padded  key_name-1"],"ok":"ICBwYWRkZWQgIGtleV9uYW1lLTE"}
+{"fn":"base64UrlEncode","args":["ΣΊΣΥΦΟΣhello"],"ok":"zqPOis6jzqXOps6fzqNoZWxsbw"}
+{"fn":"base64UrlEncode","args":["hello worldabc"],"ok":"aGVsbG8gd29ybGRhYmM"}
+{"fn":"base64UrlEncode","args":["ünïcödétab\tseparated"],"ok":"w7xuw69jw7Zkw6l0YWIJc2VwYXJhdGVk"}
+{"fn":"base64UrlEncode","args":["abns:key.path"],"ok":"YWJuczprZXkucGF0aA"}
+{"fn":"base64UrlEncode","args":["trailing.hello world"],"ok":"dHJhaWxpbmcuaGVsbG8gd29ybGQ"}
+{"fn":"base64UrlEncode","args":[":a😀b😀c"],"ok":"OmHwn5iAYvCfmIBj"}
+{"fn":"base64UrlEncode","args":["a😀b😀c.leading"],"ok":"YfCfmIBi8J-YgGMubGVhZGluZw"}
+{"fn":"base64UrlEncode","args":["日本語のテキスト😀"],"ok":"5pel5pys6Kqe44Gu44OG44Kt44K544OI8J-YgA"}
+{"fn":"base64UrlEncode","args":["./x/**/*.json😀"],"ok":"Li94LyoqLyouanNvbvCfmIA"}
+{"fn":"base64UrlEncode","args":["ΣΊΣΥΦΟΣ日本語のテキスト"],"ok":"zqPOis6jzqXOps6fzqPml6XmnKzoqp7jga7jg4bjgq3jgrnjg4g"}
+{"fn":"base64UrlEncode","args":["日本語のテキスト.leading"],"ok":"5pel5pys6Kqe44Gu44OG44Kt44K544OILmxlYWRpbmc"}
+{"fn":"base64UrlEncode","args":["HELLO😀"],"ok":"SEVMTE_wn5iA"}
+{"fn":"base64UrlEncode","args":["a😀b😀c{name} has {count} items"],"ok":"YfCfmIBi8J-YgGN7bmFtZX0gaGFzIHtjb3VudH0gaXRlbXM"}
+{"fn":"base64UrlEncode","args":["{name} has {count} items.leading"],"ok":"e25hbWV9IGhhcyB7Y291bnR9IGl0ZW1zLmxlYWRpbmc"}
+{"fn":"base64UrlEncode","args":["a.b.cHELLO"],"ok":"YS5iLmNIRUxMTw"}
+{"fn":"base64UrlEncode","args":[":./x/**/*.json"],"ok":"Oi4veC8qKi8qLmpzb24"}
+{"fn":"base64UrlEncode","args":["ΣΊΣΥΦΟΣkey_name-1"],"ok":"zqPOis6jzqXOps6fzqNrZXlfbmFtZS0x"}
+{"fn":"base64UrlEncode","args":["Hello Worldns:key.path"],"ok":"SGVsbG8gV29ybGRuczprZXkucGF0aA"}
+{"fn":"base64UrlEncode","args":[".leading  padded  "],"ok":"LmxlYWRpbmcgIHBhZGRlZCAg"}
+{"fn":"base64UrlEncode","args":["HELLO日本語のテキスト"],"ok":"SEVMTE_ml6XmnKzoqp7jga7jg4bjgq3jgrnjg4g"}
+{"fn":"base64UrlEncode","args":["ésrc/a/b.ts"],"ok":"ZcyBc3JjL2EvYi50cw"}
+{"fn":"base64UrlEncode","args":["ΣΊΣΥΦΟΣa..b"],"ok":"zqPOis6jzqXOps6fzqNhLi5i"}
+{"fn":"base64UrlEncode","args":["ünïcödé.leading"],"ok":"w7xuw69jw7Zkw6kubGVhZGluZw"}
+{"fn":"base64UrlEncode","args":["key_name-1trailing."],"ok":"a2V5X25hbWUtMXRyYWlsaW5nLg"}
+{"fn":"base64UrlEncode","args":["a.b.c  padded  "],"ok":"YS5iLmMgIHBhZGRlZCAg"}
+{"fn":"base64UrlEncode","args":[":a..b"],"ok":"OmEuLmI"}
+{"fn":"base64UrlEncode","args":["tab\tseparated  padded  "],"ok":"dGFiCXNlcGFyYXRlZCAgcGFkZGVkICA"}
+{"fn":"base64UrlEncode","args":["key_name-1Hello World"],"ok":"a2V5X25hbWUtMUhlbGxvIFdvcmxk"}
+{"fn":"base64UrlEncode","args":["a..bemoji 👍🏽 mix"],"ok":"YS4uYmVtb2ppIPCfkY3wn4-9IG1peA"}
+{"fn":"base64UrlEncode","args":["straßens:key.path"],"ok":"c3RyYcOfZW5zOmtleS5wYXRo"}
+{"fn":"base64UrlEncode","args":["straße.leading"],"ok":"c3RyYcOfZS5sZWFkaW5n"}
+{"fn":"base64UrlEncode","args":["abca😀b😀c"],"ok":"YWJjYfCfmIBi8J-YgGM"}
+{"fn":"base64UrlEncode","args":["ns:key.pathé"],"ok":"bnM6a2V5LnBhdGhlzIE"}
+{"fn":"base64UrlEncode","args":["ns:key.pathab"],"ok":"bnM6a2V5LnBhdGhhYg"}
+{"fn":"base64UrlEncode","args":["  padded  ./x/**/*.json"],"ok":"ICBwYWRkZWQgIC4veC8qKi8qLmpzb24"}
+{"fn":"base64UrlEncode","args":["ünïcödéns:key.path"],"ok":"w7xuw69jw7Zkw6luczprZXkucGF0aA"}
+{"fn":"base64UrlEncode","args":["ünïcödéΣΊΣΥΦΟΣ"],"ok":"w7xuw69jw7Zkw6nOo86KzqPOpc6mzp_Oow"}
+{"fn":"base64UrlEncode","args":["  padded  Hello World"],"ok":"ICBwYWRkZWQgIEhlbGxvIFdvcmxk"}
+{"fn":"base64UrlEncode","args":["a.b.chello"],"ok":"YS5iLmNoZWxsbw"}
+{"fn":"base64UrlEncode","args":["a:b:c😀"],"ok":"YTpiOmPwn5iA"}
+{"fn":"base64UrlEncode","args":["a  padded  "],"ok":"YSAgcGFkZGVkICA"}
+{"fn":"base64UrlEncode","args":["hello.leading"],"ok":"aGVsbG8ubGVhZGluZw"}
+{"fn":"base64UrlEncode","args":["日本語のテキスト﻿bom"],"ok":"5pel5pys6Kqe44Gu44OG44Kt44K544OI77u_Ym9t"}
+{"fn":"base64UrlEncode","args":["tab\tseparatedHello World"],"ok":"dGFiCXNlcGFyYXRlZEhlbGxvIFdvcmxk"}
+{"fn":"base64UrlEncode","args":["key_name-1./x/**/*.json"],"ok":"a2V5X25hbWUtMS4veC8qKi8qLmpzb24"}
+{"fn":"base64UrlEncode","args":["é./x/**/*.json"],"ok":"ZcyBLi94LyoqLyouanNvbg"}
+{"fn":"base64UrlEncode","args":["İstanbulab"],"ok":"xLBzdGFuYnVsYWI"}
+{"fn":"base64UrlEncode","args":["src/a/b.tsé"],"ok":"c3JjL2EvYi50c2XMgQ"}
+{"fn":"base64UrlEncode","args":["abstraße"],"ok":"YWJzdHJhw59l"}
+{"fn":"base64UrlEncode","args":["line1\nline2hello world"],"ok":"bGluZTEKbGluZTJoZWxsbyB3b3JsZA"}
+{"fn":"base64UrlEncode","args":["Hello World  padded  "],"ok":"SGVsbG8gV29ybGQgIHBhZGRlZCAg"}
+{"fn":"base64UrlEncode","args":["straßeünïcödé"],"ok":"c3RyYcOfZcO8bsOvY8O2ZMOp"}
+{"fn":"base64UrlEncode","args":["hello worldhello"],"ok":"aGVsbG8gd29ybGRoZWxsbw"}
+{"fn":"base64UrlEncode","args":["trailing.Hello World"],"ok":"dHJhaWxpbmcuSGVsbG8gV29ybGQ"}
+{"fn":"base64UrlEncode","args":["./x/**/*.json日本語のテキスト"],"ok":"Li94LyoqLyouanNvbuaXpeacrOiqnuOBruODhuOCreOCueODiA"}
+{"fn":"base64UrlEncode","args":["😀﻿bom"],"ok":"8J-YgO-7v2JvbQ"}
+{"fn":"base64UrlEncode","args":["{name} has {count} itemsİstanbul"],"ok":"e25hbWV9IGhhcyB7Y291bnR9IGl0ZW1zxLBzdGFuYnVs"}
+{"fn":"base64UrlEncode","args":["﻿bomkey_name-1"],"ok":"77u_Ym9ta2V5X25hbWUtMQ"}
+{"fn":"base64UrlEncode","args":["{name} has {count} itemsHELLO"],"ok":"e25hbWV9IGhhcyB7Y291bnR9IGl0ZW1zSEVMTE8"}
+{"fn":"base64UrlEncode","args":["aba😀b😀c"],"ok":"YWJh8J-YgGLwn5iAYw"}
+{"fn":"base64UrlEncode","args":["  padded  emoji 👍🏽 mix"],"ok":"ICBwYWRkZWQgIGVtb2ppIPCfkY3wn4-9IG1peA"}
+{"fn":"base64UrlEncode","args":["ünïcödé  padded  "],"ok":"w7xuw69jw7Zkw6kgIHBhZGRlZCAg"}
+{"fn":"base64UrlEncode","args":["a.b.ca.b.c"],"ok":"YS5iLmNhLmIuYw"}
+{"fn":"base64UrlEncode","args":["tab\tseparated:"],"ok":"dGFiCXNlcGFyYXRlZDo"}
+{"fn":"base64UrlEncode","args":["ab日本語のテキスト"],"ok":"YWLml6XmnKzoqp7jga7jg4bjgq3jgrnjg4g"}
+{"fn":"base64UrlEncode","args":["ΣΊΣΥΦΟΣa"],"ok":"zqPOis6jzqXOps6fzqNh"}
+{"fn":"base64UrlEncode","args":["./x/**/*.jsonHELLO"],"ok":"Li94LyoqLyouanNvbkhFTExP"}
+{"fn":"base64UrlEncode","args":["ünïcödéab"],"ok":"w7xuw69jw7Zkw6lhYg"}
+{"fn":"base64UrlEncode","args":["😀ΣΊΣΥΦΟΣ"],"ok":"8J-YgM6jzorOo86lzqbOn86j"}
+{"fn":"base64UrlEncode","args":["ΣΊΣΥΦΟΣa:b:c"],"ok":"zqPOis6jzqXOps6fzqNhOmI6Yw"}
+{"fn":"base64UrlEncode","args":["ns:key.pathhello"],"ok":"bnM6a2V5LnBhdGhoZWxsbw"}
+{"fn":"base64UrlEncode","args":["key_name-1hello"],"ok":"a2V5X25hbWUtMWhlbGxv"}
+{"fn":"base64UrlEncode","args":["./x/**/*.jsonns:key.path"],"ok":"Li94LyoqLyouanNvbm5zOmtleS5wYXRo"}
+{"fn":"base64UrlEncode","args":["straßeHELLO"],"ok":"c3RyYcOfZUhFTExP"}
+{"fn":"base64UrlEncode","args":["emoji 👍🏽 mix:"],"ok":"ZW1vamkg8J-RjfCfj70gbWl4Og"}
+{"fn":"base64UrlEncode","args":["aba:b:c"],"ok":"YWJhOmI6Yw"}
+{"fn":"base64UrlEncode","args":["a:b:c日本語のテキスト"],"ok":"YTpiOmPml6XmnKzoqp7jga7jg4bjgq3jgrnjg4g"}
+{"fn":"base64UrlEncode","args":["a..ba😀b😀c"],"ok":"YS4uYmHwn5iAYvCfmIBj"}
+{"fn":"base64UrlEncode","args":["  padded  é"],"ok":"ICBwYWRkZWQgIGXMgQ"}
+{"fn":"base64UrlEncode","args":["ab:"],"ok":"YWI6"}
+{"fn":"base64UrlEncode","args":["HELLOa:b:c"],"ok":"SEVMTE9hOmI6Yw"}
+{"fn":"base64UrlEncode","args":["ns:key.path😀"],"ok":"bnM6a2V5LnBhdGjwn5iA"}
+{"fn":"base64UrlEncode","args":["key_name-1emoji 👍🏽 mix"],"ok":"a2V5X25hbWUtMWVtb2ppIPCfkY3wn4-9IG1peA"}
+{"fn":"base64UrlEncode","args":["😀:"],"ok":"8J-YgDo"}
+{"fn":"base64UrlEncode","args":["日本語のテキスト:"],"ok":"5pel5pys6Kqe44Gu44OG44Kt44K544OIOg"}
+{"fn":"base64UrlEncode","args":["İstanbul{name} has {count} items"],"ok":"xLBzdGFuYnVse25hbWV9IGhhcyB7Y291bnR9IGl0ZW1z"}
+{"fn":"base64UrlEncode","args":["é日本語のテキスト"],"ok":"ZcyB5pel5pys6Kqe44Gu44OG44Kt44K544OI"}
+{"fn":"base64UrlEncode","args":["a😀b😀cline1\nline2"],"ok":"YfCfmIBi8J-YgGNsaW5lMQpsaW5lMg"}
+{"fn":"base64UrlEncode","args":["😀HELLO"],"ok":"8J-YgEhFTExP"}
+{"fn":"base64UrlEncode","args":["İstanbul.leading"],"ok":"xLBzdGFuYnVsLmxlYWRpbmc"}
+{"fn":"base64UrlEncode","args":["İstanbula.b.c"],"ok":"xLBzdGFuYnVsYS5iLmM"}
+{"fn":"base64UrlEncode","args":["ΣΊΣΥΦΟΣ😀"],"ok":"zqPOis6jzqXOps6fzqPwn5iA"}
+{"fn":"base64UrlEncode","args":["abtrailing."],"ok":"YWJ0cmFpbGluZy4"}
+{"fn":"base64UrlEncode","args":["ünïcödé{name} has {count} items"],"ok":"w7xuw69jw7Zkw6l7bmFtZX0gaGFzIHtjb3VudH0gaXRlbXM"}
+{"fn":"base64UrlEncode","args":["src/a/b.tsline1\nline2"],"ok":"c3JjL2EvYi50c2xpbmUxCmxpbmUy"}
+{"fn":"base64UrlEncode","args":["hello worldemoji 👍🏽 mix"],"ok":"aGVsbG8gd29ybGRlbW9qaSDwn5GN8J-PvSBtaXg"}
+{"fn":"base64UrlEncode","args":["İstanbula:b:c"],"ok":"xLBzdGFuYnVsYTpiOmM"}
+{"fn":"base64UrlEncode","args":["hello日本語のテキスト"],"ok":"aGVsbG_ml6XmnKzoqp7jga7jg4bjgq3jgrnjg4g"}
+{"fn":"base64UrlEncode","args":["İstanbultab\tseparated"],"ok":"xLBzdGFuYnVsdGFiCXNlcGFyYXRlZA"}
+{"fn":"base64UrlEncode","args":["aΣΊΣΥΦΟΣ"],"ok":"Yc6jzorOo86lzqbOn86j"}
+{"fn":"base64UrlEncode","args":["😀ns:key.path"],"ok":"8J-YgG5zOmtleS5wYXRo"}
+{"fn":"base64UrlEncode","args":["a😀b😀ca:b:c"],"ok":"YfCfmIBi8J-YgGNhOmI6Yw"}
+{"fn":"base64UrlEncode","args":["line1\nline2ab"],"ok":"bGluZTEKbGluZTJhYg"}
+{"fn":"base64UrlEncode","args":["src/a/b.tshello"],"ok":"c3JjL2EvYi50c2hlbGxv"}
+{"fn":"base64UrlEncode","args":["abemoji 👍🏽 mix"],"ok":"YWJlbW9qaSDwn5GN8J-PvSBtaXg"}
+{"fn":"base64UrlEncode","args":["key_name-1日本語のテキスト"],"ok":"a2V5X25hbWUtMeaXpeacrOiqnuOBruODhuOCreOCueODiA"}
+{"fn":"base64UrlEncode","args":["abcline1\nline2"],"ok":"YWJjbGluZTEKbGluZTI"}
+{"fn":"base64UrlEncode","args":["trailing.trailing."],"ok":"dHJhaWxpbmcudHJhaWxpbmcu"}
+{"fn":"base64UrlEncode","args":["ns:key.patha..b"],"ok":"bnM6a2V5LnBhdGhhLi5i"}
+{"fn":"base64UrlEncode","args":["İstanbultrailing."],"ok":"xLBzdGFuYnVsdHJhaWxpbmcu"}
+{"fn":"base64UrlEncode","args":["ΣΊΣΥΦΟΣsrc/a/b.ts"],"ok":"zqPOis6jzqXOps6fzqNzcmMvYS9iLnRz"}
+{"fn":"base64UrlEncode","args":["straßetab\tseparated"],"ok":"c3RyYcOfZXRhYglzZXBhcmF0ZWQ"}
+{"fn":"base64UrlEncode","args":[":straße"],"ok":"OnN0cmHDn2U"}
+{"fn":"base64UrlEncode","args":["a..b日本語のテキスト"],"ok":"YS4uYuaXpeacrOiqnuOBruODhuOCreOCueODiA"}
+{"fn":"base64UrlEncode","args":["hello world:"],"ok":"aGVsbG8gd29ybGQ6"}
+{"fn":"base64UrlEncode","args":["emoji 👍🏽 mix{name} has {count} items"],"ok":"ZW1vamkg8J-RjfCfj70gbWl4e25hbWV9IGhhcyB7Y291bnR9IGl0ZW1z"}
+{"fn":"base64UrlEncode","args":["HELLOa.b.c"],"ok":"SEVMTE9hLmIuYw"}
+{"fn":"base64UrlEncode","args":["﻿boma.b.c"],"ok":"77u_Ym9tYS5iLmM"}
+{"fn":"base64UrlEncode","args":["éstraße"],"ok":"ZcyBc3RyYcOfZQ"}
+{"fn":"base64UrlEncode","args":["a.b.cΣΊΣΥΦΟΣ"],"ok":"YS5iLmPOo86KzqPOpc6mzp_Oow"}
+{"fn":"base64UrlEncode","args":["key_name-1{name} has {count} items"],"ok":"a2V5X25hbWUtMXtuYW1lfSBoYXMge2NvdW50fSBpdGVtcw"}
+{"fn":"base64UrlEncode","args":["日本語のテキストΣΊΣΥΦΟΣ"],"ok":"5pel5pys6Kqe44Gu44OG44Kt44K544OIzqPOis6jzqXOps6fzqM"}
+{"fn":"base64UrlEncode","args":[".leadingkey_name-1"],"ok":"LmxlYWRpbmdrZXlfbmFtZS0x"}
+{"fn":"base64UrlEncode","args":["  padded  ﻿bom"],"ok":"ICBwYWRkZWQgIO-7v2JvbQ"}
+{"fn":"base64UrlEncode","args":["a😀b😀ca😀b😀c"],"ok":"YfCfmIBi8J-YgGNh8J-YgGLwn5iAYw"}
+{"fn":"base64UrlEncode","args":["hello worldHELLO"],"ok":"aGVsbG8gd29ybGRIRUxMTw"}
+{"fn":"base64UrlEncode","args":["./x/**/*.jsonsrc/a/b.ts"],"ok":"Li94LyoqLyouanNvbnNyYy9hL2IudHM"}
+{"fn":"base64UrlEncode","args":["日本語のテキスト日本語のテキスト"],"ok":"5pel5pys6Kqe44Gu44OG44Kt44K544OI5pel5pys6Kqe44Gu44OG44Kt44K544OI"}
+{"fn":"base64UrlEncode","args":[".leadingstraße"],"ok":"LmxlYWRpbmdzdHJhw59l"}
+{"fn":"base64UrlEncode","args":["tab\tseparatedkey_name-1"],"ok":"dGFiCXNlcGFyYXRlZGtleV9uYW1lLTE"}
+{"fn":"base64UrlEncode","args":["  padded  line1\nline2"],"ok":"ICBwYWRkZWQgIGxpbmUxCmxpbmUy"}
+{"fn":"base64UrlEncode","args":["a..ba"],"ok":"YS4uYmE"}
+{"fn":"base64UrlEncode","args":["日本語のテキストa:b:c"],"ok":"5pel5pys6Kqe44Gu44OG44Kt44K544OIYTpiOmM"}
+{"fn":"base64UrlDecodeUtf8","args":["a😀b😀c"],"ok":""}
+{"fn":"base64UrlDecodeUtf8","args":["hello world"],"ok":"��e�\n+�"}
+{"fn":"base64UrlDecodeUtf8","args":["  padded  emoji 👍🏽 mix"],"ok":"��]yצ�8"}
+{"fn":"base64UrlDecodeUtf8","args":["tab\tseparated.leading"],"ok":"���z��jם�杊x"}
+{"fn":"base64UrlDecodeUtf8","args":["straße"],"ok":"���"}
+{"fn":"base64UrlDecodeUtf8","args":["./x/**/*.json"],"ok":"�\u001f���'"}
+{"fn":"base64UrlDecodeUtf8","args":[":straße"],"ok":"���"}
+{"fn":"base64UrlDecodeUtf8","args":["ünïcödé./x/**/*.json"],"ok":"����㲉"}
+{"fn":"base64UrlDecodeUtf8","args":["hello"],"ok":"��e"}
+{"fn":"base64UrlDecodeUtf8","args":[""],"ok":""}
+{"fn":"base64UrlDecodeUtf8","args":["a:b:c"],"ok":"i�"}
+{"fn":"base64UrlDecodeUtf8","args":["😀"],"ok":""}
+{"fn":"base64UrlDecodeUtf8","args":["emoji 👍🏽 mixé"],"ok":"zj#"}
+{"fn":"base64UrlDecodeUtf8","args":["  padded  "],"ok":"��]y"}
+{"fn":"base64UrlDecodeUtf8","args":["日本語のテキスト"],"ok":""}
+{"fn":"base64UrlDecodeUtf8","args":["a:b:cHello World"],"ok":"i�\u0007zYhZ��"}
+{"fn":"base64UrlDecodeUtf8","args":["{name} has {count} items"],"ok":"�����\u001c���צ"}
+{"fn":"base64UrlDecodeUtf8","args":["ns:key.path"],"ok":"��\u001eʖ�"}
+{"fn":"base64UrlDecodeUtf8","args":["straßeemoji 👍🏽 mix"],"ok":"���y騎"}
+{"fn":"base64UrlDecodeUtf8","args":["ab"],"ok":"i"}
+{"fn":"base64UrlDecodeUtf8","args":["étab\tseparated"],"ok":"z֛��Z��^"}
+{"fn":"base64UrlDecodeUtf8","args":["İstanbul"],"ok":"��Z���"}
+{"fn":"base64UrlDecodeUtf8","args":["src/a/b.ts"],"ok":"��?k��"}
+{"fn":"base64UrlDecodeUtf8","args":["Hello World"],"ok":"\u001d�e�j+�"}
+{"fn":"base64UrlDecodeUtf8","args":[":日本語のテキスト"],"ok":""}
+{"fn":"base64UrlDecodeUtf8","args":["é"],"ok":""}
+{"fn":"base64UrlDecodeUtf8","args":["a..b"],"ok":"i"}
+{"fn":"base64UrlDecodeUtf8","args":["key_name-1"],"ok":"�쿝���"}
+{"fn":"base64UrlDecodeUtf8","args":[":Hello World"],"ok":"\u001d�e�j+�"}
+{"fn":"base64UrlDecodeUtf8","args":["ékey_name-1"],"ok":"zG��v�{�"}
+{"fn":"base64UrlDecodeUtf8","args":["trailing."],"ok":"����)�"}
+{"fn":"base64UrlDecodeUtf8","args":[".leadingé"],"ok":"�杊x\u001e"}
+{"fn":"base64UrlDecodeUtf8","args":["ünïcödé"],"ok":"��"}
+{"fn":"base64UrlDecodeUtf8","args":["tab\tseparated"],"ok":"���z��jם"}
+{"fn":"base64UrlDecodeUtf8","args":["hello world.leading"],"ok":"��e�\n+��^iا"}
+{"fn":"base64UrlDecodeUtf8","args":["  padded  ﻿bom"],"ok":"��]y��"}
+{"fn":"base64UrlDecodeUtf8","args":["line1\nline2"],"ok":"�)��X�{"}
+{"fn":"base64UrlDecodeUtf8","args":["{name} has {count} items😀"],"ok":"�����\u001c���צ"}
+{"fn":"base64UrlDecodeUtf8","args":["HELLO"],"ok":"\u001cB�"}
+{"fn":"base64UrlDecodeUtf8","args":["abc日本語のテキスト"],"ok":"i�'"}
+{"fn":"base64UrlDecodeUtf8","args":[".leading"],"ok":"�杊x"}
+{"fn":"base64UrlDecodeUtf8","args":["{name} has {count} items./x/**/*.json"],"ok":"�����\u001c���צ���;("}
+{"fn":"base64UrlDecodeUtf8","args":["hello日本語のテキスト"],"ok":"��e�"}
+{"fn":"base64UrlDecodeUtf8","args":["abc"],"ok":"i�"}
+{"fn":"base64UrlDecodeUtf8","args":["a"],"ok":""}
+{"fn":"base64UrlDecodeUtf8","args":["emoji 👍🏽 mix"],"ok":"zj#"}
+{"fn":"base64UrlDecodeUtf8","args":[":hello world"],"ok":"��e�\n+�"}
+{"fn":"base64UrlDecodeUtf8","args":["日本語のテキストns:key.path"],"ok":"�{${*Z�"}
+{"fn":"base64UrlDecodeUtf8","args":["﻿bom"],"ok":"n�"}
+{"fn":"base64UrlDecodeUtf8","args":[":key_name-1"],"ok":"�쿝���"}
+{"fn":"base64UrlDecodeUtf8","args":["abctrailing."],"ok":"i�-����x"}
+{"fn":"base64UrlDecodeUtf8","args":["日本語のテキストab"],"ok":"��"}
+{"fn":"base64UrlDecodeUtf8","args":["trailing.😀"],"ok":"����)�"}
+{"fn":"base64UrlDecodeUtf8","args":["  padded  ./x/**/*.json"],"ok":"��]y�����"}
+{"fn":"base64UrlDecodeUtf8","args":["😀key_name-1"],"ok":""}
+{"fn":"base64UrlDecodeUtf8","args":[":"],"ok":""}
+{"fn":"base64UrlDecodeUtf8","args":["./x/**/*.json:"],"ok":"�\u001f���'"}
+{"fn":"base64UrlDecodeUtf8","args":["line1\nline2a.b.c"],"ok":"�)��X�{f�"}
+{"fn":"base64UrlDecodeUtf8","args":["😀İstanbul"],"ok":""}
+{"fn":"base64UrlDecodeUtf8","args":["😀HELLO"],"ok":""}
+{"fn":"base64UrlDecodeUtf8","args":["﻿bomline1\nline2"],"ok":"n���w��)�"}
+{"fn":"base64UrlDecodeUtf8","args":["ans:key.path"],"ok":"j{${*Z�"}
+{"fn":"base64UrlDecodeUtf8","args":["line1\nline2a:b:c"],"ok":"�)��X�{f�"}
+{"fn":"base64UrlDecodeUtf8","args":["ΣΊΣΥΦΟΣline1\nline2"],"ok":"�)��X�{"}
+{"fn":"base64UrlDecodeUtf8","args":["abckey_name-1"],"ok":"i�${/�jg�"}
+{"fn":"base64UrlDecodeUtf8","args":["ΣΊΣΥΦΟΣ"],"ok":""}
+{"fn":"base64UrlDecodeUtf8","args":["line1\nline2é"],"ok":"�)��X�{g"}
+{"fn":"base64UrlDecodeUtf8","args":["Hello Worldtrailing."],"ok":"\u001d�e�j+��kj)b�"}
+{"fn":"base64UrlDecodeUtf8","args":["straßestraße"],"ok":"���z�ki"}
+{"fn":"base64UrlDecodeUtf8","args":["a.b.c"],"ok":"i�"}
+{"fn":"base64UrlDecodeUtf8","args":["﻿bomemoji 👍🏽 mix"],"ok":"n�����"}
+{"fn":"base64UrlDecodeUtf8","args":["a..btab\tseparated"],"ok":"i�Znǩj��y"}
+{"fn":"base64UrlDecodeUtf8","args":["./x/**/*.jsona😀b😀c"],"ok":"�\u001f���'"}
+{"fn":"base64UrlDecodeUtf8","args":["  padded  é"],"ok":"��]y�"}
+{"fn":"base64UrlDecodeUtf8","args":["tab\tseparated😀"],"ok":"���z��jם"}
+{"fn":"base64UrlDecodeUtf8","args":["a.b.c﻿bom"],"ok":"i�\u001b�"}
+{"fn":"base64UrlDecodeUtf8","args":["a..bHELLO"],"ok":"i��,�"}
+{"fn":"base64UrlDecodeUtf8","args":["line1\nline2a😀b😀c"],"ok":"�)��X�{f"}
+{"fn":"base64UrlDecodeUtf8","args":["ΣΊΣΥΦΟΣΣΊΣΥΦΟΣ"],"ok":""}
+{"fn":"base64UrlDecodeUtf8","args":["  padded    padded  "],"ok":"��]y�Zuם"}
+{"fn":"base64UrlDecodeUtf8","args":["{name} has {count} itemstrailing."],"ok":"�����\u001c���צ��ڊX�"}
+{"fn":"base64UrlDecodeUtf8","args":["hello worldHELLO"],"ok":"��e�\n+���,�"}
+{"fn":"base64UrlDecodeUtf8","args":["hellosrc/a/b.ts"],"ok":"��e�����۶"}
+{"fn":"base64UrlDecodeUtf8","args":["é.leading"],"ok":"zW�v)�"}
+{"fn":"base64UrlDecodeUtf8","args":["İstanbula"],"ok":"��Z���"}
+{"fn":"base64UrlDecodeUtf8","args":["atrailing."],"ok":"j�ڊX�"}
+{"fn":"base64UrlDecodeUtf8","args":["abca:b:c"],"ok":"i�\u001am"}
+{"fn":"base64UrlDecodeUtf8","args":["ns:key.pathünïcödé"],"ok":"��\u001eʖ��w\u001d"}
+{"fn":"base64UrlDecodeUtf8","args":["src/a/b.tsabc"],"ok":"��?k�����"}
+{"fn":"base64UrlDecodeUtf8","args":["trailing.src/a/b.ts"],"ok":"����)ಷ?k��"}
+{"fn":"base64UrlDecodeUtf8","args":["a😀b😀chello"],"ok":""}
+{"fn":"base64UrlDecodeUtf8","args":["日本語のテキスト😀"],"ok":""}
+{"fn":"base64UrlDecodeUtf8","args":["a.b.ckey_name-1"],"ok":"i�${/�jg�"}
+{"fn":"base64UrlDecodeUtf8","args":["emoji 👍🏽 mix日本語のテキスト"],"ok":"zj#"}
+{"fn":"base64UrlDecodeUtf8","args":["ΣΊΣΥΦΟΣ:"],"ok":""}
+{"fn":"base64UrlDecodeUtf8","args":["a😀b😀c日本語のテキスト"],"ok":""}
+{"fn":"base64UrlDecodeUtf8","args":[":hello"],"ok":"��e"}
+{"fn":"base64UrlDecodeUtf8","args":["a😀b😀cab"],"ok":""}
+{"fn":"base64UrlDecodeUtf8","args":["tab\tseparatedİstanbul"],"ok":"���z��jם��Z���"}
+{"fn":"base64UrlDecodeUtf8","args":["{name} has {count} itemsHello World"],"ok":"�����\u001c���צ�w�����W"}
+{"fn":"base64UrlDecodeUtf8","args":["a﻿bom"],"ok":"i�&"}
+{"fn":"base64UrlDecodeUtf8","args":["tab\tseparatedtrailing."],"ok":"���z��jם����)�"}
+{"fn":"base64UrlDecodeUtf8","args":["{name} has {count} itemsa..b"],"ok":"�����\u001c���צ��"}
+{"fn":"base64UrlDecodeUtf8","args":["./x/**/*.json😀"],"ok":"�\u001f���'"}
+{"fn":"base64UrlDecodeUtf8","args":["abkey_name-1"],"ok":"i�\u001e��ڙ�"}
+{"fn":"base64UrlDecodeUtf8","args":["abcünïcödé"],"ok":"i�'q"}
+{"fn":"base64UrlDecodeUtf8","args":["ünïcödé😀"],"ok":"��"}
+{"fn":"base64UrlDecodeUtf8","args":["😀a..b"],"ok":""}
+{"fn":"base64UrlDecodeUtf8","args":["line1\nline2ünïcödé"],"ok":"�)��X�{i�"}
+{"fn":"base64UrlDecodeUtf8","args":[".leadingab"],"ok":"�杊x\u001a"}
+{"fn":"base64UrlDecodeUtf8","args":["./x/**/*.json  padded  "],"ok":"�\u001f���'��]y"}
+{"fn":"base64UrlDecodeUtf8","args":["straße{name} has {count} items"],"ok":"���zv�z\u0016�r���+^�"}
+{"fn":"base64UrlDecodeUtf8","args":["  padded  {name} has {count} items"],"ok":"��]y�ڙ�Z��.�حzk"}
+{"fn":"base64UrlDecodeUtf8","args":["hello worldΣΊΣΥΦΟΣ"],"ok":"��e�\n+�"}
+{"fn":"base64UrlDecodeUtf8","args":["aİstanbul"],"ok":"kK-jv�"}
+{"fn":"base64UrlDecodeUtf8","args":["tab\tseparatedtab\tseparated"],"ok":"���z��jם���z��jם"}
+{"fn":"base64UrlDecodeUtf8","args":["emoji 👍🏽 mixline1\nline2"],"ok":"zj#"}
+{"fn":"base64UrlDecodeUtf8","args":["emoji 👍🏽 mixa..b"],"ok":"zj#"}
+{"fn":"base64UrlDecodeUtf8","args":["abHello World"],"ok":"i�ޖZ\u0016��]"}
+{"fn":"base64UrlDecodeUtf8","args":["hello world:"],"ok":"��e�\n+�"}
+{"fn":"base64UrlDecodeUtf8","args":["ΣΊΣΥΦΟΣabc"],"ok":"i�"}
+{"fn":"base64UrlDecodeUtf8","args":["hello worldİstanbul"],"ok":"��e�\n+��,��ۺ"}
+{"fn":"base64UrlDecodeUtf8","args":["src/a/b.tsab"],"ok":"��?k����"}
+{"fn":"base64UrlDecodeUtf8","args":[".leadingHELLO"],"ok":"�杊x\u0007\u0010��"}
+{"fn":"base64UrlDecodeUtf8","args":["a:b:ca..b"],"ok":"i�\u001a"}
+{"fn":"base64UrlDecodeUtf8","args":["tab\tseparatedHELLO"],"ok":"���z��jם\u001cB�"}
+{"fn":"base64UrlDecodeUtf8","args":["helloHELLO"],"ok":"��e�q\u000b,"}
+{"fn":"base64UrlDecodeUtf8","args":["ΣΊΣΥΦΟΣstraße"],"ok":"���"}
+{"fn":"base64UrlDecodeUtf8","args":["ns:key.path.leading"],"ok":"��\u001eʖ��W�v)�"}
+{"fn":"base64UrlDecodeUtf8","args":["key_name-1tab\tseparated"],"ok":"�쿝���[Znǩj��y"}
+{"fn":"base64UrlDecodeUtf8","args":["ns:key.pathline1\nline2"],"ok":"��\u001eʖ��X�{Yb��"}
+{"fn":"base64UrlDecodeUtf8","args":["tab\tseparatedab"],"ok":"���z��jםi"}
+{"fn":"base64UrlDecodeUtf8","args":["tab\tseparateda"],"ok":"���z��jם"}
+{"fn":"base64UrlDecodeUtf8","args":["hello worldab"],"ok":"��e�\n+�֛"}
+{"fn":"base64UrlDecodeUtf8","args":["./x/**/*.jsonHELLO"],"ok":"�\u001f���'\u001cB�"}
+{"fn":"base64UrlDecodeUtf8","args":["ΣΊΣΥΦΟΣ./x/**/*.json"],"ok":"�\u001f���'"}
+{"fn":"base64UrlDecodeUtf8","args":["  padded  abc"],"ok":"��]y֛"}
+{"fn":"base64UrlDecodeUtf8","args":["ns:key.pathns:key.path"],"ok":"��\u001eʖ��{${*Z�"}
+{"fn":"base64UrlDecodeUtf8","args":["emoji 👍🏽 mixa.b.c"],"ok":"zj#"}
+{"fn":"base64UrlDecodeUtf8","args":["src/a/b.ts{name} has {count} items"],"ok":"��?k���v�z\u0016�r���+^�"}
+{"fn":"base64UrlDecodeUtf8","args":["key_name-1key_name-1"],"ok":"�쿝���Y\u001e��ڙ�"}
+{"fn":"base64UrlDecodeUtf8","args":["key_name-1Hello World"],"ok":"�쿝���QޖZ\u0016��]"}
+{"fn":"base64UrlDecodeUtf8","args":["a.b.c:"],"ok":"i�"}
+{"fn":"base64UrlDecodeUtf8","args":["日本語のテキスト.leading"],"ok":"�W�v)�"}
+{"fn":"base64UrlDecodeUtf8","args":["﻿boma😀b😀c"],"ok":"n��"}
+{"fn":"base64UrlDecodeUtf8","args":["src/a/b.ts日本語のテキスト"],"ok":"��?k���"}
+{"fn":"base64UrlDecodeUtf8","args":["abc.leading"],"ok":"i�%y�b�"}
+{"fn":"base64UrlDecodeUtf8","args":["😀é"],"ok":""}
+{"fn":"base64UrlDecodeUtf8","args":["ünïcödéhello"],"ok":"��azYh"}
+{"fn":"base64UrlDecodeUtf8","args":["line1\nline2Hello World"],"ok":"�)��X�{aޖZ\u0016��]"}
+{"fn":"base64UrlDecodeUtf8","args":["a..bΣΊΣΥΦΟΣ"],"ok":"i"}
+{"fn":"base64UrlDecodeUtf8","args":["hello worldhello"],"ok":"��e�\n+��^�Z"}
+{"fn":"base64UrlDecodeUtf8","args":["abİstanbul"],"ok":"i�,��ۺ"}
+{"fn":"base64UrlDecodeUtf8","args":["ns:key.pathsrc/a/b.ts"],"ok":"��\u001eʖ������۶"}
+{"fn":"base64UrlDecodeUtf8","args":[":HELLO"],"ok":"\u001cB�"}
+{"fn":"base64UrlDecodeUtf8","args":["Hello Worldé"],"ok":"\u001d�e�j+��"}
+{"fn":"base64UrlDecodeUtf8","args":["﻿bom{name} has {count} items"],"ok":"n��jg�j�(�{b��"}
+{"fn":"base64UrlDecodeUtf8","args":["hello worldabc"],"ok":"��e�\n+�֛"}
+{"fn":"base64UrlDecodeUtf8","args":[".leading  padded  "],"ok":"�杊x)i�^"}
+{"fn":"base64UrlDecodeUtf8","args":["ΣΊΣΥΦΟΣ日本語のテキスト"],"ok":""}
+{"fn":"base64UrlDecodeUtf8","args":["  padded  trailing."],"ok":"��]y�kj)b�"}
+{"fn":"base64UrlDecodeUtf8","args":["straße./x/**/*.json"],"ok":"���{��;("}
+{"fn":"base64UrlDecodeUtf8","args":["😀straße"],"ok":""}
+{"fn":"base64UrlDecodeUtf8","args":["emoji 👍🏽 mix😀"],"ok":"zj#"}
+{"fn":"base64UrlDecodeUtf8","args":["./x/**/*.jsonhello world"],"ok":"�\u001f���'��e�\n+�"}
+{"fn":"base64UrlDecodeUtf8","args":["ns:key.pathkey_name-1"],"ok":"��\u001eʖ��G��v�{�"}
+{"fn":"base64UrlDecodeUtf8","args":["hello worldtrailing."],"ok":"��e�\n+��kj)b�"}
+{"fn":"base64UrlDecodeUtf8","args":["src/a/b.tsa😀b😀c"],"ok":"��?k���"}
+{"fn":"base64UrlDecodeUtf8","args":["src/a/b.tskey_name-1"],"ok":"��?k���G��v�{�"}
+{"fn":"base64UrlDecodeUtf8","args":["abns:key.path"],"ok":"i���j�"}
+{"fn":"base64UrlDecodeUtf8","args":["trailing.:"],"ok":"����)�"}
+{"fn":"base64UrlDecodeUtf8","args":["tab\tseparatedemoji 👍🏽 mix"],"ok":"���z��jםzj#"}
+{"fn":"base64UrlDecodeUtf8","args":["hello world{name} has {count} items"],"ok":"��e�\n+��ڙ�Z��.�حzk"}
+{"fn":"base64UrlDecodeUtf8","args":["Hello World.leading"],"ok":"\u001d�e�j+��^iا"}
+{"fn":"base64UrlDecodeUtf8","args":["ünïcödé日本語のテキスト"],"ok":"��g"}
+{"fn":"base64UrlDecodeUtf8","args":["ΣΊΣΥΦΟΣsrc/a/b.ts"],"ok":"��?k��"}
+{"fn":"base64UrlDecodeUtf8","args":["日本語のテキストhello"],"ok":"�\u0017��"}
+{"fn":"base64UrlDecodeUtf8","args":["tab\tseparateda😀b😀c"],"ok":"���z��jם"}
+{"fn":"base64UrlDecodeUtf8","args":["a.b.c{name} has {count} items"],"ok":"i�'jg�j�(�{b��"}
+{"fn":"base64UrlDecodeUtf8","args":["ünïcödé.leading"],"ok":"��ey�b�"}
+{"fn":"base64UrlDecodeUtf8","args":["./x/**/*.jsonsrc/a/b.ts"],"ok":"�\u001f���'��?k��"}
+{"fn":"base64UrlDecodeUtf8","args":["a😀b😀c﻿bom"],"ok":""}
+{"fn":"base64UrlDecodeUtf8","args":["😀ΣΊΣΥΦΟΣ"],"ok":""}
+{"fn":"base64UrlDecodeUtf8","args":["{name} has {count} itemsa:b:c"],"ok":"�����\u001c���צ���"}
+{"fn":"base64UrlDecodeUtf8","args":[".leadinga😀b😀c"],"ok":"�杊x\u001a"}
+{"fn":"base64UrlDecodeUtf8","args":["a:b:chello"],"ok":"i�!zYh"}
+{"fn":"base64UrlDecodeUtf8","args":["line1\nline2./x/**/*.json"],"ok":"�)��X�{o����"}
+{"fn":"base64UrlDecodeUtf8","args":["ünïcödéİstanbul"],"ok":"��t�֧n�"}
+{"fn":"base64UrlDecodeUtf8","args":["a:b:cΣΊΣΥΦΟΣ"],"ok":"i�"}
+{"fn":"base64UrlDecodeUtf8","args":["atab\tseparated"],"ok":"j֛��Z��^"}
+{"fn":"base64UrlDecodeUtf8","args":[".leadinga"],"ok":"�杊x\u001a"}
+{"fn":"base64UrlDecodeUtf8","args":["a😀b😀cünïcödé"],"ok":""}
+{"fn":"base64UrlDecodeUtf8","args":["aab"],"ok":"i�"}
+{"fn":"base64UrlDecodeUtf8","args":["key_name-1ünïcödé"],"ok":"�쿝���Y�"}
+{"fn":"base64UrlDecodeUtf8","args":["aa😀b😀c"],"ok":"i"}
+{"fn":"base64UrlDecodeUtf8","args":["HELLOab"],"ok":"\u001cB�9�"}
+{"fn":"base64UrlDecodeUtf8","args":[":﻿bom"],"ok":"n�"}
+{"fn":"base64UrlDecodeUtf8","args":["key_name-1a:b:c"],"ok":"�쿝���V�"}
+{"fn":"base64UrlDecodeUtf8","args":["ünïcödé  padded  "],"ok":"��ii�^"}
+{"fn":"base64UrlDecodeUtf8","args":["abstraße"],"ok":"i�-��"}
+{"fn":"base64UrlDecodeUtf8","args":["héllo wörld"],"ok":"�Yh¹]"}
+{"fn":"base64UrlDecodeUtf8","args":["👍🏽 thumbs"],"ok":""}
+{"fn":"base64UrlDecodeUtf8","args":["日本語"],"ok":""}
+{"fn":"base64UrlDecodeUtf8","args":["ılık ırmak"],"ok":"�]dֹ�"}
+{"fn":"base64UrlDecodeUtf8","args":["👨‍👩‍👧 family"],"ok":""}
+{"fn":"base64UrlDecodeUtf8","args":["a b"],"ok":"i"}
+{"fn":"base64UrlDecodeUtf8","args":["a😀b"],"ok":""}
+{"fn":"base64UrlDecodeUtf8","args":["a²b x½ y①"],"ok":"i�r"}
+{"fn":"base64UrlDecodeUtf8","args":["aⅠb Ⅻ"],"ok":"i�"}
+{"fn":"base64UrlDecodeUtf8","args":["a𐐀b 𝐀bc"],"ok":"i�["}
+{"fn":"base64UrlDecodeUtf8","args":["कि ٣٤"],"ok":"q"}
+{"fn":"base64UrlDecodeUtf8","args":["Iı İi"],"ok":"#]\""}
+{"fn":"base64UrlDecodeUtf8","args":["K K k"],"ok":"*"}
+{"fn":"base64UrlDecodeUtf8","args":["ſ s S"],"ok":"�"}
+{"fn":"base64UrlDecodeUtf8","args":["x‍y 👨‍👩‍👧"],"ok":"�"}
+{"fn":"base64UrlDecodeUtf8","args":["a b c　d"],"ok":"i�\u001d"}
+{"fn":"base64UrlDecodeUtf8","args":["١٢٣ ٤٥"],"ok":"i�\u001d"}
+{"fn":"base64UrlDecodeUtf8","args":["𝟘𝟙 ²³"],"ok":"�"}
+{"fn":"base64UrlDecodeUtf8","args":["snake_case foo-bar o'neil"],"ok":"�v�{�\u001a����ڮ�ފ"}
+{"fn":"base64UrlDecodeUtf8","args":["ǅungla Ǆ"],"ok":"�x%"}
+{"fn":"base64UrlDecodeUtf8","args":["one\r\ntwo threefour"],"ok":"�w�a�矢�"}
+{"fn":"base64UrlDecodeUtf8","args":["café café"],"ok":"q��q�"}
+{"fn":"base64UrlDecodeUtf8","args":["ΣΑΣ σας ς"],"ok":""}
+{"fn":"signPayload","args":["abc",null],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received null"}
+{"fn":"signPayload","args":["ns:key.path",{"a":{"b":"c"}}],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"signPayload","args":["a.b.ctrailing.","x"],"ok":"jRw7IM2tbSbggwD5xbeWwBYDJb5ORgyKB_D7AwHHBXc"}
+{"fn":"signPayload","args":["Hello World",{"a":"b"}],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"signPayload","args":["﻿bomsrc/a/b.ts",0],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received type number (0)"}
+{"fn":"signPayload","args":["line1\nline2:",0],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received type number (0)"}
+{"fn":"signPayload","args":["tab\tseparated",null],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received null"}
+{"fn":"signPayload","args":["src/a/b.ts","x"],"ok":"whjJ7eUJDeHbzBzDdyqChZJcT_W--EofPV6wh0sRN4E"}
+{"fn":"signPayload","args":["﻿bom",{"a":"b"}],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"signPayload","args":["a😀b😀c",{"a":{"b":"c"}}],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"signPayload","args":["abc",0],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received type number (0)"}
+{"fn":"signPayload","args":["a.b.c  padded  ",["a",1]],"ok":"3j8skYleBfwc7RFEYH2JRXLz7J261fqmQuIyW6VCNQU"}
+{"fn":"signPayload","args":["a",{"a":"b"}],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"signPayload","args":["İstanbul",true],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received type boolean (true)"}
+{"fn":"signPayload","args":["trailing.",[]],"ok":"wTTti4K-ppT9L9b4iGA_3GdevNeYigqlye-kCccQgkQ"}
+{"fn":"signPayload","args":["ΣΊΣΥΦΟΣ",true],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received type boolean (true)"}
+{"fn":"signPayload","args":["İstanbulİstanbul",{"a":{"b":"c"}}],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"signPayload","args":["a:b:c",true],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received type boolean (true)"}
+{"fn":"signPayload","args":["trailing.",null],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received null"}
+{"fn":"signPayload","args":[".leading",["a",1]],"ok":"FYKKBgaqU0V6aewgADUpZ98mwGsvKzELTZKNvp6u5p4"}
+{"fn":"signPayload","args":["éa..b","x"],"ok":"4XzRZzv79jD31KdlFlmf1F9a3raMrutieVKpsGcMVPc"}
+{"fn":"signPayload","args":["a😀b😀c",0],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received type number (0)"}
+{"fn":"signPayload","args":["./x/**/*.json",[]],"ok":"sGWSSGhwE_3KbIYn-Ysz43VB0TOy7DH_nX17F6uBjlo"}
+{"fn":"signPayload","args":[".leading",".LE"],"ok":"HY28XAAjj1RpomLXyudlFA9RiT7pjiZyftjEPwVCJxc"}
+{"fn":"signPayload","args":["HELLOemoji 👍🏽 mix","x"],"ok":"s2pRqS6Wftf4xkhdDw-hyu4mNEENkaNem_2pEKZsOn0"}
+{"fn":"signPayload","args":["{name} has {count} items",null],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received null"}
+{"fn":"signPayload","args":["😀","x"],"ok":"htHgW0-YH-4IC91d8RgnfTSt5uywLtu5A1CTC2mos84"}
+{"fn":"signPayload","args":["straße",null],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received null"}
+{"fn":"signPayload","args":["ns:key.path","x"],"ok":"a0plxzdZLg8pnCwuSViyAOnaIs3z4ahLz5ztnc-18xE"}
+{"fn":"signPayload","args":["src/a/b.ts",true],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received type boolean (true)"}
+{"fn":"signPayload","args":["straße",{}],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"signPayload","args":[".leading",{"a":{"b":"c"}}],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"signPayload","args":["line1\nline2",null],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received null"}
+{"fn":"signPayload","args":["a..bemoji 👍🏽 mix",{"a":"b"}],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"signPayload","args":["key_name-1",0],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received type number (0)"}
+{"fn":"signPayload","args":["key_name-1",{"a":{"b":"c"}}],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"signPayload","args":["hello world",0],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received type number (0)"}
+{"fn":"signPayload","args":["﻿bom",null],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received null"}
+{"fn":"signPayload","args":["a..ba.b.c",0],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received type number (0)"}
+{"fn":"signPayload","args":["./x/**/*.json",{"a":"b"}],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"signPayload","args":["{name} has {count} items",true],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received type boolean (true)"}
+{"fn":"signPayload","args":["a.b.c","x"],"ok":"i5kFxXgNn4Oc7VTSzk02U8NSnLuziqtgR2pwIZM2pOU"}
+{"fn":"signPayload","args":["emoji 👍🏽 mix",{}],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"signPayload","args":["a😀b😀c",null],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received null"}
+{"fn":"signPayload","args":["{name} has {count} items",{}],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"signPayload","args":[".leading",null],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received null"}
+{"fn":"signPayload","args":["ΣΊΣΥΦΟΣsrc/a/b.ts",true],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received type boolean (true)"}
+{"fn":"signPayload","args":["HELLO",{"a":{"b":"c"}}],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"signPayload","args":["a:b:c",0],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received type number (0)"}
+{"fn":"signPayload","args":["src/a/b.tsa..b","x"],"ok":"dLN8rVIPItQrNut5p09TAQ8CelyjnN1ea8LJxELu5_M"}
+{"fn":"signPayload","args":["a.b.c",true],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received type boolean (true)"}
+{"fn":"signPayload","args":["ab",{"a":"b"}],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"signPayload","args":["helloemoji 👍🏽 mix",true],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received type boolean (true)"}
+{"fn":"signPayload","args":["日本語のテキスト",true],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received type boolean (true)"}
+{"fn":"signPayload","args":["a",null],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received null"}
+{"fn":"signPayload","args":["a..b",{"a":"b"}],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"signPayload","args":["a😀b😀c",[]],"ok":"NbGILYBxW_9xg8L6Ak7PlL79iSCPrUUE8oRCDI9-QIM"}
+{"fn":"signPayload","args":["ünïcödé",["a",1]],"ok":"MX4TsPm7Wu6jAile0Z6Pq4VUvjZPqvncvy7MPVdao_Q"}
+{"fn":"signPayload","args":["a..b",0],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received type number (0)"}
+{"fn":"signPayload","args":["hello world",null],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received null"}
+{"fn":"signPayload","args":["straße",[]],"ok":"6O4amF2eUyKIvIPrlZcvq4KnDBKtFlN53yFxbEi30ew"}
+{"fn":"signPayload","args":["ns:key.path",{}],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"signPayload","args":["Hello Worldabc",{"a":"b"}],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"signPayload","args":["ünïcödé./x/**/*.json",{"a":{"b":"c"}}],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"signPayload","args":["a😀b😀cline1\nline2",true],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received type boolean (true)"}
+{"fn":"signPayload","args":["ünïcödé",[]],"ok":"zuQNLcnYg2qg7Lp1klvL_NvWrsX9YJwF7wZNMd4-Kk8"}
+{"fn":"signPayload","args":["","x"],"ok":"8n5lJ9a4QIQwpma3RgcMMH9UK7VO5-bcswPz5SwLCfs"}
+{"fn":"signPayload","args":["a:b:c",{"a":"b"}],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"signPayload","args":["Hello World",true],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received type boolean (true)"}
+{"fn":"signPayload","args":["hello world",true],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received type boolean (true)"}
+{"fn":"signPayload","args":["😀",{"a":"b"}],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"signPayload","args":["./x/**/*.json",0],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received type number (0)"}
+{"fn":"signPayload","args":[":",["a",1]],"ok":"c_S9XKbWJXQGjZWK7nKBvTVzoNzhsS0mwbdPKeAKDlo"}
+{"fn":"signPayload","args":["a",0],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received type number (0)"}
+{"fn":"signPayload","args":["é",true],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received type boolean (true)"}
+{"fn":"signPayload","args":["ns:key.path",[]],"ok":"QqKCQOt-lRzJYReilt2-wCDvQl_gccqEIRav8VOLi9Y"}
+{"fn":"signPayload","args":["X","x"],"ok":"cNuVwUnu4AS1BNVa_fxSd63c2f5q3CVjCX28gIi4EaQ"}
+{"fn":"signPayload","args":["﻿bom","x"],"ok":"HRV4oN36P9f4X1xVn33SKi9t5hEcZWkl_KvJLAZSXiY"}
+{"fn":"signPayload","args":["a.b.csrc/a/b.ts",{"a":{"b":"c"}}],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"signPayload","args":["日本語のテキスト",[]],"ok":"2K82ct3Ah5qcl0Hlnw5rqW_Y9K2Z0Hr5lBTPgZr8ajE"}
+{"fn":"signPayload","args":["é",["a",1]],"ok":"VDtGWa_cXfFMjEUbywAYan6daES6q9JMc2Tc7G8G-jc"}
+{"fn":"signPayload","args":["ΣΊΣΥΦΟΣ",null],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received null"}
+{"fn":"signPayload","args":["tab\tseparated",{"a":"b"}],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"signPayload","args":["straße",0],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received type number (0)"}
+{"fn":"signPayload","args":["line1\nline2","n"],"ok":"SMWp3LHhZT-ZrZaHSGd0S6PkhDE93m0tOlI4w1sG3y8"}
+{"fn":"signPayload","args":["HELLO",true],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received type boolean (true)"}
+{"fn":"signPayload","args":["abc",["a",1]],"ok":"oc7FBzwAWVcFw2LnZx8im117Hv5sfPLmQ3cS14RbmuM"}
+{"fn":"signPayload","args":["hello worlda",0],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received type number (0)"}
+{"fn":"signPayload","args":["﻿bom",{"a":{"b":"c"}}],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"signPayload","args":["hello",null],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received null"}
+{"fn":"signPayload","args":["line1\nline2",0],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received type number (0)"}
+{"fn":"signPayload","args":["",["a",1]],"ok":"uq-utIi7CEANIV68osm1AimUpAzHdUzahoIQvmIFQoE"}
+{"fn":"signPayload","args":["{name} has {count} items",{"a":"b"}],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"signPayload","args":["ab","x"],"ok":"H2ZL8VD3jXacME1zcENtKSucbV2X5OiIcP0L5y4cRaE"}
+{"fn":"signPayload","args":["hello",{}],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"signPayload","args":["﻿bom",{}],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"signPayload","args":["é",{"a":"b"}],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"signPayload","args":["  padded  ",["a",1]],"ok":"dWO9OhkPO0Q1qbeIH7QoXRFLTIVtDJEKixOfulBKtlE"}
+{"fn":"signPayload","args":["ünïcödéa:b:c",true],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received type boolean (true)"}
+{"fn":"signPayload","args":["abchello world",{}],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"signPayload","args":["key_name-1",{"a":"b"}],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"signPayload","args":["./x/**/*.json",{"a":{"b":"c"}}],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"signPayload","args":["a.b.c",null],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received null"}
+{"fn":"signPayload","args":["emoji 👍🏽 mix",["a",1]],"ok":"XjU_wjwr4IkhhypwF_hxo7jaFfI4n9UUmLq5libIsTA"}
+{"fn":"signPayload","args":["{name} has {count} itemsns:key.path",true],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received type boolean (true)"}
+{"fn":"signPayload","args":[":",null],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received null"}
+{"fn":"signPayload","args":["emoji 👍🏽 mix",true],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received type boolean (true)"}
+{"fn":"signPayload","args":["./x/**/*.json",true],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received type boolean (true)"}
+{"fn":"signPayload","args":["a",{}],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"signPayload","args":["a",[]],"ok":"lhWpXUozYRjENbnNVMXoZEq5VrVzqikmJ0oSgLZnRxM"}
+{"fn":"signPayload","args":["tab\tseparated",{"a":{"b":"c"}}],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"signPayload","args":["İstanbul",{}],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"signPayload","args":["key_name-1",["a",1]],"ok":"6aH2C_Zlib-8BIwjgrVboPeu_LsUwC3xR_cvWubldoU"}
+{"fn":"signPayload","args":["{name} has {count} items",["a",1]],"ok":"Fw5AVwM0mJ7n15NfPXCyFcWMgH9Df25tmWZo6cQh0XA"}
+{"fn":"signPayload","args":["日本語のテキストa..b",{}],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"signPayload","args":["a:b:c",{}],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"signPayload","args":["abc",{"a":"b"}],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"signPayload","args":["hellohello",{"a":"b"}],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"signPayload","args":["key_name-1",{}],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"signPayload","args":["src/a/b.tsline1\nline2",["a",1]],"ok":"aF8AddrAWYUaTM_pOpXZ5z_5Mgd66mZ_MRCeCIXcB70"}
+{"fn":"signPayload","args":["﻿bom",0],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received type number (0)"}
+{"fn":"signPayload","args":["ab",{}],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"signPayload","args":["./x/**/*.json",{}],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"signPayload","args":["Hello World",{}],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"signPayload","args":["a",{"a":{"b":"c"}}],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"signPayload","args":["  padded  ",0],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received type number (0)"}
+{"fn":"signPayload","args":["  padded  ",{"a":{"b":"c"}}],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"signPayload","args":["x","x"],"ok":"lHvSd7LTXPwH-8fjYvJpdVh6Mfg6ff94j9rB-kPEsoc"}
+{"fn":"signPayload","args":["emoji 👍🏽 mix","x"],"ok":"P-TykO9dMEVBFnYZFctt6R-OH0SZQdfZx-CvoD0vn2Y"}
+{"fn":"signPayload","args":["HELLOHELLO",{"a":{"b":"c"}}],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"signPayload","args":["ünïcödé",{"a":"b"}],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"signPayload","args":["a.b.c",[]],"ok":"jccNN7u5ePXz4Hb1UsQcShsIJxMFR6PRtB2BtcXMKrU"}
+{"fn":"signPayload","args":["😀",true],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received type boolean (true)"}
+{"fn":"signPayload","args":["ünïcödé",{"a":{"b":"c"}}],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"signPayload","args":["Hello Worldhello",{}],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"signPayload","args":["abcstraße",{}],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"signPayload","args":["HELLOHELLO","x"],"ok":"3pdApkLUM_bzjxBUTAjklvHzb1vch8j2oRqYhdoHLwQ"}
+{"fn":"signPayload","args":["😀",0],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received type number (0)"}
+{"fn":"signPayload","args":["ünïcödé",null],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received null"}
+{"fn":"signPayload","args":["./x/**/*.json","x"],"ok":"aQ0BzYvyJfqucGC1fYcz46O_FgGIIKqLqItNyXFR5QI"}
+{"fn":"signPayload","args":["{name} has {count} items",[]],"ok":"6QQ43Q3BM5ja1iHT7tcOyBldDdY11_b-3XhEgaj9eZQ"}
+{"fn":"signPayload","args":["a..b",[]],"ok":"WNxcMrlR1wFqI3WEJW3Vup2uQXUp0mrVbACvg5Le994"}
+{"fn":"signPayload","args":["HELLOHELLO",{"a":"b"}],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"signPayload","args":["﻿bom",true],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received type boolean (true)"}
+{"fn":"signPayload","args":["helloHELLO",[]],"ok":"MVKMYK7H_nmgKczEtE4A89O8PoP60-uCTVGpkPjdpNM"}
+{"fn":"signPayload","args":["HELLO","x"],"ok":"qrYal-WbDE8oefZlPFn2jnS8DZakk0YEa_2GuVKNPak"}
+{"fn":"signPayload","args":["hello worldemoji 👍🏽 mix",0],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received type number (0)"}
+{"fn":"signPayload","args":["é",[]],"ok":"LB3F3D5jMZZW7-l5yn0HBYtZrIuuwrGffCVW6DJvqqA"}
+{"fn":"signPayload","args":["line1\nline2",true],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received type boolean (true)"}
+{"fn":"signPayload","args":["a:b:c","x"],"ok":"gHCYxPDFTshmo0gnOaMz_BFVTIbZhUFiStQsQMmDpsU"}
+{"fn":"signPayload","args":["hello",{"a":"b"}],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"signPayload","args":["İstanbul",null],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received null"}
+{"fn":"signPayload","args":["trailing.",{"a":{"b":"c"}}],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"signPayload","args":["tab\tseparated",["a",1]],"ok":"da9gCwROfO1UyW0NtfV5glyeZ7F9-KwGEkYjo5dCyDY"}
+{"fn":"signPayload","args":["ns:key.path",0],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received type number (0)"}
+{"fn":"signPayload","args":["{name} has {count} items","x"],"ok":"mt_LPNeo6KpM5Eo8hq2mfs5ex8QL86H-VMr18UENT70"}
+{"fn":"signPayload","args":["a:b:c",{"a":{"b":"c"}}],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"signPayload","args":["a.b.c",{"a":"b"}],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"signPayload","args":["abc",{"a":{"b":"c"}}],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"signPayload","args":["  padded  ",{"a":"b"}],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"signPayload","args":["﻿bom",["a",1]],"ok":"MltHczfAPzs5piIFJsvQ1NUKovPfOn1OxaQypdcMBks"}
+{"fn":"signPayload","args":["hello","x"],"ok":"MQerkf9HBnqK87iFRzLUMCJov7aqcKkwYmGrqWkItS8"}
+{"fn":"signPayload","args":["line1\nline2","x"],"ok":"UzZ4o6p8-NSDVvDTsOl5RvvAbN2l1oNvRf-Awm4xEDE"}
+{"fn":"signPayload","args":["hello world",{"a":"b"}],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"signPayload","args":["Hello World  padded  ",{}],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"signPayload","args":["Hello World",null],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received null"}
+{"fn":"signPayload","args":["./x/**/*.json",["a",1]],"ok":"-nzqG-Up6Ra7_vQjRktK40KAhwUi1oouPc3IpZnbIrs"}
+{"fn":"signPayload","args":["  padded  ",{}],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"signPayload","args":["abHello World","x"],"ok":"uHFhr8Upgmo7ktv39DufZEbjhZyKL1tCimiewm3QrVA"}
+{"fn":"signPayload","args":["Hello World",0],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received type number (0)"}
+{"fn":"signPayload","args":["Hello World",["a",1]],"ok":"RcwGELq0cd-TU2-atIEwYqir5SGeV9bt3T347XoDtD0"}
+{"fn":"signPayload","args":["日本語のテキスト",["a",1]],"ok":"vKPhfeD1zgL7_JjvaZoBeZ1wZAIV7ZqmtcOFiLW0tNM"}
+{"fn":"signPayload","args":["trailing.",{}],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"signPayload","args":["emoji 👍🏽 mixtab\tseparated",["a",1]],"ok":"aRsWcss8EldXHGmYtqXYr1GVKcwymFsVNH1txj1dFlc"}
+{"fn":"signPayload","args":["straßeΣΊΣΥΦΟΣ",[]],"ok":"z6ehlEPnQqbYjMUmHOaH2c4wL_5ITzQ5nWw4E3gYONM"}
+{"fn":"signPayload","args":["Hello World",[]],"ok":"UAgtpp5-R4DIZ74ZjnlbnNXpTnOe6UhaqVpw9g425z8"}
+{"fn":"signPayload","args":["ünïcödé",0],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received type number (0)"}
+{"fn":"signPayload","args":["HELLOΣΊΣΥΦΟΣ",{"a":{"b":"c"}}],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"signPayload","args":["src/a/b.ts",{}],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"signPayload","args":["HELLO",null],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received null"}
+{"fn":"signPayload","args":["😀",[]],"ok":"vorF9FfFjQk2O5WP0Z8u6uWGI5_XtWAH8TpHsdnVkqM"}
+{"fn":"signPayload","args":["a.b.c",["a",1]],"ok":"UmmOYi1H-pVWsxbe7hV-bEaTm8SHobKsnHWFaVg1SaY"}
+{"fn":"signPayload","args":["tab\tseparated日本語のテキスト",0],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received type number (0)"}
+{"fn":"signPayload","args":["é",{}],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"signPayload","args":["HELLO",{}],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"signPayload","args":["a:b:c",["a",1]],"ok":"Hkraz3u2sccPZj9uauyRGTqP_lL6Kg3RC_XNxr1gtuY"}
+{"fn":"signPayload","args":[".leading","x"],"ok":"XNV34r3aVeFCirMHRRS8T8yeOZCdZ5oiSOWC5nwlev0"}
+{"fn":"signPayload","args":["emoji 👍🏽 mix",{"a":"b"}],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"signPayload","args":["line1\nline2",{"a":"b"}],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"signPayload","args":["emoji 👍🏽 mix",0],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received type number (0)"}
+{"fn":"signPayload","args":[".leading",{}],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"signPayload","args":["",{}],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"signPayload","args":["a",true],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received type boolean (true)"}
+{"fn":"signPayload","args":[":",0],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received type number (0)"}
+{"fn":"signPayload","args":["ΣΊΣΥΦΟΣΣΊΣΥΦΟΣ",0],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received type number (0)"}
+{"fn":"signPayload","args":["İstanbulab",[]],"ok":"B03nkyUYRu1bejy2z-mV8RVR1t9iQX8ClyDIVwrKqd4"}
+{"fn":"signPayload","args":["日本語のテキスト","x"],"ok":"89iWdsbgs7v3Gpr2YtXlesIsDQ_S7IxdJSGVGF0GQts"}
+{"fn":"signPayload","args":["straße",true],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received type boolean (true)"}
+{"fn":"signPayload","args":["ünïcödé",{}],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received an instance of Object"}
+{"fn":"signPayload","args":["",0],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received type number (0)"}
+{"fn":"signPayload","args":["héllo wörld",null],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received null"}
+{"fn":"signPayload","args":["👍🏽 thumbs",null],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received null"}
+{"fn":"signPayload","args":["日本語",null],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received null"}
+{"fn":"signPayload","args":["",null],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received null"}
+{"fn":"signPayload","args":["é",null],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received null"}
+{"fn":"signPayload","args":["ılık ırmak",null],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received null"}
+{"fn":"signPayload","args":["👨‍👩‍👧 family",null],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received null"}
+{"fn":"signPayload","args":["a b",null],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received null"}
+{"fn":"signPayload","args":["a😀b",null],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received null"}
+{"fn":"signPayload","args":["a²b x½ y①",null],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received null"}
+{"fn":"signPayload","args":["aⅠb Ⅻ",null],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received null"}
+{"fn":"signPayload","args":["a𐐀b 𝐀bc",null],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received null"}
+{"fn":"signPayload","args":["कि ٣٤",null],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received null"}
+{"fn":"signPayload","args":["Iı İi",null],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received null"}
+{"fn":"signPayload","args":["K K k",null],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received null"}
+{"fn":"signPayload","args":["ſ s S",null],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received null"}
+{"fn":"signPayload","args":["x‍y 👨‍👩‍👧",null],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received null"}
+{"fn":"signPayload","args":["a b c　d",null],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received null"}
+{"fn":"signPayload","args":["١٢٣ ٤٥",null],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received null"}
+{"fn":"signPayload","args":["𝟘𝟙 ²³",null],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received null"}
+{"fn":"signPayload","args":["snake_case foo-bar o'neil",null],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received null"}
+{"fn":"signPayload","args":["ǅungla Ǆ",null],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received null"}
+{"fn":"signPayload","args":["one\r\ntwo threefour",null],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received null"}
+{"fn":"signPayload","args":["café café",null],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received null"}
+{"fn":"signPayload","args":["ΣΑΣ σας ς",null],"error":"The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received null"}
+{"fn":"timingSafeEqualBase64Url","args":["hello worldΣΊΣΥΦΟΣ","abc  padded  "],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":[".leading","A"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["astraße","😀"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["a.b.c","a.b.c"],"error":"Crypto.timingSafeEqual is not a function"}
+{"fn":"timingSafeEqualBase64Url","args":["  padded  ","./x/**/*.json"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["日本語のテキスト","emoji 👍🏽 mix"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["emoji 👍🏽 mix","Hello World"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["hello world","ns:key.pathHELLO"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["İstanbul","a.b.c"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["日本語のテキスト",".leading"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["ünïcödé","straße"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["tab\tseparated",""],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["","a😀b😀c"],"error":"Crypto.timingSafeEqual is not a function"}
+{"fn":"timingSafeEqualBase64Url","args":["Hello World:","ab"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["a😀b😀c","c"],"error":"Crypto.timingSafeEqual is not a function"}
+{"fn":"timingSafeEqualBase64Url","args":["a..b","a:b:c"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["line1\nline2","hello"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["straße","{name} has {count} items"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["a.b.chello","İstanbul"],"error":"Crypto.timingSafeEqual is not a function"}
+{"fn":"timingSafeEqualBase64Url","args":["a..b","key_name-1line1\nline2"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["HELLOkey_name-1","line1\nline2"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["hello worldstraße","a:b:c"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["hello","e"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["l","hello"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["s","İstanbul"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["./x/**/*.json","abcline1\nline2"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["b","a..b"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["nt} ","{name} has {count} items"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["trailing.","a.b.c"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["hello","﻿bom"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["hello world","llo w"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["son","./x/**/*.jsonns:key.path"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["  padded  ",""],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["","İstanbul"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["日本語のテキスト","a😀b😀c"],"error":"Crypto.timingSafeEqual is not a function"}
+{"fn":"timingSafeEqualBase64Url","args":["abtab\tseparated","ünïcödé"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":[".leadingkey_name-1","_nam"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["tab\tseparated","./x/**/*.json"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["a..b","hello"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["a..b","😀"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["é","hello world"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["ns:key.pathkey_name-1",":"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["key_name-1",":"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["😀","😀"],"error":"Crypto.timingSafeEqual is not a function"}
+{"fn":"timingSafeEqualBase64Url","args":["src/a/b.ts","c"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["a:b:c",""],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["tab\tseparatedab","hello world"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["B","ab"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["trailing.","ns:key.path"],"error":"Crypto.timingSafeEqual is not a function"}
+{"fn":"timingSafeEqualBase64Url","args":["İstanbul","ab"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["","ab"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["ünïcödéa","{name} has {count} items./x/**/*.json"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["ünïcödé","ΣΊΣΥΦΟΣ😀"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["key_name-1","a..b"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["é","key_name-1"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["line1\nline2","\nline"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["traß","straße"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["hello","trailing."],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["ns:key.path{name} has {count} items","a"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["  padded  straße","İstanbul"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["é","日本語のテキスト"],"error":"Crypto.timingSafeEqual is not a function"}
+{"fn":"timingSafeEqualBase64Url","args":["a.b.c","hello worldHELLO"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["tab\tseparated","a😀b😀cİstanbul"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["﻿bom","key_name-1"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["hello","o"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["hello world","h"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["la","İstanbula"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["a.b.c","  padded  ns:key.path"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["a","a"],"error":"Crypto.timingSafeEqual is not a function"}
+{"fn":"timingSafeEqualBase64Url","args":["a","abc"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["tab\tseparated","Hello Worldhello"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["😀","src/a/b.ts"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["line1\nline2","﻿bom"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["Hello World  padded  ","ns:key.path"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["hello world","tab\tseparated"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":[".leading","😀"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["trailing.","trailing."],"error":"Crypto.timingSafeEqual is not a function"}
+{"fn":"timingSafeEqualBase64Url","args":["İstanbul","  padded  a:b:c"],"error":"Crypto.timingSafeEqual is not a function"}
+{"fn":"timingSafeEqualBase64Url","args":["HELLO","abc"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":[".leading","ab"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["ns:key.path","y"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["ünïcödé","hello"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["trailing.","é"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["﻿bom","ns:key.path"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["﻿bom","a:b:c"],"error":"Crypto.timingSafeEqual is not a function"}
+{"fn":"timingSafeEqualBase64Url","args":["İstanbul",":"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["key_name-1","emoji 👍🏽 mix"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["é","﻿bom"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["ELLOa","HELLOa"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["tab\tseparated","ns:key.path"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["key_name-1","me-"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["ünïcödé","é"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["﻿bom","HELLO"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["tab\tseparated","日本語のテキスト"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["abc","Hello World"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["a:b:c","ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["a..b","helloabc"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["./x/**/*.json","n"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["a..ba.b.c","{name} has {count} items"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["./x/**/*.json",":"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["{name} has {count} items","a..b"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["  padded  ","trailing."],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["İstanbul","hello"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["a..b","B"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["a.b.c","  padded  "],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["﻿bom","é"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["line1\nline2","日本語のテキスト"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["ns:key.pathemoji 👍🏽 mix","a.b.c"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":[":日本語のテキスト","a😀b😀c"],"error":"Crypto.timingSafeEqual is not a function"}
+{"fn":"timingSafeEqualBase64Url","args":[":日本語のテキスト",":"],"error":"Crypto.timingSafeEqual is not a function"}
+{"fn":"timingSafeEqualBase64Url","args":["OM","﻿bom"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["d","ünïcödé"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["😀","abcé"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["hellokey_name-1","a😀b😀c"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["a","emoji 👍🏽 mix"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["{name} has {count} items","ount} ite"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["src/a/b.ts","a"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["src/a/b.ts","﻿bom"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["ΣΊΣΥΦΟΣ","src/a/b.ts"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["moji 👍🏽","emoji 👍🏽 mix"],"error":"Crypto.timingSafeEqual is not a function"}
+{"fn":"timingSafeEqualBase64Url","args":["tab\tseparated","./x/**/*.json{name} has {count} items"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["tab\tseparated","ATE"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["ns:key.path","ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["😀","Hello Worldünïcödé"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["name","key_name-1HELLO"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["a..bünïcödé","ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["a..b","ab"],"error":"Crypto.timingSafeEqual is not a function"}
+{"fn":"timingSafeEqualBase64Url","args":["a","HELLO"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["ünïcödé","{name} has {count} itemssrc/a/b.ts"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["a..bé","{name} has {count} items"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["added","ΣΊΣΥΦΟΣ  padded  "],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["  padded  ","é"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["tab\tseparated","a..b"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["ünïcödé","ü"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["a..b","a.b.c"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["ab","a"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["a..b",".b"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["B:","a:b:c"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["ünïcödé","  padded  "],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["tab\tseparated","src/a/b.ts"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["{name} has {count} items","m"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["hello","a😀b😀c"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["İstanbul","hello world"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["hello world","HELLO"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["é","e"],"error":"Crypto.timingSafeEqual is not a function"}
+{"fn":"timingSafeEqualBase64Url","args":["HELLO","line1\nline2"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["İstanbul","İstanbul"],"error":"Crypto.timingSafeEqual is not a function"}
+{"fn":"timingSafeEqualBase64Url","args":["😀","HELLOabc"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["ab","abc"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["./x/**/*.jsonΣΊΣΥΦΟΣ","tab\tseparated"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["lİ","İstanbulİstanbul"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["a..b","HELLO"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["a.b.c","a:b:c"],"error":"Crypto.timingSafeEqual is not a function"}
+{"fn":"timingSafeEqualBase64Url","args":["abline1\nline2","😀"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["hello world","rl"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["a😀b😀c","  padded  "],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["./x/**/*.json","a😀b😀cHello World"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["hello","tab\tseparated"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["İstanbul","😀"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["m","﻿bom"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["./x/**/*.json","{name} has {count} items"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["abc","İstanbul"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["﻿bomstraße","emoji 👍🏽 mix"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["HELLO./x/**/*.json","ab"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["./x/**/*.json","X/"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":[".leading","İstanbul"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["é","é"],"error":"Crypto.timingSafeEqual is not a function"}
+{"fn":"timingSafeEqualBase64Url","args":["","abc"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["ns:key.path","at"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["HELLO","abHELLO"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["é  padded  ","  padded  .leading"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["ns:key.pathé","straße"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["straße","a..b"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["a..b","😀Hello World"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["a😀b😀c","éé"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["é","😀"],"error":"Crypto.timingSafeEqual is not a function"}
+{"fn":"timingSafeEqualBase64Url","args":["D","tab\tseparated"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["emoji 👍🏽 mix","a:b:c"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["a.b.cstraße","key_name-1"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["HELLO","emoji 👍🏽 mix"],"error":"Crypto.timingSafeEqual is not a function"}
+{"fn":"timingSafeEqualBase64Url","args":["é","́"],"error":"Crypto.timingSafeEqual is not a function"}
+{"fn":"timingSafeEqualBase64Url","args":["emoji 👍🏽 mix","ab"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["{name} has {count} items","a..b  padded  "],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["a:b:c","{name} has {count} items"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["a:b:c","Hello World"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["a:b:c",":"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":[":","HELLO"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["abc","a:b:c"],"error":"Crypto.timingSafeEqual is not a function"}
+{"fn":"timingSafeEqualBase64Url","args":["  padded  ","tab\tseparatedns:key.path"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["line1\nline2","a..b"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["abc:","abc"],"error":"Crypto.timingSafeEqual is not a function"}
+{"fn":"timingSafeEqualBase64Url","args":["hellostraße",".leading"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["ns:key.path","a:b:c﻿bom"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["a😀b😀c","a😀b😀cİstanbul"],"error":"Crypto.timingSafeEqual is not a function"}
+{"fn":"timingSafeEqualBase64Url","args":["ns:key.path","{name} has {count} items"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":[":","key_name-1"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["ab","hello"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["日本語のテキスト",""],"error":"Crypto.timingSafeEqual is not a function"}
+{"fn":"timingSafeEqualBase64Url","args":["line1\nline2","e"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["abcΣΊΣΥΦΟΣ","😀"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["héllo wörld","abc  padded  "],"error":"Crypto.timingSafeEqual is not a function"}
+{"fn":"timingSafeEqualBase64Url","args":["👍🏽 thumbs","abc  padded  "],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["日本語","abc  padded  "],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["","abc  padded  "],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["é","abc  padded  "],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["İstanbul","abc  padded  "],"error":"Crypto.timingSafeEqual is not a function"}
+{"fn":"timingSafeEqualBase64Url","args":["straße","abc  padded  "],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["ılık ırmak","abc  padded  "],"error":"Crypto.timingSafeEqual is not a function"}
+{"fn":"timingSafeEqualBase64Url","args":["👨‍👩‍👧 family","abc  padded  "],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["a b","abc  padded  "],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["ΣΊΣΥΦΟΣ","abc  padded  "],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["a😀b","abc  padded  "],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["﻿bom","abc  padded  "],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["a²b x½ y①","abc  padded  "],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["aⅠb Ⅻ","abc  padded  "],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["a𐐀b 𝐀bc","abc  padded  "],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["कि ٣٤","abc  padded  "],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["Iı İi","abc  padded  "],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["K K k","abc  padded  "],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["ſ s S","abc  padded  "],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["x‍y 👨‍👩‍👧","abc  padded  "],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["a b c　d","abc  padded  "],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["١٢٣ ٤٥","abc  padded  "],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["𝟘𝟙 ²³","abc  padded  "],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["snake_case foo-bar o'neil","abc  padded  "],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["ǅungla Ǆ","abc  padded  "],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["one\r\ntwo threefour","abc  padded  "],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["café café","abc  padded  "],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["ΣΑΣ σας ς","abc  padded  "],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["hello worldΣΊΣΥΦΟΣ","héllo wörld"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["hello worldΣΊΣΥΦΟΣ","👍🏽 thumbs"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["hello worldΣΊΣΥΦΟΣ","日本語"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["hello worldΣΊΣΥΦΟΣ",""],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["hello worldΣΊΣΥΦΟΣ","é"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["hello worldΣΊΣΥΦΟΣ","İstanbul"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["hello worldΣΊΣΥΦΟΣ","straße"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["hello worldΣΊΣΥΦΟΣ","ılık ırmak"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["hello worldΣΊΣΥΦΟΣ","👨‍👩‍👧 family"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["hello worldΣΊΣΥΦΟΣ","a b"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["hello worldΣΊΣΥΦΟΣ","ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["hello worldΣΊΣΥΦΟΣ","a😀b"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["hello worldΣΊΣΥΦΟΣ","﻿bom"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["hello worldΣΊΣΥΦΟΣ","a²b x½ y①"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["hello worldΣΊΣΥΦΟΣ","aⅠb Ⅻ"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["hello worldΣΊΣΥΦΟΣ","a𐐀b 𝐀bc"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["hello worldΣΊΣΥΦΟΣ","कि ٣٤"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["hello worldΣΊΣΥΦΟΣ","Iı İi"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["hello worldΣΊΣΥΦΟΣ","K K k"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["hello worldΣΊΣΥΦΟΣ","ſ s S"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["hello worldΣΊΣΥΦΟΣ","x‍y 👨‍👩‍👧"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["hello worldΣΊΣΥΦΟΣ","a b c　d"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["hello worldΣΊΣΥΦΟΣ","١٢٣ ٤٥"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["hello worldΣΊΣΥΦΟΣ","𝟘𝟙 ²³"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["hello worldΣΊΣΥΦΟΣ","snake_case foo-bar o'neil"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["hello worldΣΊΣΥΦΟΣ","ǅungla Ǆ"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["hello worldΣΊΣΥΦΟΣ","one\r\ntwo threefour"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["hello worldΣΊΣΥΦΟΣ","café café"],"ok":false}
+{"fn":"timingSafeEqualBase64Url","args":["hello worldΣΊΣΥΦΟΣ","ΣΑΣ σας ς"],"ok":false}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"nav":"ns:key.path","a.b":{"$undefined":true}},"remoteAddress":null,"label":".leading"}],"ok":{"label":".leading","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{}}],"ok":{"deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"2":"ns:key.path","😀":"emoji 👍🏽 mix"},"label":"ab"}],"ok":{"label":"ab","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"2":"a.b.c","b":{"$undefined":true}},"label":"  padded  "}],"ok":{"label":"  padded  ","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"title":{"$undefined":true},"a.b":{"$undefined":true}},"remoteAddress":null,"label":":"}],"ok":{"label":":","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{},"remoteAddress":"  padded  ","label":"emoji 👍🏽 mixline1\nline2"}],"ok":{"label":"emoji 👍🏽 mixline1\nline2","ipAddress":"padded","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"10":{"$undefined":true},"a":{"$undefined":true},"ünï":"﻿bom"},"label":"a"}],"ok":{"label":"a","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"nav":{"$undefined":true}},"remoteAddress":null,"label":"abHELLO"}],"ok":{"label":"abHELLO","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"2":{"$undefined":true},"title":"abc","a.b":{"$undefined":true}},"remoteAddress":"straße","label":"HELLO"}],"ok":{"label":"HELLO","ipAddress":"straße","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"😀":{"$undefined":true},"nav":{"$undefined":true}},"remoteAddress":"ns:key.path","label":".leading"}],"ok":{"label":".leading","ipAddress":"ns:key.path","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"b":{"$undefined":true},"😀":"  padded  "},"remoteAddress":null,"label":"a😀b😀c"}],"ok":{"label":"a😀b😀c","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"title":{"$undefined":true}},"remoteAddress":null,"label":"ünïcödéline1\nline2"}],"ok":{"label":"ünïcödéline1\nline2","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"2":"emoji 👍🏽 mix","ünï":{"$undefined":true}}}],"ok":{"deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"home":"aHello World","ünï":"a.b.c"},"remoteAddress":"İstanbul","label":"Hello World"}],"ok":{"label":"Hello World","ipAddress":"İstanbul","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"nav":"line1\nline2a😀b😀c","b":"hello world"},"remoteAddress":null,"label":"HELLO"}],"ok":{"label":"HELLO","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"title":"hello","b":"ab"},"remoteAddress":"日本語のテキスト","label":"straße"}],"ok":{"label":"straße","ipAddress":"日本語のテキスト","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"b":"ΣΊΣΥΦΟΣ","a":"ns:key.path"},"label":"é"}],"ok":{"label":"é","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"2":"﻿bom","10":{"$undefined":true},"nav":"é"},"label":"trailing.line1\nline2"}],"ok":{"label":"trailing.line1\nline2","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{},"remoteAddress":null}],"ok":{"deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"2":"line1\nline2"},"label":"Hello World"}],"ok":{"label":"Hello World","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"2":{"$undefined":true}},"remoteAddress":null,"label":"trailing."}],"ok":{"label":"trailing.","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{},"label":"tab\tseparatedünïcödé"}],"ok":{"label":"tab\tseparatedünïcödé","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{},"remoteAddress":null,"label":"hello world"}],"ok":{"label":"hello world","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"a":"a","home":{"$undefined":true},"title":"src/a/b.tshello world"},"remoteAddress":null}],"ok":{"deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{},"remoteAddress":"line1\nline2","label":"  padded  "}],"ok":{"label":"  padded  ","ipAddress":"line1\nline2","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"home":"ΣΊΣΥΦΟΣ","ünï":"a"},"remoteAddress":null,"label":"﻿bom"}],"ok":{"label":"﻿bom","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{},"remoteAddress":null,"label":"abc"}],"ok":{"label":"abc","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{},"label":"日本語のテキスト"}],"ok":{"label":"日本語のテキスト","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"2":{"$undefined":true},"home":"日本語のテキスト","😀":":"},"remoteAddress":"hello world","label":"a..b"}],"ok":{"label":"a..b","ipAddress":"hello world","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[0],"error":"Cannot read properties of undefined (reading 'user-agent')"}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"b":{"$undefined":true},"😀":{"$undefined":true}},"remoteAddress":null,"label":"a"}],"ok":{"label":"a","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{},"remoteAddress":null,"label":"a:b:c"}],"ok":{"label":"a:b:c","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"10":{"$undefined":true},"😀":"{name} has {count} items","a":{"$undefined":true}},"remoteAddress":null,"label":"./x/**/*.json"}],"ok":{"label":"./x/**/*.json","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"title":"日本語のテキスト"},"remoteAddress":null,"label":"ns:key.path"}],"ok":{"label":"ns:key.path","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{},"remoteAddress":"ab","label":"key_name-1"}],"ok":{"label":"key_name-1","ipAddress":"ab","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"a":"b"}],"error":"Cannot read properties of undefined (reading 'user-agent')"}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"10":{"$undefined":true},"home":"emoji 👍🏽 mix","ünï":"Hello World"},"remoteAddress":"trailing.","label":"ab"}],"ok":{"label":"ab","ipAddress":"trailing.","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"a.b":{"$undefined":true},"a":{"$undefined":true}},"remoteAddress":"a😀b😀c","label":"./x/**/*.json"}],"ok":{"label":"./x/**/*.json","ipAddress":"a😀b😀c","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":["x"],"error":"Cannot read properties of undefined (reading 'user-agent')"}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"a.b":"é","ünï":{"$undefined":true},"😀":"日本語のテキスト"},"remoteAddress":"emoji 👍🏽 mix","label":"😀"}],"ok":{"label":"😀","ipAddress":"emoji 👍🏽 mix","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"2":{"$undefined":true},"title":{"$undefined":true}},"remoteAddress":null,"label":"./x/**/*.jsonsrc/a/b.ts"}],"ok":{"label":"./x/**/*.jsonsrc/a/b.ts","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{},"remoteAddress":"HELLO","label":"line1\nline2"}],"ok":{"label":"line1\nline2","ipAddress":"HELLO","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{}],"error":"Cannot read properties of undefined (reading 'user-agent')"}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"10":{"$undefined":true},"home":{"$undefined":true}},"label":"a:b:c"}],"ok":{"label":"a:b:c","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"10":"abc","title":"a😀b😀c"},"remoteAddress":null,"label":""}],"ok":{"deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"ünï":"  padded  ab","a.b":"hello worlda..b"},"remoteAddress":"﻿bom","label":"a..b"}],"ok":{"label":"a..b","ipAddress":"bom","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"a.b":"straßeab"},"remoteAddress":"line1\nline2","label":"emoji 👍🏽 mix"}],"ok":{"label":"emoji 👍🏽 mix","ipAddress":"line1\nline2","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"2":{"$undefined":true},"a.b":"a..b","title":{"$undefined":true}},"label":"./x/**/*.json"}],"ok":{"label":"./x/**/*.json","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{},"remoteAddress":"Hello World","label":"HELLO"}],"ok":{"label":"HELLO","ipAddress":"Hello World","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[true],"error":"Cannot read properties of undefined (reading 'user-agent')"}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"b":{"$undefined":true},"a":{"$undefined":true}},"remoteAddress":null,"label":"key_name-1😀"}],"ok":{"label":"key_name-1😀","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[["a",1]],"error":"Cannot read properties of undefined (reading 'user-agent')"}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"nav":{"$undefined":true},"b":"é","a":{"$undefined":true}},"remoteAddress":null,"label":"key_name-1"}],"ok":{"label":"key_name-1","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"2":{"$undefined":true},"a.b":"emoji 👍🏽 mix"},"label":"::"}],"ok":{"label":"::","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{},"label":"HELLO"}],"ok":{"label":"HELLO","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{},"label":"a:b:c"}],"ok":{"label":"a:b:c","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"😀":"straße"},"remoteAddress":"a..b","label":"key_name-1key_name-1"}],"ok":{"label":"key_name-1key_name-1","ipAddress":"a..b","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"2":{"$undefined":true},"10":{"$undefined":true}},"remoteAddress":null,"label":"key_name-1é"}],"ok":{"label":"key_name-1é","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"ünï":{"$undefined":true},"b":"Hello World"},"remoteAddress":null,"label":"a:b:c"}],"ok":{"label":"a:b:c","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{},"remoteAddress":"src/a/b.tsab","label":"é"}],"ok":{"label":"é","ipAddress":"src/a/b.tsab","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"2":"éa:b:c","10":{"$undefined":true},"a":{"$undefined":true}},"remoteAddress":null,"label":"é"}],"ok":{"label":"é","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"home":{"$undefined":true},"title":"a.b.c"},"remoteAddress":null,"label":"hello world"}],"ok":{"label":"hello world","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"2":"ns:key.path","title":{"$undefined":true}},"remoteAddress":"a","label":"abc"}],"ok":{"label":"abc","ipAddress":"a","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"nav":"Hello World","a.b":{"$undefined":true},"😀":".leading"},"remoteAddress":null,"label":"ΣΊΣΥΦΟΣ"}],"ok":{"label":"ΣΊΣΥΦΟΣ","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"2":{"$undefined":true}},"remoteAddress":"ns:key.path","label":"abc"}],"ok":{"label":"abc","ipAddress":"ns:key.path","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{},"remoteAddress":null,"label":":"}],"ok":{"label":":","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"b":{"$undefined":true},"nav":"Hello World"},"remoteAddress":"a..b","label":"abc"}],"ok":{"label":"abc","ipAddress":"a..b","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"home":{"$undefined":true},"a.b":"Hello World","b":{"$undefined":true}},"label":"Hello World"}],"ok":{"label":"Hello World","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[null],"error":"Cannot read properties of null (reading 'headers')"}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{},"label":"ab"}],"ok":{"label":"ab","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"title":{"$undefined":true},"b":{"$undefined":true}},"label":"a😀b😀c"}],"ok":{"label":"a😀b😀c","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"a":"emoji 👍🏽 mix","home":{"$undefined":true},"title":{"$undefined":true}},"label":"a😀b😀c"}],"ok":{"label":"a😀b😀c","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"😀":"trailing."},"remoteAddress":null,"label":"emoji 👍🏽 mix"}],"ok":{"label":"emoji 👍🏽 mix","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"nav":{"$undefined":true},"b":"İstanbul"},"remoteAddress":"{name} has {count} items","label":"hello world"}],"ok":{"label":"hello world","ipAddress":"{name} has {count} items","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{},"remoteAddress":"key_name-1","label":"a..b"}],"ok":{"label":"a..b","ipAddress":"key_name-1","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"a":"İstanbul","nav":{"$undefined":true}}}],"ok":{"deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{},"remoteAddress":".leading","label":"line1\nline2"}],"ok":{"label":"line1\nline2","ipAddress":".leading","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'user-agent')"}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"b":"ünïcödé","a.b":"ΣΊΣΥΦΟΣ日本語のテキスト"},"remoteAddress":null,"label":"a.b.c"}],"ok":{"label":"a.b.c","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"title":{"$undefined":true}},"remoteAddress":null}],"ok":{"deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"a.b":"hello"},"remoteAddress":null,"label":"日本語のテキスト"}],"ok":{"label":"日本語のテキスト","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{},"label":""}],"ok":{"deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{},"remoteAddress":"helloé","label":"İstanbul.leading"}],"ok":{"label":"İstanbul.leading","ipAddress":"helloé","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{},"label":"tab\tseparated"}],"ok":{"label":"tab\tseparated","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"a":{"$undefined":true}},"remoteAddress":"a😀b😀c","label":"ns:key.path"}],"ok":{"label":"ns:key.path","ipAddress":"a😀b😀c","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{},"remoteAddress":null,"label":"ünïcödé"}],"ok":{"label":"ünïcödé","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"😀":{"$undefined":true}},"remoteAddress":"{name} has {count} items","label":"日本語のテキスト"}],"ok":{"label":"日本語のテキスト","ipAddress":"{name} has {count} items","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"10":{"$undefined":true},"a":{"$undefined":true},"nav":"HELLO"},"remoteAddress":null,"label":"a.b.c"}],"ok":{"label":"a.b.c","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"😀":"emoji 👍🏽 mix"},"remoteAddress":"é","label":"a.b.cé"}],"ok":{"label":"a.b.cé","ipAddress":"é","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{},"remoteAddress":"ns:key.path","label":"İstanbulkey_name-1"}],"ok":{"label":"İstanbulkey_name-1","ipAddress":"ns:key.path","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"10":"HELLO"},"remoteAddress":null,"label":"{name} has {count} items"}],"ok":{"label":"{name} has {count} items","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"nav":{"$undefined":true}},"label":"line1\nline2"}],"ok":{"label":"line1\nline2","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"ünï":{"$undefined":true},"a.b":{"$undefined":true}},"remoteAddress":"  padded  ","label":"./x/**/*.json"}],"ok":{"label":"./x/**/*.json","ipAddress":"padded","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"a":"src/a/b.ts","title":{"$undefined":true}},"remoteAddress":"hello","label":"{name} has {count} items"}],"ok":{"label":"{name} has {count} items","ipAddress":"hello","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"2":"hellohello world","b":{"$undefined":true}},"remoteAddress":null,"label":"ab"}],"ok":{"label":"ab","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"nav":{"$undefined":true}},"label":"ns:key.path"}],"ok":{"label":"ns:key.path","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"10":"a:b:c","b":{"$undefined":true},"a.b":"😀"},"remoteAddress":"straßeHello World","label":":"}],"ok":{"label":":","ipAddress":"straßeHello World","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"10":{"$undefined":true},"home":"{name} has {count} items  padded  ","title":"trailing."},"remoteAddress":"key_name-1"}],"ok":{"ipAddress":"key_name-1","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"ünï":"src/a/b.ts"},"label":"tab\tseparateda.b.c"}],"ok":{"label":"tab\tseparateda.b.c","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"a":{"$undefined":true}},"label":"  padded  "}],"ok":{"label":"  padded  ","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"nav":{"$undefined":true}},"remoteAddress":null,"label":"ΣΊΣΥΦΟΣ"}],"ok":{"label":"ΣΊΣΥΦΟΣ","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"b":{"$undefined":true},"nav":"a😀b😀ca..b"},"remoteAddress":"key_name-1hello","label":"Hello Worldhello"}],"ok":{"label":"Hello Worldhello","ipAddress":"key_name-1hello","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"a":"a:b:chello world","b":"","😀":"a.b.c"},"label":"a..b"}],"ok":{"label":"a..b","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"10":{"$undefined":true},"ünï":{"$undefined":true},"b":{"$undefined":true}},"remoteAddress":"ΣΊΣΥΦΟΣ","label":"abc"}],"ok":{"label":"abc","ipAddress":"ΣΊΣΥΦΟΣ","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{},"remoteAddress":"abc","label":"😀"}],"ok":{"label":"😀","ipAddress":"abc","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"10":{"$undefined":true},"b":{"$undefined":true}},"remoteAddress":"ΣΊΣΥΦΟΣ","label":"key_name-1hello world"}],"ok":{"label":"key_name-1hello world","ipAddress":"ΣΊΣΥΦΟΣ","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"😀":{"$undefined":true}},"remoteAddress":null}],"ok":{"deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"home":"hello world"},"remoteAddress":null,"label":"./x/**/*.json"}],"ok":{"label":"./x/**/*.json","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"home":{"$undefined":true}},"remoteAddress":null,"label":"日本語のテキスト"}],"ok":{"label":"日本語のテキスト","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"title":"a"},"remoteAddress":null,"label":"hello"}],"ok":{"label":"hello","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"2":{"$undefined":true},"nav":{"$undefined":true},"a":"﻿bom"},"remoteAddress":null,"label":"ab"}],"ok":{"label":"ab","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{},"remoteAddress":null,"label":"src/a/b.ts"}],"ok":{"label":"src/a/b.ts","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"10":"a😀b😀c","ünï":{"$undefined":true}},"remoteAddress":null}],"ok":{"deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"title":{"$undefined":true},"😀":"HELLO","b":{"$undefined":true}},"label":"hello"}],"ok":{"label":"hello","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"nav":"İstanbul"},"remoteAddress":"hello","label":"emoji 👍🏽 mix"}],"ok":{"label":"emoji 👍🏽 mix","ipAddress":"hello","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"10":"abc﻿bom"},"remoteAddress":"key_name-1","label":"key_name-1"}],"ok":{"label":"key_name-1","ipAddress":"key_name-1","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"title":{"$undefined":true},"b":{"$undefined":true},"nav":"a:b:c"},"remoteAddress":"emoji 👍🏽 mix","label":"a"}],"ok":{"label":"a","ipAddress":"emoji 👍🏽 mix","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"home":"abcsrc/a/b.ts","b":"hello"},"remoteAddress":"  padded  ","label":"./x/**/*.json"}],"ok":{"label":"./x/**/*.json","ipAddress":"padded","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"ünï":"./x/**/*.json","title":{"$undefined":true}},"remoteAddress":null,"label":"﻿bom"}],"ok":{"label":"﻿bom","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"nav":"hello world﻿bom","ünï":{"$undefined":true}},"label":"a:b:c"}],"ok":{"label":"a:b:c","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{},"label":"line1\nline2  padded  "}],"ok":{"label":"line1\nline2  padded  ","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"2":"hello world","ünï":"a..b","😀":{"$undefined":true}},"remoteAddress":null,"label":"hello world:"}],"ok":{"label":"hello world:","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"😀":"ab"},"remoteAddress":null,"label":"﻿bom"}],"ok":{"label":"﻿bom","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{},"remoteAddress":"abc","label":"ΣΊΣΥΦΟΣ"}],"ok":{"label":"ΣΊΣΥΦΟΣ","ipAddress":"abc","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"😀":"{name} has {count} items","ünï":{"$undefined":true},"title":{"$undefined":true}},"remoteAddress":"emoji 👍🏽 mix  padded  ","label":"  padded  "}],"ok":{"label":"  padded  ","ipAddress":"emoji 👍🏽 mix  padded","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{},"label":"a😀b😀c"}],"ok":{"label":"a😀b😀c","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"home":"ab","😀":"Hello WorldΣΊΣΥΦΟΣ"},"remoteAddress":"ab","label":"a.b.c"}],"ok":{"label":"a.b.c","ipAddress":"ab","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{},"remoteAddress":null,"label":"trailing.trailing."}],"ok":{"label":"trailing.trailing.","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"a":{"$undefined":true}},"label":"a😀b😀c"}],"ok":{"label":"a😀b😀c","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{},"remoteAddress":"ns:key.path","label":"İstanbul"}],"ok":{"label":"İstanbul","ipAddress":"ns:key.path","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{},"remoteAddress":null,"label":"tab\tseparated"}],"ok":{"label":"tab\tseparated","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{},"remoteAddress":null,"label":"HELLO"}],"ok":{"label":"HELLO","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"2":{"$undefined":true}},"label":"straße"}],"ok":{"label":"straße","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{},"remoteAddress":"ns:key.pathtrailing.","label":"a:b:ckey_name-1"}],"ok":{"label":"a:b:ckey_name-1","ipAddress":"ns:key.pathtrailing.","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"a.b":"line1\nline2","a":{"$undefined":true},"ünï":{"$undefined":true}},"remoteAddress":"key_name-1trailing."}],"ok":{"ipAddress":"key_name-1trailing.","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"10":{"$undefined":true},"a":"a..b"},"remoteAddress":null,"label":"{name} has {count} items"}],"ok":{"label":"{name} has {count} items","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"2":{"$undefined":true},"home":{"$undefined":true},"ünï":{"$undefined":true}},"remoteAddress":"emoji 👍🏽 mixtrailing.","label":"é"}],"ok":{"label":"é","ipAddress":"emoji 👍🏽 mixtrailing.","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"nav":{"$undefined":true},"a":{"$undefined":true},"b":{"$undefined":true}}}],"ok":{"deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"10":"﻿bom","title":{"$undefined":true}},"remoteAddress":"straße","label":"abc"}],"ok":{"label":"abc","ipAddress":"straße","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"ünï":{"$undefined":true},"b":"./x/**/*.json"},"label":".leading"}],"ok":{"label":".leading","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[[]],"error":"Cannot read properties of undefined (reading 'user-agent')"}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"a.b":{"$undefined":true}},"label":"﻿bom"}],"ok":{"label":"﻿bom","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"😀":"😀","a.b":{"$undefined":true}},"remoteAddress":"tab\tseparated","label":"{name} has {count} items"}],"ok":{"label":"{name} has {count} items","ipAddress":"tab\tseparated","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{},"remoteAddress":"./x/**/*.json","label":"İstanbul"}],"ok":{"label":"İstanbul","ipAddress":"./x/**/*.json","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"2":"emoji 👍🏽 mix","😀":{"$undefined":true},"a.b":"emoji 👍🏽 mix"},"remoteAddress":null,"label":"a..b"}],"ok":{"label":"a..b","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"10":{"$undefined":true},"title":"line1\nline2"},"remoteAddress":null,"label":".leading"}],"ok":{"label":".leading","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"2":"ünïcödé","ünï":{"$undefined":true}},"remoteAddress":null,"label":"﻿bom"}],"ok":{"label":"﻿bom","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"ünï":"trailing."}}],"ok":{"deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{},"remoteAddress":"  padded  a..b","label":"./x/**/*.json"}],"ok":{"label":"./x/**/*.json","ipAddress":"padded  a..b","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"😀":"trailing.","nav":"emoji 👍🏽 mix"},"remoteAddress":"key_name-1","label":"a"}],"ok":{"label":"a","ipAddress":"key_name-1","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{},"remoteAddress":null,"label":"ab"}],"ok":{"label":"ab","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{},"remoteAddress":"﻿bom"}],"ok":{"ipAddress":"bom","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{},"remoteAddress":"key_name-1","label":"straße😀"}],"ok":{"label":"straße😀","ipAddress":"key_name-1","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"nav":{"$undefined":true}},"label":"a..b"}],"ok":{"label":"a..b","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"nav":"ns:key.path"},"remoteAddress":""}],"ok":{"deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"nav":"","ünï":{"$undefined":true},"a.b":{"$undefined":true}},"remoteAddress":"emoji 👍🏽 mix"}],"ok":{"ipAddress":"emoji 👍🏽 mix","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"home":"﻿bom"},"label":"﻿bom"}],"ok":{"label":"﻿bom","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"2":{"$undefined":true}},"remoteAddress":"ab.leading","label":"HELLO"}],"ok":{"label":"HELLO","ipAddress":"ab.leading","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"a":"ΣΊΣΥΦΟΣ","b":".leading","ünï":"a😀b😀c"},"remoteAddress":"aünïcödé","label":"emoji 👍🏽 mix"}],"ok":{"label":"emoji 👍🏽 mix","ipAddress":"aünïcödé","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"title":{"$undefined":true},"nav":"hello","home":"hello"},"remoteAddress":"a.b.c","label":"İstanbul"}],"ok":{"label":"İstanbul","ipAddress":"a.b.c","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{},"remoteAddress":"src/a/b.ts"}],"ok":{"ipAddress":"src/a/b.ts","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"10":{"$undefined":true}},"label":"ab"}],"ok":{"label":"ab","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"ünï":"﻿bom"},"label":"Hello World"}],"ok":{"label":"Hello World","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"a":"hello","ünï":{"$undefined":true}},"label":"a😀b😀c"}],"ok":{"label":"a😀b😀c","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"b":"a..bhello world","a":{"$undefined":true}}}],"ok":{"deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"ünï":"{name} has {count} items","a":{"$undefined":true}},"remoteAddress":null,"label":"src/a/b.ts"}],"ok":{"label":"src/a/b.ts","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"2":{"$undefined":true},"ünï":"日本語のテキスト"},"remoteAddress":"hello","label":"src/a/b.ts"}],"ok":{"label":"src/a/b.ts","ipAddress":"hello","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"10":"src/a/b.tsstraße","home":"hello world"},"remoteAddress":"a..b","label":"src/a/b.ts"}],"ok":{"label":"src/a/b.ts","ipAddress":"a..b","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"a":{"$undefined":true}},"remoteAddress":"trailing.","label":"ab"}],"ok":{"label":"ab","ipAddress":"trailing.","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"title":"😀"},"remoteAddress":"HELLO","label":"emoji 👍🏽 mix"}],"ok":{"label":"emoji 👍🏽 mix","ipAddress":"HELLO","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"ünï":"emoji 👍🏽 mix"},"label":"  padded  ünïcödé"}],"ok":{"label":"  padded  ünïcödé","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"home":"src/a/b.ts"},"remoteAddress":"src/a/b.ts"}],"ok":{"ipAddress":"src/a/b.ts","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"😀":{"$undefined":true}},"remoteAddress":"src/a/b.ts","label":"{name} has {count} items"}],"ok":{"label":"{name} has {count} items","ipAddress":"src/a/b.ts","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"title":{"$undefined":true},"a":{"$undefined":true}},"remoteAddress":"abc"}],"ok":{"ipAddress":"abc","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{},"label":"﻿bomsrc/a/b.ts"}],"ok":{"label":"﻿bomsrc/a/b.ts","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"a.b":{"$undefined":true}},"remoteAddress":null}],"ok":{"deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"a":"  padded  straße"},"remoteAddress":null}],"ok":{"deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{},"remoteAddress":"trailing.a:b:c","label":"emoji 👍🏽 mix"}],"ok":{"label":"emoji 👍🏽 mix","ipAddress":"trailing.a:b:c","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"b":{"$undefined":true},"a.b":"a"},"remoteAddress":null,"label":":"}],"ok":{"label":":","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"10":{"$undefined":true},"😀":"a..b"},"remoteAddress":null,"label":"./x/**/*.json"}],"ok":{"label":"./x/**/*.json","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{},"remoteAddress":":","label":"é"}],"ok":{"label":"é","ipAddress":":","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"10":"straße","a":"a.b.c","nav":"abc.leading"},"remoteAddress":"emoji 👍🏽 mix","label":"İstanbula😀b😀c"}],"ok":{"label":"İstanbula😀b😀c","ipAddress":"emoji 👍🏽 mix","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"2":"trailing.","😀":{"$undefined":true},"nav":{"$undefined":true}}}],"ok":{"deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"b":{"$undefined":true},"ünï":{"$undefined":true}},"remoteAddress":null,"label":"HELLO"}],"ok":{"label":"HELLO","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"2":{"$undefined":true},"10":"tab\tseparated","a.b":{"$undefined":true}},"remoteAddress":"﻿bom","label":"😀"}],"ok":{"label":"😀","ipAddress":"bom","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"home":"trailing.日本語のテキスト"},"label":"trailing."}],"ok":{"label":"trailing.","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"ünï":{"$undefined":true}},"remoteAddress":null,"label":"ΣΊΣΥΦΟΣ"}],"ok":{"label":"ΣΊΣΥΦΟΣ","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"a.b":{"$undefined":true},"ünï":"key_name-1"},"remoteAddress":null,"label":"  padded  "}],"ok":{"label":"  padded  ","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"2":"é","home":{"$undefined":true}},"label":"hello worldΣΊΣΥΦΟΣ"}],"ok":{"label":"hello worldΣΊΣΥΦΟΣ","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"10":"emoji 👍🏽 mix","title":"emoji 👍🏽 mix"},"remoteAddress":"","label":"./x/**/*.jsona:b:c"}],"ok":{"label":"./x/**/*.jsona:b:c","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"10":{"$undefined":true},"a.b":"İstanbul"},"remoteAddress":null,"label":"ünïcödé"}],"ok":{"label":"ünïcödé","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"home":{"$undefined":true}},"remoteAddress":null,"label":"a.b.c"}],"ok":{"label":"a.b.c","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"a.b":{"$undefined":true},"title":"Hello World"},"remoteAddress":null,"label":"😀"}],"ok":{"label":"😀","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"b":"😀","home":{"$undefined":true}},"remoteAddress":null,"label":"a😀b😀chello"}],"ok":{"label":"a😀b😀chello","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"home":{"$undefined":true},"nav":"ns:key.path"},"remoteAddress":null,"label":""}],"ok":{"deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"10":{"$undefined":true}},"label":"ΣΊΣΥΦΟΣ"}],"ok":{"label":"ΣΊΣΥΦΟΣ","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"a":{"$undefined":true},"😀":"./x/**/*.json"},"remoteAddress":null}],"ok":{"deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"title":"a.b.c"},"remoteAddress":null,"label":"hello"}],"ok":{"label":"hello","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{"a.b":"İstanbul"},"remoteAddress":":"}],"ok":{"ipAddress":":","deviceType":"unknown"}}
+{"fn":"deriveAuthClientMetadata","args":[{"headers":{},"remoteAddress":"{name} has {count} items","label":"./x/**/*.json😀"}],"ok":{"label":"./x/**/*.json😀","ipAddress":"{name} has {count} items","deviceType":"unknown"}}

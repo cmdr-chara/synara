@@ -1184,7 +1184,7 @@ impl Render for Native {
             let selected = self.selected_thread.as_deref() == Some(tid.as_str());
             sidebar = sidebar.child(row(
                 ElementId::Name(format!("thread-{tid}").into()),
-                if title.is_empty() { "(untitled)".to_string() } else { title.to_string() },
+                if title.is_empty() { "\u{25c9} (untitled)".to_string() } else { format!("\u{25c9} {title}") },
                 preview.chars().take(80).collect(),
                 selected,
                 cx,

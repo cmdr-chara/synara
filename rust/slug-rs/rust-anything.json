@@ -1,0 +1,47 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/marketing/src/app/llms.mdx/docs/[[...slug]]/",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "-rs",
+  "exports": [
+    {
+      "name": "GET",
+      "file": "apps/marketing/src/app/llms.mdx/docs/[[...slug]]/route.ts",
+      "line": 16,
+      "params": [
+        {
+          "name": "_",
+          "ts_type": "Request",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "arg1",
+          "ts_type": "{\n  params: Promise<{ slug?: string[] }>;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "generateStaticParams",
+      "file": "apps/marketing/src/app/llms.mdx/docs/[[...slug]]/route.ts",
+      "line": 33,
+      "params": [],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

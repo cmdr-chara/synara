@@ -1,0 +1,17 @@
+{
+  "unit": "apps/api/src/routes/",
+  "files": 8,
+  "fingerprint": "95582fcd7d6bd30a",
+  "coverage": {
+    "lines": 39,
+    "reached": 39,
+    "files": [
+      {
+        "file": "apps/api/package.json",
+        "lines": 39,
+        "reached": 39,
+        "missed": ""
+      }
+    ]
+  }
+}

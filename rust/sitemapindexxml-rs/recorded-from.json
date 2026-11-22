@@ -1,0 +1,17 @@
+{
+  "unit": "apps/marketing/src/app/sitemap-index.xml/",
+  "files": 1,
+  "fingerprint": "74200a4bd3f6b477",
+  "coverage": {
+    "lines": 21,
+    "reached": 21,
+    "files": [
+      {
+        "file": "apps/marketing/src/app/sitemap-index.xml/route.ts",
+        "lines": 21,
+        "reached": 21,
+        "missed": ""
+      }
+    ]
+  }
+}

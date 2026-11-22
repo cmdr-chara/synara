@@ -1,0 +1,37 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/api/src/routes/",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "routes-rs",
+  "exports": [
+    {
+      "name": "isLoopbackRedirectUri",
+      "file": "apps/api/src/routes/v1.ts",
+      "line": 358,
+      "params": [
+        {
+          "name": "redirectUri",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "createV1Routes",
+      "file": "apps/api/src/routes/v1.ts",
+      "line": 381,
+      "reason": "checks `instanceof`: class identity does not survive the bridge"
+    }
+  ]
+}

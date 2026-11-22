@@ -89,6 +89,8 @@ pub fn handle(_tag: &str, payload: &Value) -> Result<Value, WsErr> {
         "thread.pinned-message.done.set" => pinned_message(command, "done"),
         "thread.pinned-message.label.set" => pinned_message(command, "label"),
         "project.create" => project_create(command),
+        "project.meta.update" => project_meta_update(command),
+        "project.delete" => project_delete(command),
         other => Err(err(format!(
             "orchestration.dispatchCommand {other} is not ported yet (native engine slice)"
         ))),
@@ -1621,5 +1623,458 @@ fn project_create(command: &Map<String, Value>) -> Result<Value, WsErr> {
         ],
     )
     .map_err(|e| err(format!("project projection insert: {e}")))?;
+    Ok(json!({ "sequence": seq }))
+}
+
+// ---- project.meta.update / project.delete ----
+
+/// relocateProjectPath: rebase `value` from previousRoot onto nextRoot when it
+/// points at or inside the old root; returns the input unchanged otherwise.
+fn relocate_project_path(value: &str, previous_root: &str, next_root: &str) -> String {
+    if !is_absolute_folder_path(value)
+        || !is_absolute_folder_path(previous_root)
+        || !is_absolute_folder_path(next_root)
+    {
+        return value.to_string();
+    }
+    let prev = normalize_root(previous_root);
+    let cand = normalize_root(value);
+    let relative = if cand == prev {
+        String::new()
+    } else {
+        let prefix = format!("{prev}/");
+        match cand.strip_prefix(&prefix) {
+            Some(r) => r.to_string(),
+            None => return value.to_string(),
+        }
+    };
+    if relative.is_empty() {
+        next_root.to_string()
+    } else {
+        format!("{}/{}", next_root.trim_end_matches('/'), relative)
+    }
+}
+
+/// threadHasInFlightTurn on projection data: a live session or running turn.
+fn thread_has_in_flight(conn: &Connection, thread_id: &str) -> Result<bool, WsErr> {
+    let session: Option<(Option<String>, Option<String>)> = conn
+        .query_row(
+            "SELECT status, active_turn_id FROM projection_thread_sessions \
+             WHERE thread_id = ?1",
+            params![thread_id],
+            |r| Ok((r.get(0)?, r.get(1)?)),
+        )
+        .ok();
+    if let Some((status, active_turn)) = session {
+        let status = status.unwrap_or_default();
+        if status == "starting" || status == "running" {
+            return Ok(true);
+        }
+        if status != "error" && active_turn.is_some() {
+            return Ok(true);
+        }
+    }
+    let running_turn: bool = conn
+        .query_row(
+            "SELECT COUNT(*) > 0 FROM projection_turns \
+             WHERE thread_id = ?1 AND state = 'running'",
+            params![thread_id],
+            |r| r.get(0),
+        )
+        .unwrap_or(false);
+    Ok(running_turn)
+}
+
+/// threadHasCheckpointRevertInProgress: latest checkpoint-revert lifecycle
+/// activity is the started marker.
+fn thread_has_revert_in_progress(conn: &Connection, thread_id: &str) -> Result<bool, WsErr> {
+    let kind: Option<String> = conn
+        .query_row(
+            "SELECT kind FROM projection_thread_activities \
+             WHERE thread_id = ?1 \
+               AND kind IN ('checkpoint.revert.started','checkpoint.revert.succeeded','checkpoint.revert.failed') \
+             ORDER BY sequence DESC, created_at DESC, activity_id DESC LIMIT 1",
+            params![thread_id],
+            |r| r.get(0),
+        )
+        .ok();
+    Ok(kind.as_deref() == Some("checkpoint.revert.started"))
+}
+
+fn project_meta_update(command: &Map<String, Value>) -> Result<Value, WsErr> {
+    let command_id = s(command, "commandId").ok_or_else(|| err("missing commandId"))?;
+    let project_id = s(command, "projectId").ok_or_else(|| err("missing projectId"))?;
+    let conn = open_state_rw()?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| err(e.to_string()))?;
+    let existing: Option<ProjectRow> = conn
+        .query_row(
+            "SELECT project_id, kind, title, workspace_root, is_pinned, space_id \
+             FROM projection_projects WHERE project_id = ?1",
+            params![project_id],
+            |r| {
+                Ok(ProjectRow {
+                    id: r.get(0)?,
+                    kind: r.get(1)?,
+                    title: r.get(2)?,
+                    workspace_root: r.get(3)?,
+                    is_pinned: r.get::<_, i64>(4)? != 0,
+                    space_id: r.get(5)?,
+                })
+            },
+        )
+        .ok();
+    let existing = existing.ok_or_else(|| {
+        err(format!(
+            "Project '{project_id}' does not exist for command 'project.meta.update'."
+        ))
+    })?;
+    let deleted_at: Option<String> = conn
+        .query_row(
+            "SELECT deleted_at FROM projection_projects WHERE project_id = ?1",
+            params![project_id],
+            |r| r.get(0),
+        )
+        .map_err(|e| err(e.to_string()))?;
+    let existing_kind = existing.kind.clone().unwrap_or_else(|| "project".to_string());
+    let next_kind = s(command, "kind").unwrap_or_else(|| existing_kind.clone());
+    let has = |k: &str| command.contains_key(k);
+    let cmd_space_present = has("spaceId");
+    let cmd_space: Option<String> = command
+        .get("spaceId")
+        .and_then(|v| v.as_str().map(String::from));
+    let requested_space: Option<Option<String>> = if cmd_space_present {
+        Some(cmd_space.clone())
+    } else if next_kind != "project" && existing.space_id.is_some() {
+        Some(None)
+    } else {
+        None
+    };
+    let effective_space = requested_space
+        .clone()
+        .unwrap_or_else(|| existing.space_id.clone());
+    let changed_space: Option<Option<String>> = match &requested_space {
+        Some(rs) if rs != &existing.space_id => Some(rs.clone()),
+        _ => None,
+    };
+    let has_other_metadata = has("kind")
+        || has("title")
+        || has("workspaceRoot")
+        || has("defaultModelSelection")
+        || has("scripts")
+        || has("isPinned")
+        || has("additionalFolders");
+
+    let legacy = is_legacy_home_row(&existing.title, &existing.workspace_root);
+    if has("title") && s(command, "title") != Some(existing.title.clone()) && legacy {
+        return Err(err("The legacy Chats container cannot be renamed."));
+    }
+    if has("workspaceRoot")
+        && s(command, "workspaceRoot")
+            .map(|r| normalize_root(&r) != normalize_root(&existing.workspace_root))
+            .unwrap_or(false)
+        && legacy
+    {
+        return Err(err(
+            "The legacy Chats container workspace root cannot be changed.",
+        ));
+    }
+    if has("workspaceRoot") || has("additionalFolders") || has("kind") {
+        let root = s(command, "workspaceRoot").unwrap_or_else(|| existing.workspace_root.clone());
+        let folders: Vec<String> = command
+            .get("additionalFolders")
+            .and_then(Value::as_array)
+            .map(|a| a.iter().filter_map(|v| v.as_str().map(String::from)).collect())
+            .unwrap_or_else(|| {
+                conn.query_row(
+                    "SELECT additional_folders_json FROM projection_projects WHERE project_id = ?1",
+                    params![project_id],
+                    |r| r.get::<_, String>(0),
+                )
+                .ok()
+                .and_then(|j| serde_json::from_str::<Vec<String>>(&j).ok())
+                .unwrap_or_default()
+            });
+        if !folders.is_empty() {
+            if next_kind != "project" {
+                return Err(err("Only ordinary projects can have additional folders."));
+            }
+            let mut paths = vec![root];
+            paths.extend(folders);
+            if let Some(problem) = find_project_folder_problem(&paths) {
+                return Err(err(problem));
+            }
+        }
+    }
+    if effective_space.is_some() {
+        let t = s(command, "title").unwrap_or_else(|| existing.title.clone());
+        let r = s(command, "workspaceRoot").unwrap_or_else(|| existing.workspace_root.clone());
+        if is_legacy_home_row(&t, &r) {
+            return Err(err(
+                "The Chats container is reachable from every space and cannot be assigned to one.",
+            ));
+        }
+    }
+    if cmd_space_present && cmd_space.is_some() {
+        if deleted_at.is_some() {
+            return Err(err("Deleted projects cannot be assigned to a space."));
+        }
+        if next_kind != "project" {
+            return Err(err("Only ordinary projects can be assigned to a space."));
+        }
+        let sid = cmd_space.clone().unwrap();
+        let space_ok: bool = conn
+            .query_row(
+                "SELECT deleted_at IS NULL FROM projection_spaces WHERE space_id = ?1",
+                params![sid],
+                |r| r.get(0),
+            )
+            .unwrap_or(false);
+        if !space_ok {
+            return Err(err(format!(
+                "Space '{sid}' does not exist for command 'project.meta.update'."
+            )));
+        }
+    }
+    if requested_space.is_some() && changed_space.is_none() && !has_other_metadata {
+        return Err(err("Project is already assigned to this space."));
+    }
+    let ownership_may_change = has("workspaceRoot")
+        || (has("kind") && next_kind != existing_kind);
+    if ownership_may_change && next_kind != "chat" {
+        let root = s(command, "workspaceRoot").unwrap_or_else(|| existing.workspace_root.clone());
+        if let Some(other) =
+            active_projects_by_root(&conn, &root, &["project", "studio", "group"])?
+                .into_iter()
+                .find(|p| p.id != project_id)
+        {
+            return Err(err(format!(
+                "Project '{}' already uses workspace root '{}'.",
+                other.id, other.workspace_root
+            )));
+        }
+    }
+    // validateProjectPinLimit
+    let cmd_pinned = command.get("isPinned").and_then(Value::as_bool);
+    let next_pinned = cmd_pinned.unwrap_or(existing.is_pinned);
+    if next_pinned && next_kind != "project" {
+        return Err(err("Only projects can be pinned."));
+    }
+    if cmd_pinned == Some(true) {
+        if deleted_at.is_some() {
+            return Err(err(format!(
+                "Deleted project '{project_id}' cannot be pinned."
+            )));
+        }
+        if !existing.is_pinned {
+            let count: i64 = conn
+                .query_row(
+                    "SELECT COUNT(*) FROM projection_projects \
+                     WHERE deleted_at IS NULL AND kind = 'project' AND is_pinned = 1 \
+                       AND project_id != ?1",
+                    params![project_id],
+                    |r| r.get(0),
+                )
+                .map_err(|e| err(e.to_string()))?;
+            if count >= MAX_PINNED_PROJECTS {
+                return Err(err(format!(
+                    "Only {MAX_PINNED_PROJECTS} projects can be pinned at once."
+                )));
+            }
+        }
+    }
+
+    let occurred_at = iso_now_ms();
+    let mut payload = Map::new();
+    payload.insert("projectId".into(), json!(project_id));
+    for (k, ev_key) in [
+        ("kind", "kind"),
+        ("title", "title"),
+        ("workspaceRoot", "workspaceRoot"),
+        ("defaultModelSelection", "defaultModelSelection"),
+        ("scripts", "scripts"),
+        ("isPinned", "isPinned"),
+        ("additionalFolders", "additionalFolders"),
+    ] {
+        if let Some(v) = command.get(k) {
+            payload.insert(ev_key.to_string(), v.clone());
+        }
+    }
+    if let Some(cs) = &changed_space {
+        payload.insert("spaceId".into(), json!(cs));
+    }
+    payload.insert("updatedAt".into(), json!(occurred_at));
+
+    let mut events: Vec<OutEvent> = vec![project_event(
+        &project_id,
+        "project.meta-updated",
+        &occurred_at,
+        Value::Object(payload.clone()),
+    )];
+
+    // withProjectRelocationEvents: moving a real project relocates live threads'
+    // working directories in the same committed batch.
+    let mut relocations: Vec<(String, String)> = Vec::new();
+    if let Some(new_root) = payload.get("workspaceRoot").and_then(Value::as_str) {
+        let roots_differ = normalize_root(new_root) != normalize_root(&existing.workspace_root);
+        let prev_is_project = existing_kind == "project";
+        let next_is_project =
+            payload.get("kind").and_then(Value::as_str).unwrap_or(&existing_kind) == "project";
+        if roots_differ && prev_is_project && next_is_project {
+            let mut st = conn
+                .prepare(
+                    "SELECT thread_id, working_directory, worktree_path, associated_worktree_path \
+                     FROM projection_threads \
+                     WHERE project_id = ?1 AND deleted_at IS NULL",
+                )
+                .map_err(|e| err(e.to_string()))?;
+            let threads: Vec<(String, Option<String>, Option<String>, Option<String>)> = st
+                .query_map(params![project_id], |r| {
+                    Ok((r.get(0)?, r.get(1)?, r.get(2)?, r.get(3)?))
+                })
+                .map_err(|e| err(e.to_string()))?
+                .collect::<Result<_, _>>()
+                .map_err(|e| err(e.to_string()))?;
+            for (tid, wd, wt, awt) in threads {
+                if thread_has_in_flight(&conn, &tid)? || thread_has_revert_in_progress(&conn, &tid)?
+                {
+                    return Err(err(
+                        "Stop active turns and wait for checkpoint restores before changing the project path.",
+                    ));
+                }
+                for worktree in [wt.as_deref(), awt.as_deref()].into_iter().flatten() {
+                    if relocate_project_path(worktree, &existing.workspace_root, new_root)
+                        != worktree
+                    {
+                        return Err(err(
+                            "This project has linked Git worktrees inside its old folder. Move and repair those worktrees separately before changing the project path.",
+                        ));
+                    }
+                }
+                if let Some(wd) = wd.as_deref() {
+                    let relocated =
+                        relocate_project_path(wd, &existing.workspace_root, new_root);
+                    if relocated != wd {
+                        relocations.push((tid.clone(), relocated.clone()));
+                        let mut ev = out_event(
+                            "thread.meta-updated",
+                            &tid,
+                            &occurred_at,
+                            json!({"threadId": tid, "workingDirectory": relocated, "updatedAt": occurred_at}),
+                        );
+                        ev.causation_event_id = Some(events[0].event_id.clone());
+                        events.push(ev);
+                    }
+                }
+            }
+        }
+    }
+
+    let seq = commit_events(&conn, &events, &command_id)?;
+
+    // Projection write: apply the changed fields.
+    let mut sets: Vec<(&str, Value)> = Vec::new();
+    if let Some(v) = payload.get("kind") {
+        sets.push(("kind", v.clone()));
+    }
+    if let Some(v) = payload.get("title") {
+        sets.push(("title", v.clone()));
+    }
+    if let Some(v) = payload.get("workspaceRoot") {
+        sets.push(("workspace_root", v.clone()));
+    }
+    if let Some(v) = payload.get("defaultModelSelection") {
+        sets.push((
+            "default_model_selection_json",
+            if v.is_null() { Value::Null } else { json!(v.to_string()) },
+        ));
+    }
+    if let Some(v) = payload.get("scripts") {
+        sets.push(("scripts_json", json!(v.to_string())));
+    }
+    if let Some(v) = payload.get("isPinned") {
+        sets.push(("is_pinned", json!(v.as_bool().unwrap_or(false) as i64)));
+    }
+    if let Some(cs) = &changed_space {
+        sets.push(("space_id", json!(cs)));
+    }
+    if let Some(v) = payload.get("additionalFolders") {
+        sets.push(("additional_folders_json", json!(v.to_string())));
+    }
+    sets.push(("updated_at", json!(occurred_at)));
+    let cols: Vec<String> = sets.iter().map(|(c, _)| c.to_string()).collect();
+    let assignments: Vec<String> = cols
+        .iter()
+        .enumerate()
+        .map(|(i, c)| format!("{c} = ?{}", i + 2))
+        .collect();
+    let mut params_vec: Vec<rusqlite::types::Value> = vec![rusqlite::types::Value::Text(project_id.clone())];
+    for (_, v) in &sets {
+        params_vec.push(json_to_sql(v));
+    }
+    conn.execute(
+        &format!(
+            "UPDATE projection_projects SET {} WHERE project_id = ?1",
+            assignments.join(", ")
+        ),
+        rusqlite::params_from_iter(params_vec),
+    )
+    .map_err(|e| err(format!("project meta projection: {e}")))?;
+    for (tid, wd) in relocations {
+        update_projection(
+            &conn,
+            &tid,
+            &[("working_directory", json!(wd)), ("updated_at", json!(occurred_at))],
+        )?;
+    }
+    Ok(json!({ "sequence": seq }))
+}
+
+fn project_delete(command: &Map<String, Value>) -> Result<Value, WsErr> {
+    let command_id = s(command, "commandId").ok_or_else(|| err("missing commandId"))?;
+    let project_id = s(command, "projectId").ok_or_else(|| err("missing projectId"))?;
+    let conn = open_state_rw()?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| err(e.to_string()))?;
+    let exists: bool = conn
+        .query_row(
+            "SELECT COUNT(*) > 0 FROM projection_projects WHERE project_id = ?1",
+            params![project_id],
+            |r| r.get(0),
+        )
+        .unwrap_or(false);
+    if !exists {
+        return Err(err(format!(
+            "Project '{project_id}' does not exist for command 'project.delete'."
+        )));
+    }
+    let remaining: i64 = conn
+        .query_row(
+            "SELECT COUNT(*) FROM projection_threads \
+             WHERE project_id = ?1 AND deleted_at IS NULL",
+            params![project_id],
+            |r| r.get(0),
+        )
+        .map_err(|e| err(e.to_string()))?;
+    if remaining > 0 {
+        return Err(err(format!(
+            "Project '{project_id}' still has {remaining} thread{} and cannot be deleted.",
+            if remaining == 1 { "" } else { "s" }
+        )));
+    }
+    let occurred_at = iso_now_ms();
+    let events = vec![project_event(
+        &project_id,
+        "project.deleted",
+        &occurred_at,
+        json!({"projectId": project_id, "deletedAt": occurred_at}),
+    )];
+    let seq = commit_events(&conn, &events, &command_id)?;
+    conn.execute(
+        "UPDATE projection_projects SET deleted_at = ?2, updated_at = ?2 \
+         WHERE project_id = ?1",
+        params![project_id, occurred_at],
+    )
+    .map_err(|e| err(e.to_string()))?;
     Ok(json!({ "sequence": seq }))
 }

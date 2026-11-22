@@ -1586,7 +1586,7 @@ fn store_receipt(
 fn require_hub_project(conn: &Connection, project_id: &str) -> Result<(), WsErr> {
     let shell = conn
         .query_row(
-            "SELECT kind, workspace_root FROM projection_projects WHERE project_id = ?1",
+            "SELECT kind, workspace_root FROM projection_projects WHERE project_id = ?1 AND deleted_at IS NULL",
             [project_id],
             |r| Ok((r.get::<_, Option<String>>(0)?, r.get::<_, Option<String>>(1)?)),
         )
@@ -2938,6 +2938,178 @@ fn configure(payload: &Value) -> Result<Value, WsErr> {
     Ok(overview)
 }
 
+fn export_documents(payload: &Value) -> Result<Value, WsErr> {
+    let project_id = payload["projectId"].as_str().unwrap_or_default().to_string();
+    let copy = open_state_copy().ok_or_else(|| err("Failed to load hub."))?;
+    let conn = &copy.conn;
+    require_hub_project(conn, &project_id)?;
+    let paths = payload["logicalPaths"].as_array().cloned().unwrap_or_default();
+    if paths.len() > 50 {
+        return Err(err("Export at most 50 documents at a time."));
+    }
+    let dest_root = payload["destinationDirectory"]
+        .as_str()
+        .unwrap_or_default()
+        .to_string();
+    let dest_abs = std::fs::canonicalize(&dest_root).unwrap_or_else(|_| PathBuf::from(&dest_root));
+    let mut exported: Vec<Value> = Vec::new();
+    for raw in paths {
+        let logical = normalize_doc_path(raw.as_str().unwrap_or(""))?;
+        let content: Option<String> = conn
+            .query_row(
+                "SELECT content FROM project_agent_documents \
+                 WHERE project_id = ?1 AND logical_path = ?2 ORDER BY revision DESC LIMIT 1",
+                rusqlite::params![&project_id, &logical],
+                |r| r.get(0),
+            )
+            .optional()
+            .map_err(|e| err(e.to_string()))?;
+        let Some(content) = content else { continue };
+        let dest = dest_abs.join(&logical);
+        if !dest.starts_with(&dest_abs) {
+            return Err(err("Export destination escaped the chosen directory."));
+        }
+        if let Some(p) = dest.parent() {
+            let _ = std::fs::create_dir_all(p);
+        }
+        std::fs::write(&dest, &content)
+            .map_err(|_| err("Failed to export project document."))?;
+        exported.push(Value::String(dest.to_string_lossy().to_string()));
+    }
+    Ok(json!({"exportedPaths": exported}))
+}
+
+fn restart_coordinator(payload: &Value) -> Result<Value, WsErr> {
+    let project_id = payload["projectId"].as_str().unwrap_or_default().to_string();
+    let request_id = payload["requestId"].as_str().unwrap_or_default().to_string();
+    let conn = crate::orchestration_engine::open_state_rw()
+        .map_err(|_| err("Failed to restart the coordinator."))?;
+    if let Some(r) = replay_receipt(&conn, &request_id, &project_id) {
+        return Ok(r);
+    }
+    require_hub_project(&conn, &project_id)?;
+    let cfg = config_row(&conn, &project_id)?
+        .ok_or_else(|| err("Project Coordinator is not configured."))?;
+    if cfg_get(&cfg, 21).is_some() || cfg_get(&cfg, 22).is_some() {
+        return Err(err("Resume or unarchive the hub before restarting its coordinator."));
+    }
+    if let Some(ct) = cfg_get(&cfg, 0) {
+        dispatch_thread("thread.session.stop", &ct);
+    }
+    append_activity(&conn, &project_id, "config-updated", "user", None, None, None,
+        "Restarted coordinator.", &crate::todo::iso_now_ms())?;
+    let overview = overview_for(&conn, &project_id)?;
+    store_receipt(&conn, &request_id, &project_id, "restartCoordinator", &overview);
+    Ok(overview)
+}
+
+fn delete_group(payload: &Value) -> Result<Value, WsErr> {
+    let project_id = payload["projectId"].as_str().unwrap_or_default().to_string();
+    let request_id = payload["requestId"].as_str().unwrap_or_default().to_string();
+    let conn = crate::orchestration_engine::open_state_rw()
+        .map_err(|_| err("Failed to delete the hub."))?;
+    if let Some(r) = replay_receipt(&conn, &request_id, &project_id) {
+        return Ok(r);
+    }
+    require_hub_project(&conn, &project_id)?;
+    let title: String = conn
+        .query_row(
+            "SELECT title FROM projection_projects WHERE project_id = ?1",
+            [&project_id],
+            |r| r.get(0),
+        )
+        .unwrap_or_default();
+    let confirm = payload["confirmName"].as_str().unwrap_or_default().trim();
+    if confirm != title.trim() {
+        return Err(err("Type the hub's name exactly to confirm deletion."));
+    }
+    if payload["requireEmpty"].as_bool() == Some(true) {
+        let members: i64 = conn
+            .query_row(
+                "SELECT COUNT(1) FROM projection_threads WHERE project_id = ?1 AND deleted_at IS NULL",
+                [&project_id],
+                |r| r.get(0),
+            )
+            .unwrap_or(0);
+        let tasks: i64 = conn
+            .query_row(
+                "SELECT COUNT(1) FROM project_agent_tasks WHERE project_id = ?1",
+                [&project_id],
+                |r| r.get(0),
+            )
+            .unwrap_or(0);
+        if members > 0 || tasks > 0 {
+            return Err(err("The hub still has work in it. Delete its threads and tasks first, or confirm deletion without the empty check."));
+        }
+        let non_seed: i64 = conn
+            .query_row(
+                "SELECT COUNT(1) FROM project_agent_document_heads WHERE project_id = ?1 \
+                 AND logical_path NOT IN ('overview.md','instructions.md','notes.md','decisions.md','archived.md','artifacts/index.md')",
+                [&project_id],
+                |r| r.get(0),
+            )
+            .unwrap_or(0);
+        if non_seed > 0 {
+            return Err(err("The hub still has work in it. Delete its threads and tasks first, or confirm deletion without the empty check."));
+        }
+    }
+    // delete group threads (members only), then wipe project-agent tables
+    let coord = config_row(&conn, &project_id)
+        .ok()
+        .flatten()
+        .and_then(|c| cfg_get(&c, 0));
+    if let Some(ct) = &coord {
+        dispatch_thread("thread.delete", ct);
+    }
+    for (tid, _) in group_thread_ids(&conn, &project_id) {
+        if Some(&tid) != coord.as_ref() {
+            dispatch_thread("thread.delete", &tid);
+        }
+    }
+    for t in [
+        "project_agent_configs", "project_agent_tasks", "project_agent_task_dependencies",
+        "project_agent_goals", "project_agent_activity", "project_agent_receipts",
+        "project_agent_linked_projects", "project_agent_digests",
+        "project_agent_thread_index", "project_agent_documents",
+        "project_agent_document_heads", "project_agent_evidence",
+        "project_agent_memory_index", "managed_workers",
+    ] {
+        let _ = conn.execute(
+            &format!("DELETE FROM {t} WHERE project_id = ?1"),
+            [&project_id],
+        );
+    }
+    let _ = conn.execute(
+        "DELETE FROM automation_definitions WHERE project_id = ?1",
+        [&project_id],
+    );
+    // move the default library to trash (never a custom libraryPath)
+    let mirror_root = PathBuf::from(state_dir()).join("project-context").join(&project_id);
+    let home = home_dir();
+    let trash = PathBuf::from(&home).join(".Trash");
+    if mirror_root.exists() && trash.exists() {
+        let target = trash.join(format!(
+            "synara-project-context-{}-{}",
+            project_id,
+            crate::todo::iso_now_ms().replace([':', '.'], "-")
+        ));
+        let _ = std::fs::rename(&mirror_root, target);
+    }
+    // project.delete via orchestration
+    let _ = crate::orchestration_engine::handle(
+        "orchestration.dispatchCommand",
+        &json!({
+            "type": "project.delete",
+            "commandId": crate::orchestration_engine::uuid_v4(),
+            "projectId": project_id,
+            "createdAt": crate::todo::iso_now_ms(),
+        }),
+    );
+    let result = json!({"deletedProjectId": project_id});
+    store_receipt(&conn, &request_id, &project_id, "deleteGroup", &result);
+    Ok(result)
+}
+
 fn welcome_message_id(thread_id: &str) -> String {
     // sha1 v5-style: hash `${threadId}:welcome`, set variant+version bits
     let mut h = sha1::Sha1::new();
@@ -2979,6 +3151,9 @@ pub fn handles(tag: &str) -> bool {
             | "projectAgent.resume"
             | "projectAgent.archive"
             | "projectAgent.unarchive"
+            | "projectAgent.exportDocuments"
+            | "projectAgent.restartCoordinator"
+            | "projectAgent.delete"
     )
 }
 
@@ -3031,6 +3206,9 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Value, WsErr> {
             "Unarchived hub.",
             "Failed to unarchive the hub.",
         ),
+        "projectAgent.exportDocuments" => export_documents(payload),
+        "projectAgent.restartCoordinator" => restart_coordinator(payload),
+        "projectAgent.delete" => delete_group(payload),
         _ => Err(err("Unknown projectAgent method")),
     }
 }

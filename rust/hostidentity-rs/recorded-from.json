@@ -1,0 +1,35 @@
+{
+  "unit": "apps/server/src/hostIdentity/",
+  "files": 5,
+  "fingerprint": "f771abb08e0852d7",
+  "coverage": {
+    "lines": 514,
+    "reached": 293,
+    "files": [
+      {
+        "file": "apps/server/src/atomicWrite.ts",
+        "lines": 172,
+        "reached": 132,
+        "missed": "23, 27-30, 45-46, 49-50, 55-56, 67, 70-74, 79-81, 85-86, 115-116, 168-171, 173-184"
+      },
+      {
+        "file": "apps/server/src/hostIdentity/jwt.ts",
+        "lines": 66,
+        "reached": 64,
+        "missed": "20, 22"
+      },
+      {
+        "file": "apps/server/src/hostIdentity/store.ts",
+        "lines": 99,
+        "reached": 69,
+        "missed": "39-68"
+      },
+      {
+        "file": "apps/server/src/privatePathPermissions.ts",
+        "lines": 177,
+        "reached": 28,
+        "missed": "21-26, 29-35, 37, 39-44, 46-62, 64-65, 67-86, 88-89, 91-101, 103-119, 121, 124-148, 150, 157-158, 160-188, 190-191"
+      }
+    ]
+  }
+}

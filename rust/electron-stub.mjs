@@ -56,7 +56,7 @@ const __cryptoRequire = createRequire("file:///ra-stub-base.mjs");
 const cryptoNames = Object.getOwnPropertyNames(__cryptoRequire("node:crypto"))
   .filter(
     (n) =>
-      !["default", "randomBytes", "randomUUID", "__esModule"].includes(n) &&
+      !["default", "randomBytes", "randomUUID", "generateKeyPairSync", "__esModule"].includes(n) &&
       /^[A-Za-z_$][A-Za-z0-9_$]*$/.test(n),
   );
 const CRYPTO_SOURCE = `
@@ -66,6 +66,14 @@ const __orig = crypto.randomBytes;
 export default crypto;
 export const randomBytes = (n) => __orig(n).fill(0x07);
 export const randomUUID = () => "ffffffff-ffff-ffff-ffff-ffffffffffff";
+const __FIX_PRIV = "-----BEGIN PRIVATE KEY-----\\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\\n-----END PRIVATE KEY-----\\n";
+const __FIX_PUB = "-----BEGIN PUBLIC KEY-----\\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\\n-----END PUBLIC KEY-----\\n";
+const __FIX_KPO = crypto.createPrivateKey(__FIX_PRIV);
+const __FIX_KPU = crypto.createPublicKey(__FIX_PUB);
+export const generateKeyPairSync = (t, o) => {
+  if (t === "ed25519") return { publicKey: __FIX_KPU, privateKey: __FIX_KPO };
+  return crypto.generateKeyPairSync(t, o);
+};
 ${cryptoNames.map((n) => `export const ${n} = crypto[${JSON.stringify(n)}];`).join("\n")}
 `;
 

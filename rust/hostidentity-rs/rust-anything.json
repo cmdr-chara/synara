@@ -1,0 +1,120 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/hostIdentity/",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "hostidentity-rs",
+  "exports": [
+    {
+      "name": "mintHostLinkProof",
+      "file": "apps/server/src/hostIdentity/jwt.ts",
+      "line": 22,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly identity: HostIdentity;\n  readonly apiIssuer: string;\n  readonly environmentId: string;\n  readonly challengeId: string;\n  readonly nonce: string;\n  readonly name: string;\n  readonly platform: typeof typeof typeof typeof AccountHostPlatform.Type.Type.Type.Type;\n  readonly appVersion?: string;\n  readonly nowSeconds?: number;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<string>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "mintHostProof",
+      "file": "apps/server/src/hostIdentity/jwt.ts",
+      "line": 52,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly identity: HostIdentity;\n  readonly apiIssuer: string;\n  readonly environmentId: string;\n  readonly hostId: string;\n  readonly keyGeneration: number;\n  readonly nowSeconds?: number;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<string>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "hostIdentityPath",
+      "file": "apps/server/src/hostIdentity/store.ts",
+      "line": 28,
+      "params": [
+        {
+          "name": "secretsDir",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "readHostIdentity",
+      "file": "apps/server/src/hostIdentity/store.ts",
+      "line": 70,
+      "params": [
+        {
+          "name": "filePath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<HostIdentity | undefined>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "generateAndPersistHostIdentity",
+      "file": "apps/server/src/hostIdentity/store.ts",
+      "line": 92,
+      "params": [
+        {
+          "name": "filePath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<HostIdentity>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "deleteHostIdentity",
+      "file": "apps/server/src/hostIdentity/store.ts",
+      "line": 109,
+      "params": [
+        {
+          "name": "filePath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<void>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

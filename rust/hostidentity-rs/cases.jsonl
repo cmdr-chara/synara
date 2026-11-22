@@ -1,0 +1,1054 @@
+{"fn":"mintHostLinkProof","args":[0],"error":"Cannot read properties of undefined (reading 'publicKeyJwk')"}
+{"fn":"mintHostLinkProof","args":[null],"error":"Cannot read properties of null (reading 'nowSeconds')"}
+{"fn":"mintHostLinkProof","args":[{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'publicKeyJwk')"}
+{"fn":"mintHostLinkProof","args":["x"],"error":"Cannot read properties of undefined (reading 'publicKeyJwk')"}
+{"fn":"mintHostLinkProof","args":[true],"error":"Cannot read properties of undefined (reading 'publicKeyJwk')"}
+{"fn":"mintHostLinkProof","args":[["a",1]],"error":"Cannot read properties of undefined (reading 'publicKeyJwk')"}
+{"fn":"mintHostLinkProof","args":[{}],"error":"Cannot read properties of undefined (reading 'publicKeyJwk')"}
+{"fn":"mintHostLinkProof","args":[{"a":"b"}],"error":"Cannot read properties of undefined (reading 'publicKeyJwk')"}
+{"fn":"mintHostLinkProof","args":[[]],"error":"Cannot read properties of undefined (reading 'publicKeyJwk')"}
+{"fn":"mintHostProof","args":["x"],"error":"Cannot read properties of undefined (reading 'privateKeyPem')"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":["a",1]},"apiIssuer":"😀","environmentId":"ΣΊΣΥΦΟΣ","hostId":"😀","keyGeneration":2147483648}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":0},"apiIssuer":"ab","environmentId":"a","hostId":"a","keyGeneration":2}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":null},"apiIssuer":"a:b:c","environmentId":"a..babc","hostId":"a","keyGeneration":0.5,"nowSeconds":0}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":null},"apiIssuer":"hello world","environmentId":"﻿bom","hostId":"ns:key.path","keyGeneration":2147483648}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{"a":"b"}},"apiIssuer":"日本語のテキスト","environmentId":"hello world","hostId":"abc","keyGeneration":{"$num":"-Infinity"}}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":true},"apiIssuer":"ΣΊΣΥΦΟΣ","environmentId":"a","hostId":"HELLO","keyGeneration":1000000,"nowSeconds":0.5}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[["a",1]],"error":"Cannot read properties of undefined (reading 'privateKeyPem')"}
+{"fn":"mintHostProof","args":[{}],"error":"Cannot read properties of undefined (reading 'privateKeyPem')"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{"a":{"b":"c"}}},"apiIssuer":"HELLOtab\tseparated","environmentId":"{name} has {count} items","hostId":"a😀b😀c","keyGeneration":0}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'privateKeyPem')"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":["a",1]},"apiIssuer":"hello worldΣΊΣΥΦΟΣ","environmentId":"emoji 👍🏽 mix","hostId":"line1\nline2line1\nline2","keyGeneration":{"$num":"-0"},"nowSeconds":0}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[null],"error":"Cannot read properties of null (reading 'identity')"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{"a":{"b":"c"}}},"apiIssuer":"ΣΊΣΥΦΟΣ","environmentId":".leadingtab\tseparated","hostId":"abc","keyGeneration":{"$num":"NaN"},"nowSeconds":{"$num":"NaN"}}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":"x"},"apiIssuer":"日本語のテキスト","environmentId":".leading","hostId":":","keyGeneration":10,"nowSeconds":2147483648}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{"a":"b"}},"apiIssuer":"é","environmentId":"😀","hostId":"hello worldünïcödé","keyGeneration":1000}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{"a":{"b":"c"}}},"apiIssuer":"ünïcödé","environmentId":"a.b.c","hostId":".leading","keyGeneration":3,"nowSeconds":1}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":"x"},"apiIssuer":"﻿bom","environmentId":"src/a/b.ts","hostId":"ünïcödé","keyGeneration":42}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":["a",1]},"apiIssuer":"a:b:c","environmentId":"{name} has {count} items","hostId":"é","keyGeneration":1000,"nowSeconds":{"$num":"NaN"}}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":"x"},"apiIssuer":"HELLO","environmentId":"  padded  ","hostId":"ab","keyGeneration":2147483648,"nowSeconds":-2.5}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":[]},"apiIssuer":"😀","environmentId":"😀.leading","hostId":"ésrc/a/b.ts","keyGeneration":{"$num":"-Infinity"},"nowSeconds":10}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{"a":{"b":"c"}}},"apiIssuer":"ab","environmentId":"﻿bom","hostId":".leading","keyGeneration":-2.5}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{}},"apiIssuer":".leading{name} has {count} items","environmentId":"line1\nline2","hostId":"key_name-1","keyGeneration":{"$num":"-Infinity"},"nowSeconds":3}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[[]],"error":"Cannot read properties of undefined (reading 'privateKeyPem')"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{"a":"b"}},"apiIssuer":"a😀b😀c","environmentId":"hello","hostId":"ünïcödé","keyGeneration":1000000,"nowSeconds":1000}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":"x"},"apiIssuer":"ünïcödé","environmentId":"  padded  ","hostId":"HELLO","keyGeneration":3,"nowSeconds":3}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":["a",1]},"apiIssuer":"./x/**/*.json","environmentId":"key_name-1","hostId":"straße","keyGeneration":2}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{}},"apiIssuer":"abc","environmentId":"abc","hostId":"é","keyGeneration":{"$num":"NaN"},"nowSeconds":42}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{}},"apiIssuer":"./x/**/*.json","environmentId":"","hostId":"abc","keyGeneration":{"$num":"-0"},"nowSeconds":1000}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{"a":"b"}},"apiIssuer":"a😀b😀c","environmentId":"abcab","hostId":"","keyGeneration":42,"nowSeconds":100}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":[]},"apiIssuer":"  padded  ","environmentId":"emoji 👍🏽 mix","hostId":"a..b:","keyGeneration":0.5,"nowSeconds":{"$num":"-0"}}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":0},"apiIssuer":"ΣΊΣΥΦΟΣ","environmentId":"  padded  ns:key.path","hostId":"./x/**/*.json","keyGeneration":3,"nowSeconds":2147483648}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{}},"apiIssuer":"a.b.c","environmentId":"straße","hostId":"line1\nline2","keyGeneration":{"$num":"-Infinity"},"nowSeconds":10}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{"a":"b"}},"apiIssuer":"é","environmentId":"a..bstraße","hostId":"a:b:c","keyGeneration":100,"nowSeconds":{"$num":"-Infinity"}}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":"x"},"apiIssuer":"ünïcödéabc","environmentId":"tab\tseparatedé","hostId":"ünïcödé","keyGeneration":9007199254740992,"nowSeconds":10}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":null},"apiIssuer":"İstanbul","environmentId":"line1\nline2日本語のテキスト","hostId":"abc","keyGeneration":{"$num":"NaN"},"nowSeconds":-2.5}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[0],"error":"Cannot read properties of undefined (reading 'privateKeyPem')"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{}},"apiIssuer":"İstanbul","environmentId":"ns:key.path","hostId":"key_name-1","keyGeneration":{"$num":"NaN"},"nowSeconds":0}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":0},"apiIssuer":"ΣΊΣΥΦΟΣ😀","environmentId":"ünïcödéa.b.c","hostId":"a😀b😀c","keyGeneration":2}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"a":"b"}],"error":"Cannot read properties of undefined (reading 'privateKeyPem')"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{"a":"b"}},"apiIssuer":"./x/**/*.json","environmentId":"日本語のテキスト","hostId":"hello","keyGeneration":0.5,"nowSeconds":3}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{"a":{"b":"c"}}},"apiIssuer":"hello world","environmentId":"a😀b😀c","hostId":".leading","keyGeneration":0.5,"nowSeconds":0.5}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":["a",1]},"apiIssuer":"{name} has {count} items","environmentId":"","hostId":"src/a/b.ts","keyGeneration":100,"nowSeconds":{"$num":"-0"}}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":"x"},"apiIssuer":"key_name-1","environmentId":"ab","hostId":"a😀b😀c","keyGeneration":-1,"nowSeconds":1000}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{}},"apiIssuer":"ab","environmentId":"﻿boma😀b😀c","hostId":"a..b","keyGeneration":100,"nowSeconds":-1}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{"a":"b"}},"apiIssuer":"trailing.","environmentId":"日本語のテキスト./x/**/*.json","hostId":"straße","keyGeneration":100,"nowSeconds":1000}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":[]},"apiIssuer":"emoji 👍🏽 mix","environmentId":"a..b","hostId":"Hello World","keyGeneration":-1}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":[]},"apiIssuer":"  padded  .leading","environmentId":"a😀b😀c","hostId":"a..b:","keyGeneration":{"$num":"-0"},"nowSeconds":0.5}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{"a":"b"}},"apiIssuer":"日本語のテキスト","environmentId":"straße","hostId":"ab","keyGeneration":{"$num":"-0"},"nowSeconds":{"$num":"-0"}}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":["a",1]},"apiIssuer":"trailing.","environmentId":"hello world","hostId":"hello world","keyGeneration":{"$num":"-0"}}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{"a":"b"}},"apiIssuer":"HELLO","environmentId":"日本語のテキスト","hostId":"a:b:c","keyGeneration":-2.5,"nowSeconds":10}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{}},"apiIssuer":"emoji 👍🏽 mix","environmentId":"a.b.cΣΊΣΥΦΟΣ","hostId":"  padded  ","keyGeneration":2,"nowSeconds":1000}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":[]},"apiIssuer":"😀","environmentId":"ab","hostId":"Hello World","keyGeneration":42,"nowSeconds":100}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{"a":{"b":"c"}}},"apiIssuer":"ns:key.path","environmentId":"hello","hostId":"  padded  ","keyGeneration":3,"nowSeconds":2147483648}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":null},"apiIssuer":"trailing.","environmentId":"😀hello","hostId":"ab","keyGeneration":0.5,"nowSeconds":-1}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":"x"},"apiIssuer":"a","environmentId":"abc","hostId":"line1\nline2","keyGeneration":100,"nowSeconds":100}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{"a":"b"}},"apiIssuer":"ns:key.path","environmentId":"{name} has {count} items","hostId":"ns:key.path","keyGeneration":0.5}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{"a":"b"}},"apiIssuer":"ünïcödé","environmentId":"a:b:c","hostId":"ns:key.path","keyGeneration":3}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[true],"error":"Cannot read properties of undefined (reading 'privateKeyPem')"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":0},"apiIssuer":"hello world","environmentId":"İstanbul﻿bom","hostId":"hello","keyGeneration":0,"nowSeconds":100}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":"x"},"apiIssuer":"Hello Worlda","environmentId":"hello world","hostId":"hello world","keyGeneration":2}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{}},"apiIssuer":"😀","environmentId":"ab","hostId":"a:b:c","keyGeneration":{"$num":"-Infinity"},"nowSeconds":{"$num":"NaN"}}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{"a":"b"}},"apiIssuer":"a😀b😀c","environmentId":"Hello World","hostId":"éa:b:c","keyGeneration":-2.5,"nowSeconds":9007199254740992}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{}},"apiIssuer":"a:b:chello","environmentId":"a","hostId":"日本語のテキストabc","keyGeneration":1,"nowSeconds":1000000}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":"x"},"apiIssuer":"日本語のテキストΣΊΣΥΦΟΣ","environmentId":"ab","hostId":"a😀b😀cab","keyGeneration":1,"nowSeconds":2}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":["a",1]},"apiIssuer":"ΣΊΣΥΦΟΣ","environmentId":"a😀b😀c","hostId":"abc","keyGeneration":1000000,"nowSeconds":10}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{"a":"b"}},"apiIssuer":":","environmentId":"HELLO.leading","hostId":"abc","keyGeneration":2,"nowSeconds":100}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{"a":{"b":"c"}}},"apiIssuer":"a😀b😀c","environmentId":"a..b","hostId":"hello./x/**/*.json","keyGeneration":2147483648}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":[]},"apiIssuer":"ab","environmentId":"😀","hostId":":","keyGeneration":42,"nowSeconds":-1}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":[]},"apiIssuer":"HELLO","environmentId":"abc","hostId":":","keyGeneration":{"$num":"NaN"},"nowSeconds":100}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{"a":{"b":"c"}}},"apiIssuer":"a.b.c","environmentId":"ünïcödé","hostId":"é","keyGeneration":1000,"nowSeconds":-1}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":null},"apiIssuer":"line1\nline2","environmentId":"","hostId":"a😀b😀c","keyGeneration":2147483648,"nowSeconds":3}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":"x"},"apiIssuer":"  padded  ","environmentId":"key_name-1src/a/b.ts","hostId":"","keyGeneration":10,"nowSeconds":9007199254740992}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":true},"apiIssuer":"a.b.c","environmentId":"a..b","hostId":"日本語のテキストtab\tseparated","keyGeneration":1,"nowSeconds":{"$num":"Infinity"}}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":true},"apiIssuer":".leading","environmentId":"ab","hostId":"key_name-1:","keyGeneration":1000,"nowSeconds":1}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":0},"apiIssuer":"src/a/b.ts","environmentId":"src/a/b.ts","hostId":"hello","keyGeneration":1,"nowSeconds":1000}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":["a",1]},"apiIssuer":"ΣΊΣΥΦΟΣ","environmentId":"hello worldé","hostId":"key_name-1","keyGeneration":1000000,"nowSeconds":0}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":"x"},"apiIssuer":"tab\tseparated","environmentId":"﻿bom日本語のテキスト","hostId":"é","keyGeneration":1}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{"a":{"b":"c"}}},"apiIssuer":"trailing.","environmentId":"a.b.c","hostId":"./x/**/*.json","keyGeneration":42}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":true},"apiIssuer":"ns:key.patha.b.c","environmentId":"hello world","hostId":"İstanbul","keyGeneration":1}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":["a",1]},"apiIssuer":"a😀b😀c😀","environmentId":"src/a/b.ts","hostId":":","keyGeneration":{"$num":"-0"},"nowSeconds":1000000}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":true},"apiIssuer":"straße","environmentId":"key_name-1","hostId":"ΣΊΣΥΦΟΣ日本語のテキスト","keyGeneration":9007199254740992,"nowSeconds":{"$num":"-0"}}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":0},"apiIssuer":"ab","environmentId":".leadingab","hostId":"src/a/b.tsab","keyGeneration":42,"nowSeconds":{"$num":"-0"}}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":0},"apiIssuer":"ΣΊΣΥΦΟΣ","environmentId":"hello world","hostId":"  padded  ","keyGeneration":0}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{"a":"b"}},"apiIssuer":"a..b","environmentId":"a😀b😀c","hostId":"./x/**/*.json","keyGeneration":1000}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":[]},"apiIssuer":"trailing.😀","environmentId":"emoji 👍🏽 mix","hostId":"{name} has {count} items","keyGeneration":9007199254740992}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":["a",1]},"apiIssuer":"ünïcödé","environmentId":"ünïcödé","hostId":"{name} has {count} items","keyGeneration":3,"nowSeconds":-1}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":null},"apiIssuer":"src/a/b.tshello","environmentId":"é","hostId":"tab\tseparated","keyGeneration":10,"nowSeconds":{"$num":"NaN"}}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{"a":"b"}},"apiIssuer":":日本語のテキスト","environmentId":"key_name-1","hostId":"key_name-1a..b","keyGeneration":1000,"nowSeconds":{"$num":"-Infinity"}}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":null},"apiIssuer":"hello","environmentId":"a😀b😀c","hostId":"hello world","keyGeneration":1000000,"nowSeconds":{"$num":"Infinity"}}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":["a",1]},"apiIssuer":"abcΣΊΣΥΦΟΣ","environmentId":"trailing.","hostId":"日本語のテキスト","keyGeneration":3,"nowSeconds":9007199254740992}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":"x"},"apiIssuer":"İstanbul","environmentId":"emoji 👍🏽 mixa","hostId":"日本語のテキストΣΊΣΥΦΟΣ","keyGeneration":0.5,"nowSeconds":{"$num":"NaN"}}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":true},"apiIssuer":"{name} has {count} items","environmentId":"日本語のテキスト","hostId":"ünïcödé","keyGeneration":-1,"nowSeconds":{"$num":"-Infinity"}}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":true},"apiIssuer":"a😀b😀c","environmentId":"a:b:c{name} has {count} items","hostId":"hello world","keyGeneration":{"$num":"-Infinity"},"nowSeconds":-2.5}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{"a":"b"}},"apiIssuer":"src/a/b.tstrailing.","environmentId":"line1\nline2:","hostId":":","keyGeneration":-2.5,"nowSeconds":2147483648}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":[]},"apiIssuer":"abcΣΊΣΥΦΟΣ","environmentId":".leading","hostId":"ns:key.path","keyGeneration":-1}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":["a",1]},"apiIssuer":"emoji 👍🏽 mixa:b:c","environmentId":"  padded  ","hostId":"","keyGeneration":1000,"nowSeconds":0.5}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{"a":{"b":"c"}}},"apiIssuer":"😀","environmentId":"ΣΊΣΥΦΟΣ","hostId":"hello worldline1\nline2","keyGeneration":{"$num":"-Infinity"},"nowSeconds":{"$num":"-0"}}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":null},"apiIssuer":"hello world","environmentId":"a:b:c","hostId":"a😀b😀c","keyGeneration":-2.5,"nowSeconds":{"$num":"-0"}}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{"a":{"b":"c"}}},"apiIssuer":"ünïcödé","environmentId":"key_name-1","hostId":"hello world","keyGeneration":9007199254740992}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{"a":"b"}},"apiIssuer":"{name} has {count} items","environmentId":"a..b","hostId":"HELLO","keyGeneration":-2.5,"nowSeconds":2}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":0},"apiIssuer":"src/a/b.tsΣΊΣΥΦΟΣ","environmentId":"日本語のテキスト","hostId":"İstanbul😀","keyGeneration":100,"nowSeconds":1}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":true},"apiIssuer":"tab\tseparated","environmentId":"ns:key.path","hostId":"İstanbul","keyGeneration":-1,"nowSeconds":1000000}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":0},"apiIssuer":"İstanbul","environmentId":"ünïcödé","hostId":"a..b","keyGeneration":1000000,"nowSeconds":1000000}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":true},"apiIssuer":"ünïcödé","environmentId":"line1\nline2","hostId":"a.b.c","keyGeneration":{"$num":"Infinity"},"nowSeconds":-2.5}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":true},"apiIssuer":"","environmentId":"a😀b😀cemoji 👍🏽 mix","hostId":"ünïcödé","keyGeneration":100,"nowSeconds":1000000}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":"x"},"apiIssuer":"ünïcödé","environmentId":"straße","hostId":"😀","keyGeneration":{"$num":"Infinity"}}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{"a":{"b":"c"}}},"apiIssuer":"{name} has {count} items","environmentId":"tab\tseparated","hostId":"hello","keyGeneration":42,"nowSeconds":2}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{}},"apiIssuer":"﻿bom","environmentId":"İstanbul","hostId":"abc","keyGeneration":100,"nowSeconds":42}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{"a":"b"}},"apiIssuer":"abc","environmentId":"ns:key.path","hostId":"a.b.c","keyGeneration":-1,"nowSeconds":1}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{}},"apiIssuer":"straße","environmentId":"key_name-1","hostId":"ns:key.path","keyGeneration":2}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{"a":"b"}},"apiIssuer":"日本語のテキスト","environmentId":"﻿bom","hostId":":","keyGeneration":2147483648,"nowSeconds":10}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{"a":{"b":"c"}}},"apiIssuer":"tab\tseparated","environmentId":"a.b.c","hostId":"hello","keyGeneration":1,"nowSeconds":2147483648}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{"a":{"b":"c"}}},"apiIssuer":"ünïcödé","environmentId":"İstanbul","hostId":"emoji 👍🏽 mix","keyGeneration":1,"nowSeconds":10}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":"x"},"apiIssuer":"Hello World","environmentId":"hello world","hostId":"line1\nline2","keyGeneration":100,"nowSeconds":42}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":[]},"apiIssuer":"tab\tseparated","environmentId":"HELLO","hostId":"a:b:c","keyGeneration":9007199254740992,"nowSeconds":9007199254740992}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":[]},"apiIssuer":"emoji 👍🏽 mix","environmentId":"😀","hostId":"ns:key.path","keyGeneration":10}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":["a",1]},"apiIssuer":"﻿bom","environmentId":"trailing.","hostId":"a:b:c","keyGeneration":{"$num":"-Infinity"}}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":"x"},"apiIssuer":"a","environmentId":"abc","hostId":"a","keyGeneration":{"$num":"-Infinity"}}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":0},"apiIssuer":"İstanbul","environmentId":"﻿bom","hostId":"a😀b😀cemoji 👍🏽 mix","keyGeneration":-1}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{"a":"b"}},"apiIssuer":":","environmentId":"a.b.c","hostId":".leading﻿bom","keyGeneration":{"$num":"NaN"}}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":[]},"apiIssuer":".leading","environmentId":"ab","hostId":"trailing.","keyGeneration":1000,"nowSeconds":1}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":true},"apiIssuer":"HELLO","environmentId":"a.b.c","hostId":"ab","keyGeneration":3,"nowSeconds":2}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":[]},"apiIssuer":"straße","environmentId":"ns:key.path","hostId":"ns:key.path","keyGeneration":100,"nowSeconds":1000000}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{}},"apiIssuer":"a.b.c","environmentId":"line1\nline2","hostId":"","keyGeneration":2,"nowSeconds":0}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":["a",1]},"apiIssuer":"Hello World  padded  ","environmentId":"tab\tseparated","hostId":"straßeemoji 👍🏽 mix","keyGeneration":1000000,"nowSeconds":-2.5}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":0},"apiIssuer":"line1\nline2","environmentId":"straße","hostId":"tab\tseparated","keyGeneration":1000,"nowSeconds":100}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{}},"apiIssuer":"a.b.c","environmentId":"a.b.c","hostId":"","keyGeneration":{"$num":"-Infinity"},"nowSeconds":0}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{"a":{"b":"c"}}},"apiIssuer":"ns:key.path","environmentId":"trailing.src/a/b.ts","hostId":"😀","keyGeneration":-2.5,"nowSeconds":1000000}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":true},"apiIssuer":"emoji 👍🏽 mix","environmentId":"abc","hostId":"ns:key.path😀","keyGeneration":0.5}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":[]},"apiIssuer":"hello world","environmentId":"trailing.","hostId":"  padded  ","keyGeneration":{"$num":"-0"},"nowSeconds":42}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":"x"},"apiIssuer":"./x/**/*.json","environmentId":":key_name-1","hostId":"{name} has {count} items😀","keyGeneration":{"$num":"Infinity"},"nowSeconds":{"$num":"Infinity"}}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{}},"apiIssuer":"{name} has {count} items","environmentId":"src/a/b.ts","hostId":"日本語のテキストline1\nline2","keyGeneration":-1,"nowSeconds":10}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":[]},"apiIssuer":"a:b:c","environmentId":"emoji 👍🏽 mix","hostId":"straße","keyGeneration":100,"nowSeconds":0.5}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":null},"apiIssuer":"tab\tseparated","environmentId":"a😀b😀c","hostId":"key_name-1","keyGeneration":{"$num":"Infinity"},"nowSeconds":0}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{}},"apiIssuer":"abc","environmentId":"line1\nline2./x/**/*.json","hostId":"a:b:c","keyGeneration":10}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":null},"apiIssuer":"trailing.","environmentId":"İstanbul","hostId":"abünïcödé","keyGeneration":{"$num":"-Infinity"},"nowSeconds":0.5}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{"a":{"b":"c"}}},"apiIssuer":"  padded  ","environmentId":"ünïcödé","hostId":"hello world","keyGeneration":9007199254740992,"nowSeconds":9007199254740992}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{"a":"b"}},"apiIssuer":"a😀b😀c","environmentId":"日本語のテキスト","hostId":"ünïcödé","keyGeneration":2147483648,"nowSeconds":10}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":null},"apiIssuer":"😀","environmentId":"a:b:c","hostId":"ab","keyGeneration":{"$num":"-0"},"nowSeconds":{"$num":"-Infinity"}}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":"x"},"apiIssuer":"{name} has {count} itemskey_name-1","environmentId":"a","hostId":"a","keyGeneration":{"$num":"Infinity"},"nowSeconds":-2.5}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":0},"apiIssuer":"key_name-1","environmentId":".leading","hostId":"İstanbul","keyGeneration":{"$num":"-Infinity"},"nowSeconds":42}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{"a":"b"}},"apiIssuer":"Hello World","environmentId":"src/a/b.ts","hostId":"日本語のテキスト","keyGeneration":100,"nowSeconds":2147483648}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":["a",1]},"apiIssuer":":ΣΊΣΥΦΟΣ","environmentId":"hello world","hostId":"HELLOİstanbul","keyGeneration":1000000,"nowSeconds":-1}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":["a",1]},"apiIssuer":"  padded  ","environmentId":"line1\nline2","hostId":"﻿bom","keyGeneration":1,"nowSeconds":1}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":"x"},"apiIssuer":"emoji 👍🏽 mix","environmentId":"ns:key.path日本語のテキスト","hostId":"","keyGeneration":1000}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":[]},"apiIssuer":"key_name-1","environmentId":"tab\tseparateda","hostId":"helloHELLO","keyGeneration":1000}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":"x"},"apiIssuer":"HELLOHELLO","environmentId":"Hello Worldtrailing.","hostId":"tab\tseparated","keyGeneration":{"$num":"Infinity"},"nowSeconds":{"$num":"-0"}}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{"a":{"b":"c"}}},"apiIssuer":"a😀b😀c","environmentId":"{name} has {count} items","hostId":"abc","keyGeneration":10}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{"a":"b"}},"apiIssuer":"straße","environmentId":"ΣΊΣΥΦΟΣtrailing.","hostId":"key_name-1","keyGeneration":1000,"nowSeconds":1000}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{"a":{"b":"c"}}},"apiIssuer":"a","environmentId":"./x/**/*.json","hostId":"emoji 👍🏽 mix","keyGeneration":2147483648,"nowSeconds":-2.5}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":["a",1]},"apiIssuer":"﻿bom","environmentId":"Hello World","hostId":"./x/**/*.json","keyGeneration":10,"nowSeconds":10}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{}},"apiIssuer":"😀a😀b😀c","environmentId":"trailing.a😀b😀c","hostId":"日本語のテキスト","keyGeneration":{"$num":"Infinity"},"nowSeconds":2}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{"a":"b"}},"apiIssuer":"{name} has {count} items","environmentId":"a","hostId":"é","keyGeneration":{"$num":"NaN"},"nowSeconds":-1}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{"a":"b"}},"apiIssuer":"a:b:c","environmentId":"ns:key.path","hostId":"HELLOünïcödé","keyGeneration":1000,"nowSeconds":{"$num":"-Infinity"}}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":["a",1]},"apiIssuer":"hello","environmentId":"emoji 👍🏽 mix","hostId":"a..b","keyGeneration":10,"nowSeconds":9007199254740992}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{"a":{"b":"c"}}},"apiIssuer":"hello world","environmentId":"key_name-1","hostId":"straßea..b","keyGeneration":9007199254740992}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{"a":{"b":"c"}}},"apiIssuer":"ünïcödéemoji 👍🏽 mix","environmentId":"ünïcödé","hostId":"line1\nline2","keyGeneration":3}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":true},"apiIssuer":"a","environmentId":"Hello World","hostId":".leadingsrc/a/b.ts","keyGeneration":3}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":[]},"apiIssuer":"ünïcödé","environmentId":"line1\nline2","hostId":"abtab\tseparated","keyGeneration":1000000}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":true},"apiIssuer":"ünïcödé","environmentId":"ns:key.pathabc","hostId":"trailing.:","keyGeneration":{"$num":"-Infinity"}}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":[]},"apiIssuer":"a..b","environmentId":".leading","hostId":"ab😀","keyGeneration":100,"nowSeconds":-1}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{"a":"b"}},"apiIssuer":"emoji 👍🏽 mix","environmentId":"Hello World","hostId":"a😀b😀c","keyGeneration":10,"nowSeconds":-2.5}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{}},"apiIssuer":"./x/**/*.json","environmentId":"ΣΊΣΥΦΟΣ日本語のテキスト","hostId":"a😀b😀c","keyGeneration":100,"nowSeconds":100}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":["a",1]},"apiIssuer":"{name} has {count} items  padded  ","environmentId":"abca😀b😀c","hostId":".leading","keyGeneration":0.5,"nowSeconds":1}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{}},"apiIssuer":"é","environmentId":"hello world","hostId":"trailing.","keyGeneration":{"$num":"-0"}}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{"a":{"b":"c"}}},"apiIssuer":"﻿bom","environmentId":"helloHello World","hostId":"😀","keyGeneration":42,"nowSeconds":{"$num":"Infinity"}}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":[]},"apiIssuer":"./x/**/*.json","environmentId":"Hello World","hostId":"trailing.","keyGeneration":0.5}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":0},"apiIssuer":":","environmentId":"﻿bom","hostId":"😀","keyGeneration":{"$num":"-Infinity"}}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":["a",1]},"apiIssuer":"abc","environmentId":"hello world﻿bom","hostId":"﻿bom","keyGeneration":1000,"nowSeconds":{"$num":"-Infinity"}}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{}},"apiIssuer":"HELLO","environmentId":"a:b:c","hostId":"","keyGeneration":42,"nowSeconds":{"$num":"-0"}}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{"a":"b"}},"apiIssuer":"src/a/b.ts","environmentId":"hello","hostId":"a","keyGeneration":100}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":0},"apiIssuer":"﻿bom","environmentId":"{name} has {count} itemsa","hostId":"ΣΊΣΥΦΟΣ.leading","keyGeneration":0}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":["a",1]},"apiIssuer":"key_name-1","environmentId":"","hostId":"  padded  ","keyGeneration":0.5,"nowSeconds":3}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":true},"apiIssuer":"tab\tseparatedns:key.path","environmentId":"😀","hostId":"abc","keyGeneration":1000,"nowSeconds":2147483648}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":[]},"apiIssuer":"a","environmentId":"tab\tseparated","hostId":"a","keyGeneration":{"$num":"NaN"},"nowSeconds":-2.5}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":0},"apiIssuer":"Hello World","environmentId":"hello world","hostId":"trailing.","keyGeneration":1000000,"nowSeconds":2}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":"x"},"apiIssuer":"emoji 👍🏽 mix","environmentId":"emoji 👍🏽 mix","hostId":"﻿bom","keyGeneration":1,"nowSeconds":{"$num":"NaN"}}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":0},"apiIssuer":"./x/**/*.json","environmentId":"tab\tseparated","hostId":"  padded  ","keyGeneration":1000000,"nowSeconds":0}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{"a":{"b":"c"}}},"apiIssuer":"hello","environmentId":"{name} has {count} items﻿bom","hostId":"straße","keyGeneration":2147483648,"nowSeconds":{"$num":"-0"}}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{}},"apiIssuer":"hello world","environmentId":"İstanbul","hostId":"{name} has {count} items","keyGeneration":9007199254740992,"nowSeconds":1000000}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":[]},"apiIssuer":"line1\nline2","environmentId":"key_name-1","hostId":"a..b","keyGeneration":-1,"nowSeconds":{"$num":"-Infinity"}}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":true},"apiIssuer":"","environmentId":"./x/**/*.json","hostId":"tab\tseparated","keyGeneration":1}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{}},"apiIssuer":"hello worlda","environmentId":"helloHello World","hostId":"key_name-1","keyGeneration":{"$num":"-0"},"nowSeconds":2147483648}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{"a":{"b":"c"}}},"apiIssuer":"straße","environmentId":"emoji 👍🏽 mix日本語のテキスト","hostId":"abca:b:c","keyGeneration":2147483648,"nowSeconds":0}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":["a",1]},"apiIssuer":"trailing.","environmentId":"a.b.c","hostId":"😀","keyGeneration":10,"nowSeconds":1000000}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{"a":{"b":"c"}}},"apiIssuer":"ab","environmentId":"﻿bom","hostId":"hello world","keyGeneration":3,"nowSeconds":9007199254740992}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":true},"apiIssuer":"a😀b😀c","environmentId":"İstanbul","hostId":"tab\tseparated","keyGeneration":100,"nowSeconds":0}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{"a":{"b":"c"}}},"apiIssuer":"./x/**/*.json","environmentId":"trailing.","hostId":"hello world","keyGeneration":2147483648}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":true},"apiIssuer":"a😀b😀chello","environmentId":"İstanbula:b:c","hostId":"a:b:c","keyGeneration":3}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":"x"},"apiIssuer":"Hello World","environmentId":"abc","hostId":"line1\nline2","keyGeneration":42,"nowSeconds":-1}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{"a":{"b":"c"}}},"apiIssuer":"{name} has {count} itemstrailing.","environmentId":":","hostId":"a..b","keyGeneration":100,"nowSeconds":{"$num":"Infinity"}}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":0},"apiIssuer":"é","environmentId":"hello","hostId":"Hello World.leading","keyGeneration":{"$num":"-0"},"nowSeconds":1}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":[]},"apiIssuer":"tab\tseparated","environmentId":"a😀b😀c","hostId":"trailing.","keyGeneration":100,"nowSeconds":2}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":["a",1]},"apiIssuer":"src/a/b.tssrc/a/b.ts","environmentId":"İstanbul日本語のテキスト","hostId":"😀:","keyGeneration":1000,"nowSeconds":42}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":[]},"apiIssuer":"日本語のテキスト","environmentId":"line1\nline2","hostId":":","keyGeneration":3,"nowSeconds":0.5}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":["a",1]},"apiIssuer":"./x/**/*.json","environmentId":"a..b","hostId":"hello","keyGeneration":{"$num":"Infinity"},"nowSeconds":0}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":true},"apiIssuer":"HELLO","environmentId":".leading","hostId":"emoji 👍🏽 mix","keyGeneration":{"$num":"NaN"},"nowSeconds":100}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":{}},"apiIssuer":"é","environmentId":"😀src/a/b.ts","hostId":"tab\tseparated","keyGeneration":0.5}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"mintHostProof","args":[{"identity":{"publicKeyJwk":null},"apiIssuer":"straße","environmentId":"src/a/b.ts","hostId":"./x/**/*.json","keyGeneration":9007199254740992,"nowSeconds":9007199254740992}],"error":"\"pkcs8\" must be PKCS#8 formatted string"}
+{"fn":"hostIdentityPath","args":["key_name-1"],"ok":"key_name-1/host-identity.json"}
+{"fn":"hostIdentityPath","args":["a..b"],"ok":"a..b/host-identity.json"}
+{"fn":"hostIdentityPath","args":["a"],"ok":"a/host-identity.json"}
+{"fn":"hostIdentityPath","args":["é"],"ok":"é/host-identity.json"}
+{"fn":"hostIdentityPath","args":["ünïcödé"],"ok":"ünïcödé/host-identity.json"}
+{"fn":"hostIdentityPath","args":["hello"],"ok":"hello/host-identity.json"}
+{"fn":"hostIdentityPath","args":["./x/**/*.json"],"ok":"x/**/*.json/host-identity.json"}
+{"fn":"hostIdentityPath","args":["İstanbul"],"ok":"İstanbul/host-identity.json"}
+{"fn":"hostIdentityPath","args":["ΣΊΣΥΦΟΣ"],"ok":"ΣΊΣΥΦΟΣ/host-identity.json"}
+{"fn":"hostIdentityPath","args":["a.b.c"],"ok":"a.b.c/host-identity.json"}
+{"fn":"hostIdentityPath","args":[".leading"],"ok":".leading/host-identity.json"}
+{"fn":"hostIdentityPath","args":["Hello Worldsrc/a/b.ts"],"ok":"Hello Worldsrc/a/b.ts/host-identity.json"}
+{"fn":"hostIdentityPath","args":[":"],"ok":":/host-identity.json"}
+{"fn":"hostIdentityPath","args":["emoji 👍🏽 mixhello world"],"ok":"emoji 👍🏽 mixhello world/host-identity.json"}
+{"fn":"hostIdentityPath","args":["{name} has {count} items"],"ok":"{name} has {count} items/host-identity.json"}
+{"fn":"hostIdentityPath","args":["😀"],"ok":"😀/host-identity.json"}
+{"fn":"hostIdentityPath","args":["HELLO"],"ok":"HELLO/host-identity.json"}
+{"fn":"hostIdentityPath","args":["ΣΊΣΥΦΟΣline1\nline2"],"ok":"ΣΊΣΥΦΟΣline1\nline2/host-identity.json"}
+{"fn":"hostIdentityPath","args":["a😀b😀c"],"ok":"a😀b😀c/host-identity.json"}
+{"fn":"hostIdentityPath","args":["abcemoji 👍🏽 mix"],"ok":"abcemoji 👍🏽 mix/host-identity.json"}
+{"fn":"hostIdentityPath","args":["abcİstanbul"],"ok":"abcİstanbul/host-identity.json"}
+{"fn":"hostIdentityPath","args":["trailing."],"ok":"trailing./host-identity.json"}
+{"fn":"hostIdentityPath","args":["a:b:c"],"ok":"a:b:c/host-identity.json"}
+{"fn":"hostIdentityPath","args":["  padded  "],"ok":"  padded  /host-identity.json"}
+{"fn":"hostIdentityPath","args":["a:b:c{name} has {count} items"],"ok":"a:b:c{name} has {count} items/host-identity.json"}
+{"fn":"hostIdentityPath","args":["Hello World"],"ok":"Hello World/host-identity.json"}
+{"fn":"hostIdentityPath","args":["src/a/b.ts"],"ok":"src/a/b.ts/host-identity.json"}
+{"fn":"hostIdentityPath","args":["ns:key.path"],"ok":"ns:key.path/host-identity.json"}
+{"fn":"hostIdentityPath","args":[""],"ok":"host-identity.json"}
+{"fn":"hostIdentityPath","args":["﻿bom"],"ok":"﻿bom/host-identity.json"}
+{"fn":"hostIdentityPath","args":["emoji 👍🏽 mix日本語のテキスト"],"ok":"emoji 👍🏽 mix日本語のテキスト/host-identity.json"}
+{"fn":"hostIdentityPath","args":["key_name-1a..b"],"ok":"key_name-1a..b/host-identity.json"}
+{"fn":"hostIdentityPath","args":["abcHELLO"],"ok":"abcHELLO/host-identity.json"}
+{"fn":"hostIdentityPath","args":["straße  padded  "],"ok":"straße  padded  /host-identity.json"}
+{"fn":"hostIdentityPath","args":["abc"],"ok":"abc/host-identity.json"}
+{"fn":"hostIdentityPath","args":["日本語のテキスト"],"ok":"日本語のテキスト/host-identity.json"}
+{"fn":"hostIdentityPath","args":["ab"],"ok":"ab/host-identity.json"}
+{"fn":"hostIdentityPath","args":["ns:key.path😀"],"ok":"ns:key.path😀/host-identity.json"}
+{"fn":"hostIdentityPath","args":["ΣΊΣΥΦΟΣsrc/a/b.ts"],"ok":"ΣΊΣΥΦΟΣsrc/a/b.ts/host-identity.json"}
+{"fn":"hostIdentityPath","args":["line1\nline2"],"ok":"line1\nline2/host-identity.json"}
+{"fn":"hostIdentityPath","args":[".leadingemoji 👍🏽 mix"],"ok":".leadingemoji 👍🏽 mix/host-identity.json"}
+{"fn":"hostIdentityPath","args":["straße"],"ok":"straße/host-identity.json"}
+{"fn":"hostIdentityPath","args":["line1\nline2  padded  "],"ok":"line1\nline2  padded  /host-identity.json"}
+{"fn":"hostIdentityPath","args":["ΣΊΣΥΦΟΣa..b"],"ok":"ΣΊΣΥΦΟΣa..b/host-identity.json"}
+{"fn":"hostIdentityPath","args":["hello world"],"ok":"hello world/host-identity.json"}
+{"fn":"hostIdentityPath","args":["ünïcödéünïcödé"],"ok":"ünïcödéünïcödé/host-identity.json"}
+{"fn":"hostIdentityPath","args":["emoji 👍🏽 mix"],"ok":"emoji 👍🏽 mix/host-identity.json"}
+{"fn":"hostIdentityPath","args":["src/a/b.tsa😀b😀c"],"ok":"src/a/b.tsa😀b😀c/host-identity.json"}
+{"fn":"hostIdentityPath","args":["abca..b"],"ok":"abca..b/host-identity.json"}
+{"fn":"hostIdentityPath","args":["src/a/b.tsHELLO"],"ok":"src/a/b.tsHELLO/host-identity.json"}
+{"fn":"hostIdentityPath","args":["a..bab"],"ok":"a..bab/host-identity.json"}
+{"fn":"hostIdentityPath","args":["a:b:cΣΊΣΥΦΟΣ"],"ok":"a:b:cΣΊΣΥΦΟΣ/host-identity.json"}
+{"fn":"hostIdentityPath","args":["HELLO😀"],"ok":"HELLO😀/host-identity.json"}
+{"fn":"hostIdentityPath","args":["key_name-1ΣΊΣΥΦΟΣ"],"ok":"key_name-1ΣΊΣΥΦΟΣ/host-identity.json"}
+{"fn":"hostIdentityPath","args":["abcünïcödé"],"ok":"abcünïcödé/host-identity.json"}
+{"fn":"hostIdentityPath","args":["ΣΊΣΥΦΟΣ{name} has {count} items"],"ok":"ΣΊΣΥΦΟΣ{name} has {count} items/host-identity.json"}
+{"fn":"hostIdentityPath","args":["key_name-1:"],"ok":"key_name-1:/host-identity.json"}
+{"fn":"hostIdentityPath","args":["ns:key.path.leading"],"ok":"ns:key.path.leading/host-identity.json"}
+{"fn":"hostIdentityPath","args":["a:b:cab"],"ok":"a:b:cab/host-identity.json"}
+{"fn":"hostIdentityPath","args":["hello worlda:b:c"],"ok":"hello worlda:b:c/host-identity.json"}
+{"fn":"hostIdentityPath","args":["hello world.leading"],"ok":"hello world.leading/host-identity.json"}
+{"fn":"hostIdentityPath","args":["İstanbultrailing."],"ok":"İstanbultrailing./host-identity.json"}
+{"fn":"hostIdentityPath","args":["tab\tseparated"],"ok":"tab\tseparated/host-identity.json"}
+{"fn":"hostIdentityPath","args":["emoji 👍🏽 mixstraße"],"ok":"emoji 👍🏽 mixstraße/host-identity.json"}
+{"fn":"hostIdentityPath","args":["abcé"],"ok":"abcé/host-identity.json"}
+{"fn":"hostIdentityPath","args":["straßea:b:c"],"ok":"straßea:b:c/host-identity.json"}
+{"fn":"hostIdentityPath","args":["trailing.HELLO"],"ok":"trailing.HELLO/host-identity.json"}
+{"fn":"hostIdentityPath","args":["{name} has {count} itemsline1\nline2"],"ok":"{name} has {count} itemsline1\nline2/host-identity.json"}
+{"fn":"hostIdentityPath","args":["😀straße"],"ok":"😀straße/host-identity.json"}
+{"fn":"hostIdentityPath","args":[":straße"],"ok":":straße/host-identity.json"}
+{"fn":"hostIdentityPath","args":["a:b:c:"],"ok":"a:b:c:/host-identity.json"}
+{"fn":"hostIdentityPath","args":["ünïcödéhello world"],"ok":"ünïcödéhello world/host-identity.json"}
+{"fn":"hostIdentityPath","args":["ab😀"],"ok":"ab😀/host-identity.json"}
+{"fn":"hostIdentityPath","args":["a:b:cns:key.path"],"ok":"a:b:cns:key.path/host-identity.json"}
+{"fn":"hostIdentityPath","args":["éΣΊΣΥΦΟΣ"],"ok":"éΣΊΣΥΦΟΣ/host-identity.json"}
+{"fn":"hostIdentityPath","args":["ns:key.pathHello World"],"ok":"ns:key.pathHello World/host-identity.json"}
+{"fn":"hostIdentityPath","args":["a:b:c日本語のテキスト"],"ok":"a:b:c日本語のテキスト/host-identity.json"}
+{"fn":"hostIdentityPath","args":["ünïcödékey_name-1"],"ok":"ünïcödékey_name-1/host-identity.json"}
+{"fn":"hostIdentityPath","args":["key_name-1straße"],"ok":"key_name-1straße/host-identity.json"}
+{"fn":"hostIdentityPath","args":["trailing..leading"],"ok":"trailing..leading/host-identity.json"}
+{"fn":"hostIdentityPath","args":["hello worldns:key.path"],"ok":"hello worldns:key.path/host-identity.json"}
+{"fn":"hostIdentityPath","args":["hello worldHello World"],"ok":"hello worldHello World/host-identity.json"}
+{"fn":"hostIdentityPath","args":["trailing.abc"],"ok":"trailing.abc/host-identity.json"}
+{"fn":"hostIdentityPath","args":["Hello Worldİstanbul"],"ok":"Hello Worldİstanbul/host-identity.json"}
+{"fn":"hostIdentityPath","args":["tab\tseparatedkey_name-1"],"ok":"tab\tseparatedkey_name-1/host-identity.json"}
+{"fn":"hostIdentityPath","args":["ab.leading"],"ok":"ab.leading/host-identity.json"}
+{"fn":"hostIdentityPath","args":["src/a/b.tsa"],"ok":"src/a/b.tsa/host-identity.json"}
+{"fn":"hostIdentityPath","args":["line1\nline2Hello World"],"ok":"line1\nline2Hello World/host-identity.json"}
+{"fn":"hostIdentityPath","args":["日本語のテキストa😀b😀c"],"ok":"日本語のテキストa😀b😀c/host-identity.json"}
+{"fn":"hostIdentityPath","args":["{name} has {count} itemshello"],"ok":"{name} has {count} itemshello/host-identity.json"}
+{"fn":"hostIdentityPath","args":["a..b  padded  "],"ok":"a..b  padded  /host-identity.json"}
+{"fn":"hostIdentityPath","args":["日本語のテキストa..b"],"ok":"日本語のテキストa..b/host-identity.json"}
+{"fn":"hostIdentityPath","args":["tab\tseparatedhello"],"ok":"tab\tseparatedhello/host-identity.json"}
+{"fn":"hostIdentityPath","args":["a:b:ca"],"ok":"a:b:ca/host-identity.json"}
+{"fn":"hostIdentityPath","args":["HELLOns:key.path"],"ok":"HELLOns:key.path/host-identity.json"}
+{"fn":"hostIdentityPath","args":["  padded  emoji 👍🏽 mix"],"ok":"  padded  emoji 👍🏽 mix/host-identity.json"}
+{"fn":"hostIdentityPath","args":["İstanbulé"],"ok":"İstanbulé/host-identity.json"}
+{"fn":"hostIdentityPath","args":["HELLOHELLO"],"ok":"HELLOHELLO/host-identity.json"}
+{"fn":"hostIdentityPath","args":["./x/**/*.json:"],"ok":"x/**/*.json:/host-identity.json"}
+{"fn":"hostIdentityPath","args":[".leadingé"],"ok":".leadingé/host-identity.json"}
+{"fn":"hostIdentityPath","args":["  padded  ./x/**/*.json"],"ok":"  padded  ./x/**/*.json/host-identity.json"}
+{"fn":"hostIdentityPath","args":["src/a/b.tsHello World"],"ok":"src/a/b.tsHello World/host-identity.json"}
+{"fn":"hostIdentityPath","args":["a😀b😀ctrailing."],"ok":"a😀b😀ctrailing./host-identity.json"}
+{"fn":"hostIdentityPath","args":["straße.leading"],"ok":"straße.leading/host-identity.json"}
+{"fn":"hostIdentityPath","args":["ünïcödéa"],"ok":"ünïcödéa/host-identity.json"}
+{"fn":"hostIdentityPath","args":["emoji 👍🏽 mixünïcödé"],"ok":"emoji 👍🏽 mixünïcödé/host-identity.json"}
+{"fn":"hostIdentityPath","args":["😀ünïcödé"],"ok":"😀ünïcödé/host-identity.json"}
+{"fn":"hostIdentityPath","args":["日本語のテキスト日本語のテキスト"],"ok":"日本語のテキスト日本語のテキスト/host-identity.json"}
+{"fn":"hostIdentityPath","args":["  padded  ünïcödé"],"ok":"  padded  ünïcödé/host-identity.json"}
+{"fn":"hostIdentityPath","args":["Hello World日本語のテキスト"],"ok":"Hello World日本語のテキスト/host-identity.json"}
+{"fn":"hostIdentityPath","args":["straße😀"],"ok":"straße😀/host-identity.json"}
+{"fn":"hostIdentityPath","args":["abİstanbul"],"ok":"abİstanbul/host-identity.json"}
+{"fn":"hostIdentityPath","args":["HELLOé"],"ok":"HELLOé/host-identity.json"}
+{"fn":"hostIdentityPath","args":["hello worlda"],"ok":"hello worlda/host-identity.json"}
+{"fn":"hostIdentityPath","args":["ns:key.patha:b:c"],"ok":"ns:key.patha:b:c/host-identity.json"}
+{"fn":"hostIdentityPath","args":["emoji 👍🏽 mixa..b"],"ok":"emoji 👍🏽 mixa..b/host-identity.json"}
+{"fn":"hostIdentityPath","args":["HELLOkey_name-1"],"ok":"HELLOkey_name-1/host-identity.json"}
+{"fn":"hostIdentityPath","args":["a😀b😀c{name} has {count} items"],"ok":"a😀b😀c{name} has {count} items/host-identity.json"}
+{"fn":"hostIdentityPath","args":["helloé"],"ok":"helloé/host-identity.json"}
+{"fn":"hostIdentityPath","args":["  padded  src/a/b.ts"],"ok":"  padded  src/a/b.ts/host-identity.json"}
+{"fn":"hostIdentityPath","args":["line1\nline2key_name-1"],"ok":"line1\nline2key_name-1/host-identity.json"}
+{"fn":"hostIdentityPath","args":["ahello world"],"ok":"ahello world/host-identity.json"}
+{"fn":"hostIdentityPath","args":["😀trailing."],"ok":"😀trailing./host-identity.json"}
+{"fn":"hostIdentityPath","args":["trailing.trailing."],"ok":"trailing.trailing./host-identity.json"}
+{"fn":"hostIdentityPath","args":["straßens:key.path"],"ok":"straßens:key.path/host-identity.json"}
+{"fn":"hostIdentityPath","args":["trailing.emoji 👍🏽 mix"],"ok":"trailing.emoji 👍🏽 mix/host-identity.json"}
+{"fn":"hostIdentityPath","args":["hello worldhello world"],"ok":"hello worldhello world/host-identity.json"}
+{"fn":"hostIdentityPath","args":["aab"],"ok":"aab/host-identity.json"}
+{"fn":"hostIdentityPath","args":["trailing.日本語のテキスト"],"ok":"trailing.日本語のテキスト/host-identity.json"}
+{"fn":"hostIdentityPath","args":["straßea"],"ok":"straßea/host-identity.json"}
+{"fn":"hostIdentityPath","args":["abHELLO"],"ok":"abHELLO/host-identity.json"}
+{"fn":"hostIdentityPath","args":["tab\tseparateda.b.c"],"ok":"tab\tseparateda.b.c/host-identity.json"}
+{"fn":"hostIdentityPath","args":["  padded  ﻿bom"],"ok":"  padded  ﻿bom/host-identity.json"}
+{"fn":"hostIdentityPath","args":["😀key_name-1"],"ok":"😀key_name-1/host-identity.json"}
+{"fn":"hostIdentityPath","args":["./x/**/*.json﻿bom"],"ok":"x/**/*.json﻿bom/host-identity.json"}
+{"fn":"hostIdentityPath","args":["aé"],"ok":"aé/host-identity.json"}
+{"fn":"hostIdentityPath","args":["key_name-1a😀b😀c"],"ok":"key_name-1a😀b😀c/host-identity.json"}
+{"fn":"hostIdentityPath","args":["{name} has {count} itemsa"],"ok":"{name} has {count} itemsa/host-identity.json"}
+{"fn":"hostIdentityPath","args":["{name} has {count} itemshello world"],"ok":"{name} has {count} itemshello world/host-identity.json"}
+{"fn":"hostIdentityPath","args":["a:b:chello world"],"ok":"a:b:chello world/host-identity.json"}
+{"fn":"hostIdentityPath","args":["src/a/b.ts.leading"],"ok":"src/a/b.ts.leading/host-identity.json"}
+{"fn":"hostIdentityPath","args":["helloHELLO"],"ok":"helloHELLO/host-identity.json"}
+{"fn":"hostIdentityPath","args":["ΣΊΣΥΦΟΣ😀"],"ok":"ΣΊΣΥΦΟΣ😀/host-identity.json"}
+{"fn":"hostIdentityPath","args":["éa:b:c"],"ok":"éa:b:c/host-identity.json"}
+{"fn":"hostIdentityPath","args":["Hello Worldé"],"ok":"Hello Worldé/host-identity.json"}
+{"fn":"hostIdentityPath","args":["emoji 👍🏽 mixabc"],"ok":"emoji 👍🏽 mixabc/host-identity.json"}
+{"fn":"hostIdentityPath","args":["tab\tseparatedΣΊΣΥΦΟΣ"],"ok":"tab\tseparatedΣΊΣΥΦΟΣ/host-identity.json"}
+{"fn":"hostIdentityPath","args":["straßea.b.c"],"ok":"straßea.b.c/host-identity.json"}
+{"fn":"hostIdentityPath","args":["src/a/b.tsa..b"],"ok":"src/a/b.tsa..b/host-identity.json"}
+{"fn":"hostIdentityPath","args":["😀a.b.c"],"ok":"😀a.b.c/host-identity.json"}
+{"fn":"hostIdentityPath","args":["a..bemoji 👍🏽 mix"],"ok":"a..bemoji 👍🏽 mix/host-identity.json"}
+{"fn":"hostIdentityPath","args":["İstanbulsrc/a/b.ts"],"ok":"İstanbulsrc/a/b.ts/host-identity.json"}
+{"fn":"hostIdentityPath","args":["emoji 👍🏽 mix{name} has {count} items"],"ok":"emoji 👍🏽 mix{name} has {count} items/host-identity.json"}
+{"fn":"hostIdentityPath","args":["a..ba.b.c"],"ok":"a..ba.b.c/host-identity.json"}
+{"fn":"hostIdentityPath","args":[".leading﻿bom"],"ok":".leading﻿bom/host-identity.json"}
+{"fn":"hostIdentityPath","args":["trailing.a.b.c"],"ok":"trailing.a.b.c/host-identity.json"}
+{"fn":"hostIdentityPath","args":["straßehello world"],"ok":"straßehello world/host-identity.json"}
+{"fn":"hostIdentityPath","args":["﻿bomline1\nline2"],"ok":"﻿bomline1\nline2/host-identity.json"}
+{"fn":"hostIdentityPath","args":["aba"],"ok":"aba/host-identity.json"}
+{"fn":"hostIdentityPath","args":["{name} has {count} items😀"],"ok":"{name} has {count} items😀/host-identity.json"}
+{"fn":"hostIdentityPath","args":["trailing.😀"],"ok":"trailing.😀/host-identity.json"}
+{"fn":"hostIdentityPath","args":["éhello"],"ok":"éhello/host-identity.json"}
+{"fn":"hostIdentityPath","args":["key_name-1hello"],"ok":"key_name-1hello/host-identity.json"}
+{"fn":"hostIdentityPath","args":["a..ba:b:c"],"ok":"a..ba:b:c/host-identity.json"}
+{"fn":"hostIdentityPath","args":["ΣΊΣΥΦΟΣhello world"],"ok":"ΣΊΣΥΦΟΣhello world/host-identity.json"}
+{"fn":"hostIdentityPath","args":["a😀b😀cΣΊΣΥΦΟΣ"],"ok":"a😀b😀cΣΊΣΥΦΟΣ/host-identity.json"}
+{"fn":"hostIdentityPath","args":["straßeünïcödé"],"ok":"straßeünïcödé/host-identity.json"}
+{"fn":"hostIdentityPath","args":["Hello Worlda😀b😀c"],"ok":"Hello Worlda😀b😀c/host-identity.json"}
+{"fn":"hostIdentityPath","args":["line1\nline2😀"],"ok":"line1\nline2😀/host-identity.json"}
+{"fn":"hostIdentityPath","args":[".leadingünïcödé"],"ok":".leadingünïcödé/host-identity.json"}
+{"fn":"hostIdentityPath","args":["a.b.c日本語のテキスト"],"ok":"a.b.c日本語のテキスト/host-identity.json"}
+{"fn":"hostIdentityPath","args":[".leadingΣΊΣΥΦΟΣ"],"ok":".leadingΣΊΣΥΦΟΣ/host-identity.json"}
+{"fn":"hostIdentityPath","args":["aabc"],"ok":"aabc/host-identity.json"}
+{"fn":"hostIdentityPath","args":["asrc/a/b.ts"],"ok":"asrc/a/b.ts/host-identity.json"}
+{"fn":"hostIdentityPath","args":["éa😀b😀c"],"ok":"éa😀b😀c/host-identity.json"}
+{"fn":"hostIdentityPath","args":["a..bhello world"],"ok":"a..bhello world/host-identity.json"}
+{"fn":"hostIdentityPath","args":["straßeHello World"],"ok":"straßeHello World/host-identity.json"}
+{"fn":"hostIdentityPath","args":["étrailing."],"ok":"étrailing./host-identity.json"}
+{"fn":"hostIdentityPath","args":["key_name-1İstanbul"],"ok":"key_name-1İstanbul/host-identity.json"}
+{"fn":"hostIdentityPath","args":["tab\tseparatedtrailing."],"ok":"tab\tseparatedtrailing./host-identity.json"}
+{"fn":"hostIdentityPath","args":["{name} has {count} items.leading"],"ok":"{name} has {count} items.leading/host-identity.json"}
+{"fn":"hostIdentityPath","args":["hello world{name} has {count} items"],"ok":"hello world{name} has {count} items/host-identity.json"}
+{"fn":"hostIdentityPath","args":["a:b:csrc/a/b.ts"],"ok":"a:b:csrc/a/b.ts/host-identity.json"}
+{"fn":"hostIdentityPath","args":[".leadingtab\tseparated"],"ok":".leadingtab\tseparated/host-identity.json"}
+{"fn":"hostIdentityPath","args":["hello world  padded  "],"ok":"hello world  padded  /host-identity.json"}
+{"fn":"hostIdentityPath","args":["HELLOa.b.c"],"ok":"HELLOa.b.c/host-identity.json"}
+{"fn":"hostIdentityPath","args":["straßeabc"],"ok":"straßeabc/host-identity.json"}
+{"fn":"hostIdentityPath","args":["日本語のテキストline1\nline2"],"ok":"日本語のテキストline1\nline2/host-identity.json"}
+{"fn":"hostIdentityPath","args":["hello worldé"],"ok":"hello worldé/host-identity.json"}
+{"fn":"hostIdentityPath","args":["hello worldab"],"ok":"hello worldab/host-identity.json"}
+{"fn":"hostIdentityPath","args":["{name} has {count} itemstab\tseparated"],"ok":"{name} has {count} itemstab\tseparated/host-identity.json"}
+{"fn":"hostIdentityPath","args":["ΣΊΣΥΦΟΣ.leading"],"ok":"ΣΊΣΥΦΟΣ.leading/host-identity.json"}
+{"fn":"hostIdentityPath","args":["a:b:ctab\tseparated"],"ok":"a:b:ctab\tseparated/host-identity.json"}
+{"fn":"hostIdentityPath","args":["Hello Worldtrailing."],"ok":"Hello Worldtrailing./host-identity.json"}
+{"fn":"hostIdentityPath","args":["src/a/b.tsstraße"],"ok":"src/a/b.tsstraße/host-identity.json"}
+{"fn":"hostIdentityPath","args":["hello world./x/**/*.json"],"ok":"hello world./x/**/*.json/host-identity.json"}
+{"fn":"hostIdentityPath","args":["a😀b😀cstraße"],"ok":"a😀b😀cstraße/host-identity.json"}
+{"fn":"hostIdentityPath","args":["hello﻿bom"],"ok":"hello﻿bom/host-identity.json"}
+{"fn":"hostIdentityPath","args":["  padded  HELLO"],"ok":"  padded  HELLO/host-identity.json"}
+{"fn":"hostIdentityPath","args":["﻿bomstraße"],"ok":"﻿bomstraße/host-identity.json"}
+{"fn":"hostIdentityPath","args":["héllo wörld"],"ok":"héllo wörld/host-identity.json"}
+{"fn":"hostIdentityPath","args":["👍🏽 thumbs"],"ok":"👍🏽 thumbs/host-identity.json"}
+{"fn":"hostIdentityPath","args":["日本語"],"ok":"日本語/host-identity.json"}
+{"fn":"hostIdentityPath","args":["ılık ırmak"],"ok":"ılık ırmak/host-identity.json"}
+{"fn":"hostIdentityPath","args":["👨‍👩‍👧 family"],"ok":"👨‍👩‍👧 family/host-identity.json"}
+{"fn":"hostIdentityPath","args":["a b"],"ok":"a b/host-identity.json"}
+{"fn":"hostIdentityPath","args":["a😀b"],"ok":"a😀b/host-identity.json"}
+{"fn":"hostIdentityPath","args":["a²b x½ y①"],"ok":"a²b x½ y①/host-identity.json"}
+{"fn":"hostIdentityPath","args":["aⅠb Ⅻ"],"ok":"aⅠb Ⅻ/host-identity.json"}
+{"fn":"hostIdentityPath","args":["a𐐀b 𝐀bc"],"ok":"a𐐀b 𝐀bc/host-identity.json"}
+{"fn":"hostIdentityPath","args":["कि ٣٤"],"ok":"कि ٣٤/host-identity.json"}
+{"fn":"readHostIdentity","args":["aba😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":[".leading"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["ünïcödé"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["a"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["straße"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":[":"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["ns:key.path"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["ΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["a..b﻿bom"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["HELLO"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["key_name-1"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["src/a/b.ts"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["﻿bom"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["  padded  "],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["é"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":[""],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["trailing."],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["hello"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["İstanbul"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["hello world.leading"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["ab"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["a.b.c"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["abc"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["emoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["😀"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["tab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":[":HELLO"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["﻿bomns:key.path"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["a:b:c"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["hello:"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["trailing.İstanbul"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["Hello World"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["a..b"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["line1\nline2"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["tab\tseparatedsrc/a/b.ts"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["hello world"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["ékey_name-1"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["a.b.cline1\nline2"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["trailing.a.b.c"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["trailing.ünïcödé"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["a😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["a😀b😀cé"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["aa"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["﻿bomünïcödé"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["  padded  key_name-1"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["helloa"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["İstanbulHELLO"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["日本語のテキストa"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["日本語のテキストé"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["tab\tseparatedkey_name-1"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["a..ba"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["a.b.cab"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["./x/**/*.jsonhello world"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["line1\nline2.leading"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["Hello Worldhello"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["a.b.c😀"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["tab\tseparatedab"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["line1\nline2straße"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["é.leading"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["key_name-1emoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["ΣΊΣΥΦΟΣa"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["日本語のテキストabc"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["atab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["ΣΊΣΥΦΟΣa.b.c"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["{name} has {count} itemsa..b"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["é:"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["hellotrailing."],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["abcabc"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":[".leadinga:b:c"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["{name} has {count} items{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["ünïcödé﻿bom"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["hello worlda"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["éab"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["  padded  line1\nline2"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["ns:key.pathtab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["key_name-1key_name-1"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["HELLOa.b.c"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["a.b.ctrailing."],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["helloΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["hello worldtrailing."],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["a.b.c  padded  "],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["a😀b😀cstraße"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["emoji 👍🏽 mixé"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":[".leading日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["a.b.cns:key.path"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["😀İstanbul"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["emoji 👍🏽 mix😀"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["a..bkey_name-1"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["src/a/b.tsİstanbul"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["hello  padded  "],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":[":key_name-1"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["{name} has {count} itemsstraße"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["﻿boma"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["trailing.a😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["  padded  ΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":[":hello"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["HELLOHELLO"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["tab\tseparateda:b:c"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["İstanbul./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["src/a/b.ts./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["é😀"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["aba.b.c"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["ns:key.path😀"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["a:b:ca"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["straße.leading"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["ns:key.path{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["hello world{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["  padded  ab"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["a:b:cΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["a😀b😀c.leading"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["tab\tseparatedΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["ünïcödé日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["abemoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["ns:key.path:"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["{name} has {count} itemshello"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["trailing.straße"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["key_name-1./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":[".leadinghello world"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["ns:key.pathünïcödé"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["abline1\nline2"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["helloünïcödé"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["ns:key.pathé"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["a😀b😀cΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["{name} has {count} items﻿bom"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["abc日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["a😀b😀cemoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["line1\nline2trailing."],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["İstanbula😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["ünïcödéΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["😀a😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["﻿bomHELLO"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["hello world:"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["ab:"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["./x/**/*.jsona"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["{name} has {count} itemstab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["ΣΊΣΥΦΟΣHello World"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":[".leading./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["﻿bomHello World"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["ΣΊΣΥΦΟΣemoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":[":tab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["  padded  ./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["a:b:ca.b.c"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["é  padded  "],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["HELLO﻿bom"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["abc{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["./x/**/*.jsonhello"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["key_name-1ab"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["tab\tseparatedünïcödé"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["éİstanbul"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["a😀b😀chello world"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["ns:key.pathHELLO"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["Hello WorldHELLO"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["a:b:cab"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["hello world日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["abtab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["a.b.ca..b"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["abcline1\nline2"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":[".leadingkey_name-1"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":[":abc"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["a..b:"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["aa:b:c"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["日本語のテキストHELLO"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["éa"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["  padded  ns:key.path"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["a:b:cünïcödé"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["key_name-1😀"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["line1\nline2./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["😀😀"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["line1\nline2abc"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["a😀b😀c  padded  "],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["trailing.a"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["ünïcödéHello World"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["😀a.b.c"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["ns:key.path日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["éa:b:c"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["ΣΊΣΥΦΟΣhello"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["key_name-1é"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["a..bünïcödé"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["tab\tseparateda..b"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["tab\tseparatedHello World"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["Hello World﻿bom"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["key_name-1a..b"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["straßea.b.c"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["日本語のテキスト./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["é./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["abcΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["a😀b😀cİstanbul"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["helloa..b"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["ahello"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["ünïcödéünïcödé"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["Hello Worlda..b"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["helloline1\nline2"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["straße日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["{name} has {count} items😀"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["hello worldİstanbul"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["abstraße"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":[":a"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["héllo wörld"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["👍🏽 thumbs"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["日本語"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["ılık ırmak"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["👨‍👩‍👧 family"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["a b"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["a😀b"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["a²b x½ y①"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["aⅠb Ⅻ"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["a𐐀b 𝐀bc"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["कि ٣٤"],"ok":{"$undefined":true}}
+{"fn":"generateAndPersistHostIdentity","args":["ab.leading"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["é"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["İstanbul"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["ab"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["line1\nline2ns:key.path"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["ünïcödé"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["a:b:c"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["a.b.c"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["HELLOa"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["{name} has {count} itemsünïcödé"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["line1\nline2"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["😀"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["trailing."],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["a.b.ckey_name-1"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["ns:key.path"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["Hello World"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["a"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["a..b"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["straße"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["HELLO"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["a😀b😀c"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":[""],"error":"ENOENT: no such file or directory, rename '.96628.ffffffff-ffff-ffff-ffff-ffffffffffff.tmp' -> ''"}
+{"fn":"generateAndPersistHostIdentity","args":["trailing.straße"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["abc"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["HELLOtab\tseparated"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["日本語のテキスト"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["./x/**/*.json"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["key_name-1"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":[".leading"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["hello"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["key_name-1abc"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["hello world"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["  padded  "],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["a.b.c😀"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["a..babc"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":[":"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["trailing.src/a/b.ts"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["hello worlda:b:c"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["a:b:ctrailing."],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["tab\tseparated"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["﻿bom"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["  padded  tab\tseparated"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["ΣΊΣΥΦΟΣ"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["a..b😀"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["Hello World😀"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["{name} has {count} items"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["::"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["hellohello world"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["a😀b😀cline1\nline2"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["﻿bomkey_name-1"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["src/a/b.ts"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["emoji 👍🏽 mix"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["a  padded  "],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["hello world😀"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["ünïcödétab\tseparated"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":[".leadinghello"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["trailing.{name} has {count} items"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["HELLOa.b.c"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["ünïcödéns:key.path"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["a..b:"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["a..b  padded  "],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["Hello Worlda..b"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["a.b.cİstanbul"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["./x/**/*.jsona:b:c"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["İstanbulline1\nline2"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["ns:key.pathünïcödé"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["a.b.cHello World"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["trailing.trailing."],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["ΣΊΣΥΦΟΣünïcödé"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["trailing.﻿bom"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["İstanbulabc"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["﻿bomé"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["ΣΊΣΥΦΟΣ  padded  "],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["{name} has {count} itemstab\tseparated"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["aa.b.c"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["trailing.hello world"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["  padded  ﻿bom"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["ab  padded  "],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["😀日本語のテキスト"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["aab"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["src/a/b.tshello world"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["日本語のテキスト日本語のテキスト"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["{name} has {count} itemsa:b:c"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["emoji 👍🏽 mix{name} has {count} items"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["ΣΊΣΥΦΟΣHELLO"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["tab\tseparatedtrailing."],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["Hello Worldtrailing."],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["abcabc"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":[":.leading"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["HELLOstraße"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":[".leading.leading"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["a😀"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["tab\tseparated./x/**/*.json"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["abHELLO"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":[":emoji 👍🏽 mix"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["a:b:cabc"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["İstanbulns:key.path"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["HELLO日本語のテキスト"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["a./x/**/*.json"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["a:b:cΣΊΣΥΦΟΣ"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["abc😀"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["key_name-1İstanbul"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["{name} has {count} itemsΣΊΣΥΦΟΣ"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["ünïcödé﻿bom"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["日本語のテキストab"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["trailing.a"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["İstanbula.b.c"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["a😀b😀c:"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["line1\nline2straße"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["ünïcödéHELLO"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["a.b.c:"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["src/a/b.tshello"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["a.b.cabc"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["Hello Worldkey_name-1"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["a:b:cns:key.path"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["HELLOhello"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["./x/**/*.jsonsrc/a/b.ts"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":[":Hello World"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["HELLOsrc/a/b.ts"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["Hello World  padded  "],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["hello:"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":[":abc"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["src/a/b.ts{name} has {count} items"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["a..b{name} has {count} items"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["a..bhello"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["abcHello World"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["emoji 👍🏽 mixtab\tseparated"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["straße:"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["﻿bom日本語のテキスト"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["HELLOhello world"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["a.b.c./x/**/*.json"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":[":a"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["abtrailing."],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["ns:key.pathHELLO"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["hello worldstraße"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["straßeemoji 👍🏽 mix"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["straßeΣΊΣΥΦΟΣ"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["key_name-1straße"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["  padded  ns:key.path"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["Hello World{name} has {count} items"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["{name} has {count} itemsab"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["hello worldhello"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["  padded  日本語のテキスト"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["ΣΊΣΥΦΟΣ﻿bom"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["ünïcödéab"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["straßeHello World"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":[":hello world"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["aabc"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["ΣΊΣΥΦΟΣHello World"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["aa"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["a:b:cHELLO"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":[".leadingünïcödé"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["﻿bomsrc/a/b.ts"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["{name} has {count} items😀"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["HELLO﻿bom"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["ns:key.pathhello world"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["ΣΊΣΥΦΟΣ😀"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["éns:key.path"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["ns:key.pathkey_name-1"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["a😀b😀ctab\tseparated"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["./x/**/*.jsonline1\nline2"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["😀  padded  "],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["  padded  a"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["hello😀"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["abcab"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["  padded  line1\nline2"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["key_name-1key_name-1"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["key_name-1é"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["日本語のテキストtab\tseparated"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["./x/**/*.jsonhello"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["line1\nline2é"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["a.b.ca.b.c"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["line1\nline2a.b.c"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["tab\tseparatedemoji 👍🏽 mix"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["日本語のテキストa"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["helloé"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["a😀b😀ckey_name-1"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["line1\nline2emoji 👍🏽 mix"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["./x/**/*.jsonHELLO"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["straßea.b.c"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["ns:key.pathemoji 👍🏽 mix"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["straße😀"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["  padded  a..b"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["İstanbulab"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["aa:b:c"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["emoji 👍🏽 mixa:b:c"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["ünïcödéa.b.c"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["İstanbultrailing."],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["é:"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["hellons:key.path"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":[".leadingtrailing."],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["key_name-1a😀b😀c"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["a日本語のテキスト"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["日本語のテキスト😀"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["Hello World:"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["tab\tseparated:"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["aba..b"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["İstanbul:"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["  padded  ./x/**/*.json"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["HELLOtrailing."],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["héllo wörld"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["👍🏽 thumbs"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["日本語"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["ılık ırmak"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["👨‍👩‍👧 family"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["a b"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["a😀b"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["a²b x½ y①"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["aⅠb Ⅻ"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["a𐐀b 𝐀bc"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"generateAndPersistHostIdentity","args":["कि ٣٤"],"ok":{"version":1,"privateKeyPem":"-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEII52nWq4Kx07DLV3aQmTHkelHOc3OQidoPf5eiNtsre8\n-----END PRIVATE KEY-----\n","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA1qnwoC+nJZ1rCoVVHt6Tb+yDcLt4GPaX4+DuaQrjXvk=\n-----END PUBLIC KEY-----\n","publicKeyJwk":{"kty":"OKP","crv":"Ed25519","x":"1qnwoC-nJZ1rCoVVHt6Tb-yDcLt4GPaX4-DuaQrjXvk"}}}
+{"fn":"deleteHostIdentity","args":["ns:key.pathab"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["ns:key.path"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["ünïcödé"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["straße"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["tab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["  padded  "],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":[""],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":[":"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["é"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["Hello World"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["trailing."],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":[".leading"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["Hello Worldé"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["ünïcödéünïcödé"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["a"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["a.leading"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["a.b.c"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["src/a/b.ts"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["a:b:c"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["﻿bom{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["😀"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["line1\nline2"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["ünïcödé  padded  "],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["ünïcödéabc"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":[".leadingünïcödé"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["İstanbula:b:c"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["key_name-1"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["﻿bom"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["aa😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["HELLOünïcödé"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["./x/**/*.jsonİstanbul"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["ab"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["ΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["trailing.İstanbul"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["  padded  😀"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["a.b.ca:b:c"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["a..b"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["{name} has {count} itemssrc/a/b.ts"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["a..btab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["İstanbul"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["src/a/b.ts./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["hello world"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["HELLO"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["a.b.cabc"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["a😀b😀cHello World"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["a😀b😀c./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["a😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["hello"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["line1\nline2ab"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["emoji 👍🏽 mixhello"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["😀{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["abc"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["key_name-1line1\nline2"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["tab\tseparatedab"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["ab.leading"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["{name} has {count} items  padded  "],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["😀İstanbul"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["tab\tseparated./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["src/a/b.ts.leading"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":[".leadingΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["😀src/a/b.ts"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["emoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["emoji 👍🏽 mixa:b:c"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["./x/**/*.jsona😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["hello world./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["./x/**/*.jsona..b"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["hellons:key.path"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":[":tab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["HELLO{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["ns:key.pathé"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["İstanbula..b"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["{name} has {count} itemsünïcödé"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["éa..b"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["ns:key.path﻿bom"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["hello.leading"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["helloHello World"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["ünïcödéa"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["İstanbulhello"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["tab\tseparatedhello"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["emoji 👍🏽 mix./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["﻿boma:b:c"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["ns:key.pathabc"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":[":src/a/b.ts"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["a.b.cHELLO"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["src/a/b.tsns:key.path"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":[".leading日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["a﻿bom"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["abc  padded  "],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":[":ab"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["﻿bomemoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["  padded  a.b.c"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["éhello world"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["a{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["é{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":[":a:b:c"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["ns:key.patha"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["./x/**/*.json﻿bom"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["emoji 👍🏽 mixsrc/a/b.ts"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["a.b.cİstanbul"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["{name} has {count} itemsa"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["aa:b:c"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["İstanbulhello world"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["éé"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["ünïcödéa..b"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["key_name-1key_name-1"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["  padded  ab"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["a:b:chello"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["trailing.ünïcödé"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["key_name-1日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["﻿bomİstanbul"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["hello worlda.b.c"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["tab\tseparatedkey_name-1"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["HELLOtrailing."],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["akey_name-1"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["src/a/b.tsab"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["ΣΊΣΥΦΟΣ{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["{name} has {count} items﻿bom"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["abé"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["hello worldünïcödé"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["a.b.ctab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["straße.leading"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["hello world日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["a..bhello"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["éstraße"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["src/a/b.tsa..b"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["line1\nline2a😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["key_name-1Hello World"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["trailing.ΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["ns:key.patha..b"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["HELLOtab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["ΣΊΣΥΦΟΣa:b:c"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["HELLO.leading"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["a:b:ctab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["key_name-1﻿bom"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["ünïcödésrc/a/b.ts"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["étrailing."],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["ns:key.pathünïcödé"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["abcünïcödé"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":[":abc"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["  padded  ΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["a.b.ca.b.c"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["a.b.c﻿bom"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["😀😀"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["éab"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["abc﻿bom"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["straße日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["hello worlda..b"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["HELLOé"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["étab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["a..bline1\nline2"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["  padded  a:b:c"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["tab\tseparatedsrc/a/b.ts"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["a..bstraße"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["a..ba:b:c"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["line1\nline2hello"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["ΣΊΣΥΦΟΣtab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["Hello Worldünïcödé"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["src/a/b.ts日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":[":emoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["emoji 👍🏽 mixΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["a.b.csrc/a/b.ts"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["hello worldns:key.path"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["line1\nline2{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["  padded  ﻿bom"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["ΣΊΣΥΦΟΣHELLO"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["key_name-1trailing."],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":[".leadingsrc/a/b.ts"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["src/a/b.ts  padded  "],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["{name} has {count} itemsé"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["ünïcödé日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["ünïcödéstraße"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["Hello World日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":[":😀"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["ünïcödéa😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["a.b.ca..b"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["tab\tseparatedtab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["  padded  ünïcödé"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["abemoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["a😀"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":[".leadinga..b"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["a:"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["abcsrc/a/b.ts"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":[":hello world"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["aHELLO"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["日本語のテキスト😀"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["a..b  padded  "],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["ns:key.path./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["ns:key.patha😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["a.b.ca😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["hellohello world"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["ns:key.pathHello World"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["a..bHELLO"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["emoji 👍🏽 mixa😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["a.b.cemoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["İstanbultrailing."],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["  padded  ns:key.path"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["line1\nline2.leading"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["héllo wörld"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["👍🏽 thumbs"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["日本語"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["ılık ırmak"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["👨‍👩‍👧 family"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["a b"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["a😀b"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["a²b x½ y①"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["aⅠb Ⅻ"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["a𐐀b 𝐀bc"],"ok":{"$undefined":true}}
+{"fn":"deleteHostIdentity","args":["कि ٣٤"],"ok":{"$undefined":true}}
+{"fn":"readHostIdentity","args":["."],"error":"EISDIR: illegal operation on a directory, read"}

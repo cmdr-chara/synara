@@ -52,6 +52,7 @@ pub fn handles(tag: &str) -> bool {
             | "git.pullRequestSnapshot"
             | "git.createDetachedWorktree"
             | "git.preparePullRequestThread"
+            | "git.runStackedAction"
     )
 }
 
@@ -66,6 +67,7 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Option<Value>, WsErr> {
         "git.preparePullRequestThread" => {
             prepare_pull_request_thread(&cwd_of(payload)?, payload).map(Some)
         }
+        "git.runStackedAction" => run_stacked_action(&cwd_of(payload)?, payload).map(Some),
         _ => Err(err(format!("unhandled git tag {tag}"))),
     }
 }
@@ -1144,5 +1146,288 @@ fn create_detached_worktree(cwd: &str, payload: &Value) -> Result<Value, WsErr> 
             "ref": resolved_ref,
             "branch": new_branch,
         }
+    }))
+}
+
+// ---------------------------------------------------------------------------------------------
+// git.runStackedAction — linear commit/push/create_pr pipeline.
+// Progress-event streaming is not emitted natively (recovery/resume bookkeeping
+// lives upstream); the returned per-step statuses match the contract.
+// ---------------------------------------------------------------------------------------------
+
+fn run_stacked_action(cwd: &str, payload: &Value) -> Result<Value, WsErr> {
+    let action = str_arg(payload, "action")?.to_string();
+    let wants_commit = matches!(action.as_str(), "commit" | "commit_push" | "commit_push_pr");
+    let wants_push = matches!(action.as_str(), "push" | "commit_push" | "commit_push_pr");
+    let wants_pr = matches!(action.as_str(), "create_pr" | "commit_push_pr");
+    if !(wants_commit || wants_push || wants_pr) {
+        return Err(err(format!("unknown stacked action {action}")));
+    }
+    require_repo(cwd)?;
+
+    // Dirty-tree safety guard for push/pr-only actions.
+    let dirty = !stdout(cwd, &["status", "--porcelain"], "git status")?
+        .trim()
+        .is_empty();
+    let allow_dirty = payload
+        .get("allowDirtyWorkingTree")
+        .and_then(|v| v.as_bool())
+        .unwrap_or(false);
+    if dirty && !allow_dirty && !wants_commit {
+        return Err(err(
+            "working tree has uncommitted changes; commit or stash them first",
+        ));
+    }
+
+    // -- branch step -------------------------------------------------------------
+    let mut branch_status = "skipped_not_requested";
+    let mut branch_name = Value::Null;
+    if payload
+        .get("featureBranch")
+        .and_then(|v| v.as_bool())
+        .unwrap_or(false)
+    {
+        let base = payload
+            .get("commitMessage")
+            .and_then(|v| v.as_str())
+            .or_else(|| payload.get("threadId").and_then(|v| v.as_str()))
+            .unwrap_or("work");
+        let slug: String = base
+            .chars()
+            .map(|c| if c.is_ascii_alphanumeric() { c.to_ascii_lowercase() } else { '-' })
+            .collect::<String>()
+            .split('-')
+            .filter(|s| !s.is_empty())
+            .take(6)
+            .collect::<Vec<_>>()
+            .join("-");
+        let name = format!("synara/{slug}");
+        run(cwd, &["checkout", "-b", &name])
+            .and_then(|o| {
+                if o.status.success() {
+                    Ok(())
+                } else {
+                    Err(err(String::from_utf8_lossy(&o.stderr).trim().to_string()))
+                }
+            })?;
+        branch_status = "created";
+        branch_name = json!(name);
+    }
+
+    // -- commit step -------------------------------------------------------------
+    let mut commit_status = if wants_commit {
+        "skipped_no_changes"
+    } else {
+        "skipped_not_requested"
+    };
+    let mut commit_sha = Value::Null;
+    let mut commit_subject = Value::Null;
+    if wants_commit {
+        let file_paths: Vec<String> = payload
+            .get("filePaths")
+            .and_then(|v| v.as_array())
+            .map(|a| a.iter().filter_map(|x| x.as_str().map(String::from)).collect())
+            .unwrap_or_default();
+        if file_paths.is_empty() {
+            run(cwd, &["add", "-A"])
+                .map_err(|e| err(format!("git add failed: {}", e.0)))?;
+        } else {
+            let mut args = vec!["add", "--"];
+            for f in &file_paths {
+                args.push(f.as_str());
+            }
+            run(cwd, &args).map_err(|e| err(format!("git add failed: {}", e.0)))?;
+        }
+        let staged = !stdout(cwd, &["diff", "--cached", "--name-only"], "git diff")?
+            .trim()
+            .is_empty();
+        if staged {
+            let msg = payload
+                .get("commitMessage")
+                .and_then(|v| v.as_str())
+                .map(str::to_string)
+                .ok_or_else(|| {
+                    err("commitMessage is required (text generation needs a provider runtime)")
+                })?;
+            run(cwd, &["commit", "-m", &msg]).and_then(|o| {
+                if o.status.success() {
+                    Ok(())
+                } else {
+                    Err(err(String::from_utf8_lossy(&o.stderr).trim().to_string()))
+                }
+            })?;
+            commit_status = "created";
+            commit_sha = json!(stdout(cwd, &["rev-parse", "HEAD"], "rev-parse")?
+                .trim()
+                .to_string());
+            commit_subject = json!(stdout(cwd, &["log", "-1", "--pretty=%s"], "log")?
+                .trim()
+                .to_string());
+        }
+    }
+
+    // -- push step ---------------------------------------------------------------
+    let mut push_status = if wants_push {
+        "pushed"
+    } else {
+        "skipped_not_requested"
+    };
+    let mut push_branch = Value::Null;
+    let mut push_upstream = Value::Null;
+    let mut set_upstream = false;
+    if wants_push {
+        let branch = crate::git_domain::current_branch(cwd)
+            .ok_or_else(|| err("not on a branch"))?;
+        push_branch = json!(branch);
+        let upstream = crate::git_domain::upstream_branch(cwd);
+        let unpushed = upstream.as_ref().map(|u| {
+            stdout(cwd, &["rev-list", &format!("{u}..HEAD"), "--count"], "rev-list")
+                .ok()
+                .and_then(|s| s.trim().parse::<i64>().ok())
+                .unwrap_or(0)
+        });
+        if matches!(unpushed, Some(0)) {
+            push_status = "skipped_up_to_date";
+            push_upstream = upstream.map(|u| json!(u)).unwrap_or(Value::Null);
+        } else {
+            let args: Vec<String> = if upstream.is_some() {
+                vec!["push".into()]
+            } else {
+                set_upstream = true;
+                vec!["push".into(), "-u".into(), "origin".into(), "HEAD".into()]
+            };
+            let arg_refs: Vec<&str> = args.iter().map(|s| s.as_str()).collect();
+            run(cwd, &arg_refs).and_then(|o| {
+                if o.status.success() {
+                    Ok(())
+                } else {
+                    Err(err(String::from_utf8_lossy(&o.stderr).trim().to_string()))
+                }
+            })?;
+            if set_upstream {
+                push_upstream = json!(format!("origin/{branch}"));
+            } else {
+                push_upstream = upstream.map(|u| json!(u)).unwrap_or(Value::Null);
+            }
+        }
+    }
+
+    // -- pr step -----------------------------------------------------------------
+    let mut pr_status = "skipped_not_requested";
+    let mut pr_url = Value::Null;
+    let mut pr_number = Value::Null;
+    let mut pr_base = Value::Null;
+    let mut pr_head = Value::Null;
+    let mut pr_title = Value::Null;
+    if wants_pr {
+        let head = crate::git_domain::current_branch(cwd)
+            .ok_or_else(|| err("not on a branch"))?;
+        pr_head = json!(head.clone());
+        let base = stdout(
+            cwd,
+            &["symbolic-ref", "refs/remotes/origin/HEAD", "--short"],
+            "origin HEAD",
+        )
+        .ok()
+        .map(|s| s.trim().trim_start_matches("origin/").to_string())
+        .unwrap_or_else(|| "main".to_string());
+        pr_base = json!(base.clone());
+        // Existing open PR for this head?
+        let existing = gh_json(
+            &[
+                "pr".into(),
+                "list".into(),
+                "--head".into(),
+                head.clone(),
+                "--state".into(),
+                "open".into(),
+                "--json".into(),
+                "url,number".into(),
+            ],
+            cwd,
+        )
+        .ok();
+        let open = existing
+            .and_then(|v| v.as_array().cloned())
+            .and_then(|a| a.into_iter().next());
+        if let Some(pr) = open {
+            pr_status = "opened_existing";
+            pr_url = pr.get("url").cloned().unwrap_or(Value::Null);
+            pr_number = pr.get("number").cloned().unwrap_or(Value::Null);
+        } else {
+            let title = payload
+                .get("prTitle")
+                .and_then(|v| v.as_str())
+                .map(str::to_string)
+                .or_else(|| {
+                    commit_subject
+                        .as_str()
+                        .map(str::to_string)
+                        .or_else(|| stdout(cwd, &["log", "-1", "--pretty=%s"], "log").ok().map(|s| s.trim().to_string()))
+                })
+                .ok_or_else(|| err("could not determine a PR title"))?;
+            let body = payload
+                .get("prBody")
+                .and_then(|v| v.as_str())
+                .map(str::to_string)
+                .unwrap_or_default();
+            let mut args = vec![
+                "pr".to_string(),
+                "create".to_string(),
+                "--title".to_string(),
+                title.clone(),
+                "--body".to_string(),
+                body,
+                "--base".to_string(),
+                base,
+            ];
+            if payload
+                .get("prDraft")
+                .and_then(|v| v.as_bool())
+                .unwrap_or(false)
+            {
+                args.push("--draft".to_string());
+            }
+            let out = gh_run(&args, cwd).map_err(gh_err)?;
+            if out.code != 0 {
+                return Err(err(out.stderr.trim().to_string()));
+            }
+            let url = out.stdout.trim().to_string();
+            pr_url = json!(url);
+            pr_status = "created";
+            pr_number = url
+                .rsplit('/')
+                .next()
+                .and_then(|n| n.parse::<i64>().ok())
+                .map(|n| json!(n))
+                .unwrap_or(Value::Null);
+            pr_title = json!(title);
+        }
+        if pr_title.is_null() {
+            pr_title = stdout(cwd, &["log", "-1", "--pretty=%s"], "log")
+                .ok()
+                .map(|s| json!(s.trim().to_string()))
+                .unwrap_or(Value::Null);
+        }
+    }
+
+    Ok(json!({
+        "action": action,
+        "branch": {"status": branch_status, "name": branch_name},
+        "commit": {"status": commit_status, "commitSha": commit_sha, "subject": commit_subject},
+        "push": {
+            "status": push_status,
+            "branch": push_branch,
+            "upstreamBranch": push_upstream,
+            "setUpstream": set_upstream,
+        },
+        "pr": {
+            "status": pr_status,
+            "url": pr_url,
+            "number": pr_number,
+            "baseBranch": pr_base,
+            "headBranch": pr_head,
+            "title": pr_title,
+        },
     }))
 }

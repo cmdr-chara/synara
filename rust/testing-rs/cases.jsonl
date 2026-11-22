@@ -1,0 +1,276 @@
+{"fn":"writePiInstallFixture","args":["é  padded  ","é  padd","tab\tseparated"],"ok":"é  padded  /bin/pi"}
+{"fn":"writePiInstallFixture","args":["line1\nline2",".leading","i"],"ok":"line1\nline2/bin/pi"}
+{"fn":"writePiInstallFixture","args":["{name} has {count} itemsns:key.path","./x/**/*.json","HELLO./x/**/*.json"],"ok":"{name} has {count} itemsns:key.path/bin/pi"}
+{"fn":"writePiInstallFixture","args":["leading",".leading",{"$undefined":true}],"ok":"leading/bin/pi"}
+{"fn":"writePiInstallFixture","args":["D","tab\tseparated"],"ok":"D/bin/pi"}
+{"fn":"writePiInstallFixture","args":["b😀c","a😀b😀c","İstanbul"],"ok":"b😀c/bin/pi"}
+{"fn":"writePiInstallFixture","args":["emoji 👍🏽 mix","tab\tseparated"],"ok":"emoji 👍🏽 mix/bin/pi"}
+{"fn":"writePiInstallFixture","args":["é","ΣΊΣΥΦΟΣ",".leadingHello World"],"ok":"é/bin/pi"}
+{"fn":"writePiInstallFixture","args":["abünïcödé","E","HELLO"],"ok":"abünïcödé/bin/pi"}
+{"fn":"writePiInstallFixture","args":["ΣΥ",":","ΣΊΣΥΦΟΣ"],"ok":"ΣΥ/bin/pi"}
+{"fn":"writePiInstallFixture","args":["a😀b😀c","","a😀b😀c"],"ok":"a😀b😀c/bin/pi"}
+{"fn":"writePiInstallFixture","args":[".leadinghello world","Hello World","a.b.c"],"ok":".leadinghello world/bin/pi"}
+{"fn":"writePiInstallFixture","args":["hello world","./x/**/*.json","日本語のテキスト"],"ok":"hello world/bin/pi"}
+{"fn":"writePiInstallFixture","args":["./x/**/*.json","日本語のテキスト"],"ok":"x/**/*.json/bin/pi"}
+{"fn":"writePiInstallFixture","args":["tab\tseparated","emoji 👍🏽 mix","hello world"],"ok":"tab\tseparated/bin/pi"}
+{"fn":"writePiInstallFixture","args":["{name} has {count} items.leading",":","./x/**/*.json"],"ok":"{name} has {count} items.leading/bin/pi"}
+{"fn":"writePiInstallFixture","args":["","trailing.","ns:key.path"],"ok":"bin/pi"}
+{"fn":"writePiInstallFixture","args":["{name} has {count} itemsemoji 👍🏽 mix"," has {count} it","{name} has {count} items"],"ok":"{name} has {count} itemsemoji 👍🏽 mix/bin/pi"}
+{"fn":"writePiInstallFixture","args":[":",":","abc"],"ok":":/bin/pi"}
+{"fn":"writePiInstallFixture","args":["İstanbul","a😀b😀c",{"$undefined":true}],"ok":"İstanbul/bin/pi"}
+{"fn":"writePiInstallFixture","args":["abc","trailing.","ab"],"ok":"abc/bin/pi"}
+{"fn":"writePiInstallFixture","args":["Hello World","tab\tseparated"],"error":"EEXIST: file already exists, symlink '../lib/node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'Hello World/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["d",".leading.leading","key_name-1"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'd/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["İstanbul","ünïcödé","aHello World"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'İstanbul/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["b😀c","a😀b😀c","./x/**/*.json"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'b😀c/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["","straße","line1\nline2"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'bin/pi'"}
+{"fn":"writePiInstallFixture","args":["",".leading",":"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'bin/pi'"}
+{"fn":"writePiInstallFixture","args":[" world","hello world",{"$undefined":true}],"ok":" world/bin/pi"}
+{"fn":"writePiInstallFixture","args":["c","abc"],"ok":"c/bin/pi"}
+{"fn":"writePiInstallFixture","args":["emoji 👍🏽 mix","","trailing."],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'emoji 👍🏽 mix/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["emoji 👍🏽 mix","nt} i","{name} has {count} items"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'emoji 👍🏽 mix/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["Hello WorldΣΊΣΥΦΟΣ","ab","a"],"ok":"Hello WorldΣΊΣΥΦΟΣ/bin/pi"}
+{"fn":"writePiInstallFixture","args":[":","hello","İstanbul"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> ':/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["{name} has {count} itemsline1\nline2","hello world","line1\nline2a😀b😀c"],"ok":"{name} has {count} itemsline1\nline2/bin/pi"}
+{"fn":"writePiInstallFixture","args":["line1\nline2hello world","a.b.c","straße"],"ok":"line1\nline2hello world/bin/pi"}
+{"fn":"writePiInstallFixture","args":["a😀b😀c","Hello World","ΣΊΣΥΦΟΣ"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'a😀b😀c/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["a😀b😀c","line1\nline2","B"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'a😀b😀c/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["ab","{name} has {count} items","{name} has {count} items"],"ok":"ab/bin/pi"}
+{"fn":"writePiInstallFixture","args":["trailing.",".leading","src/a/b.ts"],"ok":"trailing./bin/pi"}
+{"fn":"writePiInstallFixture","args":["hello","line1\nline2"],"ok":"hello/bin/pi"}
+{"fn":"writePiInstallFixture","args":["hello","a😀b😀c","key_name-1"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'hello/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["aa:b:c",":c",{"$undefined":true}],"ok":"aa:b:c/bin/pi"}
+{"fn":"writePiInstallFixture","args":[":","abtrailing.","a"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> ':/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["./x/**/*.json","ünïcödé","*/*.json"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'x/**/*.json/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["tab\tseparated","hello world","a😀b😀c"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'tab\tseparated/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["e","hello world","  padded  "],"ok":"e/bin/pi"}
+{"fn":"writePiInstallFixture","args":[":","a:b:c",{"$undefined":true}],"error":"EEXIST: file already exists, symlink '../lib/node_modules/@earendil-works/pi-coding-agent/cli.js' -> ':/bin/pi'"}
+{"fn":"writePiInstallFixture","args":[".leading","﻿bomünïcödé","  padded  "],"ok":".leading/bin/pi"}
+{"fn":"writePiInstallFixture","args":["😀","tab\tseparated","ab"],"ok":"😀/bin/pi"}
+{"fn":"writePiInstallFixture","args":["a","emoji 👍🏽 mix",""],"ok":"a/bin/pi"}
+{"fn":"writePiInstallFixture","args":["{name} has {count} itemssrc/a/b.ts","Y.","ns:key.path"],"ok":"{name} has {count} itemssrc/a/b.ts/bin/pi"}
+{"fn":"writePiInstallFixture","args":["LO","  padded  ","hello"],"ok":"LO/bin/pi"}
+{"fn":"writePiInstallFixture","args":["a:b:c","a..b","a.."],"ok":"a:b:c/bin/pi"}
+{"fn":"writePiInstallFixture","args":["a","hello worldİstanbul","key_name-1"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'a/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["HELLO",".leading",".leadingline1\nline2"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'HELLO/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["日本語のテキストünïcödé","a","astraße"],"ok":"日本語のテキストünïcödé/bin/pi"}
+{"fn":"writePiInstallFixture","args":["a..b","a.b.c"],"ok":"a..b/bin/pi"}
+{"fn":"writePiInstallFixture","args":["tab\tseparated./x/**/*.json","ab",{"$undefined":true}],"ok":"tab\tseparated./x/**/*.json/bin/pi"}
+{"fn":"writePiInstallFixture","args":["  padded  ",".leading","straße"],"ok":"  padded  /bin/pi"}
+{"fn":"writePiInstallFixture","args":[".leading","a😀b😀cstraße"],"error":"EEXIST: file already exists, symlink '../lib/node_modules/@earendil-works/pi-coding-agent/cli.js' -> '.leading/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["a.b.c","a..b",{"$undefined":true}],"ok":"a.b.c/bin/pi"}
+{"fn":"writePiInstallFixture","args":["ab",":"],"error":"EEXIST: file already exists, symlink '../lib/node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'ab/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["Hello Worldsrc/a/b.ts","trailing.src/a/b.ts",{"$undefined":true}],"ok":"Hello Worldsrc/a/b.ts/bin/pi"}
+{"fn":"writePiInstallFixture","args":["abc","{name} has {count} items","ame} ha"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'abc/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["straßea.b.c","trailing.","  padded  "],"ok":"straßea.b.c/bin/pi"}
+{"fn":"writePiInstallFixture","args":["a😀b😀ca..b","é","é"],"ok":"a😀b😀ca..b/bin/pi"}
+{"fn":"writePiInstallFixture","args":["ΣΊΣΥΦΟΣ","tab\tseparated"],"ok":"ΣΊΣΥΦΟΣ/bin/pi"}
+{"fn":"writePiInstallFixture","args":["{name} has {count} items","a.b.c","{name} has {count} items"],"ok":"{name} has {count} items/bin/pi"}
+{"fn":"writePiInstallFixture","args":["😀",".leading","hello"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> '😀/bin/pi'"}
+{"fn":"writePiInstallFixture","args":[".leading","ünïcödé","a😀b😀c"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> '.leading/bin/pi'"}
+{"fn":"writePiInstallFixture","args":[":","hello world","日本語のテキスト"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> ':/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["b.c","a.b.c","hello world"],"ok":"b.c/bin/pi"}
+{"fn":"writePiInstallFixture","args":[":.leading",":hello"],"ok":":.leading/bin/pi"}
+{"fn":"writePiInstallFixture","args":["","a:b:c","a:b:ca.b.c"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'bin/pi'"}
+{"fn":"writePiInstallFixture","args":["é","é","ünïcödé"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'é/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["Φ","  padded  .leading","ΣΊΣΥΦΟΣ"],"ok":"Φ/bin/pi"}
+{"fn":"writePiInstallFixture","args":["日本語のテキスト","テキ"],"ok":"日本語のテキスト/bin/pi"}
+{"fn":"writePiInstallFixture","args":["_nam","日本語のテキストkey_name-1","hello world"],"ok":"_nam/bin/pi"}
+{"fn":"writePiInstallFixture","args":["ΣΊΣΥΦΟΣ","key_name-1","straße"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'ΣΊΣΥΦΟΣ/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["NAME} HAS {","{name} has {count} items","  padded  "],"ok":"NAME} HAS {/bin/pi"}
+{"fn":"writePiInstallFixture","args":["a.b.c","abc","./x/**/*.json"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'a.b.c/bin/pi'"}
+{"fn":"writePiInstallFixture","args":[":",".leading",{"$undefined":true}],"error":"EEXIST: file already exists, symlink '../lib/node_modules/@earendil-works/pi-coding-agent/cli.js' -> ':/bin/pi'"}
+{"fn":"writePiInstallFixture","args":[":","a.b.c","ünïcödé.leading"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> ':/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["a😀b😀c","é"],"error":"EEXIST: file already exists, symlink '../lib/node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'a😀b😀c/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["./x/**/*.json","n"],"error":"EEXIST: file already exists, symlink '../lib/node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'x/**/*.json/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["Hello World"," W","abc"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'Hello World/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["s:key.path","ns:key.path","straße"],"ok":"s:key.path/bin/pi"}
+{"fn":"writePiInstallFixture","args":["em","","emoji 👍🏽 mix"],"ok":"em/bin/pi"}
+{"fn":"writePiInstallFixture","args":["a😀b😀cabc","emoji 👍🏽 mix","😀cab"],"ok":"a😀b😀cabc/bin/pi"}
+{"fn":"writePiInstallFixture","args":["ld","Hello World"],"ok":"ld/bin/pi"}
+{"fn":"writePiInstallFixture","args":["Hello World","line1\nline2","d"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'Hello World/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["hello","😀","o"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'hello/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["ΣΊΣΥΦΟΣ","éhello","ΣΥΦ"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'ΣΊΣΥΦΟΣ/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["a.b.cabc","abcstraße","ünïcödé"],"ok":"a.b.cabc/bin/pi"}
+{"fn":"writePiInstallFixture","args":["straße","SSE",":"],"ok":"straße/bin/pi"}
+{"fn":"writePiInstallFixture","args":[".leading","a","ns:key.path"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> '.leading/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["ns:key.path{name} has {count} items","a..ba.b.c","İstanbul"],"ok":"ns:key.path{name} has {count} items/bin/pi"}
+{"fn":"writePiInstallFixture","args":["é","a","a😀b😀c"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'é/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["İstanbulünïcödé","İ","{name} has {count} items"],"ok":"İstanbulünïcödé/bin/pi"}
+{"fn":"writePiInstallFixture","args":["abc","ünïcödé","src/a/b.tsΣΊΣΥΦΟΣ"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'abc/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["emoji 👍🏽 mix","ns:key.path",{"$undefined":true}],"error":"EEXIST: file already exists, symlink '../lib/node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'emoji 👍🏽 mix/bin/pi'"}
+{"fn":"writePiInstallFixture","args":[":","d",".leading"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> ':/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["src/a/b.tskey_name-1",""],"ok":"src/a/b.tskey_name-1/bin/pi"}
+{"fn":"writePiInstallFixture","args":["étrailing.","trailing.",".leadinga"],"ok":"étrailing./bin/pi"}
+{"fn":"writePiInstallFixture","args":["./x/**/*.json","src/a/b.ts  padded  ","İstanbul"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'x/**/*.json/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["ab","ΣΊΣΥΦΟΣ","ab"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'ab/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["straße","a",".leading"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'straße/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["key_name-1ΣΊΣΥΦΟΣ","  padded  ",{"$undefined":true}],"ok":"key_name-1ΣΊΣΥΦΟΣ/bin/pi"}
+{"fn":"writePiInstallFixture","args":["İstanbul","a:b:c"],"error":"EEXIST: file already exists, symlink '../lib/node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'İstanbul/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["  padded  ","ΣΊΣΥΦΟΣhello world","abc"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> '  padded  /bin/pi'"}
+{"fn":"writePiInstallFixture","args":["has ","﻿boma","{name} has {count} items"],"ok":"has /bin/pi"}
+{"fn":"writePiInstallFixture","args":["line1\nline2","A","a"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'line1\nline2/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["{name} has {count} items","a..b","abctab\tseparated"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> '{name} has {count} items/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["  padded  ns:key.path","é","src/a/b.ts"],"ok":"  padded  ns:key.path/bin/pi"}
+{"fn":"writePiInstallFixture","args":["T","trailing.","straße"],"ok":"T/bin/pi"}
+{"fn":"writePiInstallFixture","args":["ab","straße","raße"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'ab/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["a😀b😀c","./x/**/*.json","./x/**/*.jsonsrc/a/b.ts"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'a😀b😀c/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["abc","line1\nline2trailing.","ab"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'abc/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["line1\nline2","hello world","hello"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'line1\nline2/bin/pi'"}
+{"fn":"writePiInstallFixture","args":[":",":",{"$undefined":true}],"error":"EEXIST: file already exists, symlink '../lib/node_modules/@earendil-works/pi-coding-agent/cli.js' -> ':/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["😀","a..b","ΣΊΣΥΦΟΣ"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> '😀/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["  padded  line1\nline2","key_name-1","key_name-1"],"ok":"  padded  line1\nline2/bin/pi"}
+{"fn":"writePiInstallFixture","args":["trailing..leading","straße","tab\tseparated.leading"],"ok":"trailing..leading/bin/pi"}
+{"fn":"writePiInstallFixture","args":["ns:key.path","Hello World","straße"],"ok":"ns:key.path/bin/pi"}
+{"fn":"writePiInstallFixture","args":["{name} has {count} items","a..b","Hello World﻿bom"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> '{name} has {count} items/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["tab\tseparated","ΣΊΣΥΦΟΣ","straße"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'tab\tseparated/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["😀","日本語のテキスト","é"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> '😀/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["src/a/b.ts","tab\tseparated","./x/**/*.json"],"ok":"src/a/b.ts/bin/pi"}
+{"fn":"writePiInstallFixture","args":["ns:key.path",":","hello"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'ns:key.path/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["{name} has {count} items","items"],"error":"EEXIST: file already exists, symlink '../lib/node_modules/@earendil-works/pi-coding-agent/cli.js' -> '{name} has {count} items/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["é","emoji 👍🏽 mix",":"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'é/bin/pi'"}
+{"fn":"writePiInstallFixture","args":[".leading","trailing.","hello"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> '.leading/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["a..b日本語のテキスト","src/a/b.ts","c/a/b"],"ok":"a..b日本語のテキスト/bin/pi"}
+{"fn":"writePiInstallFixture","args":["tab\tseparated","a.b.c","c"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'tab\tseparated/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["trailing.","H","hello"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'trailing./bin/pi'"}
+{"fn":"writePiInstallFixture","args":["HELLO","LL","﻿bom"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'HELLO/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["straße","trailing.","日本語のテキスト"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'straße/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["LLO","HELLO",""],"ok":"LLO/bin/pi"}
+{"fn":"writePiInstallFixture","args":["  padded  ","","emoji 👍🏽 mix"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> '  padded  /bin/pi'"}
+{"fn":"writePiInstallFixture","args":["﻿boma:b:c","abc"],"ok":"﻿boma:b:c/bin/pi"}
+{"fn":"writePiInstallFixture","args":["{name} has {count} items","İstanbul","{name} has {count} items"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> '{name} has {count} items/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["日本語のテキスト","tab\tseparated"],"error":"EEXIST: file already exists, symlink '../lib/node_modules/@earendil-works/pi-coding-agent/cli.js' -> '日本語のテキスト/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["İstanbul","a😀b😀cΣΊΣΥΦΟΣ"],"error":"EEXIST: file already exists, symlink '../lib/node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'İstanbul/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["emoji 👍🏽 mix","line1\nline2","  padded  a😀b😀c"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'emoji 👍🏽 mix/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["{name} has {count} items","ns:key.path",{"$undefined":true}],"error":"EEXIST: file already exists, symlink '../lib/node_modules/@earendil-works/pi-coding-agent/cli.js' -> '{name} has {count} items/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["a😀b😀c","src/a/b.ts"],"error":"EEXIST: file already exists, symlink '../lib/node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'a😀b😀c/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["tab\tseparated","RAT"],"error":"EEXIST: file already exists, symlink '../lib/node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'tab\tseparated/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["straße","straße","ΣΊΣΥΦΟΣ"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'straße/bin/pi'"}
+{"fn":"writePiInstallFixture","args":[" {count","{name} has {count} items","日本語のテキスト"],"ok":" {count/bin/pi"}
+{"fn":"writePiInstallFixture","args":["﻿bom","tab\tseparatedns:key.path",{"$undefined":true}],"ok":"﻿bom/bin/pi"}
+{"fn":"writePiInstallFixture","args":["./x/**/*.json",":"],"error":"EEXIST: file already exists, symlink '../lib/node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'x/**/*.json/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["","﻿bom","./x/**/*.json"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'bin/pi'"}
+{"fn":"writePiInstallFixture","args":["HELLO","😀c","a😀b😀c"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'HELLO/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["./x/**/*.json","ünïcödé","日本語のテキスト"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'x/**/*.json/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["","a.b.c  padded  ","﻿bom"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'bin/pi'"}
+{"fn":"writePiInstallFixture","args":[":",":","src/a/b.ts"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> ':/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["src/a/b.tsHello World","HELLO","ünïcödé"],"ok":"src/a/b.tsHello World/bin/pi"}
+{"fn":"writePiInstallFixture","args":["Hello World","key_name-1",{"$undefined":true}],"error":"EEXIST: file already exists, symlink '../lib/node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'Hello World/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["日本語のテキスト","a..btab\tseparated","Hello World"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> '日本語のテキスト/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["abc","line1\nline2","key_name-1"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'abc/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["trailing.a😀b😀c",".leading","﻿bom"],"ok":"trailing.a😀b😀c/bin/pi"}
+{"fn":"writePiInstallFixture","args":["a😀b😀c","tab\tseparated","key_name-1"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'a😀b😀c/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["😀","  padded  ab",{"$undefined":true}],"error":"EEXIST: file already exists, symlink '../lib/node_modules/@earendil-works/pi-coding-agent/cli.js' -> '😀/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["key_name-1","M","﻿bom"],"ok":"key_name-1/bin/pi"}
+{"fn":"writePiInstallFixture","args":["key_name-1","emoji 👍🏽 mix"],"error":"EEXIST: file already exists, symlink '../lib/node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'key_name-1/bin/pi'"}
+{"fn":"writePiInstallFixture","args":[".","trailing.","İstanbul"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'bin/pi'"}
+{"fn":"writePiInstallFixture","args":["ünïcödé","{name} has {count} items","É"],"ok":"ünïcödé/bin/pi"}
+{"fn":"writePiInstallFixture","args":["b.c","a.b.c","line1\nline2"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'b.c/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["key_name-1","straßekey_name-1","key_name-1emoji 👍🏽 mix"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'key_name-1/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["straße","abca😀b😀c","a:b:c"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'straße/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["HELLO","L","{name} has {count} itemsemoji 👍🏽 mix"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'HELLO/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["  padded  ","D","Hello World"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> '  padded  /bin/pi'"}
+{"fn":"writePiInstallFixture","args":["tab\tseparated","src/a/b.ts",{"$undefined":true}],"error":"EEXIST: file already exists, symlink '../lib/node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'tab\tseparated/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["﻿bom","é",".leading"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> '﻿bom/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["  padded  ",":"," "],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> '  padded  /bin/pi'"}
+{"fn":"writePiInstallFixture","args":["﻿bom","日本語のテキスト﻿bom",".leading"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> '﻿bom/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["hello worldünïcödé","abctrailing.",{"$undefined":true}],"ok":"hello worldünïcödé/bin/pi"}
+{"fn":"writePiInstallFixture","args":["😀","﻿bomstraße","😀"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> '😀/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["﻿bom","İstanbul","ns:key.path"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> '﻿bom/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["  padded  trailing.","HELLOHELLO","﻿bom"],"ok":"  padded  trailing./bin/pi"}
+{"fn":"writePiInstallFixture","args":["a..b","B",{"$undefined":true}],"error":"EEXIST: file already exists, symlink '../lib/node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'a..b/bin/pi'"}
+{"fn":"writePiInstallFixture","args":[":","emoji 👍🏽 mix"],"error":"EEXIST: file already exists, symlink '../lib/node_modules/@earendil-works/pi-coding-agent/cli.js' -> ':/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["ΣΊΣΥΦΟΣ","a.b.c","tab\tseparated"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'ΣΊΣΥΦΟΣ/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["  padded  ",":",{"$undefined":true}],"error":"EEXIST: file already exists, symlink '../lib/node_modules/@earendil-works/pi-coding-agent/cli.js' -> '  padded  /bin/pi'"}
+{"fn":"writePiInstallFixture","args":["","abc","tab\tseparated"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'bin/pi'"}
+{"fn":"writePiInstallFixture","args":["İstanbul","trailing."],"error":"EEXIST: file already exists, symlink '../lib/node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'İstanbul/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["Hello Worlda😀b😀c","éΣΊΣΥΦΟΣ"],"ok":"Hello Worlda😀b😀c/bin/pi"}
+{"fn":"writePiInstallFixture","args":["😀","ns:key.path","hellostraße"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> '😀/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["hello","","emoji 👍🏽 mix"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'hello/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["é","ns:key.pathHELLO","./x/**/*.json"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'é/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["ab","a:b:c😀","😀"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'ab/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["😀","","😀HELLO"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> '😀/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["line1\nline2","a.b.cline1\nline2","ne1"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'line1\nline2/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["日本語のテキスト","ΣΊΣΥΦΟΣ","日本語のテキスト"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> '日本語のテキスト/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["hello world","﻿bom","worl"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'hello world/bin/pi'"}
+{"fn":"writePiInstallFixture","args":[".","  padded  src/a/b.ts"],"error":"EEXIST: file already exists, symlink '../lib/node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'bin/pi'"}
+{"fn":"writePiInstallFixture","args":["./x/**/*.json","ame}","{name} has {count} itemsa😀b😀c"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'x/**/*.json/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["hello world","Hello World","key_name-1./x/**/*.json"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'hello world/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["😀","a😀b😀cns:key.path","ΣΊΣΥΦΟΣsrc/a/b.ts"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> '😀/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["﻿bom","emoji 👍🏽 mix","﻿bom"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> '﻿bom/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["héllo wörld","é  padd","tab\tseparated"],"ok":"héllo wörld/bin/pi"}
+{"fn":"writePiInstallFixture","args":["👍🏽 thumbs","é  padd","tab\tseparated"],"ok":"👍🏽 thumbs/bin/pi"}
+{"fn":"writePiInstallFixture","args":["日本語","é  padd","tab\tseparated"],"ok":"日本語/bin/pi"}
+{"fn":"writePiInstallFixture","args":["","é  padd","tab\tseparated"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'bin/pi'"}
+{"fn":"writePiInstallFixture","args":["é","é  padd","tab\tseparated"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'é/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["İstanbul","é  padd","tab\tseparated"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'İstanbul/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["straße","é  padd","tab\tseparated"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'straße/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["ılık ırmak","é  padd","tab\tseparated"],"ok":"ılık ırmak/bin/pi"}
+{"fn":"writePiInstallFixture","args":["👨‍👩‍👧 family","é  padd","tab\tseparated"],"ok":"👨‍👩‍👧 family/bin/pi"}
+{"fn":"writePiInstallFixture","args":["a b","é  padd","tab\tseparated"],"ok":"a b/bin/pi"}
+{"fn":"writePiInstallFixture","args":["ΣΊΣΥΦΟΣ","é  padd","tab\tseparated"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'ΣΊΣΥΦΟΣ/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["a😀b","é  padd","tab\tseparated"],"ok":"a😀b/bin/pi"}
+{"fn":"writePiInstallFixture","args":["﻿bom","é  padd","tab\tseparated"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> '﻿bom/bin/pi'"}
+{"fn":"writePiInstallFixture","args":["a²b x½ y①","é  padd","tab\tseparated"],"ok":"a²b x½ y①/bin/pi"}
+{"fn":"writePiInstallFixture","args":["aⅠb Ⅻ","é  padd","tab\tseparated"],"ok":"aⅠb Ⅻ/bin/pi"}
+{"fn":"writePiInstallFixture","args":["a𐐀b 𝐀bc","é  padd","tab\tseparated"],"ok":"a𐐀b 𝐀bc/bin/pi"}
+{"fn":"writePiInstallFixture","args":["कि ٣٤","é  padd","tab\tseparated"],"ok":"कि ٣٤/bin/pi"}
+{"fn":"writePiInstallFixture","args":["Iı İi","é  padd","tab\tseparated"],"ok":"Iı İi/bin/pi"}
+{"fn":"writePiInstallFixture","args":["K K k","é  padd","tab\tseparated"],"ok":"K K k/bin/pi"}
+{"fn":"writePiInstallFixture","args":["ſ s S","é  padd","tab\tseparated"],"ok":"ſ s S/bin/pi"}
+{"fn":"writePiInstallFixture","args":["x‍y 👨‍👩‍👧","é  padd","tab\tseparated"],"ok":"x‍y 👨‍👩‍👧/bin/pi"}
+{"fn":"writePiInstallFixture","args":["a b c　d","é  padd","tab\tseparated"],"ok":"a b c　d/bin/pi"}
+{"fn":"writePiInstallFixture","args":["١٢٣ ٤٥","é  padd","tab\tseparated"],"ok":"١٢٣ ٤٥/bin/pi"}
+{"fn":"writePiInstallFixture","args":["𝟘𝟙 ²³","é  padd","tab\tseparated"],"ok":"𝟘𝟙 ²³/bin/pi"}
+{"fn":"writePiInstallFixture","args":["snake_case foo-bar o'neil","é  padd","tab\tseparated"],"ok":"snake_case foo-bar o'neil/bin/pi"}
+{"fn":"writePiInstallFixture","args":["ǅungla Ǆ","é  padd","tab\tseparated"],"ok":"ǅungla Ǆ/bin/pi"}
+{"fn":"writePiInstallFixture","args":["one\r\ntwo threefour","é  padd","tab\tseparated"],"ok":"one\r\ntwo threefour/bin/pi"}
+{"fn":"writePiInstallFixture","args":["café café","é  padd","tab\tseparated"],"ok":"café café/bin/pi"}
+{"fn":"writePiInstallFixture","args":["ΣΑΣ σας ς","é  padd","tab\tseparated"],"ok":"ΣΑΣ σας ς/bin/pi"}
+{"fn":"writePiInstallFixture","args":["é  padded  ","héllo wörld","tab\tseparated"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'é  padded  /bin/pi'"}
+{"fn":"writePiInstallFixture","args":["é  padded  ","👍🏽 thumbs","tab\tseparated"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'é  padded  /bin/pi'"}
+{"fn":"writePiInstallFixture","args":["é  padded  ","日本語","tab\tseparated"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'é  padded  /bin/pi'"}
+{"fn":"writePiInstallFixture","args":["é  padded  ","","tab\tseparated"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'é  padded  /bin/pi'"}
+{"fn":"writePiInstallFixture","args":["é  padded  ","é","tab\tseparated"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'é  padded  /bin/pi'"}
+{"fn":"writePiInstallFixture","args":["é  padded  ","İstanbul","tab\tseparated"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'é  padded  /bin/pi'"}
+{"fn":"writePiInstallFixture","args":["é  padded  ","straße","tab\tseparated"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'é  padded  /bin/pi'"}
+{"fn":"writePiInstallFixture","args":["é  padded  ","ılık ırmak","tab\tseparated"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'é  padded  /bin/pi'"}
+{"fn":"writePiInstallFixture","args":["é  padded  ","👨‍👩‍👧 family","tab\tseparated"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'é  padded  /bin/pi'"}
+{"fn":"writePiInstallFixture","args":["é  padded  ","a b","tab\tseparated"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'é  padded  /bin/pi'"}
+{"fn":"writePiInstallFixture","args":["é  padded  ","ΣΊΣΥΦΟΣ","tab\tseparated"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'é  padded  /bin/pi'"}
+{"fn":"writePiInstallFixture","args":["é  padded  ","a😀b","tab\tseparated"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'é  padded  /bin/pi'"}
+{"fn":"writePiInstallFixture","args":["é  padded  ","﻿bom","tab\tseparated"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'é  padded  /bin/pi'"}
+{"fn":"writePiInstallFixture","args":["é  padded  ","a²b x½ y①","tab\tseparated"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'é  padded  /bin/pi'"}
+{"fn":"writePiInstallFixture","args":["é  padded  ","aⅠb Ⅻ","tab\tseparated"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'é  padded  /bin/pi'"}
+{"fn":"writePiInstallFixture","args":["é  padded  ","a𐐀b 𝐀bc","tab\tseparated"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'é  padded  /bin/pi'"}
+{"fn":"writePiInstallFixture","args":["é  padded  ","कि ٣٤","tab\tseparated"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'é  padded  /bin/pi'"}
+{"fn":"writePiInstallFixture","args":["é  padded  ","Iı İi","tab\tseparated"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'é  padded  /bin/pi'"}
+{"fn":"writePiInstallFixture","args":["é  padded  ","K K k","tab\tseparated"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'é  padded  /bin/pi'"}
+{"fn":"writePiInstallFixture","args":["é  padded  ","ſ s S","tab\tseparated"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'é  padded  /bin/pi'"}
+{"fn":"writePiInstallFixture","args":["é  padded  ","x‍y 👨‍👩‍👧","tab\tseparated"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'é  padded  /bin/pi'"}
+{"fn":"writePiInstallFixture","args":["é  padded  ","a b c　d","tab\tseparated"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'é  padded  /bin/pi'"}
+{"fn":"writePiInstallFixture","args":["é  padded  ","١٢٣ ٤٥","tab\tseparated"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'é  padded  /bin/pi'"}
+{"fn":"writePiInstallFixture","args":["é  padded  ","𝟘𝟙 ²³","tab\tseparated"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'é  padded  /bin/pi'"}
+{"fn":"writePiInstallFixture","args":["é  padded  ","snake_case foo-bar o'neil","tab\tseparated"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'é  padded  /bin/pi'"}
+{"fn":"writePiInstallFixture","args":["é  padded  ","ǅungla Ǆ","tab\tseparated"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'é  padded  /bin/pi'"}
+{"fn":"writePiInstallFixture","args":["é  padded  ","one\r\ntwo threefour","tab\tseparated"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'é  padded  /bin/pi'"}
+{"fn":"writePiInstallFixture","args":["é  padded  ","café café","tab\tseparated"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'é  padded  /bin/pi'"}
+{"fn":"writePiInstallFixture","args":["é  padded  ","ΣΑΣ σας ς","tab\tseparated"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'é  padded  /bin/pi'"}
+{"fn":"writePiInstallFixture","args":["é  padded  ","é  padd",{"$undefined":true}],"error":"EEXIST: file already exists, symlink '../lib/node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'é  padded  /bin/pi'"}
+{"fn":"writePiInstallFixture","args":["é  padded  ","é  padd","héllo wörld"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'é  padded  /bin/pi'"}
+{"fn":"writePiInstallFixture","args":["é  padded  ","é  padd","👍🏽 thumbs"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'é  padded  /bin/pi'"}
+{"fn":"writePiInstallFixture","args":["é  padded  ","é  padd","日本語"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'é  padded  /bin/pi'"}
+{"fn":"writePiInstallFixture","args":["é  padded  ","é  padd",""],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'é  padded  /bin/pi'"}
+{"fn":"writePiInstallFixture","args":["é  padded  ","é  padd","é"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'é  padded  /bin/pi'"}
+{"fn":"writePiInstallFixture","args":["é  padded  ","é  padd","İstanbul"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'é  padded  /bin/pi'"}
+{"fn":"writePiInstallFixture","args":["é  padded  ","é  padd","straße"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'é  padded  /bin/pi'"}
+{"fn":"writePiInstallFixture","args":["é  padded  ","é  padd","ılık ırmak"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'é  padded  /bin/pi'"}
+{"fn":"writePiInstallFixture","args":["é  padded  ","é  padd","👨‍👩‍👧 family"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'é  padded  /bin/pi'"}
+{"fn":"writePiInstallFixture","args":["é  padded  ","é  padd","a b"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'é  padded  /bin/pi'"}
+{"fn":"writePiInstallFixture","args":["é  padded  ","é  padd","ΣΊΣΥΦΟΣ"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'é  padded  /bin/pi'"}
+{"fn":"writePiInstallFixture","args":["é  padded  ","é  padd","a😀b"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'é  padded  /bin/pi'"}
+{"fn":"writePiInstallFixture","args":["é  padded  ","é  padd","﻿bom"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'é  padded  /bin/pi'"}
+{"fn":"writePiInstallFixture","args":["é  padded  ","é  padd","a²b x½ y①"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'é  padded  /bin/pi'"}
+{"fn":"writePiInstallFixture","args":["é  padded  ","é  padd","aⅠb Ⅻ"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'é  padded  /bin/pi'"}
+{"fn":"writePiInstallFixture","args":["é  padded  ","é  padd","a𐐀b 𝐀bc"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'é  padded  /bin/pi'"}
+{"fn":"writePiInstallFixture","args":["é  padded  ","é  padd","कि ٣٤"],"error":"EEXIST: file already exists, symlink '../node_modules/@earendil-works/pi-coding-agent/cli.js' -> 'é  padded  /bin/pi'"}

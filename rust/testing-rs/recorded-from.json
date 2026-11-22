@@ -1,0 +1,23 @@
+{
+  "unit": "apps/server/src/provider/testing/",
+  "files": 1,
+  "fingerprint": "bfeea0bdbc2cd6f4",
+  "coverage": {
+    "lines": 282,
+    "reached": 97,
+    "files": [
+      {
+        "file": "apps/server/src/provider/piSdkImports.ts",
+        "lines": 190,
+        "reached": 25,
+        "missed": "23-24, 28-41, 43-51, 53-77, 81-99, 101-107, 109-111, 113-122, 124-135, 137-159, 167-177, 179-208"
+      },
+      {
+        "file": "apps/server/src/provider/testing/piSdkFixture.ts",
+        "lines": 92,
+        "reached": 72,
+        "missed": "22, 71-77, 79-90"
+      }
+    ]
+  }
+}

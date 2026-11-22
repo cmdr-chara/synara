@@ -1,0 +1,42 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/provider/testing/",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "testing-rs",
+  "exports": [
+    {
+      "name": "writePiInstallFixture",
+      "file": "apps/server/src/provider/testing/piSdkFixture.ts",
+      "line": 13,
+      "params": [
+        {
+          "name": "root",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "version",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "layout",
+          "ts_type": "\"npm\" | \"bun\" | \"npm-cmd\" | \"bun-exe\"",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

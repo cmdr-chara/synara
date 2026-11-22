@@ -81,6 +81,9 @@ fn intercept_todo(
         && !text.contains("server.listWorktrees")
         && !text.contains("projects.listDirectories")
         && !text.contains("projects.discoverScripts")
+        && !text.contains("projects.prewarmSearchIndex")
+        && !text.contains("projects.searchEntries")
+        && !text.contains("projects.searchLocalEntries")
     {
         return None;
     }
@@ -98,6 +101,9 @@ fn intercept_todo(
         && tag != "server.listWorktrees"
         && tag != "projects.listDirectories"
         && tag != "projects.discoverScripts"
+        && tag != "projects.prewarmSearchIndex"
+        && tag != "projects.searchEntries"
+        && tag != "projects.searchLocalEntries"
     {
         return None;
     }
@@ -153,6 +159,18 @@ fn intercept_todo(
             .map_err(error_json)
     } else if tag == "server.listWorktrees" {
         crate::list_worktrees::list_worktrees()
+            .map(Some)
+            .map_err(error_json)
+    } else if tag == "projects.prewarmSearchIndex" {
+        crate::projects_search::prewarm_search_index(&payload)
+            .map(Some)
+            .map_err(error_json)
+    } else if tag == "projects.searchEntries" {
+        crate::projects_search::search_entries(&payload)
+            .map(Some)
+            .map_err(error_json)
+    } else if tag == "projects.searchLocalEntries" {
+        crate::projects_search::search_local_entries(&payload)
             .map(Some)
             .map_err(error_json)
     } else if tag == "projects.discoverScripts" {

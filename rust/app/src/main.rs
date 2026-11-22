@@ -4,6 +4,7 @@ mod list_worktrees;
 mod native_ws;
 mod original;
 mod projects_fs;
+mod projects_search;
 mod runtime_status;
 mod server_env;
 mod shell_editor;

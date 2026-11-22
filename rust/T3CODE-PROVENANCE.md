@@ -5192,3 +5192,11 @@ normalized lines present in the counterpart.
 | 0% | 7 | 140 | `apps/server/src/orchestration/handoff.test.ts` | `apps/server/src/orchestration/Layers/ProjectionSnapshotQuery.test.ts` |
 | 0% | 7 | 58 | `apps/web/src/lib/startContainerChat.ts` | `apps/web/src/composerDraftStore.ts` |
 | 0% | 6 | 261 | `apps/server/src/device/helperClient.test.ts` | `apps/desktop/src/preview/Manager.ts` |
+
+## Post-audit verification (2026-11-22)
+
+- §4.1 line-derived crates: all 6 re-derived cases-only and gate-green (worklog, storeeventreducer, keybindingrules, shell, terminal-links, markdown-links).
+- §4.2 batch-4 re-derived cases-only and gate-green: backendsupervisionpolicy, model, providerusagesnapshot, runtimearch, session-logic, storenormalization, worker.
+- §4.2 remaining 8 (shortcutssheet, composer-editor-mentions, pendinguserinput, projectscripts, serversettings, terminalstatestore, transcriptusageparsers, workspaceentries): verified clean — none of the flagged shared internal names appear in the committed `port.rs` (grep-verified); the flagged names live in the synara TS, not our ports.
+- cua: confirmed out of copyright scope (upstream trycua/cua, MIT, adapted copies already in synara); no notice required in `rust/LICENSE`.
+- proposedplan: re-derived cases-only (1997 cases), gate green.

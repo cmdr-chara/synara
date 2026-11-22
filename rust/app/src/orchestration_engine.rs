@@ -66,10 +66,472 @@ pub fn handle(_tag: &str, payload: &Value) -> Result<Value, WsErr> {
         .ok_or_else(|| err("orchestration.dispatchCommand payload is missing type"))?;
     match command_type {
         "thread.create" => thread_create(command),
+        "thread.archive" => thread_archive(command, true),
+        "thread.unarchive" => thread_archive(command, false),
+        "thread.delete" => thread_delete(command),
+        "thread.runtime-mode.set" => thread_mode_set(command, "runtimeMode", "runtime_mode"),
+        "thread.interaction-mode.set" => {
+            thread_mode_set(command, "interactionMode", "interaction_mode")
+        }
+        "thread.meta.update" => thread_meta_update(command),
         other => Err(err(format!(
             "orchestration.dispatchCommand {other} is not ported yet (native engine slice)"
         ))),
     }
+}
+
+/// (event_type, payload, aggregate thread_id) triple produced by a decider.
+struct OutEvent {
+    event_type: &'static str,
+    payload: Value,
+    thread_id: String,
+}
+
+struct ThreadRow {
+    project_id: String,
+    archived_at: Option<String>,
+    deleted_at: Option<String>,
+    interaction_mode: String,
+    claude_cache_review: Option<String>,
+}
+
+fn require_thread(conn: &Connection, thread_id: &str) -> Result<ThreadRow, WsErr> {
+    conn.query_row(
+        "SELECT project_id, archived_at, deleted_at, interaction_mode, claude_cache_review_json \
+         FROM projection_threads WHERE thread_id = ?1",
+        params![thread_id],
+        |r| {
+            Ok(ThreadRow {
+                project_id: r.get(0)?,
+                archived_at: r.get(1)?,
+                deleted_at: r.get(2)?,
+                interaction_mode: r.get(3)?,
+                claude_cache_review: r.get(4)?,
+            })
+        },
+    )
+    .map_err(|_| err(format!("thread {thread_id} not found")))
+}
+
+/// Appends every event (incrementing stream_version per stream), writes the
+/// command receipt against the final event's sequence, returns that sequence.
+fn commit_events(
+    conn: &Connection,
+    events: &[OutEvent],
+    occurred_at: &str,
+    command_id: &str,
+    last_thread_id: &str,
+) -> Result<i64, WsErr> {
+    let tx = conn
+        .unchecked_transaction()
+        .map_err(|e| err(e.to_string()))?;
+    let mut sequence = 0i64;
+    for ev in events {
+        let stream_version: i64 = tx
+            .query_row(
+                "SELECT COALESCE(MAX(stream_version), 0) + 1 \
+                 FROM orchestration_events WHERE aggregate_kind = 'thread' AND stream_id = ?1",
+                params![ev.thread_id],
+                |r| r.get(0),
+            )
+            .map_err(|e| err(e.to_string()))?;
+        tx.execute(
+            "INSERT INTO orchestration_events \
+             (event_id, aggregate_kind, stream_id, stream_version, event_type, occurred_at, \
+              command_id, causation_event_id, correlation_id, actor_kind, payload_json, metadata_json) \
+             VALUES (?1, 'thread', ?2, ?3, ?4, ?5, ?6, NULL, ?6, 'client', ?7, '{}')",
+            params![
+                uuid_v4(),
+                ev.thread_id,
+                stream_version,
+                ev.event_type,
+                occurred_at,
+                command_id,
+                ev.payload.to_string(),
+            ],
+        )
+        .map_err(|e| err(format!("append {} event: {e}", ev.event_type)))?;
+        sequence = tx.last_insert_rowid();
+    }
+    tx.execute(
+        "INSERT INTO orchestration_command_receipts \
+         (command_id, aggregate_kind, aggregate_id, accepted_at, result_sequence, status, error, \
+          fingerprint_version, command_fingerprint) \
+         VALUES (?1, 'thread', ?2, ?3, ?4, 'accepted', NULL, NULL, NULL)",
+        params![command_id, last_thread_id, iso_now_ms(), sequence],
+    )
+    .map_err(|e| err(format!("write command receipt: {e}")))?;
+    tx.commit().map_err(|e| err(e.to_string()))?;
+    Ok(sequence)
+}
+
+/// UPDATE projection_threads SET col=?, ... WHERE thread_id=?
+fn update_projection(
+    conn: &Connection,
+    thread_id: &str,
+    sets: &[(&str, Value)],
+) -> Result<(), WsErr> {
+    if sets.is_empty() {
+        return Ok(());
+    }
+    let assignments: Vec<String> = sets
+        .iter()
+        .enumerate()
+        .map(|(i, (col, _))| format!("{col} = ?{}", i + 2))
+        .collect();
+    let sql = format!(
+        "UPDATE projection_threads SET {} WHERE thread_id = ?1",
+        assignments.join(", ")
+    );
+    let mut values: Vec<rusqlite::types::Value> = Vec::with_capacity(sets.len() + 1);
+    values.push(rusqlite::types::Value::Text(thread_id.to_string()));
+    for (_, v) in sets {
+        values.push(json_to_sql(v));
+    }
+    let refs: Vec<&dyn rusqlite::ToSql> = values.iter().map(|v| v as _).collect();
+    conn.execute(&sql, refs.as_slice())
+        .map_err(|e| err(format!("update projection_threads: {e}")))?;
+    Ok(())
+}
+
+fn json_to_sql(v: &Value) -> rusqlite::types::Value {
+    match v {
+        Value::Null => rusqlite::types::Value::Null,
+        Value::Bool(b) => rusqlite::types::Value::Integer(*b as i64),
+        Value::Number(n) => {
+            if let Some(i) = n.as_i64() {
+                rusqlite::types::Value::Integer(i)
+            } else {
+                rusqlite::types::Value::Real(n.as_f64().unwrap_or(0.0))
+            }
+        }
+        Value::String(s) => rusqlite::types::Value::Text(s.clone()),
+        other => rusqlite::types::Value::Text(other.to_string()),
+    }
+}
+
+fn collect_subagent_descendants(conn: &Connection, root: &str) -> Vec<String> {
+    let rows: Vec<(String, Option<String>)> = conn
+        .prepare("SELECT thread_id, parent_thread_id FROM projection_threads WHERE deleted_at IS NULL")
+        .and_then(|mut st| {
+            st.query_map([], |r| Ok((r.get::<_, String>(0)?, r.get::<_, Option<String>>(1)?)))
+                .map(|it| it.filter_map(|x| x.ok()).collect())
+        })
+        .unwrap_or_default();
+    let mut out = Vec::new();
+    let mut queue = vec![root.to_string()];
+    let mut seen = std::collections::HashSet::from([root.to_string()]);
+    while let Some(parent) = queue.pop() {
+        for (id, parent_id) in &rows {
+            if parent_id.as_deref() == Some(parent.as_str()) && seen.insert(id.clone()) {
+                queue.push(id.clone());
+                out.push(id.clone());
+            }
+        }
+    }
+    out
+}
+
+fn thread_archive(command: &Map<String, Value>, archive: bool) -> Result<Value, WsErr> {
+    let command_id = s(command, "commandId").ok_or_else(|| err("missing commandId"))?;
+    let thread_id = s(command, "threadId").ok_or_else(|| err("missing threadId"))?;
+    let conn = open_state_rw()?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| err(e.to_string()))?;
+    let root = require_thread(&conn, &thread_id)?;
+    if archive && root.archived_at.is_some() {
+        return Err(err(format!("thread {thread_id} is already archived")));
+    }
+    if !archive && root.archived_at.is_none() {
+        return Err(err(format!("thread {thread_id} is not archived")));
+    }
+    let occurred_at = iso_now_ms();
+    // Descendants first (active ones), the commanded thread last.
+    let mut ids: Vec<(String, ThreadRow)> = Vec::new();
+    for id in collect_subagent_descendants(&conn, &thread_id) {
+        let row = require_thread(&conn, &id)?;
+        let include = if archive {
+            row.deleted_at.is_none() && row.archived_at.is_none()
+        } else {
+            row.deleted_at.is_none() && row.archived_at.is_some()
+        };
+        if include {
+            ids.push((id, row));
+        }
+    }
+    ids.push((thread_id.clone(), require_thread(&conn, &thread_id)?));
+    let mut events: Vec<OutEvent> = Vec::new();
+    for (id, row) in &ids {
+        if row.claude_cache_review.is_some() {
+            events.push(OutEvent {
+                event_type: "thread.claude-cache-set",
+                payload: json!({"threadId": id, "review": null, "updatedAt": occurred_at}),
+                thread_id: id.clone(),
+            });
+        }
+        events.push(OutEvent {
+            event_type: if archive { "thread.archived" } else { "thread.unarchived" },
+            payload: if archive {
+                json!({"threadId": id, "archivedAt": occurred_at, "updatedAt": occurred_at})
+            } else {
+                json!({"threadId": id, "updatedAt": occurred_at})
+            },
+            thread_id: id.clone(),
+        });
+    }
+    let seq = commit_events(&conn, &events, &occurred_at, &command_id, &thread_id)?;
+    for (id, row) in &ids {
+        let mut sets: Vec<(&str, Value)> = Vec::new();
+        if row.claude_cache_review.is_some() {
+            sets.push(("claude_cache_review_json", Value::Null));
+        }
+        sets.push(("archived_at", if archive { json!(occurred_at) } else { Value::Null }));
+        sets.push(("updated_at", json!(occurred_at)));
+        update_projection(&conn, id, &sets)?;
+    }
+    Ok(json!({ "sequence": seq }))
+}
+
+fn thread_delete(command: &Map<String, Value>) -> Result<Value, WsErr> {
+    let command_id = s(command, "commandId").ok_or_else(|| err("missing commandId"))?;
+    let thread_id = s(command, "threadId").ok_or_else(|| err("missing threadId"))?;
+    let conn = open_state_rw()?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| err(e.to_string()))?;
+    let row = require_thread(&conn, &thread_id)?;
+    let occurred_at = iso_now_ms();
+    let mut events: Vec<OutEvent> = Vec::new();
+    if row.claude_cache_review.is_some() {
+        events.push(OutEvent {
+            event_type: "thread.claude-cache-set",
+            payload: json!({"threadId": thread_id, "review": null, "updatedAt": occurred_at}),
+            thread_id: thread_id.clone(),
+        });
+    }
+    events.push(OutEvent {
+        event_type: "thread.deleted",
+        payload: json!({"threadId": thread_id, "deletedAt": occurred_at}),
+        thread_id: thread_id.clone(),
+    });
+    let seq = commit_events(&conn, &events, &occurred_at, &command_id, &thread_id)?;
+    let mut sets: Vec<(&str, Value)> = vec![("deleted_at", json!(occurred_at))];
+    if row.claude_cache_review.is_some() {
+        sets.push(("claude_cache_review_json", Value::Null));
+    }
+    update_projection(&conn, &thread_id, &sets)?;
+    Ok(json!({ "sequence": seq }))
+}
+
+fn thread_mode_set(
+    command: &Map<String, Value>,
+    field: &str,
+    column: &str,
+) -> Result<Value, WsErr> {
+    let command_id = s(command, "commandId").ok_or_else(|| err("missing commandId"))?;
+    let thread_id = s(command, "threadId").ok_or_else(|| err("missing threadId"))?;
+    let value = s(command, field).ok_or_else(|| err(format!("missing {field}")))?;
+    let conn = open_state_rw()?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| err(e.to_string()))?;
+    let row = require_thread(&conn, &thread_id)?;
+    let occurred_at = iso_now_ms();
+    let event_type = if column == "runtime_mode" {
+        "thread.runtime-mode-set"
+    } else {
+        "thread.interaction-mode-set"
+    };
+    let mut payload = Map::new();
+    payload.insert("threadId".into(), json!(thread_id));
+    if column == "interaction_mode" {
+        payload.insert("previousInteractionMode".into(), json!(row.interaction_mode));
+    }
+    payload.insert(field.to_string(), json!(value));
+    payload.insert("updatedAt".into(), json!(occurred_at));
+    let events = vec![OutEvent {
+        event_type,
+        payload: Value::Object(payload),
+        thread_id: thread_id.clone(),
+    }];
+    let seq = commit_events(&conn, &events, &occurred_at, &command_id, &thread_id)?;
+    update_projection(
+        &conn,
+        &thread_id,
+        &[(column, json!(value)), ("updated_at", json!(occurred_at))],
+    )?;
+    Ok(json!({ "sequence": seq }))
+}
+
+fn thread_meta_update(command: &Map<String, Value>) -> Result<Value, WsErr> {
+    let command_id = s(command, "commandId").ok_or_else(|| err("missing commandId"))?;
+    let thread_id = s(command, "threadId").ok_or_else(|| err("missing threadId"))?;
+    if command.contains_key("goal")
+        || command.contains_key("goalStartBehavior")
+        || command.contains_key("goalAchieved")
+        || command.contains_key("goalAchievements")
+        || command.contains_key("providerHandoff")
+    {
+        return Err(err(
+            "thread.meta.update with goal/providerHandoff fields is not ported yet",
+        ));
+    }
+    let conn = open_state_rw()?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| err(e.to_string()))?;
+    let row = require_thread(&conn, &thread_id)?;
+    let occurred_at = iso_now_ms();
+    let project_kind: String = conn
+        .query_row(
+            "SELECT kind FROM projection_projects WHERE project_id = ?1",
+            params![row.project_id],
+            |r| r.get(0),
+        )
+        .unwrap_or_else(|_| "project".to_string());
+    let is_group = is_group_container_kind(&project_kind);
+
+    let mut ep = Map::new();
+    ep.insert("threadId".into(), json!(thread_id));
+    let mut sets: Vec<(&'static str, Value)> = Vec::new();
+    let mut copy_field = |ep: &mut Map<String, Value>,
+                          sets: &mut Vec<(&'static str, Value)>,
+                          key: &'static str,
+                          column: &'static str| {
+        if let Some(v) = command.get(key) {
+            ep.insert(key.to_string(), v.clone());
+            sets.push((column, v.clone()));
+        }
+    };
+    copy_field(&mut ep, &mut sets, "title", "title");
+    copy_field(&mut ep, &mut sets, "parentThreadId", "parent_thread_id");
+    copy_field(&mut ep, &mut sets, "subagentAgentId", "subagent_agent_id");
+    copy_field(&mut ep, &mut sets, "subagentNickname", "subagent_nickname");
+    copy_field(&mut ep, &mut sets, "subagentRole", "subagent_role");
+    copy_field(&mut ep, &mut sets, "notes", "notes");
+    if let Some(v) = command.get("modelSelection") {
+        ep.insert("modelSelection".into(), v.clone());
+        sets.push(("model_selection_json", json!(v.to_string())));
+    }
+    if let Some(v) = command.get("isPinned") {
+        ep.insert("isPinned".into(), v.clone());
+        sets.push(("is_pinned", v.clone()));
+    }
+    if let Some(v) = command.get("isSettled") {
+        let settled = if v.as_bool().unwrap_or(false) {
+            json!(occurred_at)
+        } else {
+            Value::Null
+        };
+        ep.insert("settledAt".into(), settled.clone());
+        sets.push(("settled_at", settled));
+    }
+    if let Some(v) = command.get("snoozedUntil") {
+        ep.insert("snoozedUntil".into(), v.clone());
+        ep.insert("snoozeReminderAt".into(), Value::Null);
+        sets.push(("snoozed_until", v.clone()));
+        sets.push(("snooze_reminder_at", Value::Null));
+    }
+    if command.contains_key("expectedSnoozedUntil") {
+        ep.insert("snoozeReminderAt".into(), json!(occurred_at));
+        ep.insert("settledAt".into(), Value::Null);
+        sets.push(("snooze_reminder_at", json!(occurred_at)));
+        sets.push(("settled_at", Value::Null));
+    }
+    if let Some(v) = command.get("handoff") {
+        ep.insert("handoff".into(), v.clone());
+        sets.push(("handoff_json", v.clone()));
+    }
+    if let Some(v) = command.get("pinnedMessages") {
+        ep.insert("pinnedMessages".into(), v.clone());
+        sets.push(("pinned_messages_json", json!(v.to_string())));
+    }
+    // Workspace metadata patch (group/studio projects ignore worktree fields).
+    let workspace_keys = [
+        "envMode",
+        "branch",
+        "worktreePath",
+        "workingDirectory",
+        "associatedWorktreePath",
+        "associatedWorktreeBranch",
+        "associatedWorktreeRef",
+    ];
+    if workspace_keys.iter().any(|k| command.contains_key(*k)) {
+        let branch = if is_group { Value::Null } else { opt(command, "branch") };
+        let worktree = if is_group {
+            Value::Null
+        } else {
+            opt(command, "worktreePath")
+        };
+        let working = if is_group {
+            if command.contains_key("workingDirectory") {
+                opt(command, "workingDirectory")
+            } else {
+                opt(command, "worktreePath")
+            }
+        } else {
+            opt(command, "workingDirectory")
+        };
+        let env_mode = if is_group {
+            json!("local")
+        } else {
+            opt(command, "envMode")
+        };
+        ep.insert("envMode".into(), env_mode.clone());
+        ep.insert("branch".into(), branch.clone());
+        ep.insert("worktreePath".into(), worktree.clone());
+        ep.insert("workingDirectory".into(), working.clone());
+        sets.push(("env_mode", env_mode));
+        sets.push(("branch", branch.clone()));
+        sets.push(("worktree_path", worktree.clone()));
+        sets.push(("working_directory", working));
+        if !is_group {
+            let (ap, ab, ar) = derive_associated(command, &branch, &worktree);
+            ep.insert("associatedWorktreePath".into(), ap.clone());
+            ep.insert("associatedWorktreeBranch".into(), ab.clone());
+            ep.insert("associatedWorktreeRef".into(), ar.clone());
+            sets.push(("associated_worktree_path", ap));
+            sets.push(("associated_worktree_branch", ab));
+            sets.push(("associated_worktree_ref", ar));
+        }
+    }
+    ep.insert("updatedAt".into(), json!(occurred_at));
+    sets.push(("updated_at", json!(occurred_at)));
+
+    let events = vec![OutEvent {
+        event_type: "thread.meta-updated",
+        payload: Value::Object(ep),
+        thread_id: thread_id.clone(),
+    }];
+    let seq = commit_events(&conn, &events, &occurred_at, &command_id, &thread_id)?;
+    update_projection(&conn, &thread_id, &sets)?;
+    Ok(json!({ "sequence": seq }))
+}
+
+fn derive_associated(
+    command: &Map<String, Value>,
+    branch: &Value,
+    worktree: &Value,
+) -> (Value, Value, Value) {
+    let path = if command.contains_key("associatedWorktreePath") {
+        opt(command, "associatedWorktreePath")
+    } else {
+        worktree.clone()
+    };
+    let branch_v = if command.contains_key("associatedWorktreeBranch") {
+        opt(command, "associatedWorktreeBranch")
+    } else if !worktree.is_null() {
+        branch.clone()
+    } else {
+        Value::Null
+    };
+    let ref_v = if command.contains_key("associatedWorktreeRef") {
+        opt(command, "associatedWorktreeRef")
+    } else if command.contains_key("associatedWorktreeBranch") {
+        opt(command, "associatedWorktreeBranch")
+    } else if !worktree.is_null() {
+        branch.clone()
+    } else {
+        Value::Null
+    };
+    (path, branch_v, ref_v)
 }
 
 fn thread_create(command: &Map<String, Value>) -> Result<Value, WsErr> {

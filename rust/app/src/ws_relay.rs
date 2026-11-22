@@ -86,6 +86,10 @@ fn intercept_todo(
         && !text.contains("projects.searchLocalEntries")
         && !text.contains("projects.resolveWorkspaceFileReferences")
         && !text.contains("projects.resolveOutOfRootFileReference")
+        && !text.contains("projects.readFile")
+        && !text.contains("projects.writeFile")
+        && !text.contains("projects.searchContent")
+        && !text.contains("projects.createLocalFilePreviewGrant")
         && !text.contains("server.getSettings")
         && !text.contains("server.updateSettings")
         && !text.contains("server.subscribeSettings")
@@ -112,6 +116,10 @@ fn intercept_todo(
         && tag != "projects.searchLocalEntries"
         && tag != "projects.resolveWorkspaceFileReferences"
         && tag != "projects.resolveOutOfRootFileReference"
+        && tag != "projects.readFile"
+        && tag != "projects.writeFile"
+        && tag != "projects.searchContent"
+        && tag != "projects.createLocalFilePreviewGrant"
         && tag != "server.getSettings"
         && tag != "server.updateSettings"
         && tag != "server.subscribeSettings"
@@ -235,6 +243,12 @@ fn intercept_todo(
         crate::server_settings::update_settings(&payload)
             .map(Some)
             .map_err(error_json)
+    } else if tag.starts_with("projects.readFile")
+        || tag == "projects.writeFile"
+        || tag == "projects.searchContent"
+        || tag == "projects.createLocalFilePreviewGrant"
+    {
+        crate::projects_fileops::handle(tag, &payload).map_err(error_json)
     } else if tag == "projects.resolveWorkspaceFileReferences" {
         crate::projects_refs::resolve_workspace_file_references(&payload)
             .map(Some)

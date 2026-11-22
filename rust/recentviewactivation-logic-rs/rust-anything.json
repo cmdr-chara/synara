@@ -1,0 +1,30 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/recentViewActivation.logic.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "recentviewactivation-rs",
+  "exports": [
+    {
+      "name": "resolveRecentThreadSplitActivation",
+      "file": "apps/web/src/recentViewActivation.logic.ts",
+      "line": 19,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  view: (| {\n      kind: \"thread\";\n      threadId: ThreadId;\n      splitViewId?: string | undefined;\n    }\n  | {\n      kind: \"settings\";\n      section?: string | undefined;\n    }\n  | {\n      kind: \"plugins\";\n    });\n  splitViewsById: Readonly<Record<string, SplitView | undefined>>;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "RecentThreadSplitActivation | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

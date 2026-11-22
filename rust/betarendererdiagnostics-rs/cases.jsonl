@@ -1,0 +1,83 @@
+{"fn":"attachBetaRendererDiagnostics","args":[["a",1],["a",1]],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":[0,{}],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":[["a",1],[]],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":[{},{"a":{"b":"c"}}],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":[{"a":"b"},0],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":[["a",1],{"a":"b"}],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":[null,[]],"error":"Cannot read properties of null (reading 'on')"}
+{"fn":"attachBetaRendererDiagnostics","args":[{"a":"b"},true],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":[null,{"a":{"b":"c"}}],"error":"Cannot read properties of null (reading 'on')"}
+{"fn":"attachBetaRendererDiagnostics","args":[{"a":"b"},"x"],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":[true,{}],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":[null,["a",1]],"error":"Cannot read properties of null (reading 'on')"}
+{"fn":"attachBetaRendererDiagnostics","args":[true,["a",1]],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":[null,0],"error":"Cannot read properties of null (reading 'on')"}
+{"fn":"attachBetaRendererDiagnostics","args":[{"a":"b"},{"a":"b"}],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":[{},true],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":[[],{"a":"b"}],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":[0,"x"],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":[{},null],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":[true,{"a":"b"}],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":[null,"x"],"error":"Cannot read properties of null (reading 'on')"}
+{"fn":"attachBetaRendererDiagnostics","args":[true,{"a":{"b":"c"}}],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":[{"a":"b"},{}],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":[0,[]],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":[["a",1],0],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":[[],[]],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":[{"a":{"b":"c"}},null],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":[{"a":{"b":"c"}},true],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":[["a",1],true],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":[0,{"a":{"b":"c"}}],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":[0,null],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":[{"a":{"b":"c"}},{}],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":[{"a":{"b":"c"}},[]],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":[[],{"a":{"b":"c"}}],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":[null,{}],"error":"Cannot read properties of null (reading 'on')"}
+{"fn":"attachBetaRendererDiagnostics","args":[[],null],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":["x",{}],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":["x",true],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":[[],["a",1]],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":[{},{}],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":[{},{"a":"b"}],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":[null,null],"error":"Cannot read properties of null (reading 'on')"}
+{"fn":"attachBetaRendererDiagnostics","args":[true,true],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":[{"a":{"b":"c"}},{"a":{"b":"c"}}],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":["x",null],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":[{"a":"b"},[]],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":[{},["a",1]],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":[true,[]],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":[{"a":{"b":"c"}},{"a":"b"}],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":[null,true],"error":"Cannot read properties of null (reading 'on')"}
+{"fn":"attachBetaRendererDiagnostics","args":[["a",1],"x"],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":[true,"x"],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":[{},"x"],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":[{"a":"b"},{"a":{"b":"c"}}],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":[null,{"a":"b"}],"error":"Cannot read properties of null (reading 'on')"}
+{"fn":"attachBetaRendererDiagnostics","args":[true,null],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":[0,["a",1]],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":[["a",1],{"a":{"b":"c"}}],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":[[],0],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":[{"a":{"b":"c"}},"x"],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":[true,0],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":[{"a":"b"},null],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":[0,true],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":["x",{"a":"b"}],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":[{"a":{"b":"c"}},["a",1]],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":["x",[]],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":[["a",1],{}],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":[{"a":{"b":"c"}},0],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":[{},0],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":[0,{"a":"b"}],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":[[],"x"],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":["x",0],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":[[],true],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":[["a",1],null],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":[{},[]],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":["x","x"],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":["x",["a",1]],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":[{"a":"b"},["a",1]],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":[0,0],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":["x",{"a":{"b":"c"}}],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":[[],{}],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":["X","x"],"error":"webContents.on is not a function"}
+{"fn":"attachBetaRendererDiagnostics","args":["x","X"],"error":"webContents.on is not a function"}

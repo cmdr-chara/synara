@@ -1,0 +1,267 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "benchmarks/desktop-perf/lib/launch.mjs",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "launch-rs",
+  "exports": [
+    {
+      "name": "assertIsolatedHome",
+      "file": "benchmarks/desktop-perf/lib/launch.mjs",
+      "line": 17,
+      "params": [
+        {
+          "name": "home",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveElectronBinary",
+      "file": "benchmarks/desktop-perf/lib/launch.mjs",
+      "line": 36,
+      "params": [
+        {
+          "name": "buildDir",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "freePort",
+      "file": "benchmarks/desktop-perf/lib/launch.mjs",
+      "line": 52,
+      "params": [],
+      "returns": "unknown",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isolatedEnvironment",
+      "file": "benchmarks/desktop-perf/lib/launch.mjs",
+      "line": 68,
+      "params": [
+        {
+          "name": "arg0",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "processTree",
+      "file": "benchmarks/desktop-perf/lib/launch.mjs",
+      "line": 104,
+      "params": [
+        {
+          "name": "rootPid",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "classifyProcess",
+      "file": "benchmarks/desktop-perf/lib/launch.mjs",
+      "line": 146,
+      "params": [
+        {
+          "name": "row",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "arg1",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "launchDesktop",
+      "file": "benchmarks/desktop-perf/lib/launch.mjs",
+      "line": 172,
+      "params": [
+        {
+          "name": "arg0",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "attachMainPage",
+      "file": "benchmarks/desktop-perf/lib/launch.mjs",
+      "line": 209,
+      "params": [
+        {
+          "name": "app",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "arg1",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "quitDesktop",
+      "file": "benchmarks/desktop-perf/lib/launch.mjs",
+      "line": 233,
+      "params": [
+        {
+          "name": "app",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "arg1",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isFrontmost",
+      "file": "benchmarks/desktop-perf/lib/launch.mjs",
+      "line": 264,
+      "params": [
+        {
+          "name": "app",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "secondsSinceUserInput",
+      "file": "benchmarks/desktop-perf/lib/launch.mjs",
+      "line": 273,
+      "params": [],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "waitForQuietMac",
+      "file": "benchmarks/desktop-perf/lib/launch.mjs",
+      "line": 285,
+      "params": [
+        {
+          "name": "arg0",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "screenLocked",
+      "file": "benchmarks/desktop-perf/lib/launch.mjs",
+      "line": 306,
+      "params": [],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "frontmostProblem",
+      "file": "benchmarks/desktop-perf/lib/launch.mjs",
+      "line": 321,
+      "params": [
+        {
+          "name": "app",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "when",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

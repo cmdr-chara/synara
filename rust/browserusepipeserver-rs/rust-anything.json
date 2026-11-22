@@ -1,0 +1,97 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/desktop/src/browserUsePipeServer.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "browserusepipeserver-rs",
+  "exports": [
+    {
+      "name": "resolveDefaultBrowserHostPipePath",
+      "file": "apps/desktop/src/browserUsePipeServer.ts",
+      "line": 110,
+      "params": [
+        {
+          "name": "platform",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        },
+        {
+          "name": "pid",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveConfiguredBrowserHostPipePath",
+      "file": "apps/desktop/src/browserUsePipeServer.ts",
+      "line": 126,
+      "params": [
+        {
+          "name": "env",
+          "ts_type": "NodeJS.ProcessEnv",
+          "optional": true,
+          "rest": false
+        },
+        {
+          "name": "platform",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveBrowserHostPipeBackendEnv",
+      "file": "apps/desktop/src/browserUsePipeServer.ts",
+      "line": 137,
+      "params": [
+        {
+          "name": "inheritedEnv",
+          "ts_type": "NodeJS.ProcessEnv",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "activePipePath",
+          "ts_type": "string | null | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "capabilityFd",
+          "ts_type": "number | null",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "NodeJS.ProcessEnv",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "BrowserHostPipeServer",
+      "file": "apps/desktop/src/browserUsePipeServer.ts",
+      "line": 238,
+      "reason": "class: async or generator method `waitForIdle`, async or generator method `start`, async or generator method `dispose`"
+    }
+  ]
+}

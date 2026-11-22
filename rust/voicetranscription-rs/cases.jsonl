@@ -1,0 +1,201 @@
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":null,"mimeType":"hello world","token":"İstanbul日本語のテキスト","transcriptionUrl":"line1\nline2"}],"error":"Cannot read properties of null (reading 'byteLength')"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":{},"mimeType":"ns:key.pathstraße","token":"hello","transcriptionUrl":"straße"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":null,"mimeType":"emoji 👍🏽 mix","token":"./x/**/*.json","transcriptionUrl":"a😀b😀chello world"}],"error":"Cannot read properties of null (reading 'byteLength')"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":0,"mimeType":"emoji 👍🏽 mix","token":"abc","transcriptionUrl":"emoji 👍🏽 mix"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":[],"mimeType":"İstanbul","token":"./x/**/*.json","transcriptionUrl":"a:b:c"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":{"a":{"b":"c"}},"mimeType":"emoji 👍🏽 mix","token":"Hello World","transcriptionUrl":"ΣΊΣΥΦΟΣHello World"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":null,"mimeType":"é","token":"key_name-1","transcriptionUrl":"straße"}],"error":"Cannot read properties of null (reading 'byteLength')"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'byteLength')"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":["a",1],"mimeType":"trailing.","token":"key_name-1","transcriptionUrl":"hello world"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":{"a":"b"},"mimeType":":","token":"abc","transcriptionUrl":"a"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":{"a":{"b":"c"}},"mimeType":"Hello World","token":"tab\tseparated","transcriptionUrl":"line1\nline2"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":[],"mimeType":"./x/**/*.json","token":"﻿bomHELLO","transcriptionUrl":"emoji 👍🏽 mix"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":null,"mimeType":"line1\nline2","token":"😀","transcriptionUrl":"abca..b"}],"error":"Multipart content type is invalid."}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":true,"mimeType":"","token":"ns:key.path","transcriptionUrl":"ΣΊΣΥΦΟΣ"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":{},"mimeType":"a:b:cİstanbul","token":"hello world","transcriptionUrl":"key_name-1a"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":true,"mimeType":"{name} has {count} items","token":"a:b:c日本語のテキスト","transcriptionUrl":"key_name-1"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":["a",1],"mimeType":"{name} has {count} items","token":"ünïcödé","transcriptionUrl":"tab\tseparated😀"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":null,"mimeType":"straße","token":".leading","transcriptionUrl":"{name} has {count} items"}],"error":"Cannot read properties of null (reading 'byteLength')"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":null,"mimeType":"emoji 👍🏽 mix","token":".leadinga..b","transcriptionUrl":"  padded  "}],"error":"Cannot read properties of null (reading 'byteLength')"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":["a",1],"mimeType":"﻿bom","token":"emoji 👍🏽 mix","transcriptionUrl":"😀"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":[],"mimeType":"tab\tseparated","token":"./x/**/*.jsona.b.c","transcriptionUrl":"a😀b😀c"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":{"a":"b"},"mimeType":"a.b.c","token":"é","transcriptionUrl":"ünïcödéstraße"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":0,"mimeType":":a:b:c","token":"İstanbul","transcriptionUrl":"hello world"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":"x","mimeType":"line1\nline2","token":"ünïcödé日本語のテキスト","transcriptionUrl":"ΣΊΣΥΦΟΣ"}],"error":"Multipart content type is invalid."}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":["a",1],"mimeType":"﻿bom./x/**/*.json","token":"Hello World","transcriptionUrl":"a"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":[],"mimeType":"","token":"aünïcödé","transcriptionUrl":"ünïcödé"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":0,"mimeType":"key_name-1","token":"  padded  ","transcriptionUrl":"{name} has {count} itemsa..b"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"a":"b"}],"error":"Cannot read properties of undefined (reading 'byteLength')"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":"x","mimeType":"İstanbul","token":"{name} has {count} items","transcriptionUrl":"é"}],"error":"Outbound destination is not a valid URL."}
+{"fn":"requestDesktopVoiceTranscription","args":[[]],"error":"Cannot read properties of undefined (reading 'byteLength')"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":{"a":"b"},"mimeType":".leading","token":"src/a/b.ts","transcriptionUrl":"Hello World"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":true,"mimeType":"İstanbul","token":"trailing.","transcriptionUrl":"emoji 👍🏽 mix"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":{"a":"b"},"mimeType":"ΣΊΣΥΦΟΣa..b","token":"tab\tseparated","transcriptionUrl":"ΣΊΣΥΦΟΣ"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[["a",1]],"error":"Cannot read properties of undefined (reading 'byteLength')"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":{},"mimeType":"abca..b","token":"a:b:c","transcriptionUrl":"src/a/b.ts"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":null,"mimeType":"hello world","token":"tab\tseparated","transcriptionUrl":".leading"}],"error":"Cannot read properties of null (reading 'byteLength')"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":{},"mimeType":"emoji 👍🏽 mix","token":"İstanbul","transcriptionUrl":"a..bsrc/a/b.ts"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":{"a":{"b":"c"}},"mimeType":"straße","token":"hello","transcriptionUrl":"a.b.c"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":null,"mimeType":"hello world","token":"İstanbul","transcriptionUrl":"a😀b😀c"}],"error":"Cannot read properties of null (reading 'byteLength')"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":{"a":{"b":"c"}},"mimeType":"HELLO","token":"HELLO","transcriptionUrl":"日本語のテキスト"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":true,"mimeType":"ΣΊΣΥΦΟΣ","token":"a😀b😀c","transcriptionUrl":"hello world"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":{"a":{"b":"c"}},"mimeType":"hello world","token":"emoji 👍🏽 mix","transcriptionUrl":"İstanbul"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":0,"mimeType":"é","token":"hello world","transcriptionUrl":"emoji 👍🏽 mix"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":0,"mimeType":"trailing.src/a/b.ts","token":"line1\nline2","transcriptionUrl":"abHello World"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":0,"mimeType":"a..b","token":"a😀b😀c","transcriptionUrl":"ünïcödé"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":[],"mimeType":"trailing.","token":"a..b","transcriptionUrl":"ab"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":true,"mimeType":"trailing.","token":"😀","transcriptionUrl":"a.b.cΣΊΣΥΦΟΣ"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":{"a":"b"},"mimeType":"ünïcödé","token":".leading./x/**/*.json","transcriptionUrl":"hello"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":0,"mimeType":"İstanbulΣΊΣΥΦΟΣ","token":"😀","transcriptionUrl":"ΣΊΣΥΦΟΣ"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":{},"mimeType":"hello world","token":"emoji 👍🏽 mix","transcriptionUrl":".leading"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":"x","mimeType":"a","token":".leading","transcriptionUrl":"a"}],"error":"Outbound destination is not a valid URL."}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":"x","mimeType":"a..b","token":"é","transcriptionUrl":"src/a/b.tsünïcödé"}],"error":"Outbound destination is not a valid URL."}
+{"fn":"requestDesktopVoiceTranscription","args":[{}],"error":"Cannot read properties of undefined (reading 'byteLength')"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":[],"mimeType":"a.b.c.leading","token":"./x/**/*.json","transcriptionUrl":"a"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":{"a":{"b":"c"}},"mimeType":"straße","token":"İstanbul","transcriptionUrl":"İstanbul"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":{"a":"b"},"mimeType":"😀","token":"İstanbul","transcriptionUrl":"﻿bom"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":"x","mimeType":"İstanbul","token":"İstanbul","transcriptionUrl":".leading"}],"error":"Outbound destination is not a valid URL."}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":{"a":"b"},"mimeType":"hello","token":"﻿bom","transcriptionUrl":"straßeİstanbul"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":{"a":"b"},"mimeType":"ns:key.path","token":"{name} has {count} items","transcriptionUrl":"a.b.c"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":0,"mimeType":"{name} has {count} items","token":".leading","transcriptionUrl":"ns:key.path"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":["a",1],"mimeType":"  padded  ","token":"  padded  ","transcriptionUrl":"tab\tseparated"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":null,"mimeType":"ΣΊΣΥΦΟΣ","token":"  padded  {name} has {count} items","transcriptionUrl":"emoji 👍🏽 mix"}],"error":"Cannot read properties of null (reading 'byteLength')"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":[],"mimeType":"ΣΊΣΥΦΟΣ","token":"ünïcödé","transcriptionUrl":"abc"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":{"a":{"b":"c"}},"mimeType":"hello worldhello world","token":"src/a/b.ts","transcriptionUrl":"a.b.c"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":null,"mimeType":"😀ünïcödé","token":"src/a/b.ts","transcriptionUrl":"src/a/b.ts"}],"error":"Cannot read properties of null (reading 'byteLength')"}
+{"fn":"requestDesktopVoiceTranscription","args":[null],"error":"Cannot read properties of null (reading 'audioBuffer')"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":null,"mimeType":"a","token":"ab","transcriptionUrl":"ΣΊΣΥΦΟΣ"}],"error":"Cannot read properties of null (reading 'byteLength')"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":{"a":{"b":"c"}},"mimeType":"{name} has {count} items","token":"a","transcriptionUrl":".leading"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":true,"mimeType":"tab\tseparated","token":"","transcriptionUrl":"key_name-1line1\nline2"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":[],"mimeType":"a..b","token":"hello","transcriptionUrl":".leading"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":["a",1],"mimeType":"emoji 👍🏽 mix","token":"İstanbul","transcriptionUrl":"😀"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":{},"mimeType":"tab\tseparated","token":"  padded  ","transcriptionUrl":"./x/**/*.json:"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":{"a":"b"},"mimeType":"  padded  ","token":"a.b.c","transcriptionUrl":"trailing."}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":{},"mimeType":"a.b.cab","token":"a😀b😀cabc","transcriptionUrl":"src/a/b.ts"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":["a",1],"mimeType":"  padded  ","token":"HELLOkey_name-1","transcriptionUrl":":"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":{"a":"b"},"mimeType":"😀{name} has {count} items","token":"  padded  ","transcriptionUrl":".leading"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":"x","mimeType":"tab\tseparated","token":"  padded  ","transcriptionUrl":"a"}],"error":"Outbound destination is not a valid URL."}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":["a",1],"mimeType":"é","token":"ab","transcriptionUrl":"src/a/b.ts"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":0,"mimeType":"emoji 👍🏽 mix","token":"line1\nline2","transcriptionUrl":".leading"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[true],"error":"Cannot read properties of undefined (reading 'byteLength')"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":{},"mimeType":"a.b.c","token":":","transcriptionUrl":"ns:key.patha😀b😀c"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":["a",1],"mimeType":"src/a/b.ts日本語のテキスト","token":"key_name-1","transcriptionUrl":"﻿bom"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":{},"mimeType":"line1\nline2","token":"hello","transcriptionUrl":"a..b"}],"error":"Multipart content type is invalid."}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":true,"mimeType":"{name} has {count} items","token":"a😀b😀c","transcriptionUrl":"é"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":"x","mimeType":"key_name-1","token":":trailing.","transcriptionUrl":"﻿bom"}],"error":"Outbound destination is not a valid URL."}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":true,"mimeType":"emoji 👍🏽 mixHELLO","token":"a.b.c","transcriptionUrl":"hello"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":{"a":"b"},"mimeType":"HELLOΣΊΣΥΦΟΣ","token":"HELLO","transcriptionUrl":"straße"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[0],"error":"Cannot read properties of undefined (reading 'byteLength')"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":["a",1],"mimeType":"😀","token":"hello world","transcriptionUrl":"  padded  emoji 👍🏽 mix"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":{"a":"b"},"mimeType":"a  padded  ","token":"a..b","transcriptionUrl":"src/a/b.ts"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":null,"mimeType":"  padded  ","token":"日本語のテキスト","transcriptionUrl":"日本語のテキストhello world"}],"error":"Cannot read properties of null (reading 'byteLength')"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":{"a":"b"},"mimeType":"src/a/b.ts","token":"a😀b😀c","transcriptionUrl":"src/a/b.ts"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":{"a":{"b":"c"}},"mimeType":"a:b:c","token":"key_name-1","transcriptionUrl":"tab\tseparatedemoji 👍🏽 mix"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":["a",1],"mimeType":":","token":"日本語のテキスト","transcriptionUrl":"./x/**/*.json"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":["x"],"error":"Cannot read properties of undefined (reading 'byteLength')"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":0,"mimeType":"emoji 👍🏽 mix","token":"İstanbul","transcriptionUrl":"line1\nline2"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":null,"mimeType":"tab\tseparated","token":"trailing.tab\tseparated","transcriptionUrl":"emoji 👍🏽 mix"}],"error":"Cannot read properties of null (reading 'byteLength')"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":[],"mimeType":"ünïcödéline1\nline2","token":"{name} has {count} itemsab","transcriptionUrl":"é"}],"error":"Multipart content type is invalid."}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":0,"mimeType":"{name} has {count} items","token":"hello","transcriptionUrl":"ünïcödé"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":[],"mimeType":"ns:key.path","token":"./x/**/*.json","transcriptionUrl":"ab"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":0,"mimeType":"a:b:c","token":"straße","transcriptionUrl":"İstanbul"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":0,"mimeType":"a.b.c","token":"ns:key.path","transcriptionUrl":".leading"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":{},"mimeType":"a:b:c","token":"é","transcriptionUrl":"日本語のテキスト"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":{"a":{"b":"c"}},"mimeType":"a:b:c","token":"astraße","transcriptionUrl":"ab"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":{},"mimeType":"{name} has {count} items","token":"﻿bom","transcriptionUrl":"ΣΊΣΥΦΟΣ"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":{},"mimeType":"HELLO","token":".leading","transcriptionUrl":"key_name-1"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":"x","mimeType":"﻿bom","token":"{name} has {count} items","transcriptionUrl":".leading😀"}],"error":"Outbound destination is not a valid URL."}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":null,"mimeType":"tab\tseparatedhello","token":"a😀b😀c","transcriptionUrl":"trailing."}],"error":"Cannot read properties of null (reading 'byteLength')"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":[],"mimeType":"a.b.c","token":"日本語のテキスト","transcriptionUrl":"ab"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":0,"mimeType":"İstanbul","token":"﻿bom","transcriptionUrl":"straße"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":0,"mimeType":"HELLO","token":":HELLO","transcriptionUrl":"HELLO"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":"x","mimeType":"a..b","token":"src/a/b.tssrc/a/b.ts","transcriptionUrl":"abé"}],"error":"Outbound destination is not a valid URL."}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":["a",1],"mimeType":"İstanbul","token":"key_name-1abc","transcriptionUrl":"a😀b😀c"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":["a",1],"mimeType":"abc","token":"a..ba:b:c","transcriptionUrl":"straßeHELLO"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":{},"mimeType":"日本語のテキスト","token":"abca..b","transcriptionUrl":"{name} has {count} items"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":[],"mimeType":"straße","token":"straße","transcriptionUrl":"hello"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":[],"mimeType":"hello world","token":"ΣΊΣΥΦΟΣ","transcriptionUrl":"a.b.c"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":{"a":{"b":"c"}},"mimeType":"src/a/b.ts","token":"abc","transcriptionUrl":"trailing."}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":{"a":{"b":"c"}},"mimeType":"😀","token":"a","transcriptionUrl":"étrailing."}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":{},"mimeType":"é","token":"tab\tseparated","transcriptionUrl":"a😀b😀c"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":["a",1],"mimeType":"﻿bom","token":"a","transcriptionUrl":"ΣΊΣΥΦΟΣ"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":{"a":{"b":"c"}},"mimeType":".leadingsrc/a/b.ts","token":"line1\nline2","transcriptionUrl":"{name} has {count} items"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":{"a":{"b":"c"}},"mimeType":"./x/**/*.json","token":"hello","transcriptionUrl":""}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":{},"mimeType":"日本語のテキスト","token":"straße","transcriptionUrl":"a:b:c"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":{"a":{"b":"c"}},"mimeType":"aab","token":"ünïcödéünïcödé","transcriptionUrl":"é"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":"x","mimeType":"src/a/b.tsa","token":"trailing.","transcriptionUrl":"a.b.c"}],"error":"Outbound destination is not a valid URL."}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":{"a":{"b":"c"}},"mimeType":"a:b:c  padded  ","token":"ünïcödé","transcriptionUrl":"a😀b😀c"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":[],"mimeType":"./x/**/*.json","token":"  padded  ","transcriptionUrl":"ünïcödé"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":0,"mimeType":"line1\nline2","token":"line1\nline2","transcriptionUrl":"HELLO"}],"error":"Multipart content type is invalid."}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":null,"mimeType":"abc","token":"straße","transcriptionUrl":"src/a/b.ts"}],"error":"Cannot read properties of null (reading 'byteLength')"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":[],"mimeType":"abc","token":"straße","transcriptionUrl":"line1\nline2emoji 👍🏽 mix"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":{"a":"b"},"mimeType":"hello","token":"hello","transcriptionUrl":"  padded  ﻿bom"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":{"a":{"b":"c"}},"mimeType":"日本語のテキスト","token":"  padded  a😀b😀c","transcriptionUrl":"😀"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":{},"mimeType":"ΣΊΣΥΦΟΣ","token":"😀","transcriptionUrl":"日本語のテキスト"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":true,"mimeType":"ns:key.path","token":"ab","transcriptionUrl":"{name} has {count} itemskey_name-1"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":0,"mimeType":"straße","token":"ΣΊΣΥΦΟΣhello world","transcriptionUrl":"a😀b😀ca😀b😀c"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":null,"mimeType":"ΣΊΣΥΦΟΣ","token":"a","transcriptionUrl":"😀İstanbul"}],"error":"Cannot read properties of null (reading 'byteLength')"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":[],"mimeType":"{name} has {count} itemsé","token":"./x/**/*.json","transcriptionUrl":""}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":{"a":{"b":"c"}},"mimeType":"src/a/b.ts","token":"  padded  HELLO","transcriptionUrl":".leading"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":0,"mimeType":"é","token":"{name} has {count} items日本語のテキスト","transcriptionUrl":"a😀b😀c"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":[],"mimeType":"a.b.c","token":"  padded  ","transcriptionUrl":":"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":{"a":{"b":"c"}},"mimeType":"a..b","token":"straße","transcriptionUrl":"hello"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":"x","mimeType":"a.b.c","token":"line1\nline2","transcriptionUrl":"./x/**/*.json"}],"error":"Outbound destination is not a valid URL."}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":"x","mimeType":"ünïcödé","token":"İstanbulΣΊΣΥΦΟΣ","transcriptionUrl":"line1\nline2"}],"error":"Outbound destination is not a valid URL."}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":["a",1],"mimeType":"key_name-1hello world","token":"é","transcriptionUrl":"ns:key.path"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":{"a":{"b":"c"}},"mimeType":".leading","token":"😀","transcriptionUrl":":İstanbul"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":{"a":{"b":"c"}},"mimeType":"key_name-1","token":"﻿bom","transcriptionUrl":"ns:key.pathHello World"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":{"a":"b"},"mimeType":"straße","token":"{name} has {count} items","transcriptionUrl":"tab\tseparated"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":[],"mimeType":"hello world","token":"a:b:c","transcriptionUrl":"a"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":[],"mimeType":"src/a/b.ts./x/**/*.json","token":"a😀b😀cab","transcriptionUrl":"a.b.c"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":0,"mimeType":"İstanbul","token":"straße﻿bom","transcriptionUrl":".leading"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":["a",1],"mimeType":"a日本語のテキスト","token":"a","transcriptionUrl":":"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":["a",1],"mimeType":"{name} has {count} items","token":"emoji 👍🏽 mix","transcriptionUrl":"trailing."}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":true,"mimeType":".leading","token":":","transcriptionUrl":"abc"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":true,"mimeType":"emoji 👍🏽 mix","token":"src/a/b.tskey_name-1","transcriptionUrl":"Hello World"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":{"a":"b"},"mimeType":"key_name-1","token":"a","transcriptionUrl":"Hello Worlda😀b😀c"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":{"a":{"b":"c"}},"mimeType":"é","token":"ΣΊΣΥΦΟΣ","transcriptionUrl":"./x/**/*.json"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":{},"mimeType":"ab","token":"a😀b😀c","transcriptionUrl":"Hello World"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":"x","mimeType":"ünïcödé","token":"İstanbul","transcriptionUrl":"hellostraße"}],"error":"Outbound destination is not a valid URL."}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":[],"mimeType":"hello world","token":"ab","transcriptionUrl":"hello"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":{"a":{"b":"c"}},"mimeType":"a..b.leading","token":":.leading","transcriptionUrl":"line1\nline2hello"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":["a",1],"mimeType":":","token":"a.b.csrc/a/b.ts","transcriptionUrl":"ΣΊΣΥΦΟΣ"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":0,"mimeType":"straßeabc","token":"hello world","transcriptionUrl":"src/a/b.ts"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":{},"mimeType":"  padded  ","token":"./x/**/*.jsonns:key.path","transcriptionUrl":"Hello World"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":{"a":"b"},"mimeType":"ab","token":"a😀b😀c","transcriptionUrl":"İstanbul"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":{},"mimeType":"HELLOhello","token":"line1\nline2","transcriptionUrl":"aba"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":["a",1],"mimeType":"ΣΊΣΥΦΟΣa:b:c","token":"a..b","transcriptionUrl":"hello"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":null,"mimeType":"HELLO","token":"emoji 👍🏽 mix﻿bom","transcriptionUrl":"ΣΊΣΥΦΟΣ"}],"error":"Cannot read properties of null (reading 'byteLength')"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":true,"mimeType":"","token":"é","transcriptionUrl":"src/a/b.ts"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":true,"mimeType":"line1\nline2","token":"日本語のテキスト","transcriptionUrl":"straße"}],"error":"Multipart content type is invalid."}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":"x","mimeType":"ab","token":"tab\tseparated","transcriptionUrl":"😀"}],"error":"Outbound destination is not a valid URL."}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":{},"mimeType":"{name} has {count} items./x/**/*.json","token":"a..b","transcriptionUrl":"./x/**/*.json"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":{},"mimeType":"HELLO","token":"ünïcödé","transcriptionUrl":":"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":0,"mimeType":"src/a/b.ts","token":"a","transcriptionUrl":"日本語のテキスト😀"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":{"a":"b"},"mimeType":"日本語のテキスト","token":"","transcriptionUrl":"aemoji 👍🏽 mix"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":true,"mimeType":"line1\nline2a:b:c","token":"key_name-1","transcriptionUrl":"Hello World"}],"error":"Multipart content type is invalid."}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":true,"mimeType":"ns:key.path","token":"a.b.c","transcriptionUrl":"{name} has {count} items"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":{"a":"b"},"mimeType":"line1\nline2","token":"a","transcriptionUrl":"hello world"}],"error":"Multipart content type is invalid."}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":{"a":{"b":"c"}},"mimeType":"emoji 👍🏽 mix","token":"ΣΊΣΥΦΟΣé","transcriptionUrl":"Hello World"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":true,"mimeType":"hello","token":"a😀b😀c","transcriptionUrl":"abc"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":["a",1],"mimeType":"a","token":"İstanbul","transcriptionUrl":"HELLO"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":"x","mimeType":".leadingns:key.path","token":"trailing.","transcriptionUrl":"a:b:c"}],"error":"Outbound destinations must use HTTPS without URL credentials unless loopback HTTP is explicitly allowed."}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":"x","mimeType":"trailing.","token":"  padded  trailing.","transcriptionUrl":"  padded  "}],"error":"Outbound destination is not a valid URL."}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":[],"mimeType":"ΣΊΣΥΦΟΣemoji 👍🏽 mix","token":"İstanbul","transcriptionUrl":"key_name-1"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":{"a":"b"},"mimeType":"tab\tseparatedsrc/a/b.ts","token":"straße","transcriptionUrl":"src/a/b.tsa..b"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":true,"mimeType":"hello world.leading","token":"abc","transcriptionUrl":""}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":[],"mimeType":"hello world","token":"hello","transcriptionUrl":"hello"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":{"a":{"b":"c"}},"mimeType":"./x/**/*.json","token":"hello world","transcriptionUrl":"./x/**/*.json😀"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":true,"mimeType":"😀","token":"a.b.c","transcriptionUrl":"Hello Worlda"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":true,"mimeType":"a😀b😀c","token":"./x/**/*.json","transcriptionUrl":"﻿bom"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":0,"mimeType":"{name} has {count} items","token":"a.b.c","transcriptionUrl":""}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":{"a":{"b":"c"}},"mimeType":"a😀b😀c","token":"line1\nline2a..b","transcriptionUrl":"😀"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":{"a":"b"},"mimeType":":","token":"a.b.c","transcriptionUrl":""}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":["a",1],"mimeType":"Hello World./x/**/*.json","token":"﻿bom","transcriptionUrl":"a..b"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":true,"mimeType":"{name} has {count} items","token":"a.b.c","transcriptionUrl":"key_name-1"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":true,"mimeType":"hello","token":"a..b","transcriptionUrl":".leading"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":null,"mimeType":"abc","token":"hello world日本語のテキスト","transcriptionUrl":"a"}],"error":"Cannot read properties of null (reading 'byteLength')"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":[],"mimeType":"emoji 👍🏽 mix","token":"trailing.","transcriptionUrl":"Hello World"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":0,"mimeType":"src/a/b.ts","token":"ΣΊΣΥΦΟΣ","transcriptionUrl":"a..b"}],"error":"offset is out of bounds"}
+{"fn":"requestDesktopVoiceTranscription","args":[{"audioBuffer":[],"mimeType":"a.b.c","token":"key_name-1","transcriptionUrl":"HELLO"}],"error":"offset is out of bounds"}
+{"fn":"registerDesktopVoiceTranscriptionHandler","args":[],"ok":{"$undefined":true}}

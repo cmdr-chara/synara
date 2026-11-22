@@ -1,0 +1,23 @@
+{
+  "unit": "apps/desktop/src/startupDiagnosticDialog.ts",
+  "files": 1,
+  "fingerprint": "25db9838b82bb337",
+  "coverage": {
+    "lines": 47,
+    "reached": 29,
+    "files": [
+      {
+        "file": "apps/desktop/src/i18n.ts",
+        "lines": 21,
+        "reached": 18,
+        "missed": "21-23"
+      },
+      {
+        "file": "apps/desktop/src/startupDiagnosticDialog.ts",
+        "lines": 26,
+        "reached": 11,
+        "missed": "12-26"
+      }
+    ]
+  }
+}

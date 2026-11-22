@@ -1,0 +1,218 @@
+{"fn":"showDiagnosticStartupDialog","args":[[],":","x"],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[[],"a😀b😀c",{"a":{"b":"c"}}],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[{"a":{"b":"c"}},"a",null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[0,"a.b.c",0],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[true,".leading","x"],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[["a",1],".leading",["a",1]],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[true,"a:b:c",null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[{},"  padded  key_name-1",null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[{"a":{"b":"c"}},".leading",null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":["x",{"$undefined":true},["a",1]],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[0,"  padded  ",true],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[true,"﻿bom./x/**/*.json",null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[0,"a..b",null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[{"a":{"b":"c"}},"a.b.c",null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[null,"﻿bom",0],"error":"Cannot read properties of null (reading 'buttons')"}
+{"fn":"showDiagnosticStartupDialog","args":[{"a":{"b":"c"}},"line1\nline2﻿bom",null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[{"a":{"b":"c"}},"ab",null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[[],"./x/**/*.json",true],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[["a",1],"tab\tseparated",null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[0,"é",{}],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[0,"a😀b😀c",null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[{},"key_name-1",{}],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[{"a":"b"},{"$undefined":true},0],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":["x",{"$undefined":true},null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[0,"é",{"a":"b"}],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":["x","ünïcödé",{"a":{"b":"c"}}],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[null,{"$undefined":true},{"a":{"b":"c"}}],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[["a",1],"ünïcödé",{"a":{"b":"c"}}],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[["a",1],"a😀b😀c",null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[[],{"$undefined":true},null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[0,{"$undefined":true},{"a":"b"}],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[0,"trailing.",[]],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[true,"ns:key.path",null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[null,".leading",null],"error":"Cannot read properties of null (reading 'buttons')"}
+{"fn":"showDiagnosticStartupDialog","args":[true,"hello",null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[{},"﻿bom{name} has {count} items",[]],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[{"a":{"b":"c"}},{"$undefined":true},null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[{"a":"b"},{"$undefined":true},null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[[],"line1\nline2",{}],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[["a",1],"ünïcödé",null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[null,"{name} has {count} items",["a",1]],"error":"Cannot read properties of null (reading 'buttons')"}
+{"fn":"showDiagnosticStartupDialog","args":[{},"ünïcödé",["a",1]],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[true,{"$undefined":true},null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[true,{"$undefined":true},{"a":{"b":"c"}}],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[["a",1],":",null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":["x",{"$undefined":true},"x"],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[{"a":{"b":"c"}},"abc",null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[{"a":"b"},"a.b.c",0],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":["x","x",null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[{},"line1\nline2",null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[0,"ΣΊΣΥΦΟΣ日本語のテキスト",null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[true,"  padded  ",null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[0,"hello",null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[{"a":"b"},{"$undefined":true},{"a":"b"}],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[[],"  padded  ",null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[null,"a.b.c",{"a":{"b":"c"}}],"error":"Cannot read properties of null (reading 'buttons')"}
+{"fn":"showDiagnosticStartupDialog","args":[true,"./x/**/*.jsonline1\nline2",true],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[{"a":{"b":"c"}},"a:b:c",null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[{"a":{"b":"c"}},"emoji 👍🏽 mix",null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[["a",1],"a..b",null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[{"a":{"b":"c"}},"Hello World.leading","x"],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[null,{"$undefined":true},true],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[{},{"$undefined":true},["a",1]],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[null,"hello",null],"error":"Cannot read properties of null (reading 'buttons')"}
+{"fn":"showDiagnosticStartupDialog","args":[0,"hello world",null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[{"a":"b"},"HELLO",null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[[],"hello",null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[null,"ünïcödé",true],"error":"Cannot read properties of null (reading 'buttons')"}
+{"fn":"showDiagnosticStartupDialog","args":[null,"  padded  ",0],"error":"Cannot read properties of null (reading 'buttons')"}
+{"fn":"showDiagnosticStartupDialog","args":[[],{"$undefined":true},{"a":{"b":"c"}}],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[{},"tab\tseparated",[]],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[true,"  padded  ",[]],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[null,"hello  padded  ",null],"error":"Cannot read properties of null (reading 'buttons')"}
+{"fn":"showDiagnosticStartupDialog","args":[true,":",null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":["x","😀",null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[{},"  padded  ",{"a":"b"}],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":["x","﻿bom",null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[true,"./x/**/*.json",null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[null,"line1\nline2",{"a":"b"}],"error":"Cannot read properties of null (reading 'buttons')"}
+{"fn":"showDiagnosticStartupDialog","args":[{},"emoji 👍🏽 mix",{"a":"b"}],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[{},"trailing.",null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[[],"hello world",null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[[],"ΣΊΣΥΦΟΣ",[]],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":["x","tab\tseparated",null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[true,"İstanbul",{}],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[["a",1],{"$undefined":true},{"a":"b"}],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":["x","a:b:c",{}],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[[],"abcemoji 👍🏽 mix","x"],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":["ト","日本語のテキスト",true],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[{"a":"b"},".leading",["a",1]],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[[],"./x/**/*.json",null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[{"a":"b"},{"$undefined":true},"x"],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[null,"src/a/b.ts",[]],"error":"Cannot read properties of null (reading 'buttons')"}
+{"fn":"showDiagnosticStartupDialog","args":["x","HELLO",{"a":{"b":"c"}}],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[0,"key_name-1  padded  ",true],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":["x","line1\nline2a..b","x"],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[null,"x","x"],"error":"Cannot read properties of null (reading 'buttons')"}
+{"fn":"showDiagnosticStartupDialog","args":[{"a":"b"},"a:b:c",null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[{},"ns:key.path",null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[[],{"$undefined":true},["a",1]],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[[],"a",null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[{},"ΣΊΣΥΦΟΣ",true],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":["e","é",null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":["x","tab\tseparated",0],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[true,"HELLO",0],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":["x","  padded  ",null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[{"a":{"b":"c"}},"{name} has {count} items😀",true],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[[],"HELLOabc",{"a":{"b":"c"}}],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[{"a":{"b":"c"}},"  padded  ",null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[{"a":{"b":"c"}},"Hello WorldHELLO",{"a":"b"}],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[[],"straße",{"a":{"b":"c"}}],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[{"a":{"b":"c"}},{"$undefined":true},["a",1]],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[{"a":{"b":"c"}},{"$undefined":true},true],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[null,"ab",null],"error":"Cannot read properties of null (reading 'buttons')"}
+{"fn":"showDiagnosticStartupDialog","args":[null,{"$undefined":true},[]],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[[],"HELLO",null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[{},{"$undefined":true},null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[null,{"$undefined":true},0],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[null,"ΣΊΣΥΦΟΣ",["a",1]],"error":"Cannot read properties of null (reading 'buttons')"}
+{"fn":"showDiagnosticStartupDialog","args":[{"a":"b"},".leading",[]],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[{"a":"b"},"{name} has {count} items","x"],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[{"a":"b"},"straße",null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[true,{"$undefined":true},true],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[{"a":{"b":"c"}},"a😀b😀c  padded  ","x"],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[{},"trailing.Hello World",{"a":{"b":"c"}}],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[[],":src/a/b.ts",null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[[],"a.b.c",{"a":{"b":"c"}}],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[{},"😀",{"a":"b"}],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[["a",1],{"$undefined":true},null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[[],"ΣΊΣΥΦΟΣsrc/a/b.ts",["a",1]],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[null,"a.b.c",null],"error":"Cannot read properties of null (reading 'buttons')"}
+{"fn":"showDiagnosticStartupDialog","args":[true,"ünïcödé",null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[{"a":{"b":"c"}},"  padded  ",[]],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[["a",1],"ab",[]],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[null,"éline1\nline2",null],"error":"Cannot read properties of null (reading 'buttons')"}
+{"fn":"showDiagnosticStartupDialog","args":[[],"./x/**/*.jsonhello",[]],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[0,"",0],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[null,"./x/**/*.json",0],"error":"Cannot read properties of null (reading 'buttons')"}
+{"fn":"showDiagnosticStartupDialog","args":[{"a":"b"},"./x/**/*.jsonhello",null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[true,"a.b.c",[]],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[0,".leading",{"a":"b"}],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[true,"﻿bom",{"a":"b"}],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[0,"étrailing.",null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[{},"a",0],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[[],"hello world",0],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[{"a":"b"},"HELLO",{"a":{"b":"c"}}],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[[],"x","x"],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[0,"src/a/b.ts",null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[true,"hello world",null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[["a",1],"straße.leading",{"a":{"b":"c"}}],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[0,{"$undefined":true},null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[{"a":"b"},"a.b.c",null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[true,"a..b",null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[{"a":{"b":"c"}},"trailing.","x"],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[true,{"$undefined":true},["a",1]],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[{},"trailing.",["a",1]],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[{"a":{"b":"c"}},"日本語のテキスト",["a",1]],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[{"a":"b"},"a😀b😀c",0],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[["a",1],"日本語のテキストhello",0],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[true,"﻿bom",null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[{"a":{"b":"c"}},"ünïcödé",null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[true,"",{}],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[[],"emoji 👍🏽 mix","x"],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[[],"./x/**/*.json",[]],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[{"a":"b"},"trailing.",{"a":{"b":"c"}}],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[true,"éΣΊΣΥΦΟΣ",null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[[],"abc",null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[true,"abcHELLO",true],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[["a",1],"a:b:c",{}],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":["x","ΣΊΣΥΦΟΣ",0],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[true,{"$undefined":true},[]],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[null,{"$undefined":true},["a",1]],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[[],"tab\tseparatedline1\nline2",null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":["x","abc",null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[{"a":{"b":"c"}},"HELLO",[]],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[{"a":"b"},"ab",null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[[],"tab\tseparated",{"a":{"b":"c"}}],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[["a",1],"a..b",{}],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[{},{"$undefined":true},{"a":{"b":"c"}}],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[{},"  padded  ","x"],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":["x","abcé",{}],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[0,{"$undefined":true},{"a":{"b":"c"}}],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[["a",1],"ünïcödéa.b.c",[]],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":["NS:KEY.","ns:key.path",null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[[],{"$undefined":true},0],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[0,"İstanbul.leading",{"a":{"b":"c"}}],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[true,"a",{"a":"b"}],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[null,"line1\nline2",[]],"error":"Cannot read properties of null (reading 'buttons')"}
+{"fn":"showDiagnosticStartupDialog","args":[0,"a..bΣΊΣΥΦΟΣ",null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[[],"straße",["a",1]],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[{},"key_name-1",null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[{"a":{"b":"c"}},"line1\nline2",null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[[],"😀",null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[["a",1],"Hello Worldkey_name-1",["a",1]],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[true,"Hello Worldtrailing.",null],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[{"a":"b"},"﻿bom",{"a":"b"}],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[{"a":"b"},"ab",{"a":"b"}],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[["a",1],{"$undefined":true},[]],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[{},"HELLOns:key.path",[]],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[{"a":{"b":"c"}},"hello world",{"a":"b"}],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[[],{"$undefined":true},"x"],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[[],"héllo wörld","x"],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[[],"👍🏽 thumbs","x"],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[[],"日本語","x"],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[[],"","x"],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[[],"é","x"],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[[],"İstanbul","x"],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[[],"straße","x"],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[[],"ılık ırmak","x"],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[[],"👨‍👩‍👧 family","x"],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[[],"a b","x"],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[[],"ΣΊΣΥΦΟΣ","x"],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[[],"a😀b","x"],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[[],"﻿bom","x"],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[[],"a²b x½ y①","x"],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[[],"aⅠb Ⅻ","x"],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[[],"a𐐀b 𝐀bc","x"],"ok":{}}
+{"fn":"showDiagnosticStartupDialog","args":[[],"कि ٣٤","x"],"ok":{}}

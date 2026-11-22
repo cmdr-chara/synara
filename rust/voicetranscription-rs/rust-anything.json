@@ -1,0 +1,41 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/desktop/src/voiceTranscription.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "voicetranscription-rs",
+  "exports": [
+    {
+      "name": "requestDesktopVoiceTranscription",
+      "file": "apps/desktop/src/voiceTranscription.ts",
+      "line": 214,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly audioBuffer: Buffer;\n  readonly mimeType: string;\n  readonly token: string;\n  readonly transcriptionUrl: string;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<OutboundHttpResponse>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "registerDesktopVoiceTranscriptionHandler",
+      "file": "apps/desktop/src/voiceTranscription.ts",
+      "line": 279,
+      "params": [],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

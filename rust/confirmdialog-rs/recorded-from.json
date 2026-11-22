@@ -1,0 +1,23 @@
+{
+  "unit": "apps/desktop/src/confirmDialog.ts",
+  "files": 1,
+  "fingerprint": "0f87fd6363877aa3",
+  "coverage": {
+    "lines": 77,
+    "reached": 47,
+    "files": [
+      {
+        "file": "apps/desktop/src/confirmDialog.ts",
+        "lines": 56,
+        "reached": 26,
+        "missed": "31-60"
+      },
+      {
+        "file": "apps/desktop/src/i18n.ts",
+        "lines": 21,
+        "reached": 21,
+        "missed": ""
+      }
+    ]
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "unit": "benchmarks/desktop-perf/lib/launch.mjs",
+  "files": 1,
+  "fingerprint": "200d78090241360c",
+  "coverage": {
+    "lines": 419,
+    "reached": 217,
+    "files": [
+      {
+        "file": "benchmarks/desktop-perf/lib/cdp.mjs",
+        "lines": 109,
+        "reached": 13,
+        "missed": "5-8, 11-13, 17-38, 40-51, 53-59, 61-65, 68-82, 85-87, 89-93, 98-99, 102-119"
+      },
+      {
+        "file": "benchmarks/desktop-perf/lib/launch.mjs",
+        "lines": 310,
+        "reached": 204,
+        "missed": "29, 33, 40-42, 49, 53-62, 95-101, 130-133, 149, 152-165, 213-222, 226-229, 236-256, 274-278, 286-303, 323-328"
+      }
+    ]
+  }
+}

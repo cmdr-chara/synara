@@ -1,0 +1,424 @@
+{"fn":"resolveDefaultBrowserHostPipePath","args":[],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[{"$undefined":true},{}],"ok":"/tmp/synara-browser-host-501/[object Object]-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[0,{"$undefined":true}],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[["a",1],{}],"ok":"/tmp/synara-browser-host-501/[object Object]-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[true,{"$undefined":true}],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[null,"x"],"ok":"/tmp/synara-browser-host-501/x-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[{"a":"b"},{"a":{"b":"c"}}],"ok":"/tmp/synara-browser-host-501/[object Object]-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[["a",1],["a",1]],"ok":"/tmp/synara-browser-host-501/a,1-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[{"$undefined":true},true],"ok":"/tmp/synara-browser-host-501/true-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[{}],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[{"$undefined":true},{"$undefined":true}],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[["a",1]],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[{},["a",1]],"ok":"/tmp/synara-browser-host-501/a,1-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[{"a":{"b":"c"}},{"a":"b"}],"ok":"/tmp/synara-browser-host-501/[object Object]-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[{"a":"b"}],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[{"a":"b"},true],"ok":"/tmp/synara-browser-host-501/true-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":["x",true],"ok":"/tmp/synara-browser-host-501/true-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[{"$undefined":true},"x"],"ok":"/tmp/synara-browser-host-501/x-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[[],0],"ok":"/tmp/synara-browser-host-501/0-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[0,{"a":{"b":"c"}}],"ok":"/tmp/synara-browser-host-501/[object Object]-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[{"a":{"b":"c"}},"x"],"ok":"/tmp/synara-browser-host-501/x-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[0,null],"ok":"/tmp/synara-browser-host-501/null-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[{"a":{"b":"c"}},{}],"ok":"/tmp/synara-browser-host-501/[object Object]-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[{"$undefined":true},null],"ok":"/tmp/synara-browser-host-501/null-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":["x"],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[null,{"a":"b"}],"ok":"/tmp/synara-browser-host-501/[object Object]-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[{"$undefined":true},[]],"ok":"/tmp/synara-browser-host-501/-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[[],{"a":"b"}],"ok":"/tmp/synara-browser-host-501/[object Object]-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[0,[]],"ok":"/tmp/synara-browser-host-501/-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[true,[]],"ok":"/tmp/synara-browser-host-501/-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[null,{}],"ok":"/tmp/synara-browser-host-501/[object Object]-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[{},"x"],"ok":"/tmp/synara-browser-host-501/x-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[{"a":"b"},{}],"ok":"/tmp/synara-browser-host-501/[object Object]-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[{},null],"ok":"/tmp/synara-browser-host-501/null-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[true],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[{"$undefined":true},{"a":{"b":"c"}}],"ok":"/tmp/synara-browser-host-501/[object Object]-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[[],{"a":{"b":"c"}}],"ok":"/tmp/synara-browser-host-501/[object Object]-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":["x",[]],"ok":"/tmp/synara-browser-host-501/-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[["a",1],{"$undefined":true}],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[null,["a",1]],"ok":"/tmp/synara-browser-host-501/a,1-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[{"a":{"b":"c"}},0],"ok":"/tmp/synara-browser-host-501/0-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[true,{"a":"b"}],"ok":"/tmp/synara-browser-host-501/[object Object]-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":["x",["a",1]],"ok":"/tmp/synara-browser-host-501/a,1-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[true,null],"ok":"/tmp/synara-browser-host-501/null-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[{"$undefined":true},0],"ok":"/tmp/synara-browser-host-501/0-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[[]],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[0,{}],"ok":"/tmp/synara-browser-host-501/[object Object]-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[null,{"$undefined":true}],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":["x",{}],"ok":"/tmp/synara-browser-host-501/[object Object]-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[["a",1],{"a":{"b":"c"}}],"ok":"/tmp/synara-browser-host-501/[object Object]-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[{},{"a":{"b":"c"}}],"ok":"/tmp/synara-browser-host-501/[object Object]-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[{"a":"b"},[]],"ok":"/tmp/synara-browser-host-501/-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[{"$undefined":true}],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[null,0],"ok":"/tmp/synara-browser-host-501/0-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[true,["a",1]],"ok":"/tmp/synara-browser-host-501/a,1-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[["a",1],true],"ok":"/tmp/synara-browser-host-501/true-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[["a",1],0],"ok":"/tmp/synara-browser-host-501/0-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[{"$undefined":true},["a",1]],"ok":"/tmp/synara-browser-host-501/a,1-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":["x",0],"ok":"/tmp/synara-browser-host-501/0-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[{"$undefined":true},{"a":"b"}],"ok":"/tmp/synara-browser-host-501/[object Object]-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[true,{}],"ok":"/tmp/synara-browser-host-501/[object Object]-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[{"a":"b"},0],"ok":"/tmp/synara-browser-host-501/0-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[[],["a",1]],"ok":"/tmp/synara-browser-host-501/a,1-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[{},{"$undefined":true}],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[null,{"a":{"b":"c"}}],"ok":"/tmp/synara-browser-host-501/[object Object]-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[true,0],"ok":"/tmp/synara-browser-host-501/0-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[0],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[{},{"a":"b"}],"ok":"/tmp/synara-browser-host-501/[object Object]-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[{"a":{"b":"c"}},{"$undefined":true}],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[{"a":{"b":"c"}},true],"ok":"/tmp/synara-browser-host-501/true-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[["a",1],{"a":"b"}],"ok":"/tmp/synara-browser-host-501/[object Object]-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[{"a":"b"},["a",1]],"ok":"/tmp/synara-browser-host-501/a,1-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[0,0],"ok":"/tmp/synara-browser-host-501/0-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[["a",1],"x"],"ok":"/tmp/synara-browser-host-501/x-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[null,[]],"ok":"/tmp/synara-browser-host-501/-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[{"a":"b"},null],"ok":"/tmp/synara-browser-host-501/null-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[{"a":{"b":"c"}},[]],"ok":"/tmp/synara-browser-host-501/-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[{"a":{"b":"c"}},["a",1]],"ok":"/tmp/synara-browser-host-501/a,1-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[[],true],"ok":"/tmp/synara-browser-host-501/true-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[null,true],"ok":"/tmp/synara-browser-host-501/true-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[[],{"$undefined":true}],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":["x",null],"ok":"/tmp/synara-browser-host-501/null-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[null,null],"ok":"/tmp/synara-browser-host-501/null-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":["x",{"a":{"b":"c"}}],"ok":"/tmp/synara-browser-host-501/[object Object]-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[0,"x"],"ok":"/tmp/synara-browser-host-501/x-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[0,{"a":"b"}],"ok":"/tmp/synara-browser-host-501/[object Object]-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[{},0],"ok":"/tmp/synara-browser-host-501/0-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[0,["a",1]],"ok":"/tmp/synara-browser-host-501/a,1-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[{},true],"ok":"/tmp/synara-browser-host-501/true-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[{"a":"b"},{"$undefined":true}],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[{"a":"b"},"x"],"ok":"/tmp/synara-browser-host-501/x-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[[],null],"ok":"/tmp/synara-browser-host-501/null-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[true,true],"ok":"/tmp/synara-browser-host-501/true-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[true,"x"],"ok":"/tmp/synara-browser-host-501/x-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[[],[]],"ok":"/tmp/synara-browser-host-501/-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":["x",{"a":"b"}],"ok":"/tmp/synara-browser-host-501/[object Object]-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[{"a":{"b":"c"}}],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[[],{}],"ok":"/tmp/synara-browser-host-501/[object Object]-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":["x",{"$undefined":true}],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[0,true],"ok":"/tmp/synara-browser-host-501/true-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[["a",1],[]],"ok":"/tmp/synara-browser-host-501/-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[true,{"a":{"b":"c"}}],"ok":"/tmp/synara-browser-host-501/[object Object]-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[["a",1],null],"ok":"/tmp/synara-browser-host-501/null-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[null],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":["x","x"],"ok":"/tmp/synara-browser-host-501/x-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[{},{}],"ok":"/tmp/synara-browser-host-501/[object Object]-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[{"a":{"b":"c"}},{"a":{"b":"c"}}],"ok":"/tmp/synara-browser-host-501/[object Object]-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[{"a":"b"},{"a":"b"}],"ok":"/tmp/synara-browser-host-501/[object Object]-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[{"a":{"b":"c"}},null],"ok":"/tmp/synara-browser-host-501/null-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[[],"x"],"ok":"/tmp/synara-browser-host-501/x-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":[{},[]],"ok":"/tmp/synara-browser-host-501/-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveDefaultBrowserHostPipePath","args":["x","X"],"ok":"/tmp/synara-browser-host-501/X-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[{"$undefined":true},[]],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[{}],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[{"a":{"b":"c"}}],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[{"a":"b"},"x"],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[null,0],"error":"Cannot read properties of null (reading 'SYNARA_BROWSER_HOST_PIPE_PATH')"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":["x"],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[0,{"a":"b"}],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[0,["a",1]],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[{"a":{"b":"c"}},{"a":{"b":"c"}}],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[{"a":{"b":"c"}},0],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[{},{"a":{"b":"c"}}],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[{"a":{"b":"c"}},null],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[null,{}],"error":"Cannot read properties of null (reading 'SYNARA_BROWSER_HOST_PIPE_PATH')"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[true,{"$undefined":true}],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":["x",["a",1]],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[["a",1],{"$undefined":true}],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[{"$undefined":true},0],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[true,{"a":{"b":"c"}}],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[0,null],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[{"a":"b"},[]],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":["x",{}],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[0,true],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[{"$undefined":true},{"a":"b"}],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[{"$undefined":true},"x"],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[{"a":{"b":"c"}},["a",1]],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[0,[]],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[[],{"a":"b"}],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[{"$undefined":true},{"$undefined":true}],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[{},["a",1]],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[null,"x"],"error":"Cannot read properties of null (reading 'SYNARA_BROWSER_HOST_PIPE_PATH')"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[{"a":{"b":"c"}},"x"],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[[],true],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[{"a":"b"},{"a":{"b":"c"}}],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[{},[]],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[true,{"a":"b"}],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[{"a":"b"},{}],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[[],[]],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[{"$undefined":true},{}],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[[],"x"],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[{"a":"b"},["a",1]],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[true,0],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[[],{"a":{"b":"c"}}],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[{"a":{"b":"c"}},[]],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[{"a":"b"}],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[null,{"$undefined":true}],"error":"Cannot read properties of null (reading 'SYNARA_BROWSER_HOST_PIPE_PATH')"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[["a",1],["a",1]],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":["x",true],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[[]],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[true,true],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[{"a":"b"},null],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[{"$undefined":true}],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[{},null],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[{"a":{"b":"c"}},true],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[null,{"a":{"b":"c"}}],"error":"Cannot read properties of null (reading 'SYNARA_BROWSER_HOST_PIPE_PATH')"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[{},true],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[{"$undefined":true},{"a":{"b":"c"}}],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[["a",1],{"a":{"b":"c"}}],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[[],null],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[{},0],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[true,{}],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":["x",null],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[{"$undefined":true},true],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[true],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[["a",1]],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[{},"x"],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[0],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[["a",1],null],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[["a",1],0],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[true,[]],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":["x",{"a":{"b":"c"}}],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[0,{}],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":["x","x"],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[true,null],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[null,[]],"error":"Cannot read properties of null (reading 'SYNARA_BROWSER_HOST_PIPE_PATH')"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[null,true],"error":"Cannot read properties of null (reading 'SYNARA_BROWSER_HOST_PIPE_PATH')"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[null,["a",1]],"error":"Cannot read properties of null (reading 'SYNARA_BROWSER_HOST_PIPE_PATH')"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[["a",1],{}],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[[],["a",1]],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[{},{"a":"b"}],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[null,{"a":"b"}],"error":"Cannot read properties of null (reading 'SYNARA_BROWSER_HOST_PIPE_PATH')"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[0,0],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":["x",{"a":"b"}],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[["a",1],true],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[[],{}],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[true,["a",1]],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[true,"x"],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[0,{"$undefined":true}],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[["a",1],{"a":"b"}],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[{"a":"b"},true],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":["x",[]],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[{"$undefined":true},null],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[{"a":"b"},{"a":"b"}],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[{"a":"b"},{"$undefined":true}],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[{"a":{"b":"c"}},{}],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[[],0],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[{"a":{"b":"c"}},{"$undefined":true}],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[["a",1],[]],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[["a",1],"x"],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[0,"x"],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[null],"error":"Cannot read properties of null (reading 'SYNARA_BROWSER_HOST_PIPE_PATH')"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":["x",{"$undefined":true}],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[null,null],"error":"Cannot read properties of null (reading 'SYNARA_BROWSER_HOST_PIPE_PATH')"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[[],{"$undefined":true}],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[{"$undefined":true},["a",1]],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[{"a":{"b":"c"}},{"a":"b"}],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[{"a":"b"},0],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[0,{"a":{"b":"c"}}],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":["x",0],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[{},{"$undefined":true}],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":[{},{}],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveConfiguredBrowserHostPipePath","args":["X","x"],"ok":"/tmp/synara-browser-host-501/424242-ffffffff-ffff-ffff-ffff-ffffffffffff.sock"}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[0,{"$undefined":true}],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[{"a":{"b":"c"}},"hello",1000000],"ok":{"a":{"b":"c"},"SYNARA_BROWSER_HOST_PIPE_PATH":"hello","SYNARA_BROWSER_USE_PIPE_PATH":"hello","SYNARA_BROWSER_HOST_CAPABILITY_FD":"1000000"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[0,"a..b",10],"ok":{"SYNARA_BROWSER_HOST_PIPE_PATH":"a..b","SYNARA_BROWSER_USE_PIPE_PATH":"a..b","SYNARA_BROWSER_HOST_CAPABILITY_FD":"10"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[null,"key_name-1"],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[0,{"$undefined":true},2147483648],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[0,"a.b.c",-1],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":["x",{"$undefined":true},9007199254740992],"ok":{"0":"x"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[["a",1],"日本語のテキスト",100],"ok":{"0":"a","1":1,"SYNARA_BROWSER_HOST_PIPE_PATH":"日本語のテキスト","SYNARA_BROWSER_USE_PIPE_PATH":"日本語のテキスト","SYNARA_BROWSER_HOST_CAPABILITY_FD":"100"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[{"a":{"b":"c"}},"日本語のテキストa:b:c",9007199254740992],"ok":{"a":{"b":"c"},"SYNARA_BROWSER_HOST_PIPE_PATH":"日本語のテキストa:b:c","SYNARA_BROWSER_USE_PIPE_PATH":"日本語のテキストa:b:c","SYNARA_BROWSER_HOST_CAPABILITY_FD":"9007199254740992"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[{"a":{"b":"c"}},"./x/**/*.json"],"ok":{"a":{"b":"c"}}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[{},{"$undefined":true},1000],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[{"a":{"b":"c"}},""],"ok":{"a":{"b":"c"}}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":["x","ΣΊΣΥΦΟΣab",3],"ok":{"0":"x","SYNARA_BROWSER_HOST_PIPE_PATH":"ΣΊΣΥΦΟΣab","SYNARA_BROWSER_USE_PIPE_PATH":"ΣΊΣΥΦΟΣab","SYNARA_BROWSER_HOST_CAPABILITY_FD":"3"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[true,"ΣΊΣΥΦΟΣ",1000],"ok":{"SYNARA_BROWSER_HOST_PIPE_PATH":"ΣΊΣΥΦΟΣ","SYNARA_BROWSER_USE_PIPE_PATH":"ΣΊΣΥΦΟΣ","SYNARA_BROWSER_HOST_CAPABILITY_FD":"1000"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[{"a":"b"},"hello world日本語のテキスト",1],"ok":{"a":"b"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[0,{"$undefined":true},3],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[[],"😀",-1],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":["x","a..b",2147483648],"ok":{"0":"x","SYNARA_BROWSER_HOST_PIPE_PATH":"a..b","SYNARA_BROWSER_USE_PIPE_PATH":"a..b","SYNARA_BROWSER_HOST_CAPABILITY_FD":"2147483648"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[{"a":"b"},"Hello World",{"$num":"-0"}],"ok":{"a":"b"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[{"a":{"b":"c"}},"tab\tseparated"],"ok":{"a":{"b":"c"}}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[true,"Hello World",2147483648],"ok":{"SYNARA_BROWSER_HOST_PIPE_PATH":"Hello World","SYNARA_BROWSER_USE_PIPE_PATH":"Hello World","SYNARA_BROWSER_HOST_CAPABILITY_FD":"2147483648"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[[],"aba"],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[[],"hello world",3],"ok":{"SYNARA_BROWSER_HOST_PIPE_PATH":"hello world","SYNARA_BROWSER_USE_PIPE_PATH":"hello world","SYNARA_BROWSER_HOST_CAPABILITY_FD":"3"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[{"a":{"b":"c"}},"aba😀b😀c",1000],"ok":{"a":{"b":"c"},"SYNARA_BROWSER_HOST_PIPE_PATH":"aba😀b😀c","SYNARA_BROWSER_USE_PIPE_PATH":"aba😀b😀c","SYNARA_BROWSER_HOST_CAPABILITY_FD":"1000"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":["x","ns:key.path",1000],"ok":{"0":"x","SYNARA_BROWSER_HOST_PIPE_PATH":"ns:key.path","SYNARA_BROWSER_USE_PIPE_PATH":"ns:key.path","SYNARA_BROWSER_HOST_CAPABILITY_FD":"1000"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[0,"{name} has {count} items",{"$undefined":true}],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[[],"hello world"],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[null,"a",-2.5],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[[],"HELLO",0.5],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[[],"éa..b",100],"ok":{"SYNARA_BROWSER_HOST_PIPE_PATH":"éa..b","SYNARA_BROWSER_USE_PIPE_PATH":"éa..b","SYNARA_BROWSER_HOST_CAPABILITY_FD":"100"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[{},"a:b:c"],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":["x",{"$undefined":true},{"$num":"NaN"}],"ok":{"0":"x"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[0,"{name} has {count} items",{"$num":"Infinity"}],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[0,{"$undefined":true},-2.5],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[null,{"$undefined":true},{"$num":"-Infinity"}],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":["bc","abc",0],"ok":{"0":"b","1":"c"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[true,"ns:key.pathhello world",100],"ok":{"SYNARA_BROWSER_HOST_PIPE_PATH":"ns:key.pathhello world","SYNARA_BROWSER_USE_PIPE_PATH":"ns:key.pathhello world","SYNARA_BROWSER_HOST_CAPABILITY_FD":"100"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":["x","",{"$num":"Infinity"}],"ok":{"0":"x"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":["x","日本語のテキスト",42],"ok":{"0":"x","SYNARA_BROWSER_HOST_PIPE_PATH":"日本語のテキスト","SYNARA_BROWSER_USE_PIPE_PATH":"日本語のテキスト","SYNARA_BROWSER_HOST_CAPABILITY_FD":"42"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[{},{"$undefined":true},{"$undefined":true}],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":["x","HELLO",0.5],"ok":{"0":"x"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[true,"ΣΊΣΥΦΟΣ:",{"$undefined":true}],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[[],"Hello World",-2.5],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[{"a":{"b":"c"}},{"$undefined":true},0],"ok":{"a":{"b":"c"}}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[0,"HELLO",100],"ok":{"SYNARA_BROWSER_HOST_PIPE_PATH":"HELLO","SYNARA_BROWSER_USE_PIPE_PATH":"HELLO","SYNARA_BROWSER_HOST_CAPABILITY_FD":"100"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[true,"é",1000000],"ok":{"SYNARA_BROWSER_HOST_PIPE_PATH":"é","SYNARA_BROWSER_USE_PIPE_PATH":"é","SYNARA_BROWSER_HOST_CAPABILITY_FD":"1000000"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[{"a":"b"},"日本語のテキスト"],"ok":{"a":"b"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[null,"İstanbul",{"$num":"-0"}],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[0,{"$undefined":true},{"$num":"-Infinity"}],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":["x","",{"$num":"-0"}],"ok":{"0":"x"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":["x","ab",9007199254740992],"ok":{"0":"x","SYNARA_BROWSER_HOST_PIPE_PATH":"ab","SYNARA_BROWSER_USE_PIPE_PATH":"ab","SYNARA_BROWSER_HOST_CAPABILITY_FD":"9007199254740992"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[["a",1],"ns:key.path",-1],"ok":{"0":"a","1":1}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[{"a":"b"},".leading",3],"ok":{"a":"b","SYNARA_BROWSER_HOST_PIPE_PATH":".leading","SYNARA_BROWSER_USE_PIPE_PATH":".leading","SYNARA_BROWSER_HOST_CAPABILITY_FD":"3"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[{"a":"b"},"Hello World",1],"ok":{"a":"b"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[0,"./x/**/*.json"],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[true,{"$undefined":true},2147483648],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":["x","a..b",-2.5],"ok":{"0":"x"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[true],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":["x",".leading",10],"ok":{"0":"x","SYNARA_BROWSER_HOST_PIPE_PATH":".leading","SYNARA_BROWSER_USE_PIPE_PATH":".leading","SYNARA_BROWSER_HOST_CAPABILITY_FD":"10"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[true,"abc",-2.5],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[{"a":{"b":"c"}},"a",2],"ok":{"a":{"b":"c"}}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[null,{"$undefined":true},0],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[":","a:b:c",1000000],"ok":{"0":":","SYNARA_BROWSER_HOST_PIPE_PATH":"a:b:c","SYNARA_BROWSER_USE_PIPE_PATH":"a:b:c","SYNARA_BROWSER_HOST_CAPABILITY_FD":"1000000"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[{"a":"b"},"a.b.c",3],"ok":{"a":"b","SYNARA_BROWSER_HOST_PIPE_PATH":"a.b.c","SYNARA_BROWSER_USE_PIPE_PATH":"a.b.c","SYNARA_BROWSER_HOST_CAPABILITY_FD":"3"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[{"a":{"b":"c"}},"ΣΊΣΥΦΟΣ"],"ok":{"a":{"b":"c"}}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[{},{"$undefined":true},1],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[null,"日本語のテキスト:",1000000],"ok":{"SYNARA_BROWSER_HOST_PIPE_PATH":"日本語のテキスト:","SYNARA_BROWSER_USE_PIPE_PATH":"日本語のテキスト:","SYNARA_BROWSER_HOST_CAPABILITY_FD":"1000000"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[["a",1]],"ok":{"0":"a","1":1}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[0,"a😀b😀chello",-2.5],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[{"a":{"b":"c"}},"src/a/b.ts",100],"ok":{"a":{"b":"c"},"SYNARA_BROWSER_HOST_PIPE_PATH":"src/a/b.ts","SYNARA_BROWSER_USE_PIPE_PATH":"src/a/b.ts","SYNARA_BROWSER_HOST_CAPABILITY_FD":"100"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[[],"😀"],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[{"a":{"b":"c"}},"Hello World",{"$num":"-Infinity"}],"ok":{"a":{"b":"c"}}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[{},"日本語のテキスト",1000],"ok":{"SYNARA_BROWSER_HOST_PIPE_PATH":"日本語のテキスト","SYNARA_BROWSER_USE_PIPE_PATH":"日本語のテキスト","SYNARA_BROWSER_HOST_CAPABILITY_FD":"1000"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[[],"src/a/b.ts",{"$num":"-Infinity"}],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[{"a":{"b":"c"}},"{name} has {count} items",2147483648],"ok":{"a":{"b":"c"},"SYNARA_BROWSER_HOST_PIPE_PATH":"{name} has {count} items","SYNARA_BROWSER_USE_PIPE_PATH":"{name} has {count} items","SYNARA_BROWSER_HOST_CAPABILITY_FD":"2147483648"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[true,"a..b:",0.5],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[null,"a.b.c./x/**/*.json"],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[true,{"$undefined":true}],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[true,"日本語のテキスト",3],"ok":{"SYNARA_BROWSER_HOST_PIPE_PATH":"日本語のテキスト","SYNARA_BROWSER_USE_PIPE_PATH":"日本語のテキスト","SYNARA_BROWSER_HOST_CAPABILITY_FD":"3"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[true,"a:b:c",10],"ok":{"SYNARA_BROWSER_HOST_PIPE_PATH":"a:b:c","SYNARA_BROWSER_USE_PIPE_PATH":"a:b:c","SYNARA_BROWSER_HOST_CAPABILITY_FD":"10"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[null,{"$undefined":true},{"$num":"Infinity"}],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[true,"hello worldünïcödé",1000],"ok":{"SYNARA_BROWSER_HOST_PIPE_PATH":"hello worldünïcödé","SYNARA_BROWSER_USE_PIPE_PATH":"hello worldünïcödé","SYNARA_BROWSER_HOST_CAPABILITY_FD":"1000"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[[],"日本語のテキスト",100],"ok":{"SYNARA_BROWSER_HOST_PIPE_PATH":"日本語のテキスト","SYNARA_BROWSER_USE_PIPE_PATH":"日本語のテキスト","SYNARA_BROWSER_HOST_CAPABILITY_FD":"100"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[{"a":"b"},{"$undefined":true},0.5],"ok":{"a":"b"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[{"a":{"b":"c"}},"abc./x/**/*.json",9007199254740992],"ok":{"a":{"b":"c"},"SYNARA_BROWSER_HOST_PIPE_PATH":"abc./x/**/*.json","SYNARA_BROWSER_USE_PIPE_PATH":"abc./x/**/*.json","SYNARA_BROWSER_HOST_CAPABILITY_FD":"9007199254740992"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":["x"],"ok":{"0":"x"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[0,"日本語のテキスト"],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[["a",1],"trailing.",1000],"ok":{"0":"a","1":1,"SYNARA_BROWSER_HOST_PIPE_PATH":"trailing.","SYNARA_BROWSER_USE_PIPE_PATH":"trailing.","SYNARA_BROWSER_HOST_CAPABILITY_FD":"1000"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[null,"é",-2.5],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":["x","x",0.5],"ok":{"0":"x"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[[],"😀",{"$num":"-0"}],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[{},{"$undefined":true},2147483648],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[true,"straße",{"$undefined":true}],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[null,"",1],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[0,"ns:key.path",{"$undefined":true}],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[0,"ünïcödé"],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":["x","a",0.5],"ok":{"0":"x"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[{},"a:b:c",1000],"ok":{"SYNARA_BROWSER_HOST_PIPE_PATH":"a:b:c","SYNARA_BROWSER_USE_PIPE_PATH":"a:b:c","SYNARA_BROWSER_HOST_CAPABILITY_FD":"1000"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[true,{"$undefined":true},0.5],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[null,"é",2147483648],"ok":{"SYNARA_BROWSER_HOST_PIPE_PATH":"é","SYNARA_BROWSER_USE_PIPE_PATH":"é","SYNARA_BROWSER_HOST_CAPABILITY_FD":"2147483648"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[true,"ünïcödé",1000],"ok":{"SYNARA_BROWSER_HOST_PIPE_PATH":"ünïcödé","SYNARA_BROWSER_USE_PIPE_PATH":"ünïcödé","SYNARA_BROWSER_HOST_CAPABILITY_FD":"1000"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[["a",1],"{name} has {count} items",1000000],"ok":{"0":"a","1":1,"SYNARA_BROWSER_HOST_PIPE_PATH":"{name} has {count} items","SYNARA_BROWSER_USE_PIPE_PATH":"{name} has {count} items","SYNARA_BROWSER_HOST_CAPABILITY_FD":"1000000"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[true,"hello",0],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[["a",1],"line1\nline2emoji 👍🏽 mix",9007199254740992],"ok":{"0":"a","1":1,"SYNARA_BROWSER_HOST_PIPE_PATH":"line1\nline2emoji 👍🏽 mix","SYNARA_BROWSER_USE_PIPE_PATH":"line1\nline2emoji 👍🏽 mix","SYNARA_BROWSER_HOST_CAPABILITY_FD":"9007199254740992"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[null,"emoji 👍🏽 mix",{"$num":"-Infinity"}],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[[],"İstanbul",-2.5],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":["x","ünïcödé"],"ok":{"0":"x"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[null,"a.b.ca",{"$num":"Infinity"}],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[["a",1],"ünïcödé",{"$num":"-Infinity"}],"ok":{"0":"a","1":1}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[0,"日本語のテキスト",0.5],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[{"a":{"b":"c"}},"./x/**/*.json",{"$undefined":true}],"ok":{"a":{"b":"c"}}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":["x",{"$undefined":true},-1],"ok":{"0":"x"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[["a",1],"Hello World",100],"ok":{"0":"a","1":1,"SYNARA_BROWSER_HOST_PIPE_PATH":"Hello World","SYNARA_BROWSER_USE_PIPE_PATH":"Hello World","SYNARA_BROWSER_HOST_CAPABILITY_FD":"100"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[{"a":"b"},"﻿bom",-1],"ok":{"a":"b"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[true,"ΣΊΣΥΦΟΣ",3],"ok":{"SYNARA_BROWSER_HOST_PIPE_PATH":"ΣΊΣΥΦΟΣ","SYNARA_BROWSER_USE_PIPE_PATH":"ΣΊΣΥΦΟΣ","SYNARA_BROWSER_HOST_CAPABILITY_FD":"3"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[0,"a.b.c"],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[["a",1],"a.b.c",10],"ok":{"0":"a","1":1,"SYNARA_BROWSER_HOST_PIPE_PATH":"a.b.c","SYNARA_BROWSER_USE_PIPE_PATH":"a.b.c","SYNARA_BROWSER_HOST_CAPABILITY_FD":"10"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[0,{"$undefined":true},{"$num":"NaN"}],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[{"a":"b"},"a..b",42],"ok":{"a":"b","SYNARA_BROWSER_HOST_PIPE_PATH":"a..b","SYNARA_BROWSER_USE_PIPE_PATH":"a..b","SYNARA_BROWSER_HOST_CAPABILITY_FD":"42"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":["x",{"$undefined":true},{"$undefined":true}],"ok":{"0":"x"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[null,"HELLO",0.5],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[null,":",2],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[{},{"$undefined":true},{"$num":"Infinity"}],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[{"a":{"b":"c"}},".leading",0.5],"ok":{"a":{"b":"c"}}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":["x",{"$undefined":true},1000000],"ok":{"0":"x"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[[],"﻿bom",{"$undefined":true}],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[{"a":"b"},"./x/**/*.json",{"$num":"-0"}],"ok":{"a":"b"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[true,"tab\tseparatedline1\nline2",0],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[[],"{name} has {count} items",1000],"ok":{"SYNARA_BROWSER_HOST_PIPE_PATH":"{name} has {count} items","SYNARA_BROWSER_USE_PIPE_PATH":"{name} has {count} items","SYNARA_BROWSER_HOST_CAPABILITY_FD":"1000"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[true,"a.b.c",3],"ok":{"SYNARA_BROWSER_HOST_PIPE_PATH":"a.b.c","SYNARA_BROWSER_USE_PIPE_PATH":"a.b.c","SYNARA_BROWSER_HOST_CAPABILITY_FD":"3"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[["a",1],"a😀b😀c",10],"ok":{"0":"a","1":1,"SYNARA_BROWSER_HOST_PIPE_PATH":"a😀b😀c","SYNARA_BROWSER_USE_PIPE_PATH":"a😀b😀c","SYNARA_BROWSER_HOST_CAPABILITY_FD":"10"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[[],"key_name-1",{"$num":"-Infinity"}],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[["a",1],"ab",3],"ok":{"0":"a","1":1,"SYNARA_BROWSER_HOST_PIPE_PATH":"ab","SYNARA_BROWSER_USE_PIPE_PATH":"ab","SYNARA_BROWSER_HOST_CAPABILITY_FD":"3"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[0,"﻿bom",9007199254740992],"ok":{"SYNARA_BROWSER_HOST_PIPE_PATH":"bom","SYNARA_BROWSER_USE_PIPE_PATH":"bom","SYNARA_BROWSER_HOST_CAPABILITY_FD":"9007199254740992"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[["a",1],"straßekey_name-1",2147483648],"ok":{"0":"a","1":1,"SYNARA_BROWSER_HOST_PIPE_PATH":"straßekey_name-1","SYNARA_BROWSER_USE_PIPE_PATH":"straßekey_name-1","SYNARA_BROWSER_HOST_CAPABILITY_FD":"2147483648"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[{"a":"b"},"a",{"$num":"-0"}],"ok":{"a":"b"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[0,"é"],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[null,"Hello World",{"$undefined":true}],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[[],"abc",10],"ok":{"SYNARA_BROWSER_HOST_PIPE_PATH":"abc","SYNARA_BROWSER_USE_PIPE_PATH":"abc","SYNARA_BROWSER_HOST_CAPABILITY_FD":"10"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[0,"ab",1000000],"ok":{"SYNARA_BROWSER_HOST_PIPE_PATH":"ab","SYNARA_BROWSER_USE_PIPE_PATH":"ab","SYNARA_BROWSER_HOST_CAPABILITY_FD":"1000000"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[["a",1],"ΣΊΣΥΦΟΣ"],"ok":{"0":"a","1":1}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[{"a":{"b":"c"}},"ünïcödé",0],"ok":{"a":{"b":"c"}}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[["a",1],"HELLO日本語のテキスト"],"ok":{"0":"a","1":1}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[{"a":"b"},"./x/**/*.json",{"$undefined":true}],"ok":{"a":"b"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":["x",{"$undefined":true},1000],"ok":{"0":"x"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[["a",1],{"$undefined":true},1],"ok":{"0":"a","1":1}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[["a",1],{"$undefined":true},1000],"ok":{"0":"a","1":1}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":["x","İstanbul",-1],"ok":{"0":"x"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[["a",1],"  padded  ",10],"ok":{"0":"a","1":1,"SYNARA_BROWSER_HOST_PIPE_PATH":"padded","SYNARA_BROWSER_USE_PIPE_PATH":"padded","SYNARA_BROWSER_HOST_CAPABILITY_FD":"10"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[0,"",1],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[0,"  padded  ",{"$undefined":true}],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[["a",1],".leading",-1],"ok":{"0":"a","1":1}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[["a",1],{"$undefined":true},100],"ok":{"0":"a","1":1}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[{},"a",2],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[["a",1],"hello world",1000000],"ok":{"0":"a","1":1,"SYNARA_BROWSER_HOST_PIPE_PATH":"hello world","SYNARA_BROWSER_USE_PIPE_PATH":"hello world","SYNARA_BROWSER_HOST_CAPABILITY_FD":"1000000"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[{"a":{"b":"c"}},"helloemoji 👍🏽 mix",{"$num":"-Infinity"}],"ok":{"a":{"b":"c"}}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[null,{"$undefined":true},{"$num":"-0"}],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[[],"İstanbul",0.5],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[["a",1],"﻿bom",-2.5],"ok":{"0":"a","1":1}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[{"a":{"b":"c"}},"emoji 👍🏽 mix",{"$num":"Infinity"}],"ok":{"a":{"b":"c"}}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[{"a":"b"},"emoji 👍🏽 mix",{"$num":"Infinity"}],"ok":{"a":"b"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[{"a":{"b":"c"}},{"$undefined":true},-1],"ok":{"a":{"b":"c"}}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[{"a":{"b":"c"}},"日本語のテキスト",{"$undefined":true}],"ok":{"a":{"b":"c"}}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[["a",1],"é",{"$undefined":true}],"ok":{"0":"a","1":1}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[{},"aa😀b😀c"],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[null,"ékey_name-1",1000],"ok":{"SYNARA_BROWSER_HOST_PIPE_PATH":"ékey_name-1","SYNARA_BROWSER_USE_PIPE_PATH":"ékey_name-1","SYNARA_BROWSER_HOST_CAPABILITY_FD":"1000"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[[],"a😀b😀c",{"$undefined":true}],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[0,"line1\nline2",{"$num":"Infinity"}],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[true,{"$undefined":true},100],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[{"a":"b"},"ΣΊΣΥΦΟΣ",{"$undefined":true}],"ok":{"a":"b"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[null,{"$undefined":true},-1],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[{},"Hello Worlda"],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[null,"a..b",1],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[["a",1],"HELLO",-1],"ok":{"0":"a","1":1}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[0,"HELLO",9007199254740992],"ok":{"SYNARA_BROWSER_HOST_PIPE_PATH":"HELLO","SYNARA_BROWSER_USE_PIPE_PATH":"HELLO","SYNARA_BROWSER_HOST_CAPABILITY_FD":"9007199254740992"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[0,"hello",3],"ok":{"SYNARA_BROWSER_HOST_PIPE_PATH":"hello","SYNARA_BROWSER_USE_PIPE_PATH":"hello","SYNARA_BROWSER_HOST_CAPABILITY_FD":"3"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[null],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[null,{"$undefined":true},{"$num":"NaN"}],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[{},"a😀b😀c",0],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[["a",1],"ab"],"ok":{"0":"a","1":1}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":["x","./x/**/*.json",{"$num":"-0"}],"ok":{"0":"x"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[{},{"$undefined":true},{"$num":"-0"}],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[{},"a.b.c",{"$num":"NaN"}],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[null,"key_name-1",100],"ok":{"SYNARA_BROWSER_HOST_PIPE_PATH":"key_name-1","SYNARA_BROWSER_USE_PIPE_PATH":"key_name-1","SYNARA_BROWSER_HOST_CAPABILITY_FD":"100"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[true,"é",-2.5],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[["a",1],{"$undefined":true},42],"ok":{"0":"a","1":1}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[{},"a😀b😀c./x/**/*.json"],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[[],":",2147483648],"ok":{"SYNARA_BROWSER_HOST_PIPE_PATH":":","SYNARA_BROWSER_USE_PIPE_PATH":":","SYNARA_BROWSER_HOST_CAPABILITY_FD":"2147483648"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":["x","x",-2.5],"ok":{"0":"x"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[["a",1],"{name} has {count} items",2],"ok":{"0":"a","1":1}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[{"a":{"b":"c"}},"İstanbulhello world"],"ok":{"a":{"b":"c"}}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[[],{"$undefined":true},2147483648],"ok":{}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[["a",1],"é"],"ok":{"0":"a","1":1}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[["a",1],{"$undefined":true}],"ok":{"0":"a","1":1}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[{},"emoji 👍🏽 mix",10],"ok":{"SYNARA_BROWSER_HOST_PIPE_PATH":"emoji 👍🏽 mix","SYNARA_BROWSER_USE_PIPE_PATH":"emoji 👍🏽 mix","SYNARA_BROWSER_HOST_CAPABILITY_FD":"10"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[{},"hello world",100],"ok":{"SYNARA_BROWSER_HOST_PIPE_PATH":"hello world","SYNARA_BROWSER_USE_PIPE_PATH":"hello world","SYNARA_BROWSER_HOST_CAPABILITY_FD":"100"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[["a",1],"a..b",3],"ok":{"0":"a","1":1,"SYNARA_BROWSER_HOST_PIPE_PATH":"a..b","SYNARA_BROWSER_USE_PIPE_PATH":"a..b","SYNARA_BROWSER_HOST_CAPABILITY_FD":"3"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[[],"Hello Worldstraße",2147483648],"ok":{"SYNARA_BROWSER_HOST_PIPE_PATH":"Hello Worldstraße","SYNARA_BROWSER_USE_PIPE_PATH":"Hello Worldstraße","SYNARA_BROWSER_HOST_CAPABILITY_FD":"2147483648"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[{"a":"b"},{"$undefined":true},-1],"ok":{"a":"b"}}
+{"fn":"resolveBrowserHostPipeBackendEnv","args":[0,"ab",-2.5],"ok":{}}

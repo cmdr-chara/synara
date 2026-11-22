@@ -1,0 +1,36 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/desktop/src/betaRendererDiagnostics.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "betarendererdiagnostics-rs",
+  "exports": [
+    {
+      "name": "attachBetaRendererDiagnostics",
+      "file": "apps/desktop/src/betaRendererDiagnostics.ts",
+      "line": 11,
+      "params": [
+        {
+          "name": "webContents",
+          "ts_type": "WebContents",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "diagnostics",
+          "ts_type": "BetaDiagnostics",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

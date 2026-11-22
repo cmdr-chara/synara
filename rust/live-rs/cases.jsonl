@@ -1,0 +1,231 @@
+{"fn":"runLiveFixture","args":["straße","ns:key.path"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["😀","abc"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["😀","  padded  "],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["line1\nline2","hello"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":[":",":"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["a:b:c","key_name-1straße"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["ab","hello world"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["ΣΊΣΥΦΟΣ","line1\nline2"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["emoji 👍🏽 mix","é"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["ab","B"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["a:b:c","./x/**/*.json"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["a:b:c","emoji 👍🏽 mix"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["ΣΊΣΥΦΟΣline1\nline2","e2"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["oji 👍🏽 mixa","emoji 👍🏽 mixa"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["hello world","ello"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["line1\nline2","ab"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["r","tab\tseparatedstraße"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["ab","abc"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["straße","Hello World"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["HELLO","{name} has {count} items"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["leadi","﻿bom.leading"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["ΣΊΣΥΦΟΣ","straße"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["Hello World","key_name-1"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["😀b","a😀b😀c"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["  padded  ","hellohello world"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["a","abc"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["helloé",":a:b:c"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["😀é","a"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["Hello World","Hello"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["straße","stra"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["a","a"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["ünïcödé","ΣΊΣΥΦΟΣhello"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["日本語のテキスト","a:b:c"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["tems","{name} has {count} items{name} has {count} items"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["aß","straße"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["src/a/b.ts","straße"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["ell","Hello World"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["a..b","."],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["ns:key.path日本語のテキスト",""],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["./x/**/*.json","*.jso"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["key_name-1","ns:key.path"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["abc{","abc{name} has {count} items"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["Hello World","a:b:c"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["ΣΊΣΥΦΟΣ","ΦΟ"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["","straße"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["a","HELLO"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":[".leading","key_name-1"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["😀","😀"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["a..babc","src/a/b.ts"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["trailing.","日本語のテキスト"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["a.b.c","  padded  "],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["Hello World","./x/**/*.json"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["hello","a..bünïcödé"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["日本語のテキストemoji 👍🏽 mix","emoji 👍🏽 mix"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["straße","  padded  "],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["moji 👍🏽 mix","emoji 👍🏽 mix"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["./x/**/*.json","ünïcödé{name} has {count} items"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["a:b:c","ab"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["line1\nline2","HELLO"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":[".","a.b.c"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["line1\nline2","tab\tseparated"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["İstanbul:","a.b.c"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["hello worldkey_name-1","emoji 👍🏽 mix"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["﻿bom😀","a..b"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":[":","a"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["ΣΊΣΥΦΟΣ","ünïcödé"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["😀","ns:key.path"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["src/a/b.tstrailing.","L"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["line1\nline2","tab\tseparated./x/**/*.json"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["hello world","a:b:cstraße"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["straße","straße"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["line1\nline2{name} has {count} items","ine2{name"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["😀","trailing."],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["./x/**/*.jsonHello World","./x/**/*.json"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["ns:key.path","trailing."],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["日本語のテキスト","é"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["日本語のテキスト","﻿bom"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["line1\nline2","line1\nline2emoji 👍🏽 mix"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["HELLO","E"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["a.b.c","abc"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["","key_name-1"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["a.b.c",":"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["{name} has {count} items","İstanbulé"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["HELLO","ab"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["hello","a..b"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["straße",".leading"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["key_name-1","é"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["hellohello","a"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["a","ab"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["ΣΊΣΥΦΟΣ","a:b:c"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["HELLOa..b","tab\tseparated"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["key_name-1","_na"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["é","e"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["ünïcödé","ünïcödé"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["line1\nline2","a.b.cab"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["emoji 👍🏽 mix"," m"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["src/a/b.ts",".leading"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["line1\nline2","ne1\nline2"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":[".leading","a😀b😀c"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["./x/**/*.jsonsrc/a/b.ts",".leading"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["Hello World","o"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["hello world","a:b:c"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["ünïcödé","Ö"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["ΣΊΣΥΦΟΣ","﻿bom"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["emoji 👍🏽 mix","👍🏽 M"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["a:b:c",":"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["a😀b😀c","B"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["line1\nline2","Hello World"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["tab\tseparated","key_name-1"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["ünïcödéline1\nline2","line1\nline2"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["emoji 👍🏽 mix","./x/**/*.json"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["hello world","a.b.c"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["Hello World","Hello World"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["é","İstanbul"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["Hello World","src/a/b.ts"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["src/a/b.ts","tab\tseparateda😀b😀c"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["ns:key.path","line1\nline2"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["a.b.c","src/a/b.ts"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["ns:key.path","﻿bom"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["  padded  ","HELLO"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["HELLO","O"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["﻿bom",""],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["a..b","hello world"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["😀","a:b:ctrailing."],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["src/a/b.tsa😀b😀c","  padded  "],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["hello world","İstanbul"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["line1\nline2İstanbul","İstanbul"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["o ","hello worldsrc/a/b.ts"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["ünïcödé",""],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["line1\nline2",".leadingΣΊΣΥΦΟΣ"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["src/a/b.ts","  padded  "],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["key_name-1","a"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["./x/**/*.json","a"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["hello","{name} has {count} items"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["日本語のテキスト日本語のテキスト","é"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["./x/**/*.json","hello world"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["line1\nline2line1\nline2","trailing."],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["HELLO","HELLOHELLO"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["étrailing.","a{name} has {count} items"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["emoji 👍🏽 mix","a"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["日本語のテキスト","straße"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["","ünïcödé"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["trailing.","Hello World"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["trailing.","hello world"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["hello world","HELLOkey_name-1"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["hello worldline1\nline2","a..b"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["ab","ns:key.pathline1\nline2"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["HELLO","line1\nline2İstanbul"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["ns:key.path","emoji 👍🏽 mix"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["ünïcödéΣΊΣΥΦΟΣ","key_name-1"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":[".leading",":"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["日本語のテキスト","ab"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["Hello World",""],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["nbu","İstanbul"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["😀","日本語のテキスト"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["é","hello world"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["a","tab\tseparated"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["./x/**/*.json","**"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["😀","a😀b😀c"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["a..b","..b"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["eparate","tab\tseparated"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["straße","é"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["HELLO","a.b.ca😀b😀c"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["trailing.","ΣΊΣΥΦΟΣ"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["hello","ab😀"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["日本語のテキストkey_name-1","﻿bom"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["ünïcödé","src/a/b.ts"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["abc","a"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["","Hello World  padded  "],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["日本語のテキスト","テ"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["HELLOa:b:c","é"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["hello worldstraße","abc"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["étab\tseparated","emoji 👍🏽 mixHELLO"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["a:b:c","a"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["straße","ab"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["İstanbul","bul"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["a","İstanbulünïcödé"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["a:b:chello","key_name-1hello world"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["abcabc","bcab"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["trailing.","straße"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["abc","a:b:c日本語のテキスト"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["om","﻿bom"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["ab",".leading"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["tab\tseparated./x/**/*.json","./x/**/*.json"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":[".","日本語のテキストa.b.c"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["","a.b.cab"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["./x/**/*.json","{name} has {count} items"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["Hello World","Wor"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["😀","src/a/b.tsab"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["ns:key.path","a.b.c"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["Hello World","日本語のテキスト"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["a","Hello World"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["","a..b"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["line1\nline2ab","ünïcödé"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["key_name-1ünïcödé","ünïcödé"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["日本語のテキストa😀b😀c","src/a/b.ts"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["t","src/a/b.ts"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["a.b.c","b"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["ünïcödé","a"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["./x/**/*.json","HELLO"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["héllo wörld","ns:key.path"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["👍🏽 thumbs","ns:key.path"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["日本語","ns:key.path"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["","ns:key.path"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["é","ns:key.path"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["İstanbul","ns:key.path"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["ılık ırmak","ns:key.path"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["👨‍👩‍👧 family","ns:key.path"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["a b","ns:key.path"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["ΣΊΣΥΦΟΣ","ns:key.path"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["a😀b","ns:key.path"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["﻿bom","ns:key.path"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["a²b x½ y①","ns:key.path"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["aⅠb Ⅻ","ns:key.path"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["a𐐀b 𝐀bc","ns:key.path"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["कि ٣٤","ns:key.path"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["straße","héllo wörld"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["straße","👍🏽 thumbs"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["straße","日本語"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["straße",""],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["straße","İstanbul"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["straße","ılık ırmak"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["straße","👨‍👩‍👧 family"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["straße","a b"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["straße","ΣΊΣΥΦΟΣ"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["straße","a😀b"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["straße","﻿bom"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["straße","a²b x½ y①"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["straße","aⅠb Ⅻ"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["straße","a𐐀b 𝐀bc"],"error":"An explicit built Synara server is required."}
+{"fn":"runLiveFixture","args":["straße","कि ٣٤"],"error":"An explicit built Synara server is required."}

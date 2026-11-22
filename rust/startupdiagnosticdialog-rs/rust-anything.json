@@ -1,0 +1,42 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/desktop/src/startupDiagnosticDialog.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "startupdiagnosticdialog-rs",
+  "exports": [
+    {
+      "name": "showDiagnosticStartupDialog",
+      "file": "apps/desktop/src/startupDiagnosticDialog.ts",
+      "line": 6,
+      "params": [
+        {
+          "name": "options",
+          "ts_type": "MessageBoxOptions",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "id",
+          "ts_type": "string | null",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "diagnostics",
+          "ts_type": "Pick<BetaDiagnostics, \"getReportStatus\"> | null",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<MessageBoxReturnValue>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

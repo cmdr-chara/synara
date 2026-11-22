@@ -1,0 +1,456 @@
+{"fn":"assertIsolatedHome","args":["x"],"error":"Refusing to use a data home outside /Users/devin/synara-perf-bench: /private/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/rust-anything-app-unit-65337-0/x"}
+{"fn":"assertIsolatedHome","args":[{"a":"b"}],"error":"The \"paths[0]\" argument must be of type string. Received an instance of Object"}
+{"fn":"assertIsolatedHome","args":[[]],"error":"The \"paths[0]\" argument must be of type string. Received an instance of Array"}
+{"fn":"assertIsolatedHome","args":[true],"error":"The \"paths[0]\" argument must be of type string. Received type boolean (true)"}
+{"fn":"assertIsolatedHome","args":[{"a":{"b":"c"}}],"error":"The \"paths[0]\" argument must be of type string. Received an instance of Object"}
+{"fn":"assertIsolatedHome","args":[null],"error":"The \"paths[0]\" argument must be of type string. Received null"}
+{"fn":"assertIsolatedHome","args":[["a",1]],"error":"The \"paths[0]\" argument must be of type string. Received an instance of Array"}
+{"fn":"assertIsolatedHome","args":[0],"error":"The \"paths[0]\" argument must be of type string. Received type number (0)"}
+{"fn":"assertIsolatedHome","args":[{}],"error":"The \"paths[0]\" argument must be of type string. Received an instance of Object"}
+{"fn":"assertIsolatedHome","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6}],"error":"The \"paths[0]\" argument must be of type string. Received an instance of Object"}
+{"fn":"assertIsolatedHome","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7}],"error":"The \"paths[0]\" argument must be of type string. Received an instance of Object"}
+{"fn":"assertIsolatedHome","args":[[3,1,2]],"error":"The \"paths[0]\" argument must be of type string. Received an instance of Array"}
+{"fn":"resolveElectronBinary","args":[{"a":{"b":"c"}}],"error":"The \"path\" argument must be of type string. Received an instance of Object"}
+{"fn":"resolveElectronBinary","args":[null],"error":"The \"path\" argument must be of type string. Received null"}
+{"fn":"resolveElectronBinary","args":[0],"error":"The \"path\" argument must be of type string. Received type number (0)"}
+{"fn":"resolveElectronBinary","args":[[]],"error":"The \"path\" argument must be of type string. Received an instance of Array"}
+{"fn":"resolveElectronBinary","args":[{"a":"b"}],"error":"The \"path\" argument must be of type string. Received an instance of Object"}
+{"fn":"resolveElectronBinary","args":["x"],"error":"The argument 'filename' must be a file URL object, file URL string, or absolute path string. Received 'x/apps/desktop/package.json'"}
+{"fn":"resolveElectronBinary","args":[{}],"error":"The \"path\" argument must be of type string. Received an instance of Object"}
+{"fn":"resolveElectronBinary","args":[true],"error":"The \"path\" argument must be of type string. Received type boolean (true)"}
+{"fn":"resolveElectronBinary","args":[["a",1]],"error":"The \"path\" argument must be of type string. Received an instance of Array"}
+{"fn":"resolveElectronBinary","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6}],"error":"The \"path\" argument must be of type string. Received an instance of Object"}
+{"fn":"resolveElectronBinary","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7}],"error":"The \"path\" argument must be of type string. Received an instance of Object"}
+{"fn":"resolveElectronBinary","args":[[3,1,2]],"error":"The \"path\" argument must be of type string. Received an instance of Array"}
+{"fn":"isolatedEnvironment","args":[{}],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"isolatedEnvironment","args":["x"],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"isolatedEnvironment","args":[[]],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"isolatedEnvironment","args":[0],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"isolatedEnvironment","args":[true],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"isolatedEnvironment","args":[["a",1]],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"isolatedEnvironment","args":[null],"error":"Cannot destructure property 'buildDir' of 'object null' as it is null."}
+{"fn":"isolatedEnvironment","args":[{"a":"b"}],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"isolatedEnvironment","args":[{"a":{"b":"c"}}],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"isolatedEnvironment","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6}],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"isolatedEnvironment","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7}],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"isolatedEnvironment","args":[[3,1,2]],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"processTree","args":[{}],"ok":[]}
+{"fn":"processTree","args":[0],"ok":[]}
+{"fn":"processTree","args":[{"a":"b"}],"ok":[]}
+{"fn":"processTree","args":[null],"ok":[]}
+{"fn":"processTree","args":[[]],"ok":[]}
+{"fn":"processTree","args":[true],"ok":[]}
+{"fn":"processTree","args":["x"],"ok":[]}
+{"fn":"processTree","args":[["a",1]],"ok":[]}
+{"fn":"processTree","args":[{"a":{"b":"c"}}],"ok":[]}
+{"fn":"processTree","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6}],"ok":[]}
+{"fn":"processTree","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7}],"ok":[]}
+{"fn":"processTree","args":[[3,1,2]],"ok":[]}
+{"fn":"classifyProcess","args":[{},"x"],"ok":"main"}
+{"fn":"classifyProcess","args":[[],true],"ok":"main"}
+{"fn":"classifyProcess","args":[{},[]],"ok":"main"}
+{"fn":"classifyProcess","args":[{},{"a":"b"}],"ok":"main"}
+{"fn":"classifyProcess","args":[{},{}],"ok":"main"}
+{"fn":"classifyProcess","args":[true,"x"],"ok":"main"}
+{"fn":"classifyProcess","args":[{"a":{"b":"c"}},{}],"ok":"main"}
+{"fn":"classifyProcess","args":["x",null],"error":"Cannot destructure property 'rootPid' of 'object null' as it is null."}
+{"fn":"classifyProcess","args":[0,"x"],"ok":"main"}
+{"fn":"classifyProcess","args":[[],{"a":"b"}],"ok":"main"}
+{"fn":"classifyProcess","args":[true,{"a":"b"}],"ok":"main"}
+{"fn":"classifyProcess","args":["x",{}],"ok":"main"}
+{"fn":"classifyProcess","args":[0,{"a":{"b":"c"}}],"ok":"main"}
+{"fn":"classifyProcess","args":[{"a":{"b":"c"}},{"a":{"b":"c"}}],"ok":"main"}
+{"fn":"classifyProcess","args":[{},true],"ok":"main"}
+{"fn":"classifyProcess","args":[null,{"a":"b"}],"error":"Cannot read properties of null (reading 'command')"}
+{"fn":"classifyProcess","args":[{"a":"b"},{"a":"b"}],"ok":"main"}
+{"fn":"classifyProcess","args":[true,true],"ok":"main"}
+{"fn":"classifyProcess","args":[{"a":"b"},0],"ok":"main"}
+{"fn":"classifyProcess","args":[{"a":"b"},["a",1]],"ok":"main"}
+{"fn":"classifyProcess","args":[["a",1],["a",1]],"ok":"main"}
+{"fn":"classifyProcess","args":["x",0],"ok":"main"}
+{"fn":"classifyProcess","args":[["a",1],0],"ok":"main"}
+{"fn":"classifyProcess","args":[null,null],"error":"Cannot destructure property 'rootPid' of 'object null' as it is null."}
+{"fn":"classifyProcess","args":[{"a":"b"},null],"error":"Cannot destructure property 'rootPid' of 'object null' as it is null."}
+{"fn":"classifyProcess","args":[true,{"a":{"b":"c"}}],"ok":"main"}
+{"fn":"classifyProcess","args":[{"a":{"b":"c"}},"x"],"ok":"main"}
+{"fn":"classifyProcess","args":[0,[]],"ok":"main"}
+{"fn":"classifyProcess","args":[0,null],"error":"Cannot destructure property 'rootPid' of 'object null' as it is null."}
+{"fn":"classifyProcess","args":[["a",1],[]],"ok":"main"}
+{"fn":"classifyProcess","args":[0,0],"ok":"main"}
+{"fn":"classifyProcess","args":[null,{"a":{"b":"c"}}],"error":"Cannot read properties of null (reading 'command')"}
+{"fn":"classifyProcess","args":["x",{"a":{"b":"c"}}],"ok":"main"}
+{"fn":"classifyProcess","args":["x",[]],"ok":"main"}
+{"fn":"classifyProcess","args":[null,0],"error":"Cannot read properties of null (reading 'command')"}
+{"fn":"classifyProcess","args":["x",["a",1]],"ok":"main"}
+{"fn":"classifyProcess","args":["x",true],"ok":"main"}
+{"fn":"classifyProcess","args":[0,true],"ok":"main"}
+{"fn":"classifyProcess","args":[{"a":"b"},true],"ok":"main"}
+{"fn":"classifyProcess","args":[0,{}],"ok":"main"}
+{"fn":"classifyProcess","args":[{},{"a":{"b":"c"}}],"ok":"main"}
+{"fn":"classifyProcess","args":[["a",1],{"a":{"b":"c"}}],"ok":"main"}
+{"fn":"classifyProcess","args":[{},0],"ok":"main"}
+{"fn":"classifyProcess","args":[[],["a",1]],"ok":"main"}
+{"fn":"classifyProcess","args":[{},["a",1]],"ok":"main"}
+{"fn":"classifyProcess","args":[0,{"a":"b"}],"ok":"main"}
+{"fn":"classifyProcess","args":[{},null],"error":"Cannot destructure property 'rootPid' of 'object null' as it is null."}
+{"fn":"classifyProcess","args":[["a",1],{}],"ok":"main"}
+{"fn":"classifyProcess","args":[{"a":"b"},[]],"ok":"main"}
+{"fn":"classifyProcess","args":[[],[]],"ok":"main"}
+{"fn":"classifyProcess","args":[["a",1],true],"ok":"main"}
+{"fn":"classifyProcess","args":[null,{}],"error":"Cannot read properties of null (reading 'command')"}
+{"fn":"classifyProcess","args":[["a",1],null],"error":"Cannot destructure property 'rootPid' of 'object null' as it is null."}
+{"fn":"classifyProcess","args":[0,["a",1]],"ok":"main"}
+{"fn":"classifyProcess","args":[true,0],"ok":"main"}
+{"fn":"classifyProcess","args":["x",{"a":"b"}],"ok":"main"}
+{"fn":"classifyProcess","args":["x","x"],"ok":"main"}
+{"fn":"classifyProcess","args":[true,null],"error":"Cannot destructure property 'rootPid' of 'object null' as it is null."}
+{"fn":"classifyProcess","args":[[],{}],"ok":"main"}
+{"fn":"classifyProcess","args":[{"a":{"b":"c"}},{"a":"b"}],"ok":"main"}
+{"fn":"classifyProcess","args":[null,"x"],"error":"Cannot read properties of null (reading 'command')"}
+{"fn":"classifyProcess","args":[[],null],"error":"Cannot destructure property 'rootPid' of 'object null' as it is null."}
+{"fn":"classifyProcess","args":[true,{}],"ok":"main"}
+{"fn":"classifyProcess","args":[[],{"a":{"b":"c"}}],"ok":"main"}
+{"fn":"classifyProcess","args":[null,[]],"error":"Cannot read properties of null (reading 'command')"}
+{"fn":"classifyProcess","args":[[],"x"],"ok":"main"}
+{"fn":"classifyProcess","args":[{"a":{"b":"c"}},[]],"ok":"main"}
+{"fn":"classifyProcess","args":[{"a":{"b":"c"}},true],"ok":"main"}
+{"fn":"classifyProcess","args":[["a",1],{"a":"b"}],"ok":"main"}
+{"fn":"classifyProcess","args":[{"a":"b"},{"a":{"b":"c"}}],"ok":"main"}
+{"fn":"classifyProcess","args":[null,["a",1]],"error":"Cannot read properties of null (reading 'command')"}
+{"fn":"classifyProcess","args":[["a",1],"x"],"ok":"main"}
+{"fn":"classifyProcess","args":[true,[]],"ok":"main"}
+{"fn":"classifyProcess","args":[{"a":{"b":"c"}},0],"ok":"main"}
+{"fn":"classifyProcess","args":[true,["a",1]],"ok":"main"}
+{"fn":"classifyProcess","args":[{"a":"b"},{}],"ok":"main"}
+{"fn":"classifyProcess","args":[{"a":{"b":"c"}},null],"error":"Cannot destructure property 'rootPid' of 'object null' as it is null."}
+{"fn":"classifyProcess","args":[null,true],"error":"Cannot read properties of null (reading 'command')"}
+{"fn":"classifyProcess","args":[{"a":"b"},"x"],"ok":"main"}
+{"fn":"classifyProcess","args":[[],0],"ok":"main"}
+{"fn":"classifyProcess","args":[{"a":{"b":"c"}},["a",1]],"ok":"main"}
+{"fn":"classifyProcess","args":["x","X"],"ok":"main"}
+{"fn":"classifyProcess","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6},"x"],"ok":"main"}
+{"fn":"classifyProcess","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7},"x"],"ok":"main"}
+{"fn":"classifyProcess","args":[[3,1,2],"x"],"ok":"main"}
+{"fn":"classifyProcess","args":[{},{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6}],"ok":"main"}
+{"fn":"classifyProcess","args":[{},{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7}],"ok":"main"}
+{"fn":"classifyProcess","args":[{},[3,1,2]],"ok":"main"}
+{"fn":"launchDesktop","args":[{}],"error":"The \"paths[0]\" argument must be of type string. Received undefined"}
+{"fn":"launchDesktop","args":[0],"error":"The \"paths[0]\" argument must be of type string. Received undefined"}
+{"fn":"launchDesktop","args":[{"a":"b"}],"error":"The \"paths[0]\" argument must be of type string. Received undefined"}
+{"fn":"launchDesktop","args":[true],"error":"The \"paths[0]\" argument must be of type string. Received undefined"}
+{"fn":"launchDesktop","args":[[]],"error":"The \"paths[0]\" argument must be of type string. Received undefined"}
+{"fn":"launchDesktop","args":[["a",1]],"error":"The \"paths[0]\" argument must be of type string. Received undefined"}
+{"fn":"launchDesktop","args":[{"a":{"b":"c"}}],"error":"The \"paths[0]\" argument must be of type string. Received undefined"}
+{"fn":"launchDesktop","args":[null],"error":"Cannot destructure property 'buildDir' of 'object null' as it is null."}
+{"fn":"launchDesktop","args":["x"],"error":"The \"paths[0]\" argument must be of type string. Received undefined"}
+{"fn":"launchDesktop","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6}],"error":"The \"paths[0]\" argument must be of type string. Received undefined"}
+{"fn":"launchDesktop","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7}],"error":"The \"paths[0]\" argument must be of type string. Received undefined"}
+{"fn":"launchDesktop","args":[[3,1,2]],"error":"The \"paths[0]\" argument must be of type string. Received undefined"}
+{"fn":"attachMainPage","args":[["a",1],"x"],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":[["a",1],null],"error":"Cannot read properties of null (reading 'timeoutMs')"}
+{"fn":"attachMainPage","args":[["a",1]],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":[null,"x"],"error":"Timed out after 60000 ms waiting for main window target: Cannot read properties of null (reading 'exited')"}
+{"fn":"attachMainPage","args":[0],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":["x",[]],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":[["a",1],{}],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":[["a",1],{"a":"b"}],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":[{},{"$undefined":true}],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":[true],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":[null],"error":"Timed out after 60000 ms waiting for main window target: Cannot read properties of null (reading 'exited')"}
+{"fn":"attachMainPage","args":[{},{}],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":[{"a":"b"},[]],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":["x",null],"error":"Cannot read properties of null (reading 'timeoutMs')"}
+{"fn":"attachMainPage","args":[[],{"a":"b"}],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":[{"a":"b"},null],"error":"Cannot read properties of null (reading 'timeoutMs')"}
+{"fn":"attachMainPage","args":[[],{"a":{"b":"c"}}],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":[null,{"$undefined":true}],"error":"Timed out after 60000 ms waiting for main window target: Cannot read properties of null (reading 'exited')"}
+{"fn":"attachMainPage","args":[{"a":{"b":"c"}},["a",1]],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":[{"a":{"b":"c"}},null],"error":"Cannot read properties of null (reading 'timeoutMs')"}
+{"fn":"attachMainPage","args":[{},[]],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":[true,null],"error":"Cannot read properties of null (reading 'timeoutMs')"}
+{"fn":"attachMainPage","args":[true,{"a":{"b":"c"}}],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":[{"a":{"b":"c"}},{"a":{"b":"c"}}],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":[0,{"$undefined":true}],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":[[],true],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":[0,0],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":[{},0],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":[null,true],"error":"Timed out after 60000 ms waiting for main window target: Cannot read properties of null (reading 'exited')"}
+{"fn":"attachMainPage","args":[0,null],"error":"Cannot read properties of null (reading 'timeoutMs')"}
+{"fn":"attachMainPage","args":[[],[]],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":[null,{"a":{"b":"c"}}],"error":"Timed out after 60000 ms waiting for main window target: Cannot read properties of null (reading 'exited')"}
+{"fn":"attachMainPage","args":["x","x"],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":[0,{"a":"b"}],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":["x",0],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":[{"a":"b"},{"$undefined":true}],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":[null,0],"error":"Timed out after 60000 ms waiting for main window target: Cannot read properties of null (reading 'exited')"}
+{"fn":"attachMainPage","args":[{"a":{"b":"c"}},true],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":[["a",1],["a",1]],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":[{}],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":[{"a":{"b":"c"}},{"$undefined":true}],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":[{"a":"b"},true],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":[[],0],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":[{},null],"error":"Cannot read properties of null (reading 'timeoutMs')"}
+{"fn":"attachMainPage","args":[null,null],"error":"Cannot read properties of null (reading 'timeoutMs')"}
+{"fn":"attachMainPage","args":[[],{"$undefined":true}],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":[true,{"a":"b"}],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":[[],["a",1]],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":[true,true],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":[true,{"$undefined":true}],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":[{"a":"b"}],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":[{},["a",1]],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":["x",{"$undefined":true}],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":[null,{"a":"b"}],"error":"Timed out after 60000 ms waiting for main window target: Cannot read properties of null (reading 'exited')"}
+{"fn":"attachMainPage","args":[true,["a",1]],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":["x",true],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":[["a",1],{"$undefined":true}],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":[0,"x"],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":[[],"x"],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":["x",["a",1]],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":[null,{}],"error":"Timed out after 60000 ms waiting for main window target: Cannot read properties of null (reading 'exited')"}
+{"fn":"attachMainPage","args":[["a",1],[]],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":[{"a":{"b":"c"}},[]],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":[{"a":"b"},{"a":{"b":"c"}}],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":[[],null],"error":"Cannot read properties of null (reading 'timeoutMs')"}
+{"fn":"attachMainPage","args":[{},{"a":{"b":"c"}}],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":["x",{"a":{"b":"c"}}],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":[{},{"a":"b"}],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":[null,[]],"error":"Timed out after 60000 ms waiting for main window target: Cannot read properties of null (reading 'exited')"}
+{"fn":"attachMainPage","args":[{"a":{"b":"c"}},{"a":"b"}],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":[["a",1],true],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":[null,["a",1]],"error":"Timed out after 60000 ms waiting for main window target: Cannot read properties of null (reading 'exited')"}
+{"fn":"attachMainPage","args":[{},"x"],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":[0,[]],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":[0,true],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":["x",{"a":"b"}],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":[{"a":"b"},{}],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":[true,"x"],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":[true,[]],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":["x"],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":[{"a":"b"},0],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":[true,{}],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":[["a",1],0],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":[{"a":{"b":"c"}},"x"],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":[true,0],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":["x",{}],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":[["a",1],{"a":{"b":"c"}}],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":[{"a":{"b":"c"}},0],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":[[],{}],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":[{"a":{"b":"c"}},{}],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":[{},true],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":[0,{"a":{"b":"c"}}],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":[{"a":"b"},["a",1]],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":[{"a":"b"},"x"],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":[{"a":{"b":"c"}}],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":[0,{}],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":[{"a":"b"},{"a":"b"}],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":[[]],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":[0,["a",1]],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":["X","x"],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":["x","X"],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6},"x"],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7},"x"],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"attachMainPage","args":[[3,1,2],"x"],"error":"Timed out after 60000 ms waiting for main window target: app.exited is not a function"}
+{"fn":"quitDesktop","args":[[],{"a":"b"}],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[0,{"$undefined":true}],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[0,{"a":{"b":"c"}}],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[{"a":"b"},{"a":{"b":"c"}}],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[[],null],"error":"Cannot read properties of null (reading 'timeoutMs')"}
+{"fn":"quitDesktop","args":[{"a":"b"},{}],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[{"a":"b"},null],"error":"Cannot read properties of null (reading 'timeoutMs')"}
+{"fn":"quitDesktop","args":[0,true],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[{},{"a":{"b":"c"}}],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":["x"],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[{"a":{"b":"c"}},true],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[{"a":{"b":"c"}},["a",1]],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[{"a":{"b":"c"}},null],"error":"Cannot read properties of null (reading 'timeoutMs')"}
+{"fn":"quitDesktop","args":["x",{"a":"b"}],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[{"a":{"b":"c"}}],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[null,{}],"error":"Cannot read properties of null (reading 'pid')"}
+{"fn":"quitDesktop","args":[{"a":{"b":"c"}},{"a":"b"}],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[{}],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[0,null],"error":"Cannot read properties of null (reading 'timeoutMs')"}
+{"fn":"quitDesktop","args":[0,"x"],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[null,[]],"error":"Cannot read properties of null (reading 'pid')"}
+{"fn":"quitDesktop","args":[{"a":{"b":"c"}},[]],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[{"a":"b"}],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[{"a":"b"},{"$undefined":true}],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[["a",1],{"$undefined":true}],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":["x",0],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[null,0],"error":"Cannot read properties of null (reading 'pid')"}
+{"fn":"quitDesktop","args":[true,["a",1]],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[["a",1],"x"],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":["x",{}],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[{},true],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[true,[]],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[null,{"a":{"b":"c"}}],"error":"Cannot read properties of null (reading 'pid')"}
+{"fn":"quitDesktop","args":[["a",1],["a",1]],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[0,{}],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[{},["a",1]],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[["a",1],{}],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[["a",1],{"a":{"b":"c"}}],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":["x",true],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[null,["a",1]],"error":"Cannot read properties of null (reading 'pid')"}
+{"fn":"quitDesktop","args":[[],["a",1]],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[true,null],"error":"Cannot read properties of null (reading 'timeoutMs')"}
+{"fn":"quitDesktop","args":[true],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[true,{"$undefined":true}],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[[],0],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[{},null],"error":"Cannot read properties of null (reading 'timeoutMs')"}
+{"fn":"quitDesktop","args":[true,{}],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[{"a":"b"},[]],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[{"a":"b"},["a",1]],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":["x",["a",1]],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[["a",1],[]],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[["a",1],null],"error":"Cannot read properties of null (reading 'timeoutMs')"}
+{"fn":"quitDesktop","args":[{"a":"b"},true],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[[],[]],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[{"a":{"b":"c"}},{"$undefined":true}],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[{},"x"],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[{"a":{"b":"c"}},{}],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[[],{"a":{"b":"c"}}],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[true,{"a":{"b":"c"}}],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[[],true],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":["x",null],"error":"Cannot read properties of null (reading 'timeoutMs')"}
+{"fn":"quitDesktop","args":[null,"x"],"error":"Cannot read properties of null (reading 'pid')"}
+{"fn":"quitDesktop","args":[{"a":"b"},0],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[null,{"$undefined":true}],"error":"Cannot read properties of null (reading 'pid')"}
+{"fn":"quitDesktop","args":[{},{}],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[[],"x"],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[true,{"a":"b"}],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[["a",1],{"a":"b"}],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[0,[]],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[{},[]],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[["a",1],0],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[null,{"a":"b"}],"error":"Cannot read properties of null (reading 'pid')"}
+{"fn":"quitDesktop","args":[0],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[{"a":{"b":"c"}},{"a":{"b":"c"}}],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[{"a":{"b":"c"}},"x"],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[null,null],"error":"Cannot read properties of null (reading 'timeoutMs')"}
+{"fn":"quitDesktop","args":[0,["a",1]],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":["x",[]],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":["x","x"],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[["a",1]],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[true,"x"],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[true,0],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[null],"error":"Cannot read properties of null (reading 'pid')"}
+{"fn":"quitDesktop","args":[[]],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[[],{"$undefined":true}],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[["a",1],true],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":["x",{"$undefined":true}],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[{},0],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[{},{"a":"b"}],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[0,{"a":"b"}],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[{"a":"b"},{"a":"b"}],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[true,true],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[{},{"$undefined":true}],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[0,0],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[[],{}],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":["x",{"a":{"b":"c"}}],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[{"a":"b"},"x"],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[{"a":{"b":"c"}},0],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[null,true],"error":"Cannot read properties of null (reading 'pid')"}
+{"fn":"quitDesktop","args":["x","X"],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6},{"a":"b"}],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7},{"a":"b"}],"error":"app.exited is not a function"}
+{"fn":"quitDesktop","args":[[3,1,2],{"a":"b"}],"error":"app.exited is not a function"}
+{"fn":"isFrontmost","args":[["a",1]],"ok":null}
+{"fn":"isFrontmost","args":[{"a":{"b":"c"}}],"ok":null}
+{"fn":"isFrontmost","args":[true],"ok":null}
+{"fn":"isFrontmost","args":[0],"ok":null}
+{"fn":"isFrontmost","args":[{}],"ok":null}
+{"fn":"isFrontmost","args":["x"],"ok":null}
+{"fn":"isFrontmost","args":[null],"ok":null}
+{"fn":"isFrontmost","args":[[]],"ok":null}
+{"fn":"isFrontmost","args":[{"a":"b"}],"ok":null}
+{"fn":"isFrontmost","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6}],"ok":null}
+{"fn":"isFrontmost","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7}],"ok":null}
+{"fn":"isFrontmost","args":[[3,1,2]],"ok":null}
+{"fn":"screenLocked","args":[],"ok":false}
+{"fn":"frontmostProblem","args":[{},{"a":{"b":"c"}}],"ok":null}
+{"fn":"frontmostProblem","args":[0,null],"ok":null}
+{"fn":"frontmostProblem","args":[null,[]],"ok":null}
+{"fn":"frontmostProblem","args":[[],{}],"ok":null}
+{"fn":"frontmostProblem","args":["x",0],"ok":null}
+{"fn":"frontmostProblem","args":[null,null],"ok":null}
+{"fn":"frontmostProblem","args":[{"a":{"b":"c"}},{"a":{"b":"c"}}],"ok":null}
+{"fn":"frontmostProblem","args":[true,{"a":"b"}],"ok":null}
+{"fn":"frontmostProblem","args":[[],[]],"ok":null}
+{"fn":"frontmostProblem","args":[{},"x"],"ok":null}
+{"fn":"frontmostProblem","args":["x",["a",1]],"ok":null}
+{"fn":"frontmostProblem","args":[{"a":{"b":"c"}},null],"ok":null}
+{"fn":"frontmostProblem","args":[true,0],"ok":null}
+{"fn":"frontmostProblem","args":["x",[]],"ok":null}
+{"fn":"frontmostProblem","args":[["a",1],"x"],"ok":null}
+{"fn":"frontmostProblem","args":[["a",1],{"a":{"b":"c"}}],"ok":null}
+{"fn":"frontmostProblem","args":[{"a":"b"},{"a":{"b":"c"}}],"ok":null}
+{"fn":"frontmostProblem","args":[0,true],"ok":null}
+{"fn":"frontmostProblem","args":[0,[]],"ok":null}
+{"fn":"frontmostProblem","args":[{"a":"b"},[]],"ok":null}
+{"fn":"frontmostProblem","args":[{},["a",1]],"ok":null}
+{"fn":"frontmostProblem","args":[null,{}],"ok":null}
+{"fn":"frontmostProblem","args":["x",null],"ok":null}
+{"fn":"frontmostProblem","args":[null,0],"ok":null}
+{"fn":"frontmostProblem","args":[{"a":"b"},"x"],"ok":null}
+{"fn":"frontmostProblem","args":[{"a":"b"},{"a":"b"}],"ok":null}
+{"fn":"frontmostProblem","args":[{"a":"b"},0],"ok":null}
+{"fn":"frontmostProblem","args":[null,true],"ok":null}
+{"fn":"frontmostProblem","args":[{"a":{"b":"c"}},["a",1]],"ok":null}
+{"fn":"frontmostProblem","args":[{"a":{"b":"c"}},0],"ok":null}
+{"fn":"frontmostProblem","args":[["a",1],["a",1]],"ok":null}
+{"fn":"frontmostProblem","args":[{},0],"ok":null}
+{"fn":"frontmostProblem","args":[[],{"a":{"b":"c"}}],"ok":null}
+{"fn":"frontmostProblem","args":["x",{}],"ok":null}
+{"fn":"frontmostProblem","args":[[],null],"ok":null}
+{"fn":"frontmostProblem","args":[null,{"a":{"b":"c"}}],"ok":null}
+{"fn":"frontmostProblem","args":[[],true],"ok":null}
+{"fn":"frontmostProblem","args":[{"a":"b"},{}],"ok":null}
+{"fn":"frontmostProblem","args":[{"a":{"b":"c"}},true],"ok":null}
+{"fn":"frontmostProblem","args":[true,[]],"ok":null}
+{"fn":"frontmostProblem","args":[{"a":{"b":"c"}},{"a":"b"}],"ok":null}
+{"fn":"frontmostProblem","args":[{"a":"b"},null],"ok":null}
+{"fn":"frontmostProblem","args":[{"a":"b"},true],"ok":null}
+{"fn":"frontmostProblem","args":[0,"x"],"ok":null}
+{"fn":"frontmostProblem","args":[true,{"a":{"b":"c"}}],"ok":null}
+{"fn":"frontmostProblem","args":[["a",1],{"a":"b"}],"ok":null}
+{"fn":"frontmostProblem","args":[{"a":{"b":"c"}},"x"],"ok":null}
+{"fn":"frontmostProblem","args":["x",true],"ok":null}
+{"fn":"frontmostProblem","args":["x",{"a":"b"}],"ok":null}
+{"fn":"frontmostProblem","args":[true,null],"ok":null}
+{"fn":"frontmostProblem","args":[0,0],"ok":null}
+{"fn":"frontmostProblem","args":[true,true],"ok":null}
+{"fn":"frontmostProblem","args":[["a",1],[]],"ok":null}
+{"fn":"frontmostProblem","args":["x",{"a":{"b":"c"}}],"ok":null}
+{"fn":"frontmostProblem","args":[[],"x"],"ok":null}
+{"fn":"frontmostProblem","args":["x","x"],"ok":null}
+{"fn":"frontmostProblem","args":[0,{"a":"b"}],"ok":null}
+{"fn":"frontmostProblem","args":[{"a":"b"},["a",1]],"ok":null}
+{"fn":"frontmostProblem","args":[{"a":{"b":"c"}},{}],"ok":null}
+{"fn":"frontmostProblem","args":[true,{}],"ok":null}
+{"fn":"frontmostProblem","args":[true,["a",1]],"ok":null}
+{"fn":"frontmostProblem","args":[{},[]],"ok":null}
+{"fn":"frontmostProblem","args":[[],{"a":"b"}],"ok":null}
+{"fn":"frontmostProblem","args":[0,{"a":{"b":"c"}}],"ok":null}
+{"fn":"frontmostProblem","args":[null,{"a":"b"}],"ok":null}
+{"fn":"frontmostProblem","args":[["a",1],0],"ok":null}
+{"fn":"frontmostProblem","args":[0,{}],"ok":null}
+{"fn":"frontmostProblem","args":[{},{}],"ok":null}
+{"fn":"frontmostProblem","args":[{},null],"ok":null}
+{"fn":"frontmostProblem","args":[["a",1],{}],"ok":null}
+{"fn":"frontmostProblem","args":[{},true],"ok":null}
+{"fn":"frontmostProblem","args":[[],0],"ok":null}
+{"fn":"frontmostProblem","args":[{"a":{"b":"c"}},[]],"ok":null}
+{"fn":"frontmostProblem","args":[null,["a",1]],"ok":null}
+{"fn":"frontmostProblem","args":[0,["a",1]],"ok":null}
+{"fn":"frontmostProblem","args":[["a",1],null],"ok":null}
+{"fn":"frontmostProblem","args":[[],["a",1]],"ok":null}
+{"fn":"frontmostProblem","args":[["a",1],true],"ok":null}
+{"fn":"frontmostProblem","args":[true,"x"],"ok":null}
+{"fn":"frontmostProblem","args":[{},{"a":"b"}],"ok":null}
+{"fn":"frontmostProblem","args":[null,"x"],"ok":null}
+{"fn":"frontmostProblem","args":["x","X"],"ok":null}
+{"fn":"frontmostProblem","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6},{"a":{"b":"c"}}],"ok":null}
+{"fn":"frontmostProblem","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7},{"a":{"b":"c"}}],"ok":null}
+{"fn":"frontmostProblem","args":[[3,1,2],{"a":{"b":"c"}}],"ok":null}
+{"fn":"frontmostProblem","args":[{},{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6}],"ok":null}
+{"fn":"frontmostProblem","args":[{},{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7}],"ok":null}
+{"fn":"frontmostProblem","args":[{},[3,1,2]],"ok":null}

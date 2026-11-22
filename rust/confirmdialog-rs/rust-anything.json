@@ -1,0 +1,43 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/desktop/src/confirmDialog.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "confirmdialog-rs",
+  "exports": [
+    {
+      "name": "showDesktopConfirmDialog",
+      "file": "apps/desktop/src/confirmDialog.ts",
+      "line": 6,
+      "params": [
+        {
+          "name": "message",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "ownerWindow",
+          "ts_type": "BrowserWindow | null",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<boolean>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "guardDesktopWindowClose",
+      "file": "apps/desktop/src/confirmDialog.ts",
+      "line": 30,
+      "reason": "takes or returns a function"
+    }
+  ]
+}

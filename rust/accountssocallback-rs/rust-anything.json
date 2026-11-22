@@ -1,0 +1,41 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/accountSsoCallback.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "accountssocallback-rs",
+  "exports": [
+    {
+      "name": "createPkcePair",
+      "file": "apps/server/src/accountSsoCallback.ts",
+      "line": 32,
+      "params": [],
+      "returns": "PkcePair",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "createSsoState",
+      "file": "apps/server/src/accountSsoCallback.ts",
+      "line": 39,
+      "params": [],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "startSsoCallbackListener",
+      "file": "apps/server/src/accountSsoCallback.ts",
+      "line": 91,
+      "reason": "uses `SsoCallbackListener`, which has function members"
+    }
+  ]
+}

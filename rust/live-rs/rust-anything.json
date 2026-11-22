@@ -1,0 +1,36 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/desktop/src/cuaFixtures/live.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "live-rs",
+  "exports": [
+    {
+      "name": "runLiveFixture",
+      "file": "apps/desktop/src/cuaFixtures/live.ts",
+      "line": 15,
+      "params": [
+        {
+          "name": "directory",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "binaryPath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

@@ -1,0 +1,17 @@
+{
+  "unit": "apps/server/src/accountSsoCallback.ts",
+  "files": 1,
+  "fingerprint": "061017be1670f409",
+  "coverage": {
+    "lines": 160,
+    "reached": 82,
+    "files": [
+      {
+        "file": "apps/server/src/accountSsoCallback.ts",
+        "lines": 160,
+        "reached": 82,
+        "missed": "92-101, 103-108, 110-116, 118-132, 134-138, 140-148, 150-156, 158-176"
+      }
+    ]
+  }
+}

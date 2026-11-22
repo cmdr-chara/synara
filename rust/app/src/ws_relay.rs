@@ -23,8 +23,10 @@ use tokio_tungstenite::tungstenite::Message as UpstreamMessage;
 use crate::original::Original;
 
 /// Forward the headers that matter to the original's admission and auth.
+/// `origin` is deliberately excluded: the original gates upgrades on a trusted
+/// origin list and the webview's dev-server origin (e.g. localhost:4577) is not
+/// on it — omitting the header passes admission while `token` still auths.
 const FORWARDED: &[&str] = &[
-    "origin",
     "cookie",
     "authorization",
     "sec-websocket-protocol",

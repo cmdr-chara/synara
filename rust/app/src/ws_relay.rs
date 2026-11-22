@@ -95,6 +95,8 @@ fn intercept_todo(
         && !text.contains("projects.stopDevServer")
         && !text.contains("projects.subscribeDevServerEvents")
         && !text.contains("projects.subscribeFileChange")
+        && !text.contains("server.upsertKeybinding")
+        && !text.contains("server.editKeybindings")
         && !text.contains("server.getSettings")
         && !text.contains("server.updateSettings")
         && !text.contains("server.subscribeSettings")
@@ -130,6 +132,8 @@ fn intercept_todo(
         && tag != "projects.stopDevServer"
         && tag != "projects.subscribeDevServerEvents"
         && tag != "projects.subscribeFileChange"
+        && tag != "server.upsertKeybinding"
+        && tag != "server.editKeybindings"
         && tag != "server.getSettings"
         && tag != "server.updateSettings"
         && tag != "server.subscribeSettings"
@@ -320,6 +324,14 @@ fn intercept_todo(
             .map_err(error_json)
     } else if tag.starts_with("terminal.") {
         crate::terminal::handle(tag, &payload).map_err(error_json)
+    } else if tag == "server.upsertKeybinding" {
+        crate::server_keybindings::upsert_keybinding(&payload)
+            .map(Some)
+            .map_err(error_json)
+    } else if tag == "server.editKeybindings" {
+        crate::server_keybindings::edit_keybindings(&payload)
+            .map(Some)
+            .map_err(error_json)
     } else if tag == "server.getSettings" {
         crate::server_settings::get_settings(&payload)
             .map(Some)

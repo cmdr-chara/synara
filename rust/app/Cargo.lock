@@ -612,6 +612,7 @@ dependencies = [
  "axum",
  "futures-util",
  "http",
+ "keybindingrules-rs",
  "portable-pty",
  "reqwest",
  "rusqlite",
@@ -653,6 +654,17 @@ dependencies = [
  "cfg-if",
  "futures-util",
  "wasm-bindgen",
+]
+
+[[package]]
+name = "keybindingrules-rs"
+version = "0.1.0"
+dependencies = [
+ "napi",
+ "napi-build",
+ "napi-derive",
+ "serde",
+ "serde_json",
 ]
 
 [[package]]

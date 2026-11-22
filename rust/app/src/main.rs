@@ -10,6 +10,7 @@ mod projects_refs;
 mod projects_search;
 mod runtime_status;
 mod server_env;
+mod server_keybindings;
 mod server_settings;
 mod shell_editor;
 mod terminal;

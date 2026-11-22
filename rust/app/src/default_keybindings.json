@@ -1,0 +1,421 @@
+[
+  {
+    "key": "mod+b",
+    "command": "sidebar.toggle",
+    "when": "!terminalFocus"
+  },
+  {
+    "key": "cmd+k",
+    "command": "sidebar.search"
+  },
+  {
+    "key": "ctrl+k",
+    "command": "sidebar.search",
+    "when": "!isMac"
+  },
+  {
+    "key": "mod+alt+u",
+    "command": "sidebar.activity",
+    "when": "!terminalFocus || isMac"
+  },
+  {
+    "key": "mod+shift+o",
+    "command": "sidebar.addProject",
+    "when": "!terminalFocus"
+  },
+  {
+    "key": "mod+i",
+    "command": "sidebar.importThread",
+    "when": "!terminalFocus"
+  },
+  {
+    "key": "mod+alt+arrowleft",
+    "command": "space.previous",
+    "when": "!terminalFocus"
+  },
+  {
+    "key": "mod+alt+arrowright",
+    "command": "space.next",
+    "when": "!terminalFocus"
+  },
+  {
+    "key": "mod+alt+1",
+    "command": "space.jump.1",
+    "when": "!terminalFocus || isMac"
+  },
+  {
+    "key": "mod+alt+2",
+    "command": "space.jump.2",
+    "when": "!terminalFocus || isMac"
+  },
+  {
+    "key": "mod+alt+3",
+    "command": "space.jump.3",
+    "when": "!terminalFocus || isMac"
+  },
+  {
+    "key": "mod+alt+4",
+    "command": "space.jump.4",
+    "when": "!terminalFocus || isMac"
+  },
+  {
+    "key": "mod+alt+5",
+    "command": "space.jump.5",
+    "when": "!terminalFocus || isMac"
+  },
+  {
+    "key": "mod+alt+6",
+    "command": "space.jump.6",
+    "when": "!terminalFocus || isMac"
+  },
+  {
+    "key": "mod+alt+7",
+    "command": "space.jump.7",
+    "when": "!terminalFocus || isMac"
+  },
+  {
+    "key": "mod+alt+8",
+    "command": "space.jump.8",
+    "when": "!terminalFocus || isMac"
+  },
+  {
+    "key": "mod+alt+9",
+    "command": "space.jump.9",
+    "when": "!terminalFocus || isMac"
+  },
+  {
+    "key": "mod+j",
+    "command": "terminal.toggle"
+  },
+  {
+    "key": "mod+t",
+    "command": "terminal.new",
+    "when": "terminalFocus"
+  },
+  {
+    "key": "mod+w",
+    "command": "terminal.close",
+    "when": "terminalFocus"
+  },
+  {
+    "key": "mod+shift+j",
+    "command": "terminal.workspace.newFullWidth"
+  },
+  {
+    "key": "mod+w",
+    "command": "terminal.workspace.closeActive",
+    "when": "terminalWorkspaceOpen"
+  },
+  {
+    "key": "mod+w",
+    "command": "threadTab.close",
+    "when": "!terminalFocus && !terminalWorkspaceOpen"
+  },
+  {
+    "key": "ctrl+1",
+    "command": "terminal.workspace.terminal",
+    "when": "terminalWorkspaceOpen"
+  },
+  {
+    "key": "ctrl+2",
+    "command": "terminal.workspace.chat",
+    "when": "terminalWorkspaceOpen"
+  },
+  {
+    "key": "mod+shift+b",
+    "command": "browser.toggle",
+    "when": "!terminalFocus"
+  },
+  {
+    "key": "mod+alt+s",
+    "command": "sidechat.toggle",
+    "when": "!terminalFocus || isMac"
+  },
+  {
+    "key": "mod+d",
+    "command": "diff.toggle",
+    "when": "!terminalFocus"
+  },
+  {
+    "key": "alt+arrowdown",
+    "command": "diff.change.next",
+    "when": "!terminalFocus"
+  },
+  {
+    "key": "alt+arrowup",
+    "command": "diff.change.previous",
+    "when": "!terminalFocus"
+  },
+  {
+    "key": "cmd+l",
+    "command": "composer.focus.toggle",
+    "when": "!terminalFocus"
+  },
+  {
+    "key": "mod+f",
+    "command": "chat.find",
+    "when": "!terminalFocus"
+  },
+  {
+    "key": "mod+p",
+    "command": "search.files",
+    "when": "!terminalFocus"
+  },
+  {
+    "key": "mod+shift+f",
+    "command": "search.content",
+    "when": "!terminalFocus"
+  },
+  {
+    "key": "mod+shift+m",
+    "command": "modelPicker.toggle",
+    "when": "!terminalFocus"
+  },
+  {
+    "key": "alt+]",
+    "command": "model.next",
+    "when": "!terminalFocus"
+  },
+  {
+    "key": "alt+[",
+    "command": "model.previous",
+    "when": "!terminalFocus"
+  },
+  {
+    "key": "shift+tab",
+    "command": "model.effort.next",
+    "when": "composerFocus"
+  },
+  {
+    "key": "mod+shift+e",
+    "command": "traitsPicker.toggle",
+    "when": "!terminalFocus"
+  },
+  {
+    "key": "mod+shift+u",
+    "command": "settings.usage",
+    "when": "!terminalFocus"
+  },
+  {
+    "key": "mod+n",
+    "command": "chat.new",
+    "when": "!terminalFocus || isMac"
+  },
+  {
+    "key": "mod+shift+n",
+    "command": "chat.newLatestProject",
+    "when": "!terminalFocus || isMac"
+  },
+  {
+    "key": "mod+alt+n",
+    "command": "chat.newChat",
+    "when": "!terminalFocus || isMac"
+  },
+  {
+    "key": "mod+shift+t",
+    "command": "chat.newTerminal",
+    "when": "!terminalFocus || isMac"
+  },
+  {
+    "key": "mod+alt+c",
+    "command": "chat.newClaude",
+    "when": "!terminalFocus || isMac"
+  },
+  {
+    "key": "mod+alt+x",
+    "command": "chat.newCodex",
+    "when": "!terminalFocus || isMac"
+  },
+  {
+    "key": "mod+alt+r",
+    "command": "chat.newCursor",
+    "when": "!terminalFocus || isMac"
+  },
+  {
+    "key": "mod+\\",
+    "command": "chat.split",
+    "when": "!terminalFocus || isMac"
+  },
+  {
+    "key": "ctrl+tab",
+    "command": "view.recent.next"
+  },
+  {
+    "key": "ctrl+shift+tab",
+    "command": "view.recent.previous"
+  },
+  {
+    "key": "mod+1",
+    "command": "thread.jump.1",
+    "when": "(!terminalFocus && !terminalWorkspaceOpen) || isMac"
+  },
+  {
+    "key": "mod+2",
+    "command": "thread.jump.2",
+    "when": "(!terminalFocus && !terminalWorkspaceOpen) || isMac"
+  },
+  {
+    "key": "mod+3",
+    "command": "thread.jump.3",
+    "when": "(!terminalFocus && !terminalWorkspaceOpen) || isMac"
+  },
+  {
+    "key": "mod+4",
+    "command": "thread.jump.4",
+    "when": "(!terminalFocus && !terminalWorkspaceOpen) || isMac"
+  },
+  {
+    "key": "mod+5",
+    "command": "thread.jump.5",
+    "when": "(!terminalFocus && !terminalWorkspaceOpen) || isMac"
+  },
+  {
+    "key": "mod+6",
+    "command": "thread.jump.6",
+    "when": "(!terminalFocus && !terminalWorkspaceOpen) || isMac"
+  },
+  {
+    "key": "mod+7",
+    "command": "thread.jump.7",
+    "when": "(!terminalFocus && !terminalWorkspaceOpen) || isMac"
+  },
+  {
+    "key": "mod+8",
+    "command": "thread.jump.8",
+    "when": "(!terminalFocus && !terminalWorkspaceOpen) || isMac"
+  },
+  {
+    "key": "mod+9",
+    "command": "thread.jump.9",
+    "when": "(!terminalFocus && !terminalWorkspaceOpen) || isMac"
+  },
+  {
+    "key": "mod+shift+c",
+    "command": "thread.copyId",
+    "when": "!terminalFocus || isMac"
+  },
+  {
+    "key": "mod+alt+shift+a",
+    "command": "thread.archive",
+    "when": "!terminalFocus || isMac"
+  },
+  {
+    "key": "mod+alt+shift+s",
+    "command": "thread.snooze",
+    "when": "!terminalFocus || isMac"
+  },
+  {
+    "key": "mod+alt+shift+u",
+    "command": "thread.markUnread",
+    "when": "!terminalFocus || isMac"
+  },
+  {
+    "key": "mod+shift+]",
+    "command": "chat.visible.next",
+    "when": "!terminalFocus"
+  },
+  {
+    "key": "mod+shift+[",
+    "command": "chat.visible.previous",
+    "when": "!terminalFocus"
+  },
+  {
+    "key": "mod+alt+a",
+    "command": "chat.attention.next",
+    "when": "!terminalFocus || isMac"
+  },
+  {
+    "key": "mod+ctrl+arrowright",
+    "command": "threadTab.next",
+    "when": "isMac"
+  },
+  {
+    "key": "mod+ctrl+arrowleft",
+    "command": "threadTab.previous",
+    "when": "isMac"
+  },
+  {
+    "key": "ctrl+pagedown",
+    "command": "threadTab.next",
+    "when": "!terminalFocus && !isMac"
+  },
+  {
+    "key": "ctrl+pageup",
+    "command": "threadTab.previous",
+    "when": "!terminalFocus && !isMac"
+  },
+  {
+    "key": "meta+ctrl+p",
+    "command": "git.commitAndPush",
+    "when": "!terminalFocus && isMac"
+  },
+  {
+    "key": "ctrl+alt+p",
+    "command": "git.commitAndPush",
+    "when": "!terminalFocus && !isMac"
+  },
+  {
+    "key": "mod+o",
+    "command": "editor.openFavorite"
+  },
+  {
+    "key": "mod+s",
+    "command": "editor.file.save",
+    "when": "!terminalFocus"
+  },
+  {
+    "key": "f1",
+    "command": "editor.commands",
+    "when": "!terminalFocus"
+  },
+  {
+    "key": "f2",
+    "command": "editor.rename",
+    "when": "!terminalFocus"
+  },
+  {
+    "key": "f12",
+    "command": "editor.goToDefinition",
+    "when": "!terminalFocus"
+  },
+  {
+    "key": "shift+f12",
+    "command": "editor.findReferences",
+    "when": "!terminalFocus"
+  },
+  {
+    "key": "mod+.",
+    "command": "editor.quickFix",
+    "when": "!terminalFocus"
+  },
+  {
+    "key": "f5",
+    "command": "editor.debug.start",
+    "when": "!terminalFocus"
+  },
+  {
+    "key": "shift+f5",
+    "command": "editor.debug.stop",
+    "when": "!terminalFocus"
+  },
+  {
+    "key": "f9",
+    "command": "editor.debug.toggleBreakpoint",
+    "when": "!terminalFocus"
+  },
+  {
+    "key": "f10",
+    "command": "editor.debug.stepOver",
+    "when": "!terminalFocus"
+  },
+  {
+    "key": "f11",
+    "command": "editor.debug.stepInto",
+    "when": "!terminalFocus"
+  },
+  {
+    "key": "shift+f11",
+    "command": "editor.debug.stepOut",
+    "when": "!terminalFocus"
+  }
+]

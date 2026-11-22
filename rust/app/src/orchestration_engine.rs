@@ -38,7 +38,9 @@ fn uuid_v4() -> String {
 pub fn handles(tag: &str) -> bool {
     matches!(
         tag,
-        "orchestration.dispatchCommand" | "orchestration.settleTurnDispatch"
+        "orchestration.dispatchCommand"
+            | "orchestration.settleTurnDispatch"
+            | "orchestration.prepareQuitResume"
     ) && std::env::var("SYNARA_NO_UPSTREAM").is_ok()
 }
 
@@ -60,6 +62,9 @@ fn is_group_container_kind(kind: &str) -> bool {
 }
 
 pub fn handle(tag: &str, payload: &Value) -> Result<Value, WsErr> {
+    if tag == "orchestration.prepareQuitResume" {
+        return prepare_quit_resume(payload);
+    }
     if tag == "orchestration.settleTurnDispatch" {
         let command = payload
             .get("command")
@@ -5500,4 +5505,125 @@ fn settle_turn_dispatch(command: &Map<String, Value>) -> Result<Value, WsErr> {
     )
     .map_err(|_| err("Failed to settle the original message."))?;
     Err(err(detail))
+}
+
+fn prepare_quit_resume(payload: &Value) -> Result<Value, WsErr> {
+    let thread_ids: Vec<String> = payload
+        .get("threadIds")
+        .and_then(Value::as_array)
+        .map(|a| {
+            a.iter()
+                .filter_map(|v| v.as_str().map(str::to_string))
+                .collect()
+        })
+        .unwrap_or_default();
+    let continuation_prompt = payload
+        .get("continuationPrompt")
+        .and_then(Value::as_str)
+        .unwrap_or("")
+        .to_string();
+    let now = iso_now_ms();
+    let record_id = uuid_v4();
+    let conn = open_state_rw()?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| err(e.to_string()))?;
+
+    let mut seen = std::collections::HashSet::new();
+    let mut recorded: Vec<(String, Option<String>)> = Vec::new();
+    for thread_id in thread_ids {
+        if !seen.insert(thread_id.clone()) {
+            continue;
+        }
+        let row: Option<(Option<String>,)> = conn
+            .query_row(
+                "SELECT deleted_at FROM projection_threads WHERE thread_id = ?1",
+                params![thread_id],
+                |r| Ok((r.get(0)?,)),
+            )
+            .optional()
+            .map_err(|e| err(e.to_string()))?;
+        let Some((deleted_at,)) = row else { continue };
+        if deleted_at.is_some() {
+            continue;
+        }
+        let session: Option<(String, Option<String>)> = conn
+            .query_row(
+                "SELECT status, active_turn_id FROM projection_thread_sessions \
+                 WHERE thread_id = ?1",
+                params![thread_id],
+                |r| Ok((r.get(0)?, r.get(1)?)),
+            )
+            .optional()
+            .map_err(|e| err(e.to_string()))?;
+        let latest = latest_turn(&conn, &thread_id);
+        let in_flight = session
+            .as_ref()
+            .map(|(st, at)| {
+                (st != "error" && at.is_some()) || st == "starting" || st == "running"
+            })
+            .unwrap_or(false)
+            || latest.as_ref().map(|(_, st, _)| st == "running").unwrap_or(false);
+        if !in_flight {
+            continue;
+        }
+        let turn_id = session
+            .and_then(|(_, at)| at)
+            .or_else(|| {
+                latest.and_then(|(tid, st, _)| (st == "running").then_some(tid))
+            });
+        recorded.push((thread_id, turn_id));
+    }
+
+    let record = json!({
+        "version": 1,
+        "recordId": record_id,
+        "recordedAt": now,
+        "continuationPrompt": continuation_prompt,
+        "threads": recorded.iter().map(|(tid, turn)| json!({"threadId": tid, "turnId": turn})).collect::<Vec<_>>(),
+    });
+    let record_path = PathBuf::from(state_dir()).join("quit-resume.json");
+    let tmp_path = record_path.with_extension("json.tmp");
+    std::fs::write(&tmp_path, format!("{}\n", record.to_string()))
+        .and_then(|_| std::fs::rename(&tmp_path, &record_path))
+        .map_err(|e| err(format!("persist quit-resume record: {e}")))?;
+
+    // Best-effort interrupts (upstream: detached, errors only logged).
+    for (thread_id, turn_id) in &recorded {
+        let mut cmd = Map::new();
+        cmd.insert("type".into(), json!("thread.turn.interrupt"));
+        cmd.insert(
+            "commandId".into(),
+            json!(format!("quit-resume-interrupt:{record_id}:{thread_id}")),
+        );
+        cmd.insert("threadId".into(), json!(thread_id));
+        if let Some(t) = turn_id {
+            cmd.insert("turnId".into(), json!(t));
+        }
+        cmd.insert("createdAt".into(), json!(now));
+        let _ = handle("orchestration.dispatchCommand", &Value::Object(cmd));
+    }
+
+    // 30s abandon sweep: if the quit never completed, drop our own record.
+    {
+        let path = record_path.clone();
+        let rid = record_id.clone();
+        std::thread::spawn(move || {
+            std::thread::sleep(std::time::Duration::from_secs(30));
+            if let Ok(raw) = std::fs::read_to_string(&path) {
+                if serde_json::from_str::<Value>(raw.trim())
+                    .ok()
+                    .and_then(|v| v.get("recordId").and_then(Value::as_str).map(str::to_string))
+                    .as_deref()
+                    == Some(rid.as_str())
+                {
+                    let _ = std::fs::remove_file(&path);
+                }
+            }
+        });
+    }
+
+    Ok(json!({
+        "recordedThreadIds": recorded.iter().map(|(tid, _)| tid).collect::<Vec<_>>(),
+        "recordedAt": now,
+    }))
 }

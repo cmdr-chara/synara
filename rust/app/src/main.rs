@@ -9,6 +9,7 @@ mod projects_fs;
 mod projects_refs;
 mod projects_search;
 mod runtime_status;
+mod server_desktop_update;
 mod server_diagnostics;
 mod server_env;
 mod server_keybindings;

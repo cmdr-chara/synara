@@ -100,6 +100,8 @@ fn intercept_todo(
         && !text.contains("server.listLocalServers")
         && !text.contains("server.stopLocalServer")
         && !text.contains("server.getDiagnostics")
+        && !text.contains("server.desktopUpdateStatus")
+        && !text.contains("server.desktopUpdate")
         && !text.contains("server.getSettings")
         && !text.contains("server.updateSettings")
         && !text.contains("server.subscribeSettings")
@@ -143,6 +145,8 @@ fn intercept_todo(
         && tag != "server.listLocalServers"
         && tag != "server.stopLocalServer"
         && tag != "server.getDiagnostics"
+        && tag != "server.desktopUpdateStatus"
+        && tag != "server.desktopUpdate"
         && tag != "server.getSettings"
         && tag != "server.updateSettings"
         && tag != "server.subscribeSettings"
@@ -403,6 +407,14 @@ fn intercept_todo(
             .map_err(error_json)
     } else if tag == "server.stopLocalServer" {
         crate::server_local_servers::stop_local_server(&payload)
+            .map(Some)
+            .map_err(error_json)
+    } else if tag == "server.desktopUpdateStatus" {
+        crate::server_desktop_update::desktop_update_status()
+            .map(Some)
+            .map_err(error_json)
+    } else if tag == "server.desktopUpdate" {
+        crate::server_desktop_update::desktop_update(&payload)
             .map(Some)
             .map_err(error_json)
     } else if tag.starts_with("stats.") {

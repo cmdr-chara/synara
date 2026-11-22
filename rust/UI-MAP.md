@@ -16,22 +16,22 @@ Source of truth for web components: `apps/web/src/components/**.tsx`
 | Sidebar header | SidebarHeaderNavigationControls, "Synara ▾" app menu | DropdownMenu w/ PopupMenuItem → open_url | ✅ |
 | Sidebar search | SidebarSearchPalette, WorkspaceSearchPalette | `Input` + client filter + `searchThreads` hits | 🔶 (palette overlay missing) |
 | Sidebar projects | ProjectFolderList, SidebarProjectRowContent, ProjectMenuPicker, ProjectHoverCardContent | clickable rows w/ branch+dirty badge | 🔶 (no hover card/context menu) |
-| Sidebar chats | SidebarThreadRowContent, ThreadRowQuickActions, ThreadPinToggleButton, ThreadRunningSpinner, SidebarListSection | collapsible `row()` list | 🔶 (no pin/quick-actions/spinner) |
+| Sidebar chats | SidebarThreadRowContent, ThreadRowQuickActions, ThreadPinToggleButton, ThreadRunningSpinner, SidebarListSection | collapsible `row()` list + pin markers | 🔶 (pin via header menu, local state; no quick-actions) |
 | Empty home | ChatEmptyStateHero, ChatShell, SponsorLandingBanner | watermark columns + Υ + Support card | ✅ |
-| Composer | ComposerCapsule, ComposerInputBanners, ComposerModelPicker*, ComposerEffortSliderCard, ComposerExtrasPanel, ComposerCommandMenu, ComposerQueuedHeader | bordered composer card; runtime-mode + model dropdowns | 🔶 (no +/attachments, no effort/model pickers, no slash menu) |
-| Transcript | ChatTranscriptPane, MessagesTimeline, TurnHeaderLine, MessageTrail, ChatMarkdown*, ThreadErrorBanner | right-aligned user pills, md_blocks, error chips | 🔶 (markdown-lite only; no find-bar, selection actions, code highlighting) |
-| Activities | MessageTrail, ToolCallGroupSummaryRow, SubagentRunCard, BackgroundTaskRow, WorkflowRunCard, ProposedPlanCard, TaskProgressSteps | ◦ timeline rows + plan cards | 🔶 (no grouped tool cards/subagent cards) |
+| Composer | ComposerCapsule, ComposerInputBanners, ComposerModelPicker*, ComposerEffortSliderCard, ComposerExtrasPanel, ComposerCommandMenu, ComposerQueuedHeader | composer card; attachments (+picker/upload/chips), runtime-mode dropdown | 🔶 (model picker blocked: needs provider CLI installed; no slash menu, no effort) |
+| Transcript | ChatTranscriptPane, MessagesTimeline, TurnHeaderLine, MessageTrail, ChatMarkdown*, ThreadErrorBanner | right-aligned user pills, `TextView::markdown` (tables/code/bold/lists, selectable) | 🔶 (no find-bar, selection actions, code highlighting) |
+| Activities | MessageTrail, ToolCallGroupSummaryRow, SubagentRunCard, BackgroundTaskRow, WorkflowRunCard, ProposedPlanCard, TaskProgressSteps | collapsible tool-call cards ("N actions ▸") + plan cards | 🔶 (no subagent/background-task cards) |
 | Approvals | ComposerPendingApprovalPanel, AsyncUserInputCard, UserInputQuestionForm | approve/decline buttons | 🔶 (no form-type questions) |
-| Thread chrome | OpenThreadTabStrip, ChatHeader, ThreadStatusPillChip, ThreadArchiveActionButton, RenameThreadDialog | tab strip header + status chips + Stop/Archive | 🔶 (single tab only, no rename) |
+| Thread chrome | OpenThreadTabStrip, ChatHeader, ThreadStatusPillChip, ThreadArchiveActionButton, RenameThreadDialog | multi-tab strip, ⋯ menu (Rename inline → thread.meta.update, Pin/Unpin local), Spinner + status chips, Stop/Archive | ✅ |
 | Files pane | ProjectFolderList, workspaceExplorer, WorkspaceFilePreview* | dir list + viewer | 🔶 (flat dir listing, no tree) |
 | File editor | EditorWorkspaceView, WorkspaceFileEditorPane, codeEditor/* (Monaco) | `Editor` + `EditorState` (gpui native editor) | 🔶 (view/edit/save; no diff editor, no syntax lang detection) |
 | Dev servers | (dev-server UI in server surfaces) | DEV SERVERS pane list/run/stop | ✅ |
 | Settings | settings/* (44 comps), SettingsSidebarNav, ThemePackEditor, DebugFeatureFlagsMenu | Settings pane: appearance + about | 🔶 (theme+about only) |
-| Diff panel | DiffPanel* (9 comps), DiffLineBlamePopover, DiffWorkerPoolProvider | — | ⬜ |
+| Diff panel | DiffPanel* (9 comps), DiffLineBlamePopover, DiffWorkerPoolProvider | CHANGES dock: git.status file list (+ins/-del) + colored patch view | 🔶 (no blame, no staged/unstaged split) |
 | Terminal | terminal/*, TerminalWorkspaceTabs, ThreadTerminalDrawer, TerminalSearch | — | ⬜ (terminal RPCs native; no pane) |
-| Inbox | inbox/*, githubInbox/* (4) | — | ⬜ (githubInbox.* RPCs native; no UI) |
+| Inbox | inbox/*, githubInbox/* (4) | INBOX pane: PR/issue rows (icon, #, repo, author, rel time), opens URL | 🔶 (no filters/actions) |
 | Browser | BrowserPanel, BrowserTabStrip, BrowserVault* | — | ⬜ (wry webview only as fallback) |
-| Right dock | RightDock, SubagentsDockPane, BackgroundTasksDockPane, SidechatDockPane, PlanSidebar | — | ⬜ |
+| Right dock | RightDock, SubagentsDockPane, BackgroundTasksDockPane, SidechatDockPane, PlanSidebar | right-side dock container w/ CHANGES pane | 🔶 (only changes pane; no subagents/tasks/sidechat) |
 | Kanban | kanban/* (11) | — | ⬜ |
 | Pull requests | pullRequest/* (34), PullRequestThreadDialog, GitCreatePrDialog | — | ⬜ |
 | Automation | automation/* (5), RailAutomationsPanel, ComposerAutomationSetupBanner | — | ⬜ |

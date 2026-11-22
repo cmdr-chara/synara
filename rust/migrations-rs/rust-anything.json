@@ -1,0 +1,192 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/persistence/Migrations/",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "migrations-rs",
+  "exports": [
+    {
+      "name": "resolveAutomationProviderIdentity",
+      "file": "apps/server/src/persistence/Migrations/automationProviderIdentity.ts",
+      "line": 86,
+      "params": [
+        {
+          "name": "modelSelectionValue",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "providerOptionsValue",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "providerHintValue",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "(| { readonly safe: true; readonly modelSelection: Record<string, unknown> }\n  | { readonly safe: false })",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "makeUnresolvedAutomationModelSelection",
+      "file": "apps/server/src/persistence/Migrations/automationProviderIdentity.ts",
+      "line": 216,
+      "params": [
+        {
+          "name": "modelSelectionValue",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "providerOptionsValue",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        },
+        {
+          "name": "providerHintValue",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "{ readonly provider: (typeof PROVIDERS)[number]; readonly modelSelection: Record<string, unknown> }",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "makeUnresolvedAutomationPermissionSnapshot",
+      "file": "apps/server/src/persistence/Migrations/automationProviderIdentity.ts",
+      "line": 238,
+      "params": [
+        {
+          "name": "snapshotValue",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "createdAtFallback",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Record<string, unknown>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "parseJson",
+      "file": "apps/server/src/persistence/Migrations/automationProviderIdentity.ts",
+      "line": 282,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "columnExists",
+      "file": "apps/server/src/persistence/Migrations/schemaHelpers.ts",
+      "line": 10,
+      "params": [
+        {
+          "name": "sql",
+          "ts_type": "SqlClient.SqlClient",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "tableName",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "columnName",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "tableExists",
+      "file": "apps/server/src/persistence/Migrations/schemaHelpers.ts",
+      "line": 21,
+      "params": [
+        {
+          "name": "sql",
+          "ts_type": "SqlClient.SqlClient",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "tableName",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "primaryKeyColumns",
+      "file": "apps/server/src/persistence/Migrations/schemaHelpers.ts",
+      "line": 32,
+      "params": [
+        {
+          "name": "sql",
+          "ts_type": "SqlClient.SqlClient",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "tableName",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

@@ -1,0 +1,1320 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "benchmarks/desktop-perf/lib/",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "lib-rs",
+  "exports": [
+    {
+      "name": "useTemplateSet",
+      "file": "benchmarks/desktop-perf/lib/builds.mjs",
+      "line": 34,
+      "params": [
+        {
+          "name": "name",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "currentTemplateSet",
+      "file": "benchmarks/desktop-perf/lib/builds.mjs",
+      "line": 35,
+      "params": [],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "buildName",
+      "file": "benchmarks/desktop-perf/lib/builds.mjs",
+      "line": 55,
+      "params": [
+        {
+          "name": "ref",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "buildInfo",
+      "file": "benchmarks/desktop-perf/lib/builds.mjs",
+      "line": 59,
+      "params": [
+        {
+          "name": "name",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "prepareBuild",
+      "file": "benchmarks/desktop-perf/lib/builds.mjs",
+      "line": 71,
+      "params": [
+        {
+          "name": "ref",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "name",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        },
+        {
+          "name": "arg2",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "templatePaths",
+      "file": "benchmarks/desktop-perf/lib/builds.mjs",
+      "line": 123,
+      "params": [
+        {
+          "name": "kind",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "templateInfo",
+      "file": "benchmarks/desktop-perf/lib/builds.mjs",
+      "line": 133,
+      "params": [
+        {
+          "name": "kind",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "freshHomeFromTemplate",
+      "file": "benchmarks/desktop-perf/lib/builds.mjs",
+      "line": 156,
+      "params": [
+        {
+          "name": "kind",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "removeHome",
+      "file": "benchmarks/desktop-perf/lib/builds.mjs",
+      "line": 167,
+      "params": [
+        {
+          "name": "home",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "clearChromiumCaches",
+      "file": "benchmarks/desktop-perf/lib/builds.mjs",
+      "line": 173,
+      "params": [
+        {
+          "name": "profile",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "seed",
+      "file": "benchmarks/desktop-perf/lib/builds.mjs",
+      "line": 258,
+      "params": [
+        {
+          "name": "build",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "home",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "shape",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "arg3",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "createTemplates",
+      "file": "benchmarks/desktop-perf/lib/builds.mjs",
+      "line": 283,
+      "params": [
+        {
+          "name": "build",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "arg1",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "fetchJson",
+      "file": "benchmarks/desktop-perf/lib/cdp.mjs",
+      "line": 4,
+      "params": [
+        {
+          "name": "url",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "timeoutMs",
+          "ts_type": "number",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "listTargets",
+      "file": "benchmarks/desktop-perf/lib/cdp.mjs",
+      "line": 97,
+      "params": [
+        {
+          "name": "port",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "waitFor",
+      "file": "benchmarks/desktop-perf/lib/cdp.mjs",
+      "line": 101,
+      "params": [
+        {
+          "name": "check",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "arg1",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "sleep",
+      "file": "benchmarks/desktop-perf/lib/cdp.mjs",
+      "line": 121,
+      "params": [
+        {
+          "name": "ms",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "createProfileSummarizer",
+      "file": "benchmarks/desktop-perf/lib/cpuProfile.mjs",
+      "line": 49,
+      "params": [
+        {
+          "name": "buildDir",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "elementCenter",
+      "file": "benchmarks/desktop-perf/lib/drive.mjs",
+      "line": 13,
+      "params": [
+        {
+          "name": "session",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "selector",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "clickAt",
+      "file": "benchmarks/desktop-perf/lib/drive.mjs",
+      "line": 24,
+      "params": [
+        {
+          "name": "session",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "arg1",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "clickSelector",
+      "file": "benchmarks/desktop-perf/lib/drive.mjs",
+      "line": 42,
+      "params": [
+        {
+          "name": "session",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "selector",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "arg2",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "clickLabel",
+      "file": "benchmarks/desktop-perf/lib/drive.mjs",
+      "line": 54,
+      "params": [
+        {
+          "name": "session",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "labels",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "dismissAnnouncements",
+      "file": "benchmarks/desktop-perf/lib/drive.mjs",
+      "line": 80,
+      "params": [
+        {
+          "name": "session",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "arg1",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "focusEmulation",
+      "file": "benchmarks/desktop-perf/lib/drive.mjs",
+      "line": 112,
+      "params": [
+        {
+          "name": "session",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "enabled",
+          "ts_type": "boolean",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "pressKey",
+      "file": "benchmarks/desktop-perf/lib/drive.mjs",
+      "line": 118,
+      "params": [
+        {
+          "name": "session",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "key",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "modifiers",
+          "ts_type": "number",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "typeCharacter",
+      "file": "benchmarks/desktop-perf/lib/drive.mjs",
+      "line": 134,
+      "params": [
+        {
+          "name": "session",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "character",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "wheel",
+      "file": "benchmarks/desktop-perf/lib/drive.mjs",
+      "line": 148,
+      "params": [
+        {
+          "name": "session",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "arg1",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "composerText",
+      "file": "benchmarks/desktop-perf/lib/drive.mjs",
+      "line": 152,
+      "params": [
+        {
+          "name": "session",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "screenshot",
+      "file": "benchmarks/desktop-perf/lib/drive.mjs",
+      "line": 159,
+      "params": [
+        {
+          "name": "session",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "path",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "openThreadFromSidebar",
+      "file": "benchmarks/desktop-perf/lib/drive.mjs",
+      "line": 166,
+      "params": [
+        {
+          "name": "session",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "threadId",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "arg2",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "bootHeadlessBackend",
+      "file": "benchmarks/desktop-perf/lib/headlessBackend.mjs",
+      "line": 10,
+      "params": [
+        {
+          "name": "build",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "home",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "arg2",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "assertIsolatedHome",
+      "file": "benchmarks/desktop-perf/lib/launch.mjs",
+      "line": 17,
+      "params": [
+        {
+          "name": "home",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveElectronBinary",
+      "file": "benchmarks/desktop-perf/lib/launch.mjs",
+      "line": 36,
+      "params": [
+        {
+          "name": "buildDir",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "freePort",
+      "file": "benchmarks/desktop-perf/lib/launch.mjs",
+      "line": 52,
+      "params": [],
+      "returns": "unknown",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isolatedEnvironment",
+      "file": "benchmarks/desktop-perf/lib/launch.mjs",
+      "line": 68,
+      "params": [
+        {
+          "name": "arg0",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "processTree",
+      "file": "benchmarks/desktop-perf/lib/launch.mjs",
+      "line": 104,
+      "params": [
+        {
+          "name": "rootPid",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "classifyProcess",
+      "file": "benchmarks/desktop-perf/lib/launch.mjs",
+      "line": 146,
+      "params": [
+        {
+          "name": "row",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "arg1",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "launchDesktop",
+      "file": "benchmarks/desktop-perf/lib/launch.mjs",
+      "line": 172,
+      "params": [
+        {
+          "name": "arg0",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "attachMainPage",
+      "file": "benchmarks/desktop-perf/lib/launch.mjs",
+      "line": 209,
+      "params": [
+        {
+          "name": "app",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "arg1",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "quitDesktop",
+      "file": "benchmarks/desktop-perf/lib/launch.mjs",
+      "line": 233,
+      "params": [
+        {
+          "name": "app",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "arg1",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isFrontmost",
+      "file": "benchmarks/desktop-perf/lib/launch.mjs",
+      "line": 264,
+      "params": [
+        {
+          "name": "app",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "secondsSinceUserInput",
+      "file": "benchmarks/desktop-perf/lib/launch.mjs",
+      "line": 273,
+      "params": [],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "waitForQuietMac",
+      "file": "benchmarks/desktop-perf/lib/launch.mjs",
+      "line": 285,
+      "params": [
+        {
+          "name": "arg0",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "screenLocked",
+      "file": "benchmarks/desktop-perf/lib/launch.mjs",
+      "line": 306,
+      "params": [],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "frontmostProblem",
+      "file": "benchmarks/desktop-perf/lib/launch.mjs",
+      "line": 321,
+      "params": [
+        {
+          "name": "app",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "when",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "footprintMb",
+      "file": "benchmarks/desktop-perf/lib/metrics.mjs",
+      "line": 14,
+      "params": [
+        {
+          "name": "pids",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "memorySnapshot",
+      "file": "benchmarks/desktop-perf/lib/metrics.mjs",
+      "line": 39,
+      "params": [
+        {
+          "name": "app",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "rssTotalMb",
+      "file": "benchmarks/desktop-perf/lib/metrics.mjs",
+      "line": 73,
+      "params": [
+        {
+          "name": "app",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "cpuOverWindow",
+      "file": "benchmarks/desktop-perf/lib/metrics.mjs",
+      "line": 96,
+      "params": [
+        {
+          "name": "app",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "seconds",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "wakeupsOverWindow",
+      "file": "benchmarks/desktop-perf/lib/metrics.mjs",
+      "line": 130,
+      "params": [
+        {
+          "name": "app",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "seconds",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "gpuSystemSample",
+      "file": "benchmarks/desktop-perf/lib/metrics.mjs",
+      "line": 203,
+      "params": [],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "gpuSystemOverWindow",
+      "file": "benchmarks/desktop-perf/lib/metrics.mjs",
+      "line": 222,
+      "params": [
+        {
+          "name": "seconds",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "machineState",
+      "file": "benchmarks/desktop-perf/lib/metrics.mjs",
+      "line": 232,
+      "params": [],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "machineIdentity",
+      "file": "benchmarks/desktop-perf/lib/metrics.mjs",
+      "line": 256,
+      "params": [],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "median",
+      "file": "benchmarks/desktop-perf/lib/stats.mjs",
+      "line": 2,
+      "params": [
+        {
+          "name": "values",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "percentile",
+      "file": "benchmarks/desktop-perf/lib/stats.mjs",
+      "line": 9,
+      "params": [
+        {
+          "name": "values",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "fraction",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "summarize",
+      "file": "benchmarks/desktop-perf/lib/stats.mjs",
+      "line": 19,
+      "params": [
+        {
+          "name": "samples",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "unit",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "gap",
+      "file": "benchmarks/desktop-perf/lib/stats.mjs",
+      "line": 42,
+      "params": [
+        {
+          "name": "result",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "cause",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "startApp",
+      "file": "benchmarks/desktop-perf/lib/tests-session.mjs",
+      "line": 40,
+      "params": [
+        {
+          "name": "arg0",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "windowBounds",
+      "file": "benchmarks/desktop-perf/lib/tests-session.mjs",
+      "line": 67,
+      "params": [
+        {
+          "name": "session",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "measureIdle",
+      "file": "benchmarks/desktop-perf/lib/tests-session.mjs",
+      "line": 123,
+      "params": [
+        {
+          "name": "arg0",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "measureSwitching",
+      "file": "benchmarks/desktop-perf/lib/tests-session.mjs",
+      "line": 319,
+      "params": [
+        {
+          "name": "arg0",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "measureLongChat",
+      "file": "benchmarks/desktop-perf/lib/tests-session.mjs",
+      "line": 388,
+      "params": [
+        {
+          "name": "arg0",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "measureLoad",
+      "file": "benchmarks/desktop-perf/lib/tests-session.mjs",
+      "line": 460,
+      "params": [
+        {
+          "name": "arg0",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "measureLaunch",
+      "file": "benchmarks/desktop-perf/lib/tests-startup.mjs",
+      "line": 34,
+      "params": [
+        {
+          "name": "arg0",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "CdpSession",
+      "file": "benchmarks/desktop-perf/lib/cdp.mjs",
+      "line": 10,
+      "reason": "class: static method `connect`, async or generator method `evaluate`"
+    }
+  ]
+}

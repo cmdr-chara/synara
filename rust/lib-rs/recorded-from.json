@@ -1,0 +1,53 @@
+{
+  "unit": "benchmarks/desktop-perf/lib/",
+  "files": 11,
+  "fingerprint": "325a32bc88f63f91",
+  "coverage": {
+    "lines": 1569,
+    "reached": 419,
+    "files": [
+      {
+        "file": "benchmarks/desktop-perf/lib/cdp.mjs",
+        "lines": 109,
+        "reached": 13,
+        "missed": "5-8, 11-13, 17-38, 40-51, 53-59, 61-65, 68-82, 85-87, 89-93, 98-99, 102-119"
+      },
+      {
+        "file": "benchmarks/desktop-perf/lib/drive.mjs",
+        "lines": 167,
+        "reached": 27,
+        "missed": "14-22, 25-40, 43-51, 55-77, 81-110, 113-114, 119-131, 135-146, 149-150, 153-157, 160-163, 167-181"
+      },
+      {
+        "file": "benchmarks/desktop-perf/lib/launch.mjs",
+        "lines": 310,
+        "reached": 63,
+        "missed": "18-34, 37-43, 45-50, 53-62, 69-93, 95-101, 105-135, 137-144, 147-166, 173-206, 210-230, 234-257, 265-270, 274-278, 286-303, 322-329"
+      },
+      {
+        "file": "benchmarks/desktop-perf/lib/metrics.mjs",
+        "lines": 259,
+        "reached": 104,
+        "missed": "15-36, 40-70, 74-77, 79-89, 97-123, 137-195, 216"
+      },
+      {
+        "file": "benchmarks/desktop-perf/lib/stats.mjs",
+        "lines": 38,
+        "reached": 38,
+        "missed": ""
+      },
+      {
+        "file": "benchmarks/desktop-perf/lib/tests-session.mjs",
+        "lines": 581,
+        "reached": 134,
+        "missed": "46-64, 73-103, 105-108, 110-117, 126-153, 159-220, 223-244, 248-256, 259-262, 265-285, 321-371, 390-420, 425-438, 449-453, 462-561, 563-600"
+      },
+      {
+        "file": "benchmarks/desktop-perf/lib/tests-startup.mjs",
+        "lines": 105,
+        "reached": 40,
+        "missed": "40-91, 93-97, 100-107"
+      }
+    ]
+  }
+}

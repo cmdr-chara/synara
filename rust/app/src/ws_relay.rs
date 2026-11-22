@@ -116,6 +116,7 @@ fn intercept_todo(
         && !text.contains("orchestration.")
         && !text.contains("githubInbox.")
         && !text.contains("pullRequests.")
+        && !text.contains("automation.")
         && !text.contains("provider.")
         && !text.contains("ExternalMcp")
         && !text.contains("server.readThreadDiagnostics")
@@ -189,6 +190,8 @@ fn intercept_todo(
         && !crate::project_imports::handles(tag)
         && !tag.starts_with("githubInbox.")
         && !crate::pull_requests::handles(tag)
+        && !crate::automation::handles(tag)
+        && tag != "automation.subscribe"
         && !tag.starts_with("stats.")
         && !tag.starts_with("terminal.")
     {
@@ -442,6 +445,47 @@ fn intercept_todo(
                     Err(_) => {}
                 }
                 tokio::time::sleep(std::time::Duration::from_millis(1200)).await;
+            }
+        });
+        if let Ok(mut map) = streams.lock() {
+            map.insert(request_id, task);
+        }
+        return Some(None);
+    }
+    if tag == "automation.subscribe" {
+        let project_id = payload
+            .get("projectId")
+            .and_then(|v| v.as_str())
+            .map(|s| s.to_string());
+        let include_archived = payload
+            .get("includeArchived")
+            .and_then(|v| v.as_bool())
+            .unwrap_or(false);
+        let tx = native_tx.clone();
+        let rid = request_id.clone();
+        let task = tokio::spawn(async move {
+            let mut last: Option<String> = None;
+            loop {
+                match crate::automation::snapshot_event(project_id.as_deref(), include_archived) {
+                    Ok(event) => {
+                        let enc = event.to_string();
+                        if last.as_deref() != Some(enc.as_str()) {
+                            last = Some(enc);
+                            let chunk = serde_json::json!({
+                                "_tag": "Chunk", "requestId": rid,
+                                "values": [event],
+                            });
+                            if tx
+                                .send(ClientMessage::Text(chunk.to_string().into()))
+                                .is_err()
+                            {
+                                return;
+                            }
+                        }
+                    }
+                    Err(_) => {}
+                }
+                tokio::time::sleep(std::time::Duration::from_millis(1500)).await;
             }
         });
         if let Ok(mut map) = streams.lock() {
@@ -817,6 +861,10 @@ fn intercept_todo(
             .map_err(error_json)
     } else if crate::mcp_connectors::handles(tag) {
         crate::mcp_connectors::handle(tag, &payload)
+            .map(Some)
+            .map_err(error_json)
+    } else if crate::automation::handles(tag) {
+        crate::automation::handle(tag, &payload)
             .map(Some)
             .map_err(error_json)
     } else if crate::pull_requests::handles(tag) {

@@ -1,3 +1,4 @@
+mod automation;
 mod fs_browse;
 mod git_domain;
 mod git_handoff;

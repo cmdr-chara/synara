@@ -53,7 +53,7 @@ const cryptoNames = [
 ];
 const CRYPTO_SOURCE = `
 import { createRequire } from "node:module";
-const crypto = createRequire(import.meta.url)("node:crypto");
+const crypto = createRequire("file:///ra-stub-base.mjs")("node:crypto");
 const __orig = crypto.randomBytes;
 export default crypto;
 export const randomBytes = (n) => __orig(n).fill(0x07);
@@ -96,7 +96,7 @@ export async function load(url, context, next) {
     }
     return { format: "module", source: GENERIC, shortCircuit: true };
   }
-  if (url.endsWith(".json")) {
+  if (url.split("?")[0].endsWith(".json")) {
     const text = await readFile(new URL(url), "utf8");
     const data = JSON.parse(text);
     const keys = data && typeof data === "object" && !Array.isArray(data) ? Object.keys(data) : [];
@@ -110,7 +110,14 @@ export async function load(url, context, next) {
       shortCircuit: true,
     };
   }
-  return next(url, context);
+  try {
+    return await next(url, context);
+  } catch (err) {
+    if (err && (err.code === "ERR_UNKNOWN_FILE_EXTENSION" || err.code === "ERR_MODULE_NOT_FOUND" || err.code === "ERR_IMPORT_ATTRIBUTE_MISSING")) {
+      return { format: "module", source: GENERIC, shortCircuit: true };
+    }
+    throw err;
+  }
 }
 `;
 

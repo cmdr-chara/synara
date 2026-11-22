@@ -1,0 +1,77 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/environment/",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "environment-rs",
+  "exports": [
+    {
+      "name": "hashMachineId",
+      "file": "apps/server/src/environment/machineId.ts",
+      "line": 14,
+      "params": [
+        {
+          "name": "raw",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "parseIoregPlatformUuid",
+      "file": "apps/server/src/environment/machineId.ts",
+      "line": 24,
+      "params": [
+        {
+          "name": "output",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "parseWindowsMachineGuid",
+      "file": "apps/server/src/environment/machineId.ts",
+      "line": 29,
+      "params": [
+        {
+          "name": "output",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "readMachineId",
+      "file": "apps/server/src/environment/machineId.ts",
+      "line": 64,
+      "params": [],
+      "returns": "Promise<string | undefined>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

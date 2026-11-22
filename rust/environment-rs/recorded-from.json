@@ -1,0 +1,17 @@
+{
+  "unit": "apps/server/src/environment/",
+  "files": 6,
+  "fingerprint": "4defce5e0dd1b56a",
+  "coverage": {
+    "lines": 63,
+    "reached": 49,
+    "files": [
+      {
+        "file": "apps/server/src/environment/machineId.ts",
+        "lines": 63,
+        "reached": 49,
+        "missed": "48-59, 69-70"
+      }
+    ]
+  }
+}

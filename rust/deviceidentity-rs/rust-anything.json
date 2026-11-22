@@ -1,0 +1,61 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/deviceIdentity/",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "deviceidentity-rs",
+  "exports": [
+    {
+      "name": "deviceIdentityPath",
+      "file": "apps/server/src/deviceIdentity/store.ts",
+      "line": 34,
+      "params": [
+        {
+          "name": "secretsDir",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "loadOrCreateDeviceIdentity",
+      "file": "apps/server/src/deviceIdentity/store.ts",
+      "line": 183,
+      "params": [
+        {
+          "name": "filePath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<DeviceIdentity>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "readDeviceIdentity",
+      "file": "apps/server/src/deviceIdentity/store.ts",
+      "line": 123,
+      "reason": "checks `instanceof`: class identity does not survive the bridge"
+    },
+    {
+      "name": "withDeviceIdentityFile",
+      "file": "apps/server/src/deviceIdentity/store.ts",
+      "line": 166,
+      "reason": "takes or returns a function"
+    }
+  ]
+}

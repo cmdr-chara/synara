@@ -1,0 +1,418 @@
+{"fn":"deviceIdentityPath","args":[""],"ok":"device-identity.json"}
+{"fn":"deviceIdentityPath","args":["a.b.c"],"ok":"a.b.c/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["  padded  "],"ok":"  padded  /device-identity.json"}
+{"fn":"deviceIdentityPath","args":["éline1\nline2"],"ok":"éline1\nline2/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["ΣΊΣΥΦΟΣ"],"ok":"ΣΊΣΥΦΟΣ/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["{name} has {count} items"],"ok":"{name} has {count} items/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["Hello World"],"ok":"Hello World/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["emoji 👍🏽 mix"],"ok":"emoji 👍🏽 mix/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["a..b"],"ok":"a..b/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["./x/**/*.json"],"ok":"x/**/*.json/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["straße"],"ok":"straße/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["a😀b😀ca.b.c"],"ok":"a😀b😀ca.b.c/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["line1\nline2ünïcödé"],"ok":"line1\nline2ünïcödé/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["ab"],"ok":"ab/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["日本語のテキストns:key.path"],"ok":"日本語のテキストns:key.path/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["HELLO"],"ok":"HELLO/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["line1\nline2HELLO"],"ok":"line1\nline2HELLO/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["ünïcödé"],"ok":"ünïcödé/device-identity.json"}
+{"fn":"deviceIdentityPath","args":[".leading"],"ok":".leading/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["日本語のテキスト"],"ok":"日本語のテキスト/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["src/a/b.ts"],"ok":"src/a/b.ts/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["hello"],"ok":"hello/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["😀İstanbul"],"ok":"😀İstanbul/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["a:b:c"],"ok":"a:b:c/device-identity.json"}
+{"fn":"deviceIdentityPath","args":[":"],"ok":":/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["line1\nline2"],"ok":"line1\nline2/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["😀"],"ok":"😀/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["İstanbul"],"ok":"İstanbul/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["a😀b😀c"],"ok":"a😀b😀c/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["absrc/a/b.ts"],"ok":"absrc/a/b.ts/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["hello world"],"ok":"hello world/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["HELLOsrc/a/b.ts"],"ok":"HELLOsrc/a/b.ts/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["a..b:"],"ok":"a..b:/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["a"],"ok":"a/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["é"],"ok":"é/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["trailing."],"ok":"trailing./device-identity.json"}
+{"fn":"deviceIdentityPath","args":["key_name-1"],"ok":"key_name-1/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["emoji 👍🏽 mixhello"],"ok":"emoji 👍🏽 mixhello/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["line1\nline2é"],"ok":"line1\nline2é/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["abc"],"ok":"abc/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["key_name-1{name} has {count} items"],"ok":"key_name-1{name} has {count} items/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["Hello Worlda.b.c"],"ok":"Hello Worlda.b.c/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["日本語のテキストhello"],"ok":"日本語のテキストhello/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["./x/**/*.json{name} has {count} items"],"ok":"x/**/*.json{name} has {count} items/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["straßea.b.c"],"ok":"straßea.b.c/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["tab\tseparated"],"ok":"tab\tseparated/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["ns:key.path"],"ok":"ns:key.path/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["./x/**/*.json./x/**/*.json"],"ok":"x/**/*.json./x/**/*.json/device-identity.json"}
+{"fn":"deviceIdentityPath","args":[".leadingline1\nline2"],"ok":".leadingline1\nline2/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["﻿bom"],"ok":"﻿bom/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["tab\tseparated﻿bom"],"ok":"tab\tseparated﻿bom/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["emoji 👍🏽 mixabc"],"ok":"emoji 👍🏽 mixabc/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["tab\tseparatedns:key.path"],"ok":"tab\tseparatedns:key.path/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["emoji 👍🏽 mixHELLO"],"ok":"emoji 👍🏽 mixHELLO/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["key_name-1ns:key.path"],"ok":"key_name-1ns:key.path/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["a:b:ctab\tseparated"],"ok":"a:b:ctab\tseparated/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["﻿bomns:key.path"],"ok":"﻿bomns:key.path/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["aba:b:c"],"ok":"aba:b:c/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["trailing.ΣΊΣΥΦΟΣ"],"ok":"trailing.ΣΊΣΥΦΟΣ/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["İstanbula..b"],"ok":"İstanbula..b/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["a😀"],"ok":"a😀/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["a:b:cabc"],"ok":"a:b:cabc/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["akey_name-1"],"ok":"akey_name-1/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["line1\nline2﻿bom"],"ok":"line1\nline2﻿bom/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["{name} has {count} items日本語のテキスト"],"ok":"{name} has {count} items日本語のテキスト/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["a..bemoji 👍🏽 mix"],"ok":"a..bemoji 👍🏽 mix/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["a.b.cemoji 👍🏽 mix"],"ok":"a.b.cemoji 👍🏽 mix/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["./x/**/*.jsona😀b😀c"],"ok":"x/**/*.jsona😀b😀c/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["a.b.ca😀b😀c"],"ok":"a.b.ca😀b😀c/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["./x/**/*.jsonkey_name-1"],"ok":"x/**/*.jsonkey_name-1/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["line1\nline2a.b.c"],"ok":"line1\nline2a.b.c/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["src/a/b.tsa"],"ok":"src/a/b.tsa/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["a:b:c﻿bom"],"ok":"a:b:c﻿bom/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["éİstanbul"],"ok":"éİstanbul/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["a..bstraße"],"ok":"a..bstraße/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["key_name-1.leading"],"ok":"key_name-1.leading/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["emoji 👍🏽 mixkey_name-1"],"ok":"emoji 👍🏽 mixkey_name-1/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["straße😀"],"ok":"straße😀/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["src/a/b.tsa.b.c"],"ok":"src/a/b.tsa.b.c/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["straßens:key.path"],"ok":"straßens:key.path/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["İstanbulhello"],"ok":"İstanbulhello/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["tab\tseparatedsrc/a/b.ts"],"ok":"tab\tseparatedsrc/a/b.ts/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["a:"],"ok":"a:/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["a.b.c﻿bom"],"ok":"a.b.c﻿bom/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["helloabc"],"ok":"helloabc/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["line1\nline2emoji 👍🏽 mix"],"ok":"line1\nline2emoji 👍🏽 mix/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["key_name-1İstanbul"],"ok":"key_name-1İstanbul/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["Hello World:"],"ok":"Hello World:/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["éhello"],"ok":"éhello/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["hello world﻿bom"],"ok":"hello world﻿bom/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["hello worlda..b"],"ok":"hello worlda..b/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["ünïcödéünïcödé"],"ok":"ünïcödéünïcödé/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["a..ba:b:c"],"ok":"a..ba:b:c/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["a😀b😀cHELLO"],"ok":"a😀b😀cHELLO/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["éhello world"],"ok":"éhello world/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["hello world😀"],"ok":"hello world😀/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["aabc"],"ok":"aabc/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["line1\nline2hello world"],"ok":"line1\nline2hello world/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["Hello WorldHello World"],"ok":"Hello WorldHello World/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["{name} has {count} itemsabc"],"ok":"{name} has {count} itemsabc/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["﻿bomsrc/a/b.ts"],"ok":"﻿bomsrc/a/b.ts/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["{name} has {count} items{name} has {count} items"],"ok":"{name} has {count} items{name} has {count} items/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["hello worldé"],"ok":"hello worldé/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["HELLO{name} has {count} items"],"ok":"HELLO{name} has {count} items/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["key_name-1straße"],"ok":"key_name-1straße/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["a.b.ckey_name-1"],"ok":"a.b.ckey_name-1/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["key_name-1a.b.c"],"ok":"key_name-1a.b.c/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["{name} has {count} items😀"],"ok":"{name} has {count} items😀/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["{name} has {count} items./x/**/*.json"],"ok":"{name} has {count} items./x/**/*.json/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["Hello World.leading"],"ok":"Hello World.leading/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["emoji 👍🏽 mixΣΊΣΥΦΟΣ"],"ok":"emoji 👍🏽 mixΣΊΣΥΦΟΣ/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["  padded  line1\nline2"],"ok":"  padded  line1\nline2/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["key_name-1é"],"ok":"key_name-1é/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["﻿boma.b.c"],"ok":"﻿boma.b.c/device-identity.json"}
+{"fn":"deviceIdentityPath","args":[".leadingab"],"ok":".leadingab/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["line1\nline2.leading"],"ok":"line1\nline2.leading/device-identity.json"}
+{"fn":"deviceIdentityPath","args":[".leadingstraße"],"ok":".leadingstraße/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["emoji 👍🏽 mixünïcödé"],"ok":"emoji 👍🏽 mixünïcödé/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["a.b.c日本語のテキスト"],"ok":"a.b.c日本語のテキスト/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["trailing.HELLO"],"ok":"trailing.HELLO/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["hello worldtab\tseparated"],"ok":"hello worldtab\tseparated/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["straßeé"],"ok":"straßeé/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["😀HELLO"],"ok":"😀HELLO/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["{name} has {count} itemsa:b:c"],"ok":"{name} has {count} itemsa:b:c/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["{name} has {count} itemsHello World"],"ok":"{name} has {count} itemsHello World/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["src/a/b.tsab"],"ok":"src/a/b.tsab/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["straßesrc/a/b.ts"],"ok":"straßesrc/a/b.ts/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["./x/**/*.jsonΣΊΣΥΦΟΣ"],"ok":"x/**/*.jsonΣΊΣΥΦΟΣ/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["line1\nline2{name} has {count} items"],"ok":"line1\nline2{name} has {count} items/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["line1\nline2a"],"ok":"line1\nline2a/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["ns:key.path{name} has {count} items"],"ok":"ns:key.path{name} has {count} items/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["helloHELLO"],"ok":"helloHELLO/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["ünïcödékey_name-1"],"ok":"ünïcödékey_name-1/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["日本語のテキストa😀b😀c"],"ok":"日本語のテキストa😀b😀c/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["éé"],"ok":"éé/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["ünïcödéstraße"],"ok":"ünïcödéstraße/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["src/a/b.tstrailing."],"ok":"src/a/b.tstrailing./device-identity.json"}
+{"fn":"deviceIdentityPath","args":["./x/**/*.jsonhello"],"ok":"x/**/*.jsonhello/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["ünïcödé:"],"ok":"ünïcödé:/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["ahello"],"ok":"ahello/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["a:b:cé"],"ok":"a:b:cé/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["trailing.ns:key.path"],"ok":"trailing.ns:key.path/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["éabc"],"ok":"éabc/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["trailing.﻿bom"],"ok":"trailing.﻿bom/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["ns:key.pathemoji 👍🏽 mix"],"ok":"ns:key.pathemoji 👍🏽 mix/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["日本語のテキストa"],"ok":"日本語のテキストa/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["日本語のテキストé"],"ok":"日本語のテキストé/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["ünïcödétab\tseparated"],"ok":"ünïcödétab\tseparated/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["ns:key.path./x/**/*.json"],"ok":"ns:key.path./x/**/*.json/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["ns:key.pathé"],"ok":"ns:key.pathé/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["./x/**/*.jsontab\tseparated"],"ok":"x/**/*.jsontab\tseparated/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["hello﻿bom"],"ok":"hello﻿bom/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["a./x/**/*.json"],"ok":"a./x/**/*.json/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["key_name-1  padded  "],"ok":"key_name-1  padded  /device-identity.json"}
+{"fn":"deviceIdentityPath","args":["a:b:c  padded  "],"ok":"a:b:c  padded  /device-identity.json"}
+{"fn":"deviceIdentityPath","args":["﻿bomİstanbul"],"ok":"﻿bomİstanbul/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["Hello Worldtab\tseparated"],"ok":"Hello Worldtab\tseparated/device-identity.json"}
+{"fn":"deviceIdentityPath","args":[":{name} has {count} items"],"ok":":{name} has {count} items/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["a:b:c:"],"ok":"a:b:c:/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["a..ba"],"ok":"a..ba/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["HELLOİstanbul"],"ok":"HELLOİstanbul/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["a.b.ca:b:c"],"ok":"a.b.ca:b:c/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["😀straße"],"ok":"😀straße/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["ΣΊΣΥΦΟΣ:"],"ok":"ΣΊΣΥΦΟΣ:/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["trailing.a:b:c"],"ok":"trailing.a:b:c/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["a😀b😀c﻿bom"],"ok":"a😀b😀c﻿bom/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["  padded  straße"],"ok":"  padded  straße/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["tab\tseparatedünïcödé"],"ok":"tab\tseparatedünïcödé/device-identity.json"}
+{"fn":"deviceIdentityPath","args":[".leadingé"],"ok":".leadingé/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["ünïcödéhello world"],"ok":"ünïcödéhello world/device-identity.json"}
+{"fn":"deviceIdentityPath","args":[":a.b.c"],"ok":":a.b.c/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["key_name-1hello world"],"ok":"key_name-1hello world/device-identity.json"}
+{"fn":"deviceIdentityPath","args":[":line1\nline2"],"ok":":line1\nline2/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["ab:"],"ok":"ab:/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["{name} has {count} items  padded  "],"ok":"{name} has {count} items  padded  /device-identity.json"}
+{"fn":"deviceIdentityPath","args":["ünïcödé.leading"],"ok":"ünïcödé.leading/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["src/a/b.tsünïcödé"],"ok":"src/a/b.tsünïcödé/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["aba"],"ok":"aba/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["a..ba😀b😀c"],"ok":"a..ba😀b😀c/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["hello worldstraße"],"ok":"hello worldstraße/device-identity.json"}
+{"fn":"deviceIdentityPath","args":[".leadingkey_name-1"],"ok":".leadingkey_name-1/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["日本語のテキストstraße"],"ok":"日本語のテキストstraße/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["ΣΊΣΥΦΟΣstraße"],"ok":"ΣΊΣΥΦΟΣstraße/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["a😀b😀cemoji 👍🏽 mix"],"ok":"a😀b😀cemoji 👍🏽 mix/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["abcsrc/a/b.ts"],"ok":"abcsrc/a/b.ts/device-identity.json"}
+{"fn":"deviceIdentityPath","args":[".leadinghello world"],"ok":".leadinghello world/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["hello  padded  "],"ok":"hello  padded  /device-identity.json"}
+{"fn":"deviceIdentityPath","args":["a..b﻿bom"],"ok":"a..b﻿bom/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["ünïcödéabc"],"ok":"ünïcödéabc/device-identity.json"}
+{"fn":"deviceIdentityPath","args":[".leadingabc"],"ok":".leadingabc/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["İstanbulstraße"],"ok":"İstanbulstraße/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["tab\tseparatedkey_name-1"],"ok":"tab\tseparatedkey_name-1/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["日本語のテキストsrc/a/b.ts"],"ok":"日本語のテキストsrc/a/b.ts/device-identity.json"}
+{"fn":"deviceIdentityPath","args":[":emoji 👍🏽 mix"],"ok":":emoji 👍🏽 mix/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["::"],"ok":"::/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["line1\nline2😀"],"ok":"line1\nline2😀/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["abcemoji 👍🏽 mix"],"ok":"abcemoji 👍🏽 mix/device-identity.json"}
+{"fn":"deviceIdentityPath","args":[".leadingns:key.path"],"ok":".leadingns:key.path/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["  padded  hello world"],"ok":"  padded  hello world/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["hello world  padded  "],"ok":"hello world  padded  /device-identity.json"}
+{"fn":"deviceIdentityPath","args":["héllo wörld"],"ok":"héllo wörld/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["👍🏽 thumbs"],"ok":"👍🏽 thumbs/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["日本語"],"ok":"日本語/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["ılık ırmak"],"ok":"ılık ırmak/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["👨‍👩‍👧 family"],"ok":"👨‍👩‍👧 family/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["a b"],"ok":"a b/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["a😀b"],"ok":"a😀b/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["a²b x½ y①"],"ok":"a²b x½ y①/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["aⅠb Ⅻ"],"ok":"aⅠb Ⅻ/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["a𐐀b 𝐀bc"],"ok":"a𐐀b 𝐀bc/device-identity.json"}
+{"fn":"deviceIdentityPath","args":["कि ٣٤"],"ok":"कि ٣٤/device-identity.json"}
+{"fn":"loadOrCreateDeviceIdentity","args":["HELLO"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["日本語のテキスト"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":[""],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["abhello world"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["abc"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["trailing."],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["  padded  "],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["İstanbul"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["hello world"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["a😀b😀ckey_name-1"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["é"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["key_name-1"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["{name} has {count} items"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["line1\nline2"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["straße"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["ns:key.path"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["a..b"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["src/a/b.ts"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":[".leading"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["a😀b😀c"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["./x/**/*.json"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["😀"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["HELLOHello World"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["key_name-1ns:key.path"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["tab\tseparated"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["hello worldé"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["ΣΊΣΥΦΟΣa😀b😀c"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["﻿boma.b.c"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["emoji 👍🏽 mix"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["tab\tseparatedemoji 👍🏽 mix"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["ΣΊΣΥΦΟΣa..b"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":[":"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["hello"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["ünïcödé"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["a:b:cünïcödé"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["ünïcödékey_name-1"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["hello worlda"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["key_name-1straße"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["éΣΊΣΥΦΟΣ"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["hello worldİstanbul"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["a"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["HELLO  padded  "],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["a.b.cns:key.path"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["./x/**/*.json日本語のテキスト"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["﻿bom"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["a.b.c"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["aa😀b😀c"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["ΣΊΣΥΦΟΣtrailing."],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["ΣΊΣΥΦΟΣ"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["hello worlda😀b😀c"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["ab"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["ns:key.patha😀b😀c"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["Hello World  padded  "],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["  padded  İstanbul"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["ns:key.pathhello"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":[".leading日本語のテキスト"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["hellotrailing."],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["a:b:c"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["a﻿bom"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["a.b.c😀"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["line1\nline2a"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["src/a/b.tsstraße"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["a.b.ca😀b😀c"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["a..bHello World"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["  padded  ﻿bom"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["HELLOkey_name-1"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["日本語のテキストa"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["😀./x/**/*.json"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["abckey_name-1"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["straßeİstanbul"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["src/a/b.tsline1\nline2"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["﻿boma"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["ünïcödé./x/**/*.json"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["ab{name} has {count} items"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["abctab\tseparated"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["ΣΊΣΥΦΟΣsrc/a/b.ts"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["  padded  line1\nline2"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["日本語のテキストemoji 👍🏽 mix"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["a..bkey_name-1"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["tab\tseparateda"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["tab\tseparatedHELLO"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["HELLOünïcödé"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["ns:key.patha.b.c"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["a😀"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["emoji 👍🏽 mixé"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["😀  padded  "],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["a.b.c﻿bom"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["  padded  a.b.c"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["straße日本語のテキスト"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["ns:key.pathstraße"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["hello worldline1\nline2"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["ns:key.path:"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["  padded  a..b"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["a😀b😀csrc/a/b.ts"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["Hello Worldİstanbul"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["﻿bom日本語のテキスト"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":[".leadingtrailing."],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["😀src/a/b.ts"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["absrc/a/b.ts"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":[":emoji 👍🏽 mix"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["İstanbula..b"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["{name} has {count} itemsa.b.c"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["./x/**/*.json  padded  "],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["a..b{name} has {count} items"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["emoji 👍🏽 mixHELLO"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["İstanbul{name} has {count} items"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["./x/**/*.jsonkey_name-1"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["  padded  ns:key.path"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["emoji 👍🏽 mix{name} has {count} items"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["é﻿bom"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["hello./x/**/*.json"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["a:b:c😀"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["İstanbulİstanbul"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["abca..b"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["HELLOhello"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["src/a/b.tsİstanbul"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["line1\nline2line1\nline2"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["ünïcödésrc/a/b.ts"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["./x/**/*.jsonhello"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["﻿bomline1\nline2"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["😀a..b"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["tab\tseparatedab"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["./x/**/*.jsonab"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["hellosrc/a/b.ts"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":[":line1\nline2"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["hellokey_name-1"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["日本語のテキストİstanbul"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["ns:key.pathab"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["﻿bom:"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["ns:key.path😀"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["İstanbulstraße"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["😀tab\tseparated"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["日本語のテキスト﻿bom"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["a..b  padded  "],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["a:b:csrc/a/b.ts"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["é  padded  "],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["ab.leading"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["ünïcödé日本語のテキスト"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["hello worldns:key.path"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["a.b.cemoji 👍🏽 mix"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["emoji 👍🏽 mix:"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["./x/**/*.json😀"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["a..ba"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["line1\nline2hello world"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["a..bİstanbul"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":[":﻿bom"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["line1\nline2key_name-1"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["tab\tseparatedHello World"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["  padded  é"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["hellons:key.path"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["ünïcödé  padded  "],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["{name} has {count} itemsab"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["helloa😀b😀c"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["a.b.cHELLO"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["hello world﻿bom"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["Hello Worldsrc/a/b.ts"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["{name} has {count} items{name} has {count} items"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["HELLOhello world"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["{name} has {count} itemshello"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["HELLOİstanbul"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["éab"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["İstanbulkey_name-1"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["tab\tseparated./x/**/*.json"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["HELLOa.b.c"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["Hello Worldkey_name-1"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["ns:key.pathns:key.path"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["ns:key.pathtab\tseparated"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["key_name-1hello"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["hello{name} has {count} items"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["::"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["line1\nline2trailing."],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["{name} has {count} itemstrailing."],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["ababc"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["emoji 👍🏽 mixa.b.c"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["İstanbultrailing."],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["hello.leading"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["a:b:chello world"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["日本語のテキストstraße"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["a😀b😀ca.b.c"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["key_name-1é"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["a😀b😀cé"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["éİstanbul"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["éa.b.c"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["emoji 👍🏽 mixline1\nline2"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["hello world{name} has {count} items"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":[".leadinga"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["abctrailing."],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["a.b.c./x/**/*.json"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["tab\tseparateda:b:c"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["日本語のテキストabc"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["İstanbul😀"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["abchello"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["a:b:c日本語のテキスト"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":[":Hello World"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["a.b.cabc"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["ns:key.pathabc"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["héllo wörld"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["👍🏽 thumbs"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["日本語"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["ılık ırmak"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["👨‍👩‍👧 family"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["a b"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["a😀b"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["a²b x½ y①"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["aⅠb Ⅻ"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["a𐐀b 𝐀bc"],"error":"lock owner metadata is invalid"}
+{"fn":"loadOrCreateDeviceIdentity","args":["कि ٣٤"],"error":"lock owner metadata is invalid"}

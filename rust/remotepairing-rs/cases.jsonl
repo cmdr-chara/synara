@@ -1,0 +1,427 @@
+{"fn":"requestLocalRemoteAccess","args":["straße",true],"error":"No running Synara instance was found under straße. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["ΣΊΣΥΦΟΣ",[]],"error":"No running Synara instance was found under ΣΊΣΥΦΟΣ. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["src/a/b.ts",{}],"error":"No running Synara instance was found under src/a/b.ts. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["  padded  ",true],"error":"No running Synara instance was found under   padded  . Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["a.b.cΣΊΣΥΦΟΣ",0],"error":"No running Synara instance was found under a.b.cΣΊΣΥΦΟΣ. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["a..b",{"a":"b"}],"error":"No running Synara instance was found under a..b. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["  padded  ",["a",1]],"error":"No running Synara instance was found under   padded  . Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["İstanbul.leading",0],"error":"No running Synara instance was found under İstanbul.leading. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["a:b:c日本語のテキスト",[]],"error":"No running Synara instance was found under a:b:c日本語のテキスト. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["日本語のテキスト",{"a":"b"}],"error":"No running Synara instance was found under 日本語のテキスト. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["src/a/b.ts",0],"error":"No running Synara instance was found under src/a/b.ts. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["a",{"a":"b"}],"error":"No running Synara instance was found under a. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["日本語のテキストa😀b😀c",["a",1]],"error":"No running Synara instance was found under 日本語のテキストa😀b😀c. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["tab\tseparated",0],"error":"No running Synara instance was found under tab\tseparated. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["a:b:c",[]],"error":"No running Synara instance was found under a:b:c. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["hello",0],"error":"No running Synara instance was found under hello. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":[":",0],"error":"No running Synara instance was found under :. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["ns:key.path  padded  ",{}],"error":"No running Synara instance was found under ns:key.path  padded  . Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["﻿bom.leading",null],"error":"No running Synara instance was found under ﻿bom.leading. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["ns:key.path",0],"error":"No running Synara instance was found under ns:key.path. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":[".leading",["a",1]],"error":"No running Synara instance was found under .leading. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["ΣΊΣΥΦΟΣ",{}],"error":"No running Synara instance was found under ΣΊΣΥΦΟΣ. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["a..bHELLO",["a",1]],"error":"No running Synara instance was found under a..bHELLO. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["ünïcödé",{"a":{"b":"c"}}],"error":"No running Synara instance was found under ünïcödé. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["trailing.",null],"error":"No running Synara instance was found under trailing.. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["{name} has {count} items",["a",1]],"error":"No running Synara instance was found under {name} has {count} items. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["line1\nline2",[]],"error":"No running Synara instance was found under line1\nline2. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["line1\nline2",{"a":"b"}],"error":"No running Synara instance was found under line1\nline2. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["ΣΊΣΥΦΟΣtrailing.",null],"error":"No running Synara instance was found under ΣΊΣΥΦΟΣtrailing.. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["src/a/b.ts",[]],"error":"No running Synara instance was found under src/a/b.ts. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["a:b:c",{"a":{"b":"c"}}],"error":"No running Synara instance was found under a:b:c. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["ünïcödé","x"],"error":"No running Synara instance was found under ünïcödé. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["😀",null],"error":"No running Synara instance was found under 😀. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["./x/**/*.json",null],"error":"No running Synara instance was found under ./x/**/*.json. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["İstanbul",{"a":"b"}],"error":"No running Synara instance was found under İstanbul. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["abc",{"a":{"b":"c"}}],"error":"No running Synara instance was found under abc. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["İstanbul",true],"error":"No running Synara instance was found under İstanbul. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["emoji 👍🏽 mixemoji 👍🏽 mix",{"a":"b"}],"error":"No running Synara instance was found under emoji 👍🏽 mixemoji 👍🏽 mix. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["hello world","x"],"error":"No running Synara instance was found under hello world. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["line1\nline2",0],"error":"No running Synara instance was found under line1\nline2. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["a:b:c",["a",1]],"error":"No running Synara instance was found under a:b:c. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["HELLO",null],"error":"No running Synara instance was found under HELLO. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["straße",{"a":{"b":"c"}}],"error":"No running Synara instance was found under straße. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["emoji 👍🏽 mix",{"a":{"b":"c"}}],"error":"No running Synara instance was found under emoji 👍🏽 mix. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":[".leading",0],"error":"No running Synara instance was found under .leading. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["Hello World",["a",1]],"error":"No running Synara instance was found under Hello World. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":[".leading",true],"error":"No running Synara instance was found under .leading. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["trailing.emoji 👍🏽 mix",[]],"error":"No running Synara instance was found under trailing.emoji 👍🏽 mix. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["src/a/b.ts",{"a":{"b":"c"}}],"error":"No running Synara instance was found under src/a/b.ts. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["./x/**/*.json","x"],"error":"No running Synara instance was found under ./x/**/*.json. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["İstanbul",{}],"error":"No running Synara instance was found under İstanbul. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["",{"a":{"b":"c"}}],"error":"No running Synara instance was found under . Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["x","x"],"error":"No running Synara instance was found under x. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["hello world",true],"error":"No running Synara instance was found under hello world. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":[":",["a",1]],"error":"No running Synara instance was found under :. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["./x/**/*.json",{}],"error":"No running Synara instance was found under ./x/**/*.json. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["emoji 👍🏽 mix",0],"error":"No running Synara instance was found under emoji 👍🏽 mix. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["",null],"error":"No running Synara instance was found under . Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["hello world",null],"error":"No running Synara instance was found under hello world. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["tab\tseparated","x"],"error":"No running Synara instance was found under tab\tseparated. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["HELLO",{"a":{"b":"c"}}],"error":"No running Synara instance was found under HELLO. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["hello",null],"error":"No running Synara instance was found under hello. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["😀",{}],"error":"No running Synara instance was found under 😀. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["emoji 👍🏽 mix",{}],"error":"No running Synara instance was found under emoji 👍🏽 mix. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["Hello World",null],"error":"No running Synara instance was found under Hello World. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["Hello World",[]],"error":"No running Synara instance was found under Hello World. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["ΣΊΣΥΦΟΣ",["a",1]],"error":"No running Synara instance was found under ΣΊΣΥΦΟΣ. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["a:b:ca😀b😀c",true],"error":"No running Synara instance was found under a:b:ca😀b😀c. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["a..b",[]],"error":"No running Synara instance was found under a..b. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["Hello World",true],"error":"No running Synara instance was found under Hello World. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["a..b","a"],"error":"No running Synara instance was found under a..b. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["a:b:cab",true],"error":"No running Synara instance was found under a:b:cab. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["tab\tseparated",true],"error":"No running Synara instance was found under tab\tseparated. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["Hello World","x"],"error":"No running Synara instance was found under Hello World. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["a😀b😀c",0],"error":"No running Synara instance was found under a😀b😀c. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["ésrc/a/b.ts",["a",1]],"error":"No running Synara instance was found under ésrc/a/b.ts. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["src/a/b.ts",["a",1]],"error":"No running Synara instance was found under src/a/b.ts. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["ΣΊΣΥΦΟΣ",true],"error":"No running Synara instance was found under ΣΊΣΥΦΟΣ. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["trailing.",{}],"error":"No running Synara instance was found under trailing.. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["abc",{"a":"b"}],"error":"No running Synara instance was found under abc. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["straße",["a",1]],"error":"No running Synara instance was found under straße. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["./x/**/*.json",0],"error":"No running Synara instance was found under ./x/**/*.json. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["./x/**/*.json",["a",1]],"error":"No running Synara instance was found under ./x/**/*.json. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["./x/**/*.json","*.json"],"error":"No running Synara instance was found under ./x/**/*.json. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["日本語のテキスト.leading",[]],"error":"No running Synara instance was found under 日本語のテキスト.leading. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["line1\nline2","ne"],"error":"No running Synara instance was found under line1\nline2. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["hello","x"],"error":"No running Synara instance was found under hello. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["trailing.HELLO",true],"error":"No running Synara instance was found under trailing.HELLO. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":[".leadingHello World",{"a":{"b":"c"}}],"error":"No running Synara instance was found under .leadingHello World. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["ünïcödé",true],"error":"No running Synara instance was found under ünïcödé. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["key_name-1",{}],"error":"No running Synara instance was found under key_name-1. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["key_name-1",{"a":"b"}],"error":"No running Synara instance was found under key_name-1. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["key_name-1",{"a":{"b":"c"}}],"error":"No running Synara instance was found under key_name-1. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["trailing.",true],"error":"No running Synara instance was found under trailing.. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":[":a..b",{"a":{"b":"c"}}],"error":"No running Synara instance was found under :a..b. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["﻿bom",0],"error":"No running Synara instance was found under ﻿bom. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["  padded  ",{"a":"b"}],"error":"No running Synara instance was found under   padded  . Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["ns:key.path",[]],"error":"No running Synara instance was found under ns:key.path. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["straße","x"],"error":"No running Synara instance was found under straße. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["emoji 👍🏽 mix","x"],"error":"No running Synara instance was found under emoji 👍🏽 mix. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["İstanbul",0],"error":"No running Synara instance was found under İstanbul. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["straße  padded  ",[]],"error":"No running Synara instance was found under straße  padded  . Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["straße",null],"error":"No running Synara instance was found under straße. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["trailing.",["a",1]],"error":"No running Synara instance was found under trailing.. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":[".leading",[]],"error":"No running Synara instance was found under .leading. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["日本語のテキスト",true],"error":"No running Synara instance was found under 日本語のテキスト. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["straße",[]],"error":"No running Synara instance was found under straße. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["日本語のテキスト",null],"error":"No running Synara instance was found under 日本語のテキスト. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["ab./x/**/*.json",0],"error":"No running Synara instance was found under ab./x/**/*.json. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["hellokey_name-1",null],"error":"No running Synara instance was found under hellokey_name-1. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":[":ab",{"a":{"b":"c"}}],"error":"No running Synara instance was found under :ab. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["a.b.c",0],"error":"No running Synara instance was found under a.b.c. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["a😀b😀c",{}],"error":"No running Synara instance was found under a😀b😀c. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["HELLOa..b",["a",1]],"error":"No running Synara instance was found under HELLOa..b. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["İstanbul",["a",1]],"error":"No running Synara instance was found under İstanbul. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["key_name-1",true],"error":"No running Synara instance was found under key_name-1. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["ünïcödétab\tseparated",{"a":{"b":"c"}}],"error":"No running Synara instance was found under ünïcödétab\tseparated. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["a..b",0],"error":"No running Synara instance was found under a..b. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["a😀b😀c",null],"error":"No running Synara instance was found under a😀b😀c. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["a",true],"error":"No running Synara instance was found under a. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["﻿bom",true],"error":"No running Synara instance was found under ﻿bom. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["HELLOhello",true],"error":"No running Synara instance was found under HELLOhello. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":[".leading",{"a":"b"}],"error":"No running Synara instance was found under .leading. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["İstanbulabc","x"],"error":"No running Synara instance was found under İstanbulabc. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["./x/**/*.json",true],"error":"No running Synara instance was found under ./x/**/*.json. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["straßea😀b😀c",{"a":{"b":"c"}}],"error":"No running Synara instance was found under straßea😀b😀c. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["hello world",{}],"error":"No running Synara instance was found under hello world. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["ünïcödé﻿bom",{"a":"b"}],"error":"No running Synara instance was found under ünïcödé﻿bom. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["abc{name} has {count} items",["a",1]],"error":"No running Synara instance was found under abc{name} has {count} items. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["ns:key.path",["a",1]],"error":"No running Synara instance was found under ns:key.path. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["a.b.c",{"a":{"b":"c"}}],"error":"No running Synara instance was found under a.b.c. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["ünïcödé",{"a":"b"}],"error":"No running Synara instance was found under ünïcödé. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["./x/**/*.jsonab","x"],"error":"No running Synara instance was found under ./x/**/*.jsonab. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["hello",{}],"error":"No running Synara instance was found under hello. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["ünïcödé",{}],"error":"No running Synara instance was found under ünïcödé. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["HELLO",[]],"error":"No running Synara instance was found under HELLO. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["ünïcödéHello World",true],"error":"No running Synara instance was found under ünïcödéHello World. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["é",true],"error":"No running Synara instance was found under é. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["a😀b😀c",["a",1]],"error":"No running Synara instance was found under a😀b😀c. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["ns:key.path","x"],"error":"No running Synara instance was found under ns:key.path. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["{name} has {count} items",{}],"error":"No running Synara instance was found under {name} has {count} items. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["abc",0],"error":"No running Synara instance was found under abc. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["./x/**/*.json",[]],"error":"No running Synara instance was found under ./x/**/*.json. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":[".leadingHello World","x"],"error":"No running Synara instance was found under .leadingHello World. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["a:b:ctab\tseparated",null],"error":"No running Synara instance was found under a:b:ctab\tseparated. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["src/a/b.ts",true],"error":"No running Synara instance was found under src/a/b.ts. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["ab😀",null],"error":"No running Synara instance was found under ab😀. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["emoji 👍🏽 mix./x/**/*.json",{"a":"b"}],"error":"No running Synara instance was found under emoji 👍🏽 mix./x/**/*.json. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["tab\tseparated",{"a":{"b":"c"}}],"error":"No running Synara instance was found under tab\tseparated. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["a.b.cstraße",{}],"error":"No running Synara instance was found under a.b.cstraße. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["emoji 👍🏽 mix",{"a":"b"}],"error":"No running Synara instance was found under emoji 👍🏽 mix. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["ΣΊΣΥΦΟΣ  padded  ",[]],"error":"No running Synara instance was found under ΣΊΣΥΦΟΣ  padded  . Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["a",{}],"error":"No running Synara instance was found under a. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["﻿bom",{}],"error":"No running Synara instance was found under ﻿bom. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["  padded  ","x"],"error":"No running Synara instance was found under   padded  . Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["a:b:ctab\tseparated",[]],"error":"No running Synara instance was found under a:b:ctab\tseparated. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["ab",{}],"error":"No running Synara instance was found under ab. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["{name} has {count} items",null],"error":"No running Synara instance was found under {name} has {count} items. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["HELLO",{"a":"b"}],"error":"No running Synara instance was found under HELLO. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["{name} has {count} items","x"],"error":"No running Synara instance was found under {name} has {count} items. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["emoji 👍🏽 mix",true],"error":"No running Synara instance was found under emoji 👍🏽 mix. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["a:b:cünïcödé",[]],"error":"No running Synara instance was found under a:b:cünïcödé. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["abc",{}],"error":"No running Synara instance was found under abc. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["a",["a",1]],"error":"No running Synara instance was found under a. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["😀",["a",1]],"error":"No running Synara instance was found under 😀. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["tab\tseparated",null],"error":"No running Synara instance was found under tab\tseparated. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["tab\tseparated",{}],"error":"No running Synara instance was found under tab\tseparated. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["key_name-1",[]],"error":"No running Synara instance was found under key_name-1. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["é",["a",1]],"error":"No running Synara instance was found under é. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["trailing.",[]],"error":"No running Synara instance was found under trailing.. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["tab\tseparated",{"a":"b"}],"error":"No running Synara instance was found under tab\tseparated. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["ΣΊΣΥΦΟΣ","x"],"error":"No running Synara instance was found under ΣΊΣΥΦΟΣ. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["a..b",{"a":{"b":"c"}}],"error":"No running Synara instance was found under a..b. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["abc",["a",1]],"error":"No running Synara instance was found under abc. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["éstraße",{"a":{"b":"c"}}],"error":"No running Synara instance was found under éstraße. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["a",[]],"error":"No running Synara instance was found under a. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["a",null],"error":"No running Synara instance was found under a. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["ab",{"a":{"b":"c"}}],"error":"No running Synara instance was found under ab. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["Hello World",{}],"error":"No running Synara instance was found under Hello World. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["abc",true],"error":"No running Synara instance was found under abc. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["HELLO",0],"error":"No running Synara instance was found under HELLO. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["a.b.c",true],"error":"No running Synara instance was found under a.b.c. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["emoji 👍🏽 mix",[]],"error":"No running Synara instance was found under emoji 👍🏽 mix. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["日本語のテキストhello world",0],"error":"No running Synara instance was found under 日本語のテキストhello world. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["é  padded  ",{"a":{"b":"c"}}],"error":"No running Synara instance was found under é  padded  . Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["HELLO","x"],"error":"No running Synara instance was found under HELLO. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["ΣΊΣΥΦΟΣ",{"a":"b"}],"error":"No running Synara instance was found under ΣΊΣΥΦΟΣ. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["İstanbul",{"a":{"b":"c"}}],"error":"No running Synara instance was found under İstanbul. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["hello",[]],"error":"No running Synara instance was found under hello. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":[".leading",{}],"error":"No running Synara instance was found under .leading. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["a.b.c",["a",1]],"error":"No running Synara instance was found under a.b.c. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["😀",true],"error":"No running Synara instance was found under 😀. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["line1\nline2",{}],"error":"No running Synara instance was found under line1\nline2. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["HELLO  padded  ",{"a":{"b":"c"}}],"error":"No running Synara instance was found under HELLO  padded  . Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["ns:key.path",null],"error":"No running Synara instance was found under ns:key.path. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["ab","x"],"error":"No running Synara instance was found under ab. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["line1\nline2a:b:c",true],"error":"No running Synara instance was found under line1\nline2a:b:c. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["hello",["a",1]],"error":"No running Synara instance was found under hello. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["hello",true],"error":"No running Synara instance was found under hello. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["  padded  {name} has {count} items",{}],"error":"No running Synara instance was found under   padded  {name} has {count} items. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["héllo wörld",true],"error":"No running Synara instance was found under héllo wörld. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["👍🏽 thumbs",true],"error":"No running Synara instance was found under 👍🏽 thumbs. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["日本語",true],"error":"No running Synara instance was found under 日本語. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["",true],"error":"No running Synara instance was found under . Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["ılık ırmak",true],"error":"No running Synara instance was found under ılık ırmak. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["👨‍👩‍👧 family",true],"error":"No running Synara instance was found under 👨‍👩‍👧 family. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["a b",true],"error":"No running Synara instance was found under a b. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["a😀b",true],"error":"No running Synara instance was found under a😀b. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["a²b x½ y①",true],"error":"No running Synara instance was found under a²b x½ y①. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["aⅠb Ⅻ",true],"error":"No running Synara instance was found under aⅠb Ⅻ. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["a𐐀b 𝐀bc",true],"error":"No running Synara instance was found under a𐐀b 𝐀bc. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"requestLocalRemoteAccess","args":["कि ٣٤",true],"error":"No running Synara instance was found under कि ٣٤. Start Synara first or pass --home-dir for the intended instance."}
+{"fn":"saveRemoteInvitation","args":["{name} has {count} items",{"a":{"b":"c"}}],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["HELLO{name} has {count} items",["a",1]],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["trailing.ab",["a",1]],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["trailing.",null],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"saveRemoteInvitation","args":[".leading",0],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["é","x"],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["key_name-1",{"a":{"b":"c"}}],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["trailing.",0],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["hello日本語のテキスト",["a",1]],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["trailing.",["a",1]],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["ünïcödé",null],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"saveRemoteInvitation","args":["src/a/b.ts",{"a":"b"}],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":[".leading",{"a":{"b":"c"}}],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["abc",[]],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["abc",true],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["hello world",0],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["hello",["a",1]],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["a:b:ctrailing.",{"a":"b"}],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["line1\nline2",{"a":{"b":"c"}}],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["src/a/b.tskey_name-1",{"a":"b"}],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["﻿bom","﻿bo"],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["./x/**/*.json",true],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["İstanbul",0],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["a.b.c",["a",1]],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":[":",[]],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["a",[]],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["straßehello world",{}],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["a..b😀","x"],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["hello world",["a",1]],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":[".leading",[]],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":[".leading",null],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"saveRemoteInvitation","args":["{name} has {count} itemsstraße",{}],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["a",["a",1]],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["key_name-1",0],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["emoji 👍🏽 mix",0],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["abc",["a",1]],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["Hello Worldsrc/a/b.ts",0],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["X","x"],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["a..btab\tseparated",0],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["ΣΊΣΥΦΟΣ",0],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["😀",true],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["{name} has {count} items",0],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["a:b:c",{}],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["ΣΊΣΥΦΟΣhello",{"a":{"b":"c"}}],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["./x/**/*.json",{"a":{"b":"c"}}],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["HELLO",{"a":"b"}],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["line1\nline2",null],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"saveRemoteInvitation","args":[":",{"a":"b"}],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["trailing.",{"a":"b"}],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["a","A"],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["src/a/b.tsa.b.c",0],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["a😀b😀ca.b.c",0],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["Hello World",{}],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["a..b",[]],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["Hello World",0],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["emoji 👍🏽 mix",{"a":{"b":"c"}}],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["İstanbul",["a",1]],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["",null],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"saveRemoteInvitation","args":[".leading","x"],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["ΣΊΣΥΦΟΣ",null],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"saveRemoteInvitation","args":["日本語のテキスト",{"a":"b"}],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["a:b:c",0],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["ΣΊΣΥΦΟΣab",{"a":"b"}],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["line1\nline2",true],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["a😀b😀c",0],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["a..b",0],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["a..b",["a",1]],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["a:b:cline1\nline2",0],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["emoji 👍🏽 mix",["a",1]],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["Hello World",[]],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["ns:key.path","x"],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["src/a/b.ts",true],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["x","x"],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["  padded  ",0],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["😀",{"a":{"b":"c"}}],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["😀",{"a":"b"}],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["é",[]],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["key_name-1",["a",1]],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["trailing.",true],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["hello",true],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["straße",null],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"saveRemoteInvitation","args":["étrailing.",null],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"saveRemoteInvitation","args":["HELLOa.b.c",null],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"saveRemoteInvitation","args":[":","x"],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["a:b:c",true],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["{name} has {count} itemsa..b",0],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["ünïcödé",{}],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":[".leading",{"a":"b"}],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["ns:key.path",true],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["HELLO",true],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["a.b.cemoji 👍🏽 mix",{"a":"b"}],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["日本語のテキスト",0],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["straße",0],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["straße",["a",1]],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["straße",{"a":"b"}],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["a",null],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"saveRemoteInvitation","args":["﻿bom",{}],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["é",0],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["hello",null],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"saveRemoteInvitation","args":["src/a/b.ts",0],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["abc",null],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"saveRemoteInvitation","args":["./x/**/*.json","x"],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["Hello Worldemoji 👍🏽 mix",[]],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["a:b:c",["a",1]],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["{name} has {count} itemsünïcödé",{"a":{"b":"c"}}],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["./x/**/*.jsonstraße","x"],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["hello world./x/**/*.json",null],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"saveRemoteInvitation","args":["  padded  ",true],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["ab",{"a":"b"}],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["{name} has {count} items",{"a":"b"}],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["a:b:cstraße",0],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["",[]],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["İstanbul","x"],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["a.b.c",null],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"saveRemoteInvitation","args":["HELLO./x/**/*.json",[]],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["abc","x"],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["日本語のテキスト",[]],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["key_name-1",[]],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":[":ΣΊΣΥΦΟΣ",["a",1]],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["hello world",{}],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["a.b.cns:key.path","x"],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":[".leadingline1\nline2",true],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["hello",{}],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["hello","l"],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["😀",["a",1]],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["a.b.c",".b."],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["﻿bom",{"a":"b"}],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["src/a/b.tstab\tseparated",null],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"saveRemoteInvitation","args":["﻿bom",["a",1]],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["a..b",{"a":{"b":"c"}}],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["ΣΊΣΥΦΟΣ","x"],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["a.b.cab",["a",1]],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["./x/**/*.json日本語のテキスト",{}],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["",{"a":"b"}],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["a",{"a":{"b":"c"}}],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["","x"],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["hello world",{"a":{"b":"c"}}],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["{name} has {count} items","x"],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["line1\nline2",{"a":"b"}],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["ünïcödé",[]],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["./x/**/*.json",{"a":"b"}],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":[":",true],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["./x/**/*.json",null],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"saveRemoteInvitation","args":["日本語のテキスト",{}],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["﻿bom",0],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["src/a/b.ts",{}],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["ünïcödé",{"a":"b"}],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["hello worldhello world",["a",1]],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["HELLOa",0],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["abc",0],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["straße",[]],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["ns:key.pathHello World","x"],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["😀",[]],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["hello world",true],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["ab",0],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["HELLO",{}],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["a.b.c",0],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["ab",{}],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["Hello World","x"],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":[":  padded  ",{"a":"b"}],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["a",0],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["emoji 👍🏽 mix",[]],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["ab",["a",1]],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["İstanbul",true],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["😀:","x"],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["a😀b😀c",null],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"saveRemoteInvitation","args":["é",{"a":{"b":"c"}}],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["a.b.c",[]],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["./x/**/*.json",0],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["HELLO",null],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"saveRemoteInvitation","args":["a😀b😀c",{"a":{"b":"c"}}],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["İstanbul",{"a":{"b":"c"}}],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["abkey_name-1",[]],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["HELLO",0],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["tab\tseparatedΣΊΣΥΦΟΣ",["a",1]],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["a.b.c",{"a":"b"}],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["Hello World",["a",1]],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["ns:key.pathtrailing.",null],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"saveRemoteInvitation","args":["Hello World",{"a":{"b":"c"}}],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["aé",{"a":"b"}],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["src/a/b.ts",{"a":{"b":"c"}}],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["Hello Worldemoji 👍🏽 mix",null],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"saveRemoteInvitation","args":["src/a/b.ts😀",["a",1]],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["﻿bomhello world",0],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["ns:key.pathhello",{"a":"b"}],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["line1\nline2",["a",1]],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["a:b:c",{"a":{"b":"c"}}],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["é./x/**/*.json",[]],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":[".leading",true],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["😀","x"],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["tab\tseparated",{"a":"b"}],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["helloa..b",true],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["HELLO",[]],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["ΣΊΣΥΦΟΣ:",["a",1]],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["a",true],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["ns:key.pathtab\tseparated",true],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["日本語のテキスト",true],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["a.b.c","x"],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["straße",{}],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["日本語のテキスト",null],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"saveRemoteInvitation","args":["héllo wörld",{"a":{"b":"c"}}],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["👍🏽 thumbs",{"a":{"b":"c"}}],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["日本語",{"a":{"b":"c"}}],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["",{"a":{"b":"c"}}],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["straße",{"a":{"b":"c"}}],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["ılık ırmak",{"a":{"b":"c"}}],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["👨‍👩‍👧 family",{"a":{"b":"c"}}],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["a b",{"a":{"b":"c"}}],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["ΣΊΣΥΦΟΣ",{"a":{"b":"c"}}],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["a😀b",{"a":{"b":"c"}}],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["﻿bom",{"a":{"b":"c"}}],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["a²b x½ y①",{"a":{"b":"c"}}],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["aⅠb Ⅻ",{"a":{"b":"c"}}],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["a𐐀b 𝐀bc",{"a":{"b":"c"}}],"error":"The server did not issue an invitation."}
+{"fn":"saveRemoteInvitation","args":["कि ٣٤",{"a":{"b":"c"}}],"error":"The server did not issue an invitation."}

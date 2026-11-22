@@ -1,0 +1,79 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/remotePairing/",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "remotepairing-rs",
+  "exports": [
+    {
+      "name": "requestLocalRemoteAccess",
+      "file": "apps/server/src/remotePairing/cli.ts",
+      "line": 19,
+      "params": [
+        {
+          "name": "baseDir",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "request",
+          "ts_type": "typeof typeof typeof typeof RemoteAccessRequest.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<typeof typeof typeof typeof RemoteAccessResult.Type.Type.Type.Type>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "saveRemoteInvitation",
+      "file": "apps/server/src/remotePairing/cli.ts",
+      "line": 109,
+      "params": [
+        {
+          "name": "file",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "result",
+          "ts_type": "typeof typeof typeof typeof RemoteAccessResult.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<void>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "pairRemoteHost",
+      "file": "apps/server/src/remotePairing/client.ts",
+      "line": 29,
+      "reason": "uses `RemoteChannelInput`, which has function members"
+    },
+    {
+      "name": "acceptRemotePairing",
+      "file": "apps/server/src/remotePairing/gateway.ts",
+      "line": 41,
+      "reason": "uses `AuthControlPlaneShape`, which has function members"
+    },
+    {
+      "name": "makeRemoteAccessManagement",
+      "file": "apps/server/src/remotePairing/management.ts",
+      "line": 55,
+      "reason": "checks `instanceof`: class identity does not survive the bridge"
+    }
+  ]
+}

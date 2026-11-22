@@ -1,0 +1,17 @@
+{
+  "unit": "apps/server/src/remotePairing/",
+  "files": 7,
+  "fingerprint": "954a2f92a9234c19",
+  "coverage": {
+    "lines": 72,
+    "reached": 72,
+    "files": [
+      {
+        "file": "apps/server/package.json",
+        "lines": 72,
+        "reached": 72,
+        "missed": ""
+      }
+    ]
+  }
+}

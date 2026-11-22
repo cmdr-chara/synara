@@ -3,7 +3,7 @@
 Extracted 2026-11-22 from `packages/contracts/src/rpc.ts` (`Rpc.make` declarations, 285 methods).
 Transport: `apps/server/src/wsRpc.ts` over the WS upgrade path; this is the app's real API surface — the 30 HTTP routes in ROUTES.md are auxiliary.
 
-Native coverage in rust/app (relay handles the rest): ~147/285.
+Native coverage in rust/app (relay handles the rest): ~181/285.
 - `bootstrap.negotiate` (HTTP GET /ws/negotiate)
 - `filesystem.browse`
 - `git.*` — 26 of 27 (missing: summarizeDiff)

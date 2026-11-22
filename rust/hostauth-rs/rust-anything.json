@@ -1,0 +1,137 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/hostAuth/",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "hostauth-rs",
+  "exports": [
+    {
+      "name": "verifySessionCredential",
+      "file": "apps/server/src/hostAuth/credential.ts",
+      "line": 27,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly credential: string;\n  readonly dpop: string;\n  readonly identity: HostIdentity;\n  readonly environmentId: string;\n  readonly keyGeneration: number;\n  readonly expectedHtu: string;\n  readonly expectedHtm: string;\n  readonly replayCache?: JwtReplayCache;\n  readonly nowSeconds?: number;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<VerifiedSessionCredential>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "assertBoundedLifetime",
+      "file": "apps/server/src/hostAuth/grantVerifier.ts",
+      "line": 36,
+      "params": [
+        {
+          "name": "claims",
+          "ts_type": "{ iat: number; exp: number }",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "maximumSeconds",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "label",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "nowSeconds",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [
+    {
+      "name": "JwtReplayCache",
+      "file": "apps/server/src/hostAuth/replayCache.ts",
+      "line": 3,
+      "constructor": [],
+      "methods": [
+        {
+          "name": "consume",
+          "file": "apps/server/src/hostAuth/replayCache.ts",
+          "line": 13,
+          "params": [
+            {
+              "name": "jti",
+              "ts_type": "string",
+              "optional": false,
+              "rest": false
+            },
+            {
+              "name": "expiresAtSeconds",
+              "ts_type": "number",
+              "optional": false,
+              "rest": false
+            },
+            {
+              "name": "nowSeconds",
+              "ts_type": "unknown",
+              "optional": true,
+              "rest": false
+            }
+          ],
+          "returns": "void",
+          "is_async": false,
+          "is_generator": false,
+          "type_params": [],
+          "uses_instanceof": false
+        }
+      ],
+      "blocker": null
+    }
+  ],
+  "js_only": [
+    {
+      "name": "ApiJwksCache",
+      "file": "apps/server/src/hostAuth/apiJwksCache.ts",
+      "line": 7,
+      "reason": "class: public parameter properties, async or generator method `get`, async or generator method `refreshForUnknownKid`"
+    },
+    {
+      "name": "HostMintError",
+      "file": "apps/server/src/hostAuth/grantVerifier.ts",
+      "line": 25,
+      "reason": "class: extends another class, public parameter properties"
+    },
+    {
+      "name": "HostGrantVerifier",
+      "file": "apps/server/src/hostAuth/grantVerifier.ts",
+      "line": 74,
+      "reason": "class: public parameter properties, async or generator method `verify`"
+    },
+    {
+      "name": "HostAuthorizationUnavailableError",
+      "file": "apps/server/src/hostAuth/mintService.ts",
+      "line": 66,
+      "reason": "class: extends another class"
+    },
+    {
+      "name": "HostMintService",
+      "file": "apps/server/src/hostAuth/mintService.ts",
+      "line": 73,
+      "reason": "class: public parameter properties, async or generator method `mint`"
+    }
+  ]
+}

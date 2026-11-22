@@ -36,6 +36,8 @@ pub struct Native {
     files_loading: bool,
     git_status: Option<Value>,
     file_stream_id: Option<String>,
+    search_query: String,
+    search_hits: Vec<Value>,
 }
 
 fn get<'a>(v: &'a Value, k: &str) -> &'a Value {
@@ -93,9 +95,9 @@ impl Native {
             cx.subscribe_in(
                 &search,
                 window,
-                |_this: &mut Self, _state, event, _window, cx| {
+                |this: &mut Self, _state, event, _window, cx| {
                     if let InputEvent::Change = event {
-                        cx.notify();
+                        this.on_search_change(cx);
                     }
                 },
             )
@@ -117,6 +119,8 @@ impl Native {
                 files_loading: false,
                 git_status: None,
                 file_stream_id: None,
+                search_query: String::new(),
+                search_hits: Vec::new(),
             };
             this.refresh(cx);
             this
@@ -303,6 +307,46 @@ impl Native {
             }
         }
         cx.notify();
+    }
+
+    /// Debounced content search via orchestration.searchThreads.
+    fn on_search_change(&mut self, cx: &mut Context<Self>) {
+        let query = self.search.read(cx).value().to_string();
+        self.search_query = query.clone();
+        self.search_hits = Vec::new();
+        cx.notify();
+        let trimmed = query.trim().to_string();
+        if trimmed.chars().count() < 2 {
+            return;
+        }
+        let cell = self.client.clone();
+        cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
+            cx.background_executor()
+                .timer(std::time::Duration::from_millis(300))
+                .await;
+            let still = this
+                .update(cx, |this: &mut Self, _| this.search_query.trim() == trimmed)
+                .unwrap_or(false);
+            if !still {
+                return;
+            }
+            let v = cx
+                .background_executor()
+                .spawn(async move {
+                    ensure_client(&cell).and_then(|c| {
+                        c.call(
+                            "orchestration.searchThreads",
+                            json!({"query": trimmed, "limit": 20}),
+                        )
+                    })
+                })
+                .await;
+            let _ = this.update(cx, |this: &mut Self, cx| {
+                this.search_hits = v.map(|v| arr(&v, "matches").to_vec()).unwrap_or_default();
+                cx.notify();
+            });
+        })
+        .detach();
     }
 
     /// Fetch git.status of the first project's workspace root.
@@ -750,6 +794,36 @@ impl Render for Native {
                     if title.is_empty() { "(untitled)".to_string() } else { title.to_string() },
                     preview.chars().take(80).collect(),
                     selected,
+                    cx,
+                    move |this, _ev, _w, cx| this.open_thread(tid.clone(), cx),
+                ));
+            }
+        }
+        // Server-side content matches (searchThreads).
+        if !self.search_hits.is_empty() {
+            sidebar = sidebar.child(
+                div()
+                    .text_xs()
+                    .font_weight(FontWeight::SEMIBOLD)
+                    .text_color(theme.muted_foreground)
+                    .child("CONTENT MATCHES"),
+            );
+            for hit in self.search_hits.clone() {
+                let tid = str_at(&hit, "threadId").to_string();
+                let count = get(&hit, "matchCount").as_i64().unwrap_or(0);
+                let excerpt = str_at(&hit, "excerpt");
+                // Show the thread's title when we know it.
+                let known = arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "threads")
+                    .iter()
+                    .find(|t| str_at(t, "id") == tid)
+                    .map(|t| str_at(t, "title").to_string())
+                    .filter(|t| !t.is_empty())
+                    .unwrap_or_else(|| tid.chars().take(8).collect());
+                sidebar = sidebar.child(row(
+                    ElementId::Name(format!("hit-{tid}-{count}").into()),
+                    format!("{known} (x{count})"),
+                    excerpt.chars().take(80).collect(),
+                    false,
                     cx,
                     move |this, _ev, _w, cx| this.open_thread(tid.clone(), cx),
                 ));

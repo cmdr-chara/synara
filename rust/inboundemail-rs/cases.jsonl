@@ -1,0 +1,9 @@
+{"fn":"POST","args":[[]],"ok":{}}
+{"fn":"POST","args":[{}],"ok":{}}
+{"fn":"POST","args":[["a",1]],"ok":{}}
+{"fn":"POST","args":[null],"ok":{}}
+{"fn":"POST","args":[true],"ok":{}}
+{"fn":"POST","args":[0],"ok":{}}
+{"fn":"POST","args":["x"],"ok":{}}
+{"fn":"POST","args":[{"a":{"b":"c"}}],"ok":{}}
+{"fn":"POST","args":[{"a":"b"}],"ok":{}}

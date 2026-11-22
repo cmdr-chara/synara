@@ -114,4 +114,25 @@ export async function load(url, context, next) {
 }
 `;
 
+// Optional clock freeze: `SYNARA_STATE_NOW_MS` pins `Date.now()` and
+// argument-free `new Date()` so timestamp-bearing exports record
+// deterministically (replay via the crate's env vars, like crypto above).
+const NOW_MS = process.env.SYNARA_STATE_NOW_MS;
+if (NOW_MS !== undefined) {
+  const ms = Number(NOW_MS);
+  const RealDate = Date;
+  globalThis.Date = new Proxy(RealDate, {
+    apply(_t, _this, _args) {
+      return new RealDate(ms).toString();
+    },
+    construct(_t, args) {
+      return args.length ? Reflect.construct(RealDate, args) : new RealDate(ms);
+    },
+    get(t, k) {
+      if (k === "now") return () => ms;
+      return t[k];
+    },
+  });
+}
+
 register(`data:text/javascript,${encodeURIComponent(HOOKS)}`, import.meta.url);

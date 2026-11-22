@@ -1,0 +1,30 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/todo/Layers/",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "layers-rs",
+  "exports": [
+    {
+      "name": "nextTodoUpdatedAt",
+      "file": "apps/server/src/todo/Layers/TodoService.ts",
+      "line": 16,
+      "params": [
+        {
+          "name": "previousUpdatedAt",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

@@ -1,0 +1,61 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/externalMcp/Services/",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "services-rs",
+  "exports": [
+    {
+      "name": "canTransitionExternalMcpTask",
+      "file": "apps/server/src/externalMcp/Services/ExternalMcpRepository.ts",
+      "line": 64,
+      "params": [
+        {
+          "name": "from",
+          "ts_type": "keyof typeof EXTERNAL_MCP_TASK_TRANSITIONS",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "to",
+          "ts_type": "keyof typeof EXTERNAL_MCP_TASK_TRANSITIONS",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "ExternalMcpGateway",
+      "file": "apps/server/src/externalMcp/Services/ExternalMcpGateway.ts",
+      "line": 18,
+      "reason": "class: extends another class"
+    },
+    {
+      "name": "ExternalMcpRepository",
+      "file": "apps/server/src/externalMcp/Services/ExternalMcpRepository.ts",
+      "line": 228,
+      "reason": "class: extends another class"
+    },
+    {
+      "name": "ExternalMcpError",
+      "file": "apps/server/src/externalMcp/Services/ExternalMcpService.ts",
+      "line": 13,
+      "reason": "class: extends another class"
+    },
+    {
+      "name": "ExternalMcpService",
+      "file": "apps/server/src/externalMcp/Services/ExternalMcpService.ts",
+      "line": 74,
+      "reason": "class: extends another class"
+    }
+  ]
+}

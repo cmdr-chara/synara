@@ -1,0 +1,30 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/marketing/src/app/api/inbound-email/",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "inbound-email-rs",
+  "exports": [
+    {
+      "name": "POST",
+      "file": "apps/marketing/src/app/api/inbound-email/route.ts",
+      "line": 27,
+      "params": [
+        {
+          "name": "request",
+          "ts_type": "Request",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<Response>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

@@ -3110,6 +3110,117 @@ fn delete_group(payload: &Value) -> Result<Value, WsErr> {
     Ok(result)
 }
 
+fn library_root(conn: &Connection, project_id: &str) -> Result<PathBuf, WsErr> {
+    let cfg = config_row(conn, project_id).unwrap_or(None);
+    if let Some(lp) = cfg.as_ref().and_then(|c| cfg_get(c, 18)) {
+        let bad = !lp.starts_with('/') && !(lp.len() > 1 && lp.as_bytes()[1] == b':');
+        if bad || lp.split(['/', '\\']).any(|s| s == "..") {
+            return Err(err("libraryPath must be an absolute path without '..' segments."));
+        }
+        return Ok(PathBuf::from(lp));
+    }
+    Ok(PathBuf::from(state_dir())
+        .join("project-context")
+        .join(project_id)
+        .join("library"))
+}
+
+fn ensure_library_repo(root: &PathBuf, managed: bool) -> Result<(), WsErr> {
+    let _ = std::fs::create_dir_all(root);
+    if managed && !root.join(".git").exists() {
+        let _ = std::fs::create_dir_all(root.join("Artifacts"));
+        let _ = std::fs::write(root.join(".gitignore"), ".DS_Store\nThumbs.db\n");
+        let _ = std::fs::write(
+            root.join(".gitattributes"),
+            "*.png binary\n*.jpg binary\n*.jpeg binary\n*.gif binary\n*.webp binary\n*.bmp binary\n*.ico binary\n*.pdf binary\n*.zip binary\n*.tar binary\n*.gz binary\n*.7z binary\n*.mp4 binary\n*.mp3 binary\n*.wav binary\n",
+        );
+        for args in [
+            vec!["init", "-q"],
+            vec!["add", "-A"],
+            vec![
+                "-c", "user.name=Synara Library", "-c", "user.email=library@synara.local",
+                "commit", "-q", "-m", "Initialize hub library", "--allow-empty",
+            ],
+        ] {
+            let _ = std::process::Command::new("git")
+                .args(&args)
+                .current_dir(root)
+                .output();
+        }
+    }
+    Ok(())
+}
+
+fn library_list(payload: &Value) -> Result<Value, WsErr> {
+    let project_id = payload["projectId"].as_str().unwrap_or_default().to_string();
+    let copy = open_state_copy().ok_or_else(|| err("Failed to list the hub library."))?;
+    let conn = &copy.conn;
+    require_hub_project(conn, &project_id)?;
+    let root = library_root(conn, &project_id)?;
+    ensure_library_repo(&root, true)
+        .map_err(|_| err("Failed to prepare the hub library."))?;
+    let rel = payload["relativePath"].as_str().unwrap_or("");
+    let normalized = if rel.is_empty() {
+        String::new()
+    } else {
+        normalize_doc_path(rel)
+            .map_err(|_| err(format!("Library path \"{rel}\" is not a valid relative path.")))?
+    };
+    let dir = if normalized.is_empty() {
+        root.clone()
+    } else {
+        root.join(&normalized)
+    };
+    if !dir.starts_with(&root) || !dir.is_dir() {
+        return Err(err("Failed to list the library directory."));
+    }
+    let mut entries: Vec<Value> = Vec::new();
+    if let Ok(rd) = std::fs::read_dir(&dir) {
+        for e in rd.flatten() {
+            let name = e.file_name().to_string_lossy().to_string();
+            if name.starts_with('.')
+                || matches!(name.as_str(), ".DS_Store" | "Thumbs.db" | ".git")
+            {
+                continue;
+            }
+            let Ok(meta) = e.metadata() else { continue };
+            if meta.file_type().is_symlink() {
+                continue;
+            }
+            let kind = if meta.is_dir() {
+                "directory"
+            } else if meta.is_file() {
+                "file"
+            } else {
+                continue;
+            };
+            let modified = meta
+                .modified()
+                .ok()
+                .and_then(|t| t.duration_since(std::time::UNIX_EPOCH).ok())
+                .map(|d| crate::todo::iso_from_ms(d.as_millis() as i64))
+                .unwrap_or_default();
+            entries.push(json!({
+                "name": name,
+                "relativePath": if normalized.is_empty() {
+                    name.clone()
+                } else {
+                    format!("{normalized}/{name}")
+                },
+                "kind": kind,
+                "sizeBytes": if kind == "file" { meta.len() } else { 0 },
+                "modifiedAt": modified,
+            }));
+        }
+    }
+    entries.sort_by(|a, b| {
+        let ka = a["kind"].as_str().unwrap_or("");
+        let kb = b["kind"].as_str().unwrap_or("");
+        ka.cmp(kb).then(a["name"].as_str().unwrap_or("").cmp(b["name"].as_str().unwrap_or("")))
+    });
+    Ok(json!({"root": root.to_string_lossy(), "entries": entries}))
+}
+
 fn welcome_message_id(thread_id: &str) -> String {
     // sha1 v5-style: hash `${threadId}:welcome`, set variant+version bits
     let mut h = sha1::Sha1::new();
@@ -3154,6 +3265,7 @@ pub fn handles(tag: &str) -> bool {
             | "projectAgent.exportDocuments"
             | "projectAgent.restartCoordinator"
             | "projectAgent.delete"
+            | "projectAgent.library.list"
     )
 }
 
@@ -3209,6 +3321,7 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Value, WsErr> {
         "projectAgent.exportDocuments" => export_documents(payload),
         "projectAgent.restartCoordinator" => restart_coordinator(payload),
         "projectAgent.delete" => delete_group(payload),
+        "projectAgent.library.list" => library_list(payload),
         _ => Err(err("Unknown projectAgent method")),
     }
 }

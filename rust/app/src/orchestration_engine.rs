@@ -103,6 +103,9 @@ pub fn handle(_tag: &str, payload: &Value) -> Result<Value, WsErr> {
         "thread.session.set" => session_set(command),
         "thread.goal.continue" => goal_continue(command),
         "thread.turn.resume" => turn_resume(command),
+        "thread.pull-request.link" | "thread.pull-request.unlink" | "thread.pull-request.sync" => {
+            pull_request_command(command)
+        }
         other => Err(err(format!(
             "orchestration.dispatchCommand {other} is not ported yet (native engine slice)"
         ))),
@@ -3122,6 +3125,410 @@ fn turn_resume(command: &Map<String, Value>) -> Result<Value, WsErr> {
         &created_at,
         Value::Object(payload),
     )];
+    let seq = commit_events(&conn, &events, &command_id)?;
+    Ok(json!({ "sequence": seq }))
+}
+
+// ---- thread.pull-request.* ----
+
+const PR_LINK_LIMIT: usize = 50;
+
+fn pr_link_key(url: &str) -> String {
+    let trimmed = url.trim();
+    // normalizeGitHubPullRequestUrl
+    if let Some(rest) = trimmed
+        .strip_prefix("https://github.com/")
+        .or_else(|| trimmed.strip_prefix("http://github.com/"))
+    {
+        let mut parts = rest.split('/');
+        if let (Some(owner), Some(repo), Some(pull_tag), Some(num)) =
+            (parts.next(), parts.next(), parts.next(), parts.next())
+        {
+            let num: String = num
+                .chars()
+                .take_while(|c| c.is_ascii_digit())
+                .collect();
+            if pull_tag == "pull"
+                && !num.is_empty()
+                && num.len() == num.chars().take_while(|c| c.is_ascii_digit()).count()
+                && !owner.is_empty()
+                && !repo.is_empty()
+                && !owner.contains(char::is_whitespace)
+                && !repo.contains(char::is_whitespace)
+            {
+                // valid only when nothing but optional ?/#/path suffix follows the number
+                let tail = &rest[rest.find(num.as_str()).map(|i| i + num.len()).unwrap_or(rest.len())..];
+                if tail.is_empty()
+                    || tail.starts_with('/')
+                    || tail.starts_with('?')
+                    || tail.starts_with('#')
+                {
+                    return format!(
+                        "https://github.com/{}/{}/pull/{}",
+                        owner.to_lowercase(),
+                        repo.to_lowercase(),
+                        num
+                    );
+                }
+            }
+        }
+    }
+    trimmed
+        .split(['?', '#'])
+        .next()
+        .unwrap_or("")
+        .trim_end_matches('/')
+        .to_lowercase()
+}
+
+fn pr_is_visible(link: &Value) -> bool {
+    link.get("dismissedAt").is_none() || link.get("dismissedAt").map_or(true, Value::is_null)
+}
+
+fn pr_is_explicit_source(source: &str) -> bool {
+    matches!(source, "created" | "agent" | "user" | "checkout")
+}
+
+fn pr_source(link: &Value) -> &str {
+    link.get("source").and_then(Value::as_str).unwrap_or("")
+}
+
+fn pr_state(link: &Value) -> &str {
+    link.pointer("/pullRequest/state")
+        .and_then(Value::as_str)
+        .unwrap_or("")
+}
+
+fn pr_url(link: &Value) -> &str {
+    link.pointer("/pullRequest/url")
+        .and_then(Value::as_str)
+        .unwrap_or("")
+}
+
+fn pr_linked_at(link: &Value) -> &str {
+    link.get("linkedAt").and_then(Value::as_str).unwrap_or("")
+}
+
+fn resolve_current_pr_link(links: &[Value]) -> Option<Value> {
+    let mut current: Option<&Value> = None;
+    for link in links {
+        if !pr_is_visible(link) {
+            continue;
+        }
+        match current {
+            None => current = Some(link),
+            Some(cur) => {
+                let is_open = pr_state(link) == "open";
+                let cur_open = pr_state(cur) == "open";
+                if is_open != cur_open {
+                    if is_open {
+                        current = Some(link);
+                    }
+                } else if pr_linked_at(link) >= pr_linked_at(cur) {
+                    current = Some(link);
+                }
+            }
+        }
+    }
+    current.cloned()
+}
+
+fn cap_pr_links(links: Vec<Value>) -> Vec<Value> {
+    if links.len() <= PR_LINK_LIMIT {
+        return links;
+    }
+    let current = resolve_current_pr_link(&links);
+    let rank = |l: &Value| {
+        if !pr_is_visible(l) {
+            0
+        } else if pr_state(l) != "open" {
+            1
+        } else {
+            2
+        }
+    };
+    let current_pos = current
+        .as_ref()
+        .and_then(|cur| links.iter().position(|l| l == cur));
+    let mut removable: Vec<usize> = (0..links.len())
+        .filter(|i| Some(*i) != current_pos)
+        .collect();
+    removable.sort_by(|a, b| {
+        rank(&links[*a])
+            .cmp(&rank(&links[*b]))
+            .then(pr_linked_at(&links[*a]).cmp(pr_linked_at(&links[*b])))
+    });
+    let drop_n = links.len() - PR_LINK_LIMIT;
+    let dropped: std::collections::HashSet<usize> =
+        removable.iter().take(drop_n).copied().collect();
+    links
+        .into_iter()
+        .enumerate()
+        .filter(|(i, _)| !dropped.contains(i))
+        .map(|(_, l)| l)
+        .collect()
+}
+
+fn pr_index_of(links: &[Value], url: &str) -> Option<usize> {
+    let key = pr_link_key(url);
+    links.iter().position(|l| pr_link_key(pr_url(l)) == key)
+}
+
+fn pr_find<'a>(links: &'a [Value], url: &str) -> Option<&'a Value> {
+    pr_index_of(links, url).map(|i| &links[i])
+}
+
+fn link_pull_request(links: Vec<Value>, pr: Value, source: &str, linked_at: &str) -> Vec<Value> {
+    let fresh = json!({"pullRequest": pr, "source": source, "linkedAt": linked_at});
+    match pr_index_of(&links, pr.get("url").and_then(Value::as_str).unwrap_or("")) {
+        None => cap_pr_links(
+            links.iter().cloned().chain([fresh]).collect::<Vec<_>>(),
+        ),
+        Some(i) => {
+            let mut next = links;
+            let existing = &next[i];
+            next[i] = if !pr_is_visible(existing) {
+                fresh
+            } else {
+                json!({
+                    "pullRequest": pr,
+                    "source": if pr_is_explicit_source(pr_source(existing)) {
+                        pr_source(existing)
+                    } else {
+                        source
+                    },
+                    "linkedAt": pr_linked_at(existing),
+                })
+            };
+            next
+        }
+    }
+}
+
+fn unlink_pull_request(links: &[Value], url: &str, dismissed_at: &str) -> Option<Vec<Value>> {
+    let i = pr_index_of(links, url)?;
+    let existing = &links[i];
+    if !pr_is_visible(existing) {
+        return None;
+    }
+    let mut next = links.to_vec();
+    let mut tombstone = existing.clone();
+    tombstone["dismissedAt"] = json!(dismissed_at);
+    next[i] = tombstone;
+    Some(next)
+}
+
+fn sync_discovered_pr(links: &[Value], pr: &Value, observed_at: &str) -> Vec<Value> {
+    let key = if pr.is_null() {
+        None
+    } else {
+        Some(pr_link_key(pr.get("url").and_then(Value::as_str).unwrap_or("")))
+    };
+    let mut kept: Vec<Value> = links
+        .iter()
+        .filter(|l| {
+            !pr_is_visible(l)
+                || pr_is_explicit_source(pr_source(l))
+                || Some(pr_link_key(pr_url(l))) == key
+        })
+        .cloned()
+        .collect();
+    if pr.is_null() {
+        return kept;
+    }
+    match pr_index_of(&kept, pr.get("url").and_then(Value::as_str).unwrap_or("")) {
+        None => {
+            kept.push(json!({"pullRequest": pr, "source": "discovered", "linkedAt": observed_at}));
+            cap_pr_links(kept)
+        }
+        Some(i) => {
+            if !pr_is_visible(&kept[i]) {
+                kept
+            } else {
+                kept[i]["pullRequest"] = pr.clone();
+                kept
+            }
+        }
+    }
+}
+
+fn refresh_pr_snapshots(links: &[Value], prs: &[Value]) -> Vec<Value> {
+    links
+        .iter()
+        .map(|l| {
+            if !pr_is_visible(l) {
+                return l.clone();
+            }
+            let key = pr_link_key(pr_url(l));
+            match prs
+                .iter()
+                .find(|p| pr_link_key(p.get("url").and_then(Value::as_str).unwrap_or("")) == key)
+            {
+                Some(fresh) => {
+                    let mut next = l.clone();
+                    next["pullRequest"] = fresh.clone();
+                    next
+                }
+                None => l.clone(),
+            }
+        })
+        .collect()
+}
+
+fn pr_pull_requests_equal(a: &Value, b: &Value) -> bool {
+    if a == b {
+        return true;
+    }
+    let g = |v: &Value, k: &str| v.get(k).cloned().unwrap_or(Value::Null);
+    for k in [
+        "number",
+        "title",
+        "url",
+        "baseBranch",
+        "headBranch",
+        "state",
+    ] {
+        if g(a, k) != g(b, k) {
+            return false;
+        }
+    }
+    if g(a, "isDraft").as_bool().unwrap_or(false) != g(b, "isDraft").as_bool().unwrap_or(false)
+        || g(a, "mergeability").as_str().unwrap_or("unknown")
+            != g(b, "mergeability").as_str().unwrap_or("unknown")
+    {
+        return false;
+    }
+    for k in ["additions", "deletions", "changedFiles"] {
+        if g(a, k) != g(b, k) {
+            return false;
+        }
+    }
+    true
+}
+
+fn pr_links_equal(left: &[Value], right: &[Value]) -> bool {
+    if left.len() != right.len() {
+        return false;
+    }
+    left.iter().zip(right.iter()).all(|(a, b)| {
+        pr_source(a) == pr_source(b)
+            && pr_linked_at(a) == pr_linked_at(b)
+            && a.get("dismissedAt").cloned().unwrap_or(Value::Null)
+                == b.get("dismissedAt").cloned().unwrap_or(Value::Null)
+            && pr_pull_requests_equal(
+                a.get("pullRequest").unwrap_or(&Value::Null),
+                b.get("pullRequest").unwrap_or(&Value::Null),
+            )
+    })
+}
+
+fn thread_pr_links(conn: &Connection, thread_id: &str, occurred_at: &str) -> Vec<Value> {
+    let (links_json, last_pr): (Option<String>, Option<String>) = conn
+        .query_row(
+            "SELECT pull_requests_json, last_known_pr_json FROM projection_threads \
+             WHERE thread_id = ?1",
+            params![thread_id],
+            |r| Ok((r.get(0)?, r.get(1)?)),
+        )
+        .unwrap_or((None, None));
+    if let Some(j) = links_json {
+        if !j.is_empty() && j != "null" {
+            return serde_json::from_str(&j).unwrap_or_default();
+        }
+    }
+    match last_pr.and_then(|j| serde_json::from_str::<Value>(&j).ok()) {
+        Some(pr) if !pr.is_null() => {
+            vec![json!({"pullRequest": pr, "source": "legacy", "linkedAt": occurred_at})]
+        }
+        _ => Vec::new(),
+    }
+}
+
+fn pr_links_dispatch(
+    conn: &Connection,
+    command: &Map<String, Value>,
+    next_links: Vec<Value>,
+    occurred_at: &str,
+) -> Result<Vec<OutEvent>, WsErr> {
+    let thread_id = s(command, "threadId").ok_or_else(|| err("missing threadId"))?;
+    let current = thread_pr_links(conn, &thread_id, occurred_at);
+    if pr_links_equal(&current, &next_links) {
+        return Ok(Vec::new());
+    }
+    let last_known = resolve_current_pr_link(&next_links)
+        .map(|l| l.get("pullRequest").cloned().unwrap_or(Value::Null))
+        .unwrap_or(Value::Null);
+    update_projection(
+        conn,
+        &thread_id,
+        &[
+            ("pull_requests_json", json!(next_links)),
+            ("last_known_pr_json", last_known.clone()),
+            ("updated_at", json!(occurred_at)),
+        ],
+    )?;
+    Ok(vec![out_event(
+        "thread.meta-updated",
+        &thread_id,
+        occurred_at,
+        json!({
+            "threadId": thread_id,
+            "pullRequests": next_links,
+            "lastKnownPr": last_known,
+            "updatedAt": occurred_at,
+        }),
+    )])
+}
+
+fn pull_request_command(command: &Map<String, Value>) -> Result<Value, WsErr> {
+    let command_id = s(command, "commandId").ok_or_else(|| err("missing commandId"))?;
+    let thread_id = s(command, "threadId").ok_or_else(|| err("missing threadId"))?;
+    let command_type = s(command, "type").unwrap_or_default();
+    let conn = open_state_rw()?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| err(e.to_string()))?;
+    require_thread(&conn, &thread_id)?;
+    let occurred_at = iso_now_ms();
+    let links = thread_pr_links(&conn, &thread_id, &occurred_at);
+    let next_links = match command_type.as_str() {
+        "thread.pull-request.link" => {
+            let pr = command.get("pullRequest").cloned().unwrap_or(Value::Null);
+            let source = s(command, "source").unwrap_or_else(|| "user".into());
+            if source == "created" {
+                if let Some(existing) = pr_find(
+                    &links,
+                    pr.get("url").and_then(Value::as_str).unwrap_or(""),
+                ) {
+                    if !pr_is_visible(existing) {
+                        return Err(err("Command produced no events."));
+                    }
+                }
+            }
+            link_pull_request(links, pr, &source, &occurred_at)
+        }
+        "thread.pull-request.unlink" => {
+            let url = s(command, "url").ok_or_else(|| err("missing url"))?;
+            match unlink_pull_request(&links, &url, &occurred_at) {
+                None => return Err(err("Command produced no events.")),
+                Some(next) => next,
+            }
+        }
+        "thread.pull-request.sync" => {
+            let mut next = links;
+            if let Some(discovered) = command.get("discovered") {
+                next = sync_discovered_pr(&next, discovered, &occurred_at);
+            }
+            if let Some(snapshots) = command.get("snapshots").and_then(Value::as_array) {
+                next = refresh_pr_snapshots(&next, snapshots);
+            }
+            next
+        }
+        _ => return Err(err(format!("unsupported pull-request command {command_type}"))),
+    };
+    let events = pr_links_dispatch(&conn, command, next_links, &occurred_at)?;
+    if events.is_empty() {
+        return Err(err("Command produced no events."));
+    }
     let seq = commit_events(&conn, &events, &command_id)?;
     Ok(json!({ "sequence": seq }))
 }

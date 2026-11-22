@@ -507,6 +507,10 @@ impl Render for Native {
                         .text_color(theme.warning)
                         .child("working\u{2026}"),
                 );
+            } else if turn_state == "error" || turn_state == "interrupted" {
+                header = header.child(
+                    div().text_xs().text_color(theme.danger).child(turn_state),
+                );
             }
             if get(thread_v, "hasPendingApprovals").as_bool().unwrap_or(false) {
                 header = header.child(

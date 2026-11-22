@@ -3125,30 +3125,169 @@ fn library_root(conn: &Connection, project_id: &str) -> Result<PathBuf, WsErr> {
         .join("library"))
 }
 
-fn ensure_library_repo(root: &PathBuf, managed: bool) -> Result<(), WsErr> {
+fn run_git(root: &PathBuf, args: &[&str]) -> Result<String, WsErr> {
+    let out = std::process::Command::new("git")
+        .args(args)
+        .current_dir(root)
+        .output()
+        .map_err(|e| err(e.to_string()))?;
+    if !out.status.success() {
+        return Err(err(String::from_utf8_lossy(&out.stderr).trim().to_string()));
+    }
+    Ok(String::from_utf8_lossy(&out.stdout).trim_end().to_string())
+}
+
+fn write_library_marker(root: &PathBuf, project_id: &str) {
+    let _ = std::fs::write(
+        root.join(".synara-library"),
+        format!("synara-library\n{project_id}\n"),
+    );
+}
+
+fn ensure_library_repo(root: &PathBuf, managed: bool, project_id: &str) -> Result<(), WsErr> {
     let _ = std::fs::create_dir_all(root);
-    if managed && !root.join(".git").exists() {
-        let _ = std::fs::create_dir_all(root.join("Artifacts"));
-        let _ = std::fs::write(root.join(".gitignore"), ".DS_Store\nThumbs.db\n");
-        let _ = std::fs::write(
-            root.join(".gitattributes"),
-            "*.png binary\n*.jpg binary\n*.jpeg binary\n*.gif binary\n*.webp binary\n*.bmp binary\n*.ico binary\n*.pdf binary\n*.zip binary\n*.tar binary\n*.gz binary\n*.7z binary\n*.mp4 binary\n*.mp3 binary\n*.wav binary\n",
-        );
-        for args in [
-            vec!["init", "-q"],
-            vec!["add", "-A"],
-            vec![
-                "-c", "user.name=Synara Library", "-c", "user.email=library@synara.local",
-                "commit", "-q", "-m", "Initialize hub library", "--allow-empty",
-            ],
-        ] {
-            let _ = std::process::Command::new("git")
-                .args(&args)
-                .current_dir(root)
-                .output();
+    if root.join(".git").exists() {
+        let marker = std::fs::read_to_string(root.join(".synara-library")).ok();
+        match marker {
+            Some(text) => {
+                let mut lines = text.split('\n');
+                if lines.next() != Some("synara-library") {
+                    if !managed {
+                        return Err(err(format!(
+                            "Library root \"{}\" is a git repository that was not created by Synara.",
+                            root.display()
+                        )));
+                    }
+                    write_library_marker(root, project_id);
+                    return Ok(());
+                }
+                let owner = lines.next().map(|s| s.trim()).unwrap_or("");
+                if !owner.is_empty() && owner != project_id {
+                    return Err(err(format!(
+                        "Library root \"{}\" already belongs to another hub.",
+                        root.display()
+                    )));
+                }
+                if owner.is_empty() {
+                    write_library_marker(root, project_id);
+                }
+                return Ok(());
+            }
+            None => {
+                if !managed {
+                    return Err(err(format!(
+                        "Library root \"{}\" is a git repository that was not created by Synara.",
+                        root.display()
+                    )));
+                }
+                write_library_marker(root, project_id);
+                return Ok(());
+            }
         }
     }
+    run_git(root, &["init"])?;
+    run_git(root, &["symbolic-ref", "HEAD", "refs/heads/main"])?;
+    let _ = std::fs::create_dir_all(root.join("Artifacts"));
+    let _ = std::fs::write(root.join("Artifacts").join(".gitkeep"), "");
+    let _ = std::fs::write(root.join(".gitignore"), ".DS_Store\nThumbs.db\n");
+    let _ = std::fs::write(
+        root.join(".gitattributes"),
+        "*.png binary\n*.jpg binary\n*.jpeg binary\n*.gif binary\n*.webp binary\n*.bmp binary\n*.ico binary\n*.pdf binary\n*.zip binary\n*.tar binary\n*.gz binary\n*.7z binary\n*.mp4 binary\n*.mp3 binary\n*.wav binary\n",
+    );
+    write_library_marker(root, project_id);
+    commit_library_change(root, "Initialize library")?;
     Ok(())
+}
+
+fn commit_library_change(root: &PathBuf, message: &str) -> Result<Value, WsErr> {
+    run_git(root, &["add", "-A"])?;
+    let staged = run_git(root, &["diff", "--cached", "--name-only"])?;
+    if !staged.is_empty() {
+        run_git(
+            root,
+            &[
+                "-c",
+                "user.name=Synara Library",
+                "-c",
+                "user.email=library@synara.local",
+                "commit",
+                "-m",
+                message,
+            ],
+        )?;
+    }
+    let sha = run_git(root, &["rev-parse", "HEAD"])?;
+    Ok(json!({ "commitSha": sha }))
+}
+
+fn normalize_library_path(raw: &str) -> Result<String, WsErr> {
+    let normalized = normalize_doc_path(raw)
+        .map_err(|_| err(format!("Library path \"{raw}\" is not a valid relative path.")))?;
+    const RESERVED: [&str; 6] = [
+        ".ds_store",
+        "thumbs.db",
+        ".gitkeep",
+        ".gitignore",
+        ".gitattributes",
+        ".synara-library",
+    ];
+    for seg in normalized.split('/') {
+        if seg.eq_ignore_ascii_case(".git") {
+            return Err(err("Library paths cannot address repository metadata."));
+        }
+        if RESERVED.iter().any(|r| seg.eq_ignore_ascii_case(r)) {
+            return Err(err(format!(
+                "Library path \"{raw}\" is reserved for Synara."
+            )));
+        }
+    }
+    Ok(normalized)
+}
+
+// Canonicalize the nearest existing ancestor and append the rest; the final
+// path must stay inside the canonicalized root.
+fn resolve_in_root(root: &PathBuf, normalized: &str, display: &str) -> Result<PathBuf, WsErr> {
+    let real_root = std::fs::canonicalize(root)
+        .map_err(|_| err("Could not resolve the library root.".to_string()))?;
+    let mut cursor = real_root.clone();
+    let parts: Vec<&str> = normalized.split('/').filter(|s| !s.is_empty()).collect();
+    let mut resolved_ok = true;
+    for (i, seg) in parts.iter().enumerate() {
+        cursor.push(seg);
+        match std::fs::canonicalize(&cursor) {
+            Ok(c) => cursor = c,
+            Err(_) => {
+                // Missing leaf component: allow it and everything after only
+                // when the parent chain stayed inside the root.
+                resolved_ok = cursor.starts_with(&real_root);
+                for rest in &parts[i + 1..] {
+                    cursor.push(rest);
+                }
+                break;
+            }
+        }
+    }
+    if !resolved_ok || !cursor.starts_with(&real_root) {
+        return Err(err(format!(
+            "Library path \"{display}\" escapes the library root."
+        )));
+    }
+    if cursor == real_root {
+        return Err(err(format!(
+            "Library path \"{display}\" addresses repository metadata."
+        )));
+    }
+    // Reject .git segments that survived case-insensitive resolution.
+    let rel = cursor.strip_prefix(&real_root).unwrap_or(&cursor);
+    if rel
+        .iter()
+        .any(|s| s.to_string_lossy().eq_ignore_ascii_case(".git"))
+    {
+        return Err(err(format!(
+            "Library path \"{display}\" addresses repository metadata."
+        )));
+    }
+    Ok(cursor)
 }
 
 fn library_list(payload: &Value) -> Result<Value, WsErr> {
@@ -3157,7 +3296,7 @@ fn library_list(payload: &Value) -> Result<Value, WsErr> {
     let conn = &copy.conn;
     require_hub_project(conn, &project_id)?;
     let root = library_root(conn, &project_id)?;
-    ensure_library_repo(&root, true)
+    ensure_library_repo(&root, true, &project_id)
         .map_err(|_| err("Failed to prepare the hub library."))?;
     let rel = payload["relativePath"].as_str().unwrap_or("");
     let normalized = if rel.is_empty() {
@@ -3221,6 +3360,206 @@ fn library_list(payload: &Value) -> Result<Value, WsErr> {
     Ok(json!({"root": root.to_string_lossy(), "entries": entries}))
 }
 
+// Shared front-half for the mutating library ops: hub guard + root + ensure.
+fn library_write_root(payload: &Value) -> Result<(PathBuf, String, bool), WsErr> {
+    let project_id = payload["projectId"].as_str().unwrap_or_default().to_string();
+    let copy = open_state_copy().ok_or_else(|| err("Failed to prepare the hub library."))?;
+    let conn = &copy.conn;
+    require_hub_project(conn, &project_id)?;
+    let root = library_root(conn, &project_id)?;
+    let managed = config_row(conn, &project_id)
+        .unwrap_or(None)
+        .and_then(|c| cfg_get(&c, 18))
+        .is_none();
+    ensure_library_repo(&root, managed, &project_id)?;
+    Ok((root, project_id, managed))
+}
+
+fn library_mkdir(payload: &Value) -> Result<Value, WsErr> {
+    let (root, _pid, _m) = library_write_root(payload)?;
+    let rel = payload["relativePath"].as_str().unwrap_or_default();
+    let normalized = normalize_library_path(rel)?;
+    let target = resolve_in_root(&root, &normalized, &normalized)?;
+    std::fs::create_dir_all(&target)
+        .map_err(|_| err(format!("Could not create library directory \"{normalized}\".")))?;
+    if std::fs::read_dir(&target)
+        .map(|mut r| r.next().is_none())
+        .unwrap_or(true)
+    {
+        let _ = std::fs::write(target.join(".gitkeep"), "");
+    }
+    commit_library_change(&root, &format!("Create {normalized}"))
+}
+
+fn library_rename(payload: &Value) -> Result<Value, WsErr> {
+    let (root, _pid, _m) = library_write_root(payload)?;
+    let from = payload["from"].as_str().unwrap_or_default();
+    let to = payload["to"].as_str().unwrap_or_default();
+    let from_n = normalize_library_path(from)?;
+    let to_n = normalize_library_path(to)?;
+    let source = resolve_in_root(&root, &from_n, &from_n)?;
+    let destination = resolve_in_root(&root, &to_n, &to_n)?;
+    if destination.exists() {
+        return Err(err(format!(
+            "A library entry already exists at \"{to_n}\"."
+        )));
+    }
+    std::fs::rename(&source, &destination)
+        .map_err(|_| err(format!("Could not rename \"{from_n}\" to \"{to_n}\".")))?;
+    commit_library_change(&root, &format!("Rename {from_n} to {to_n}"))
+}
+
+fn library_delete(payload: &Value) -> Result<Value, WsErr> {
+    let (root, _pid, _m) = library_write_root(payload)?;
+    let rel = payload["relativePath"].as_str().unwrap_or_default();
+    let normalized = normalize_library_path(rel)?;
+    let target = resolve_in_root(&root, &normalized, &normalized)?;
+    let meta = std::fs::symlink_metadata(&target)
+        .map_err(|_| err(format!("Library path \"{normalized}\" was not found.")))?;
+    if meta.is_dir() && !meta.file_type().is_symlink() {
+        std::fs::remove_dir_all(&target)
+    } else {
+        std::fs::remove_file(&target)
+    }
+    .map_err(|_| err(format!("Could not delete library entry \"{normalized}\".")))?;
+    commit_library_change(&root, &format!("Delete {normalized}"))
+}
+
+fn library_history(payload: &Value) -> Result<Value, WsErr> {
+    let project_id = payload["projectId"].as_str().unwrap_or_default().to_string();
+    let copy = open_state_copy().ok_or_else(|| err("Failed to load library history."))?;
+    let conn = &copy.conn;
+    require_hub_project(conn, &project_id)?;
+    let root = library_root(conn, &project_id)?;
+    let managed = config_row(conn, &project_id)
+        .unwrap_or(None)
+        .and_then(|c| cfg_get(&c, 18))
+        .is_none();
+    ensure_library_repo(&root, managed, &project_id)?;
+    let rel = payload["relativePath"].as_str();
+    let normalized = match rel {
+        Some(r) if !r.is_empty() => Some(normalize_library_path(r)?),
+        _ => None,
+    };
+    let fmt = "--format=%H\x1f%an\x1f%aI\x1f%s";
+    let out = match &normalized {
+        Some(n) => run_git(&root, &["log", fmt, "--follow", "--", n])?,
+        None => run_git(&root, &["log", fmt])?,
+    };
+    let mut commits = Vec::new();
+    for line in out.split('\n') {
+        if line.trim().is_empty() {
+            continue;
+        }
+        let mut parts = line.splitn(4, '\x1f');
+        let (Some(sha), Some(author), Some(at)) =
+            (parts.next(), parts.next(), parts.next())
+        else {
+            continue;
+        };
+        let message = parts.next().unwrap_or("(no message)");
+        commits.push(json!({
+            "sha": sha,
+            "author": author,
+            "at": at,
+            "message": if message.is_empty() { "(no message)" } else { message },
+        }));
+    }
+    Ok(json!({"root": root.to_string_lossy(), "commits": commits}))
+}
+
+fn library_restore(payload: &Value) -> Result<Value, WsErr> {
+    let (root, _pid, _m) = library_write_root(payload)?;
+    let rel = payload["relativePath"].as_str().unwrap_or_default();
+    let normalized = normalize_library_path(rel)?;
+    let sha = payload["sha"].as_str().unwrap_or_default();
+    let valid = sha.len() == 40 && sha.bytes().all(|b| b.is_ascii_hexdigit() && !b.is_ascii_uppercase());
+    if !valid {
+        return Err(err(format!(
+            "Commit \"{sha}\" is not a valid 40-character library commit sha."
+        )));
+    }
+    if run_git(&root, &["rev-parse", "--verify", "--quiet", &format!("{sha}^{{commit}}")]).is_err() {
+        return Err(err(format!(
+            "Commit \"{sha}\" does not exist in this library's history."
+        )));
+    }
+    // Resolve the name the entry had at `sha` (walk --follow renames backward).
+    let path_exists_at = |name: &str| -> bool {
+        run_git(&root, &["ls-tree", "-z", "--name-only", sha, "--", name])
+            .map(|o| o.split('\0').any(|t| t == name))
+            .unwrap_or(false)
+    };
+    let mut path_at_sha: Option<String> = None;
+    if path_exists_at(&normalized) {
+        path_at_sha = Some(normalized.clone());
+    } else {
+        let log = run_git(
+            &root,
+            &[
+                "log", "--format=%H", "--follow", "-M", "--name-status", "-z", "--", &normalized,
+            ],
+        )
+        .unwrap_or_default();
+        let tokens: Vec<&str> = log.split('\0').filter(|t| !t.is_empty()).collect();
+        let mut current = normalized.clone();
+        let mut i = 0;
+        while i < tokens.len() {
+            let token = tokens[i];
+            let is_sha = token.len() == 40 && token.bytes().all(|b| b.is_ascii_hexdigit());
+            if is_sha {
+                if run_git(&root, &["merge-base", "--is-ancestor", token, sha]).is_ok()
+                    && path_exists_at(&current)
+                {
+                    path_at_sha = Some(current.clone());
+                }
+                break;
+            }
+            let stripped = token.strip_prefix('\n').unwrap_or(token);
+            if stripped.starts_with('R') && stripped[1..].bytes().all(|b| b.is_ascii_digit() || stripped.len() == 1) {
+                let (f, t) = (tokens.get(i + 1), tokens.get(i + 2));
+                if let (Some(f), Some(t)) = (f, t) {
+                    if *t == current {
+                        current = f.to_string();
+                    }
+                }
+                i += 3;
+                continue;
+            }
+            i += 1;
+        }
+    }
+    let Some(path_at_sha) = path_at_sha else {
+        return Err(err(format!(
+            "Commit \"{sha}\" did not change \"{normalized}\"."
+        )));
+    };
+    run_git(&root, &["checkout", sha, "--", &path_at_sha])?;
+    if path_at_sha != normalized {
+        run_git(&root, &["mv", "-f", "--", &path_at_sha, &normalized])?;
+    }
+    commit_library_change(&root, &format!("Restore {normalized} from {}", &sha[..7]))
+}
+
+fn library_status(payload: &Value) -> Result<Value, WsErr> {
+    let project_id = payload["projectId"].as_str().unwrap_or_default().to_string();
+    let copy = open_state_copy().ok_or_else(|| err("Failed to load library status."))?;
+    let conn = &copy.conn;
+    require_hub_project(conn, &project_id)?;
+    let root = library_root(conn, &project_id)?;
+    let cfg = config_row(conn, &project_id).unwrap_or(None);
+    let remote = cfg.as_ref().and_then(|c| cfg_get(c, 19));
+    let record = std::fs::read_to_string(root.join(".git").join("synara-push-status.json"))
+        .ok()
+        .and_then(|t| serde_json::from_str::<Value>(&t).ok());
+    Ok(json!({
+        "root": root.to_string_lossy(),
+        "remoteConfigured": remote.is_some(),
+        "lastPushAt": record.as_ref().and_then(|r| r["at"].as_str()),
+        "lastPushError": record.as_ref().and_then(|r| r["error"].as_str()),
+    }))
+}
+
 fn welcome_message_id(thread_id: &str) -> String {
     // sha1 v5-style: hash `${threadId}:welcome`, set variant+version bits
     let mut h = sha1::Sha1::new();
@@ -3266,6 +3605,12 @@ pub fn handles(tag: &str) -> bool {
             | "projectAgent.restartCoordinator"
             | "projectAgent.delete"
             | "projectAgent.library.list"
+            | "projectAgent.library.mkdir"
+            | "projectAgent.library.rename"
+            | "projectAgent.library.delete"
+            | "projectAgent.library.history"
+            | "projectAgent.library.restore"
+            | "projectAgent.library.status"
     )
 }
 
@@ -3322,6 +3667,12 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Value, WsErr> {
         "projectAgent.restartCoordinator" => restart_coordinator(payload),
         "projectAgent.delete" => delete_group(payload),
         "projectAgent.library.list" => library_list(payload),
+        "projectAgent.library.mkdir" => library_mkdir(payload),
+        "projectAgent.library.rename" => library_rename(payload),
+        "projectAgent.library.delete" => library_delete(payload),
+        "projectAgent.library.history" => library_history(payload),
+        "projectAgent.library.restore" => library_restore(payload),
+        "projectAgent.library.status" => library_status(payload),
         _ => Err(err("Unknown projectAgent method")),
     }
 }

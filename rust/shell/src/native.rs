@@ -1855,7 +1855,10 @@ impl Render for Native {
                         Button::new("composer-model")
                             .ghost()
                             .compact()
-                            .label("Astra Medium \u{25be}"),
+                            .label("Astra Medium \u{25be}")
+                            .dropdown_menu(|menu, _, _| {
+                                menu.item(PopupMenuItem::new("\u{2713} Astra Medium (codex)"))
+                            }),
                     )
                     .child(
                         Button::new("send")

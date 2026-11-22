@@ -10,7 +10,7 @@
 use serde_json::{json, Value};
 use std::collections::HashMap;
 use std::net::TcpStream;
-use std::sync::atomic::{AtomicU64, Ordering};
+use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 use std::sync::mpsc::{channel, Receiver, Sender};
 use std::sync::{Arc, Mutex};
 use std::thread;
@@ -21,6 +21,7 @@ pub struct Client {
     writer: Arc<Mutex<WebSocket<TcpStream>>>,
     pending: Arc<Mutex<HashMap<String, Sender<Value>>>>,
     next_id: AtomicU64,
+    alive: Arc<AtomicBool>,
 }
 
 impl Client {
@@ -118,7 +119,10 @@ impl Client {
             Arc::new(Mutex::new(HashMap::new()));
         let pending_reader = pending.clone();
         let pong_writer = writer.clone();
-        thread::spawn(move || loop {
+        let alive = Arc::new(AtomicBool::new(true));
+        let reader_alive = alive.clone();
+        thread::spawn(move || {
+            loop {
             match sock.read() {
                 Ok(Message::Text(text)) => {
                     let Ok(msg) = serde_json::from_str::<Value>(&text) else {
@@ -149,10 +153,13 @@ impl Client {
                 }
                 Ok(_) => {}
             }
+            }
+            reader_alive.store(false, Ordering::Relaxed);
         });
         // The upstream closes relayed sockets after ~40s of silence; the
         // browser keeps them alive with an application-level Ping frame.
         let heartbeat_writer = writer.clone();
+        let heartbeat_alive = alive.clone();
         thread::spawn(move || loop {
             thread::sleep(Duration::from_secs(15));
             let frame = json!({"_tag": "Ping"});
@@ -161,6 +168,7 @@ impl Client {
                 .map(|mut w| w.send(Message::Text(frame.to_string().into())).is_ok())
                 .unwrap_or(false);
             if !ok {
+                heartbeat_alive.store(false, Ordering::Relaxed);
                 break;
             }
         });
@@ -168,7 +176,12 @@ impl Client {
             writer,
             pending,
             next_id: AtomicU64::new(0),
+            alive,
         }))
+    }
+
+    pub fn is_alive(&self) -> bool {
+        self.alive.load(Ordering::Relaxed)
     }
 
     /// Issue a Request frame; returns (request_id, receiver for its frames).

@@ -55,7 +55,8 @@ fn uuid() -> String {
 /// executor.
 fn ensure_client(cell: &SharedClient) -> Option<Arc<Client>> {
     let mut guard = cell.lock().ok()?;
-    if guard.is_none() {
+    let dead = guard.as_ref().is_none_or(|c| !c.is_alive());
+    if dead {
         *guard = Client::connect();
     }
     guard.clone()
@@ -112,49 +113,58 @@ impl Native {
     fn refresh(&self, cx: &mut Context<Self>) {
         let client = self.client.clone();
         cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
-            let cell = client.clone();
-            let client = cx
-                .background_executor()
-                .spawn(async move { ensure_client(&cell) })
-                .await;
-            let Some(client) = client else {
-                eprintln!("native: ws connect failed");
-                return;
-            };
-            let c = client.clone();
-            let snapshot = cx
-                .background_executor()
-                .spawn(async move { c.call("orchestration.getShellSnapshot", json!({})) })
-                .await;
-            let _ = this.update(cx, |this: &mut Self, cx| {
-                if let Some(s) = snapshot {
-                    this.snapshot = Some(s);
-                }
-                cx.notify();
-            });
-            // Live updates: subscribeShell streams shell-domain events; on each
-            // chunk just refetch the snapshot.
-            let (tx, rx) = async_channel::unbounded::<()>();
-            let c = client.clone();
-            cx.background_executor()
-                .spawn(async move {
-                    c.call_stream("orchestration.subscribeShell", json!({}), move |_| {
-                        let _ = tx.send_blocking(());
-                    });
-                })
-                .detach();
-            while rx.recv().await.is_ok() {
+            loop {
+                let cell = client.clone();
+                let client = cx
+                    .background_executor()
+                    .spawn(async move { ensure_client(&cell) })
+                    .await;
+                let Some(client) = client else {
+                    eprintln!("native: ws connect failed");
+                    cx.background_executor()
+                        .timer(std::time::Duration::from_secs(3))
+                        .await;
+                    continue;
+                };
                 let c = client.clone();
-                let s = cx
+                let snapshot = cx
                     .background_executor()
                     .spawn(async move { c.call("orchestration.getShellSnapshot", json!({})) })
                     .await;
                 let _ = this.update(cx, |this: &mut Self, cx| {
-                    if let Some(s) = s {
+                    if let Some(s) = snapshot {
                         this.snapshot = Some(s);
                     }
                     cx.notify();
                 });
+                // Live updates: subscribeShell streams shell-domain events; on
+                // each chunk just refetch the snapshot.
+                let (tx, rx) = async_channel::unbounded::<()>();
+                let c = client.clone();
+                cx.background_executor()
+                    .spawn(async move {
+                        c.call_stream("orchestration.subscribeShell", json!({}), move |_| {
+                            let _ = tx.send_blocking(());
+                        });
+                    })
+                    .detach();
+                while rx.recv().await.is_ok() {
+                    let c = client.clone();
+                    let s = cx
+                        .background_executor()
+                        .spawn(async move { c.call("orchestration.getShellSnapshot", json!({})) })
+                        .await;
+                    let _ = this.update(cx, |this: &mut Self, cx| {
+                        if let Some(s) = s {
+                            this.snapshot = Some(s);
+                        }
+                        cx.notify();
+                    });
+                }
+                // The stream ended (socket dropped): reconnect and resubscribe.
+                cx.background_executor()
+                    .timer(std::time::Duration::from_secs(1))
+                    .await;
             }
         })
         .detach();

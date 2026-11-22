@@ -117,6 +117,11 @@ pub fn handle(_tag: &str, payload: &Value) -> Result<Value, WsErr> {
         "thread.sidechat.activity.record" => sidechat_activity(command),
         "thread.sidechat.expire" => sidechat_expire(command),
         t if t.starts_with("thread.usage-limit.") => usage_limit_dispatch(command),
+        "thread.messages.import" => messages_import(command),
+        "thread.message.assistant.delta" => assistant_message_event(command, true),
+        "thread.message.assistant.complete" => assistant_message_event(command, false),
+        "thread.message.user.bind-turn" => user_bind_or_boundary(command, true),
+        "thread.message.user.set-turn-boundary" => user_bind_or_boundary(command, false),
         other => Err(err(format!(
             "orchestration.dispatchCommand {other} is not ported yet (native engine slice)"
         ))),
@@ -4706,5 +4711,336 @@ fn sidechat_expire(command: &Map<String, Value>) -> Result<Value, WsErr> {
             ("updated_at", json!(iso_now_ms())),
         ],
     )?;
+    Ok(json!({ "sequence": seq }))
+}
+
+// ---- thread.messages.import / message.* ----
+
+fn project_message_sent(
+    conn: &Connection,
+    thread_id: &str,
+    p: &Value,
+) -> Result<(), WsErr> {
+    let g = |k: &str| p.get(k).cloned().unwrap_or(Value::Null);
+    let message_id = g("messageId");
+    let role = g("role");
+    let streaming = g("streaming").as_bool().unwrap_or(false);
+    let delta_mode = role.as_str() == Some("assistant") && streaming;
+    let existing: Option<(String, Option<String>, i64)> = conn
+        .query_row(
+            "SELECT text, turn_id, is_streaming FROM projection_thread_messages \
+             WHERE thread_id = ?1 AND message_id = ?2",
+            params![thread_id, json_to_sql(&message_id)],
+            |r| Ok((r.get(0)?, r.get(1)?, r.get(2)?)),
+        )
+        .ok();
+    let text = if delta_mode {
+        match &existing {
+            Some((t, _, _)) => {
+                json!(format!("{}{}", t, g("text").as_str().unwrap_or("")))
+            }
+            _ => g("text"),
+        }
+    } else {
+        match (&existing, g("text").as_str().unwrap_or("").is_empty()) {
+            (Some((t, _, _)), true) => json!(t),
+            _ => g("text"),
+        }
+    };
+    let turn_id = match &existing {
+        Some((_, Some(t), _)) => json!(t),
+        _ => g("turnId"),
+    };
+    conn.execute(
+        "INSERT INTO projection_thread_messages \
+         (message_id, thread_id, turn_id, role, text, is_streaming, created_at, updated_at, \
+          attachments_json, source, skills_json, mentions_json, dispatch_mode, dispatch_origin, \
+          starts_new_turn, async_user_input_json) \
+         VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14, ?15, ?16) \
+         ON CONFLICT(thread_id, message_id) DO UPDATE SET \
+          turn_id=excluded.turn_id, text=excluded.text, is_streaming=excluded.is_streaming, \
+          updated_at=excluded.updated_at, \
+          attachments_json=COALESCE(excluded.attachments_json, projection_thread_messages.attachments_json), \
+          skills_json=COALESCE(excluded.skills_json, projection_thread_messages.skills_json), \
+          mentions_json=COALESCE(excluded.mentions_json, projection_thread_messages.mentions_json), \
+          dispatch_mode=COALESCE(excluded.dispatch_mode, projection_thread_messages.dispatch_mode), \
+          dispatch_origin=COALESCE(excluded.dispatch_origin, projection_thread_messages.dispatch_origin), \
+          starts_new_turn=COALESCE(excluded.starts_new_turn, projection_thread_messages.starts_new_turn), \
+          async_user_input_json=COALESCE(excluded.async_user_input_json, projection_thread_messages.async_user_input_json)",
+        params![
+            json_to_sql(&message_id),
+            thread_id,
+            json_to_sql(&turn_id),
+            json_to_sql(&role),
+            json_to_sql(&text),
+            if streaming { 1 } else { 0 },
+            json_to_sql(&g("createdAt")),
+            json_to_sql(&g("updatedAt")),
+            g("attachments").to_string_opt(),
+            g("source").as_str().unwrap_or("native").to_string(),
+            g("skills").to_string_opt(),
+            g("mentions").to_string_opt(),
+            g("dispatchMode").to_string_opt(),
+            g("dispatchOrigin").to_string_opt(),
+            g("startsNewTurn").to_string_opt(),
+            g("asyncUserInput").to_string_opt(),
+        ],
+    )
+    .map_err(|e| err(format!("message projection: {e}")))?;
+    Ok(())
+}
+
+trait ToStringOpt {
+    fn to_string_opt(&self) -> Option<String>;
+}
+impl ToStringOpt for Value {
+    fn to_string_opt(&self) -> Option<String> {
+        if self.is_null() {
+            None
+        } else if let Some(s) = self.as_str() {
+            Some(s.to_string())
+        } else {
+            Some(self.to_string())
+        }
+    }
+}
+
+fn messages_import(command: &Map<String, Value>) -> Result<Value, WsErr> {
+    let command_id = s(command, "commandId").ok_or_else(|| err("missing commandId"))?;
+    let thread_id = s(command, "threadId").ok_or_else(|| err("missing threadId"))?;
+    let created_at = s(command, "createdAt").ok_or_else(|| err("missing createdAt"))?;
+    let messages = command
+        .get("messages")
+        .and_then(Value::as_array)
+        .cloned()
+        .unwrap_or_default();
+    let conn = open_state_rw()?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| err(e.to_string()))?;
+    require_thread(&conn, &thread_id)?;
+    if messages.is_empty() {
+        return Err(err("Command produced no events."));
+    }
+    let mut events = Vec::new();
+    for m in &messages {
+        let mut payload = Map::new();
+        payload.insert("threadId".into(), json!(thread_id));
+        payload.insert("messageId".into(), m.get("messageId").cloned().unwrap_or(Value::Null));
+        payload.insert("role".into(), m.get("role").cloned().unwrap_or(Value::Null));
+        payload.insert("text".into(), m.get("text").cloned().unwrap_or(Value::Null));
+        if let Some(v) = m.get("attachments") {
+            payload.insert("attachments".into(), v.clone());
+        }
+        if let Some(v) = m.get("dispatchOrigin") {
+            payload.insert("dispatchOrigin".into(), v.clone());
+        }
+        payload.insert("turnId".into(), Value::Null);
+        payload.insert("streaming".into(), json!(false));
+        payload.insert("source".into(), json!("native"));
+        payload.insert("createdAt".into(), m.get("createdAt").cloned().unwrap_or(Value::Null));
+        payload.insert("updatedAt".into(), m.get("updatedAt").cloned().unwrap_or(Value::Null));
+        events.push(out_event(
+            "thread.message-sent",
+            &thread_id,
+            &created_at,
+            Value::Object(payload),
+        ));
+    }
+    for ev in &events {
+        project_message_sent(&conn, &thread_id, &ev.payload)?;
+    }
+    let seq = commit_events(&conn, &events, &command_id)?;
+    Ok(json!({ "sequence": seq }))
+}
+
+fn assistant_message_event(command: &Map<String, Value>, delta: bool) -> Result<Value, WsErr> {
+    let command_id = s(command, "commandId").ok_or_else(|| err("missing commandId"))?;
+    let thread_id = s(command, "threadId").ok_or_else(|| err("missing threadId"))?;
+    let created_at = s(command, "createdAt").ok_or_else(|| err("missing createdAt"))?;
+    let message_id = s(command, "messageId").ok_or_else(|| err("missing messageId"))?;
+    let conn = open_state_rw()?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| err(e.to_string()))?;
+    require_thread(&conn, &thread_id)?;
+    let existing: Option<(String, i64, Option<String>, Option<String>)> = conn
+        .query_row(
+            "SELECT role, is_streaming, turn_id, async_user_input_json \
+             FROM projection_thread_messages WHERE thread_id = ?1 AND message_id = ?2",
+            params![thread_id, message_id],
+            |r| Ok((r.get(0)?, r.get(1)?, r.get(2)?, r.get(3)?)),
+        )
+        .ok();
+    if delta
+        && command.get("attachments").is_some()
+        && existing
+            .as_ref()
+            .map(|(role, streaming, _, _)| role != "assistant" || *streaming == 1)
+            .unwrap_or(true)
+    {
+        return Err(err(
+            "Late image snapshots require an already finalized assistant message.",
+        ));
+    }
+    let existing_turn = existing.as_ref().and_then(|(_, _, t, _)| t.clone());
+    let turn_id = existing_turn
+        .or_else(|| s(command, "turnId"))
+        .map_or(Value::Null, |v| json!(v));
+    let mut payload = Map::new();
+    payload.insert("threadId".into(), json!(thread_id));
+    payload.insert("messageId".into(), json!(message_id));
+    payload.insert("role".into(), json!("assistant"));
+    if delta {
+        payload.insert("text".into(), command.get("delta").cloned().unwrap_or(json!("")));
+    } else {
+        let existing_text: Option<String> = conn
+            .query_row(
+                "SELECT text FROM projection_thread_messages \
+                 WHERE thread_id = ?1 AND message_id = ?2",
+                params![thread_id, message_id],
+                |r| r.get(0),
+            )
+            .ok();
+        payload.insert("text".into(), existing_text.map_or(json!(""), |t| json!(t)));
+        if let Some(v) = command.get("asyncQuestions") {
+            let aui = existing
+                .as_ref()
+                .and_then(|(_, _, _, a)| a.clone())
+                .and_then(|j| serde_json::from_str::<Value>(&j).ok())
+                .unwrap_or_else(|| json!({"questions": v.clone()}));
+            payload.insert("asyncUserInput".into(), aui);
+        }
+    }
+    if let Some(v) = command.get("attachments") {
+        payload.insert("attachments".into(), v.clone());
+    }
+    if delta {
+        for k in ["segmentStartedAt", "segmentSequence"] {
+            if let Some(v) = command.get(k) {
+                payload.insert(k.to_string(), v.clone());
+            }
+        }
+    }
+    payload.insert("turnId".into(), turn_id);
+    payload.insert("streaming".into(), json!(delta));
+    payload.insert("createdAt".into(), json!(created_at));
+    payload.insert("updatedAt".into(), json!(created_at));
+    let first = out_event("thread.message-sent", &thread_id, &created_at, Value::Object(payload));
+    let mut events = vec![first.clone_shallow()];
+    let finalized_before = existing
+        .as_ref()
+        .map(|(role, streaming, _, _)| role == "assistant" && *streaming != 1)
+        .unwrap_or(false);
+    if delta && finalized_before {
+        // Late delta on a settled message: re-settle in the same command.
+        let mut settle = first.clone_shallow();
+        settle.event_id = uuid_v4();
+        settle.payload["streaming"] = json!(false);
+        settle.payload["text"] = json!("");
+        events.push(settle);
+    }
+    for ev in &events {
+        project_message_sent(&conn, &thread_id, &ev.payload)?;
+    }
+    let seq = commit_events(&conn, &events, &command_id)?;
+    Ok(json!({ "sequence": seq }))
+}
+
+fn user_bind_or_boundary(command: &Map<String, Value>, bind: bool) -> Result<Value, WsErr> {
+    let command_id = s(command, "commandId").ok_or_else(|| err("missing commandId"))?;
+    let thread_id = s(command, "threadId").ok_or_else(|| err("missing threadId"))?;
+    let created_at = s(command, "createdAt").ok_or_else(|| err("missing createdAt"))?;
+    let message_id = s(command, "messageId").ok_or_else(|| err("missing messageId"))?;
+    let conn = open_state_rw()?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| err(e.to_string()))?;
+    require_thread(&conn, &thread_id)?;
+    let msg: Option<(String, Option<String>, String, String, Option<String>, Option<String>, Option<String>, Option<String>, Option<i64>)> = conn
+        .query_row(
+            "SELECT role, turn_id, text, source, attachments_json, skills_json, mentions_json, dispatch_origin, starts_new_turn \
+             FROM projection_thread_messages WHERE thread_id = ?1 AND message_id = ?2",
+            params![thread_id, message_id],
+            |r| Ok((r.get(0)?, r.get(1)?, r.get(2)?, r.get(3)?, r.get(4)?, r.get(5)?, r.get(6)?, r.get(7)?, r.get(8)?)),
+        )
+        .ok();
+    let (role, cur_turn, text, source, attachments, skills, mentions, dispatch_origin, starts_new) =
+        match msg {
+            Some(m) => m,
+            None => {
+                return Err(err(format!(
+                    "User message '{message_id}' does not exist on thread '{thread_id}'."
+                )))
+            }
+        };
+    if role != "user" {
+        return Err(err(format!(
+            "User message '{message_id}' does not exist on thread '{thread_id}'."
+        )));
+    }
+    if bind {
+        let cmd_turn = s(command, "turnId");
+        if let (Some(cur), Some(new)) = (&cur_turn, &cmd_turn) {
+            if cur != new {
+                return Err(err(format!(
+                    "User message '{message_id}' is already bound to turn '{cur}'."
+                )));
+            }
+        }
+    }
+    let turn_id = if bind {
+        s(command, "turnId").map_or(cur_turn.clone().map_or(Value::Null, |v| json!(v)), |v| json!(v))
+    } else {
+        cur_turn.clone().map_or(Value::Null, |v| json!(v))
+    };
+    let starts = if bind {
+        starts_new.map(|v| v != 0)
+    } else {
+        command.get("startsNewTurn").and_then(Value::as_bool)
+    };
+    let mut payload = Map::new();
+    payload.insert("threadId".into(), json!(thread_id));
+    payload.insert("messageId".into(), json!(message_id));
+    payload.insert("role".into(), json!("user"));
+    payload.insert("text".into(), json!(text));
+    if let Some(a) = attachments {
+        if let Ok(v) = serde_json::from_str::<Value>(&a) {
+            payload.insert("attachments".into(), v);
+        }
+    }
+    for (k, v) in [("skills", skills), ("mentions", mentions)] {
+        if let Some(j) = v {
+            if let Ok(val) = serde_json::from_str::<Value>(&j) {
+                payload.insert(k.to_string(), val);
+            }
+        }
+    }
+    if let Some(d) = dispatch_origin {
+        payload.insert("dispatchOrigin".into(), json!(d));
+    }
+    if let Some(st) = starts {
+        payload.insert("startsNewTurn".into(), json!(st));
+    }
+    payload.insert("turnId".into(), turn_id);
+    payload.insert("streaming".into(), json!(false));
+    payload.insert("source".into(), json!(source));
+    let (created, updated): (Option<String>, Option<String>) = conn
+        .query_row(
+            "SELECT created_at, updated_at FROM projection_thread_messages \
+             WHERE thread_id = ?1 AND message_id = ?2",
+            params![thread_id, message_id],
+            |r| Ok((r.get(0)?, r.get(1)?)),
+        )
+        .unwrap_or((None, None));
+    payload.insert("createdAt".into(), created.map_or(Value::Null, |v| json!(v)));
+    payload.insert("updatedAt".into(), updated.map_or(Value::Null, |v| json!(v)));
+    let events = vec![out_event(
+        "thread.message-sent",
+        &thread_id,
+        &created_at,
+        Value::Object(payload),
+    )];
+    for ev in &events {
+        project_message_sent(&conn, &thread_id, &ev.payload)?;
+    }
+    let seq = commit_events(&conn, &events, &command_id)?;
     Ok(json!({ "sequence": seq }))
 }

@@ -182,6 +182,7 @@ fn intercept_todo(
         && tag != "orchestration.subscribeDomainEvents"
         && !crate::orchestration_reads::handles(tag)
         && !crate::provider_cache::handles(tag)
+        && !crate::skills_catalog::handles(tag)
         && !tag.starts_with("githubInbox.")
         && !tag.starts_with("stats.")
         && !tag.starts_with("terminal.")
@@ -782,6 +783,10 @@ fn intercept_todo(
             .map_err(error_json)
     } else if crate::orchestration_reads::handles(tag) {
         crate::orchestration_reads::handle(tag, &payload)
+            .map(Some)
+            .map_err(error_json)
+    } else if crate::skills_catalog::handles(tag) {
+        crate::skills_catalog::handle(tag, &payload)
             .map(Some)
             .map_err(error_json)
     } else if crate::provider_cache::handles(tag) {

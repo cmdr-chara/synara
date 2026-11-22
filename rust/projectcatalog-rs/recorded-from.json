@@ -1,0 +1,17 @@
+{
+  "unit": "apps/web/src/lib/projectCatalog/",
+  "files": 4,
+  "fingerprint": "66c5d29c3e8b5bfd",
+  "coverage": {
+    "lines": 193,
+    "reached": 135,
+    "files": [
+      {
+        "file": "apps/web/src/lib/projectCatalog/model.ts",
+        "lines": 193,
+        "reached": 135,
+        "missed": "64-67, 99-102, 105-113, 115, 136-165, 178, 184-192"
+      }
+    ]
+  }
+}

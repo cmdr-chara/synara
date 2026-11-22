@@ -1,0 +1,298 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/lib/projectCatalog/",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "projectcatalog-rs",
+  "exports": [
+    {
+      "name": "emptyCatalog",
+      "file": "apps/web/src/lib/projectCatalog/model.ts",
+      "line": 34,
+      "params": [],
+      "returns": "ProjectCatalog",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "checkoutKey",
+      "file": "apps/web/src/lib/projectCatalog/model.ts",
+      "line": 40,
+      "params": [
+        {
+          "name": "ref",
+          "ts_type": "CheckoutRef",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "repositoryIdentity",
+      "file": "apps/web/src/lib/projectCatalog/model.ts",
+      "line": 46,
+      "params": [
+        {
+          "name": "raw",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "observeCheckouts",
+      "file": "apps/web/src/lib/projectCatalog/model.ts",
+      "line": 69,
+      "params": [
+        {
+          "name": "catalog",
+          "ts_type": "ProjectCatalog",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "environmentId",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "incoming",
+          "ts_type": "CatalogCheckout[]",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ProjectCatalog",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "catalogSuggestions",
+      "file": "apps/web/src/lib/projectCatalog/model.ts",
+      "line": 86,
+      "params": [
+        {
+          "name": "catalog",
+          "ts_type": "ProjectCatalog",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "[CatalogCheckout, CatalogCheckout][]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "excludeSuggestion",
+      "file": "apps/web/src/lib/projectCatalog/model.ts",
+      "line": 115,
+      "params": [
+        {
+          "name": "catalog",
+          "ts_type": "ProjectCatalog",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "a",
+          "ts_type": "CheckoutRef",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "b",
+          "ts_type": "CheckoutRef",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ProjectCatalog",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "linkCheckouts",
+      "file": "apps/web/src/lib/projectCatalog/model.ts",
+      "line": 122,
+      "params": [
+        {
+          "name": "catalog",
+          "ts_type": "ProjectCatalog",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "refs",
+          "ts_type": "CheckoutRef[]",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "name",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "id",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ProjectCatalog",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "unlinkCheckout",
+      "file": "apps/web/src/lib/projectCatalog/model.ts",
+      "line": 164,
+      "params": [
+        {
+          "name": "catalog",
+          "ts_type": "ProjectCatalog",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "groupId",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "ref",
+          "ts_type": "CheckoutRef",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ProjectCatalog",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "splitGroup",
+      "file": "apps/web/src/lib/projectCatalog/model.ts",
+      "line": 193,
+      "params": [
+        {
+          "name": "catalog",
+          "ts_type": "ProjectCatalog",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "groupId",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ProjectCatalog",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "openCatalogCheckout",
+      "file": "apps/web/src/lib/projectCatalog/navigation.ts",
+      "line": 14,
+      "params": [
+        {
+          "name": "checkout",
+          "ts_type": "CatalogCheckout",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<void>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "projectCatalogKey",
+      "file": "apps/web/src/lib/projectCatalog/storage.ts",
+      "line": 5,
+      "params": [],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "readProjectCatalog",
+      "file": "apps/web/src/lib/projectCatalog/storage.ts",
+      "line": 14,
+      "params": [
+        {
+          "name": "key",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ProjectCatalog",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "saveProjectCatalog",
+      "file": "apps/web/src/lib/projectCatalog/storage.ts",
+      "line": 53,
+      "params": [
+        {
+          "name": "key",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "value",
+          "ts_type": "ProjectCatalog",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

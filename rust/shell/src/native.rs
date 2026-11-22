@@ -71,6 +71,12 @@ pub struct Native {
     changes_diff: Option<(String, String)>,
     changes_loading: bool,
     changes_unavailable: bool,
+    view_terminal: bool,
+    term_id: String,
+    term_buf: String,
+    term_status: Option<String>,
+    term_input: Option<Entity<InputState>>,
+    term_events: bool,
 }
 
 fn get<'a>(v: &'a Value, k: &str) -> &'a Value {
@@ -105,6 +111,48 @@ fn rel_time(iso: &str) -> String {
 
 fn uuid() -> String {
     uuid::Uuid::new_v4().to_string()
+}
+
+/// Drop ANSI escape sequences (CSI/OSC/single-char) and CR/BS/BEL from PTY
+/// output — the drawer renders plain text.
+fn strip_ansi(s: &str) -> String {
+    let mut out = String::with_capacity(s.len());
+    let mut it = s.chars().peekable();
+    while let Some(c) = it.next() {
+        if c == '\u{1b}' {
+            match it.peek().copied() {
+                Some('[') => {
+                    it.next();
+                    while let Some(n) = it.next() {
+                        if n.is_ascii_alphabetic() || n == '@' || n == '`' {
+                            break;
+                        }
+                    }
+                }
+                Some(']') => {
+                    it.next();
+                    loop {
+                        match it.next() {
+                            None | Some('\u{7}') => break,
+                            Some('\u{1b}') => {
+                                if it.peek() == Some(&'\\') {
+                                    it.next();
+                                }
+                                break;
+                            }
+                            Some(_) => {}
+                        }
+                    }
+                }
+                _ => {
+                    it.next();
+                }
+            }
+        } else if c != '\r' && c != '\u{8}' && c != '\u{7}' {
+            out.push(c);
+        }
+    }
+    out
 }
 
 /// Blocking: connect (once) and clone the shared client. Run on a background
@@ -197,6 +245,12 @@ impl Native {
                 changes_diff: None,
                 changes_loading: false,
                 changes_unavailable: false,
+                view_terminal: false,
+                term_id: String::new(),
+                term_buf: String::new(),
+                term_status: None,
+                term_input: None,
+                term_events: false,
             };
             this.refresh(cx);
             this
@@ -572,6 +626,247 @@ impl Native {
             });
         })
         .detach();
+    }
+
+    /// Rail button: toggle the bottom terminal drawer. Opening spawns a PTY
+    /// session on the workspace root via terminal.open and subscribes to its
+    /// event stream; closing kills it.
+    fn toggle_terminal(&mut self, window: &mut Window, cx: &mut Context<Self>) {
+        self.view_terminal = !self.view_terminal;
+        if self.view_terminal {
+            self.term_id = uuid();
+            self.term_buf.clear();
+            self.term_status = None;
+            let input = cx.new(|cx| {
+                InputState::new(window, cx).placeholder("type a command")
+            });
+            cx.subscribe_in(&input, window, |this: &mut Self, _s, ev, w, cx| {
+                if let InputEvent::PressEnter { .. } = ev {
+                    this.term_send(w, cx);
+                }
+            })
+            .detach();
+            self.term_input = Some(input);
+            self.ensure_terminal_events(cx);
+            self.open_terminal(cx);
+        } else {
+            self.close_terminal(cx);
+        }
+        cx.notify();
+    }
+
+    fn open_terminal(&mut self, cx: &mut Context<Self>) {
+        let client = self.client.clone();
+        let terminal_id = self.term_id.clone();
+        let cwd = self.files_root().unwrap_or_else(|| "/".to_string());
+        cx.spawn(async move |_this, cx: &mut AsyncApp| {
+            let cell = client.clone();
+            let client = cx
+                .background_executor()
+                .spawn(async move { ensure_client(&cell) })
+                .await;
+            let Some(client) = client else { return };
+            let _ = cx
+                .background_executor()
+                .spawn(async move {
+                    client.call(
+                        "terminal.open",
+                        json!({
+                            "threadId": "shell",
+                            "terminalId": terminal_id,
+                            "cwd": cwd,
+                            "cols": 140,
+                            "rows": 30,
+                            "streamOutput": true,
+                        }),
+                    )
+                })
+                .await;
+        })
+        .detach();
+    }
+
+    fn close_terminal(&mut self, cx: &mut Context<Self>) {
+        self.term_input = None;
+        self.term_status = None;
+        self.term_buf.clear();
+        let client = self.client.clone();
+        let terminal_id = self.term_id.clone();
+        cx.spawn(async move |_this, cx: &mut AsyncApp| {
+            let cell = client.clone();
+            let client = cx
+                .background_executor()
+                .spawn(async move { ensure_client(&cell) })
+                .await;
+            let Some(client) = client else { return };
+            let _ = cx
+                .background_executor()
+                .spawn(async move {
+                    client.call(
+                        "terminal.close",
+                        json!({
+                            "threadId": "shell",
+                            "terminalId": terminal_id,
+                            "deleteHistory": true,
+                        }),
+                    )
+                })
+                .await;
+        })
+        .detach();
+    }
+
+    fn term_restart(&mut self, cx: &mut Context<Self>) {
+        let client = self.client.clone();
+        let terminal_id = self.term_id.clone();
+        let cwd = self.files_root().unwrap_or_else(|| "/".to_string());
+        cx.spawn(async move |_this, cx: &mut AsyncApp| {
+            let cell = client.clone();
+            let client = cx
+                .background_executor()
+                .spawn(async move { ensure_client(&cell) })
+                .await;
+            let Some(client) = client else { return };
+            let _ = cx
+                .background_executor()
+                .spawn(async move {
+                    client.call(
+                        "terminal.restart",
+                        json!({
+                            "threadId": "shell",
+                            "terminalId": terminal_id,
+                            "cwd": cwd,
+                            "cols": 140,
+                            "rows": 30,
+                        }),
+                    )
+                })
+                .await;
+        })
+        .detach();
+    }
+
+    fn term_send(&mut self, window: &mut Window, cx: &mut Context<Self>) {
+        let Some(input) = self.term_input.clone() else {
+            return;
+        };
+        let text = input.read(cx).value().to_string();
+        if text.is_empty() {
+            return;
+        }
+        input.update(cx, |s, cx| s.clean(window, cx));
+        let client = self.client.clone();
+        let terminal_id = self.term_id.clone();
+        cx.spawn(async move |_this, cx: &mut AsyncApp| {
+            let cell = client.clone();
+            let client = cx
+                .background_executor()
+                .spawn(async move { ensure_client(&cell) })
+                .await;
+            let Some(client) = client else { return };
+            let _ = cx
+                .background_executor()
+                .spawn(async move {
+                    client.call(
+                        "terminal.write",
+                        json!({
+                            "threadId": "shell",
+                            "terminalId": terminal_id,
+                            "data": format!("{text}\r"),
+                        }),
+                    )
+                })
+                .await;
+        })
+        .detach();
+    }
+
+    /// Long-lived subscribeEvents stream feeding the terminal drawer; it
+    /// reconnects itself while the drawer is open.
+    fn ensure_terminal_events(&mut self, cx: &mut Context<Self>) {
+        if self.term_events {
+            return;
+        }
+        self.term_events = true;
+        let client = self.client.clone();
+        cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
+            loop {
+                let open = this
+                    .update(cx, |t: &mut Self, _| t.view_terminal)
+                    .unwrap_or(false);
+                if !open {
+                    break;
+                }
+                let cell = client.clone();
+                let client = cx
+                    .background_executor()
+                    .spawn(async move { ensure_client(&cell) })
+                    .await;
+                let Some(client) = client else {
+                    cx.background_executor()
+                        .timer(std::time::Duration::from_secs(3))
+                        .await;
+                    continue;
+                };
+                let (tx, rx) = async_channel::unbounded::<Vec<Value>>();
+                let c = client.clone();
+                cx.background_executor()
+                    .spawn(async move {
+                        c.call_stream("terminal.subscribeEvents", json!({}), move |v| {
+                            let _ = tx.send_blocking(v);
+                        });
+                    })
+                    .detach();
+                while let Ok(values) = rx.recv().await {
+                    let _ = this.update(cx, |t: &mut Self, cx| {
+                        for ev in values {
+                            t.on_terminal_event(ev);
+                        }
+                        cx.notify();
+                    });
+                }
+                cx.background_executor()
+                    .timer(std::time::Duration::from_secs(1))
+                    .await;
+            }
+            let _ = this.update(cx, |t: &mut Self, _| {
+                t.term_events = false;
+            });
+        })
+        .detach();
+    }
+
+    fn on_terminal_event(&mut self, ev: Value) {
+        if str_at(&ev, "terminalId") != self.term_id || str_at(&ev, "threadId") != "shell" {
+            return;
+        }
+        match str_at(&ev, "type") {
+            "started" | "restarted" => {
+                let snap = get(&ev, "snapshot");
+                self.term_buf = strip_ansi(str_at(snap, "history"));
+                self.term_status = Some(str_at(snap, "status").to_string());
+            }
+            "output" => {
+                self.term_buf.push_str(&strip_ansi(str_at(&ev, "data")));
+                if self.term_buf.len() > 200_000 {
+                    let mut cut = self.term_buf.len() - 100_000;
+                    while !self.term_buf.is_char_boundary(cut) {
+                        cut += 1;
+                    }
+                    self.term_buf.drain(..cut);
+                }
+            }
+            "cleared" => self.term_buf.clear(),
+            "exited" => {
+                self.term_status = Some("exited".to_string());
+                let suffix = get(&ev, "exitCode")
+                    .as_i64()
+                    .map(|c| format!(" code {c}"))
+                    .unwrap_or_default();
+                self.term_buf.push_str(&format!("\n[process exited{suffix}]\n"));
+            }
+            _ => {}
+        }
     }
 
     /// "+" button: native file picker -> upload each file -> chip in composer.
@@ -2515,6 +2810,81 @@ impl Render for Native {
                     ),
             );
 
+        // ---- terminal drawer (bottom pane over the transcript column) ----
+        let mut term_drawer = v_flex()
+            .h(px(220.))
+            .border_t_1()
+            .border_color(theme.border);
+        let mut term_head = h_flex()
+            .px_2()
+            .py_1()
+            .gap_2()
+            .items_center()
+            .child(
+                div()
+                    .text_xs()
+                    .font_weight(FontWeight::SEMIBOLD)
+                    .text_color(theme.muted_foreground)
+                    .child("TERMINAL"),
+            );
+        if let Some(st) = &self.term_status {
+            term_head = term_head.child(
+                div()
+                    .text_xs()
+                    .text_color(if st == "exited" { theme.warning } else { theme.success })
+                    .child(st.clone()),
+            );
+        }
+        term_head = term_head
+            .child(div().flex_1())
+            .child(
+                Button::new("term-restart")
+                    .ghost()
+                    .compact()
+                    .icon(IconName::RefreshCw)
+                    .on_click(cx.listener(|this, _ev, _w, cx| this.term_restart(cx))),
+            )
+            .child(
+                Button::new("term-close")
+                    .ghost()
+                    .compact()
+                    .label("\u{00d7}")
+                    .on_click(cx.listener(|this, _ev, w, cx| this.toggle_terminal(w, cx))),
+            );
+        term_drawer = term_drawer
+            .child(term_head)
+            .child(
+                div()
+                    .flex_1()
+                    .overflow_y_scrollbar()
+                    .px_2()
+                    .py_1()
+                    .font_family(theme.mono_font_family.clone())
+                    .text_xs()
+                    .child(if self.term_buf.is_empty() {
+                        "Starting terminal\u{2026}".to_string()
+                    } else {
+                        self.term_buf.clone()
+                    }),
+            );
+        if let Some(inp) = &self.term_input {
+            term_drawer = term_drawer.child(
+                h_flex()
+                    .px_2()
+                    .pb_1()
+                    .gap_1()
+                    .items_center()
+                    .child(
+                        div()
+                            .text_xs()
+                            .text_color(theme.success)
+                            .font_family(theme.mono_font_family.clone())
+                            .child("$"),
+                    )
+                    .child(div().flex_1().child(Input::new(inp))),
+            );
+        }
+
         let mut main = v_flex().flex_1().h_full();
         if self.view_settings {
             main = main.child(div().flex_1().child(settings_pane.overflow_y_scrollbar()));
@@ -2525,9 +2895,11 @@ impl Render for Native {
         } else if self.view_inbox {
             main = main.child(div().flex_1().child(inbox_pane.overflow_y_scrollbar()));
         } else {
-            main = main
-                .child(div().flex_1().child(pane.overflow_y_scrollbar()))
-                .child(composer_bar);
+            main = main.child(div().flex_1().child(pane.overflow_y_scrollbar()));
+            if self.view_terminal {
+                main = main.child(term_drawer);
+            }
+            main = main.child(composer_bar);
         }
 
         // ---- changes dock (right pane) ----
@@ -2717,6 +3089,15 @@ impl Render for Native {
                 }
                 .on_click(cx.listener(|this, _ev, _w, cx| {
                     this.toggle_changes(cx);
+                })),
+            )
+            .child(
+                {
+                    let b = Button::new("nav-terminal").icon(AssetIcon::SquareTerminal);
+                    if self.view_terminal { b.outline() } else { b.ghost() }
+                }
+                .on_click(cx.listener(|this, _ev, w, cx| {
+                    this.toggle_terminal(w, cx);
                 })),
             )
             .child(div().flex_1())

@@ -1,0 +1,138 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/composerPrediction/",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "composerprediction-rs",
+  "exports": [
+    {
+      "name": "resolveComposerPredictionTurnBlocker",
+      "file": "apps/server/src/composerPrediction/composerPrediction.ts",
+      "line": 56,
+      "params": [
+        {
+          "name": "thread",
+          "ts_type": "(Pick<\n  typeof typeof typeof OrchestrationThreadShell.Type.Type.Type,\n  \"archivedAt\" | \"latestTurn\" | \"session\" | \"hasPendingApprovals\" | \"hasPendingUserInput\"\n>) | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "expectedTurnId",
+          "ts_type": "typeof typeof typeof typeof TurnId.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(| \"thread-missing\"\n  | \"thread-archived\"\n  | \"turn-not-latest\"\n  | \"turn-incomplete\"\n  | \"session-busy\"\n  | \"pending-approval\"\n  | \"pending-user-input\") | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isComposerPredictionTurnCurrent",
+      "file": "apps/server/src/composerPrediction/composerPrediction.ts",
+      "line": 75,
+      "params": [
+        {
+          "name": "thread",
+          "ts_type": "(Pick<\n  typeof typeof typeof OrchestrationThreadShell.Type.Type.Type,\n  \"archivedAt\" | \"latestTurn\" | \"session\" | \"hasPendingApprovals\" | \"hasPendingUserInput\"\n>) | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "expectedTurnId",
+          "ts_type": "typeof typeof typeof typeof TurnId.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "buildComposerPredictionConversation",
+      "file": "apps/server/src/composerPrediction/composerPrediction.ts",
+      "line": 123,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly messages: ReadonlyArray<(Pick<typeof typeof typeof OrchestrationMessage.Type.Type.Type, \"id\" | \"role\" | \"text\" | \"streaming\">)>;\n  readonly finalReplyMessageId: typeof typeof typeof typeof MessageId.Type.Type.Type.Type;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "lowestSupportedEffort",
+      "file": "apps/server/src/composerPrediction/composerPrediction.ts",
+      "line": 209,
+      "params": [
+        {
+          "name": "provider",
+          "ts_type": "typeof typeof typeof typeof ProviderKind.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "model",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveComposerPredictionHedgeDelayMs",
+      "file": "apps/server/src/composerPrediction/composerPrediction.ts",
+      "line": 258,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly recentDurationsMs: ReadonlyArray<number>;\n  readonly timeoutMs: number;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "number | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveComposerPredictionRouting",
+      "file": "apps/server/src/composerPrediction/composerPrediction.ts",
+      "line": 291,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly thread: Pick<typeof typeof typeof typeof OrchestrationThreadShell.Type.Type.Type.Type, \"modelSelection\" | \"session\">;\n  readonly settings: typeof typeof typeof typeof ServerSettings.Type.Type.Type.Type;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(TextGenerationProviderInput & {\n  readonly source: \"git-writing-model\" | \"prediction-model\" | \"chat-model\";\n}) | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

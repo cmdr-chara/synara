@@ -1,0 +1,599 @@
+{"fn":"resolveComposerPredictionTurnBlocker","args":[null,["a",1]],"ok":"thread-missing"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":[null,"x"],"ok":"thread-missing"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":[0,{"a":"b"}],"ok":"thread-missing"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":[{"a":"b"},{"a":{"b":"c"}}],"ok":"turn-not-latest"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":[{"a":{"b":"c"}},0],"ok":"turn-not-latest"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":[null,null],"ok":"thread-missing"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":[true,null],"ok":"turn-not-latest"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":[{"a":{"b":"c"}},["a",1]],"ok":"turn-not-latest"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":["x",["a",1]],"ok":"turn-not-latest"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":[{"a":"b"},0],"ok":"turn-not-latest"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":[{"a":{"b":"c"}},null],"ok":"turn-not-latest"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":[0,"x"],"ok":"thread-missing"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":[{"a":"b"},["a",1]],"ok":"turn-not-latest"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":["x",null],"ok":"turn-not-latest"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":[["a",1],["a",1]],"ok":"turn-not-latest"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":[{},{"a":{"b":"c"}}],"ok":"turn-not-latest"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":["x",[]],"ok":"turn-not-latest"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":["x",{"a":{"b":"c"}}],"ok":"turn-not-latest"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":[true,"x"],"ok":"turn-not-latest"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":[[],{"a":{"b":"c"}}],"ok":"turn-not-latest"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":["x","x"],"ok":"turn-not-latest"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":[[],"x"],"ok":"turn-not-latest"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":["x",true],"ok":"turn-not-latest"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":[["a",1],{"a":"b"}],"ok":"turn-not-latest"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":[{"a":"b"},{"a":"b"}],"ok":"turn-not-latest"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":[["a",1],"x"],"ok":"turn-not-latest"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":[["a",1],{"a":{"b":"c"}}],"ok":"turn-not-latest"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":[null,[]],"ok":"thread-missing"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":[[],["a",1]],"ok":"turn-not-latest"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":[["a",1],true],"ok":"turn-not-latest"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":[0,[]],"ok":"thread-missing"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":["x",{"a":"b"}],"ok":"turn-not-latest"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":[true,{}],"ok":"turn-not-latest"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":[{},true],"ok":"turn-not-latest"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":[{},0],"ok":"turn-not-latest"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":[0,0],"ok":"thread-missing"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":[true,0],"ok":"turn-not-latest"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":[[],[]],"ok":"turn-not-latest"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":[{},["a",1]],"ok":"turn-not-latest"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":[[],{"a":"b"}],"ok":"turn-not-latest"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":[null,0],"ok":"thread-missing"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":[{},[]],"ok":"turn-not-latest"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":[[],0],"ok":"turn-not-latest"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":[true,{"a":"b"}],"ok":"turn-not-latest"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":[true,[]],"ok":"turn-not-latest"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":[{"a":"b"},{}],"ok":"turn-not-latest"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":[{},{"a":"b"}],"ok":"turn-not-latest"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":[null,{}],"ok":"thread-missing"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":[["a",1],{}],"ok":"turn-not-latest"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":[{"a":{"b":"c"}},{"a":{"b":"c"}}],"ok":"turn-not-latest"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":[["a",1],0],"ok":"turn-not-latest"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":[["a",1],null],"ok":"turn-not-latest"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":["x",{}],"ok":"turn-not-latest"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":[[],{}],"ok":"turn-not-latest"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":[{"a":{"b":"c"}},true],"ok":"turn-not-latest"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":[{"a":{"b":"c"}},{}],"ok":"turn-not-latest"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":[{},{}],"ok":"turn-not-latest"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":[null,{"a":{"b":"c"}}],"ok":"thread-missing"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":[0,{}],"ok":"thread-missing"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":[0,true],"ok":"thread-missing"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":[{"a":"b"},null],"ok":"turn-not-latest"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":[[],null],"ok":"turn-not-latest"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":[{},"x"],"ok":"turn-not-latest"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":[0,null],"ok":"thread-missing"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":[0,{"a":{"b":"c"}}],"ok":"thread-missing"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":[["a",1],[]],"ok":"turn-not-latest"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":[null,{"a":"b"}],"ok":"thread-missing"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":[{"a":"b"},"x"],"ok":"turn-not-latest"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":[{"a":{"b":"c"}},{"a":"b"}],"ok":"turn-not-latest"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":[true,true],"ok":"turn-not-latest"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":[{"a":{"b":"c"}},"x"],"ok":"turn-not-latest"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":["x",0],"ok":"turn-not-latest"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":[{"a":{"b":"c"}},[]],"ok":"turn-not-latest"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":[0,["a",1]],"ok":"thread-missing"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":[true,{"a":{"b":"c"}}],"ok":"turn-not-latest"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":[[],true],"ok":"turn-not-latest"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":[true,["a",1]],"ok":"turn-not-latest"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":[{},null],"ok":"turn-not-latest"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":[{"a":"b"},[]],"ok":"turn-not-latest"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":[{"a":"b"},true],"ok":"turn-not-latest"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":[null,true],"ok":"thread-missing"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":["x","X"],"ok":"turn-not-latest"}
+{"fn":"resolveComposerPredictionTurnBlocker","args":["X","x"],"ok":"turn-not-latest"}
+{"fn":"isComposerPredictionTurnCurrent","args":["x",[]],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":[{"a":{"b":"c"}},["a",1]],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":[["a",1],true],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":[{"a":"b"},["a",1]],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":[{},[]],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":[true,true],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":[{},["a",1]],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":["x",null],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":[null,"x"],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":[{},{}],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":[["a",1],0],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":[["a",1],[]],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":[0,{"a":"b"}],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":[{"a":{"b":"c"}},{}],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":[{"a":"b"},0],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":[true,"x"],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":[[],"x"],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":[{"a":"b"},[]],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":[null,["a",1]],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":["x",true],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":["x",["a",1]],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":[{"a":"b"},{"a":{"b":"c"}}],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":[[],[]],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":[{},true],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":[{"a":{"b":"c"}},null],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":[["a",1],"x"],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":[["a",1],{}],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":[{"a":{"b":"c"}},true],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":[["a",1],{"a":"b"}],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":[0,["a",1]],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":["x",{"a":"b"}],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":[[],null],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":[{"a":"b"},{"a":"b"}],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":[true,null],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":[null,[]],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":[{"a":{"b":"c"}},0],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":[[],true],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":[0,null],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":[["a",1],null],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":[{},null],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":[[],{"a":"b"}],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":[null,{}],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":["x",{}],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":[true,0],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":[true,{"a":{"b":"c"}}],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":[0,"x"],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":[{},0],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":[0,{}],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":[true,{}],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":[{},{"a":{"b":"c"}}],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":[{"a":{"b":"c"}},"x"],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":[null,true],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":[true,[]],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":[{},"x"],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":[{"a":{"b":"c"}},[]],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":[[],{}],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":[{"a":"b"},{}],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":[true,["a",1]],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":["x",{"a":{"b":"c"}}],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":[{"a":"b"},"x"],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":[[],0],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":[{"a":{"b":"c"}},{"a":{"b":"c"}}],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":[0,0],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":[["a",1],["a",1]],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":[0,[]],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":[null,{"a":{"b":"c"}}],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":["x",0],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":[{"a":"b"},true],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":[[],["a",1]],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":[["a",1],{"a":{"b":"c"}}],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":[{"a":"b"},null],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":[[],{"a":{"b":"c"}}],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":[0,true],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":[null,0],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":["x","x"],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":[{},{"a":"b"}],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":[null,{"a":"b"}],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":[true,{"a":"b"}],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":[0,{"a":{"b":"c"}}],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":[null,null],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":[{"a":{"b":"c"}},{"a":"b"}],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":["X","x"],"ok":false}
+{"fn":"isComposerPredictionTurnCurrent","args":["x","X"],"ok":false}
+{"fn":"buildComposerPredictionConversation","args":[["a",1]],"error":"Cannot read properties of undefined (reading 'findIndex')"}
+{"fn":"buildComposerPredictionConversation","args":[[]],"error":"Cannot read properties of undefined (reading 'findIndex')"}
+{"fn":"buildComposerPredictionConversation","args":[{}],"error":"Cannot read properties of undefined (reading 'findIndex')"}
+{"fn":"buildComposerPredictionConversation","args":[true],"error":"Cannot read properties of undefined (reading 'findIndex')"}
+{"fn":"buildComposerPredictionConversation","args":[null],"error":"Cannot read properties of null (reading 'messages')"}
+{"fn":"buildComposerPredictionConversation","args":["x"],"error":"Cannot read properties of undefined (reading 'findIndex')"}
+{"fn":"buildComposerPredictionConversation","args":[{"a":"b"}],"error":"Cannot read properties of undefined (reading 'findIndex')"}
+{"fn":"buildComposerPredictionConversation","args":[{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'findIndex')"}
+{"fn":"buildComposerPredictionConversation","args":[0],"error":"Cannot read properties of undefined (reading 'findIndex')"}
+{"fn":"lowestSupportedEffort","args":[true,"ns:key.path"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[["a",1],"trailing."],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[["a",1],"abc"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[null,":"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[true,"a..b"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":["x","{name} has {count} items"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[[],"straße"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[["a",1],"straße"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[null,".leading"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[null,"aé"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":["x","a:b:c"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[{"a":{"b":"c"}},"a..b"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[{"a":{"b":"c"}},"hello worldünïcödé"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[{"a":"b"},":"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[0,"trailing."],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[[],".leading"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[[],"ünïcödé"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[[],"  padded  "],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[{},"a😀b😀c"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[{"a":{"b":"c"}},"tab\tseparated"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[true,"{name} has {count} items"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[{"a":"b"},"hello"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[[],"é"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[0,"ab"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[[],"😀"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[{"a":"b"},"a:b:c"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[true,"  padded  "],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[null,"ns:key.path"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[0,""],"ok":null}
+{"fn":"lowestSupportedEffort","args":[["a",1],"ΣΊΣΥΦΟΣ"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":["x","ab"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[null,".leadingünïcödé"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[["a",1],".leading"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[{"a":"b"},"emoji 👍🏽 mix"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[{"a":{"b":"c"}},"key_name-1"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[true,"trailing."],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[null,"ab"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[{"a":"b"},"hello world"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[true,"ünïcödé"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":["x","HELLO"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[{},".leading"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[0,":"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[0,"./x/**/*.json"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[null,"./x/**/*.json"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[true,"abc"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":["x","straße"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[["a",1],"é"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[["a",1],"./x/**/*.json"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[true,"emoji 👍🏽 mix"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[["a",1],"hello"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[[],"İstanbul"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[{"a":"b"},""],"ok":null}
+{"fn":"lowestSupportedEffort","args":[null,"ΣΊΣΥΦΟΣ{name} has {count} items"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[["a",1],":"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[null,"trailing.ünïcödé"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[0,"emoji 👍🏽 mix"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":["x","é"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[{"a":{"b":"c"}},"abc"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[0,"line1\nline2"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[[],""],"ok":null}
+{"fn":"lowestSupportedEffort","args":[["a",1],"﻿bom"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[0,"é"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[true,"HELLO"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[{},"a..b"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[[],"hello worldsrc/a/b.ts"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[{},"ΣΊΣΥΦΟΣ"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[{},"Hello World"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[{"a":"b"},"ünïcödé:"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[{},"a:b:c"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[{"a":{"b":"c"}},"emoji 👍🏽 mix日本語のテキスト"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[0,"HELLO"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[null,"{name} has {count} items"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[0,"{name} has {count} items"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":["b😀ca","a😀b😀ca"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[["a",1],"trailing.key_name-1"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[[],"﻿bomline1\nline2"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[null,"emoji 👍🏽 mix"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[["a",1],"aba😀b😀c"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[0,".leading"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[{"a":"b"},"key_name-1"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[null,"HELLO"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[{"a":"b"},"a.b.c"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[["a",1],"key_name-1"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[[],"tab\tseparated"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[{},"line1\nline2"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[[],"src/a/b.ts"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[true,".leading"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[{},"日本語のテキスト  padded  "],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[{"a":"b"},"abchello world"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[{"a":{"b":"c"}},"😀"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[0,"a..b"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[[],"ΣΊΣΥΦΟΣ日本語のテキスト"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[null,"  padded  "],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[{"a":{"b":"c"}},"ab"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":["x","ns:key.path"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":["x","ünïcödé"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":["x","ünïcödé{name} has {count} items"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[[],"hellotab\tseparated"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[{"a":"b"},"a😀b😀c"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[null,"straße"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[["a",1],"./x/**/*.jsonabc"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[[],"a.b.cns:key.path"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[true,"a..btab\tseparated"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[["a",1],"HELLO"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[{"a":{"b":"c"}},"a:b:c"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[[],"a😀b😀c"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":["xa😀","emoji 👍🏽 mixa😀b😀c"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[{},"./x/**/*.jsona:b:c"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[true,"hello world"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":["ße","straße"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[0,"Hello Worldİstanbul"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[{},"a.b.c"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[{},"abHELLO"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[["a",1],"emoji 👍🏽 mix"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[true,"a.b.c"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[["a",1],"a😀b😀c"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[["a",1],"a"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[{"a":{"b":"c"}},"a"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[["a",1],"hello world"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[{"a":{"b":"c"}},"﻿bom{name} has {count} items"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[{"a":{"b":"c"}},"é"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[["a",1],"./x/**/*.json  padded  "],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[{"a":{"b":"c"}},"Hello World"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[{"a":{"b":"c"}},"helloHello World"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[null,"abc"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[true,"key_name-1:"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[0,"😀"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[true,"a"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[["a",1],"line1\nline2"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[{"a":{"b":"c"}},"abemoji 👍🏽 mix"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[[],"a.b.c"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[["a",1],"ΣΊΣΥΦΟΣİstanbul"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[0,"  padded  é"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[["a",1],"a😀b😀cHello World"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[null,"a"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[{},":"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[{"a":"b"},"a..b"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":["x","abc"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[{"a":{"b":"c"}},"ünïcödé"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[0,"﻿boma.b.c"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[true,"ünïcödéé"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[null,"a😀b😀c"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[{},"﻿bom"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[{"a":{"b":"c"}},"日本語のテキスト"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":["x","tab\tseparatedab"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[{},"😀"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[["a",1],"😀tab\tseparated"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[0,"straße"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[0,"hello"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[true,".leadinga..b"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[[],"日本語のテキスト"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[["a",1],"ünïcödé"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[true,"key_name-1"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[null,"key_name-1"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[[],"{name} has {count} items"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[{"a":"b"},"a"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[{"a":"b"},"trailing.  padded  "],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[{"a":"b"},"line1\nline2"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[null,"é"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[[],"日本語のテキストline1\nline2"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[["a",1],""],"ok":null}
+{"fn":"lowestSupportedEffort","args":[true,":ΣΊΣΥΦΟΣ"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[null,"hello worldline1\nline2"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[0,"ΣΊΣΥΦΟΣ"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[{"a":"b"},"ΣΊΣΥΦΟΣ"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[{"a":{"b":"c"}},"HELLO"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[{},"tab\tseparated"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[0,"hello world"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[0,".leadinghello"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[true,"İstanbul"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[{},"日本語のテキスト"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[{},"trailing."],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[["a",1],"ab"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[0,"﻿bom"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[[],"trailing."],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[{"a":"b"},"tab\tseparated"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[{"a":{"b":"c"}},"ns:key.path"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":["x","trailing."],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[{"a":"b"},"abc"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[true,"é"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[{},"ünïcödé"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[{"a":{"b":"c"}},"a😀b😀c"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[true,"tab\tseparated😀"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[true,"ns:key.pathemoji 👍🏽 mix"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[true,"ab"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[{},"HELLO"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[0,"ab:"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":["x","line1\nline2"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[null,"a.b.c"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[[],"HELLOΣΊΣΥΦΟΣ"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[[],"straßea..b"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[["a",1],"{name} has {count} items"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[[],"straßea:b:c"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[[],"ns:key.path"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":["x","ΣΊΣΥΦΟΣ"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":["x","x"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[":","a:b:c"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[true,"./x/**/*.jsonhello"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[null,"./x/**/*.jsonünïcödé"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[null,"a..b"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[true,"héllo wörld"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[true,"👍🏽 thumbs"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[true,"日本語"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[true,""],"ok":null}
+{"fn":"lowestSupportedEffort","args":[true,"straße"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[true,"ılık ırmak"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[true,"👨‍👩‍👧 family"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[true,"a b"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[true,"ΣΊΣΥΦΟΣ"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[true,"a😀b"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[true,"﻿bom"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[true,"a²b x½ y①"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[true,"aⅠb Ⅻ"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[true,"a𐐀b 𝐀bc"],"error":"Cannot convert undefined or null to object"}
+{"fn":"lowestSupportedEffort","args":[true,"कि ٣٤"],"error":"Cannot convert undefined or null to object"}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[null],"error":"Cannot read properties of null (reading 'recentDurationsMs')"}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[],"timeoutMs":1000000}],"ok":10000}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[10,{"$num":"-0"},1000],"timeoutMs":{"$num":"NaN"}}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[2147483648,0.5],"timeoutMs":2}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[[]],"error":"Cannot read properties of undefined (reading 'length')"}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[],"timeoutMs":2}],"ok":10000}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[10],"timeoutMs":0}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[2,0.5],"timeoutMs":{"$num":"NaN"}}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[1000],"timeoutMs":0.5}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[100],"timeoutMs":3}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[2],"timeoutMs":42}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[{"$num":"-Infinity"},0],"timeoutMs":1}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[1000,1000000],"timeoutMs":9007199254740992}],"ok":2000000}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[3],"timeoutMs":100}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[2147483648],"timeoutMs":10}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'length')"}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[],"timeoutMs":42}],"ok":10000}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[],"timeoutMs":1}],"ok":10000}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[],"timeoutMs":1000}],"ok":10000}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[],"timeoutMs":2147483648}],"ok":10000}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[],"timeoutMs":100}],"ok":10000}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[1000],"timeoutMs":42}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[2147483648],"timeoutMs":1000}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[{"$num":"-Infinity"},0.5,10],"timeoutMs":3}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[],"timeoutMs":0}],"ok":10000}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[{"$num":"NaN"}],"timeoutMs":9007199254740992}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[true],"error":"Cannot read properties of undefined (reading 'length')"}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[{"$num":"Infinity"}],"timeoutMs":0}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[2147483648,{"$num":"-Infinity"}],"timeoutMs":{"$num":"-0"}}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[9007199254740992],"timeoutMs":9007199254740992}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{}],"error":"Cannot read properties of undefined (reading 'length')"}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[-1,3,2147483648],"timeoutMs":{"$num":"NaN"}}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[-2.5],"timeoutMs":0.5}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[{"$num":"Infinity"},2147483648],"timeoutMs":{"$num":"NaN"}}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[],"timeoutMs":{"$num":"-0"}}],"ok":10000}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[],"timeoutMs":{"$num":"-Infinity"}}],"ok":10000}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[0,0],"timeoutMs":0}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[],"timeoutMs":-1}],"ok":10000}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[10],"timeoutMs":2147483648}],"ok":6000}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[{"$num":"Infinity"}],"timeoutMs":{"$num":"Infinity"}}],"ok":{"$num":"Infinity"}}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[0],"error":"Cannot read properties of undefined (reading 'length')"}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[1000,0],"timeoutMs":1000000}],"ok":6000}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[0.5],"timeoutMs":42}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[],"timeoutMs":10}],"ok":10000}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[1000,2,1],"timeoutMs":1}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[{"$num":"-Infinity"},{"$num":"Infinity"},{"$num":"-Infinity"}],"timeoutMs":3}],"ok":6000}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[3,-1,{"$num":"NaN"}],"timeoutMs":0.5}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[10,9007199254740992],"timeoutMs":42}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"a":"b"}],"error":"Cannot read properties of undefined (reading 'length')"}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[],"timeoutMs":0.5}],"ok":10000}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[{"$num":"Infinity"},3,0],"timeoutMs":-1}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[-1],"timeoutMs":1000}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[{"$num":"Infinity"}],"timeoutMs":2}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[-2.5,9007199254740992],"timeoutMs":2147483648}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[2,100,1000000],"timeoutMs":{"$num":"-Infinity"}}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[1000,{"$num":"-Infinity"},2],"timeoutMs":{"$num":"-0"}}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[-1],"timeoutMs":{"$num":"Infinity"}}],"ok":6000}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[1000000,42],"timeoutMs":3}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[0,1000,{"$num":"-0"}],"timeoutMs":2147483648}],"ok":6000}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[{"$num":"Infinity"},9007199254740992,{"$num":"-0"}],"timeoutMs":{"$num":"NaN"}}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[],"timeoutMs":{"$num":"Infinity"}}],"ok":10000}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[-1],"timeoutMs":1}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[9007199254740992],"timeoutMs":10}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[2],"timeoutMs":9007199254740992}],"ok":6000}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[100,{"$num":"-0"},1000],"timeoutMs":{"$num":"-Infinity"}}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[0,{"$num":"-Infinity"}],"timeoutMs":10}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[{"$num":"-Infinity"},{"$num":"NaN"}],"timeoutMs":1000000}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[-2.5],"timeoutMs":{"$num":"-0"}}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[1000000,{"$num":"-Infinity"},{"$num":"-Infinity"}],"timeoutMs":10}],"ok":6000}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[2147483648],"timeoutMs":3}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[1,10,-1],"timeoutMs":{"$num":"NaN"}}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[1000000],"timeoutMs":1000000}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[3,{"$num":"-Infinity"}],"timeoutMs":{"$num":"NaN"}}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[{"$num":"-0"},42],"timeoutMs":2}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[1,3,-2.5],"timeoutMs":2}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[3],"timeoutMs":2}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[1],"timeoutMs":-1}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[1,{"$num":"Infinity"}],"timeoutMs":-2.5}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[1000000,{"$num":"Infinity"},-2.5],"timeoutMs":1}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[1000,2147483648,-1],"timeoutMs":2}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[3,{"$num":"-Infinity"}],"timeoutMs":10}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[1000000],"timeoutMs":0.5}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[3,-2.5,{"$num":"Infinity"}],"timeoutMs":1}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[{"$num":"NaN"},0],"timeoutMs":0}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[2,-2.5,0.5],"timeoutMs":42}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[9007199254740992,1000000,-1],"timeoutMs":9007199254740992}],"ok":2000000}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[-1,0.5,-1],"timeoutMs":1}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[1],"timeoutMs":{"$num":"NaN"}}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[{"$num":"Infinity"}],"timeoutMs":1}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[{"$num":"-0"},2,{"$num":"NaN"}],"timeoutMs":-2.5}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[{"$num":"NaN"},1000,{"$num":"NaN"}],"timeoutMs":3}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[{"$num":"-0"},{"$num":"Infinity"},42],"timeoutMs":{"$num":"Infinity"}}],"ok":6000}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[],"timeoutMs":{"$num":"NaN"}}],"ok":10000}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[-1,1],"timeoutMs":0.5}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[42,-2.5,10],"timeoutMs":{"$num":"-Infinity"}}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[9007199254740992,0.5,0.5],"timeoutMs":3}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[1000,{"$num":"NaN"}],"timeoutMs":1000000}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[{"$num":"-0"},42,{"$num":"NaN"}],"timeoutMs":{"$num":"-0"}}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[2,2147483648,3],"timeoutMs":{"$num":"-Infinity"}}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[1000],"timeoutMs":{"$num":"NaN"}}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[["a",1]],"error":"Cannot read properties of undefined (reading 'length')"}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[1,1000,100],"timeoutMs":1000}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[10],"timeoutMs":1}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[2,3],"timeoutMs":1000}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[{"$num":"-Infinity"},0],"timeoutMs":1000000}],"ok":6000}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[1000000,42],"timeoutMs":1000000}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[0],"timeoutMs":{"$num":"-0"}}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[{"$num":"-Infinity"}],"timeoutMs":0.5}],"ok":6000}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[{"$num":"-Infinity"},42,1],"timeoutMs":1}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[-1,1000000],"timeoutMs":42}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[1000,2],"timeoutMs":2}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":["x"],"error":"Cannot read properties of undefined (reading 'length')"}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[],"timeoutMs":-2.5}],"ok":10000}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[10,3,2147483648],"timeoutMs":-1}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[10,{"$num":"-Infinity"}],"timeoutMs":1}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[100,1000000],"timeoutMs":-2.5}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[],"timeoutMs":9007199254740992}],"ok":10000}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[2,2],"timeoutMs":100}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[0,{"$num":"-Infinity"}],"timeoutMs":0}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[2,100,-1],"timeoutMs":9007199254740992}],"ok":6000}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[42,{"$num":"NaN"}],"timeoutMs":{"$num":"-Infinity"}}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[1000],"timeoutMs":-2.5}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[{"$num":"NaN"},0.5],"timeoutMs":1000000}],"ok":6000}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[10],"timeoutMs":-2.5}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[42,{"$num":"-0"}],"timeoutMs":{"$num":"-Infinity"}}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[{"$num":"-Infinity"}],"timeoutMs":2147483648}],"ok":6000}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[{"$num":"NaN"},1],"timeoutMs":{"$num":"-0"}}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[{"$num":"-Infinity"},42],"timeoutMs":42}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[1000000,0.5],"timeoutMs":1}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[{"$num":"NaN"},100,1000],"timeoutMs":100}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[-1,1],"timeoutMs":1000}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[9007199254740992,2],"timeoutMs":3}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[{"$num":"-0"}],"timeoutMs":1000000}],"ok":6000}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[2,{"$num":"-0"},100],"timeoutMs":42}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[42,-1,2],"timeoutMs":{"$num":"NaN"}}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[42,-2.5],"timeoutMs":9007199254740992}],"ok":6000}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[2147483648],"timeoutMs":1000000}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[10],"timeoutMs":{"$num":"NaN"}}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[0],"timeoutMs":{"$num":"NaN"}}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[{"$num":"-Infinity"},0.5,1],"timeoutMs":2147483648}],"ok":6000}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[{"$num":"-0"},2],"timeoutMs":-2.5}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[10,{"$num":"-0"}],"timeoutMs":1000000}],"ok":6000}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[-1,3,2147483648],"timeoutMs":2147483648}],"ok":6000}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[3],"timeoutMs":1}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[10,-1,9007199254740992],"timeoutMs":2147483648}],"ok":6000}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[{"$num":"Infinity"},100],"timeoutMs":{"$num":"NaN"}}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[1,0],"timeoutMs":-2.5}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[{"$num":"NaN"},2147483648,2],"timeoutMs":0.5}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[-1,100,0.5],"timeoutMs":10}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[2,{"$num":"-Infinity"}],"timeoutMs":{"$num":"Infinity"}}],"ok":6000}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[{"$num":"NaN"},2147483648],"timeoutMs":2147483648}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[42],"timeoutMs":2}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[1],"timeoutMs":9007199254740992}],"ok":6000}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[],"timeoutMs":3}],"ok":10000}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[1],"timeoutMs":3}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[{"$num":"-0"},0.5],"timeoutMs":1000}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[{"$num":"NaN"}],"timeoutMs":-1}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[{"$num":"-0"},-1],"timeoutMs":1}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[0.5,100,10],"timeoutMs":100}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[2147483648,-1,100],"timeoutMs":-2.5}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[1,{"$num":"-0"},{"$num":"Infinity"}],"timeoutMs":1000}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[-1],"timeoutMs":2147483648}],"ok":6000}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[{"$num":"NaN"}],"timeoutMs":{"$num":"Infinity"}}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[1000],"timeoutMs":2}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[2147483648,10],"timeoutMs":42}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[9007199254740992],"timeoutMs":0.5}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[0.5,0.5,{"$num":"-Infinity"}],"timeoutMs":0.5}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[3,2147483648,0],"timeoutMs":{"$num":"-Infinity"}}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[1],"timeoutMs":{"$num":"-0"}}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[{"$num":"-Infinity"},-1,100],"timeoutMs":1000000}],"ok":6000}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[{"$num":"-Infinity"},1,{"$num":"-0"}],"timeoutMs":2147483648}],"ok":6000}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[-1,100,2],"timeoutMs":10}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[9007199254740992],"timeoutMs":{"$num":"NaN"}}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[10,{"$num":"Infinity"},-2.5],"timeoutMs":2147483648}],"ok":6000}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[-2.5,{"$num":"-Infinity"},9007199254740992],"timeoutMs":9007199254740992}],"ok":6000}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[{"$num":"NaN"},0],"timeoutMs":-2.5}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[0,42,42],"timeoutMs":2}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[{"$num":"NaN"}],"timeoutMs":{"$num":"-Infinity"}}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[3,0.5,1000],"timeoutMs":3}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[-1,1,{"$num":"Infinity"}],"timeoutMs":-2.5}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[2147483648,{"$num":"Infinity"}],"timeoutMs":9007199254740992}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[1000],"timeoutMs":-1}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[{"$num":"Infinity"},100,42],"timeoutMs":-2.5}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[1,100],"timeoutMs":10}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[9007199254740992,9007199254740992],"timeoutMs":1000}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[10,1000,10],"timeoutMs":{"$num":"NaN"}}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[100,0.5],"timeoutMs":9007199254740992}],"ok":6000}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[0,{"$num":"-Infinity"},42],"timeoutMs":100}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[-2.5],"timeoutMs":0}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[10,100],"timeoutMs":-2.5}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[-2.5,{"$num":"NaN"}],"timeoutMs":{"$num":"NaN"}}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[2],"timeoutMs":1000}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[0.5,2,2],"timeoutMs":{"$num":"NaN"}}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[{"$num":"NaN"},10],"timeoutMs":10}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[{"$num":"Infinity"},2,42],"timeoutMs":1000}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[2],"timeoutMs":-1}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[2,{"$num":"-Infinity"},10],"timeoutMs":{"$num":"-0"}}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[-1,2],"timeoutMs":-1}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[10,-1],"timeoutMs":1000}],"ok":null}
+{"fn":"resolveComposerPredictionHedgeDelayMs","args":[{"recentDurationsMs":[9007199254740992],"timeoutMs":1000}],"ok":null}
+{"fn":"resolveComposerPredictionRouting","args":[{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'modelSelection')"}
+{"fn":"resolveComposerPredictionRouting","args":["x"],"error":"Cannot read properties of undefined (reading 'modelSelection')"}
+{"fn":"resolveComposerPredictionRouting","args":[true],"error":"Cannot read properties of undefined (reading 'modelSelection')"}
+{"fn":"resolveComposerPredictionRouting","args":[[]],"error":"Cannot read properties of undefined (reading 'modelSelection')"}
+{"fn":"resolveComposerPredictionRouting","args":[{}],"error":"Cannot read properties of undefined (reading 'modelSelection')"}
+{"fn":"resolveComposerPredictionRouting","args":[0],"error":"Cannot read properties of undefined (reading 'modelSelection')"}
+{"fn":"resolveComposerPredictionRouting","args":[{"a":"b"}],"error":"Cannot read properties of undefined (reading 'modelSelection')"}
+{"fn":"resolveComposerPredictionRouting","args":[null],"error":"Cannot read properties of null (reading 'thread')"}
+{"fn":"resolveComposerPredictionRouting","args":[["a",1]],"error":"Cannot read properties of undefined (reading 'modelSelection')"}

@@ -116,28 +116,34 @@ fn intercept_todo(
         return Some(None);
     }
     let exit = match if tag == "server.getEnvironment" {
-        crate::server_env::get_environment(&crate::todo::state_dir()).map_err(crate::todo::err_pub)
+        crate::server_env::get_environment(&crate::todo::state_dir())
+            .map_err(crate::todo::err_pub)
+            .map_err(error_json)
     } else if tag == "server.getRuntimeStatus" {
         Ok(crate::runtime_status::get_runtime_status())
     } else {
-        todos.handle(tag, payload)
+        todos.handle(tag, payload).map_err(error_json)
     } {
         Ok(value) => serde_json::json!({"_tag": "Success", "value": value}),
-        Err(crate::todo::WsErr(message, code)) => serde_json::json!({
+        Err(error) => serde_json::json!({
             "_tag": "Failure",
             "cause": [{
                 "_tag": "Fail",
-                "error": {
-                    "_tag": "WsRpcError",
-                    "message": message,
-                    "code": code,
-                    "retryable": false,
-                }
+                "error": error,
             }]
         }),
     };
     let reply = serde_json::json!({"_tag": "Exit", "requestId": request_id, "exit": exit});
     Some(Some(ClientMessage::Text(reply.to_string().into())))
+}
+
+fn error_json(crate::todo::WsErr(message, code): crate::todo::WsErr) -> serde_json::Value {
+    serde_json::json!({
+        "_tag": "WsRpcError",
+        "message": message,
+        "code": code,
+        "retryable": false,
+    })
 }
 
 /// A `bootstrap.negotiate` request answered natively, or `None` to relay.

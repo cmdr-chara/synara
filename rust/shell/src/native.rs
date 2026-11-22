@@ -1797,17 +1797,35 @@ impl Render for Native {
                     })),
             )
             .child(
+                rail_btn("nav-inbox", IconName::Inbox, false)
+                    .on_click(cx.listener(|this, _ev, _w, cx| {
+                        this.view_files = false;
+                        this.view_dev = false;
+                        cx.notify();
+                    })),
+            )
+            .child(
                 rail_btn("nav-files", IconName::FolderClosed, self.view_files)
                     .on_click(cx.listener(|this, _ev, _w, cx| this.toggle_files(cx))),
             )
             .child(
-                rail_btn("nav-dev", IconName::SquareTerminal, self.view_dev)
+                rail_btn("nav-activity", IconName::Cpu, self.view_dev)
                     .on_click(cx.listener(|this, _ev, _w, cx| this.toggle_dev(cx))),
+            )
+            .child(
+                rail_btn("nav-grid", IconName::GalleryVerticalEnd, self.view_files)
+                    .on_click(cx.listener(|this, _ev, _w, cx| this.toggle_files(cx))),
             )
             .child(div().flex_1())
             .child(
                 rail_btn("nav-refresh", IconName::RefreshCw, false)
                     .on_click(cx.listener(|this, _ev, _w, cx| this.refresh(cx))),
+            )
+            .child(
+                rail_btn("nav-user", IconName::CircleUser, false)
+                    .on_click(cx.listener(|_this, _ev, _w, cx| {
+                        cx.open_url("https://github.com/Emanuele-web04/synara");
+                    })),
             );
 
         h_flex()

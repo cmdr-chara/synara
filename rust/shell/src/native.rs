@@ -38,6 +38,9 @@ pub struct Native {
     file_stream_id: Option<String>,
     search_query: String,
     search_hits: Vec<Value>,
+    view_dev: bool,
+    dev_servers: Vec<Value>,
+    dev_cmd: Entity<InputState>,
 }
 
 fn get<'a>(v: &'a Value, k: &str) -> &'a Value {
@@ -201,6 +204,11 @@ impl Native {
                 file_stream_id: None,
                 search_query: String::new(),
                 search_hits: Vec::new(),
+                view_dev: false,
+                dev_servers: Vec::new(),
+                dev_cmd: cx.new(|cx| {
+                    InputState::new(window, cx).placeholder("Dev server command")
+                }),
             };
             this.refresh(cx);
             this
@@ -381,12 +389,101 @@ impl Native {
 
     fn toggle_files(&mut self, cx: &mut Context<Self>) {
         self.view_files = !self.view_files;
-        if self.view_files && self.files_dir.is_empty() {
-            if let Some(root) = self.files_root() {
-                self.load_dir(root, cx);
+        if self.view_files {
+            self.view_dev = false;
+            if self.files_dir.is_empty() {
+                if let Some(root) = self.files_root() {
+                    self.load_dir(root, cx);
+                }
             }
         }
         cx.notify();
+    }
+
+    fn toggle_dev(&mut self, cx: &mut Context<Self>) {
+        self.view_dev = !self.view_dev;
+        if self.view_dev {
+            self.view_files = false;
+            self.fetch_dev_servers(cx);
+        }
+        cx.notify();
+    }
+
+    /// Blocking RPC: list running dev servers.
+    fn fetch_dev_servers(&self, cx: &mut Context<Self>) {
+        let cell = self.client.clone();
+        cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
+            let v = cx
+                .background_executor()
+                .spawn(async move {
+                    ensure_client(&cell)
+                        .and_then(|c| c.call("projects.listDevServers", json!({})))
+                })
+                .await;
+            let _ = this.update(cx, |this: &mut Self, cx| {
+                this.dev_servers = v.map(|v| arr(&v, "servers").to_vec()).unwrap_or_default();
+                cx.notify();
+            });
+        })
+        .detach();
+    }
+
+    /// Start a dev server for the first project with the typed command.
+    fn dev_run(&mut self, window: &mut Window, cx: &mut Context<Self>) {
+        let command = self.dev_cmd.read(cx).value().to_string();
+        let command = command.trim().to_string();
+        if command.is_empty() {
+            return;
+        }
+        self.dev_cmd.update(cx, |s, cx| s.clean(window, cx));
+        let project_id = arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "projects")
+            .first()
+            .and_then(|p| p.get("id"))
+            .and_then(Value::as_str)
+            .unwrap_or("default")
+            .to_string();
+        let Some(cwd) = self.files_root() else {
+            return;
+        };
+        let cell = self.client.clone();
+        cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
+            let v = cx
+                .background_executor()
+                .spawn(async move {
+                    ensure_client(&cell).and_then(|c| {
+                        c.call(
+                            "projects.runDevServer",
+                            json!({"projectId": project_id, "command": command, "cwd": cwd}),
+                        )
+                    })
+                })
+                .await;
+            if v.is_none() {
+                eprintln!("native: runDevServer failed");
+            }
+            let _ = this.update(cx, |this: &mut Self, cx| this.fetch_dev_servers(cx));
+        })
+        .detach();
+    }
+
+    /// Stop a dev server by project id.
+    fn dev_stop(&mut self, project_id: String, cx: &mut Context<Self>) {
+        let cell = self.client.clone();
+        cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
+            let v = cx
+                .background_executor()
+                .spawn(async move {
+                    ensure_client(&cell).and_then(|c| {
+                        c.call("projects.stopDevServer", json!({"projectId": project_id}))
+                    })
+                })
+                .await;
+            if v.is_none() {
+                eprintln!("native: stopDevServer failed");
+            }
+            let _ = this.update(cx, |this: &mut Self, cx| this.fetch_dev_servers(cx));
+        })
+        .detach();
     }
 
     /// Debounced content search via orchestration.searchThreads.
@@ -907,6 +1004,12 @@ impl Render for Native {
                         .ghost()
                         .label(if self.view_files { "Chat" } else { "Files" })
                         .on_click(cx.listener(|this, _ev, _w, cx| this.toggle_files(cx))),
+                )
+                .child(
+                    Button::new("toggle-dev")
+                        .ghost()
+                        .label(if self.view_dev { "Chat" } else { "Dev" })
+                        .on_click(cx.listener(|this, _ev, _w, cx| this.toggle_dev(cx))),
                 ),
         );
         for space in arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "spaces") {
@@ -1307,6 +1410,85 @@ impl Render for Native {
             }
         }
 
+        // ---- dev servers pane ----
+        let mut dev_pane = v_flex().flex_1().h_full().p_4().gap_2();
+        if self.view_dev {
+            dev_pane = dev_pane.child(
+                h_flex()
+                    .gap_2()
+                    .child(
+                        div()
+                            .text_xs()
+                            .font_weight(FontWeight::SEMIBOLD)
+                            .text_color(theme.muted_foreground)
+                            .child("DEV SERVERS"),
+                    )
+                    .child(
+                        Button::new("dev-refresh")
+                            .ghost()
+                            .label("Refresh")
+                            .on_click(cx.listener(|this, _ev, _w, cx| {
+                                this.fetch_dev_servers(cx)
+                            })),
+                    ),
+            );
+            dev_pane = dev_pane.child(
+                h_flex()
+                    .gap_2()
+                    .child(div().flex_1().child(Input::new(&self.dev_cmd)))
+                    .child(
+                        Button::new("dev-run")
+                            .primary()
+                            .label("Run")
+                            .on_click(cx.listener(|this, _ev, w, cx| this.dev_run(w, cx))),
+                    ),
+            );
+            if self.dev_servers.is_empty() {
+                dev_pane = dev_pane.child(
+                    div()
+                        .text_sm()
+                        .text_color(theme.muted_foreground)
+                        .child("No dev servers running"),
+                );
+            }
+            for s in self.dev_servers.clone() {
+                let pid_key = str_at(&s, "projectId").to_string();
+                let status = str_at(&s, "status");
+                let color = match status {
+                    "running" => theme.accent,
+                    "failed" | "exited" | "stopped" => theme.danger,
+                    _ => theme.muted_foreground,
+                };
+                dev_pane = dev_pane.child(
+                    h_flex()
+                        .gap_2()
+                        .child(
+                            div()
+                                .flex_1()
+                                .text_xs()
+                                .font_family("monospace")
+                                .child(str_at(&s, "command").to_string()),
+                        )
+                        .child(
+                            div()
+                                .text_xs()
+                                .text_color(color)
+                                .child(format!("{status} (pid {})", get(&s, "pid"))),
+                        )
+                        .child(
+                            Button::new(ElementId::Name(
+                                format!("dev-stop-{pid_key}").into(),
+                            ))
+                            .ghost()
+                            .label("Stop")
+                            .on_click(cx.listener(move |this, _ev, _w, cx| {
+                                this.dev_stop(pid_key.clone(), cx)
+                            })),
+                        ),
+                );
+            }
+        }
+
         // ---- composer ----
         let composer_bar = h_flex()
             .w_full()
@@ -1323,7 +1505,9 @@ impl Render for Native {
             );
 
         let mut main = v_flex().flex_1().h_full();
-        if self.view_files {
+        if self.view_dev {
+            main = main.child(div().flex_1().child(dev_pane.overflow_y_scrollbar()));
+        } else if self.view_files {
             main = main.child(div().flex_1().child(files_pane.overflow_y_scrollbar()));
         } else {
             main = main

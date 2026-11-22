@@ -1,0 +1,541 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/wsTransport.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "wstransport-rs",
+  "exports": [
+    {
+      "name": "projectFileChangeStreamKey",
+      "file": "apps/web/src/wsTransport.ts",
+      "line": 167,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "ProjectWatchFileInput",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "getReconnectRetryDelayMs",
+      "file": "apps/web/src/wsTransport.ts",
+      "line": 325,
+      "params": [
+        {
+          "name": "attempt",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "number",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "rawSocketUrl",
+      "file": "apps/web/src/wsTransport.ts",
+      "line": 367,
+      "params": [
+        {
+          "name": "explicitUrl",
+          "ts_type": "string | null",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "shouldDeclineCompressionForLocalBackend",
+      "file": "apps/web/src/wsTransport.ts",
+      "line": 406,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly constructedWithUrl: boolean;\n  readonly socketUrl: string;\n  readonly inWorkspaceFrame: boolean;\n  readonly desktopWsUrl: string | null | undefined;\n  readonly browserOverride: boolean;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "makeSocketUrl",
+      "file": "apps/web/src/wsTransport.ts",
+      "line": 426,
+      "params": [
+        {
+          "name": "explicitUrl",
+          "ts_type": "string | null",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "path",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "makeFeatureSocketUrl",
+      "file": "apps/web/src/wsTransport.ts",
+      "line": 430,
+      "params": [
+        {
+          "name": "explicitUrl",
+          "ts_type": "string | null",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "compatibility",
+          "ts_type": "WsBootstrapNegotiateResult",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "options",
+          "ts_type": "{ readonly declineCompression?: boolean }",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "makeNegotiateHttpUrl",
+      "file": "apps/web/src/wsTransport.ts",
+      "line": 450,
+      "params": [
+        {
+          "name": "explicitUrl",
+          "ts_type": "string | null",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "negotiateOverHttp",
+      "file": "apps/web/src/wsTransport.ts",
+      "line": 481,
+      "params": [
+        {
+          "name": "explicitUrl",
+          "ts_type": "string | null",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "lifetimeSignal",
+          "ts_type": "AbortSignal",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<WsBootstrapNegotiateResult | null>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "getSnapshotFaultRetryDelayMs",
+      "file": "apps/web/src/wsTransport.ts",
+      "line": 729,
+      "params": [
+        {
+          "name": "cause",
+          "ts_type": "Cause.Cause<unknown>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "number | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isTerminalCompatibilityFailure",
+      "file": "apps/web/src/wsTransport.ts",
+      "line": 747,
+      "params": [
+        {
+          "name": "error",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "serverIdentityChanged",
+      "file": "apps/web/src/wsTransport.ts",
+      "line": 770,
+      "params": [
+        {
+          "name": "lastKnownServerInstanceId",
+          "ts_type": "string | null",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "negotiatedServerInstanceId",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "getTerminalCompatibilityError",
+      "file": "apps/web/src/wsTransport.ts",
+      "line": 779,
+      "params": [
+        {
+          "name": "error",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "WsCompatibilityError | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "shouldReconnectAfterStreamFailure",
+      "file": "apps/web/src/wsTransport.ts",
+      "line": 783,
+      "params": [
+        {
+          "name": "cause",
+          "ts_type": "Cause.Cause<unknown>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "getProjectFileWatchRetryDelayMs",
+      "file": "apps/web/src/wsTransport.ts",
+      "line": 812,
+      "params": [
+        {
+          "name": "cause",
+          "ts_type": "Cause.Cause<unknown>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "previousAttempts",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "number | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "getUnexpectedStreamCompletionRetryDelayMs",
+      "file": "apps/web/src/wsTransport.ts",
+      "line": 836,
+      "params": [
+        {
+          "name": "attempt",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "number",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "getStreamCapacityRetryDelayMs",
+      "file": "apps/web/src/wsTransport.ts",
+      "line": 851,
+      "params": [
+        {
+          "name": "cause",
+          "ts_type": "Cause.Cause<unknown>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "number | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "getStreamDuplicateRetryDelayMs",
+      "file": "apps/web/src/wsTransport.ts",
+      "line": 884,
+      "params": [
+        {
+          "name": "cause",
+          "ts_type": "Cause.Cause<unknown>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "previousAttempts",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "number | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "getThreadSnapshotBootstrapRetryDelayMs",
+      "file": "apps/web/src/wsTransport.ts",
+      "line": 910,
+      "params": [
+        {
+          "name": "cause",
+          "ts_type": "Cause.Cause<unknown>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "previousAttempts",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "number | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "getResnapshotRetryDelayMs",
+      "file": "apps/web/src/wsTransport.ts",
+      "line": 940,
+      "params": [
+        {
+          "name": "cause",
+          "ts_type": "Cause.Cause<unknown>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "previousAttempts",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "number | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveStreamAdmissionRetry",
+      "file": "apps/web/src/wsTransport.ts",
+      "line": 963,
+      "params": [
+        {
+          "name": "cause",
+          "ts_type": "Cause.Cause<unknown>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "capacityAttempts",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "duplicateAttempts",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "threadBootstrapAttempts",
+          "ts_type": "number",
+          "optional": true,
+          "rest": false
+        },
+        {
+          "name": "resnapshotAttempts",
+          "ts_type": "number",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "(| { readonly kind: \"capacity\"; readonly attempt: number; readonly delayMs: number }\n  | { readonly kind: \"duplicate\"; readonly attempt: number; readonly delayMs: number }\n  | { readonly kind: \"thread-bootstrap\"; readonly attempt: number; readonly delayMs: number }\n  | { readonly kind: \"resnapshot\"; readonly attempt: number; readonly delayMs: number }) | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "threadStreamInputsEqual",
+      "file": "apps/web/src/wsTransport.ts",
+      "line": 1025,
+      "params": [
+        {
+          "name": "left",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "right",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isServerLifecyclePushChannel",
+      "file": "apps/web/src/wsTransport.ts",
+      "line": 1062,
+      "params": [
+        {
+          "name": "channel",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "shouldKeepServerLifecycleStream",
+      "file": "apps/web/src/wsTransport.ts",
+      "line": 1066,
+      "params": [
+        {
+          "name": "activeChannels",
+          "ts_type": "ReadonlySet<string>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "WsTransportRequestInterruptedError",
+      "file": "apps/web/src/wsTransport.ts",
+      "line": 176,
+      "reason": "class: extends another class"
+    },
+    {
+      "name": "RemoteConnectionUnavailableError",
+      "file": "apps/web/src/wsTransport.ts",
+      "line": 464,
+      "reason": "class: extends another class, public parameter properties"
+    },
+    {
+      "name": "WsTransport",
+      "file": "apps/web/src/wsTransport.ts",
+      "line": 1073,
+      "reason": "class: async or generator method `request`, async or generator method `dispose`, async or generator method `waitForRemoteConnectionRecovery`, async or generator method `unsubscribeProjectAgentEvents`"
+    },
+    {
+      "name": "isRuntimeInterruptFailure",
+      "file": "apps/web/src/wsTransport.ts",
+      "line": 211,
+      "reason": "checks `instanceof`: class identity does not survive the bridge"
+    },
+    {
+      "name": "makeRequestAbortScope",
+      "file": "apps/web/src/wsTransport.ts",
+      "line": 231,
+      "reason": "uses `RequestAbortScope`, which has function members"
+    }
+  ]
+}

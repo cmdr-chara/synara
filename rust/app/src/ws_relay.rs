@@ -120,6 +120,7 @@ fn intercept_todo(
         && !text.contains("studio.")
         && !text.contains("projectAgent.")
         && !text.contains("provider.")
+        && !text.contains("computer.")
         && !text.contains("ExternalMcp")
         && !text.contains("server.readThreadDiagnostics")
         && !text.contains("server.listMcp")
@@ -190,6 +191,7 @@ fn intercept_todo(
         && !crate::provider_cache::handles(tag)
         && !crate::skills_catalog::handles(tag)
         && !crate::project_imports::handles(tag)
+        && !crate::computer_audit::handles(tag)
         && !tag.starts_with("githubInbox.")
         && !crate::pull_requests::handles(tag)
         && !crate::automation::handles(tag)
@@ -892,6 +894,10 @@ fn intercept_todo(
             .map_err(error_json)
     } else if crate::project_imports::handles(tag) {
         crate::project_imports::handle(tag, &payload)
+            .map(Some)
+            .map_err(error_json)
+    } else if crate::computer_audit::handles(tag) {
+        crate::computer_audit::handle(tag, &payload)
             .map(Some)
             .map_err(error_json)
     } else if crate::provider_cache::handles(tag) {

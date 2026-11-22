@@ -75,6 +75,19 @@ pub fn handle(_tag: &str, payload: &Value) -> Result<Value, WsErr> {
         }
         "thread.meta.update" => thread_meta_update(command),
         "thread.turn.start" => thread_turn_start(command),
+        "thread.turn.interrupt" => thread_simple(command, "thread.turn-interrupt-requested"),
+        "thread.task.stop" => thread_simple(command, "thread.task-stop-requested"),
+        "thread.task.background" => thread_simple(command, "thread.task-background-requested"),
+        "thread.approval.respond" => {
+            thread_simple(command, "thread.approval-response-requested")
+        }
+        "thread.user-input.respond" => {
+            thread_simple(command, "thread.user-input-response-requested")
+        }
+        "thread.pinned-message.add" => pinned_message(command, "add"),
+        "thread.pinned-message.remove" => pinned_message(command, "remove"),
+        "thread.pinned-message.done.set" => pinned_message(command, "done"),
+        "thread.pinned-message.label.set" => pinned_message(command, "label"),
         other => Err(err(format!(
             "orchestration.dispatchCommand {other} is not ported yet (native engine slice)"
         ))),
@@ -89,6 +102,7 @@ struct OutEvent {
     thread_id: String,
     occurred_at: String,
     causation_event_id: Option<String>,
+    metadata: Option<Value>,
 }
 
 fn out_event(
@@ -104,6 +118,7 @@ fn out_event(
         thread_id: thread_id.to_string(),
         occurred_at: occurred_at.to_string(),
         causation_event_id: None,
+        metadata: None,
     }
 }
 
@@ -174,7 +189,7 @@ fn commit_events(
             "INSERT INTO orchestration_events \
              (event_id, aggregate_kind, stream_id, stream_version, event_type, occurred_at, \
               command_id, causation_event_id, correlation_id, actor_kind, payload_json, metadata_json) \
-             VALUES (?1, 'thread', ?2, ?3, ?4, ?5, ?6, ?7, ?6, 'client', ?8, '{}')",
+             VALUES (?1, 'thread', ?2, ?3, ?4, ?5, ?6, ?7, ?6, 'client', ?8, ?9)",
             params![
                 ev.event_id,
                 ev.thread_id,
@@ -184,6 +199,7 @@ fn commit_events(
                 command_id,
                 ev.causation_event_id,
                 ev.payload.to_string(),
+                ev.metadata.as_ref().map_or("{}".to_string(), |m| m.to_string()),
             ],
         )
         .map_err(|e| err(format!("append {} event: {e}", ev.event_type)))?;
@@ -980,5 +996,179 @@ fn thread_turn_start(command: &Map<String, Value>) -> Result<Value, WsErr> {
         sets.push(("snooze_reminder_at", Value::Null));
     }
     update_projection(&conn, &thread_id, &sets)?;
+    Ok(json!({ "sequence": seq }))
+}
+
+/// Event-only commands: validate the thread exists, append one event whose
+/// payload is the command's fields plus createdAt; no projection side effects.
+fn thread_simple(command: &Map<String, Value>, event_type: &'static str) -> Result<Value, WsErr> {
+    let command_id = s(command, "commandId").ok_or_else(|| err("missing commandId"))?;
+    let thread_id = s(command, "threadId").ok_or_else(|| err("missing threadId"))?;
+    let created_at = s(command, "createdAt").ok_or_else(|| err("missing createdAt"))?;
+    let conn = open_state_rw()?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| err(e.to_string()))?;
+    require_thread(&conn, &thread_id)?;
+    let mut payload = Map::new();
+    payload.insert("threadId".into(), json!(thread_id));
+    for (k, v) in command {
+        if matches!(
+            k.as_str(),
+            "type" | "commandId" | "threadId" | "createdAt"
+        ) {
+            continue;
+        }
+        payload.insert(k.clone(), v.clone());
+    }
+    payload.insert("createdAt".into(), json!(created_at));
+    let mut ev = out_event(
+        event_type,
+        &thread_id,
+        &created_at,
+        Value::Object(payload),
+    );
+    if event_type == "thread.approval-response-requested"
+        || event_type == "thread.user-input-response-requested"
+    {
+        if let Some(rid) = s(command, "requestId") {
+            ev.metadata = Some(json!({ "requestId": rid }));
+        }
+    }
+    // thread.turn.interrupt pauses an active goal before the interrupt request.
+    let mut events: Vec<OutEvent> = Vec::new();
+    if event_type == "thread.turn-interrupt-requested" {
+        let (goal, paused): (Option<String>, Option<String>) = conn
+            .query_row(
+                "SELECT goal, goal_paused_at FROM projection_threads WHERE thread_id = ?1",
+                params![thread_id],
+                |r| Ok((r.get(0)?, r.get(1)?)),
+            )
+            .map_err(|e| err(e.to_string()))?;
+        if goal.as_deref().map_or(false, |g| !g.trim().is_empty()) && paused.is_none() {
+            let pause_at = iso_now_ms();
+            let mut pause = out_event(
+                "thread.meta-updated",
+                &thread_id,
+                &pause_at,
+                json!({"threadId": thread_id, "goalPausedAt": pause_at, "updatedAt": pause_at}),
+            );
+            events.push(pause.clone_shallow());
+            ev.causation_event_id = Some(pause.event_id);
+            update_projection(
+                &conn,
+                &thread_id,
+                &[
+                    ("goal_paused_at", json!(pause_at)),
+                    ("updated_at", json!(pause_at)),
+                ],
+            )?;
+        }
+    }
+    events.push(ev);
+    let seq = commit_events(&conn, &events, &command_id, &thread_id)?;
+    Ok(json!({ "sequence": seq }))
+}
+
+impl OutEvent {
+    fn clone_shallow(&self) -> OutEvent {
+        OutEvent {
+            event_id: self.event_id.clone(),
+            event_type: self.event_type,
+            payload: self.payload.clone(),
+            thread_id: self.thread_id.clone(),
+            occurred_at: self.occurred_at.clone(),
+            causation_event_id: None,
+            metadata: None,
+        }
+    }
+}
+
+const PINNED_MESSAGES_MAX_COUNT: usize = 100;
+
+fn pinned_message(command: &Map<String, Value>, op: &str) -> Result<Value, WsErr> {
+    let command_id = s(command, "commandId").ok_or_else(|| err("missing commandId"))?;
+    let thread_id = s(command, "threadId").ok_or_else(|| err("missing threadId"))?;
+    let message_id = s(command, "messageId").ok_or_else(|| err("missing messageId"))?;
+    let conn = open_state_rw()?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| err(e.to_string()))?;
+    require_thread(&conn, &thread_id)?;
+    let pins_json: Option<String> = conn
+        .query_row(
+            "SELECT pinned_messages_json FROM projection_threads WHERE thread_id = ?1",
+            params![thread_id],
+            |r| r.get(0),
+        )
+        .unwrap_or(None);
+    let mut pins: Vec<Value> = pins_json
+        .as_deref()
+        .and_then(|j| serde_json::from_str(j).ok())
+        .unwrap_or_default();
+    let occurred_at = iso_now_ms();
+    let existing = pins
+        .iter()
+        .position(|p| p.get("messageId").and_then(Value::as_str) == Some(message_id.as_str()));
+
+    let (event_type, payload) = match op {
+        "add" => {
+            if existing.is_none() && pins.len() >= PINNED_MESSAGES_MAX_COUNT {
+                return Err(err(format!(
+                    "thread {thread_id} already has the maximum of {PINNED_MESSAGES_MAX_COUNT} pinned messages"
+                )));
+            }
+            let pin = existing
+                .map(|i| pins[i].clone())
+                .unwrap_or_else(|| {
+                    json!({"messageId": message_id, "label": null, "done": false, "pinnedAt": occurred_at})
+                });
+            if existing.is_none() {
+                pins.push(pin.clone());
+            }
+            (
+                "thread.pinned-message-added",
+                json!({"threadId": thread_id, "pin": pin, "updatedAt": occurred_at}),
+            )
+        }
+        "remove" => {
+            if let Some(i) = existing {
+                pins.remove(i);
+            }
+            (
+                "thread.pinned-message-removed",
+                json!({"threadId": thread_id, "messageId": message_id, "updatedAt": occurred_at}),
+            )
+        }
+        "done" => {
+            let done = command.get("done").cloned().unwrap_or(Value::Null);
+            if let Some(i) = existing {
+                pins[i]["done"] = done.clone();
+            }
+            (
+                "thread.pinned-message-done-set",
+                json!({"threadId": thread_id, "messageId": message_id, "done": done, "updatedAt": occurred_at}),
+            )
+        }
+        "label" => {
+            let label = command.get("label").cloned().unwrap_or(Value::Null);
+            if let Some(i) = existing {
+                pins[i]["label"] = label.clone();
+            }
+            (
+                "thread.pinned-message-label-set",
+                json!({"threadId": thread_id, "messageId": message_id, "label": label, "updatedAt": occurred_at}),
+            )
+        }
+        _ => unreachable!(),
+    };
+    let events = vec![out_event(event_type, &thread_id, &occurred_at, payload)];
+    let seq = commit_events(&conn, &events, &command_id, &thread_id)?;
+    update_projection(
+        &conn,
+        &thread_id,
+        &[
+            ("pinned_messages_json", json!(Value::Array(pins).to_string())),
+            ("updated_at", json!(occurred_at)),
+        ],
+    )?;
     Ok(json!({ "sequence": seq }))
 }

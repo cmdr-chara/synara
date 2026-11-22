@@ -1,0 +1,29 @@
+{
+  "unit": "apps/server/src/terminal/",
+  "files": 29,
+  "fingerprint": "96518f9cd2993b6a",
+  "coverage": {
+    "lines": 748,
+    "reached": 413,
+    "files": [
+      {
+        "file": "apps/server/src/executableLookup.ts",
+        "lines": 2,
+        "reached": 2,
+        "missed": ""
+      },
+      {
+        "file": "apps/server/src/privatePathPermissions.ts",
+        "lines": 177,
+        "reached": 61,
+        "missed": "55-56, 65-86, 89-101, 103-119, 122-148, 155-158, 160-188, 190-191"
+      },
+      {
+        "file": "apps/server/src/terminal/managedTerminalWrappers.ts",
+        "lines": 569,
+        "reached": 350,
+        "missed": "136-220, 222-244, 339-340, 350, 365-371, 387-394, 396-399, 401-437, 439-466, 475-483, 492-493, 528-540"
+      }
+    ]
+  }
+}

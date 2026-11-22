@@ -1,0 +1,382 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/terminal/",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "terminal-rs",
+  "exports": [
+    {
+      "name": "buildProviderProfileProcessEnv",
+      "file": "apps/server/src/terminal/managedTerminalWrappers.ts",
+      "line": 283,
+      "params": [
+        {
+          "name": "profile",
+          "ts_type": "ManagedTerminalProfile",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "baseEnv",
+          "ts_type": "NodeJS.ProcessEnv",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "NodeJS.ProcessEnv",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "buildProviderProfileWrapperScript",
+      "file": "apps/server/src/terminal/managedTerminalWrappers.ts",
+      "line": 297,
+      "params": [
+        {
+          "name": "profile",
+          "ts_type": "ManagedTerminalProfile",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "prepareManagedTerminalWrappers",
+      "file": "apps/server/src/terminal/managedTerminalWrappers.ts",
+      "line": 468,
+      "params": [
+        {
+          "name": "options",
+          "ts_type": "{\n  baseEnv: NodeJS.ProcessEnv;\n  profiles?: ReadonlyArray<ManagedTerminalProfile>;\n  rootDir: string;\n  zshRootDir: string;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ManagedTerminalWrapperState",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "applyManagedTerminalAgentWrapperEnv",
+      "file": "apps/server/src/terminal/managedTerminalWrappers.ts",
+      "line": 585,
+      "params": [
+        {
+          "name": "env",
+          "ts_type": "NodeJS.ProcessEnv",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "wrapperState",
+          "ts_type": "{\n    binDir: string | null;\n    zshDir: string | null;\n  }",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "NodeJS.ProcessEnv",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "prepareManagedTerminalAgentWrappers",
+      "file": "apps/server/src/terminal/managedTerminalWrappers.ts",
+      "line": 595,
+      "params": [
+        {
+          "name": "options",
+          "ts_type": "{\n  baseEnv: NodeJS.ProcessEnv;\n  profiles?: ReadonlyArray<ManagedTerminalProfile>;\n  targetDir: string;\n  zshDir: string;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ManagedTerminalWrapperState",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "prepareProviderAuthenticationSettings",
+      "file": "apps/server/src/terminal/providerAuthentication.ts",
+      "line": 27,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly settings: typeof typeof typeof typeof ServerSettings.Type.Type.Type.Type;\n  readonly instanceId: string;\n  readonly homeDir: string;\n  readonly stateDir: string;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ServerSettingsPatch.Type.Type.Type.Type | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveProviderAuthenticationLaunch",
+      "file": "apps/server/src/terminal/providerAuthentication.ts",
+      "line": 101,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly settings: typeof typeof typeof typeof ServerSettings.Type.Type.Type.Type;\n  readonly instanceId: string;\n  readonly homeDir: string;\n  readonly stateDir: string;\n  readonly baseEnv: NodeJS.ProcessEnv;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<ProviderAuthenticationLaunch>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "deriveManagedTerminalProfiles",
+      "file": "apps/server/src/terminal/providerTerminalProfiles.ts",
+      "line": 104,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly settings: typeof typeof typeof typeof ServerSettings.Type.Type.Type.Type;\n  readonly onlyInstanceId?: string;\n  /** Only for a direct process launch; sensitive values must never reach shim files. */\n  readonly includeSensitiveEnvironment?: boolean;\n  readonly baseEnv: NodeJS.ProcessEnv;\n  readonly homeDir: string;\n  readonly stateDir: string;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<ManagedTerminalProfile[]>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "selectPtyAdapterRuntime",
+      "file": "apps/server/src/terminal/runtimeSelection.ts",
+      "line": 7,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly platform: NodeJS.Platform;\n  readonly runtime: (\"bun\" | \"node\");\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(\"bun\" | \"node\")",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "inspectSubprocessActivity",
+      "file": "apps/server/src/terminal/subprocessActivity.ts",
+      "line": 100,
+      "params": [
+        {
+          "name": "parentPid",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "childrenByParentPid",
+          "ts_type": "Map<number, Array<CapturedProcess>>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "TerminalSubprocessActivity",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "captureProcessChildrenMap",
+      "file": "apps/server/src/terminal/subprocessActivity.ts",
+      "line": 119,
+      "params": [],
+      "returns": "Promise<Map<number, Array<CapturedProcess>> | null>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "defaultSubprocessChecker",
+      "file": "apps/server/src/terminal/subprocessActivity.ts",
+      "line": 227,
+      "params": [
+        {
+          "name": "terminalPid",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<TerminalSubprocessActivity>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "capHistoryLines",
+      "file": "apps/server/src/terminal/terminalHistory.ts",
+      "line": 16,
+      "params": [
+        {
+          "name": "history",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "maxLines",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "capHistoryBytes",
+      "file": "apps/server/src/terminal/terminalHistory.ts",
+      "line": 38,
+      "params": [
+        {
+          "name": "history",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "maxBytes",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "scanWindow",
+          "ts_type": "number",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "capHistoryByLimits",
+      "file": "apps/server/src/terminal/terminalHistory.ts",
+      "line": 74,
+      "params": [
+        {
+          "name": "history",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "limits",
+          "ts_type": "HistoryLimits",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [
+    {
+      "name": "TerminalThreadTitleTracker",
+      "file": "apps/server/src/terminal/terminalThreadTitleTracker.ts",
+      "line": 15,
+      "constructor": [],
+      "methods": [
+        {
+          "name": "reset",
+          "file": "apps/server/src/terminal/terminalThreadTitleTracker.ts",
+          "line": 18,
+          "params": [
+            {
+              "name": "threadId",
+              "ts_type": "string",
+              "optional": false,
+              "rest": false
+            },
+            {
+              "name": "terminalId",
+              "ts_type": "string | null",
+              "optional": true,
+              "rest": false
+            }
+          ],
+          "returns": "void",
+          "is_async": false,
+          "is_generator": false,
+          "type_params": [],
+          "uses_instanceof": false
+        },
+        {
+          "name": "consumeWrite",
+          "file": "apps/server/src/terminal/terminalThreadTitleTracker.ts",
+          "line": 31,
+          "params": [
+            {
+              "name": "input",
+              "ts_type": "{\n    currentTitle: string | null | undefined;\n    data: string;\n    terminalId: string;\n    threadId: string;\n  }",
+              "optional": false,
+              "rest": false
+            }
+          ],
+          "returns": "string | null",
+          "is_async": false,
+          "is_generator": false,
+          "type_params": [],
+          "uses_instanceof": false
+        }
+      ],
+      "blocker": null
+    }
+  ],
+  "js_only": [
+    {
+      "name": "TerminalHistoryBuffer",
+      "file": "apps/server/src/terminal/terminalHistory.ts",
+      "line": 95,
+      "reason": "class: static method `fromString`, accessor `isEmpty`"
+    },
+    {
+      "name": "createTerminalModeReplayTracker",
+      "file": "apps/server/src/terminal/terminalModeReplay.ts",
+      "line": 72,
+      "reason": "uses `TerminalModeReplayTracker`, which has function members"
+    }
+  ]
+}

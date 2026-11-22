@@ -1,0 +1,2222 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/agentGateway/",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "agentgateway-rs",
+  "exports": [
+    {
+      "name": "extractBearerToken",
+      "file": "apps/server/src/agentGateway/bearerToken.ts",
+      "line": 2,
+      "params": [
+        {
+          "name": "authorizationHeader",
+          "ts_type": "string | undefined | null",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "saveBrowserProof",
+      "file": "apps/server/src/agentGateway/browserProof.ts",
+      "line": 11,
+      "params": [
+        {
+          "name": "threadId",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "data",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "root",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        },
+        {
+          "name": "category",
+          "ts_type": "\"browser-proof\" | \"device-proof\"",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<string>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "normalizeGatewayBrowserArguments",
+      "file": "apps/server/src/agentGateway/browserTools.ts",
+      "line": 69,
+      "params": [
+        {
+          "name": "name",
+          "ts_type": "(typeof BROWSER_TOOL_NAMES)[number]",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "argumentsValue",
+          "ts_type": "Record<string, unknown>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Record<string, unknown>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "computerApprovalDisplayArgs",
+      "file": "apps/server/src/agentGateway/computerApprovalDisplay.ts",
+      "line": 4,
+      "params": [
+        {
+          "name": "args",
+          "ts_type": "Record<string, unknown>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "computerBrowserEffect",
+      "file": "apps/server/src/agentGateway/computerBrowserEffect.ts",
+      "line": 23,
+      "params": [
+        {
+          "name": "name",
+          "ts_type": "(typeof COMPUTER_BROWSER_TOOL_NAMES)[number]",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "args",
+          "ts_type": "Record<string, unknown>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "result",
+          "ts_type": "ComputerBrowserCallResult",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "BrowserEffectProof",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "computerBrowserFieldReadback",
+      "file": "apps/server/src/agentGateway/computerBrowserEffect.ts",
+      "line": 97,
+      "params": [
+        {
+          "name": "name",
+          "ts_type": "(typeof COMPUTER_BROWSER_TOOL_NAMES)[number]",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "args",
+          "ts_type": "Record<string, unknown>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "result",
+          "ts_type": "ComputerBrowserCallResult",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "computerBrowserToolRequiresApproval",
+      "file": "apps/server/src/agentGateway/computerBrowserTools.ts",
+      "line": 103,
+      "params": [
+        {
+          "name": "name",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "args",
+          "ts_type": "Record<string, unknown>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "computerToolInstructions",
+      "file": "apps/server/src/agentGateway/computerGuidance.ts",
+      "line": 74,
+      "params": [],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "readComputerPastePayload",
+      "file": "apps/server/src/agentGateway/computerPasteInput.ts",
+      "line": 12,
+      "params": [
+        {
+          "name": "args",
+          "ts_type": "Record<string, unknown>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(| { readonly text: string }\n  | { readonly imagePath: string }\n  | { readonly filePath: string })",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "canonicalSynaraComputerToolName",
+      "file": "apps/server/src/agentGateway/computerToolPermission.ts",
+      "line": 74,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(typeof SYNARA_COMPUTER_TOOL_NAMES)[number] | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "qualifiedSynaraComputerToolName",
+      "file": "apps/server/src/agentGateway/computerToolPermission.ts",
+      "line": 94,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(typeof SYNARA_COMPUTER_TOOL_NAMES)[number] | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isSynaraComputerToolFamilyName",
+      "file": "apps/server/src/agentGateway/computerToolPermission.ts",
+      "line": 133,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "computerToolNameFromProviderPermission",
+      "file": "apps/server/src/agentGateway/computerToolPermission.ts",
+      "line": 145,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly name?: unknown;\n  readonly title?: unknown;\n  readonly rawInput?: unknown;\n  readonly metadata?: unknown;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(typeof SYNARA_COMPUTER_TOOL_NAMES)[number] | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isSynaraGatewayToolName",
+      "file": "apps/server/src/agentGateway/computerToolPermission.ts",
+      "line": 285,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isSynaraGatewayToolCall",
+      "file": "apps/server/src/agentGateway/computerToolPermission.ts",
+      "line": 311,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly name?: unknown;\n  // Accepted for call-site shape compatibility but never consulted.\n  readonly title?: unknown;\n  readonly rawInput?: unknown;\n  readonly metadata?: unknown;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "shouldAllowSynaraComputerProviderTool",
+      "file": "apps/server/src/agentGateway/computerToolPermission.ts",
+      "line": 339,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly computerControlEnabled: boolean;\n  readonly activeTurn: boolean;\n  readonly interactionMode: typeof typeof typeof typeof ProviderInteractionMode.Type.Type.Type.Type | undefined;\n  readonly runtimeMode: typeof typeof typeof typeof RuntimeMode.Type.Type.Type.Type;\n  readonly permission: Parameters<typeof computerToolNameFromProviderPermission>[0];\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "computerToolRequiresApproval",
+      "file": "apps/server/src/agentGateway/computerTools.ts",
+      "line": 210,
+      "params": [
+        {
+          "name": "name",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "computerApprovalRequiredError",
+      "file": "apps/server/src/agentGateway/computerTools.ts",
+      "line": 729,
+      "params": [
+        {
+          "name": "name",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "{\n  readonly code: \"ComputerApprovalRequired\";\n  readonly message: string;\n}",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "cuaActionErrorPayload",
+      "file": "apps/server/src/agentGateway/computerTools.ts",
+      "line": 745,
+      "params": [
+        {
+          "name": "error",
+          "ts_type": "CuaActionError",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "{\n  readonly error: string;\n  readonly effect: string;\n  readonly message: string;\n  readonly retryAllowed: false;\n  readonly diagnostics?: ComputerAuditEntry[\"diagnostics\"];\n  readonly layer?: ComputerAuditEntry[\"layer\"];\n  readonly wait_seconds?: number;\n  readonly requery_hint?: string;\n}",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "boundedWorkspacePath",
+      "file": "apps/server/src/agentGateway/computerWorkspacePath.ts",
+      "line": 6,
+      "params": [
+        {
+          "name": "raw",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "workspaceRoot",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "field",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<string>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "gatewayIsoNow",
+      "file": "apps/server/src/agentGateway/creationUtils.ts",
+      "line": 5,
+      "params": [],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "canonicalJson",
+      "file": "apps/server/src/agentGateway/creationUtils.ts",
+      "line": 9,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "stableGatewayDigest",
+      "file": "apps/server/src/agentGateway/creationUtils.ts",
+      "line": 20,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "length",
+          "ts_type": "number",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "makeAgentCreationIds",
+      "file": "apps/server/src/agentGateway/creationUtils.ts",
+      "line": 24,
+      "params": [
+        {
+          "name": "operationId",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "index",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "deviceToolRequiresApproval",
+      "file": "apps/server/src/agentGateway/deviceTools.ts",
+      "line": 75,
+      "params": [
+        {
+          "name": "name",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "edgeForSwipeStart",
+      "file": "apps/server/src/agentGateway/deviceTools.ts",
+      "line": 337,
+      "params": [
+        {
+          "name": "point",
+          "ts_type": "{ readonly x: number; readonly y: number }",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "screen",
+          "ts_type": "{ readonly width: number; readonly height: number } | null",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(\"top\" | \"left\" | \"bottom\" | \"right\") | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "diagnosticFilterFingerprint",
+      "file": "apps/server/src/agentGateway/diagnosticCursor.ts",
+      "line": 16,
+      "params": [
+        {
+          "name": "filters",
+          "ts_type": "Readonly<Record<string, (string | null | ReadonlyArray<string>)>>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "encodeDiagnosticCursor",
+      "file": "apps/server/src/agentGateway/diagnosticCursor.ts",
+      "line": 25,
+      "params": [
+        {
+          "name": "cursor",
+          "ts_type": "DiagnosticCursor",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "decodeDiagnosticCursor",
+      "file": "apps/server/src/agentGateway/diagnosticCursor.ts",
+      "line": 29,
+      "params": [
+        {
+          "name": "raw",
+          "ts_type": "string | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "expected",
+          "ts_type": "{\n    readonly kind: (\"activity\" | \"event\" | \"runtime\");\n    readonly threadId: string;\n    readonly filterFingerprint: string;\n  }",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "DiagnosticCursor | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "sanitizeDiagnosticValue",
+      "file": "apps/server/src/agentGateway/diagnosticSanitizer.ts",
+      "line": 55,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "depth",
+          "ts_type": "number",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "renderSynaraHarnessPolicy",
+      "file": "apps/server/src/agentGateway/harnessPolicy.ts",
+      "line": 30,
+      "params": [
+        {
+          "name": "capabilities",
+          "ts_type": "SynaraHarnessCapabilities",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "providerHasSynaraGatewayControl",
+      "file": "apps/server/src/agentGateway/harnessPolicy.ts",
+      "line": 109,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly provider: typeof typeof typeof typeof ProviderKind.Type.Type.Type.Type;\n  readonly scopedGatewayConnectionAvailable: boolean;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "takeSynaraHarnessPolicyForSession",
+      "file": "apps/server/src/agentGateway/harnessPolicy.ts",
+      "line": 120,
+      "params": [
+        {
+          "name": "state",
+          "ts_type": "SynaraHarnessPolicyDeliveryState",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "capabilities",
+          "ts_type": "SynaraHarnessCapabilities",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "takeSynaraHarnessPolicyForProviderSession",
+      "file": "apps/server/src/agentGateway/harnessPolicy.ts",
+      "line": 137,
+      "params": [
+        {
+          "name": "state",
+          "ts_type": "SynaraHarnessPolicyDeliveryState",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "input",
+          "ts_type": "{\n    readonly provider: typeof typeof typeof typeof ProviderKind.Type.Type.Type.Type;\n    readonly scopedGatewayConnectionAvailable: boolean;\n  }",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "takeSynaraHarnessPolicyTextPartForProviderSession",
+      "file": "apps/server/src/agentGateway/harnessPolicy.ts",
+      "line": 151,
+      "params": [
+        {
+          "name": "state",
+          "ts_type": "SynaraHarnessPolicyDeliveryState",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "input",
+          "ts_type": "{\n    readonly provider: typeof typeof typeof typeof ProviderKind.Type.Type.Type.Type;\n    readonly scopedGatewayConnectionAvailable: boolean;\n  }",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "{ readonly type: \"text\"; readonly text: string } | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "readMcpJsonBody",
+      "file": "apps/server/src/agentGateway/httpRoute.ts",
+      "line": 30,
+      "params": [
+        {
+          "name": "request",
+          "ts_type": "HttpServerRequest.HttpServerRequest",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "maxBytes",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "Effect.Effect<(| { readonly kind: \"ok\"; readonly body: unknown }\n  | { readonly kind: \"invalid\" }\n  | { readonly kind: \"too-large\" })>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "normalizeHubTaskKey",
+      "file": "apps/server/src/agentGateway/hubWorkRouting.ts",
+      "line": 19,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "hubWorkWorkItemId",
+      "file": "apps/server/src/agentGateway/hubWorkRouting.ts",
+      "line": 36,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly projectId: typeof typeof typeof typeof ProjectId.Type.Type.Type.Type;\n  readonly scopeKey: string;\n  readonly taskKey: string;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "hubWorkTaskFingerprint",
+      "file": "apps/server/src/agentGateway/hubWorkRouting.ts",
+      "line": 48,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly sourceMessages: readonly unknown[];\n  readonly spec: unknown;\n  readonly title: string | undefined;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "hubWorkRequestFingerprint",
+      "file": "apps/server/src/agentGateway/hubWorkRouting.ts",
+      "line": 68,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly sourceMessages: readonly unknown[];\n  readonly taskKeys: readonly string[];\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "renderHubWorkPrompt",
+      "file": "apps/server/src/agentGateway/hubWorkSource.ts",
+      "line": 93,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly workItemId?: string;\n  readonly brief: string;\n  readonly sourceMessages: readonly typeof typeof typeof typeof HubWorkSourceMessage.Type.Type.Type.Type[];\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "buildCodexMcpConfigToml",
+      "file": "apps/server/src/agentGateway/mcpInjection.ts",
+      "line": 46,
+      "params": [
+        {
+          "name": "endpointUrl",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "credentialTransport",
+          "ts_type": "\"environment\" | \"thread\"",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "buildCodexMcpThreadConfig",
+      "file": "apps/server/src/agentGateway/mcpInjection.ts",
+      "line": 63,
+      "params": [
+        {
+          "name": "connection",
+          "ts_type": "AgentGatewayMcpConnection",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "buildOpenCodeMcpServer",
+      "file": "apps/server/src/agentGateway/mcpInjection.ts",
+      "line": 99,
+      "params": [
+        {
+          "name": "connection",
+          "ts_type": "AgentGatewayMcpConnection",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "OpenCodeMcpRemoteServerConfig",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "buildOpenCodeConnectorMcpServers",
+      "file": "apps/server/src/agentGateway/mcpInjection.ts",
+      "line": 112,
+      "params": [
+        {
+          "name": "connection",
+          "ts_type": "AgentGatewayMcpConnection",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Array<{ readonly name: string; readonly config: OpenCodeMcpRemoteServerConfig }>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "buildClaudeMcpServers",
+      "file": "apps/server/src/agentGateway/mcpInjection.ts",
+      "line": 230,
+      "params": [
+        {
+          "name": "connection",
+          "ts_type": "AgentGatewayMcpConnection",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Record<string, ClaudeMcpHttpServerConfig>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "buildAcpSynaraMcpServers",
+      "file": "apps/server/src/agentGateway/mcpInjection.ts",
+      "line": 261,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly connection: AgentGatewayMcpConnection;\n  readonly initializeResult: AcpInitializeCapabilitiesView;\n  readonly stdioProxy: AgentGatewayStdioProxySpawn;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Array<Acp.McpServer>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "parseRecoverableCreationPlan",
+      "file": "apps/server/src/agentGateway/operationPlan.ts",
+      "line": 37,
+      "params": [
+        {
+          "name": "planJson",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "operationId",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ReadonlyArray<RecoverableCreationPlanEntry>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "recordCreatedWorktreeInPlan",
+      "file": "apps/server/src/agentGateway/operationPlan.ts",
+      "line": 106,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly planJson: string;\n  readonly operationId: string;\n  readonly index: number;\n  readonly workspaceRoot: string;\n  readonly path: string;\n  readonly branch: string | null;\n  readonly token: string;\n  readonly gitDir: string;\n  readonly head: string;\n  readonly stateHash?: string;\n  readonly recordedAt: string;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "redactCreationPlanForPurgedCaller",
+      "file": "apps/server/src/agentGateway/operationPlan.ts",
+      "line": 148,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly planJson: string;\n  readonly operationId: string;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "mcpToolResultError",
+      "file": "apps/server/src/agentGateway/protocol.ts",
+      "line": 84,
+      "params": [
+        {
+          "name": "text",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "McpToolCallResult",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "mcpToolResultJson",
+      "file": "apps/server/src/agentGateway/protocol.ts",
+      "line": 88,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "McpToolCallResult",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "jsonRpcResult",
+      "file": "apps/server/src/agentGateway/protocol.ts",
+      "line": 92,
+      "params": [
+        {
+          "name": "id",
+          "ts_type": "(string | number | null)",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "result",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Record<string, unknown>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "jsonRpcError",
+      "file": "apps/server/src/agentGateway/protocol.ts",
+      "line": 96,
+      "params": [
+        {
+          "name": "id",
+          "ts_type": "(string | number | null)",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "code",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "message",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Record<string, unknown>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "parseMcpMessage",
+      "file": "apps/server/src/agentGateway/protocol.ts",
+      "line": 115,
+      "params": [
+        {
+          "name": "raw",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(| { readonly kind: \"request\"; readonly request: JsonRpcRequest }\n  | { readonly kind: \"notification\"; readonly notification: JsonRpcNotification }\n  | { readonly kind: \"response\" }\n  | { readonly kind: \"invalid\"; readonly id: (string | number | null) })",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "negotiateMcpProtocolVersion",
+      "file": "apps/server/src/agentGateway/protocol.ts",
+      "line": 155,
+      "params": [
+        {
+          "name": "requested",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "buildMcpInitializeResult",
+      "file": "apps/server/src/agentGateway/protocol.ts",
+      "line": 162,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly requestedProtocolVersion: unknown;\n  readonly serverVersion: string;\n  readonly instructions: string;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Record<string, unknown>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "sanitizeToolInputSchema",
+      "file": "apps/server/src/agentGateway/sanitizeToolInputSchema.ts",
+      "line": 106,
+      "params": [
+        {
+          "name": "schema",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isJsonRecord",
+      "file": "apps/server/src/agentGateway/schemaTestUtils.ts",
+      "line": 3,
+      "params": [
+        {
+          "name": "node",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "node is Record<string, unknown>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "countSchemaKeyOccurrences",
+      "file": "apps/server/src/agentGateway/schemaTestUtils.ts",
+      "line": 7,
+      "params": [
+        {
+          "name": "node",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "key",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "number",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "agentGatewayCapabilitiesFor",
+      "file": "apps/server/src/agentGateway/sessionLease.ts",
+      "line": 33,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "AgentGatewayCapabilityInput",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "readonly (| \"thread:read\"\n  | \"thread:write\"\n  | \"automation:write\"\n  | \"diagnostics:read\"\n  | \"browser:control\"\n  | \"device:control\"\n  | \"computer:control\"\n  | \"turn:plan\")[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "agentGatewayProviderCapabilitiesFor",
+      "file": "apps/server/src/agentGateway/sessionLease.ts",
+      "line": 46,
+      "params": [
+        {
+          "name": "provider",
+          "ts_type": "typeof typeof typeof typeof ProviderKind.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "readonly (| \"thread:read\"\n  | \"thread:write\"\n  | \"automation:write\"\n  | \"diagnostics:read\"\n  | \"browser:control\"\n  | \"device:control\"\n  | \"computer:control\"\n  | \"turn:plan\")[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "agentGatewaySessionLeaseOptionsFor",
+      "file": "apps/server/src/agentGateway/sessionLease.ts",
+      "line": 52,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "AgentGatewayCapabilityInput",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "provider",
+          "ts_type": "typeof typeof typeof typeof ProviderKind.Type.Type.Type.Type",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "AgentGatewaySessionLeaseOptions | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "captureAgentGatewayCapabilityInput",
+      "file": "apps/server/src/agentGateway/sessionLease.ts",
+      "line": 70,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "AgentGatewayCapabilityInput",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "AgentGatewayCapabilityInput",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "agentGatewayTargetOptionGuidance",
+      "file": "apps/server/src/agentGateway/targetResolver.ts",
+      "line": 479,
+      "params": [
+        {
+          "name": "catalog",
+          "ts_type": "AgentGatewayProviderCatalog",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "AgentGatewayTargetOptionGuidance",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "readDiagnosticPageLimit",
+      "file": "apps/server/src/agentGateway/threadDiagnosticSummary.ts",
+      "line": 9,
+      "params": [
+        {
+          "name": "args",
+          "ts_type": "Record<string, unknown>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "number",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "diagnosticEventMessageId",
+      "file": "apps/server/src/agentGateway/threadDiagnosticSummary.ts",
+      "line": 16,
+      "params": [
+        {
+          "name": "event",
+          "ts_type": "typeof typeof typeof typeof OrchestrationEvent.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "groupDiagnosticEvents",
+      "file": "apps/server/src/agentGateway/threadDiagnosticSummary.ts",
+      "line": 39,
+      "params": [
+        {
+          "name": "eventsNewestFirst",
+          "ts_type": "ReadonlyArray<typeof typeof typeof typeof OrchestrationEvent.Type.Type.Type.Type>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ReadonlyArray<DiagnosticEventGroup>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "shapeDiagnosticEvents",
+      "file": "apps/server/src/agentGateway/threadDiagnosticSummary.ts",
+      "line": 95,
+      "params": [
+        {
+          "name": "eventsNewestFirst",
+          "ts_type": "ReadonlyArray<typeof typeof typeof typeof OrchestrationEvent.Type.Type.Type.Type>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "payloadMode",
+          "ts_type": "\"none\" | \"summary\" | \"full\"",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "deriveAgentThreadStatus",
+      "file": "apps/server/src/agentGateway/threadSummary.ts",
+      "line": 35,
+      "params": [
+        {
+          "name": "thread",
+          "ts_type": "{\n  readonly session: typeof typeof typeof typeof OrchestrationThreadShell.Type.Type.Type.Type[\"session\"];\n  readonly latestTurn: typeof typeof typeof typeof OrchestrationThreadShell.Type.Type.Type.Type[\"latestTurn\"];\n  readonly hasPendingApprovals?: boolean | undefined;\n  readonly hasPendingUserInput?: boolean | undefined;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(| \"working\"\n  | \"idle\"\n  | \"waiting-for-approval\"\n  | \"waiting-for-user-input\"\n  | \"interrupted\"\n  | \"error\")",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "summarizeThreadShell",
+      "file": "apps/server/src/agentGateway/threadSummary.ts",
+      "line": 70,
+      "params": [
+        {
+          "name": "thread",
+          "ts_type": "typeof typeof typeof typeof OrchestrationThreadShell.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "callerThreadId",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "AgentThreadListItem",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "summarizeWaitThreadText",
+      "file": "apps/server/src/agentGateway/threadSummary.ts",
+      "line": 292,
+      "params": [
+        {
+          "name": "text",
+          "ts_type": "string | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "{\n  readonly summary: string | null;\n  readonly truncated: boolean;\n}",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "paginateThreadMessages",
+      "file": "apps/server/src/agentGateway/threadSummary.ts",
+      "line": 319,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly messages: ReadonlyArray<typeof typeof typeof typeof OrchestrationMessage.Type.Type.Type.Type>;\n  readonly cursor?: string | undefined;\n  readonly messageLimit?: number | undefined;\n  readonly maxMessageChars?: number | undefined;\n  readonly messageIndex?: number | undefined;\n  readonly messageOffsetChars?: number | undefined;\n  readonly messageId?: string | undefined;\n  readonly messageVersion?: string | undefined;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "AgentThreadMessagePage",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "summarizeThreadDetail",
+      "file": "apps/server/src/agentGateway/threadSummary.ts",
+      "line": 438,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly thread: typeof typeof typeof typeof OrchestrationThread.Type.Type.Type.Type;\n  readonly cursor?: string | undefined;\n  readonly messageLimit?: number | undefined;\n  readonly maxMessageChars?: number | undefined;\n  readonly messageIndex?: number | undefined;\n  readonly messageOffsetChars?: number | undefined;\n  readonly messageId?: string | undefined;\n  readonly messageVersion?: string | undefined;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "AgentThreadDetail",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "readStringArg",
+      "file": "apps/server/src/agentGateway/toolInput.ts",
+      "line": 53,
+      "params": [
+        {
+          "name": "args",
+          "ts_type": "Record<string, unknown>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "name",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "options",
+          "ts_type": "{ readonly required?: boolean }",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "readVerbatimStringArg",
+      "file": "apps/server/src/agentGateway/toolInput.ts",
+      "line": 81,
+      "params": [
+        {
+          "name": "args",
+          "ts_type": "Record<string, unknown>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "name",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "readNumberArg",
+      "file": "apps/server/src/agentGateway/toolInput.ts",
+      "line": 93,
+      "params": [
+        {
+          "name": "args",
+          "ts_type": "Record<string, unknown>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "name",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "number | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "readBooleanArg",
+      "file": "apps/server/src/agentGateway/toolInput.ts",
+      "line": 102,
+      "params": [
+        {
+          "name": "args",
+          "ts_type": "Record<string, unknown>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "name",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "readIsoTimestampArg",
+      "file": "apps/server/src/agentGateway/toolInput.ts",
+      "line": 111,
+      "params": [
+        {
+          "name": "args",
+          "ts_type": "Record<string, unknown>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "name",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "readRecordArg",
+      "file": "apps/server/src/agentGateway/toolInput.ts",
+      "line": 124,
+      "params": [
+        {
+          "name": "args",
+          "ts_type": "Record<string, unknown>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "name",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Record<string, unknown> | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "readStringArrayArg",
+      "file": "apps/server/src/agentGateway/toolInput.ts",
+      "line": 136,
+      "params": [
+        {
+          "name": "args",
+          "ts_type": "Record<string, unknown>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "name",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ReadonlyArray<string> | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "parseProviderKind",
+      "file": "apps/server/src/agentGateway/toolInput.ts",
+      "line": 151,
+      "params": [
+        {
+          "name": "raw",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ProviderKind.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "readModelSelectionArg",
+      "file": "apps/server/src/agentGateway/toolInput.ts",
+      "line": 165,
+      "params": [
+        {
+          "name": "args",
+          "ts_type": "Record<string, unknown>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "name",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ModelSelection.Type.Type.Type.Type | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "buildModelSelection",
+      "file": "apps/server/src/agentGateway/toolInput.ts",
+      "line": 183,
+      "params": [
+        {
+          "name": "provider",
+          "ts_type": "typeof typeof typeof typeof ProviderKind.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "model",
+          "ts_type": "string | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "fallbackSelection",
+          "ts_type": "typeof typeof typeof typeof ModelSelection.Type.Type.Type.Type",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ModelSelection.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "decodeCreateThreadsInput",
+      "file": "apps/server/src/agentGateway/toolInput.ts",
+      "line": 209,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "decodeWaitForThreadsInput",
+      "file": "apps/server/src/agentGateway/toolInput.ts",
+      "line": 217,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "filterToolsByCapability",
+      "file": "apps/server/src/agentGateway/toolRuntime.ts",
+      "line": 101,
+      "params": [
+        {
+          "name": "tools",
+          "ts_type": "ReadonlyArray<({ readonly requiredCapability: Capability })>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "capabilities",
+          "ts_type": "ReadonlySet<(string)>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ReadonlyArray<({ readonly requiredCapability: Capability })>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "gatewayToolErrorResult",
+      "file": "apps/server/src/agentGateway/toolRuntime.ts",
+      "line": 119,
+      "params": [
+        {
+          "name": "error",
+          "ts_type": "GatewayToolError | AgentGatewayTargetError",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "parseTurnPlanSteps",
+      "file": "apps/server/src/agentGateway/turnPlanTools.ts",
+      "line": 49,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "Record<string, unknown>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "{ readonly steps: ReadonlyArray<TurnPlanStep> } | { readonly error: string }",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [
+    {
+      "name": "ComputerProgressGuard",
+      "file": "apps/server/src/agentGateway/computerProgressGuard.ts",
+      "line": 124,
+      "constructor": [
+        {
+          "name": "maximumScopes",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        },
+        {
+          "name": "maximumTargetsPerScope",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "methods": [
+        {
+          "name": "check",
+          "file": "apps/server/src/agentGateway/computerProgressGuard.ts",
+          "line": 138,
+          "params": [
+            {
+              "name": "action",
+              "ts_type": "ComputerProgressAction",
+              "optional": false,
+              "rest": false
+            }
+          ],
+          "returns": "ComputerProgressBlock | undefined",
+          "is_async": false,
+          "is_generator": false,
+          "type_params": [],
+          "uses_instanceof": false
+        },
+        {
+          "name": "record",
+          "file": "apps/server/src/agentGateway/computerProgressGuard.ts",
+          "line": 163,
+          "params": [
+            {
+              "name": "action",
+              "ts_type": "ComputerProgressAction",
+              "optional": false,
+              "rest": false
+            },
+            {
+              "name": "outcome",
+              "ts_type": "ComputerProgressOutcome",
+              "optional": false,
+              "rest": false
+            }
+          ],
+          "returns": "void",
+          "is_async": false,
+          "is_generator": false,
+          "type_params": [],
+          "uses_instanceof": false
+        },
+        {
+          "name": "recordVerifiedProgress",
+          "file": "apps/server/src/agentGateway/computerProgressGuard.ts",
+          "line": 209,
+          "params": [
+            {
+              "name": "scope",
+              "ts_type": "ComputerProgressScope",
+              "optional": false,
+              "rest": false
+            },
+            {
+              "name": "targetKey",
+              "ts_type": "string",
+              "optional": false,
+              "rest": false
+            }
+          ],
+          "returns": "void",
+          "is_async": false,
+          "is_generator": false,
+          "type_params": [],
+          "uses_instanceof": false
+        }
+      ],
+      "blocker": null
+    },
+    {
+      "name": "ToolGuidanceCadence",
+      "file": "apps/server/src/agentGateway/toolGuidanceCadence.ts",
+      "line": 1,
+      "constructor": [
+        {
+          "name": "interval",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "maximumThreads",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "methods": [
+        {
+          "name": "shouldRefresh",
+          "file": "apps/server/src/agentGateway/toolGuidanceCadence.ts",
+          "line": 16,
+          "params": [
+            {
+              "name": "threadId",
+              "ts_type": "string",
+              "optional": false,
+              "rest": false
+            }
+          ],
+          "returns": "boolean",
+          "is_async": false,
+          "is_generator": false,
+          "type_params": [],
+          "uses_instanceof": false
+        }
+      ],
+      "blocker": null
+    }
+  ],
+  "js_only": [
+    {
+      "name": "makeAgentGatewayAutomationTools",
+      "file": "apps/server/src/agentGateway/automationTools.ts",
+      "line": 260,
+      "reason": "uses `AutomationToolDependencies`, which has function members"
+    },
+    {
+      "name": "makeAgentGatewayBrowserTools",
+      "file": "apps/server/src/agentGateway/browserTools.ts",
+      "line": 249,
+      "reason": "uses `BrowserAutomationHostShape`, which has function members"
+    },
+    {
+      "name": "deliverGatewayCompletions",
+      "file": "apps/server/src/agentGateway/completionDelivery.ts",
+      "line": 17,
+      "reason": "uses `CompletionDeliveryDependencies`, which has function members"
+    },
+    {
+      "name": "makeAgentGatewayComputerBrowserTools",
+      "file": "apps/server/src/agentGateway/computerBrowserTools.ts",
+      "line": 422,
+      "reason": "checks `instanceof`: class identity does not survive the bridge"
+    },
+    {
+      "name": "makeComputerForegroundConsent",
+      "file": "apps/server/src/agentGateway/computerForegroundConsent.ts",
+      "line": 44,
+      "reason": "uses `ComputerForegroundConsentOptions`, which has function members"
+    },
+    {
+      "name": "boundComputerPastePayload",
+      "file": "apps/server/src/agentGateway/computerPasteInput.ts",
+      "line": 30,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "makeComputerSpaceTools",
+      "file": "apps/server/src/agentGateway/computerSpaceTools.ts",
+      "line": 38,
+      "reason": "uses `SpaceToolsOptions`, which has function members"
+    },
+    {
+      "name": "computerAuditErrorOutcome",
+      "file": "apps/server/src/agentGateway/computerTools.ts",
+      "line": 345,
+      "reason": "checks `instanceof`: class identity does not survive the bridge"
+    },
+    {
+      "name": "makeAgentGatewayComputerTools",
+      "file": "apps/server/src/agentGateway/computerTools.ts",
+      "line": 1427,
+      "reason": "checks `instanceof`: class identity does not survive the bridge"
+    },
+    {
+      "name": "makeConnectorTools",
+      "file": "apps/server/src/agentGateway/connectorTools.ts",
+      "line": 28,
+      "reason": "checks `instanceof`: class identity does not survive the bridge"
+    },
+    {
+      "name": "appendThreadCreationRecap",
+      "file": "apps/server/src/agentGateway/creationCoordinator.ts",
+      "line": 109,
+      "reason": "uses `OrchestrationEngineShape`, which has function members"
+    },
+    {
+      "name": "cloneDelegatedAttachments",
+      "file": "apps/server/src/agentGateway/delegatedAttachments.ts",
+      "line": 224,
+      "reason": "uses `CloneInput`, which has function members"
+    },
+    {
+      "name": "makeAgentGatewayDeviceTools",
+      "file": "apps/server/src/agentGateway/deviceTools.ts",
+      "line": 429,
+      "reason": "uses `AgentGatewayDeviceToolsOptions`, which has function members"
+    },
+    {
+      "name": "makeHubWorkGateway",
+      "file": "apps/server/src/agentGateway/hubWorkGateway.ts",
+      "line": 46,
+      "reason": "checks `instanceof`: class identity does not survive the bridge"
+    },
+    {
+      "name": "resolveHubWorkSource",
+      "file": "apps/server/src/agentGateway/hubWorkSource.ts",
+      "line": 21,
+      "reason": "uses `ProjectionSnapshotQueryShape`, which has function members"
+    },
+    {
+      "name": "makeAgentGatewayInFlightRequestRegistry",
+      "file": "apps/server/src/agentGateway/inFlightRequestRegistry.ts",
+      "line": 41,
+      "reason": "uses `AgentGatewayInFlightRequestRegistry`, which has function members"
+    },
+    {
+      "name": "makeAgentGatewayInlineVisualTools",
+      "file": "apps/server/src/agentGateway/inlineVisualTools.ts",
+      "line": 268,
+      "reason": "uses `InlineVisualToolsInput`, which has function members"
+    },
+    {
+      "name": "makeAgentGatewayKanbanTools",
+      "file": "apps/server/src/agentGateway/kanbanTools.ts",
+      "line": 228,
+      "reason": "uses `KanbanToolsInput`, which has function members"
+    },
+    {
+      "name": "listAgentGatewayMcpTools",
+      "file": "apps/server/src/agentGateway/mcpInjection.ts",
+      "line": 184,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "callAgentGatewayMcpTool",
+      "file": "apps/server/src/agentGateway/mcpInjection.ts",
+      "line": 214,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "makeAgentGatewayMcpTransport",
+      "file": "apps/server/src/agentGateway/mcpTransport.ts",
+      "line": 94,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "makeProjectAgentTools",
+      "file": "apps/server/src/agentGateway/projectAgentTools.ts",
+      "line": 32,
+      "reason": "uses `ProjectAgentToolDependencies`, which has function members"
+    },
+    {
+      "name": "makeRemoteAwareTools",
+      "file": "apps/server/src/agentGateway/remoteTools.ts",
+      "line": 116,
+      "reason": "checks `instanceof`: class identity does not survive the bridge"
+    },
+    {
+      "name": "receiveRemoteTool",
+      "file": "apps/server/src/agentGateway/remoteTools.ts",
+      "line": 308,
+      "reason": "uses `ToolEntry`, which has function members"
+    },
+    {
+      "name": "cancelAgentGatewayTurn",
+      "file": "apps/server/src/agentGateway/sessionLease.ts",
+      "line": 158,
+      "reason": "uses `AgentGatewaySessionLease`, which has function members"
+    },
+    {
+      "name": "withAgentGatewayTurnCancellation",
+      "file": "apps/server/src/agentGateway/sessionLease.ts",
+      "line": 174,
+      "reason": "uses `AgentGatewaySessionLease`, which has function members"
+    },
+    {
+      "name": "acquireAgentGatewaySessionLease",
+      "file": "apps/server/src/agentGateway/sessionLease.ts",
+      "line": 217,
+      "reason": "uses `AgentGatewayCredentialsShape`, which has function members"
+    },
+    {
+      "name": "startAgentGatewaySessionLeaseExitWatcher",
+      "file": "apps/server/src/agentGateway/sessionLease.ts",
+      "line": 266,
+      "reason": "uses `AgentGatewaySessionLease`, which has function members"
+    },
+    {
+      "name": "releaseAgentGatewaySessionLeaseOnInterrupt",
+      "file": "apps/server/src/agentGateway/sessionLease.ts",
+      "line": 279,
+      "reason": "uses `AgentGatewaySessionLease`, which has function members"
+    },
+    {
+      "name": "recoverInterruptedAgentGatewayOperations",
+      "file": "apps/server/src/agentGateway/startupRecovery.ts",
+      "line": 22,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "AgentGatewayTargetError",
+      "file": "apps/server/src/agentGateway/targetResolver.ts",
+      "line": 27,
+      "reason": "class: extends another class, public field `code`, public field `details`"
+    },
+    {
+      "name": "loadAgentGatewayProviderCatalog",
+      "file": "apps/server/src/agentGateway/targetResolver.ts",
+      "line": 285,
+      "reason": "checks `instanceof`: class identity does not survive the bridge"
+    },
+    {
+      "name": "resolveAgentGatewayTarget",
+      "file": "apps/server/src/agentGateway/targetResolver.ts",
+      "line": 689,
+      "reason": "checks `instanceof`: class identity does not survive the bridge"
+    },
+    {
+      "name": "makeThreadDiagnosticTools",
+      "file": "apps/server/src/agentGateway/threadDiagnosticTools.ts",
+      "line": 49,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "makeThreadDiagnosticPageReaders",
+      "file": "apps/server/src/agentGateway/threadDiagnosticTools.ts",
+      "line": 352,
+      "reason": "uses `ThreadDiagnosticPageDependencies`, which has function members"
+    },
+    {
+      "name": "makeThreadReadTools",
+      "file": "apps/server/src/agentGateway/threadReadTools.ts",
+      "line": 70,
+      "reason": "checks `instanceof`: class identity does not survive the bridge"
+    },
+    {
+      "name": "makeAgentGatewayTodoTools",
+      "file": "apps/server/src/agentGateway/todoTools.ts",
+      "line": 106,
+      "reason": "checks `instanceof`: class identity does not survive the bridge"
+    },
+    {
+      "name": "ToolInputError",
+      "file": "apps/server/src/agentGateway/toolInput.ts",
+      "line": 48,
+      "reason": "class: extends another class"
+    },
+    {
+      "name": "errorText",
+      "file": "apps/server/src/agentGateway/toolInput.ts",
+      "line": 50,
+      "reason": "checks `instanceof`: class identity does not survive the bridge"
+    },
+    {
+      "name": "GatewayToolError",
+      "file": "apps/server/src/agentGateway/toolRuntime.ts",
+      "line": 108,
+      "reason": "class: extends another class, public field `code`, public field `details`"
+    },
+    {
+      "name": "makeAgentGatewayTurnPlanTools",
+      "file": "apps/server/src/agentGateway/turnPlanTools.ts",
+      "line": 101,
+      "reason": "uses `ToolEntry`, which has function members"
+    }
+  ]
+}

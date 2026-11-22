@@ -1,0 +1,59 @@
+{
+  "unit": "apps/server/src/agentGateway/",
+  "files": 113,
+  "fingerprint": "1ae7a2b048ef84b6",
+  "coverage": {
+    "lines": 2300,
+    "reached": 1514,
+    "files": [
+      {
+        "file": "apps/server/src/agentGateway/computerPasteInput.ts",
+        "lines": 51,
+        "reached": 19,
+        "missed": "19-28, 32-53"
+      },
+      {
+        "file": "apps/server/src/agentGateway/computerProgressGuard.ts",
+        "lines": 195,
+        "reached": 158,
+        "missed": "87-89, 91-105, 108-117, 119, 146-147, 149-151, 153, 218-219"
+      },
+      {
+        "file": "apps/server/src/agentGateway/computerWorkspacePath.ts",
+        "lines": 18,
+        "reached": 18,
+        "missed": ""
+      },
+      {
+        "file": "apps/server/src/agentGateway/operationPlan.ts",
+        "lines": 160,
+        "reached": 103,
+        "missed": "48-50, 52-53, 55, 57, 59-63, 65, 69-70, 73, 75-77, 79-87, 127, 130, 133-144, 150-164"
+      },
+      {
+        "file": "apps/server/src/agentGateway/targetResolver.ts",
+        "lines": 806,
+        "reached": 273,
+        "missed": "32-37, 39, 276-279, 282-283, 285, 287-352, 354, 356-366, 369-370, 372-373, 375-384, 386-413, 415-421, 423-448, 450, 452-462, 464, 466-476, 481-510, 512-513, 515-524, 526, 536-540, 543-546, 549-578, 580, 582-594, 596-597, 599-603, 605-608, 610-619, 621-625, 627, 629-670, 672, 674-686, 691-788, 790-802, 804-830, 832-856"
+      },
+      {
+        "file": "apps/server/src/agentGateway/toolGuidanceCadence.ts",
+        "lines": 23,
+        "reached": 23,
+        "missed": ""
+      },
+      {
+        "file": "apps/server/src/agentGateway/toolInput.ts",
+        "lines": 206,
+        "reached": 180,
+        "missed": "61-62, 119-122, 124, 145, 167-181, 183, 193, 207"
+      },
+      {
+        "file": "apps/server/src/computer/ComputerBackend.ts",
+        "lines": 841,
+        "reached": 740,
+        "missed": "95-100, 102, 290-320, 322-323, 326-343, 345, 817-824, 826, 833-838, 840, 842-867"
+      }
+    ]
+  }
+}

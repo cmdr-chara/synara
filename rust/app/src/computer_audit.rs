@@ -300,13 +300,58 @@ fn project_entry(line: &[u8], position: &Position) -> Option<Value> {
     Some(Value::Object(entry))
 }
 
+// wsComputerHandlers.ts unsupported branch — mirrored verbatim for the
+// no-backend front door. With the original running, everything except
+// getAuditHistory relays to the real manager.
+const UNSUPPORTED_MESSAGE: &str = "No computer backend is available on this server.";
+
+fn unsupported_status() -> Value {
+    json!({
+        "computerId": "desktop",
+        "availability": {"kind": "backend-unavailable", "message": UNSUPPORTED_MESSAGE},
+        "health": {
+            "status": "unavailable",
+            "consecutiveFailures": 0,
+            "reconnects": 0,
+            "captureAvailable": false,
+        },
+        "capabilities": {
+            "windows": false, "windowBounds": false, "stacking": false,
+            "capture": false, "input": false, "clipboard": false,
+            "focus": false, "raise": false, "ghostCursor": false,
+            "visibleDesktop": false,
+        },
+    })
+}
+
 pub fn handles(tag: &str) -> bool {
     tag == "computer.getAuditHistory"
+        || (std::env::var("SYNARA_NO_UPSTREAM").is_ok() && tag.starts_with("computer."))
 }
 
 pub fn handle(tag: &str, payload: &Value) -> Result<Value, WsErr> {
     match tag {
         "computer.getAuditHistory" => get_audit_history(payload),
+        "computer.getStatus" => Ok(unsupported_status()),
+        "computer.getThreadState" => {
+            let mut v = unsupported_status();
+            let map = v.as_object_mut().expect("status object");
+            map.insert(
+                "threadId".into(),
+                payload.get("threadId").cloned().unwrap_or(Value::Null),
+            );
+            map.insert("version".into(), json!(0));
+            map.insert("windows".into(), json!([]));
+            map.insert(
+                "screenSize".into(),
+                json!({"width": 1, "height": 1}),
+            );
+            map.insert("agentActive".into(), json!(false));
+            map.insert("controlledByOtherThread".into(), json!(false));
+            map.insert("lastError".into(), Value::Null);
+            Ok(v)
+        }
+        _ if tag.starts_with("computer.") => Err(err(UNSUPPORTED_MESSAGE)),
         _ => Err(err("unhandled computer tag")),
     }
 }

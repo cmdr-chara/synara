@@ -60,13 +60,13 @@ fn nodes(v: &Value, k: &str) -> Vec<Value> {
 // gh process boundary
 // ---------------------------------------------------------------------------------------------
 
-struct GhOutput {
-    code: i32,
-    stdout: String,
-    stderr: String,
+pub(crate) struct GhOutput {
+    pub code: i32,
+    pub stdout: String,
+    pub stderr: String,
 }
 
-fn gh_run(args: &[String], cwd: &str) -> Result<GhOutput, String> {
+pub(crate) fn gh_run(args: &[String], cwd: &str) -> Result<GhOutput, String> {
     let out = Command::new("gh")
         .args(args)
         .current_dir(if cwd.is_empty() { "." } else { cwd })
@@ -80,7 +80,7 @@ fn gh_run(args: &[String], cwd: &str) -> Result<GhOutput, String> {
 }
 
 /// Port of `summarizeGitHubInboxError`: first meaningful line of the failure, `gh:` stripped.
-fn summarize_error(stderr: &str) -> String {
+pub(crate) fn summarize_error(stderr: &str) -> String {
     let text = stderr.trim().trim_start_matches("gh:").trim();
     for line in text.lines() {
         let l = line.trim();
@@ -95,12 +95,30 @@ fn summarize_error(stderr: &str) -> String {
     "GitHub request failed.".to_string()
 }
 
-fn gh_json(args: &[String], cwd: &str) -> Result<Value, String> {
+pub(crate) fn gh_json(args: &[String], cwd: &str) -> Result<Value, String> {
     let out = gh_run(args, cwd)?;
     if out.code != 0 {
         return Err(summarize_error(&out.stderr));
     }
     serde_json::from_str(&out.stdout).map_err(|e| format!("gh returned invalid JSON ({e})"))
+}
+
+pub(crate) fn graphql_host(
+    host: &str,
+    query: &str,
+    vars: &[String],
+    cwd: &str,
+) -> Result<Value, String> {
+    let mut args: Vec<String> = vec![
+        "api".into(),
+        "graphql".into(),
+        "--hostname".into(),
+        host.into(),
+        "-f".into(),
+        format!("query={query}"),
+    ];
+    args.extend(vars.iter().cloned());
+    gh_json(&args, cwd)
 }
 
 fn graphql(query: &str, vars: &[String], cwd: &str) -> Result<Value, String> {

@@ -130,6 +130,7 @@ fn intercept_todo(
         && tag != "server.getRuntimeStatus"
         && tag != "shell.openInEditor"
         && !crate::git_domain::handles(tag)
+        && !crate::git_pr::handles(tag)
         && tag != "filesystem.browse"
         && tag != "server.listWorktrees"
         && tag != "projects.listDirectories"
@@ -550,8 +551,13 @@ fn intercept_todo(
         crate::projects_fs::list_directories(&payload)
             .map(Some)
             .map_err(error_json)
-    } else if crate::git_domain::handles(tag) {
-        match crate::git_domain::handle(tag, &payload) {
+    } else if crate::git_domain::handles(tag) || crate::git_pr::handles(tag) {
+        let result = if crate::git_pr::handles(tag) {
+            crate::git_pr::handle(tag, &payload)
+        } else {
+            crate::git_domain::handle(tag, &payload)
+        };
+        match result {
             Ok(value) => Ok(value),
             Err(e) => Err(error_json(e)),
         }

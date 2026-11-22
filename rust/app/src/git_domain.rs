@@ -10,7 +10,7 @@ use std::process::Command;
 
 use crate::todo::WsErr;
 
-fn err(message: impl Into<String>) -> WsErr {
+pub(crate) fn err(message: impl Into<String>) -> WsErr {
     WsErr(message.into(), None)
 }
 
@@ -48,7 +48,7 @@ pub fn handles(tag: &str) -> bool {
     HANDLED.contains(&tag)
 }
 
-fn cwd_of(payload: &Value) -> Result<String, WsErr> {
+pub(crate) fn cwd_of(payload: &Value) -> Result<String, WsErr> {
     payload
         .get("cwd")
         .and_then(Value::as_str)
@@ -57,7 +57,7 @@ fn cwd_of(payload: &Value) -> Result<String, WsErr> {
         .ok_or_else(|| err("`cwd` is required"))
 }
 
-fn str_arg<'a>(payload: &'a Value, key: &str) -> Result<&'a str, WsErr> {
+pub(crate) fn str_arg<'a>(payload: &'a Value, key: &str) -> Result<&'a str, WsErr> {
     payload
         .get(key)
         .and_then(Value::as_str)
@@ -70,7 +70,7 @@ fn rev_ok(rev: &str) -> bool {
     !rev.is_empty() && rev.len() <= 256 && !rev.starts_with('-')
 }
 
-fn run(cwd: &str, args: &[&str]) -> Result<std::process::Output, WsErr> {
+pub(crate) fn run(cwd: &str, args: &[&str]) -> Result<std::process::Output, WsErr> {
     Command::new("git")
         .arg("-C")
         .arg(cwd)
@@ -91,11 +91,11 @@ pub(crate) fn stdout(cwd: &str, args: &[&str], what: &str) -> Result<String, WsE
     Ok(String::from_utf8_lossy(&out.stdout).to_string())
 }
 
-fn ok(cwd: &str, args: &[&str]) -> bool {
+pub(crate) fn ok(cwd: &str, args: &[&str]) -> bool {
     run(cwd, args).map(|o| o.status.success()).unwrap_or(false)
 }
 
-fn require_repo(cwd: &str) -> Result<(), WsErr> {
+pub(crate) fn require_repo(cwd: &str) -> Result<(), WsErr> {
     if ok(cwd, &["rev-parse", "--is-inside-work-tree"]) {
         Ok(())
     } else {
@@ -103,13 +103,13 @@ fn require_repo(cwd: &str) -> Result<(), WsErr> {
     }
 }
 
-fn current_branch(cwd: &str) -> Option<String> {
+pub(crate) fn current_branch(cwd: &str) -> Option<String> {
     let b = stdout(cwd, &["branch", "--show-current"], "git").ok()?;
     let b = b.trim();
     (!b.is_empty()).then(|| b.to_string())
 }
 
-fn upstream_branch(cwd: &str) -> Option<String> {
+pub(crate) fn upstream_branch(cwd: &str) -> Option<String> {
     let u = stdout(cwd, &["rev-parse", "--abbrev-ref", "@{upstream}"], "git").ok()?;
     let u = u.trim();
     (!u.is_empty()).then(|| u.to_string())

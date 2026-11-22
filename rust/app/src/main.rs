@@ -1,5 +1,6 @@
 mod fs_browse;
 mod git_domain;
+mod git_pr;
 mod github_inbox;
 mod list_worktrees;
 mod native_ws;

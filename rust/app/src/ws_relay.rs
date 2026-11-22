@@ -80,6 +80,7 @@ fn intercept_todo(
         && !text.contains("\"filesystem.browse")
         && !text.contains("server.listWorktrees")
         && !text.contains("projects.listDirectories")
+        && !text.contains("projects.discoverScripts")
     {
         return None;
     }
@@ -96,6 +97,7 @@ fn intercept_todo(
         && tag != "filesystem.browse"
         && tag != "server.listWorktrees"
         && tag != "projects.listDirectories"
+        && tag != "projects.discoverScripts"
     {
         return None;
     }
@@ -151,6 +153,10 @@ fn intercept_todo(
             .map_err(error_json)
     } else if tag == "server.listWorktrees" {
         crate::list_worktrees::list_worktrees()
+            .map(Some)
+            .map_err(error_json)
+    } else if tag == "projects.discoverScripts" {
+        crate::projects_fs::discover_scripts(&payload)
             .map(Some)
             .map_err(error_json)
     } else if tag == "projects.listDirectories" {

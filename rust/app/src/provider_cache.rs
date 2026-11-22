@@ -21,13 +21,22 @@ pub fn handles(tag: &str) -> bool {
             | "server.listExternalMcpIntegrations"
             | "server.refreshProviders"
             | "server.updateProvider"
-    )
+    ) || (std::env::var("SYNARA_NO_UPSTREAM").is_ok()
+        && matches!(
+            tag,
+            "server.createExternalMcpIntegration"
+                | "server.revokeExternalMcpIntegration"
+                | "server.refreshExternalMcpPairing"
+        ))
 }
 
 pub fn handle(tag: &str, payload: &Value) -> Result<Value, WsErr> {
     match tag {
         "provider.listModels" => list_models(payload),
         "server.listExternalMcpIntegrations" => list_external_mcp_integrations(),
+        "server.createExternalMcpIntegration" => create_external_mcp_integration(payload),
+        "server.revokeExternalMcpIntegration" => revoke_external_mcp_integration(payload),
+        "server.refreshExternalMcpPairing" => refresh_external_mcp_pairing(payload),
         "server.refreshProviders" => refresh_providers(),
         "server.updateProvider" => update_provider(payload),
         _ => Err(err("unhandled provider tag")),
@@ -111,6 +120,236 @@ fn list_models(payload: &Value) -> Result<Value, WsErr> {
     )))
 }
 
+/// External MCP helpers mirroring `externalMcp/Layers/ExternalMcpService.ts`
+/// and `launcher.ts`: hashed opaque secrets, the `mcp serve`/`mcp pair`
+/// stdio configs, and the record → `ExternalMcpIntegration` view.
+const EXTERNAL_MCP_AUDIENCE: &str = "synara.external-mcp";
+const PAIRING_PREFIX: &str = "syn_pair_v1_";
+const PAIRING_TTL_MS: i64 = 10 * 60 * 1_000;
+const DEFAULT_EXPIRY_DAYS: i64 = 30;
+const DEFAULT_RATE_LIMIT_PER_MINUTE: i64 = 60;
+const DEFAULT_ACTIVE_TASK_LIMIT: i64 = 2;
+
+fn mcp_home_dir() -> String {
+    // `state_dir()` is `<home>/userdata`; the launcher's `--home-dir` is the
+    // parent, matching ServerConfig.baseDir.
+    state_dir().trim_end_matches("/userdata").to_string()
+}
+
+fn hash_external_mcp_secret(secret: &str) -> String {
+    use sha2::{Digest, Sha256};
+    let mut h = Sha256::new();
+    h.update(EXTERNAL_MCP_AUDIENCE.as_bytes());
+    h.update(b"\0");
+    h.update(secret.as_bytes());
+    h.finalize().iter().map(|b| format!("{b:02x}")).collect()
+}
+
+fn base64url(data: &[u8]) -> String {
+    const T: &[u8; 64] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
+    let mut out = String::with_capacity(data.len().div_ceil(3) * 4);
+    for chunk in data.chunks(3) {
+        let b0 = chunk[0];
+        let b1 = chunk.get(1).copied().unwrap_or(0);
+        let b2 = chunk.get(2).copied().unwrap_or(0);
+        out.push(T[(b0 >> 2) as usize] as char);
+        out.push(T[(((b0 & 3) << 4) | (b1 >> 4)) as usize] as char);
+        if chunk.len() > 1 {
+            out.push(T[(((b1 & 15) << 2) | (b2 >> 6)) as usize] as char);
+        }
+        if chunk.len() > 2 {
+            out.push(T[(b2 & 63) as usize] as char);
+        }
+    }
+    out
+}
+
+fn random_opaque(prefix: &str) -> String {
+    let mut bytes = [0u8; 32];
+    if let Ok(mut f) = std::fs::File::open("/dev/urandom") {
+        use std::io::Read;
+        let _ = f.read_exact(&mut bytes);
+    }
+    format!("{prefix}{}", base64url(&bytes))
+}
+
+/// `externalMcpLauncher`: the native binary stands in for
+/// `process.execPath` + the server entry script.
+fn mcp_stdio(args: &[&str]) -> Value {
+    let command = std::env::current_exe()
+        .map(|p| p.display().to_string())
+        .unwrap_or_else(|_| "synara".to_string());
+    let args: Vec<Value> = args.iter().map(|a| json!(a)).collect();
+    json!({"command": command, "args": args})
+}
+
+fn mcp_serve_stdio(integration_id: &str) -> Value {
+    mcp_stdio(&[
+        "mcp",
+        "serve",
+        "--integration",
+        integration_id,
+        "--home-dir",
+        &mcp_home_dir(),
+    ])
+}
+
+fn mcp_pair_stdio(pairing_code: &str) -> Value {
+    mcp_stdio(&[
+        "mcp",
+        "pair",
+        "--code",
+        pairing_code,
+        "--home-dir",
+        &mcp_home_dir(),
+    ])
+}
+
+fn shell_quote(value: &str) -> String {
+    format!("'{}'", value.replace('\'', "'\"'\"'"))
+}
+
+fn mcp_shell_command(config: &Value) -> String {
+    let mut parts: Vec<String> = Vec::new();
+    if let Some(c) = config.get("command").and_then(Value::as_str) {
+        parts.push(shell_quote(c));
+    }
+    if let Some(args) = config.get("args").and_then(Value::as_array) {
+        for a in args {
+            if let Some(a) = a.as_str() {
+                parts.push(shell_quote(a));
+            }
+        }
+    }
+    parts.join(" ")
+}
+
+fn load_active_projects(conn: &rusqlite::Connection) -> Vec<(String, String)> {
+    let mut out = Vec::new();
+    if let Ok(mut stmt) = conn.prepare(
+        "SELECT project_id, title FROM projection_projects \
+         WHERE deleted_at IS NULL ORDER BY created_at ASC, project_id ASC",
+    ) {
+        if let Ok(rows) = stmt.query_map([], |r| {
+            Ok((r.get::<_, String>(0)?, r.get::<_, String>(1)?))
+        }) {
+            out = rows.flatten().collect();
+        }
+    }
+    out
+}
+
+struct McpIntegrationRow {
+    integration_id: String,
+    name: String,
+    audience: String,
+    client_kind: String,
+    capabilities: Value,
+    project_scope: String,
+    created_at: String,
+    expires_at: String,
+    last_used_at: Option<String>,
+    paired_at: Option<String>,
+    revoked_at: Option<String>,
+    rate_limit_per_minute: i64,
+    concurrency_limit: i64,
+}
+
+fn read_integration_row(row: &rusqlite::Row) -> McpIntegrationRow {
+    McpIntegrationRow {
+        integration_id: row.get(0).unwrap_or_default(),
+        name: row.get(1).unwrap_or_default(),
+        audience: row.get(2).unwrap_or_default(),
+        client_kind: row.get(3).unwrap_or_default(),
+        capabilities: row
+            .get::<_, String>(4)
+            .ok()
+            .and_then(|s| serde_json::from_str(&s).ok())
+            .unwrap_or(json!([])),
+        project_scope: row.get(5).unwrap_or_else(|_| "selected".into()),
+        created_at: row.get(6).unwrap_or_default(),
+        expires_at: row.get(7).unwrap_or_default(),
+        last_used_at: row.get(8).unwrap_or(None),
+        paired_at: row.get(9).unwrap_or(None),
+        revoked_at: row.get(10).unwrap_or(None),
+        rate_limit_per_minute: row.get(11).unwrap_or(0),
+        concurrency_limit: row.get(12).unwrap_or(0),
+    }
+}
+
+const INTEGRATION_COLS: &str = "integration_id, name, audience, client_kind, \
+     capabilities_json, project_scope, created_at, expires_at, last_used_at, \
+     paired_at, revoked_at, rate_limit_per_minute, concurrency_limit";
+
+/// `toView`: allowedProjects resolves to the live project list for
+/// `project_scope = 'all'`, else the stored grant ids that still exist.
+fn integration_view(
+    conn: &rusqlite::Connection,
+    rec: &McpIntegrationRow,
+    projects: &[(String, String)],
+) -> Value {
+    let allowed: Vec<Value> = if rec.project_scope == "all" {
+        projects
+            .iter()
+            .map(|(id, title)| json!({"projectId": id, "title": title}))
+            .collect()
+    } else {
+        let mut out = Vec::new();
+        if let Ok(mut ps) = conn.prepare(
+            "SELECT p.project_id, COALESCE(pr.title, p.project_id) \
+             FROM external_mcp_integration_projects p \
+             LEFT JOIN projection_projects pr ON pr.project_id = p.project_id \
+             WHERE p.integration_id = ?1 ORDER BY p.project_id",
+        ) {
+            if let Ok(mapped) = ps.query_map(params![rec.integration_id.clone()], |r| {
+                Ok(json!({
+                    "projectId": r.get::<_, String>(0)?,
+                    "title": r.get::<_, String>(1)?,
+                }))
+            }) {
+                out = mapped.flatten().collect();
+            }
+        }
+        out
+    };
+    json!({
+        "integrationId": rec.integration_id,
+        "name": rec.name,
+        "audience": rec.audience,
+        "capabilities": rec.capabilities,
+        "projectScope": rec.project_scope,
+        "allowedProjects": allowed,
+        "createdAt": rec.created_at,
+        "expiresAt": rec.expires_at,
+        "lastUsedAt": rec.last_used_at,
+        "pairedAt": rec.paired_at,
+        "revokedAt": rec.revoked_at,
+        "rateLimitPerMinute": rec.rate_limit_per_minute,
+        "concurrencyLimit": rec.concurrency_limit,
+        "clientKind": rec.client_kind,
+        "stdio": mcp_serve_stdio(&rec.integration_id),
+    })
+}
+
+fn integration_by_id(
+    conn: &rusqlite::Connection,
+    integration_id: &str,
+) -> Result<Option<McpIntegrationRow>, WsErr> {
+    let mut stmt = conn
+        .prepare(&format!(
+            "SELECT {INTEGRATION_COLS} FROM external_mcp_integrations \
+             WHERE integration_id = ?1"
+        ))
+        .map_err(|e| err(e.to_string()))?;
+    let mut rows = stmt
+        .query(params![integration_id])
+        .map_err(|e| err(e.to_string()))?;
+    match rows.next().map_err(|e| err(e.to_string()))? {
+        Some(row) => Ok(Some(read_integration_row(row))),
+        None => Ok(None),
+    }
+}
+
 /// `server.listExternalMcpIntegrations`: rows from external_mcp_integrations
 /// with their project grants.
 fn list_external_mcp_integrations() -> Result<Value, WsErr> {
@@ -118,58 +357,284 @@ fn list_external_mcp_integrations() -> Result<Value, WsErr> {
         return Err(err("state.sqlite is unavailable"));
     };
     let conn = &copy.conn;
+    let projects = load_active_projects(conn);
     let mut stmt = conn
-        .prepare(
-            "SELECT integration_id, name, audience, client_kind, capabilities_json, \
-                    project_scope, created_at, expires_at, last_used_at, paired_at, \
-                    revoked_at, rate_limit_per_minute, concurrency_limit \
-             FROM external_mcp_integrations ORDER BY created_at",
-        )
+        .prepare(&format!(
+            "SELECT {INTEGRATION_COLS} FROM external_mcp_integrations ORDER BY created_at"
+        ))
         .map_err(|e| err(e.to_string()))?;
     let mut rows = stmt.query([]).map_err(|e| err(e.to_string()))?;
     let mut out = Vec::new();
     while let Some(row) = rows.next().map_err(|e| err(e.to_string()))? {
-        let id: String = row.get(0).unwrap_or_default();
-        let capabilities: Value = row
-            .get::<_, String>(4)
-            .ok()
-            .and_then(|s| serde_json::from_str(&s).ok())
-            .unwrap_or(json!([]));
-        let mut grants = Vec::new();
-        if let Ok(mut ps) = conn.prepare(
-            "SELECT p.project_id, COALESCE(pr.title, p.project_id) \
-             FROM external_mcp_integration_projects p \
-             LEFT JOIN projection_projects pr ON pr.project_id = p.project_id \
-             WHERE p.integration_id = ?1 ORDER BY p.project_id",
-        ) {
-            if let Ok(mapped) = ps.query_map(params![id.clone()], |r| {
-                Ok(json!({
-                    "projectId": r.get::<_, String>(0)?,
-                    "title": r.get::<_, String>(1)?,
-                }))
-            }) {
-                grants = mapped.flatten().collect();
-            }
-        }
-        out.push(json!({
-            "integrationId": id,
-            "name": row.get::<_, String>(1).unwrap_or_default(),
-            "audience": row.get::<_, String>(2).unwrap_or_default(),
-            "capabilities": capabilities,
-            "projectScope": row.get::<_, String>(5).unwrap_or_else(|_| "selected".into()),
-            "allowedProjects": grants,
-            "createdAt": row.get::<_, String>(6).unwrap_or_default(),
-            "expiresAt": row.get::<_, String>(7).unwrap_or_default(),
-            "lastUsedAt": row.get::<_, Option<String>>(8).unwrap_or(None),
-            "pairedAt": row.get::<_, Option<String>>(9).unwrap_or(None),
-            "revokedAt": row.get::<_, Option<String>>(10).unwrap_or(None),
-            "rateLimitPerMinute": row.get::<_, i64>(11).unwrap_or(0),
-            "concurrencyLimit": row.get::<_, i64>(12).unwrap_or(0),
-            "clientKind": row.get::<_, String>(3).unwrap_or_default(),
-            "stdio": {"command": "", "args": []},
-        }));
+        let rec = read_integration_row(row);
+        out.push(integration_view(conn, &rec, &projects));
     }
     Ok(Value::Array(out))
+}
+
+fn now_ms() -> i64 {
+    std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .map(|d| d.as_millis() as i64)
+        .unwrap_or(0)
+}
+
+/// `makeSetup`: the create/refreshPairing success payload.
+fn make_setup(
+    conn: &rusqlite::Connection,
+    rec: &McpIntegrationRow,
+    pairing_code: &str,
+    pairing_expires_at: &str,
+) -> Result<Value, WsErr> {
+    let projects = load_active_projects(conn);
+    let pair = mcp_pair_stdio(pairing_code);
+    Ok(json!({
+        "integration": integration_view(conn, rec, &projects),
+        "pairingCode": pairing_code,
+        "pairingExpiresAt": pairing_expires_at,
+        "setupCommand": mcp_shell_command(&pair),
+        "stdio": pair,
+    }))
+}
+
+/// `server.createExternalMcpIntegration`.
+fn create_external_mcp_integration(payload: &Value) -> Result<Value, WsErr> {
+    let project_scope = payload
+        .get("projectScope")
+        .and_then(Value::as_str)
+        .unwrap_or("selected")
+        .to_string();
+    let mut project_ids: Vec<String> = Vec::new();
+    if project_scope != "all" {
+        for p in payload
+            .get("projectIds")
+            .and_then(Value::as_array)
+            .cloned()
+            .unwrap_or_default()
+        {
+            if let Some(id) = p.as_str() {
+                if !project_ids.iter().any(|x| x == id) {
+                    project_ids.push(id.to_string());
+                }
+            }
+        }
+    }
+    let mut capabilities: Vec<String> = Vec::new();
+    for c in payload
+        .get("capabilities")
+        .and_then(Value::as_array)
+        .cloned()
+        .unwrap_or_default()
+    {
+        if let Some(c) = c.as_str() {
+            if !capabilities.iter().any(|x| x == c) {
+                capabilities.push(c.to_string());
+            }
+        }
+    }
+
+    let conn = crate::orchestration_engine::open_state_rw()?;
+    let active = load_active_projects(&conn);
+    if project_scope == "selected" {
+        if project_ids.is_empty() {
+            return Err(err(
+                "Select at least one project or grant access to all projects.",
+            ));
+        }
+        if let Some(missing) = project_ids
+            .iter()
+            .find(|id| !active.iter().any(|(pid, _)| pid == *id))
+        {
+            return Err(err(format!("Project \"{missing}\" was not found.")));
+        }
+    }
+    if capabilities.iter().any(|c| c == "tasks:create")
+        && !capabilities.iter().any(|c| c == "projects:read")
+    {
+        return Err(err(
+            "The \"tasks:create\" capability requires \"projects:read\".",
+        ));
+    }
+
+    let name = payload
+        .get("name")
+        .and_then(Value::as_str)
+        .unwrap_or_default();
+    let client_kind = payload
+        .get("clientKind")
+        .and_then(Value::as_str)
+        .unwrap_or("other");
+    let now = now_ms();
+    let created_at = crate::todo::iso_from_ms(now);
+    let expires_at = crate::todo::iso_from_ms(
+        now + payload
+            .get("expiresInDays")
+            .and_then(Value::as_i64)
+            .unwrap_or(DEFAULT_EXPIRY_DAYS)
+            * 86_400_000,
+    );
+    let pairing_expires_at = crate::todo::iso_from_ms(now + PAIRING_TTL_MS);
+    let integration_id = format!("mcp_int_{}", crate::orchestration_engine::uuid_v4());
+    let pairing_code = random_opaque(PAIRING_PREFIX);
+    let pairing_hash = hash_external_mcp_secret(&pairing_code);
+    let caps_json = serde_json::to_string(&capabilities).unwrap_or_else(|_| "[]".into());
+
+    conn.execute_batch("BEGIN IMMEDIATE")
+        .map_err(|e| err(format!("Could not create the external MCP integration. {e}")))?;
+    let result = (|| -> Result<(), WsErr> {
+        conn.execute(
+            "INSERT INTO external_mcp_integrations (
+                integration_id, name, client_kind, audience, credential_hash,
+                capabilities_json, project_scope, created_at, expires_at,
+                last_used_at, paired_at, revoked_at,
+                rate_limit_per_minute, concurrency_limit
+            ) VALUES (?1, ?2, ?3, ?4, NULL, ?5, ?6, ?7, ?8, NULL, NULL, NULL, ?9, ?10)",
+            params![
+                integration_id,
+                name,
+                client_kind,
+                EXTERNAL_MCP_AUDIENCE,
+                caps_json,
+                project_scope,
+                created_at,
+                expires_at,
+                DEFAULT_RATE_LIMIT_PER_MINUTE,
+                DEFAULT_ACTIVE_TASK_LIMIT,
+            ],
+        )
+        .map_err(|e| err(format!("Could not create the external MCP integration. {e}")))?;
+        for pid in &project_ids {
+            conn.execute(
+                "INSERT INTO external_mcp_integration_projects (integration_id, project_id) \
+                 VALUES (?1, ?2)",
+                params![integration_id, pid],
+            )
+            .map_err(|e| err(format!("Could not create the external MCP integration. {e}")))?;
+        }
+        conn.execute(
+            "INSERT INTO external_mcp_pairing_codes (
+                pairing_hash, integration_id, created_at, expires_at, consumed_at
+            ) VALUES (?1, ?2, ?3, ?4, NULL)",
+            params![pairing_hash, integration_id, created_at, pairing_expires_at],
+        )
+        .map_err(|e| err(format!("Could not create the external MCP integration. {e}")))?;
+        Ok(())
+    })();
+    match result {
+        Ok(()) => {
+            conn.execute_batch("COMMIT").ok();
+        }
+        Err(e) => {
+            conn.execute_batch("ROLLBACK").ok();
+            return Err(e);
+        }
+    }
+
+    let Some(rec) = integration_by_id(&conn, &integration_id)? else {
+        return Err(err("The new integration could not be read back."));
+    };
+    make_setup(&conn, &rec, &pairing_code, &pairing_expires_at)
+}
+
+/// `server.revokeExternalMcpIntegration` → `{ revoked: boolean }`.
+fn revoke_external_mcp_integration(payload: &Value) -> Result<Value, WsErr> {
+    let integration_id = payload
+        .get("integrationId")
+        .and_then(Value::as_str)
+        .ok_or_else(|| err("missing integrationId"))?;
+    let conn = crate::orchestration_engine::open_state_rw()?;
+    let n = conn
+        .execute(
+            "UPDATE external_mcp_integrations \
+             SET revoked_at = ?2, credential_hash = NULL \
+             WHERE integration_id = ?1 AND revoked_at IS NULL",
+            params![integration_id, crate::todo::iso_now_ms()],
+        )
+        .map_err(|e| err(format!("Could not revoke the external MCP integration. {e}")))?;
+    Ok(json!({"revoked": n > 0}))
+}
+
+/// `server.refreshExternalMcpPairing`.
+fn refresh_external_mcp_pairing(payload: &Value) -> Result<Value, WsErr> {
+    let integration_id = payload
+        .get("integrationId")
+        .and_then(Value::as_str)
+        .ok_or_else(|| err("missing integrationId"))?;
+    let conn = crate::orchestration_engine::open_state_rw()?;
+    let Some(rec) = integration_by_id(&conn, integration_id)? else {
+        return Err(err(
+            "Only an active, not-yet-paired integration can receive a new pairing code.",
+        ));
+    };
+    let now = now_ms();
+    let now_iso = crate::todo::iso_from_ms(now);
+    if rec.revoked_at.is_some() || rec.expires_at <= now_iso {
+        return Err(err(
+            "Only an active, not-yet-paired integration can receive a new pairing code.",
+        ));
+    }
+    let has_credential: bool = conn
+        .query_row(
+            "SELECT credential_hash IS NOT NULL FROM external_mcp_integrations \
+             WHERE integration_id = ?1",
+            params![integration_id],
+            |r| r.get(0),
+        )
+        .unwrap_or(true);
+    if has_credential {
+        return Err(err(
+            "Only an active, not-yet-paired integration can receive a new pairing code.",
+        ));
+    }
+    let pairing_code = random_opaque(PAIRING_PREFIX);
+    let pairing_hash = hash_external_mcp_secret(&pairing_code);
+    let pairing_expires_at = crate::todo::iso_from_ms(now + PAIRING_TTL_MS);
+
+    conn.execute_batch("BEGIN IMMEDIATE")
+        .map_err(|e| err(format!("Could not refresh pairing. {e}")))?;
+    let refreshed = (|| -> Result<bool, WsErr> {
+        let active: i64 = conn
+            .query_row(
+                "SELECT COUNT(*) FROM external_mcp_integrations \
+                 WHERE integration_id = ?1 AND credential_hash IS NULL \
+                   AND paired_at IS NULL AND revoked_at IS NULL AND expires_at > ?2",
+                params![integration_id, now_iso],
+                |r| r.get(0),
+            )
+            .map_err(|e| err(format!("Could not refresh pairing. {e}")))?;
+        if active == 0 {
+            return Ok(false);
+        }
+        conn.execute(
+            "DELETE FROM external_mcp_pairing_codes WHERE integration_id = ?1",
+            params![integration_id],
+        )
+        .map_err(|e| err(format!("Could not refresh pairing. {e}")))?;
+        conn.execute(
+            "INSERT INTO external_mcp_pairing_codes (
+                pairing_hash, integration_id, created_at, expires_at, consumed_at
+            ) VALUES (?1, ?2, ?3, ?4, NULL)",
+            params![pairing_hash, integration_id, now_iso, pairing_expires_at],
+        )
+        .map_err(|e| err(format!("Could not refresh pairing. {e}")))?;
+        Ok(true)
+    })();
+    match refreshed {
+        Ok(true) => {
+            conn.execute_batch("COMMIT").ok();
+        }
+        Ok(false) => {
+            conn.execute_batch("ROLLBACK").ok();
+            return Err(err(
+                "The integration was paired, revoked, or expired before pairing could be refreshed.",
+            ));
+        }
+        Err(e) => {
+            conn.execute_batch("ROLLBACK").ok();
+            return Err(e);
+        }
+    }
+    make_setup(&conn, &rec, &pairing_code, &pairing_expires_at)
 }
 
 /// `server.refreshProviders`: re-probe each provider's configured binary and

@@ -16,7 +16,7 @@ fn err(message: impl Into<String>) -> WsErr {
     WsErr(message.into(), None)
 }
 
-fn uuid_v4() -> String {
+pub(crate) fn uuid_v4() -> String {
     let mut bytes = [0u8; 16];
     if let Ok(mut f) = std::fs::File::open("/dev/urandom") {
         use std::io::Read;
@@ -45,7 +45,7 @@ pub fn handles(tag: &str) -> bool {
     ) && std::env::var("SYNARA_NO_UPSTREAM").is_ok()
 }
 
-fn open_state_rw() -> Result<Connection, WsErr> {
+pub(crate) fn open_state_rw() -> Result<Connection, WsErr> {
     let db = PathBuf::from(state_dir()).join("state.sqlite");
     Connection::open(&db).map_err(|e| err(format!("could not open state.sqlite: {e}")))
 }

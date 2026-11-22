@@ -7,18 +7,18 @@
 //! answers them natively (same `WsBootstrapNegotiateResult` the HTTP
 //! `/ws/negotiate` route produces); every other frame relays upstream.
 
-use axum::extract::ws::{Message as ClientMessage, WebSocket, WebSocketUpgrade};
+use axum::Router;
 use axum::extract::State;
+use axum::extract::ws::{Message as ClientMessage, WebSocket, WebSocketUpgrade};
 use axum::http::{HeaderMap, Uri};
 use axum::response::Response;
 use axum::routing::get;
-use axum::Router;
 use futures_util::{SinkExt, StreamExt};
 use serde_json::json;
 use tokio::sync::mpsc::unbounded_channel;
 use tokio_tungstenite::connect_async;
-use tokio_tungstenite::tungstenite::client::IntoClientRequest;
 use tokio_tungstenite::tungstenite::Message as UpstreamMessage;
+use tokio_tungstenite::tungstenite::client::IntoClientRequest;
 
 use crate::original::Original;
 
@@ -73,7 +73,12 @@ fn intercept_todo(
         std::sync::Mutex<std::collections::HashMap<String, tokio::task::JoinHandle<()>>>,
     >,
 ) -> Option<Option<ClientMessage>> {
-    if !text.contains("\"todo.") && !text.contains("\"server.get") && !text.contains("\"shell.openInEditor\"") && !text.contains("\"git.") {
+    if !text.contains("\"todo.")
+        && !text.contains("\"server.get")
+        && !text.contains("\"shell.openInEditor\"")
+        && !text.contains("\"git.")
+        && !text.contains("\"filesystem.browse")
+    {
         return None;
     }
     let msg: serde_json::Value = serde_json::from_str(text).ok()?;
@@ -86,6 +91,7 @@ fn intercept_todo(
         && tag != "server.getRuntimeStatus"
         && tag != "shell.openInEditor"
         && !crate::git_domain::handles(tag)
+        && tag != "filesystem.browse"
     {
         return None;
     }
@@ -94,7 +100,10 @@ fn intercept_todo(
         .and_then(|v| v.as_str())
         .unwrap_or("")
         .to_string();
-    let payload = msg.get("payload").cloned().unwrap_or(serde_json::Value::Null);
+    let payload = msg
+        .get("payload")
+        .cloned()
+        .unwrap_or(serde_json::Value::Null);
     if tag == "todo.subscribe" {
         // Snapshot first, then every change — mirrors `streamChanges`
         // (subscribe-then-read ordering is preserved by the store lock).
@@ -103,16 +112,26 @@ fn intercept_todo(
         let rid = request_id.clone();
         let task = tokio::spawn(async move {
             let mut rx = todos.subscribe();
-            if let Ok(serde_json::Value::Object(mut snapshot)) = todos.handle("todo.list", serde_json::Value::Null) {
+            if let Ok(serde_json::Value::Object(mut snapshot)) =
+                todos.handle("todo.list", serde_json::Value::Null)
+            {
                 let event = serde_json::json!({"type": "snapshot", "todos": snapshot.remove("todos").unwrap_or(serde_json::json!([]))});
-                let chunk = serde_json::json!({"_tag": "Chunk", "requestId": rid, "values": [event]});
-                if tx.send(ClientMessage::Text(chunk.to_string().into())).is_err() {
+                let chunk =
+                    serde_json::json!({"_tag": "Chunk", "requestId": rid, "values": [event]});
+                if tx
+                    .send(ClientMessage::Text(chunk.to_string().into()))
+                    .is_err()
+                {
                     return;
                 }
             }
             while let Ok(event) = rx.recv().await {
-                let chunk = serde_json::json!({"_tag": "Chunk", "requestId": rid, "values": [event]});
-                if tx.send(ClientMessage::Text(chunk.to_string().into())).is_err() {
+                let chunk =
+                    serde_json::json!({"_tag": "Chunk", "requestId": rid, "values": [event]});
+                if tx
+                    .send(ClientMessage::Text(chunk.to_string().into()))
+                    .is_err()
+                {
                     return;
                 }
             }
@@ -122,7 +141,11 @@ fn intercept_todo(
         }
         return Some(None);
     }
-    let outcome = if crate::git_domain::handles(tag) {
+    let outcome = if tag == "filesystem.browse" {
+        crate::fs_browse::browse(&payload)
+            .map(Some)
+            .map_err(error_json)
+    } else if crate::git_domain::handles(tag) {
         match crate::git_domain::handle(tag, &payload) {
             Ok(value) => Ok(value),
             Err(e) => Err(error_json(e)),
@@ -174,8 +197,15 @@ fn intercept_bootstrap(text: &str) -> Option<(String, ClientMessage)> {
     if msg.get("_tag")?.as_str()? != "Request" || msg.get("tag")?.as_str()? != BOOTSTRAP_NEGOTIATE {
         return None;
     }
-    let request_id = msg.get("id").and_then(|v| v.as_str()).unwrap_or("").to_string();
-    let payload = msg.get("payload").cloned().unwrap_or(serde_json::Value::Null);
+    let request_id = msg
+        .get("id")
+        .and_then(|v| v.as_str())
+        .unwrap_or("")
+        .to_string();
+    let payload = msg
+        .get("payload")
+        .cloned()
+        .unwrap_or(serde_json::Value::Null);
     let get_int = |k: &str| payload.get(k).and_then(|v| v.as_i64()).unwrap_or(-1);
     let required: Vec<String> = payload
         .get("requiredCapabilities")
@@ -199,10 +229,7 @@ fn intercept_bootstrap(text: &str) -> Option<(String, ClientMessage)> {
         }),
     };
     let reply = json!({"_tag": "Exit", "requestId": request_id, "exit": exit});
-    Some((
-        request_id,
-        ClientMessage::Text(reply.to_string().into()),
-    ))
+    Some((request_id, ClientMessage::Text(reply.to_string().into())))
 }
 
 /// Replaces the `x-synara-server-instance` query value in a socket target.
@@ -324,10 +351,7 @@ async fn relay(
                     {
                         let tag = msg.get("_tag").and_then(|v| v.as_str()).unwrap_or("");
                         if tag == "Interrupt" || tag == "Eof" {
-                            let rid = msg
-                                .get("requestId")
-                                .and_then(|v| v.as_str())
-                                .unwrap_or("");
+                            let rid = msg.get("requestId").and_then(|v| v.as_str()).unwrap_or("");
                             let owned = if let Ok(mut map) = streams_in.lock() {
                                 if tag == "Eof" {
                                     map.drain().map(|(_, h)| h).collect::<Vec<_>>()

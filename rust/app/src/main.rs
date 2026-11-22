@@ -10,6 +10,7 @@ mod original;
 mod mcp_connectors;
 mod provider_cache;
 mod skills_catalog;
+mod project_imports;
 mod projects_provision;
 mod projects_devserver;
 mod projects_fileops;

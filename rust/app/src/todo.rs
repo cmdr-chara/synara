@@ -55,7 +55,7 @@ fn iso_now_ms() -> String {
     iso_from_ms(ms)
 }
 
-fn iso_from_ms(ms: i64) -> String {
+pub(crate) fn iso_from_ms(ms: i64) -> String {
     let secs = ms.div_euclid(1000);
     let rem = ms.rem_euclid(1000);
     let days = secs.div_euclid(86_400);

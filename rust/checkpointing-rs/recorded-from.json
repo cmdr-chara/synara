@@ -1,0 +1,23 @@
+{
+  "unit": "apps/server/src/checkpointing/",
+  "files": 13,
+  "fingerprint": "344a8238f14be089",
+  "coverage": {
+    "lines": 87,
+    "reached": 45,
+    "files": [
+      {
+        "file": "apps/server/src/checkpointing/Diffs.ts",
+        "lines": 65,
+        "reached": 23,
+        "missed": "19-33, 35-49, 51-54, 64-71"
+      },
+      {
+        "file": "apps/server/src/lazyModule.ts",
+        "lines": 22,
+        "reached": 22,
+        "missed": ""
+      }
+    ]
+  }
+}

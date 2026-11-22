@@ -1,0 +1,457 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/checkpointing/",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "checkpointing-rs",
+  "exports": [
+    {
+      "name": "parseCheckpointFilesFromUnifiedDiff",
+      "file": "apps/server/src/checkpointing/Diffs.ts",
+      "line": 60,
+      "params": [
+        {
+          "name": "diff",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Effect.Effect<typeof typeof typeof typeof OrchestrationCheckpointFile.Type.Type.Type.Type[]>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "parseManagedCheckpointRef",
+      "file": "apps/server/src/checkpointing/Utils.ts",
+      "line": 27,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ManagedCheckpointRefParts | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isManagedCheckpointRefForThread",
+      "file": "apps/server/src/checkpointing/Utils.ts",
+      "line": 42,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "threadId",
+          "ts_type": "typeof typeof typeof typeof ThreadId.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "checkpointRefForThreadTurn",
+      "file": "apps/server/src/checkpointing/Utils.ts",
+      "line": 47,
+      "params": [
+        {
+          "name": "threadId",
+          "ts_type": "typeof typeof typeof typeof ThreadId.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "turnCount",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof CheckpointRef.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "checkpointRefForThreadTurnInManagedFamily",
+      "file": "apps/server/src/checkpointing/Utils.ts",
+      "line": 53,
+      "params": [
+        {
+          "name": "managedRef",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "threadId",
+          "ts_type": "typeof typeof typeof typeof ThreadId.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "turnCount",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof CheckpointRef.Type.Type.Type.Type | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "checkpointRefForThreadMessageStart",
+      "file": "apps/server/src/checkpointing/Utils.ts",
+      "line": 63,
+      "params": [
+        {
+          "name": "threadId",
+          "ts_type": "typeof typeof typeof typeof ThreadId.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "messageId",
+          "ts_type": "typeof typeof typeof typeof MessageId.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof CheckpointRef.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "checkpointRefForThreadTurnStart",
+      "file": "apps/server/src/checkpointing/Utils.ts",
+      "line": 72,
+      "params": [
+        {
+          "name": "threadId",
+          "ts_type": "typeof typeof typeof typeof ThreadId.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "turnId",
+          "ts_type": "typeof typeof typeof typeof TurnId.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof CheckpointRef.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "checkpointRefForThreadTurnStartInManagedFamily",
+      "file": "apps/server/src/checkpointing/Utils.ts",
+      "line": 78,
+      "params": [
+        {
+          "name": "managedRef",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "threadId",
+          "ts_type": "typeof typeof typeof typeof ThreadId.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "turnId",
+          "ts_type": "typeof typeof typeof typeof TurnId.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof CheckpointRef.Type.Type.Type.Type | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "checkpointRefForThreadTurnLive",
+      "file": "apps/server/src/checkpointing/Utils.ts",
+      "line": 92,
+      "params": [
+        {
+          "name": "threadId",
+          "ts_type": "typeof typeof typeof typeof ThreadId.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "turnId",
+          "ts_type": "typeof typeof typeof typeof TurnId.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "revision",
+          "ts_type": "string",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof CheckpointRef.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "checkpointRefForThreadRevertRescue",
+      "file": "apps/server/src/checkpointing/Utils.ts",
+      "line": 109,
+      "params": [
+        {
+          "name": "threadId",
+          "ts_type": "typeof typeof typeof typeof ThreadId.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "token",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof CheckpointRef.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveProjectCwdForKind",
+      "file": "apps/server/src/checkpointing/Utils.ts",
+      "line": 131,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly kind: typeof typeof typeof typeof ProjectKind.Type.Type.Type.Type | string | null | undefined;\n  readonly workspaceRoot: string | null;\n  readonly worktreePath: string | null | undefined;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveThreadWorkspaceCwd",
+      "file": "apps/server/src/checkpointing/Utils.ts",
+      "line": 142,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly dedicatedChatWorkspaceParent?: string | undefined;\n  readonly thread: {\n    readonly projectId: typeof typeof typeof typeof ProjectId.Type.Type.Type.Type;\n    readonly envMode?: \"local\" | \"worktree\" | undefined;\n    readonly worktreePath: string | null;\n    readonly workingDirectory?: string | null | undefined;\n  };\n  readonly projects: ReadonlyArray<{\n    readonly id: typeof typeof typeof typeof ProjectId.Type.Type.Type.Type;\n    readonly kind?: typeof typeof typeof typeof ProjectKind.Type.Type.Type.Type | undefined;\n    readonly workspaceRoot: string;\n  }>;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "formatCheckpointHeadTrailer",
+      "file": "apps/server/src/checkpointing/historyIntegration.ts",
+      "line": 14,
+      "params": [
+        {
+          "name": "headCommit",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "reflogEntry",
+          "ts_type": "string",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "checkpointReflogAnchor",
+      "file": "apps/server/src/checkpointing/historyIntegration.ts",
+      "line": 21,
+      "params": [
+        {
+          "name": "entry",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "parseCheckpointCommit",
+      "file": "apps/server/src/checkpointing/historyIntegration.ts",
+      "line": 32,
+      "params": [
+        {
+          "name": "raw",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "CheckpointCommitMetadata",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "checkpointHeadTransitions",
+      "file": "apps/server/src/checkpointing/historyIntegration.ts",
+      "line": 64,
+      "params": [
+        {
+          "name": "raw",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "from",
+          "ts_type": "CheckpointCommitMetadata",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "to",
+          "ts_type": "CheckpointCommitMetadata",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "HeadReflogEntry[] | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "parseRawDiff",
+      "file": "apps/server/src/checkpointing/historyIntegration.ts",
+      "line": 98,
+      "params": [
+        {
+          "name": "stdout",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "RawDiffEntry[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "parseNameOnlyPaths",
+      "file": "apps/server/src/checkpointing/historyIntegration.ts",
+      "line": 113,
+      "params": [
+        {
+          "name": "stdout",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Set<string>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "chunkArgumentGroups",
+      "file": "apps/server/src/checkpointing/historyIntegration.ts",
+      "line": 121,
+      "params": [
+        {
+          "name": "groups",
+          "ts_type": "ReadonlyArray<ReadonlyArray<string>>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "maxCharacters",
+          "ts_type": "number",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string[][]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "CheckpointUnavailableError",
+      "file": "apps/server/src/checkpointing/Errors.ts",
+      "line": 8,
+      "reason": "class: extends another class, accessor `message`"
+    },
+    {
+      "name": "CheckpointInvariantError",
+      "file": "apps/server/src/checkpointing/Errors.ts",
+      "line": 25,
+      "reason": "class: extends another class, accessor `message`"
+    }
+  ]
+}

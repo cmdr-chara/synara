@@ -28,7 +28,7 @@ Source of truth for web components: `apps/web/src/components/**.tsx`
 | Dev servers | (dev-server UI in server surfaces) | DEV SERVERS pane list/run/stop | ✅ |
 | Settings | settings/* (44 comps), SettingsSidebarNav, ThemePackEditor, DebugFeatureFlagsMenu | Settings pane: appearance + about | 🔶 (theme+about only) |
 | Diff panel | DiffPanel* (9 comps), DiffLineBlamePopover, DiffWorkerPoolProvider | CHANGES dock: git.status file list (+ins/-del) + colored patch view | 🔶 (no blame, no staged/unstaged split) |
-| Terminal | terminal/*, TerminalWorkspaceTabs, ThreadTerminalDrawer, TerminalSearch | — | ⬜ (terminal RPCs native; no pane) |
+| Terminal | terminal/*, TerminalWorkspaceTabs, ThreadTerminalDrawer, TerminalSearch | bottom TERMINAL drawer: PTY via terminal.open, subscribeEvents stream (ANSI-stripped), $ input -> terminal.write, restart/close | 🔶 (no tabs/multi-session, no search, no true tty rendering) |
 | Inbox | inbox/*, githubInbox/* (4) | INBOX pane: PR/issue rows (icon, #, repo, author, rel time), opens URL | 🔶 (no filters/actions) |
 | Browser | BrowserPanel, BrowserTabStrip, BrowserVault* | — | ⬜ (wry webview only as fallback) |
 | Right dock | RightDock, SubagentsDockPane, BackgroundTasksDockPane, SidechatDockPane, PlanSidebar | right-side dock container w/ CHANGES pane | 🔶 (only changes pane; no subagents/tasks/sidechat) |
@@ -48,6 +48,7 @@ Source of truth for web components: `apps/web/src/components/**.tsx`
 3. Thread chrome: multi-tab strip, pin/rename/archive quick actions, running
    spinner.
 4. Right dock panes (background tasks, subagents, sidechat).
-5. Diff panel + terminal pane (both have native RPCs already).
-6. Inbox/githubInbox, kanban, automation, hosts/device/account surfaces.
+5. Terminal upgrade: tabs/multi-session, search, truer rendering (colors/cursor).
+6. Kanban, automation, hosts/device/account surfaces (blocked on relayed/T3-derived domains).
 7. Dialogs/sheets on demand.
+8. Composer completeness: model picker (needs provider CLI) + slash menu.

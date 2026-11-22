@@ -1,0 +1,744 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/theme/",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "theme-rs",
+  "exports": [
+    {
+      "name": "isThemeMode",
+      "file": "apps/web/src/theme/theme.logic.ts",
+      "line": 350,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "value is (\"light\" | \"dark\" | \"system\")",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isThemeVariant",
+      "file": "apps/web/src/theme/theme.logic.ts",
+      "line": 354,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "value is (\"light\" | \"dark\")",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "getAvailableCodeThemes",
+      "file": "apps/web/src/theme/theme.logic.ts",
+      "line": 358,
+      "params": [
+        {
+          "name": "variant",
+          "ts_type": "(\"light\" | \"dark\")",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "readonly CodeThemeOption[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isCodeThemeAvailable",
+      "file": "apps/web/src/theme/theme.logic.ts",
+      "line": 362,
+      "params": [
+        {
+          "name": "codeThemeId",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "variant",
+          "ts_type": "(\"light\" | \"dark\")",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "normalizeCodeThemeId",
+      "file": "apps/web/src/theme/theme.logic.ts",
+      "line": 369,
+      "params": [
+        {
+          "name": "codeThemeId",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "variant",
+          "ts_type": "(\"light\" | \"dark\")",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "fallback",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "normalizeThemeFonts",
+      "file": "apps/web/src/theme/theme.logic.ts",
+      "line": 381,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ThemeFonts",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "normalizeSemanticColors",
+      "file": "apps/web/src/theme/theme.logic.ts",
+      "line": 389,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "fallback",
+          "ts_type": "ThemeSemanticColors",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ThemeSemanticColors",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "normalizeChromeTheme",
+      "file": "apps/web/src/theme/theme.logic.ts",
+      "line": 401,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "variant",
+          "ts_type": "(\"light\" | \"dark\")",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ChromeTheme",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "normalizeWindowTranslucency",
+      "file": "apps/web/src/theme/theme.logic.ts",
+      "line": 419,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "variant",
+          "ts_type": "(\"light\" | \"dark\")",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "WindowTranslucency",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "normalizeThemePack",
+      "file": "apps/web/src/theme/theme.logic.ts",
+      "line": 450,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "variant",
+          "ts_type": "(\"light\" | \"dark\")",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ThemePack",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "normalizeThemeState",
+      "file": "apps/web/src/theme/theme.logic.ts",
+      "line": 474,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ThemeState",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "parseStoredThemeState",
+      "file": "apps/web/src/theme/theme.logic.ts",
+      "line": 517,
+      "params": [
+        {
+          "name": "rawValue",
+          "ts_type": "string | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ThemeState",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "serializeThemeState",
+      "file": "apps/web/src/theme/theme.logic.ts",
+      "line": 532,
+      "params": [
+        {
+          "name": "state",
+          "ts_type": "ThemeState",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "createThemeShareString",
+      "file": "apps/web/src/theme/theme.logic.ts",
+      "line": 538,
+      "params": [
+        {
+          "name": "variant",
+          "ts_type": "(\"light\" | \"dark\")",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "pack",
+          "ts_type": "ThemePack",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "parseThemeShareString",
+      "file": "apps/web/src/theme/theme.logic.ts",
+      "line": 546,
+      "params": [
+        {
+          "name": "rawValue",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ThemeSharePayload",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "canParseThemeShareString",
+      "file": "apps/web/src/theme/theme.logic.ts",
+      "line": 575,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "targetVariant",
+          "ts_type": "(\"light\" | \"dark\")",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "parseThemeShareStringForVariant",
+      "file": "apps/web/src/theme/theme.logic.ts",
+      "line": 584,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "targetVariant",
+          "ts_type": "(\"light\" | \"dark\")",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "ThemeSharePayload",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "updateThemePackFromShareString",
+      "file": "apps/web/src/theme/theme.logic.ts",
+      "line": 597,
+      "params": [
+        {
+          "name": "state",
+          "ts_type": "ThemeState",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "value",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "targetVariant",
+          "ts_type": "(\"light\" | \"dark\")",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ThemeState",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "updateChromeTheme",
+      "file": "apps/web/src/theme/theme.logic.ts",
+      "line": 618,
+      "params": [
+        {
+          "name": "state",
+          "ts_type": "ThemeState",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "variant",
+          "ts_type": "(\"light\" | \"dark\")",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "patch",
+          "ts_type": "Partial<ChromeTheme>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ThemeState",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "setThemeCodeThemeId",
+      "file": "apps/web/src/theme/theme.logic.ts",
+      "line": 640,
+      "params": [
+        {
+          "name": "state",
+          "ts_type": "ThemeState",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "variant",
+          "ts_type": "(\"light\" | \"dark\")",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "codeThemeId",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ThemeState",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "getCodeThemeSeed",
+      "file": "apps/web/src/theme/theme.logic.ts",
+      "line": 664,
+      "params": [
+        {
+          "name": "codeThemeId",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "variant",
+          "ts_type": "(\"light\" | \"dark\")",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ChromeTheme",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "setThemeFonts",
+      "file": "apps/web/src/theme/theme.logic.ts",
+      "line": 723,
+      "params": [
+        {
+          "name": "state",
+          "ts_type": "ThemeState",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "variant",
+          "ts_type": "(\"light\" | \"dark\")",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "patch",
+          "ts_type": "Partial<ThemeFonts>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ThemeState",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resetThemeVariant",
+      "file": "apps/web/src/theme/theme.logic.ts",
+      "line": 744,
+      "params": [
+        {
+          "name": "state",
+          "ts_type": "ThemeState",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "variant",
+          "ts_type": "(\"light\" | \"dark\")",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ThemeState",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "setWindowTranslucency",
+      "file": "apps/web/src/theme/theme.logic.ts",
+      "line": 762,
+      "params": [
+        {
+          "name": "state",
+          "ts_type": "ThemeState",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "variant",
+          "ts_type": "(\"light\" | \"dark\")",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "patch",
+          "ts_type": "Partial<WindowTranslucency>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ThemeState",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "areWindowTranslucenciesEqual",
+      "file": "apps/web/src/theme/theme.logic.ts",
+      "line": 776,
+      "params": [
+        {
+          "name": "left",
+          "ts_type": "WindowTranslucency",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "right",
+          "ts_type": "WindowTranslucency",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveThemePack",
+      "file": "apps/web/src/theme/theme.logic.ts",
+      "line": 787,
+      "params": [
+        {
+          "name": "state",
+          "ts_type": "ThemeState",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "variant",
+          "ts_type": "(\"light\" | \"dark\")",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ThemePack",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveProfileThemeAccent",
+      "file": "apps/web/src/theme/theme.logic.ts",
+      "line": 795,
+      "params": [
+        {
+          "name": "state",
+          "ts_type": "ThemeState",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "{ light: string; dark: string }",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "areThemePacksEqual",
+      "file": "apps/web/src/theme/theme.logic.ts",
+      "line": 802,
+      "params": [
+        {
+          "name": "left",
+          "ts_type": "ThemePack",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "right",
+          "ts_type": "ThemePack",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveThemeVariant",
+      "file": "apps/web/src/theme/theme.logic.ts",
+      "line": 820,
+      "params": [
+        {
+          "name": "mode",
+          "ts_type": "(\"light\" | \"dark\" | \"system\")",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "systemDark",
+          "ts_type": "boolean",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(\"light\" | \"dark\")",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "buildThemeCssVariables",
+      "file": "apps/web/src/theme/theme.logic.ts",
+      "line": 827,
+      "params": [
+        {
+          "name": "pack",
+          "ts_type": "ThemePack",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "variant",
+          "ts_type": "(\"light\" | \"dark\")",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "options",
+          "ts_type": "{\n    /** How the desktop window backs glass; null or absent for an opaque window. */\n    windowTranslucency?: (\"native\" | \"compositor\") | null;\n    systemUiFont?: boolean;\n    translucency?: WindowTranslucency;\n  }",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "ThemeCssVariableBuild",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "buildResolvedThemeTokens",
+      "file": "apps/web/src/theme/theme.logic.ts",
+      "line": 1004,
+      "params": [
+        {
+          "name": "pack",
+          "ts_type": "ThemePack",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "variant",
+          "ts_type": "(\"light\" | \"dark\")",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ResolvedThemeTokens",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

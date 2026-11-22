@@ -1,0 +1,73 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/browserAutomation/",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "browserautomation-rs",
+  "exports": [
+    {
+      "name": "callBrowserHostTool",
+      "file": "apps/server/src/browserAutomation/browserHostRpcClient.ts",
+      "line": 289,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "BrowserHostToolCall",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<unknown>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveBrowserHostPipePath",
+      "file": "apps/server/src/browserAutomation/browserHostRpcClient.ts",
+      "line": 329,
+      "params": [
+        {
+          "name": "env",
+          "ts_type": "NodeJS.ProcessEnv",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveBrowserHostCapability",
+      "file": "apps/server/src/browserAutomation/browserHostRpcClient.ts",
+      "line": 337,
+      "params": [
+        {
+          "name": "env",
+          "ts_type": "NodeJS.ProcessEnv",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "BrowserHostRpcError",
+      "file": "apps/server/src/browserAutomation/browserHostRpcClient.ts",
+      "line": 51,
+      "reason": "class: extends another class, public field `kind`, public field `data`"
+    }
+  ]
+}

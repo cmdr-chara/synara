@@ -9,6 +9,7 @@ use gpui_kit::component::{
     button::{Button, ButtonVariants as _},
     h_flex,
     input::{Editor, EditorState, Input, InputEvent, InputState},
+    menu::{DropdownMenu as _, PopupMenuItem},
     scroll::ScrollableElement as _,
     v_flex,
     ActiveTheme as _, IconName,
@@ -1097,11 +1098,20 @@ impl Render for Native {
                 .compact()
                 .label("Synara \u{25be}")
                 .w_full()
-                .on_click(cx.listener(|this, _ev, _w, cx| {
-                    this.view_files = false;
-                    this.view_dev = false;
-                    cx.notify();
-                })),
+                .dropdown_menu(|menu, _, _| {
+                    menu.item(
+                        PopupMenuItem::new("Synara on GitHub").on_click(|_, _, cx| {
+                            cx.open_url("https://github.com/Emanuele-web04/synara");
+                        }),
+                    )
+                    .item(
+                        PopupMenuItem::new("Synara on GitHub (Rust port)").on_click(
+                            |_, _, cx| {
+                                cx.open_url("https://github.com/cmdr-chara/synara/tree/feat/rust-port");
+                            },
+                        ),
+                    )
+                }),
         );
         sidebar = sidebar.child(
             h_flex()
@@ -1125,12 +1135,38 @@ impl Render for Native {
                 .child("Projects"),
         );
         for project in arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "projects") {
-            let mut proj_head = v_flex().gap_0().child(
-                div()
-                    .text_sm()
-                    .font_weight(FontWeight::SEMIBOLD)
-                    .child(str_at(project, "title").to_string()),
-            );
+            let mut proj_head = v_flex()
+                .gap_0()
+                .id(ElementId::Name(
+                    format!("project-{}", str_at(project, "id")).into(),
+                ))
+                .cursor_pointer()
+                .rounded_md()
+                .px_2()
+                .child(
+                    h_flex()
+                        .gap_1()
+                        .items_center()
+                        .child(
+                            div()
+                                .text_sm()
+                                .font_weight(FontWeight::SEMIBOLD)
+                                .child(str_at(project, "title").to_string()),
+                        )
+                        .child(
+                            div()
+                                .text_xs()
+                                .text_color(theme.muted_foreground)
+                                .child("\u{203a}"),
+                        ),
+                )
+                .on_click(cx.listener(|this, _ev, _w, cx| {
+                    if !this.view_files {
+                        this.toggle_files(cx);
+                    } else {
+                        cx.notify();
+                    }
+                }));
             if let Some(status) = &self.git_status {
                 let branch = str_at(status, "branch");
                 if !branch.is_empty() {

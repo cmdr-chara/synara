@@ -39,8 +39,15 @@ pub fn router() -> Router<Original> {
     Router::new()
         .route("/ws", get(|s, w, u, h| upgrade(s, w, u, h, false)))
         .route("/ws/bootstrap", get(|s, w, u, h| upgrade(s, w, u, h, true)))
-        .route("/ws/frames/device", get(|s, w, u, h| upgrade(s, w, u, h, false)))
-        .route("/ws/frames/computer", get(|s, w, u, h| upgrade(s, w, u, h, false)))
+        .route(
+            "/ws/device-frames",
+            get(|s, w, u, h| upgrade(s, w, u, h, false)),
+        )
+        .route(
+            "/ws/computer-frames",
+            get(|s, w, u, h| upgrade(s, w, u, h, false)),
+        )
+        .route("/ws/host/v2", get(|s, w, u, h| upgrade(s, w, u, h, false)))
 }
 
 async fn upgrade(

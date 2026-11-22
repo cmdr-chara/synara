@@ -1122,7 +1122,7 @@ impl Render for Native {
                 .text_xs()
                 .font_weight(FontWeight::SEMIBOLD)
                 .text_color(theme.muted_foreground)
-                .child("PROJECTS"),
+                .child("Projects"),
         );
         for project in arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "projects") {
             let mut proj_head = v_flex().gap_0().child(
@@ -1161,7 +1161,7 @@ impl Render for Native {
                 .text_xs()
                 .font_weight(FontWeight::SEMIBOLD)
                 .text_color(theme.muted_foreground)
-                .child("CHATS"),
+                .child("Chats  \u{203a}"),
         );
         for thread in arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "threads")
             .iter()
@@ -1235,14 +1235,28 @@ impl Render for Native {
                         .top(px(4.))
                         .right(px(4.))
                         .child(
-                            Button::new("support-synara")
-                                .ghost()
-                                .compact()
-                                .icon(IconName::Star)
-                                .label("Support Synara")
-                                .on_click(cx.listener(|_this, _ev, _w, cx| {
-                                    cx.open_url("https://github.com/Emanuele-web04/synara");
-                                })),
+                            v_flex()
+                                .border_1()
+                                .border_color(theme.border)
+                                .rounded_md()
+                                .p_2()
+                                .gap_0()
+                                .child(
+                                    Button::new("support-synara")
+                                        .ghost()
+                                        .compact()
+                                        .icon(IconName::Star)
+                                        .label("Support Synara")
+                                        .on_click(cx.listener(|_this, _ev, _w, cx| {
+                                            cx.open_url("https://github.com/Emanuele-web04/synara");
+                                        })),
+                                )
+                                .child(
+                                    div()
+                                        .text_xs()
+                                        .text_color(theme.muted_foreground)
+                                        .child("Explore sponsorships and help fund development"),
+                                ),
                         ),
                 )
                 .child(div().text_2xl().child("\u{3a5}"))
@@ -1251,13 +1265,6 @@ impl Render for Native {
                         .text_xl()
                         .font_weight(FontWeight::SEMIBOLD)
                         .child("What should we work on?"),
-                )
-                .child(
-                    Button::new("work-in-project")
-                        .outline()
-                        .icon(IconName::FolderClosed)
-                        .label("Work in a project")
-                        .on_click(cx.listener(|this, _ev, _w, cx| this.toggle_files(cx))),
                 );
         }
         let thread_v = get(self.detail.as_ref().unwrap_or(&Value::Null), "thread");
@@ -1712,10 +1719,24 @@ impl Render for Native {
                             .on_click(cx.listener(|this, _ev, w, cx| this.send(w, cx))),
                     ),
             );
+        let mut composer_col = v_flex().w_full().max_w(px(640.)).gap_1();
+        if self.selected_thread.is_none() && !self.view_files && !self.view_dev {
+            composer_col = composer_col.child(
+                h_flex().child(
+                Button::new("work-in-project")
+                    .outline()
+                    .compact()
+                    .icon(IconName::FolderClosed)
+                    .label("Work in a project")
+                    .on_click(cx.listener(|this, _ev, _w, cx| this.toggle_files(cx))),
+                ),
+            );
+        }
+        composer_col = composer_col.child(composer_card);
         let composer_bar = div()
             .w_full()
             .p_3()
-            .child(h_flex().justify_center().child(composer_card));
+            .child(h_flex().justify_center().child(composer_col));
 
         let mut main = v_flex().flex_1().h_full();
         if self.view_dev {

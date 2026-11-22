@@ -1,0 +1,973 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/persistence/",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "persistence-rs",
+  "exports": [
+    {
+      "name": "migrationTrackerFingerprint",
+      "file": "apps/server/src/persistence/AccountMigrationLineage.ts",
+      "line": 66,
+      "params": [
+        {
+          "name": "rows",
+          "ts_type": "readonly { readonly migration_id: number; readonly name: string }[]",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "classifyAccountMigrationLineage",
+      "file": "apps/server/src/persistence/AccountMigrationLineage.ts",
+      "line": 71,
+      "params": [
+        {
+          "name": "rows",
+          "ts_type": "readonly { readonly migration_id: number; readonly name: string }[]",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "canonical",
+          "ts_type": "ReadonlyMap<number, string>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "validateAccountMigrationSchema",
+      "file": "apps/server/src/persistence/AccountMigrationLineage.ts",
+      "line": 111,
+      "params": [
+        {
+          "name": "columns",
+          "ts_type": "readonly Record<string, unknown>[]",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "rows",
+          "ts_type": "readonly Record<string, unknown>[]",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "requiresIdentity",
+          "ts_type": "boolean",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "acquireDatabaseLifecycleLock",
+      "file": "apps/server/src/persistence/DatabaseLifecycleLock.ts",
+      "line": 418,
+      "params": [
+        {
+          "name": "dbPath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "releaseDatabaseLifecycleLock",
+      "file": "apps/server/src/persistence/DatabaseLifecycleLock.ts",
+      "line": 421,
+      "params": [
+        {
+          "name": "lock",
+          "ts_type": "{\n  readonly dbPath: string;\n  readonly lockPath: string;\n  readonly owner: {\n  readonly pid: number;\n  readonly token: string;\n  readonly createdAt: string;\n};\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "toPersistenceDecodeError",
+      "file": "apps/server/src/persistence/Errors.ts",
+      "line": 54,
+      "params": [
+        {
+          "name": "operation",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "toPersistenceDecodeCauseError",
+      "file": "apps/server/src/persistence/Errors.ts",
+      "line": 73,
+      "params": [
+        {
+          "name": "operation",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isPersistenceError",
+      "file": "apps/server/src/persistence/Errors.ts",
+      "line": 107,
+      "params": [
+        {
+          "name": "u",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "estimateMigrationBackupRequiredBytes",
+      "file": "apps/server/src/persistence/MigrationBackup.ts",
+      "line": 138,
+      "params": [
+        {
+          "name": "dbPath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "pruneMigrationBackups",
+      "file": "apps/server/src/persistence/MigrationBackup.ts",
+      "line": 806,
+      "params": [
+        {
+          "name": "dbPath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "retention",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "createMigrationBackup",
+      "file": "apps/server/src/persistence/MigrationBackup.ts",
+      "line": 819,
+      "params": [
+        {
+          "name": "dbPath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "plan",
+          "ts_type": "MigrationDivergencePlan",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "inspectSqliteMigrationBackup",
+      "file": "apps/server/src/persistence/MigrationBackup.ts",
+      "line": 1099,
+      "params": [
+        {
+          "name": "backupPath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<SqliteMigrationBackupInspection>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "inspectCompletedMigrationBackupForSchemaTooNew",
+      "file": "apps/server/src/persistence/MigrationBackup.ts",
+      "line": 1370,
+      "params": [
+        {
+          "name": "dbPath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "input",
+          "ts_type": "{\n    readonly databaseMigrationId: number;\n    readonly latestSupportedMigrationId: number;\n  }",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<(| {\n      readonly kind: \"restore-available\";\n      readonly backupPath: string;\n      readonly provenancePath: string;\n      readonly backupMigrationId: number;\n    }\n  | {\n      readonly kind: \"restore-unavailable\";\n      readonly reason:\n        | \"missing-provenance\"\n        | \"invalid-provenance\"\n        | \"invalid-backup\"\n        | \"incompatible-backup\";\n    })>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "reclaimOrphanedMigrationArtifacts",
+      "file": "apps/server/src/persistence/MigrationBackup.ts",
+      "line": 1430,
+      "params": [
+        {
+          "name": "dbPath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "requireNoPendingMigrationRecovery",
+      "file": "apps/server/src/persistence/MigrationBackup.ts",
+      "line": 1449,
+      "params": [
+        {
+          "name": "dbPath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "inspectPendingMigrationRecovery",
+      "file": "apps/server/src/persistence/MigrationBackup.ts",
+      "line": 1482,
+      "params": [
+        {
+          "name": "dbPath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "restoreMarkedMigrationBackup",
+      "file": "apps/server/src/persistence/MigrationBackup.ts",
+      "line": 1634,
+      "params": [
+        {
+          "name": "dbPath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "options",
+          "ts_type": "RestoreMarkedMigrationBackupOptions",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "createMigrationDivergenceConsentChallenge",
+      "file": "apps/server/src/persistence/MigrationDivergenceConsent.ts",
+      "line": 34,
+      "params": [
+        {
+          "name": "dbPath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "plan",
+          "ts_type": "MigrationDivergencePlan",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "MigrationDivergenceConsentChallenge | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "createMigrationSchemaTooNewStartupBlockError",
+      "file": "apps/server/src/persistence/MigrationSchemaTooNewStartupBlock.ts",
+      "line": 19,
+      "params": [
+        {
+          "name": "dbPath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "cause",
+          "ts_type": "MigrationSchemaTooNewError",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<MigrationSchemaTooNewStartupBlockError>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "makeMigrationLoader",
+      "file": "apps/server/src/persistence/Migrations.ts",
+      "line": 332,
+      "params": [
+        {
+          "name": "throughId",
+          "ts_type": "number",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isReleasedMainMigrationGap",
+      "file": "apps/server/src/persistence/Migrations.ts",
+      "line": 362,
+      "params": [
+        {
+          "name": "recordedNamesById",
+          "ts_type": "ReadonlyMap<number, string>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "planAccountMigrationRepair",
+      "file": "apps/server/src/persistence/Migrations.ts",
+      "line": 372,
+      "params": [
+        {
+          "name": "rows",
+          "ts_type": "readonly { readonly migration_id: number; readonly name: string }[]",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "planLegacyMigration32Rename",
+      "file": "apps/server/src/persistence/Migrations.ts",
+      "line": 398,
+      "params": [
+        {
+          "name": "recordedNamesById",
+          "ts_type": "ReadonlyMap<number, string>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "findFirstMigrationLineageDivergence",
+      "file": "apps/server/src/persistence/Migrations.ts",
+      "line": 423,
+      "params": [
+        {
+          "name": "recordedNamesById",
+          "ts_type": "ReadonlyMap<number, string>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "highWaterMark",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "planMigrationLineageAliasRepairs",
+      "file": "apps/server/src/persistence/Migrations.ts",
+      "line": 483,
+      "params": [
+        {
+          "name": "recordedNamesById",
+          "ts_type": "ReadonlyMap<number, string>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "readonly (| { readonly kind: \"rename\"; readonly migrationId: number; readonly name: string }\n  | { readonly kind: \"remove\"; readonly migrationId: number })[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "runMigrations",
+      "file": "apps/server/src/persistence/Migrations.ts",
+      "line": 693,
+      "params": [
+        {
+          "name": "arg0",
+          "ts_type": "RunMigrationsOptions",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "reclaimFreedSqlitePages",
+      "file": "apps/server/src/persistence/SqliteReclamation.ts",
+      "line": 9,
+      "params": [
+        {
+          "name": "sql",
+          "ts_type": "SqlClient.SqlClient",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "reclaimLegacySqliteDatabase",
+      "file": "apps/server/src/persistence/SqliteReclamation.ts",
+      "line": 76,
+      "params": [
+        {
+          "name": "dbPath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "notifyAfterCommit",
+      "file": "apps/server/src/persistence/commitNotifications.ts",
+      "line": 9,
+      "params": [
+        {
+          "name": "notification",
+          "ts_type": "Effect.Effect<void>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Effect.Effect<void>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "selectMessageTextChunks",
+      "file": "apps/server/src/persistence/messageTextChunks.ts",
+      "line": 9,
+      "params": [
+        {
+          "name": "sql",
+          "ts_type": "SqlClient.SqlClient",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "table",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "segment",
+          "ts_type": "boolean",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "selectSegmentEndedAt",
+      "file": "apps/server/src/persistence/messageTextChunks.ts",
+      "line": 21,
+      "params": [
+        {
+          "name": "sql",
+          "ts_type": "SqlClient.SqlClient",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "table",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "joinMessageTextChunks",
+      "file": "apps/server/src/persistence/messageTextChunks.ts",
+      "line": 29,
+      "params": [
+        {
+          "name": "row",
+          "ts_type": "{\n  readonly text: string;\n  readonly encodedText?: string | null | undefined;\n  readonly textChunks?: ReadonlyArray<string> | undefined;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "encodeMessageTextFallback",
+      "file": "apps/server/src/persistence/messageTextChunks.ts",
+      "line": 37,
+      "params": [
+        {
+          "name": "text",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "makeMessageTextChunks",
+      "file": "apps/server/src/persistence/messageTextChunks.ts",
+      "line": 44,
+      "params": [
+        {
+          "name": "sql",
+          "ts_type": "SqlClient.SqlClient",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "normalizeLegacyModelSelection",
+      "file": "apps/server/src/persistence/modelSelectionCompatibility.ts",
+      "line": 222,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly provider: unknown;\n  readonly instanceId?: unknown;\n  readonly model: string;\n  readonly options: unknown;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Record<string, unknown>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "normalizePersistedModelSelection",
+      "file": "apps/server/src/persistence/modelSelectionCompatibility.ts",
+      "line": 276,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "settings",
+          "ts_type": "typeof typeof typeof typeof ServerSettings.Type.Type.Type.Type",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "orchestrationMessageFromStoredMessage",
+      "file": "apps/server/src/persistence/projectionThreadMessageRow.ts",
+      "line": 39,
+      "params": [
+        {
+          "name": "row",
+          "ts_type": "ProjectionThreadMessageRecord",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof OrchestrationMessage.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "projectionThreadMessageFromRow",
+      "file": "apps/server/src/persistence/projectionThreadMessageRow.ts",
+      "line": 46,
+      "params": [
+        {
+          "name": "row",
+          "ts_type": "Schema.Schema.Type<\n  typeof ProjectionThreadMessageDbRowSchema\n>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ProjectionThreadMessageRecord",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "orchestrationMessageFromProjectionRow",
+      "file": "apps/server/src/persistence/projectionThreadMessageRow.ts",
+      "line": 71,
+      "params": [
+        {
+          "name": "row",
+          "ts_type": "Schema.Schema.Type<\n  typeof ProjectionThreadMessageDbRowSchema\n>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof OrchestrationMessage.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveStoredPullRequestLinks",
+      "file": "apps/server/src/persistence/pullRequestLinksColumn.ts",
+      "line": 51,
+      "params": [
+        {
+          "name": "row",
+          "ts_type": "{\n  readonly pullRequests?: ReadonlyArray<typeof typeof typeof typeof OrchestrationThreadPullRequestLink.Type.Type.Type.Type> | null | undefined;\n  readonly lastKnownPr: typeof typeof typeof typeof OrchestrationThreadPullRequest.Type.Type.Type.Type | null;\n  readonly updatedAt: string;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof OrchestrationThreadPullRequestLink.Type.Type.Type.Type[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveSqliteMemoryBudget",
+      "file": "apps/server/src/persistence/sqliteMemoryBudget.ts",
+      "line": 24,
+      "params": [
+        {
+          "name": "totalMemoryBytes",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "SqliteMemoryBudget",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "DatabaseLifecycleLockedError",
+      "file": "apps/server/src/persistence/DatabaseLifecycleLock.ts",
+      "line": 25,
+      "reason": "class: extends another class, public field `_tag`, public parameter properties"
+    },
+    {
+      "name": "withDatabaseLifecycleLock",
+      "file": "apps/server/src/persistence/DatabaseLifecycleLock.ts",
+      "line": 424,
+      "reason": "generic over `A`: values of any shape, functions included"
+    },
+    {
+      "name": "PersistenceSqlError",
+      "file": "apps/server/src/persistence/Errors.ts",
+      "line": 7,
+      "reason": "class: extends another class, accessor `message`"
+    },
+    {
+      "name": "PersistenceDecodeError",
+      "file": "apps/server/src/persistence/Errors.ts",
+      "line": 20,
+      "reason": "class: extends another class, accessor `message`"
+    },
+    {
+      "name": "ProjectionStateIncompleteError",
+      "file": "apps/server/src/persistence/Errors.ts",
+      "line": 90,
+      "reason": "class: extends another class, accessor `message`"
+    },
+    {
+      "name": "MigrationLineageError",
+      "file": "apps/server/src/persistence/Errors.ts",
+      "line": 112,
+      "reason": "class: extends another class, accessor `message`"
+    },
+    {
+      "name": "MigrationSchemaTooNewError",
+      "file": "apps/server/src/persistence/Errors.ts",
+      "line": 129,
+      "reason": "class: extends another class, accessor `message`"
+    },
+    {
+      "name": "ProviderSessionRepositoryValidationError",
+      "file": "apps/server/src/persistence/Errors.ts",
+      "line": 149,
+      "reason": "class: extends another class, accessor `message`"
+    },
+    {
+      "name": "ProviderSessionRepositoryPersistenceError",
+      "file": "apps/server/src/persistence/Errors.ts",
+      "line": 162,
+      "reason": "class: extends another class, accessor `message`"
+    },
+    {
+      "name": "toPersistenceSqlError",
+      "file": "apps/server/src/persistence/Errors.ts",
+      "line": 33,
+      "reason": "checks `instanceof`: class identity does not survive the bridge"
+    },
+    {
+      "name": "toPersistenceSqlOrDecodeError",
+      "file": "apps/server/src/persistence/Errors.ts",
+      "line": 63,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "MigrationRecoveryRequiredError",
+      "file": "apps/server/src/persistence/MigrationBackup.ts",
+      "line": 59,
+      "reason": "class: extends another class, public field `_tag`, public parameter properties"
+    },
+    {
+      "name": "InsufficientMigrationBackupSpaceError",
+      "file": "apps/server/src/persistence/MigrationBackup.ts",
+      "line": 92,
+      "reason": "class: extends another class, public field `_tag`, public parameter properties"
+    },
+    {
+      "name": "runWithPreMigrationBackup",
+      "file": "apps/server/src/persistence/MigrationBackup.ts",
+      "line": 956,
+      "reason": "generic over `A`: values of any shape, functions included"
+    },
+    {
+      "name": "resumeMarkedMigration",
+      "file": "apps/server/src/persistence/MigrationBackup.ts",
+      "line": 1530,
+      "reason": "generic over `A`: values of any shape, functions included"
+    },
+    {
+      "name": "MigrationDivergenceConsentRequiredError",
+      "file": "apps/server/src/persistence/MigrationDivergenceConsent.ts",
+      "line": 25,
+      "reason": "class: extends another class, public field `_tag`, public parameter properties"
+    },
+    {
+      "name": "MigrationSchemaTooNewStartupBlockError",
+      "file": "apps/server/src/persistence/MigrationSchemaTooNewStartupBlock.ts",
+      "line": 9,
+      "reason": "class: extends another class, public field `block`"
+    },
+    {
+      "name": "inspectAccountMigrationRepair",
+      "file": "apps/server/src/persistence/Migrations.ts",
+      "line": 375,
+      "reason": "checks `instanceof`: class identity does not survive the bridge"
+    },
+    {
+      "name": "layerConfig",
+      "file": "apps/server/src/persistence/NodeSqliteClient.ts",
+      "line": 241,
+      "reason": "uses `SqliteClientConfig`, which has function members"
+    },
+    {
+      "name": "layer",
+      "file": "apps/server/src/persistence/NodeSqliteClient.ts",
+      "line": 255,
+      "reason": "uses `SqliteClientConfig`, which has function members"
+    },
+    {
+      "name": "layerMemory",
+      "file": "apps/server/src/persistence/NodeSqliteClient.ts",
+      "line": 262,
+      "reason": "uses `SqliteMemoryClientConfig`, which has function members"
+    },
+    {
+      "name": "compactSqliteDatabase",
+      "file": "apps/server/src/persistence/SqliteCompaction.ts",
+      "line": 95,
+      "reason": "checks `instanceof`: class identity does not survive the bridge"
+    },
+    {
+      "name": "withCommitNotifications",
+      "file": "apps/server/src/persistence/commitNotifications.ts",
+      "line": 23,
+      "reason": "generic over `A`: values of any shape, functions included"
+    }
+  ]
+}

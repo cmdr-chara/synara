@@ -1,0 +1,470 @@
+{"fn":"remoteTlsIdentityPath","args":["😀"],"ok":"😀/remote-tls.json"}
+{"fn":"remoteTlsIdentityPath","args":["HELLOtab\tseparated"],"ok":"HELLOtab\tseparated/remote-tls.json"}
+{"fn":"remoteTlsIdentityPath","args":["ünïcödéhello"],"ok":"ünïcödéhello/remote-tls.json"}
+{"fn":"remoteTlsIdentityPath","args":["a.b.c"],"ok":"a.b.c/remote-tls.json"}
+{"fn":"remoteTlsIdentityPath","args":["hello world"],"ok":"hello world/remote-tls.json"}
+{"fn":"remoteTlsIdentityPath","args":[".leading"],"ok":".leading/remote-tls.json"}
+{"fn":"remoteTlsIdentityPath","args":["key_name-1:"],"ok":"key_name-1:/remote-tls.json"}
+{"fn":"remoteTlsIdentityPath","args":["﻿bom"],"ok":"﻿bom/remote-tls.json"}
+{"fn":"remoteTlsIdentityPath","args":["hello"],"ok":"hello/remote-tls.json"}
+{"fn":"remoteTlsIdentityPath","args":[":"],"ok":":/remote-tls.json"}
+{"fn":"remoteTlsIdentityPath","args":["ns:key.path:"],"ok":"ns:key.path:/remote-tls.json"}
+{"fn":"remoteTlsIdentityPath","args":["ΣΊΣΥΦΟΣ"],"ok":"ΣΊΣΥΦΟΣ/remote-tls.json"}
+{"fn":"remoteTlsIdentityPath","args":["İstanbul"],"ok":"İstanbul/remote-tls.json"}
+{"fn":"remoteTlsIdentityPath","args":["{name} has {count} items"],"ok":"{name} has {count} items/remote-tls.json"}
+{"fn":"remoteTlsIdentityPath","args":["ab"],"ok":"ab/remote-tls.json"}
+{"fn":"remoteTlsIdentityPath","args":["src/a/b.ts"],"ok":"src/a/b.ts/remote-tls.json"}
+{"fn":"remoteTlsIdentityPath","args":["straße"],"ok":"straße/remote-tls.json"}
+{"fn":"remoteTlsIdentityPath","args":["a😀b😀ctab\tseparated"],"ok":"a😀b😀ctab\tseparated/remote-tls.json"}
+{"fn":"remoteTlsIdentityPath","args":["src/a/b.tsΣΊΣΥΦΟΣ"],"ok":"src/a/b.tsΣΊΣΥΦΟΣ/remote-tls.json"}
+{"fn":"remoteTlsIdentityPath","args":["src/a/b.tsstraße"],"ok":"src/a/b.tsstraße/remote-tls.json"}
+{"fn":"remoteTlsIdentityPath","args":["héllo wörld"],"ok":"héllo wörld/remote-tls.json"}
+{"fn":"remoteTlsIdentityPath","args":["👍🏽 thumbs"],"ok":"👍🏽 thumbs/remote-tls.json"}
+{"fn":"remoteTlsIdentityPath","args":["日本語"],"ok":"日本語/remote-tls.json"}
+{"fn":"remoteTlsIdentityPath","args":[""],"ok":"remote-tls.json"}
+{"fn":"remoteTlsIdentityPath","args":["é"],"ok":"é/remote-tls.json"}
+{"fn":"remoteTlsIdentityPath","args":["ılık ırmak"],"ok":"ılık ırmak/remote-tls.json"}
+{"fn":"remoteTlsIdentityPath","args":["👨‍👩‍👧 family"],"ok":"👨‍👩‍👧 family/remote-tls.json"}
+{"fn":"remoteTlsIdentityPath","args":["a b"],"ok":"a b/remote-tls.json"}
+{"fn":"remoteTlsIdentityPath","args":["a😀b"],"ok":"a😀b/remote-tls.json"}
+{"fn":"remoteTlsIdentityPath","args":["a²b x½ y①"],"ok":"a²b x½ y①/remote-tls.json"}
+{"fn":"remoteTlsIdentityPath","args":["aⅠb Ⅻ"],"ok":"aⅠb Ⅻ/remote-tls.json"}
+{"fn":"remoteTlsIdentityPath","args":["a𐐀b 𝐀bc"],"ok":"a𐐀b 𝐀bc/remote-tls.json"}
+{"fn":"remoteTlsIdentityPath","args":["कि ٣٤"],"ok":"कि ٣٤/remote-tls.json"}
+{"fn":"remoteTlsIdentityPath","args":["Iı İi"],"ok":"Iı İi/remote-tls.json"}
+{"fn":"remoteTlsIdentityPath","args":["K K k"],"ok":"K K k/remote-tls.json"}
+{"fn":"remoteTlsIdentityPath","args":["ſ s S"],"ok":"ſ s S/remote-tls.json"}
+{"fn":"remoteTlsIdentityPath","args":["x‍y 👨‍👩‍👧"],"ok":"x‍y 👨‍👩‍👧/remote-tls.json"}
+{"fn":"remoteTlsIdentityPath","args":["a b c　d"],"ok":"a b c　d/remote-tls.json"}
+{"fn":"remoteTlsIdentityPath","args":["١٢٣ ٤٥"],"ok":"١٢٣ ٤٥/remote-tls.json"}
+{"fn":"remoteTlsIdentityPath","args":["𝟘𝟙 ²³"],"ok":"𝟘𝟙 ²³/remote-tls.json"}
+{"fn":"remoteTlsIdentityPath","args":["snake_case foo-bar o'neil"],"ok":"snake_case foo-bar o'neil/remote-tls.json"}
+{"fn":"remoteTlsIdentityPath","args":["ǅungla Ǆ"],"ok":"ǅungla Ǆ/remote-tls.json"}
+{"fn":"remoteTlsIdentityPath","args":["one\r\ntwo threefour"],"ok":"one\r\ntwo threefour/remote-tls.json"}
+{"fn":"remoteTlsIdentityPath","args":["café café"],"ok":"café café/remote-tls.json"}
+{"fn":"remoteTlsIdentityPath","args":["ΣΑΣ σας ς"],"ok":"ΣΑΣ σας ς/remote-tls.json"}
+{"fn":"remoteTlsServerName","args":["İstanbul"],"error":"Invalid remote environment identity"}
+{"fn":"remoteTlsServerName","args":["😀日本語のテキスト"],"error":"Invalid remote environment identity"}
+{"fn":"remoteTlsServerName","args":["a..b"],"error":"Invalid remote environment identity"}
+{"fn":"remoteTlsServerName","args":["😀"],"error":"Invalid remote environment identity"}
+{"fn":"remoteTlsServerName","args":["ab"],"ok":"host-ab.synara.invalid"}
+{"fn":"remoteTlsServerName","args":["emoji 👍🏽 mix"],"error":"Invalid remote environment identity"}
+{"fn":"remoteTlsServerName","args":[":"],"error":"Invalid remote environment identity"}
+{"fn":"remoteTlsServerName","args":["İstanbul{name} has {count} items"],"error":"Invalid remote environment identity"}
+{"fn":"remoteTlsServerName","args":["{name} has {count} items"],"error":"Invalid remote environment identity"}
+{"fn":"remoteTlsServerName","args":["line1\nline2abc"],"error":"Invalid remote environment identity"}
+{"fn":"remoteTlsServerName","args":["  padded  "],"error":"Invalid remote environment identity"}
+{"fn":"remoteTlsServerName","args":["./x/**/*.jsoné"],"error":"Invalid remote environment identity"}
+{"fn":"remoteTlsServerName","args":["é"],"error":"Invalid remote environment identity"}
+{"fn":"remoteTlsServerName","args":["key_name-1"],"error":"Invalid remote environment identity"}
+{"fn":"remoteTlsServerName","args":["abcab"],"ok":"host-abcab.synara.invalid"}
+{"fn":"remoteTlsServerName","args":["straße"],"error":"Invalid remote environment identity"}
+{"fn":"remoteTlsServerName","args":["a.b.c:"],"error":"Invalid remote environment identity"}
+{"fn":"remoteTlsServerName","args":["﻿bom"],"error":"Invalid remote environment identity"}
+{"fn":"remoteTlsServerName","args":["hello world"],"error":"Invalid remote environment identity"}
+{"fn":"remoteTlsServerName","args":["Hello World"],"error":"Invalid remote environment identity"}
+{"fn":"remoteTlsServerName","args":["héllo wörld"],"error":"Invalid remote environment identity"}
+{"fn":"remoteTlsServerName","args":["👍🏽 thumbs"],"error":"Invalid remote environment identity"}
+{"fn":"remoteTlsServerName","args":["日本語"],"error":"Invalid remote environment identity"}
+{"fn":"remoteTlsServerName","args":[""],"error":"Invalid remote environment identity"}
+{"fn":"remoteTlsServerName","args":["ılık ırmak"],"error":"Invalid remote environment identity"}
+{"fn":"remoteTlsServerName","args":["👨‍👩‍👧 family"],"error":"Invalid remote environment identity"}
+{"fn":"remoteTlsServerName","args":["a b"],"error":"Invalid remote environment identity"}
+{"fn":"remoteTlsServerName","args":["ΣΊΣΥΦΟΣ"],"error":"Invalid remote environment identity"}
+{"fn":"remoteTlsServerName","args":["a😀b"],"error":"Invalid remote environment identity"}
+{"fn":"remoteTlsServerName","args":["a²b x½ y①"],"error":"Invalid remote environment identity"}
+{"fn":"remoteTlsServerName","args":["aⅠb Ⅻ"],"error":"Invalid remote environment identity"}
+{"fn":"remoteTlsServerName","args":["a𐐀b 𝐀bc"],"error":"Invalid remote environment identity"}
+{"fn":"remoteTlsServerName","args":["कि ٣٤"],"error":"Invalid remote environment identity"}
+{"fn":"remoteTlsServerName","args":["Iı İi"],"error":"Invalid remote environment identity"}
+{"fn":"remoteTlsServerName","args":["K K k"],"error":"Invalid remote environment identity"}
+{"fn":"remoteTlsServerName","args":["ſ s S"],"error":"Invalid remote environment identity"}
+{"fn":"remoteTlsServerName","args":["x‍y 👨‍👩‍👧"],"error":"Invalid remote environment identity"}
+{"fn":"remoteTlsServerName","args":["a b c　d"],"error":"Invalid remote environment identity"}
+{"fn":"remoteTlsServerName","args":["١٢٣ ٤٥"],"error":"Invalid remote environment identity"}
+{"fn":"remoteTlsServerName","args":["𝟘𝟙 ²³"],"error":"Invalid remote environment identity"}
+{"fn":"remoteTlsServerName","args":["snake_case foo-bar o'neil"],"error":"Invalid remote environment identity"}
+{"fn":"remoteTlsServerName","args":["ǅungla Ǆ"],"error":"Invalid remote environment identity"}
+{"fn":"remoteTlsServerName","args":["one\r\ntwo threefour"],"error":"Invalid remote environment identity"}
+{"fn":"remoteTlsServerName","args":["café café"],"error":"Invalid remote environment identity"}
+{"fn":"remoteTlsServerName","args":["ΣΑΣ σας ς"],"error":"Invalid remote environment identity"}
+{"fn":"remoteTlsAnchor","args":[{}],"error":"The \"buffer\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received undefined"}
+{"fn":"remoteTlsAnchor","args":[0],"error":"The \"buffer\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received undefined"}
+{"fn":"remoteTlsAnchor","args":["x"],"error":"The \"buffer\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received undefined"}
+{"fn":"remoteTlsAnchor","args":[true],"error":"The \"buffer\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received undefined"}
+{"fn":"remoteTlsAnchor","args":[{"a":"b"}],"error":"The \"buffer\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received undefined"}
+{"fn":"remoteTlsAnchor","args":[[]],"error":"The \"buffer\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received undefined"}
+{"fn":"remoteTlsAnchor","args":[{"a":{"b":"c"}}],"error":"The \"buffer\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received undefined"}
+{"fn":"remoteTlsAnchor","args":[["a",1]],"error":"The \"buffer\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received undefined"}
+{"fn":"remoteTlsAnchor","args":[null],"error":"Cannot read properties of null (reading 'rootCertificate')"}
+{"fn":"validateRemoteTlsAnchor","args":[[]],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"validateRemoteTlsAnchor","args":[{"environmentId":"key_name-1","rootCertificate":"","rootFingerprint":"src/a/b.ts"}],"error":"Invalid remote environment identity"}
+{"fn":"validateRemoteTlsAnchor","args":[{"environmentId":"./x/**/*.json","rootCertificate":"HELLO","rootFingerprint":"ab"}],"error":"Invalid remote environment identity"}
+{"fn":"validateRemoteTlsAnchor","args":[{"environmentId":"﻿bom","rootCertificate":"straße","rootFingerprint":"abca"}],"error":"Invalid remote environment identity"}
+{"fn":"validateRemoteTlsAnchor","args":[null],"error":"Cannot read properties of null (reading 'environmentId')"}
+{"fn":"validateRemoteTlsAnchor","args":[{"environmentId":"trailing.","rootCertificate":"😀","rootFingerprint":"a..bé"}],"error":"Invalid remote environment identity"}
+{"fn":"validateRemoteTlsAnchor","args":[{"environmentId":"a:b:cstraße","rootCertificate":"ab","rootFingerprint":"  padded  "}],"error":"Invalid remote environment identity"}
+{"fn":"validateRemoteTlsAnchor","args":[{"environmentId":"a..b","rootCertificate":"{name} has {count} items","rootFingerprint":"ΣΊΣΥΦΟΣ"}],"error":"Invalid remote environment identity"}
+{"fn":"validateRemoteTlsAnchor","args":[{"environmentId":"a😀b😀c","rootCertificate":"a..b","rootFingerprint":"a:b:c"}],"error":"Invalid remote environment identity"}
+{"fn":"validateRemoteTlsAnchor","args":[{"environmentId":"a.b.c","rootCertificate":"  padded  ","rootFingerprint":"abc"}],"error":"Invalid remote environment identity"}
+{"fn":"validateRemoteTlsAnchor","args":[{"environmentId":"straße","rootCertificate":"trailing.","rootFingerprint":"😀"}],"error":"Invalid remote environment identity"}
+{"fn":"validateRemoteTlsAnchor","args":[{"environmentId":"a","rootCertificate":"trailing.😀","rootFingerprint":"tab\tseparated"}],"error":"error:0480006C:PEM routines::no start line"}
+{"fn":"validateRemoteTlsAnchor","args":[{"environmentId":"straße","rootCertificate":"hello日本語のテキスト","rootFingerprint":"src/a/b.ts"}],"error":"Invalid remote environment identity"}
+{"fn":"validateRemoteTlsAnchor","args":[{"environmentId":"ünïcödéstraße","rootCertificate":"a","rootFingerprint":"a..b"}],"error":"Invalid remote environment identity"}
+{"fn":"validateRemoteTlsAnchor","args":[{"environmentId":"trailing.","rootCertificate":"HELLO","rootFingerprint":"Hello World"}],"error":"Invalid remote environment identity"}
+{"fn":"validateRemoteTlsAnchor","args":[0],"error":"Cannot read properties of undefined (reading 'toLowerCase')"}
+{"fn":"validateRemoteTlsAnchor","args":[{"environmentId":"ab","rootCertificate":"straße","rootFingerprint":"trailing."}],"error":"error:0480006C:PEM routines::no start line"}
+{"fn":"validateRemoteTlsAnchor","args":[{"environmentId":"ns:key.pathHello World","rootCertificate":"tab\tseparated","rootFingerprint":"a😀b😀ca😀b😀c"}],"error":"Invalid remote environment identity"}
+{"fn":"validateRemoteTlsAnchor","args":[{"environmentId":"emoji 👍🏽 mix","rootCertificate":"日本語のテキスト","rootFingerprint":"a:b:c"}],"error":"Invalid remote environment identity"}
+{"fn":"validateRemoteTlsAnchor","args":[{"environmentId":"straßehello world","rootCertificate":"","rootFingerprint":"trailing."}],"error":"Invalid remote environment identity"}
+{"fn":"readRemoteTlsTrustAnchor","args":["key_name-1","HELLO",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'key_name-1'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["s","hello worldsrc/a/b.ts",null],"error":"ENOENT: no such file or directory, open 's'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["tab\tseparated","ΣΊΣΥΦΟΣ",0],"error":"ENOENT: no such file or directory, open 'tab\tseparated'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["tab\tseparated","😀"],"error":"ENOENT: no such file or directory, open 'tab\tseparated'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["x","hello","x"],"error":"ENOENT: no such file or directory, open 'x'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["line1\nline2","src/a/b.ts",{"a":"b"}],"error":"ENOENT: no such file or directory, open 'line1\nline2'"}
+{"fn":"readRemoteTlsTrustAnchor","args":[" 👍🏽 mixta","emoji 👍🏽 mixtab\tseparated",true],"error":"ENOENT: no such file or directory, open ' 👍🏽 mixta'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["key_name-1","m"],"error":"ENOENT: no such file or directory, open 'key_name-1'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["HELLOkey_name-1","😀",null],"error":"ENOENT: no such file or directory, open 'HELLOkey_name-1'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["﻿bom","  padded  ﻿bom",null],"error":"ENOENT: no such file or directory, open '﻿bom'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["hello world","tab\tseparated",["a",1]],"error":"ENOENT: no such file or directory, open 'hello world'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["x","","x"],"error":"ENOENT: no such file or directory, open 'x'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["src/a/b.ts","ékey_name-1",["a",1]],"error":"ENOENT: no such file or directory, open 'src/a/b.ts'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["ΣΊΣΥΦΟΣ","{name} has {count} itemsünïcödé"],"error":"ENOENT: no such file or directory, open 'ΣΊΣΥΦΟΣ'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["e","tab\tseparated",{"$undefined":true}],"error":"ENOENT: no such file or directory, open 'e'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["abcemoji 👍🏽 mix","hello world",{"$undefined":true}],"error":"ENOENT: no such file or directory, open 'abcemoji 👍🏽 mix'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["./x/**/*.json﻿bom","é",[]],"error":"ENOENT: no such file or directory, open './x/**/*.json﻿bom'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["",".leadingé",{"a":"b"}],"error":"ENOENT: no such file or directory, open ''"}
+{"fn":"readRemoteTlsTrustAnchor","args":["a😀b😀c","tab\tseparated",0],"error":"ENOENT: no such file or directory, open 'a😀b😀c'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["ΣΊΣΥΦΟΣabc","a:b:c"],"error":"ENOENT: no such file or directory, open 'ΣΊΣΥΦΟΣabc'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["héllo wörld","HELLO",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'héllo wörld'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["👍🏽 thumbs","HELLO",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open '👍🏽 thumbs'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["日本語","HELLO",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open '日本語'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["","HELLO",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open ''"}
+{"fn":"readRemoteTlsTrustAnchor","args":["é","HELLO",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'é'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["İstanbul","HELLO",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'İstanbul'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["straße","HELLO",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'straße'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["ılık ırmak","HELLO",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'ılık ırmak'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["👨‍👩‍👧 family","HELLO",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open '👨‍👩‍👧 family'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["a b","HELLO",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'a b'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["ΣΊΣΥΦΟΣ","HELLO",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'ΣΊΣΥΦΟΣ'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["a😀b","HELLO",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'a😀b'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["﻿bom","HELLO",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open '﻿bom'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["a²b x½ y①","HELLO",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'a²b x½ y①'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["aⅠb Ⅻ","HELLO",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'aⅠb Ⅻ'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["a𐐀b 𝐀bc","HELLO",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'a𐐀b 𝐀bc'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["कि ٣٤","HELLO",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'कि ٣٤'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["Iı İi","HELLO",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'Iı İi'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["K K k","HELLO",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'K K k'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["ſ s S","HELLO",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'ſ s S'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["x‍y 👨‍👩‍👧","HELLO",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'x‍y 👨‍👩‍👧'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["a b c　d","HELLO",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'a b c　d'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["١٢٣ ٤٥","HELLO",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open '١٢٣ ٤٥'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["𝟘𝟙 ²³","HELLO",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open '𝟘𝟙 ²³'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["snake_case foo-bar o'neil","HELLO",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'snake_case foo-bar o'neil'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["ǅungla Ǆ","HELLO",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'ǅungla Ǆ'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["one\r\ntwo threefour","HELLO",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'one\r\ntwo threefour'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["café café","HELLO",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'café café'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["ΣΑΣ σας ς","HELLO",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'ΣΑΣ σας ς'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["key_name-1","héllo wörld",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'key_name-1'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["key_name-1","👍🏽 thumbs",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'key_name-1'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["key_name-1","日本語",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'key_name-1'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["key_name-1","",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'key_name-1'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["key_name-1","é",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'key_name-1'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["key_name-1","İstanbul",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'key_name-1'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["key_name-1","straße",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'key_name-1'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["key_name-1","ılık ırmak",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'key_name-1'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["key_name-1","👨‍👩‍👧 family",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'key_name-1'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["key_name-1","a b",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'key_name-1'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["key_name-1","ΣΊΣΥΦΟΣ",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'key_name-1'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["key_name-1","a😀b",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'key_name-1'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["key_name-1","﻿bom",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'key_name-1'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["key_name-1","a²b x½ y①",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'key_name-1'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["key_name-1","aⅠb Ⅻ",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'key_name-1'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["key_name-1","a𐐀b 𝐀bc",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'key_name-1'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["key_name-1","कि ٣٤",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'key_name-1'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["key_name-1","Iı İi",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'key_name-1'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["key_name-1","K K k",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'key_name-1'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["key_name-1","ſ s S",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'key_name-1'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["key_name-1","x‍y 👨‍👩‍👧",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'key_name-1'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["key_name-1","a b c　d",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'key_name-1'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["key_name-1","١٢٣ ٤٥",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'key_name-1'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["key_name-1","𝟘𝟙 ²³",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'key_name-1'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["key_name-1","snake_case foo-bar o'neil",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'key_name-1'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["key_name-1","ǅungla Ǆ",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'key_name-1'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["key_name-1","one\r\ntwo threefour",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'key_name-1'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["key_name-1","café café",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'key_name-1'"}
+{"fn":"readRemoteTlsTrustAnchor","args":["key_name-1","ΣΑΣ σας ς",{"a":{"b":"c"}}],"error":"ENOENT: no such file or directory, open 'key_name-1'"}
+{"fn":"remoteTlsRootNeedsRepair","args":[{"version":2,"environmentId":"😀","rootCertificate":"{name} has {count} items","rootPrivateKey":"hello world","leafCertificate":"src/a/b.ts","leafPrivateKey":"İstanbul"},["a",1]],"error":"error:0480006C:PEM routines::no start line"}
+{"fn":"remoteTlsRootNeedsRepair","args":[null,true],"error":"Cannot read properties of null (reading 'rootCertificate')"}
+{"fn":"remoteTlsRootNeedsRepair","args":[{"version":2,"environmentId":"é","rootCertificate":"ΣΊΣΥΦΟΣ","rootPrivateKey":"src/a/b.ts","leafCertificate":"日本語のテキスト","leafPrivateKey":"a:b:c"},0],"error":"error:0480006C:PEM routines::no start line"}
+{"fn":"remoteTlsRootNeedsRepair","args":[true,{"$undefined":true}],"error":"The \"buffer\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received undefined"}
+{"fn":"remoteTlsRootNeedsRepair","args":[{"version":2,"environmentId":"İstanbul","rootCertificate":"hello","rootPrivateKey":"  padded  a.b.c","leafCertificate":"ab","leafPrivateKey":"İstanbulab"},["a",1]],"error":"error:0480006C:PEM routines::no start line"}
+{"fn":"remoteTlsRootNeedsRepair","args":[{"version":2,"environmentId":"tab\tseparated","rootCertificate":"./x/**/*.json","rootPrivateKey":"./x/**/*.json","leafCertificate":"key_name-1","leafPrivateKey":"ns:key.path{name} has {count} items"},"x"],"error":"error:0480006C:PEM routines::no start line"}
+{"fn":"remoteTlsRootNeedsRepair","args":[{"version":2,"environmentId":"hello worlda","rootCertificate":".leading","rootPrivateKey":"日本語のテキスト","leafCertificate":"src/a/b.ts","leafPrivateKey":"ΣΊΣΥΦΟΣ"},null],"error":"error:0480006C:PEM routines::no start line"}
+{"fn":"remoteTlsRootNeedsRepair","args":[true,{"a":"b"}],"error":"The \"buffer\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received undefined"}
+{"fn":"remoteTlsRootNeedsRepair","args":[{"version":2,"environmentId":"a..b","rootCertificate":"ab","rootPrivateKey":"  padded  😀","leafCertificate":"./x/**/*.jsonemoji 👍🏽 mix","leafPrivateKey":"emoji 👍🏽 mixtab\tseparated"},{"a":"b"}],"error":"error:0480006C:PEM routines::no start line"}
+{"fn":"remoteTlsRootNeedsRepair","args":[true,0],"error":"The \"buffer\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received undefined"}
+{"fn":"remoteTlsRootNeedsRepair","args":[{"version":2,"environmentId":"日本語のテキスト","rootCertificate":"a.b.c","rootPrivateKey":".leadinghello world","leafCertificate":"﻿bom./x/**/*.json","leafPrivateKey":"a.b.c"},"x"],"error":"error:0480006C:PEM routines::no start line"}
+{"fn":"remoteTlsRootNeedsRepair","args":[{"version":2,"environmentId":"a","rootCertificate":":","rootPrivateKey":"./x/**/*.json","leafCertificate":"﻿bom","leafPrivateKey":"İstanbul"}],"error":"error:0480006C:PEM routines::no start line"}
+{"fn":"remoteTlsRootNeedsRepair","args":[{"version":2,"environmentId":"éa.b.c","rootCertificate":"line1\nline2","rootPrivateKey":"ns:key.path","leafCertificate":"﻿bom","leafPrivateKey":"日本語のテキスト"}],"error":"error:0480006C:PEM routines::no start line"}
+{"fn":"remoteTlsRootNeedsRepair","args":[{"version":2,"environmentId":"line1\nline2","rootCertificate":"key_name-1","rootPrivateKey":"hello world","leafCertificate":"abc","leafPrivateKey":"abcHELLO"},true],"error":"error:0480006C:PEM routines::no start line"}
+{"fn":"remoteTlsRootNeedsRepair","args":[{"version":2,"environmentId":"key_name-1","rootCertificate":"a..bab","rootPrivateKey":"İstanbul","leafCertificate":"é","leafPrivateKey":"line1\nline2"},"x"],"error":"error:0480006C:PEM routines::no start line"}
+{"fn":"remoteTlsRootNeedsRepair","args":[0,[]],"error":"The \"buffer\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received undefined"}
+{"fn":"remoteTlsRootNeedsRepair","args":[0,{}],"error":"The \"buffer\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received undefined"}
+{"fn":"remoteTlsRootNeedsRepair","args":[{"version":2,"environmentId":"Hello World","rootCertificate":"trailing.","rootPrivateKey":"a:b:ca:b:c","leafCertificate":"{name} has {count} itemsline1\nline2","leafPrivateKey":"﻿bom"},{"a":"b"}],"error":"error:0480006C:PEM routines::no start line"}
+{"fn":"remoteTlsRootNeedsRepair","args":[{"version":2,"environmentId":"{name} has {count} items","rootCertificate":"abc","rootPrivateKey":"hello world","leafCertificate":"a😀b😀c","leafPrivateKey":"abc"},{"a":"b"}],"error":"error:0480006C:PEM routines::no start line"}
+{"fn":"remoteTlsRootNeedsRepair","args":[{"version":2,"environmentId":"ns:key.pathhello","rootCertificate":"./x/**/*.json","rootPrivateKey":"key_name-1","leafCertificate":"line1\nline2İstanbul","leafPrivateKey":"{name} has {count} items"}],"error":"error:0480006C:PEM routines::no start line"}
+{"fn":"initializeRemoteTlsIdentity","args":["﻿bom","BOM",["a",1]],"error":"lock owner metadata is invalid"}
+{"fn":"initializeRemoteTlsIdentity","args":["  padded  {name} has {count} items","./x/**/*.json",null],"error":"lock owner metadata is invalid"}
+{"fn":"initializeRemoteTlsIdentity","args":["straßeHELLO","tra",true],"error":"lock owner metadata is invalid"}
+{"fn":"initializeRemoteTlsIdentity","args":["İstanbul","  padded  é",{}],"error":"lock owner metadata is invalid"}
+{"fn":"initializeRemoteTlsIdentity","args":["ab","HELLO",0],"error":"lock owner metadata is invalid"}
+{"fn":"initializeRemoteTlsIdentity","args":["src/a/b.ts./x/**/*.json","abc",true],"error":"lock owner metadata is invalid"}
+{"fn":"initializeRemoteTlsIdentity","args":["a😀b😀c","tab\tseparated",{}],"error":"lock owner metadata is invalid"}
+{"fn":"initializeRemoteTlsIdentity","args":["emoji 👍🏽 mix","a😀b😀c:",["a",1]],"error":"lock owner metadata is invalid"}
+{"fn":"initializeRemoteTlsIdentity","args":["ΣΊΣΥΦΟΣ","ünïcödé",true],"error":"lock owner metadata is invalid"}
+{"fn":"initializeRemoteTlsIdentity","args":["./x/**/*.jsonHello World","İstanbul"],"error":"lock owner metadata is invalid"}
+{"fn":"initializeRemoteTlsIdentity","args":["src/a/b.ts","trailing.ns:key.path",{"$undefined":true}],"error":"lock owner metadata is invalid"}
+{"fn":"initializeRemoteTlsIdentity","args":["hello world","İstanbul","x"],"error":"lock owner metadata is invalid"}
+{"fn":"initializeRemoteTlsIdentity","args":["line1\nline2","İstanbul",{"$undefined":true}],"error":"lock owner metadata is invalid"}
+{"fn":"initializeRemoteTlsIdentity","args":["{name} has {count} items","İstanbul"],"error":"lock owner metadata is invalid"}
+{"fn":"initializeRemoteTlsIdentity","args":["a.b.c","﻿bom",{"a":"b"}],"error":"lock owner metadata is invalid"}
+{"fn":"initializeRemoteTlsIdentity","args":["😀c","a😀b😀c",["a",1]],"error":"lock owner metadata is invalid"}
+{"fn":"initializeRemoteTlsIdentity","args":[":",":",{"a":{"b":"c"}}],"error":"lock owner metadata is invalid"}
+{"fn":"initializeRemoteTlsIdentity","args":["./x/**/*.json","x","x"],"error":"lock owner metadata is invalid"}
+{"fn":"initializeRemoteTlsIdentity","args":["﻿bom","Hello World{name} has {count} items",{"a":{"b":"c"}}],"error":"lock owner metadata is invalid"}
+{"fn":"initializeRemoteTlsIdentity","args":["héllo wörld","BOM",["a",1]],"error":"lock owner metadata is invalid"}
+{"fn":"initializeRemoteTlsIdentity","args":["👍🏽 thumbs","BOM",["a",1]],"error":"lock owner metadata is invalid"}
+{"fn":"initializeRemoteTlsIdentity","args":["日本語","BOM",["a",1]],"error":"lock owner metadata is invalid"}
+{"fn":"initializeRemoteTlsIdentity","args":["","BOM",["a",1]],"error":"lock owner metadata is invalid"}
+{"fn":"initializeRemoteTlsIdentity","args":["é","BOM",["a",1]],"error":"lock owner metadata is invalid"}
+{"fn":"initializeRemoteTlsIdentity","args":["İstanbul","BOM",["a",1]],"error":"lock owner metadata is invalid"}
+{"fn":"initializeRemoteTlsIdentity","args":["straße","BOM",["a",1]],"error":"lock owner metadata is invalid"}
+{"fn":"initializeRemoteTlsIdentity","args":["ılık ırmak","BOM",["a",1]],"error":"lock owner metadata is invalid"}
+{"fn":"initializeRemoteTlsIdentity","args":["👨‍👩‍👧 family","BOM",["a",1]],"error":"lock owner metadata is invalid"}
+{"fn":"initializeRemoteTlsIdentity","args":["a b","BOM",["a",1]],"error":"lock owner metadata is invalid"}
+{"fn":"initializeRemoteTlsIdentity","args":["ΣΊΣΥΦΟΣ","BOM",["a",1]],"error":"lock owner metadata is invalid"}
+{"fn":"initializeRemoteTlsIdentity","args":["a😀b","BOM",["a",1]],"error":"lock owner metadata is invalid"}
+{"fn":"initializeRemoteTlsIdentity","args":["a²b x½ y①","BOM",["a",1]],"error":"lock owner metadata is invalid"}
+{"fn":"initializeRemoteTlsIdentity","args":["aⅠb Ⅻ","BOM",["a",1]],"error":"lock owner metadata is invalid"}
+{"fn":"initializeRemoteTlsIdentity","args":["a𐐀b 𝐀bc","BOM",["a",1]],"error":"lock owner metadata is invalid"}
+{"fn":"initializeRemoteTlsIdentity","args":["कि ٣٤","BOM",["a",1]],"error":"lock owner metadata is invalid"}
+{"fn":"initializeRemoteTlsIdentity","args":["Iı İi","BOM",["a",1]],"error":"lock owner metadata is invalid"}
+{"fn":"initializeRemoteTlsIdentity","args":["K K k","BOM",["a",1]],"error":"lock owner metadata is invalid"}
+{"fn":"initializeRemoteTlsIdentity","args":["ſ s S","BOM",["a",1]],"error":"lock owner metadata is invalid"}
+{"fn":"initializeRemoteTlsIdentity","args":["x‍y 👨‍👩‍👧","BOM",["a",1]],"error":"lock owner metadata is invalid"}
+{"fn":"initializeRemoteTlsIdentity","args":["a b c　d","BOM",["a",1]],"error":"lock owner metadata is invalid"}
+{"fn":"initializeRemoteTlsIdentity","args":["١٢٣ ٤٥","BOM",["a",1]],"error":"lock owner metadata is invalid"}
+{"fn":"initializeRemoteTlsIdentity","args":["𝟘𝟙 ²³","BOM",["a",1]],"error":"lock owner metadata is invalid"}
+{"fn":"initializeRemoteTlsIdentity","args":["snake_case foo-bar o'neil","BOM",["a",1]],"error":"lock owner metadata is invalid"}
+{"fn":"initializeRemoteTlsIdentity","args":["ǅungla Ǆ","BOM",["a",1]],"error":"lock owner metadata is invalid"}
+{"fn":"initializeRemoteTlsIdentity","args":["one\r\ntwo threefour","BOM",["a",1]],"error":"lock owner metadata is invalid"}
+{"fn":"initializeRemoteTlsIdentity","args":["café café","BOM",["a",1]],"error":"lock owner metadata is invalid"}
+{"fn":"initializeRemoteTlsIdentity","args":["ΣΑΣ σας ς","BOM",["a",1]],"error":"lock owner metadata is invalid"}
+{"fn":"initializeRemoteTlsIdentity","args":["﻿bom","👍🏽 thumbs",["a",1]],"error":"lock owner metadata is invalid"}
+{"fn":"initializeRemoteTlsIdentity","args":["﻿bom","",["a",1]],"error":"lock owner metadata is invalid"}
+{"fn":"initializeRemoteTlsIdentity","args":["﻿bom","İstanbul",["a",1]],"error":"lock owner metadata is invalid"}
+{"fn":"initializeRemoteTlsIdentity","args":["﻿bom","ılık ırmak",["a",1]],"error":"lock owner metadata is invalid"}
+{"fn":"initializeRemoteTlsIdentity","args":["﻿bom","a b",["a",1]],"error":"lock owner metadata is invalid"}
+{"fn":"initializeRemoteTlsIdentity","args":["﻿bom","a😀b",["a",1]],"error":"lock owner metadata is invalid"}
+{"fn":"initializeRemoteTlsIdentity","args":["﻿bom","a²b x½ y①",["a",1]],"error":"lock owner metadata is invalid"}
+{"fn":"initializeRemoteTlsIdentity","args":["﻿bom","a𐐀b 𝐀bc",["a",1]],"error":"lock owner metadata is invalid"}
+{"fn":"initializeRemoteTlsIdentity","args":["﻿bom","Iı İi",["a",1]],"error":"lock owner metadata is invalid"}
+{"fn":"initializeRemoteTlsIdentity","args":["﻿bom","ſ s S",["a",1]],"error":"lock owner metadata is invalid"}
+{"fn":"initializeRemoteTlsIdentity","args":["﻿bom","a b c　d",["a",1]],"error":"lock owner metadata is invalid"}
+{"fn":"initializeRemoteTlsIdentity","args":["﻿bom","𝟘𝟙 ²³",["a",1]],"error":"lock owner metadata is invalid"}
+{"fn":"initializeRemoteTlsIdentity","args":["﻿bom","ǅungla Ǆ",["a",1]],"error":"lock owner metadata is invalid"}
+{"fn":"initializeRemoteTlsIdentity","args":["﻿bom","café café",["a",1]],"error":"lock owner metadata is invalid"}
+{"fn":"loadRemoteTlsIdentity","args":["a:b:c","éa:b:c",{}],"error":"lock owner metadata is invalid"}
+{"fn":"loadRemoteTlsIdentity","args":["ns:key.patha😀b😀c","İstanbul","l"],"error":"lock owner metadata is invalid"}
+{"fn":"loadRemoteTlsIdentity","args":["emoji 👍🏽 mix","hello world.leading",{"$undefined":true}],"error":"lock owner metadata is invalid"}
+{"fn":"loadRemoteTlsIdentity","args":["a😀b😀c","X","x"],"error":"lock owner metadata is invalid"}
+{"fn":"loadRemoteTlsIdentity","args":["ΣΊΣΥΦΟΣ","key_name-1"],"error":"lock owner metadata is invalid"}
+{"fn":"loadRemoteTlsIdentity","args":["ΣΊΣΥΦΟΣΣΊΣΥΦΟΣ","abctab\tseparated",0],"error":"lock owner metadata is invalid"}
+{"fn":"loadRemoteTlsIdentity","args":["HELLOHello World","ns:key.path",0],"error":"lock owner metadata is invalid"}
+{"fn":"loadRemoteTlsIdentity","args":["src/a/b.tsline1\nline2","hello",true],"error":"lock owner metadata is invalid"}
+{"fn":"loadRemoteTlsIdentity","args":["ms","{name} has {count} items",{"$undefined":true}],"error":"lock owner metadata is invalid"}
+{"fn":"loadRemoteTlsIdentity","args":["emoji 👍🏽 mix","ΣΊΣΥΦΟΣ",["a",1]],"error":"lock owner metadata is invalid"}
+{"fn":"loadRemoteTlsIdentity","args":["key_name-1","ΣΊΣΥΦΟΣ",{"a":{"b":"c"}}],"error":"lock owner metadata is invalid"}
+{"fn":"loadRemoteTlsIdentity","args":["A.B.C","a.b.c",0],"error":"lock owner metadata is invalid"}
+{"fn":"loadRemoteTlsIdentity","args":["﻿bom",".leading",{}],"error":"lock owner metadata is invalid"}
+{"fn":"loadRemoteTlsIdentity","args":["./x/**/*.json","😀",null],"error":"lock owner metadata is invalid"}
+{"fn":"loadRemoteTlsIdentity","args":["😀","hello world",{"a":"b"}],"error":"lock owner metadata is invalid"}
+{"fn":"loadRemoteTlsIdentity","args":["İstanbul./x/**/*.json","HELLO",{}],"error":"lock owner metadata is invalid"}
+{"fn":"loadRemoteTlsIdentity","args":[".leading","straße:",{"a":{"b":"c"}}],"error":"lock owner metadata is invalid"}
+{"fn":"loadRemoteTlsIdentity","args":["HELLOstraße","ELLOSTRASSE","x"],"error":"lock owner metadata is invalid"}
+{"fn":"loadRemoteTlsIdentity","args":["héllo wörld","éa:b:c",{}],"error":"lock owner metadata is invalid"}
+{"fn":"loadRemoteTlsIdentity","args":["👍🏽 thumbs","éa:b:c",{}],"error":"lock owner metadata is invalid"}
+{"fn":"loadRemoteTlsIdentity","args":["日本語","éa:b:c",{}],"error":"lock owner metadata is invalid"}
+{"fn":"loadRemoteTlsIdentity","args":["","éa:b:c",{}],"error":"lock owner metadata is invalid"}
+{"fn":"loadRemoteTlsIdentity","args":["é","éa:b:c",{}],"error":"lock owner metadata is invalid"}
+{"fn":"loadRemoteTlsIdentity","args":["İstanbul","éa:b:c",{}],"error":"lock owner metadata is invalid"}
+{"fn":"loadRemoteTlsIdentity","args":["straße","éa:b:c",{}],"error":"lock owner metadata is invalid"}
+{"fn":"loadRemoteTlsIdentity","args":["ılık ırmak","éa:b:c",{}],"error":"lock owner metadata is invalid"}
+{"fn":"loadRemoteTlsIdentity","args":["👨‍👩‍👧 family","éa:b:c",{}],"error":"lock owner metadata is invalid"}
+{"fn":"loadRemoteTlsIdentity","args":["a b","éa:b:c",{}],"error":"lock owner metadata is invalid"}
+{"fn":"loadRemoteTlsIdentity","args":["ΣΊΣΥΦΟΣ","éa:b:c",{}],"error":"lock owner metadata is invalid"}
+{"fn":"loadRemoteTlsIdentity","args":["a😀b","éa:b:c",{}],"error":"lock owner metadata is invalid"}
+{"fn":"loadRemoteTlsIdentity","args":["a²b x½ y①","éa:b:c",{}],"error":"lock owner metadata is invalid"}
+{"fn":"loadRemoteTlsIdentity","args":["aⅠb Ⅻ","éa:b:c",{}],"error":"lock owner metadata is invalid"}
+{"fn":"loadRemoteTlsIdentity","args":["a𐐀b 𝐀bc","éa:b:c",{}],"error":"lock owner metadata is invalid"}
+{"fn":"loadRemoteTlsIdentity","args":["कि ٣٤","éa:b:c",{}],"error":"lock owner metadata is invalid"}
+{"fn":"loadRemoteTlsIdentity","args":["Iı İi","éa:b:c",{}],"error":"lock owner metadata is invalid"}
+{"fn":"loadRemoteTlsIdentity","args":["K K k","éa:b:c",{}],"error":"lock owner metadata is invalid"}
+{"fn":"loadRemoteTlsIdentity","args":["ſ s S","éa:b:c",{}],"error":"lock owner metadata is invalid"}
+{"fn":"loadRemoteTlsIdentity","args":["x‍y 👨‍👩‍👧","éa:b:c",{}],"error":"lock owner metadata is invalid"}
+{"fn":"loadRemoteTlsIdentity","args":["a b c　d","éa:b:c",{}],"error":"lock owner metadata is invalid"}
+{"fn":"loadRemoteTlsIdentity","args":["١٢٣ ٤٥","éa:b:c",{}],"error":"lock owner metadata is invalid"}
+{"fn":"loadRemoteTlsIdentity","args":["𝟘𝟙 ²³","éa:b:c",{}],"error":"lock owner metadata is invalid"}
+{"fn":"loadRemoteTlsIdentity","args":["snake_case foo-bar o'neil","éa:b:c",{}],"error":"lock owner metadata is invalid"}
+{"fn":"loadRemoteTlsIdentity","args":["ǅungla Ǆ","éa:b:c",{}],"error":"lock owner metadata is invalid"}
+{"fn":"loadRemoteTlsIdentity","args":["one\r\ntwo threefour","éa:b:c",{}],"error":"lock owner metadata is invalid"}
+{"fn":"loadRemoteTlsIdentity","args":["café café","éa:b:c",{}],"error":"lock owner metadata is invalid"}
+{"fn":"loadRemoteTlsIdentity","args":["ΣΑΣ σας ς","éa:b:c",{}],"error":"lock owner metadata is invalid"}
+{"fn":"loadRemoteTlsIdentity","args":["a:b:c","héllo wörld",{}],"error":"lock owner metadata is invalid"}
+{"fn":"loadRemoteTlsIdentity","args":["a:b:c","日本語",{}],"error":"lock owner metadata is invalid"}
+{"fn":"loadRemoteTlsIdentity","args":["a:b:c","é",{}],"error":"lock owner metadata is invalid"}
+{"fn":"loadRemoteTlsIdentity","args":["a:b:c","straße",{}],"error":"lock owner metadata is invalid"}
+{"fn":"loadRemoteTlsIdentity","args":["a:b:c","👨‍👩‍👧 family",{}],"error":"lock owner metadata is invalid"}
+{"fn":"loadRemoteTlsIdentity","args":["a:b:c","ΣΊΣΥΦΟΣ",{}],"error":"lock owner metadata is invalid"}
+{"fn":"loadRemoteTlsIdentity","args":["a:b:c","﻿bom",{}],"error":"lock owner metadata is invalid"}
+{"fn":"loadRemoteTlsIdentity","args":["a:b:c","aⅠb Ⅻ",{}],"error":"lock owner metadata is invalid"}
+{"fn":"loadRemoteTlsIdentity","args":["a:b:c","कि ٣٤",{}],"error":"lock owner metadata is invalid"}
+{"fn":"loadRemoteTlsIdentity","args":["a:b:c","K K k",{}],"error":"lock owner metadata is invalid"}
+{"fn":"loadRemoteTlsIdentity","args":["a:b:c","x‍y 👨‍👩‍👧",{}],"error":"lock owner metadata is invalid"}
+{"fn":"loadRemoteTlsIdentity","args":["a:b:c","١٢٣ ٤٥",{}],"error":"lock owner metadata is invalid"}
+{"fn":"loadRemoteTlsIdentity","args":["a:b:c","snake_case foo-bar o'neil",{}],"error":"lock owner metadata is invalid"}
+{"fn":"loadRemoteTlsIdentity","args":["a:b:c","one\r\ntwo threefour",{}],"error":"lock owner metadata is invalid"}
+{"fn":"loadRemoteTlsIdentity","args":["a:b:c","ΣΑΣ σας ς",{}],"error":"lock owner metadata is invalid"}
+{"fn":"resetRemoteTlsIdentity","args":["é","ab"],"error":"lock owner metadata is invalid"}
+{"fn":"resetRemoteTlsIdentity","args":["İstanbul","emoji 👍🏽 mixstraße"],"error":"lock owner metadata is invalid"}
+{"fn":"resetRemoteTlsIdentity","args":["hello","h"],"error":"lock owner metadata is invalid"}
+{"fn":"resetRemoteTlsIdentity","args":["trailing.","İstanbul"],"error":"lock owner metadata is invalid"}
+{"fn":"resetRemoteTlsIdentity","args":["😀","😀"],"error":"lock owner metadata is invalid"}
+{"fn":"resetRemoteTlsIdentity","args":["a😀b😀c","src/a/b.ts"],"error":"lock owner metadata is invalid"}
+{"fn":"resetRemoteTlsIdentity","args":["ns:key.pathstraße","日本語のテキスト"],"error":"lock owner metadata is invalid"}
+{"fn":"resetRemoteTlsIdentity","args":["ab","ab"],"error":"lock owner metadata is invalid"}
+{"fn":"resetRemoteTlsIdentity","args":["o","hello"],"error":"lock owner metadata is invalid"}
+{"fn":"resetRemoteTlsIdentity","args":["src/a/b.ts","ns:key.path日本語のテキスト"],"error":"lock owner metadata is invalid"}
+{"fn":"resetRemoteTlsIdentity","args":["  padded  ","DDED "],"error":"lock owner metadata is invalid"}
+{"fn":"resetRemoteTlsIdentity","args":["","emoji 👍🏽 mix"],"error":"lock owner metadata is invalid"}
+{"fn":"resetRemoteTlsIdentity","args":["hello","./x/**/*.json"],"error":"lock owner metadata is invalid"}
+{"fn":"resetRemoteTlsIdentity","args":["😀","﻿bom"],"error":"lock owner metadata is invalid"}
+{"fn":"resetRemoteTlsIdentity","args":["﻿bomkey_name-1","y_n"],"error":"lock owner metadata is invalid"}
+{"fn":"resetRemoteTlsIdentity","args":["ünïcödé","日本語のテキスト"],"error":"lock owner metadata is invalid"}
+{"fn":"resetRemoteTlsIdentity","args":["./x/**/*.json./x/**/*.json","é"],"error":"lock owner metadata is invalid"}
+{"fn":"resetRemoteTlsIdentity","args":["src/a/b.ts","😀:"],"error":"lock owner metadata is invalid"}
+{"fn":"resetRemoteTlsIdentity","args":["ix","emoji 👍🏽 mix"],"error":"lock owner metadata is invalid"}
+{"fn":"resetRemoteTlsIdentity","args":["héllo wörld","ab"],"error":"lock owner metadata is invalid"}
+{"fn":"resetRemoteTlsIdentity","args":["👍🏽 thumbs","ab"],"error":"lock owner metadata is invalid"}
+{"fn":"resetRemoteTlsIdentity","args":["日本語","ab"],"error":"lock owner metadata is invalid"}
+{"fn":"resetRemoteTlsIdentity","args":["İstanbul","ab"],"error":"lock owner metadata is invalid"}
+{"fn":"resetRemoteTlsIdentity","args":["straße","ab"],"error":"lock owner metadata is invalid"}
+{"fn":"resetRemoteTlsIdentity","args":["ılık ırmak","ab"],"error":"lock owner metadata is invalid"}
+{"fn":"resetRemoteTlsIdentity","args":["👨‍👩‍👧 family","ab"],"error":"lock owner metadata is invalid"}
+{"fn":"resetRemoteTlsIdentity","args":["a b","ab"],"error":"lock owner metadata is invalid"}
+{"fn":"resetRemoteTlsIdentity","args":["ΣΊΣΥΦΟΣ","ab"],"error":"lock owner metadata is invalid"}
+{"fn":"resetRemoteTlsIdentity","args":["a😀b","ab"],"error":"lock owner metadata is invalid"}
+{"fn":"resetRemoteTlsIdentity","args":["﻿bom","ab"],"error":"lock owner metadata is invalid"}
+{"fn":"resetRemoteTlsIdentity","args":["a²b x½ y①","ab"],"error":"lock owner metadata is invalid"}
+{"fn":"resetRemoteTlsIdentity","args":["aⅠb Ⅻ","ab"],"error":"lock owner metadata is invalid"}
+{"fn":"resetRemoteTlsIdentity","args":["a𐐀b 𝐀bc","ab"],"error":"lock owner metadata is invalid"}
+{"fn":"resetRemoteTlsIdentity","args":["कि ٣٤","ab"],"error":"lock owner metadata is invalid"}
+{"fn":"resetRemoteTlsIdentity","args":["Iı İi","ab"],"error":"lock owner metadata is invalid"}
+{"fn":"resetRemoteTlsIdentity","args":["K K k","ab"],"error":"lock owner metadata is invalid"}
+{"fn":"resetRemoteTlsIdentity","args":["ſ s S","ab"],"error":"lock owner metadata is invalid"}
+{"fn":"resetRemoteTlsIdentity","args":["x‍y 👨‍👩‍👧","ab"],"error":"lock owner metadata is invalid"}
+{"fn":"resetRemoteTlsIdentity","args":["a b c　d","ab"],"error":"lock owner metadata is invalid"}
+{"fn":"resetRemoteTlsIdentity","args":["١٢٣ ٤٥","ab"],"error":"lock owner metadata is invalid"}
+{"fn":"resetRemoteTlsIdentity","args":["𝟘𝟙 ²³","ab"],"error":"lock owner metadata is invalid"}
+{"fn":"resetRemoteTlsIdentity","args":["snake_case foo-bar o'neil","ab"],"error":"lock owner metadata is invalid"}
+{"fn":"resetRemoteTlsIdentity","args":["ǅungla Ǆ","ab"],"error":"lock owner metadata is invalid"}
+{"fn":"resetRemoteTlsIdentity","args":["one\r\ntwo threefour","ab"],"error":"lock owner metadata is invalid"}
+{"fn":"resetRemoteTlsIdentity","args":["café café","ab"],"error":"lock owner metadata is invalid"}
+{"fn":"resetRemoteTlsIdentity","args":["ΣΑΣ σας ς","ab"],"error":"lock owner metadata is invalid"}
+{"fn":"resetRemoteTlsIdentity","args":["é","héllo wörld"],"error":"lock owner metadata is invalid"}
+{"fn":"resetRemoteTlsIdentity","args":["é","日本語"],"error":"lock owner metadata is invalid"}
+{"fn":"resetRemoteTlsIdentity","args":["é","é"],"error":"lock owner metadata is invalid"}
+{"fn":"resetRemoteTlsIdentity","args":["é","straße"],"error":"lock owner metadata is invalid"}
+{"fn":"resetRemoteTlsIdentity","args":["é","👨‍👩‍👧 family"],"error":"lock owner metadata is invalid"}
+{"fn":"resetRemoteTlsIdentity","args":["é","ΣΊΣΥΦΟΣ"],"error":"lock owner metadata is invalid"}
+{"fn":"resetRemoteTlsIdentity","args":["é","﻿bom"],"error":"lock owner metadata is invalid"}
+{"fn":"resetRemoteTlsIdentity","args":["é","aⅠb Ⅻ"],"error":"lock owner metadata is invalid"}
+{"fn":"resetRemoteTlsIdentity","args":["é","कि ٣٤"],"error":"lock owner metadata is invalid"}
+{"fn":"resetRemoteTlsIdentity","args":["é","K K k"],"error":"lock owner metadata is invalid"}
+{"fn":"resetRemoteTlsIdentity","args":["é","x‍y 👨‍👩‍👧"],"error":"lock owner metadata is invalid"}
+{"fn":"resetRemoteTlsIdentity","args":["é","١٢٣ ٤٥"],"error":"lock owner metadata is invalid"}
+{"fn":"resetRemoteTlsIdentity","args":["é","snake_case foo-bar o'neil"],"error":"lock owner metadata is invalid"}
+{"fn":"resetRemoteTlsIdentity","args":["é","one\r\ntwo threefour"],"error":"lock owner metadata is invalid"}
+{"fn":"resetRemoteTlsIdentity","args":["é","ΣΑΣ σας ς"],"error":"lock owner metadata is invalid"}
+{"fn":"resourceRequestHeaders","args":[["a",1],-1],"error":"Resource content type is required"}
+{"fn":"resourceRequestHeaders","args":[{"a":"b"},-1],"error":"Resource content type is required"}
+{"fn":"resourceRequestHeaders","args":[true,-1],"error":"Resource content type is required"}
+{"fn":"resourceRequestHeaders","args":[{"a":{"b":"c"}},1],"error":"Resource content type is required"}
+{"fn":"resourceRequestHeaders","args":["x",2],"error":"Resource content type is required"}
+{"fn":"resourceRequestHeaders","args":[{},10],"error":"Resource content type is required"}
+{"fn":"resourceRequestHeaders","args":[null,10],"error":"Cannot read properties of null (reading 'range')"}
+{"fn":"resourceRequestHeaders","args":[{},3],"error":"Resource content type is required"}
+{"fn":"resourceRequestHeaders","args":[{},{"$num":"NaN"}],"ok":{}}
+{"fn":"resourceRequestHeaders","args":[{},100],"error":"Resource content type is required"}
+{"fn":"resourceRequestHeaders","args":[0,9007199254740992],"error":"Resource content type is required"}
+{"fn":"resourceRequestHeaders","args":[[],2],"error":"Resource content type is required"}
+{"fn":"resourceRequestHeaders","args":[{},-1],"error":"Resource content type is required"}
+{"fn":"resourceRequestHeaders","args":[true,100],"error":"Resource content type is required"}
+{"fn":"resourceRequestHeaders","args":[["a",1],2147483648],"error":"Resource content type is required"}
+{"fn":"resourceRequestHeaders","args":[{"a":"b"},0],"ok":{}}
+{"fn":"resourceRequestHeaders","args":[{"a":{"b":"c"}},1000],"error":"Resource content type is required"}
+{"fn":"resourceRequestHeaders","args":[true,0.5],"error":"Resource content type is required"}
+{"fn":"resourceRequestHeaders","args":[{"a":{"b":"c"}},1000000],"error":"Resource content type is required"}
+{"fn":"resourceRequestHeaders","args":[[],{"$num":"NaN"}],"ok":{}}
+{"fn":"resourceRequestHeaders","args":[["a",1],-7.5],"error":"Resource content type is required"}
+{"fn":"resourceRequestHeaders","args":[["a",1],0.1],"error":"Resource content type is required"}
+{"fn":"resourceRequestHeaders","args":[["a",1],0.30000000000000004],"error":"Resource content type is required"}
+{"fn":"resourceRequestHeaders","args":[["a",1],1e+21],"error":"Resource content type is required"}
+{"fn":"resourceRequestHeaders","args":[["a",1],1e-7],"error":"Resource content type is required"}
+{"fn":"resourceRequestHeaders","args":[["a",1],5e-324],"error":"Resource content type is required"}
+{"fn":"resourceRequestHeaders","args":[["a",1],1.7976931348623157e+308],"error":"Resource content type is required"}
+{"fn":"resourceRequestHeaders","args":[["a",1],9007199254740992],"error":"Resource content type is required"}
+{"fn":"resourceRequestHeaders","args":[["a",1],{"$num":"-0"}],"ok":{}}
+{"fn":"verifyRemoteTlsRuntime","args":[],"error":"lock owner metadata is invalid"}
+{"fn":"connectRemoteTls","args":[[],{"environmentId":"﻿bom","rootCertificate":"./x/**/*.json","rootFingerprint":"{name} has {count} itemsa:b:c"},"x",{"a":"b"}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[null,{"environmentId":"ns:key.path","rootCertificate":":line1\nline2","rootFingerprint":"hello world"},{"a":{"b":"c"}},["a",1]],"error":"Cannot read properties of null (reading 'terminate')"}
+{"fn":"connectRemoteTls","args":[true,{"environmentId":"Hello Worldünïcödé","rootCertificate":"","rootFingerprint":".leading"},null,["a",1]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[[],{},{"$undefined":true},null],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[0,{"environmentId":"tab\tseparated","rootCertificate":"straße","rootFingerprint":"line1\nline2"},{"a":{"b":"c"}},true],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[["a",1],{"environmentId":".leading","rootCertificate":"","rootFingerprint":"ns:key.path"},{"$undefined":true},{"a":"b"}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[true,{"environmentId":"a:b:c","rootCertificate":"","rootFingerprint":"ab"},0,"x"],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[{"a":"b"},{"environmentId":"line1\nline2日本語のテキスト","rootCertificate":"tab\tseparated","rootFingerprint":"ΣΊΣΥΦΟΣ"},0],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[["a",1],{"environmentId":"a..b","rootCertificate":"{name} has {count} items","rootFingerprint":"  padded  "},true,{"$undefined":true}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[[],null,{},{"a":"b"}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":["x",{"environmentId":"{name} has {count} items","rootCertificate":"abcé","rootFingerprint":"Hello World"},null,[]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[null,{"environmentId":"src/a/b.ts","rootCertificate":"ünïcödé","rootFingerprint":"./x/**/*.json"},{"$undefined":true}],"error":"Cannot read properties of null (reading 'terminate')"}
+{"fn":"connectRemoteTls","args":[0,{"environmentId":"abc","rootCertificate":"a😀b😀c","rootFingerprint":"ns:key.path"},{"a":{"b":"c"}}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[{"a":{"b":"c"}},{"environmentId":"HELLO","rootCertificate":"a.b.c","rootFingerprint":"a..b"},{},[]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[{"a":{"b":"c"}},{"environmentId":"日本語のテキスト","rootCertificate":"hello","rootFingerprint":"key_name-1"},true,{"a":"b"}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[{},{"environmentId":":","rootCertificate":"HELLO","rootFingerprint":"﻿bom"},{"a":{"b":"c"}},{}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[null,{"environmentId":"a.b.c","rootCertificate":"Hello World","rootFingerprint":"straße﻿bom"},{"a":"b"},null],"error":"Cannot read properties of null (reading 'terminate')"}
+{"fn":"connectRemoteTls","args":[[],{"environmentId":"src/a/b.ts","rootCertificate":"","rootFingerprint":".leading"},{"$undefined":true},{"a":{"b":"c"}}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[null,{"environmentId":"  padded  ","rootCertificate":"key_name-1","rootFingerprint":"a..b"},{},["a",1]],"error":"Cannot read properties of null (reading 'terminate')"}
+{"fn":"connectRemoteTls","args":["x",{"environmentId":"a..b:","rootCertificate":"a:b:c","rootFingerprint":"a.b.c"},0,true],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[true,{"environmentId":"HELLO","rootCertificate":"HELLOabc","rootFingerprint":"a:b:c"},null,["a",1]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[null,{"environmentId":"ΣΊΣΥΦΟΣ","rootCertificate":"straße","rootFingerprint":"ab"},{"a":"b"},0],"error":"Cannot read properties of null (reading 'terminate')"}
+{"fn":"connectRemoteWebSocket","args":[{"a":"b"},{"environmentId":".leading","rootCertificate":"abc","rootFingerprint":"a..b"},{"$undefined":true},[]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[["a",1],{"environmentId":"ns:key.path","rootCertificate":"İstanbul","rootFingerprint":"{name} has {count} items"},null,"x"],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[null,{"environmentId":"日本語のテキストline1\nline2","rootCertificate":":","rootFingerprint":"line1\nline2"},["a",1]],"error":"Cannot read properties of null (reading 'terminate')"}
+{"fn":"connectRemoteWebSocket","args":[{},{"environmentId":"a.b.c","rootCertificate":"日本語のテキスト","rootFingerprint":"{name} has {count} items"},"x",{}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[["a",1],{"environmentId":"ünïcödé","rootCertificate":"a.b.c","rootFingerprint":"emoji 👍🏽 mix"},"x",true],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[true,{"environmentId":"İstanbul","rootCertificate":"  padded  ","rootFingerprint":"😀"},[],{"a":"b"}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[{"a":{"b":"c"}},{"environmentId":"a.b.c:","rootCertificate":"ünïcödé","rootFingerprint":"tab\tseparated"},"x",[]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[{"a":"b"},["a",1],0,null],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[{},{"environmentId":"{name} has {count} items","rootCertificate":"line1\nline2","rootFingerprint":"😀hello"}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[[],{"environmentId":"abc","rootCertificate":"é","rootFingerprint":"a.b.cline1\nline2"},{},{"a":{"b":"c"}}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[{},{"environmentId":"﻿bom","rootCertificate":"a.b.c","rootFingerprint":"İstanbul"},[],{}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[["a",1],{"environmentId":"﻿bom","rootCertificate":"HELLO","rootFingerprint":""}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[{"a":"b"},{"environmentId":"tab\tseparated","rootCertificate":"é","rootFingerprint":"key_name-1"},["a",1],[]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[true,{"environmentId":":","rootCertificate":"helloHello World","rootFingerprint":"a"},{"a":{"b":"c"}},true],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":["x",[],[],[]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[0,0,{"a":{"b":"c"}},null],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[null,{"environmentId":":","rootCertificate":"key_name-1","rootFingerprint":"trailing."},{"a":"b"},{}],"error":"Cannot read properties of null (reading 'terminate')"}
+{"fn":"connectRemoteWebSocket","args":[{"a":{"b":"c"}},true,"x"],"error":"outer.terminate is not a function"}

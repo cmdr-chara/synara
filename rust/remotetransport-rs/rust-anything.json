@@ -1,0 +1,348 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/remoteTransport/",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "remotetransport-rs",
+  "exports": [
+    {
+      "name": "remoteTlsIdentityPath",
+      "file": "apps/server/src/remoteTransport/certificates.ts",
+      "line": 45,
+      "params": [
+        {
+          "name": "secretsDir",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "remoteTlsServerName",
+      "file": "apps/server/src/remoteTransport/certificates.ts",
+      "line": 49,
+      "params": [
+        {
+          "name": "environmentId",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "remoteTlsAnchor",
+      "file": "apps/server/src/remoteTransport/certificates.ts",
+      "line": 55,
+      "params": [
+        {
+          "name": "identity",
+          "ts_type": "Pick<RemoteTlsIdentity, \"environmentId\" | \"rootCertificate\">",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "RemoteTlsAnchor",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "validateRemoteTlsAnchor",
+      "file": "apps/server/src/remoteTransport/certificates.ts",
+      "line": 68,
+      "params": [
+        {
+          "name": "anchor",
+          "ts_type": "RemoteTlsAnchor",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "readRemoteTlsTrustAnchor",
+      "file": "apps/server/src/remoteTransport/certificates.ts",
+      "line": 80,
+      "params": [
+        {
+          "name": "filePath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "environmentId",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "now",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<RemoteTlsAnchor>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "remoteTlsRootNeedsRepair",
+      "file": "apps/server/src/remoteTransport/certificates.ts",
+      "line": 107,
+      "params": [
+        {
+          "name": "identity",
+          "ts_type": "RemoteTlsIdentity",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "now",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "initializeRemoteTlsIdentity",
+      "file": "apps/server/src/remoteTransport/certificates.ts",
+      "line": 248,
+      "params": [
+        {
+          "name": "filePath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "environmentId",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "now",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<RemoteTlsIdentity>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "loadRemoteTlsIdentity",
+      "file": "apps/server/src/remoteTransport/certificates.ts",
+      "line": 255,
+      "params": [
+        {
+          "name": "filePath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "environmentId",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "now",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<RemoteTlsIdentity>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resetRemoteTlsIdentity",
+      "file": "apps/server/src/remoteTransport/certificates.ts",
+      "line": 263,
+      "params": [
+        {
+          "name": "filePath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "environmentId",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<RemoteTlsIdentity>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resourceRequestHeaders",
+      "file": "apps/server/src/remoteTransport/resourceProxy.ts",
+      "line": 18,
+      "params": [
+        {
+          "name": "headers",
+          "ts_type": "http.IncomingHttpHeaders",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "maxBodyBytes",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "http.OutgoingHttpHeaders",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "verifyRemoteTlsRuntime",
+      "file": "apps/server/src/remoteTransport/runtimeSmoke.ts",
+      "line": 16,
+      "params": [],
+      "returns": "Promise<void>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "connectRemoteTls",
+      "file": "apps/server/src/remoteTransport/tunnel.ts",
+      "line": 227,
+      "params": [
+        {
+          "name": "outer",
+          "ts_type": "WebSocket",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "anchor",
+          "ts_type": "RemoteTlsAnchor",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "signal",
+          "ts_type": "AbortSignal",
+          "optional": true,
+          "rest": false
+        },
+        {
+          "name": "timeoutMs",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<tls.TLSSocket>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "connectRemoteWebSocket",
+      "file": "apps/server/src/remoteTransport/tunnel.ts",
+      "line": 281,
+      "params": [
+        {
+          "name": "outer",
+          "ts_type": "WebSocket",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "anchor",
+          "ts_type": "RemoteTlsAnchor",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "path",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        },
+        {
+          "name": "signal",
+          "ts_type": "AbortSignal",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<WebSocket>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "createRemoteResourceGateway",
+      "file": "apps/server/src/remoteTransport/resourceGateway.ts",
+      "line": 17,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "proxyResourceRequest",
+      "file": "apps/server/src/remoteTransport/resourceProxy.ts",
+      "line": 49,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "RemoteTlsServer",
+      "file": "apps/server/src/remoteTransport/tunnel.ts",
+      "line": 91,
+      "reason": "class: accessor `connectionCount`"
+    }
+  ]
+}

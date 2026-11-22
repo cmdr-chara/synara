@@ -1,0 +1,77 @@
+{
+  "unit": "apps/server/src/remoteTransport/",
+  "files": 5,
+  "fingerprint": "d893a5dcc7df47c7",
+  "coverage": {
+    "lines": 1733,
+    "reached": 740,
+    "files": [
+      {
+        "file": "apps/server/src/accountCredentialLock.ts",
+        "lines": 56,
+        "reached": 50,
+        "missed": "23-24, 32, 34-35, 37"
+      },
+      {
+        "file": "apps/server/src/atomicWrite.ts",
+        "lines": 172,
+        "reached": 115,
+        "missed": "23, 27-30, 32-38, 42-59, 67, 70-74, 79-81, 85-86, 115-116, 144-147, 149-154, 156, 179-181"
+      },
+      {
+        "file": "apps/server/src/lazyModule.ts",
+        "lines": 22,
+        "reached": 22,
+        "missed": ""
+      },
+      {
+        "file": "apps/server/src/persistence/DatabaseLifecycleLock.ts",
+        "lines": 393,
+        "reached": 146,
+        "missed": "30-36, 38, 48-49, 51-53, 66-67, 80-83, 93, 98, 100-106, 134-136, 138-139, 141-146, 148, 150-168, 170, 172-173, 175-176, 186-198, 200-201, 203-204, 209-211, 213-214, 220-221, 223-231, 233-258, 260-284, 286-287, 290-306, 308-310, 312-313, 315-343, 345, 361-386, 388-389, 391, 393, 400, 403, 405-413, 415, 427-429"
+      },
+      {
+        "file": "apps/server/src/privatePathPermissions.ts",
+        "lines": 177,
+        "reached": 28,
+        "missed": "21-26, 29-35, 37, 39-44, 46-62, 64-65, 67-86, 88-89, 91-101, 103-119, 121, 124-148, 150, 157-158, 160-188, 190-191"
+      },
+      {
+        "file": "apps/server/src/relaySocket.ts",
+        "lines": 143,
+        "reached": 24,
+        "missed": "23-27, 30-34, 38-46, 50-149"
+      },
+      {
+        "file": "apps/server/src/reliability.ts",
+        "lines": 23,
+        "reached": 6,
+        "missed": "9-25"
+      },
+      {
+        "file": "apps/server/src/remoteTransport/certificates.ts",
+        "lines": 260,
+        "reached": 191,
+        "missed": "46-47, 57-66, 76-77, 82-105, 108-109, 213, 215-222, 225, 229, 232, 235-246, 248, 258-261"
+      },
+      {
+        "file": "apps/server/src/remoteTransport/resourceProxy.ts",
+        "lines": 111,
+        "reached": 35,
+        "missed": "26-29, 32-39, 51-114"
+      },
+      {
+        "file": "apps/server/src/remoteTransport/runtimeSmoke.ts",
+        "lines": 69,
+        "reached": 35,
+        "missed": "24-43, 47-58, 66-67"
+      },
+      {
+        "file": "apps/server/src/remoteTransport/tunnel.ts",
+        "lines": 307,
+        "reached": 88,
+        "missed": "26-62, 64, 94-102, 104, 106-150, 152, 154, 157-198, 204-209, 211-212, 214-224, 243-275, 290-319"
+      }
+    ]
+  }
+}

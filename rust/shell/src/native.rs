@@ -47,6 +47,7 @@ pub struct Native {
     view_dev: bool,
     dev_servers: Vec<Value>,
     dev_cmd: Entity<InputState>,
+    runtime_mode: &'static str,
 }
 
 fn get<'a>(v: &'a Value, k: &str) -> &'a Value {
@@ -219,6 +220,7 @@ impl Native {
                 dev_cmd: cx.new(|cx| {
                     InputState::new(window, cx).placeholder("Dev server command")
                 }),
+                runtime_mode: "full-access",
             };
             this.refresh(cx);
             this
@@ -957,6 +959,7 @@ impl Native {
             .and_then(Value::as_str)
             .map(str::to_owned);
         let client = self.client.clone();
+        let mode = self.runtime_mode;
         cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
             let cell = client.clone();
             let client = cx
@@ -987,7 +990,7 @@ impl Native {
                         "projectId": pid,
                         "title": text.chars().take(60).collect::<String>(),
                         "modelSelection": model_selection,
-                        "runtimeMode": "full-access",
+                        "runtimeMode": mode,
                         "interactionMode": "default",
                         "envMode": "local",
                         "branch": null,
@@ -1006,7 +1009,7 @@ impl Native {
                     "text": text,
                     "attachments": [],
                 },
-                "runtimeMode": "full-access",
+                "runtimeMode": mode,
                 "interactionMode": "default",
                 "createdAt": now_iso(),
             }));
@@ -1797,7 +1800,37 @@ impl Render for Native {
                         Button::new("composer-mode")
                             .ghost()
                             .compact()
-                            .label("Full access \u{25be}"),
+                            .label(format!(
+                                "{} \u{25be}",
+                                match self.runtime_mode {
+                                    "approval-required" => "Approval required",
+                                    "auto" => "Approve for me",
+                                    _ => "Full access",
+                                }
+                            ))
+                            .dropdown_menu({
+                                let this = cx.entity();
+                                move |mut menu, _, _| {
+                                    for (mode, label) in [
+                                        ("approval-required", "Approval required"),
+                                        ("auto", "Approve for me"),
+                                        ("full-access", "Full access"),
+                                    ] {
+                                        let this = this.clone();
+                                        menu = menu.item(
+                                            PopupMenuItem::new(label).on_click(
+                                                move |_, _, cx| {
+                                                    this.update(cx, |this, cx| {
+                                                        this.runtime_mode = mode;
+                                                        cx.notify();
+                                                    });
+                                                },
+                                            ),
+                                        );
+                                    }
+                                    menu
+                                }
+                            }),
                     )
                     .child(div().flex_1())
                     .child(

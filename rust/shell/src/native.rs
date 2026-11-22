@@ -14,9 +14,11 @@ use gpui_kit::component::{
     text::TextView,
     theme::{Theme, ThemeMode},
     v_flex,
+    Icon,
     ActiveTheme as _, IconName,
 };
 use gpui_kit::*;
+use gpui_kit::assets::IconName as AssetIcon;
 
 use crate::ws_client::Client;
 
@@ -51,6 +53,10 @@ pub struct Native {
     runtime_mode: &'static str,
     chats_collapsed: bool,
     view_settings: bool,
+    view_inbox: bool,
+    inbox_items: Vec<Value>,
+    inbox_errors: Vec<Value>,
+    inbox_loading: bool,
 }
 
 fn get<'a>(v: &'a Value, k: &str) -> &'a Value {
@@ -67,6 +73,20 @@ fn arr<'a>(v: &'a Value, k: &str) -> &'a [Value] {
 
 fn now_iso() -> String {
     chrono::Utc::now().to_rfc3339_opts(chrono::SecondsFormat::Millis, true)
+}
+
+fn rel_time(iso: &str) -> String {
+    let Ok(t) = chrono::DateTime::parse_from_rfc3339(iso) else {
+        return String::new();
+    };
+    let d = chrono::Utc::now().signed_duration_since(t).num_seconds().max(0);
+    if d < 3600 {
+        format!("{}m", d / 60)
+    } else if d < 86400 {
+        format!("{}h", d / 3600)
+    } else {
+        format!("{}d", d / 86400)
+    }
 }
 
 fn uuid() -> String {
@@ -146,6 +166,10 @@ impl Native {
                 runtime_mode: "full-access",
                 chats_collapsed: false,
                 view_settings: false,
+                view_inbox: false,
+                inbox_items: Vec::new(),
+                inbox_errors: Vec::new(),
+                inbox_loading: false,
             };
             this.refresh(cx);
             this
@@ -328,6 +352,7 @@ impl Native {
         self.view_files = !self.view_files;
         if self.view_files {
             self.view_dev = false;
+            self.view_inbox = false;
             if self.files_dir.is_empty() {
                 if let Some(root) = self.files_root() {
                     self.load_dir(root, cx);
@@ -341,9 +366,48 @@ impl Native {
         self.view_dev = !self.view_dev;
         if self.view_dev {
             self.view_files = false;
+            self.view_inbox = false;
             self.fetch_dev_servers(cx);
         }
         cx.notify();
+    }
+
+    fn toggle_inbox(&mut self, cx: &mut Context<Self>) {
+        self.view_inbox = !self.view_inbox;
+        if self.view_inbox {
+            self.view_files = false;
+            self.view_dev = false;
+            self.view_settings = false;
+            self.fetch_inbox(cx);
+        }
+        cx.notify();
+    }
+
+    /// Blocking RPC: GitHub inbox (PRs + issues of the project's repos).
+    fn fetch_inbox(&self, cx: &mut Context<Self>) {
+        let cell = self.client.clone();
+        cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
+            let _ = this.update(cx, |this: &mut Self, cx| {
+                this.inbox_loading = true;
+                cx.notify();
+            });
+            let v = cx
+                .background_executor()
+                .spawn(async move {
+                    ensure_client(&cell)
+                        .and_then(|c| {
+                            c.call("githubInbox.list", json!({"state": "open", "sort": "updated"}))
+                        })
+                })
+                .await;
+            let _ = this.update(cx, |this: &mut Self, cx| {
+                this.inbox_loading = false;
+                this.inbox_items = v.as_ref().map(|v| arr(v, "items").to_vec()).unwrap_or_default();
+                this.inbox_errors = v.map(|v| arr(&v, "errors").to_vec()).unwrap_or_default();
+                cx.notify();
+            });
+        })
+        .detach();
     }
 
     /// Blocking RPC: list running dev servers.
@@ -1732,6 +1796,107 @@ impl Render for Native {
             }
         }
 
+        // ---- inbox pane (GitHub PRs + issues) ----
+        let mut inbox_pane = v_flex().flex_1().h_full().p_4().gap_2();
+        if self.view_inbox {
+            inbox_pane = inbox_pane.child(
+                h_flex()
+                    .gap_2()
+                    .child(
+                        div()
+                            .text_xs()
+                            .font_weight(FontWeight::SEMIBOLD)
+                            .text_color(theme.muted_foreground)
+                            .child("INBOX"),
+                    )
+                    .child(
+                        Button::new("inbox-refresh")
+                            .ghost()
+                            .label("Refresh")
+                            .on_click(cx.listener(|this, _ev, _w, cx| {
+                                this.fetch_inbox(cx)
+                            })),
+                    ),
+            );
+            if self.inbox_loading {
+                inbox_pane = inbox_pane.child(
+                    div()
+                        .text_sm()
+                        .text_color(theme.muted_foreground)
+                        .child("Loading…"),
+                );
+            } else if self.inbox_items.is_empty() {
+                inbox_pane = inbox_pane.child(
+                    div()
+                        .text_sm()
+                        .text_color(theme.muted_foreground)
+                        .child(if self.inbox_errors.is_empty() {
+                            "No open pull requests or issues".to_string()
+                        } else {
+                            self.inbox_errors
+                                .iter()
+                                .map(|e| str_at(e, "message").to_string())
+                                .collect::<Vec<_>>()
+                                .join("\n")
+                        }),
+                );
+            }
+            for it in self.inbox_items.clone() {
+                let is_pr = str_at(&it, "kind") == "pullRequest";
+                let url = str_at(&it, "url").to_string();
+                let state = str_at(&it, "state").to_lowercase();
+                let state_color = match state.as_str() {
+                    "merged" | "closed" => theme.muted_foreground,
+                    "open" => theme.primary,
+                    _ => theme.muted_foreground,
+                };
+                inbox_pane = inbox_pane.child(
+                    h_flex()
+                        .id(ElementId::Name(format!("inbox-{}-{}", str_at(&it, "repository"), get(&it, "number")).into()))
+                        .gap_2()
+                        .items_center()
+                        .cursor_pointer()
+                        .on_mouse_down(gpui::MouseButton::Left, move |_, _, cx| {
+                            if !url.is_empty() {
+                                cx.open_url(&url);
+                            }
+                        })
+                        .child(
+                            Icon::new(if is_pr {
+                                AssetIcon::GitPullRequest
+                            } else {
+                                AssetIcon::CircleDot
+                            })
+                            .size(px(14.))
+                            .text_color(state_color),
+                        )
+                        .child(
+                            v_flex()
+                                .flex_1()
+                                .gap_0p5()
+                                .child(
+                                    div().text_sm().child(format!(
+                                        "#{} {}",
+                                        get(&it, "number"),
+                                        str_at(&it, "title")
+                                    )),
+                                )
+                                .child(
+                                    div()
+                                        .text_xs()
+                                        .text_color(theme.muted_foreground)
+                                        .child(format!(
+                                            "{} · {} · {}",
+                                            str_at(&it, "repository"),
+                                            str_at(get(&it, "author"), "login"),
+                                            rel_time(str_at(&it, "updatedAt"))
+                                        )),
+                                ),
+                        ),
+                );
+            }
+        }
+
         // ---- composer ----
         let composer_card = v_flex()
             .w_full()
@@ -1897,6 +2062,8 @@ impl Render for Native {
             main = main.child(div().flex_1().child(dev_pane.overflow_y_scrollbar()));
         } else if self.view_files {
             main = main.child(div().flex_1().child(files_pane.overflow_y_scrollbar()));
+        } else if self.view_inbox {
+            main = main.child(div().flex_1().child(inbox_pane.overflow_y_scrollbar()));
         } else {
             main = main
                 .child(div().flex_1().child(pane.overflow_y_scrollbar()))
@@ -1918,28 +2085,27 @@ impl Render for Native {
                 rail_btn(
                     "nav-chat",
                     IconName::LayoutDashboard,
-                    !self.view_files && !self.view_dev && !self.view_settings,
+                    !self.view_files && !self.view_dev && !self.view_settings && !self.view_inbox,
                 )
                 .on_click(cx.listener(|this, _ev, _w, cx| {
                     this.view_files = false;
                     this.view_dev = false;
                     this.view_settings = false;
+                    this.view_inbox = false;
                     cx.notify();
                 })),
             )
             .child(
-                rail_btn("nav-inbox", IconName::Inbox, false)
+                rail_btn("nav-inbox", IconName::Inbox, self.view_inbox)
                     .on_click(cx.listener(|this, _ev, _w, cx| {
-                        this.view_files = false;
-                        this.view_dev = false;
-                        this.view_settings = false;
-                        cx.notify();
+                        this.toggle_inbox(cx);
                     })),
             )
             .child(
                 rail_btn("nav-files", IconName::FolderClosed, self.view_files)
                     .on_click(cx.listener(|this, _ev, _w, cx| {
                         this.view_settings = false;
+                        this.view_inbox = false;
                         this.toggle_files(cx);
                     })),
             )
@@ -1947,6 +2113,7 @@ impl Render for Native {
                 rail_btn("nav-activity", IconName::Cpu, self.view_dev)
                     .on_click(cx.listener(|this, _ev, _w, cx| {
                         this.view_settings = false;
+                        this.view_inbox = false;
                         this.toggle_dev(cx);
                     })),
             )
@@ -1954,6 +2121,7 @@ impl Render for Native {
                 rail_btn("nav-grid", IconName::GalleryVerticalEnd, self.view_files)
                     .on_click(cx.listener(|this, _ev, _w, cx| {
                         this.view_settings = false;
+                        this.view_inbox = false;
                         this.toggle_files(cx);
                     })),
             )
@@ -1965,6 +2133,7 @@ impl Render for Native {
                         if this.view_settings {
                             this.view_files = false;
                             this.view_dev = false;
+                            this.view_inbox = false;
                         }
                         cx.notify();
                     })),

@@ -48,6 +48,8 @@ pub struct Native {
     dev_servers: Vec<Value>,
     dev_cmd: Entity<InputState>,
     runtime_mode: &'static str,
+    chats_collapsed: bool,
+    view_settings: bool,
 }
 
 fn get<'a>(v: &'a Value, k: &str) -> &'a Value {
@@ -221,6 +223,8 @@ impl Native {
                     InputState::new(window, cx).placeholder("Dev server command")
                 }),
                 runtime_mode: "full-access",
+                chats_collapsed: false,
+                view_settings: false,
             };
             this.refresh(cx);
             this
@@ -1197,27 +1201,41 @@ impl Render for Native {
         }
         sidebar = sidebar.child(
             div()
+                .id("chats-toggle")
                 .mt_2()
+                .cursor_pointer()
                 .text_xs()
                 .font_weight(FontWeight::SEMIBOLD)
                 .text_color(theme.muted_foreground)
-                .child("Chats  \u{203a}"),
+                .child(if self.chats_collapsed {
+                    "Chats \u{203a}"
+                } else {
+                    "Chats \u{2228}"
+                })
+                .on_click(cx.listener(|this, _ev, _w, cx| {
+                    this.chats_collapsed = !this.chats_collapsed;
+                    cx.notify();
+                })),
         );
-        for thread in arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "threads")
-            .iter()
-            .filter(|t| {
-                get(t, "deletedAt").is_null() && get(t, "archivedAt").is_null()
-            })
-            .filter(|t| {
-                query.is_empty()
-                    || str_at(t, "title").to_lowercase().contains(&query)
-                    || str_at(t, "latestReplyPreview")
-                        .to_lowercase()
-                        .contains(&query)
-            })
-            .cloned()
-            .collect::<Vec<_>>()
-        {
+        let chat_threads: Vec<Value> = if self.chats_collapsed {
+            Vec::new()
+        } else {
+            arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "threads")
+                .iter()
+                .filter(|t| {
+                    get(t, "deletedAt").is_null() && get(t, "archivedAt").is_null()
+                })
+                .filter(|t| {
+                    query.is_empty()
+                        || str_at(t, "title").to_lowercase().contains(&query)
+                        || str_at(t, "latestReplyPreview")
+                            .to_lowercase()
+                            .contains(&query)
+                })
+                .cloned()
+                .collect()
+        };
+        for thread in chat_threads {
             let tid = str_at(&thread, "id").to_string();
             let title = str_at(&thread, "title");
             let preview = str_at(&thread, "latestReplyPreview");
@@ -1847,7 +1865,7 @@ impl Render for Native {
                     ),
             );
         let mut composer_col = v_flex().w_full().max_w(px(640.)).gap_1();
-        if self.selected_thread.is_none() && !self.view_files && !self.view_dev {
+        if self.selected_thread.is_none() && !self.view_files && !self.view_dev && !self.view_settings {
             composer_col = composer_col.child(
                 h_flex().child(
                 Button::new("work-in-project")
@@ -1865,8 +1883,81 @@ impl Render for Native {
             .p_3()
             .child(h_flex().justify_center().child(composer_col));
 
+        // ---- settings pane ----
+        let mut settings_pane = v_flex()
+            .size_full()
+            .p_4()
+            .gap_4()
+            .child(
+                div()
+                    .text_xl()
+                    .font_weight(FontWeight::SEMIBOLD)
+                    .child("Settings"),
+            )
+            .child(
+                v_flex()
+                    .gap_2()
+                    .child(
+                        div()
+                            .text_xs()
+                            .font_weight(FontWeight::SEMIBOLD)
+                            .text_color(theme.muted_foreground)
+                            .child("APPEARANCE"),
+                    )
+                    .child(
+                        h_flex()
+                            .gap_2()
+                            .child(
+                                Button::new("theme-light")
+                                    .icon(IconName::Sun)
+                                    .label("Light")
+                                    .on_click(cx.listener(|_this, _ev, _w, cx| {
+                                        Theme::change(ThemeMode::Light, None, cx);
+                                    })),
+                            )
+                            .child(
+                                Button::new("theme-dark")
+                                    .icon(IconName::Moon)
+                                    .label("Dark")
+                                    .on_click(cx.listener(|_this, _ev, _w, cx| {
+                                        Theme::change(ThemeMode::Dark, None, cx);
+                                    })),
+                            ),
+                    ),
+            )
+            .child(
+                v_flex()
+                    .gap_2()
+                    .child(
+                        div()
+                            .text_xs()
+                            .font_weight(FontWeight::SEMIBOLD)
+                            .text_color(theme.muted_foreground)
+                            .child("ABOUT"),
+                    )
+                    .child(
+                        div()
+                            .text_sm()
+                            .child("Synara (Rust port)"),
+                    )
+                    .child(
+                        Button::new("about-repo")
+                            .ghost()
+                            .compact()
+                            .icon(IconName::ExternalLink)
+                            .label("github.com/cmdr-chara/synara")
+                            .on_click(cx.listener(|_this, _ev, _w, cx| {
+                                cx.open_url(
+                                    "https://github.com/cmdr-chara/synara/tree/feat/rust-port",
+                                );
+                            })),
+                    ),
+            );
+
         let mut main = v_flex().flex_1().h_full();
-        if self.view_dev {
+        if self.view_settings {
+            main = main.child(div().flex_1().child(settings_pane.overflow_y_scrollbar()));
+        } else if self.view_dev {
             main = main.child(div().flex_1().child(dev_pane.overflow_y_scrollbar()));
         } else if self.view_files {
             main = main.child(div().flex_1().child(files_pane.overflow_y_scrollbar()));
@@ -1888,34 +1979,60 @@ impl Render for Native {
             .items_center()
             .gap_1()
             .child(
-                rail_btn("nav-chat", IconName::LayoutDashboard, !self.view_files && !self.view_dev)
-                    .on_click(cx.listener(|this, _ev, _w, cx| {
-                        this.view_files = false;
-                        this.view_dev = false;
-                        cx.notify();
-                    })),
+                rail_btn(
+                    "nav-chat",
+                    IconName::LayoutDashboard,
+                    !self.view_files && !self.view_dev && !self.view_settings,
+                )
+                .on_click(cx.listener(|this, _ev, _w, cx| {
+                    this.view_files = false;
+                    this.view_dev = false;
+                    this.view_settings = false;
+                    cx.notify();
+                })),
             )
             .child(
                 rail_btn("nav-inbox", IconName::Inbox, false)
                     .on_click(cx.listener(|this, _ev, _w, cx| {
                         this.view_files = false;
                         this.view_dev = false;
+                        this.view_settings = false;
                         cx.notify();
                     })),
             )
             .child(
                 rail_btn("nav-files", IconName::FolderClosed, self.view_files)
-                    .on_click(cx.listener(|this, _ev, _w, cx| this.toggle_files(cx))),
+                    .on_click(cx.listener(|this, _ev, _w, cx| {
+                        this.view_settings = false;
+                        this.toggle_files(cx);
+                    })),
             )
             .child(
                 rail_btn("nav-activity", IconName::Cpu, self.view_dev)
-                    .on_click(cx.listener(|this, _ev, _w, cx| this.toggle_dev(cx))),
+                    .on_click(cx.listener(|this, _ev, _w, cx| {
+                        this.view_settings = false;
+                        this.toggle_dev(cx);
+                    })),
             )
             .child(
                 rail_btn("nav-grid", IconName::GalleryVerticalEnd, self.view_files)
-                    .on_click(cx.listener(|this, _ev, _w, cx| this.toggle_files(cx))),
+                    .on_click(cx.listener(|this, _ev, _w, cx| {
+                        this.view_settings = false;
+                        this.toggle_files(cx);
+                    })),
             )
             .child(div().flex_1())
+            .child(
+                rail_btn("nav-settings", IconName::Settings, self.view_settings)
+                    .on_click(cx.listener(|this, _ev, _w, cx| {
+                        this.view_settings = !this.view_settings;
+                        if this.view_settings {
+                            this.view_files = false;
+                            this.view_dev = false;
+                        }
+                        cx.notify();
+                    })),
+            )
             .child(
                 rail_btn("nav-theme", if matches!(theme.mode, ThemeMode::Dark) { IconName::Sun } else { IconName::Moon }, false)
                     .on_click(cx.listener(|_this, _ev, _w, cx| {

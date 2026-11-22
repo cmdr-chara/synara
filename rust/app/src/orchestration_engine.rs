@@ -88,6 +88,7 @@ pub fn handle(_tag: &str, payload: &Value) -> Result<Value, WsErr> {
         "thread.pinned-message.remove" => pinned_message(command, "remove"),
         "thread.pinned-message.done.set" => pinned_message(command, "done"),
         "thread.pinned-message.label.set" => pinned_message(command, "label"),
+        "project.create" => project_create(command),
         other => Err(err(format!(
             "orchestration.dispatchCommand {other} is not ported yet (native engine slice)"
         ))),
@@ -100,6 +101,7 @@ struct OutEvent {
     event_type: &'static str,
     payload: Value,
     thread_id: String,
+    agg_kind: &'static str,
     occurred_at: String,
     causation_event_id: Option<String>,
     metadata: Option<Value>,
@@ -116,6 +118,7 @@ fn out_event(
         event_type,
         payload,
         thread_id: thread_id.to_string(),
+        agg_kind: "thread",
         occurred_at: occurred_at.to_string(),
         causation_event_id: None,
         metadata: None,
@@ -166,12 +169,7 @@ fn require_thread(conn: &Connection, thread_id: &str) -> Result<ThreadRow, WsErr
 
 /// Appends every event (incrementing stream_version per stream), writes the
 /// command receipt against the final event's sequence, returns that sequence.
-fn commit_events(
-    conn: &Connection,
-    events: &[OutEvent],
-    command_id: &str,
-    last_thread_id: &str,
-) -> Result<i64, WsErr> {
+fn commit_events(conn: &Connection, events: &[OutEvent], command_id: &str) -> Result<i64, WsErr> {
     let tx = conn
         .unchecked_transaction()
         .map_err(|e| err(e.to_string()))?;
@@ -180,8 +178,8 @@ fn commit_events(
         let stream_version: i64 = tx
             .query_row(
                 "SELECT COALESCE(MAX(stream_version), 0) + 1 \
-                 FROM orchestration_events WHERE aggregate_kind = 'thread' AND stream_id = ?1",
-                params![ev.thread_id],
+                 FROM orchestration_events WHERE aggregate_kind = ?2 AND stream_id = ?1",
+                params![ev.thread_id, ev.agg_kind],
                 |r| r.get(0),
             )
             .map_err(|e| err(e.to_string()))?;
@@ -189,7 +187,7 @@ fn commit_events(
             "INSERT INTO orchestration_events \
              (event_id, aggregate_kind, stream_id, stream_version, event_type, occurred_at, \
               command_id, causation_event_id, correlation_id, actor_kind, payload_json, metadata_json) \
-             VALUES (?1, 'thread', ?2, ?3, ?4, ?5, ?6, ?7, ?6, 'client', ?8, ?9)",
+             VALUES (?1, ?10, ?2, ?3, ?4, ?5, ?6, ?7, ?6, 'client', ?8, ?9)",
             params![
                 ev.event_id,
                 ev.thread_id,
@@ -200,17 +198,27 @@ fn commit_events(
                 ev.causation_event_id,
                 ev.payload.to_string(),
                 ev.metadata.as_ref().map_or("{}".to_string(), |m| m.to_string()),
+                ev.agg_kind,
             ],
         )
         .map_err(|e| err(format!("append {} event: {e}", ev.event_type)))?;
         sequence = tx.last_insert_rowid();
     }
+    let last = events
+        .last()
+        .ok_or_else(|| err("dispatch produced no events"))?;
     tx.execute(
         "INSERT INTO orchestration_command_receipts \
          (command_id, aggregate_kind, aggregate_id, accepted_at, result_sequence, status, error, \
           fingerprint_version, command_fingerprint) \
-         VALUES (?1, 'thread', ?2, ?3, ?4, 'accepted', NULL, NULL, NULL)",
-        params![command_id, last_thread_id, iso_now_ms(), sequence],
+         VALUES (?1, ?5, ?2, ?3, ?4, 'accepted', NULL, NULL, NULL)",
+        params![
+            command_id,
+            last.thread_id,
+            iso_now_ms(),
+            sequence,
+            last.agg_kind
+        ],
     )
     .map_err(|e| err(format!("write command receipt: {e}")))?;
     tx.commit().map_err(|e| err(e.to_string()))?;
@@ -319,7 +327,7 @@ fn thread_archive(command: &Map<String, Value>, archive: bool) -> Result<Value, 
         }
         events.push(out_event(if archive { "thread.archived" } else { "thread.unarchived" }, id, &occurred_at, if archive { json!({"threadId": id, "archivedAt": occurred_at, "updatedAt": occurred_at}) } else { json!({"threadId": id, "updatedAt": occurred_at}) }));
     }
-    let seq = commit_events(&conn, &events, &command_id, &thread_id)?;
+    let seq = commit_events(&conn, &events, &command_id)?;
     for (id, row) in &ids {
         let mut sets: Vec<(&str, Value)> = Vec::new();
         if row.claude_cache_review.is_some() {
@@ -345,7 +353,7 @@ fn thread_delete(command: &Map<String, Value>) -> Result<Value, WsErr> {
         events.push(out_event("thread.claude-cache-set", &thread_id, &occurred_at, json!({"threadId": thread_id, "review": null, "updatedAt": occurred_at})));
     }
     events.push(out_event("thread.deleted", &thread_id, &occurred_at, json!({"threadId": thread_id, "deletedAt": occurred_at})));
-    let seq = commit_events(&conn, &events, &command_id, &thread_id)?;
+    let seq = commit_events(&conn, &events, &command_id)?;
     let mut sets: Vec<(&str, Value)> = vec![("deleted_at", json!(occurred_at))];
     if row.claude_cache_review.is_some() {
         sets.push(("claude_cache_review_json", Value::Null));
@@ -380,7 +388,7 @@ fn thread_mode_set(
     payload.insert(field.to_string(), json!(value));
     payload.insert("updatedAt".into(), json!(occurred_at));
     let events = vec![out_event(event_type, &thread_id, &occurred_at, Value::Object(payload))];
-    let seq = commit_events(&conn, &events, &command_id, &thread_id)?;
+    let seq = commit_events(&conn, &events, &command_id)?;
     update_projection(
         &conn,
         &thread_id,
@@ -524,7 +532,7 @@ fn thread_meta_update(command: &Map<String, Value>) -> Result<Value, WsErr> {
     sets.push(("updated_at", json!(occurred_at)));
 
     let events = vec![out_event("thread.meta-updated", &thread_id, &occurred_at, Value::Object(ep))];
-    let seq = commit_events(&conn, &events, &command_id, &thread_id)?;
+    let seq = commit_events(&conn, &events, &command_id)?;
     update_projection(&conn, &thread_id, &sets)?;
     Ok(json!({ "sequence": seq }))
 }
@@ -937,7 +945,7 @@ fn thread_turn_start(command: &Map<String, Value>) -> Result<Value, WsErr> {
     turn_event.causation_event_id = Some(message_event_id);
     events.push(turn_event);
 
-    let seq = commit_events(&conn, &events, &command_id, &thread_id)?;
+    let seq = commit_events(&conn, &events, &command_id)?;
 
     // --- projection: message row + thread shell fields ---------------------
     let attachments = message.get("attachments").cloned().unwrap_or(json!([]));
@@ -1065,7 +1073,7 @@ fn thread_simple(command: &Map<String, Value>, event_type: &'static str) -> Resu
         }
     }
     events.push(ev);
-    let seq = commit_events(&conn, &events, &command_id, &thread_id)?;
+    let seq = commit_events(&conn, &events, &command_id)?;
     Ok(json!({ "sequence": seq }))
 }
 
@@ -1076,6 +1084,7 @@ impl OutEvent {
             event_type: self.event_type,
             payload: self.payload.clone(),
             thread_id: self.thread_id.clone(),
+            agg_kind: self.agg_kind,
             occurred_at: self.occurred_at.clone(),
             causation_event_id: None,
             metadata: None,
@@ -1161,7 +1170,7 @@ fn pinned_message(command: &Map<String, Value>, op: &str) -> Result<Value, WsErr
         _ => unreachable!(),
     };
     let events = vec![out_event(event_type, &thread_id, &occurred_at, payload)];
-    let seq = commit_events(&conn, &events, &command_id, &thread_id)?;
+    let seq = commit_events(&conn, &events, &command_id)?;
     update_projection(
         &conn,
         &thread_id,
@@ -1170,5 +1179,447 @@ fn pinned_message(command: &Map<String, Value>, op: &str) -> Result<Value, WsErr
             ("updated_at", json!(occurred_at)),
         ],
     )?;
+    Ok(json!({ "sequence": seq }))
+}
+
+// ---- project.create ----
+
+const PLATFORM: &str = std::env::consts::OS;
+const MAX_PINNED_PROJECTS: i64 = 3;
+
+/// normalizeWorkspaceRootForComparison: separator + slash-run canonicalization,
+/// trailing-slash strip, macOS /private{,/var,/tmp} alias folding, Windows lowercasing.
+fn normalize_root(value: &str) -> String {
+    let trimmed = value.trim();
+    if trimmed.is_empty() {
+        return String::new();
+    }
+    let fwd = trimmed.replace('\\', "/");
+    let is_windows_drive_root = {
+        let b = fwd.as_bytes();
+        b.len() >= 3 && b[0].is_ascii_alphabetic() && b[1] == b':' && fwd[2..].chars().all(|c| c == '/')
+    };
+    let has_unc = fwd.starts_with("//");
+    let prefix: &str = if has_unc {
+        "//"
+    } else if fwd.starts_with('/') {
+        "/"
+    } else {
+        ""
+    };
+    let mut body = fwd[prefix.len()..].to_string();
+    while body.contains("//") {
+        body = body.replace("//", "/");
+    }
+    while body.ends_with('/') {
+        body.pop();
+    }
+    let normalized = if !prefix.is_empty() {
+        format!("{prefix}{body}")
+    } else {
+        body
+    };
+    let mut final_value = if is_windows_drive_root {
+        format!("{}/", &fwd[..2])
+    } else if normalized.is_empty() {
+        prefix.to_string()
+    } else {
+        normalized
+    };
+    if PLATFORM == "macos"
+        && (final_value.starts_with("/private/var/") || final_value.starts_with("/private/tmp/"))
+    {
+        final_value = final_value["/private".len()..].to_string();
+    }
+    // isLikelyWindowsWorkspaceRoot: on non-win32 platforms only true when the path
+    // literally looks like a Windows path (drive letter or UNC).
+    let looks_windows = {
+        let t = trimmed;
+        (t.len() >= 3 && t.as_bytes()[1] == b':' && (t.as_bytes()[2] == b'\\' || t.as_bytes()[2] == b'/')
+            && t.as_bytes()[0].is_ascii_alphabetic())
+            || t.starts_with("\\\\")
+            || t.starts_with("//")
+    };
+    if PLATFORM == "windows" || looks_windows {
+        return final_value.to_lowercase();
+    }
+    final_value
+}
+
+fn root_within(candidate: &str, ancestor: &str) -> bool {
+    let c = normalize_root(candidate);
+    let a = normalize_root(ancestor);
+    if c.is_empty() || a.is_empty() {
+        return false;
+    }
+    if c == a {
+        return true;
+    }
+    let prefix = if a.ends_with('/') { a } else { format!("{a}/") };
+    c.starts_with(&prefix)
+}
+
+fn is_absolute_folder_path(path: &str) -> bool {
+    let t = path.trim();
+    t.starts_with('/')
+        || (t.len() >= 3
+            && t.as_bytes()[0].is_ascii_alphabetic()
+            && t.as_bytes()[1] == b':'
+            && (t.as_bytes()[2] == b'\\' || t.as_bytes()[2] == b'/'))
+        || t.starts_with("\\\\")
+}
+
+fn folder_name(path: &str) -> String {
+    path.replace('\\', "/")
+        .split('/')
+        .filter(|p| !p.is_empty())
+        .last()
+        .unwrap_or(path)
+        .to_string()
+}
+
+/// findProjectFolderProblem: absolute, distinct, and non-nested folder list.
+fn find_project_folder_problem(paths: &[String]) -> Option<String> {
+    if paths.is_empty() {
+        return Some("Add at least one folder.".to_string());
+    }
+    for p in paths {
+        if !is_absolute_folder_path(p) {
+            return Some(format!("Use an absolute path: {p}"));
+        }
+    }
+    for outer in 0..paths.len() {
+        for inner in (outer + 1)..paths.len() {
+            let left = &paths[outer];
+            let right = &paths[inner];
+            if normalize_root(left) == normalize_root(right) {
+                return Some(format!("{} is already in this project.", folder_name(right)));
+            }
+            if root_within(right, left) {
+                return Some(format!(
+                    "{} is inside {}. Add only one of them.",
+                    folder_name(right),
+                    folder_name(left)
+                ));
+            }
+            if root_within(left, right) {
+                return Some(format!(
+                    "{} is inside {}. Add only one of them.",
+                    folder_name(left),
+                    folder_name(right)
+                ));
+            }
+        }
+    }
+    None
+}
+
+/// realpathNearestExisting: canonicalize the deepest existing ancestor and
+/// re-append the not-yet-created remainder.
+fn realpath_nearest_existing(p: &std::path::Path) -> std::path::PathBuf {
+    if let Ok(c) = std::fs::canonicalize(p) {
+        return c;
+    }
+    let mut missing: Vec<std::ffi::OsString> = Vec::new();
+    let mut cur = p.to_path_buf();
+    loop {
+        if let Ok(c) = std::fs::canonicalize(&cur) {
+            let mut out = c;
+            for part in missing.iter().rev() {
+                out.push(part);
+            }
+            return out;
+        }
+        match cur.parent() {
+            Some(parent) => {
+                missing.push(cur.file_name().unwrap_or_default().to_os_string());
+                cur = parent.to_path_buf();
+            }
+            None => return p.to_path_buf(),
+        }
+    }
+}
+
+fn workspace_paths() -> (String, String) {
+    let home = std::env::var("HOME").unwrap_or_else(|_| "/".to_string());
+    let home_dir = realpath_nearest_existing(std::path::Path::new(&home))
+        .to_string_lossy()
+        .to_string();
+    let chat_root = realpath_nearest_existing(
+        &std::path::Path::new(&home_dir).join("Documents").join("Synara"),
+    )
+    .to_string_lossy()
+    .to_string();
+    (home_dir, chat_root)
+}
+
+fn is_legacy_home_row(title: &str, root: &str) -> bool {
+    if title != "Home" {
+        return false;
+    }
+    let (home_dir, chat_root) = workspace_paths();
+    if home_dir.trim().is_empty() || chat_root.trim().is_empty() {
+        return false;
+    }
+    normalize_root(root) == normalize_root(&chat_root) || normalize_root(root) == normalize_root(&home_dir)
+}
+
+struct ProjectRow {
+    id: String,
+    kind: Option<String>,
+    title: String,
+    workspace_root: String,
+    is_pinned: bool,
+    space_id: Option<String>,
+}
+
+fn active_projects_by_root(
+    conn: &Connection,
+    root: &str,
+    kinds: &[&str],
+) -> Result<Vec<ProjectRow>, WsErr> {
+    let normalized = normalize_root(root);
+    let mut st = conn
+        .prepare(
+            "SELECT project_id, kind, title, workspace_root, is_pinned, space_id \
+             FROM projection_projects WHERE deleted_at IS NULL",
+        )
+        .map_err(|e| err(e.to_string()))?;
+    let rows = st
+        .query_map([], |r| {
+            Ok(ProjectRow {
+                id: r.get(0)?,
+                kind: r.get(1)?,
+                title: r.get(2)?,
+                workspace_root: r.get(3)?,
+                is_pinned: r.get::<_, i64>(4)? != 0,
+                space_id: r.get(5)?,
+            })
+        })
+        .map_err(|e| err(e.to_string()))?;
+    let mut out = Vec::new();
+    for row in rows {
+        let row = row.map_err(|e| err(e.to_string()))?;
+        let kind = row.kind.clone().unwrap_or_else(|| "project".to_string());
+        if !kinds.contains(&kind.as_str()) {
+            continue;
+        }
+        if normalize_root(&row.workspace_root) == normalized {
+            out.push(row);
+        }
+    }
+    Ok(out)
+}
+
+fn project_event(agg_id: &str, event_type: &'static str, occurred_at: &str, payload: Value) -> OutEvent {
+    let mut ev = out_event(event_type, agg_id, occurred_at, payload);
+    ev.agg_kind = "project";
+    ev
+}
+
+fn project_create(command: &Map<String, Value>) -> Result<Value, WsErr> {
+    let command_id = s(command, "commandId").ok_or_else(|| err("missing commandId"))?;
+    let project_id = s(command, "projectId").ok_or_else(|| err("missing projectId"))?;
+    let title = s(command, "title").ok_or_else(|| err("missing title"))?;
+    let workspace_root =
+        s(command, "workspaceRoot").ok_or_else(|| err("missing workspaceRoot"))?;
+    let created_at = s(command, "createdAt").ok_or_else(|| err("missing createdAt"))?;
+    let next_kind = s(command, "kind").unwrap_or_else(|| "project".to_string());
+    let additional_folders: Vec<String> = command
+        .get("additionalFolders")
+        .and_then(Value::as_array)
+        .map(|a| a.iter().filter_map(|v| v.as_str().map(String::from)).collect())
+        .unwrap_or_default();
+    let is_pinned = command.get("isPinned").and_then(Value::as_bool).unwrap_or(false);
+    let preserve = command
+        .get("preserveExistingProject")
+        .and_then(Value::as_bool)
+        .unwrap_or(false);
+    let space_id: Option<String> = command
+        .get("spaceId")
+        .and_then(Value::as_str)
+        .map(String::from);
+    let conn = open_state_rw()?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| err(e.to_string()))?;
+
+    // requireProjectAbsent
+    let exists: i64 = conn
+        .query_row(
+            "SELECT COUNT(*) FROM projection_projects WHERE project_id = ?1",
+            params![project_id],
+            |r| r.get(0),
+        )
+        .map_err(|e| err(e.to_string()))?;
+    if exists > 0 {
+        return Err(err(format!(
+            "Project '{project_id}' already exists and cannot be created twice."
+        )));
+    }
+
+    // requireValidProjectFolders
+    if !additional_folders.is_empty() {
+        if next_kind != "project" {
+            return Err(err("Only ordinary projects can have additional folders."));
+        }
+        let mut paths = vec![workspace_root.clone()];
+        paths.extend(additional_folders.iter().cloned());
+        if let Some(problem) = find_project_folder_problem(&paths) {
+            return Err(err(problem));
+        }
+    }
+
+    let mut events: Vec<OutEvent> = Vec::new();
+    let mut stale_ids: Vec<String> = Vec::new();
+
+    if next_kind == "project" {
+        // Group containers own their root exclusively; never retired here.
+        if let Some(existing) =
+            active_projects_by_root(&conn, &workspace_root, &["studio", "group"])?.into_iter().next()
+        {
+            return Err(err(format!(
+                "Project '{}' already uses workspace root '{}'.",
+                existing.id, existing.workspace_root
+            )));
+        }
+        for existing in active_projects_by_root(&conn, &workspace_root, &["project"])? {
+            let live_threads: i64 = conn
+                .query_row(
+                    "SELECT COUNT(*) FROM projection_threads \
+                     WHERE project_id = ?1 AND deleted_at IS NULL",
+                    params![existing.id],
+                    |r| r.get(0),
+                )
+                .map_err(|e| err(e.to_string()))?;
+            if live_threads > 0 || preserve {
+                return Err(err(format!(
+                    "Project '{}' already uses workspace root '{}'.",
+                    existing.id, existing.workspace_root
+                )));
+            }
+            stale_ids.push(existing.id.clone());
+        }
+        for stale_id in &stale_ids {
+            events.push(project_event(
+                stale_id,
+                "project.deleted",
+                &created_at,
+                json!({"projectId": stale_id, "deletedAt": created_at}),
+            ));
+        }
+    }
+    if next_kind == "group" || next_kind == "studio" {
+        // Cross-kind: a regular project already owning this root would break
+        // workspace-root-to-project uniqueness.
+        if let Some(existing) =
+            active_projects_by_root(&conn, &workspace_root, &["project", "studio", "group"])?
+                .into_iter()
+                .next()
+        {
+            return Err(err(format!(
+                "Project '{}' already uses workspace root '{}'.",
+                existing.id, existing.workspace_root
+            )));
+        }
+    }
+
+    // validateProjectPinLimit
+    if is_pinned && next_kind != "project" {
+        return Err(err("Only projects can be pinned."));
+    }
+    if is_pinned {
+        let mut st = conn
+            .prepare(
+                "SELECT project_id FROM projection_projects \
+                 WHERE deleted_at IS NULL AND kind = 'project' AND is_pinned = 1",
+            )
+            .map_err(|e| err(e.to_string()))?;
+        let pinned: Vec<String> = st
+            .query_map([], |r| r.get(0))
+            .map_err(|e| err(e.to_string()))?
+            .collect::<Result<_, _>>()
+            .map_err(|e| err(e.to_string()))?;
+        let count = pinned
+            .iter()
+            .filter(|id| *id != &project_id && !stale_ids.contains(id))
+            .count() as i64;
+        if count >= MAX_PINNED_PROJECTS {
+            return Err(err(format!(
+                "Only {MAX_PINNED_PROJECTS} projects can be pinned at once."
+            )));
+        }
+    }
+
+    // Best-effort space filing: an unusable target degrades to Void.
+    let creation_space_id: Option<String> = if next_kind == "project" && space_id.is_some() {
+        let sid = space_id.clone().unwrap();
+        let space_ok: bool = conn
+            .query_row(
+                "SELECT deleted_at IS NULL FROM projection_spaces WHERE space_id = ?1",
+                params![sid],
+                |r| r.get::<_, bool>(0),
+            )
+            .unwrap_or(false);
+        if space_ok && !is_legacy_home_row(&title, &workspace_root) {
+            Some(sid)
+        } else {
+            None
+        }
+    } else {
+        None
+    };
+
+    let default_model = command
+        .get("defaultModelSelection")
+        .cloned()
+        .unwrap_or(Value::Null);
+    events.push(project_event(
+        &project_id,
+        "project.created",
+        &created_at,
+        json!({
+            "projectId": project_id,
+            "kind": next_kind,
+            "title": title,
+            "workspaceRoot": workspace_root,
+            "defaultModelSelection": default_model,
+            "scripts": [],
+            "isPinned": is_pinned,
+            "spaceId": creation_space_id,
+            "additionalFolders": additional_folders,
+            "createdAt": created_at,
+            "updatedAt": created_at,
+        }),
+    ));
+
+    let seq = commit_events(&conn, &events, &command_id)?;
+
+    // Projection writes: retire stale shells, insert the new row.
+    for stale_id in &stale_ids {
+        conn.execute(
+            "UPDATE projection_projects SET deleted_at = ?2, updated_at = ?2 \
+             WHERE project_id = ?1",
+            params![stale_id, created_at],
+        )
+        .map_err(|e| err(e.to_string()))?;
+    }
+    conn.execute(
+        "INSERT OR REPLACE INTO projection_projects \
+         (project_id, kind, title, workspace_root, scripts_json, created_at, updated_at, \
+          deleted_at, default_model_selection_json, is_pinned, space_id, additional_folders_json) \
+         VALUES (?1, ?2, ?3, ?4, '[]', ?5, ?5, NULL, ?6, ?7, ?8, ?9)",
+        params![
+            project_id,
+            next_kind,
+            title,
+            workspace_root,
+            created_at,
+            if default_model.is_null() { None } else { Some(default_model.to_string()) },
+            is_pinned as i64,
+            creation_space_id,
+            serde_json::to_string(&additional_folders).unwrap_or_else(|_| "[]".to_string()),
+        ],
+    )
+    .map_err(|e| err(format!("project projection insert: {e}")))?;
     Ok(json!({ "sequence": seq }))
 }

@@ -187,7 +187,33 @@ function fixParamProps(src) {
     if (!changed) { idx = q; continue; }
     const decls = fields.map((f) => f + ";").join("");
     const assigns = fields.map((f) => "this." + f + "=" + f + ";").join("");
-    out = out.slice(0, ci) + decls + "constructor(" + plain.join(",") + "){" + assigns + out.slice(q + 1);
+    // In a derived class this is TDZ until super() returns: put the
+    // assignments after the first super(...) call when the body has one.
+    const body = out.slice(q + 1);
+    let insertAt = 0;
+    const superIdx = body.indexOf("super(");
+    if (superIdx >= 0) {
+      let d3 = 0;
+      str = "";
+      let closeIdx = -1;
+      for (let i = superIdx + 5; i < body.length; i++) {
+        const c = body[i];
+        if (str) {
+          if (c === "\\\\") { i++; continue; }
+          if (c === str) str = "";
+          continue;
+        }
+        if (c === '"' || c === "'" || c === "\\x60") { str = c; continue; }
+        if (c === "(") d3++;
+        else if (c === ")") { d3--; if (d3 === 0) { closeIdx = i; break; } }
+      }
+      if (closeIdx >= 0) {
+        insertAt = closeIdx + 1;
+        while (insertAt < body.length && /\\s/.test(body[insertAt])) insertAt++;
+        if (body[insertAt] === ";") insertAt++;
+      }
+    }
+    out = out.slice(0, ci) + decls + "constructor(" + plain.join(",") + "){" + body.slice(0, insertAt) + assigns + body.slice(insertAt);
     idx = ci;
   }
   return out;

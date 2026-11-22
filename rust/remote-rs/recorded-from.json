@@ -1,0 +1,47 @@
+{
+  "unit": "apps/api/src/remote/",
+  "files": 6,
+  "fingerprint": "33ba35956e0f8a1d",
+  "coverage": {
+    "lines": 1702,
+    "reached": 1045,
+    "files": [
+      {
+        "file": "apps/api/src/db/schema.ts",
+        "lines": 575,
+        "reached": 476,
+        "missed": "54-62, 94-100, 102, 119-122, 138-140, 155-157, 159, 180-187, 189, 202, 204, 240, 242, 268-276, 278, 311-313, 315, 403-412, 414, 433-441, 467-473, 475, 491-493, 531-536, 558-560, 595-598"
+      },
+      {
+        "file": "apps/api/src/identity/hostRecords.ts",
+        "lines": 31,
+        "reached": 8,
+        "missed": "9-23, 28-35"
+      },
+      {
+        "file": "apps/api/src/identity/interfaces.ts",
+        "lines": 456,
+        "reached": 434,
+        "missed": "92-94, 96, 109-111, 113, 148-149, 151-152, 331-336, 338-341"
+      },
+      {
+        "file": "apps/api/src/identity/signing.ts",
+        "lines": 195,
+        "reached": 65,
+        "missed": "32-37, 39-40, 42-63, 69-87, 93-103, 106-107, 113-116, 118, 120-126, 128, 130-143, 145-146, 170-181, 183-209"
+      },
+      {
+        "file": "apps/api/src/remote/pairing.ts",
+        "lines": 199,
+        "reached": 31,
+        "missed": "27-33, 37-90, 92-102, 104-118, 120-196, 198-201"
+      },
+      {
+        "file": "apps/api/src/remote/tunnels.ts",
+        "lines": 246,
+        "reached": 31,
+        "missed": "15-16, 19-22, 31-64, 66-85, 87-112, 114-124, 127-166, 168-179, 181-203, 205-247"
+      }
+    ]
+  }
+}

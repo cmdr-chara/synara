@@ -1,0 +1,79 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/api/src/remote/",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "remote-rs",
+  "exports": [
+    {
+      "name": "createPairingRendezvous",
+      "file": "apps/api/src/remote/pairing.ts",
+      "line": 34,
+      "params": [
+        {
+          "name": "db",
+          "ts_type": "NodePgDatabase<typeof schema>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "apiIssuer",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "createTunnelCoordinator",
+      "file": "apps/api/src/remote/tunnels.ts",
+      "line": 25,
+      "params": [
+        {
+          "name": "db",
+          "ts_type": "NodePgDatabase<typeof schema>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "cloudflare",
+          "ts_type": "ReturnType<typeof createCloudflareClient>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "domain",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "CloudflareError",
+      "file": "apps/api/src/remote/cloudflare.ts",
+      "line": 4,
+      "reason": "class: extends another class, public parameter properties"
+    },
+    {
+      "name": "createCloudflareClient",
+      "file": "apps/api/src/remote/cloudflare.ts",
+      "line": 13,
+      "reason": "checks `instanceof`: class identity does not survive the bridge"
+    }
+  ]
+}

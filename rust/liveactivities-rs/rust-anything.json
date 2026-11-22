@@ -1,0 +1,55 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/api/src/liveActivities/",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "liveactivities-rs",
+  "exports": [
+    {
+      "name": "createApnsSender",
+      "file": "apps/api/src/liveActivities/apns.ts",
+      "line": 58,
+      "params": [
+        {
+          "name": "config",
+          "ts_type": "({\n  privateKey: string;\n  keyId: string;\n  teamId: string;\n  bundleId: string;\n  environment: \"sandbox\" | \"production\" | \"both\";\n  /** Environment-restricted Apple keys need a separate Production signer. */\n  productionCredentials?: { privateKey: string; keyId: string };\n})",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "liveActivityContent",
+      "file": "apps/api/src/liveActivities/presentation.ts",
+      "line": 45,
+      "params": [
+        {
+          "name": "conversations",
+          "ts_type": "readonly {\n  id: string;\n  state: typeof typeof LiveActivityHostSnapshot.Type.Type[\"turns\"][number][\"state\"];\n  startedAt?: number;\n  usageLimitResetAt?: number;\n}[]",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "createLiveActivityService",
+      "file": "apps/api/src/liveActivities/service.ts",
+      "line": 59,
+      "reason": "takes or returns a function"
+    }
+  ]
+}

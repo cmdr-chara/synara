@@ -1,0 +1,23 @@
+{
+  "unit": "apps/api/src/liveActivities/",
+  "files": 6,
+  "fingerprint": "00b8f2029d5cde20",
+  "coverage": {
+    "lines": 220,
+    "reached": 73,
+    "files": [
+      {
+        "file": "apps/api/src/liveActivities/apns.ts",
+        "lines": 162,
+        "reached": 38,
+        "missed": "32-55, 66-165"
+      },
+      {
+        "file": "apps/api/src/liveActivities/presentation.ts",
+        "lines": 58,
+        "reached": 35,
+        "missed": "20-42"
+      }
+    ]
+  }
+}

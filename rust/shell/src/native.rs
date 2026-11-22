@@ -11,6 +11,7 @@ use gpui_kit::component::{
     input::{Editor, EditorState, Input, InputEvent, InputState},
     menu::{DropdownMenu as _, PopupMenuItem},
     scroll::ScrollableElement as _,
+    theme::{Theme, ThemeMode},
     v_flex,
     ActiveTheme as _, IconName,
 };
@@ -1882,6 +1883,17 @@ impl Render for Native {
                     .on_click(cx.listener(|this, _ev, _w, cx| this.toggle_files(cx))),
             )
             .child(div().flex_1())
+            .child(
+                rail_btn("nav-theme", if matches!(theme.mode, ThemeMode::Dark) { IconName::Sun } else { IconName::Moon }, false)
+                    .on_click(cx.listener(|_this, _ev, _w, cx| {
+                        let dark = matches!(Theme::global(cx).mode, ThemeMode::Dark);
+                        Theme::change(
+                            if dark { ThemeMode::Light } else { ThemeMode::Dark },
+                            None,
+                            cx,
+                        );
+                    })),
+            )
             .child(
                 rail_btn("nav-refresh", IconName::RefreshCw, false)
                     .on_click(cx.listener(|this, _ev, _w, cx| this.refresh(cx))),

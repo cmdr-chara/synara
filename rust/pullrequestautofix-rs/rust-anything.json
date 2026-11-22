@@ -1,0 +1,66 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/pullRequestAutoFix/",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "pullrequestautofix-rs",
+  "exports": [
+    {
+      "name": "isThreadBusyForAutoFix",
+      "file": "apps/server/src/pullRequestAutoFix/pullRequestAutoFixDecision.ts",
+      "line": 67,
+      "params": [
+        {
+          "name": "thread",
+          "ts_type": "(Pick<\n  typeof typeof typeof OrchestrationThreadShell.Type.Type.Type,\n  | \"archivedAt\"\n  | \"session\"\n  | \"latestTurn\"\n  | \"hasPendingApprovals\"\n  | \"hasPendingUserInput\"\n  | \"interactionMode\"\n>)",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "decidePullRequestAutoFix",
+      "file": "apps/server/src/pullRequestAutoFix/pullRequestAutoFixDecision.ts",
+      "line": 82,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly state: typeof typeof typeof typeof PullRequestAutoFixState.Type.Type.Type.Type;\n  readonly thread: (Pick<\n  typeof typeof typeof OrchestrationThreadShell.Type.Type.Type,\n  | \"archivedAt\"\n  | \"session\"\n  | \"latestTurn\"\n  | \"hasPendingApprovals\"\n  | \"hasPendingUserInput\"\n  | \"interactionMode\"\n>) | null;\n  readonly checkout: PullRequestAutoFixCheckout | null;\n  readonly pullRequest: PullRequestAutoFixObservation;\n  readonly maxAttempts?: number;\n  readonly now: number;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(| { readonly type: \"wait\" }\n  /** Stop watching for good and delete the row. */\n  | { readonly type: \"disable\"; readonly reason: \"pull-request-closed\" | \"thread-unavailable\" }\n  | { readonly type: \"pause\"; readonly reason: typeof typeof typeof PullRequestAutoFixPauseReason.Type.Type.Type }\n  /** Persist a bookkeeping change without starting a turn. */\n  | {\n      readonly type: \"update\";\n      readonly status: \"watching\";\n      readonly attempts: number;\n    }\n  /**\n   * Start fix turn number `attempt` for the failing checks on `headSha`. `switchBranch` is set\n   * when the chat sits on another branch: the turn switches to the PR's branch first and back\n   * to `returnBranch` (null for a detached HEAD) afterwards.\n   */\n  | {\n      readonly type: \"fix\";\n      readonly headSha: string;\n      readonly attempt: number;\n      readonly switchBranch: { readonly to: string; readonly returnBranch: string | null } | null;\n    })",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "buildPullRequestAutoFixPrompt",
+      "file": "apps/server/src/pullRequestAutoFix/pullRequestAutoFixDecision.ts",
+      "line": 165,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly prNumber: number;\n  readonly pullRequestUrl: string;\n  readonly returnHeadSha: string;\n  readonly headSha: string;\n  readonly switchBranch: { readonly to: string; readonly returnBranch: string | null } | null;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

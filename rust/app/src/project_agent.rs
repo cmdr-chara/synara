@@ -2112,6 +2112,846 @@ fn exclude_thread(payload: &Value) -> Result<Value, WsErr> {
     Ok(entry)
 }
 
+// ---- config row ----
+
+fn config_row(conn: &Connection, project_id: &str) -> Result<Option<Vec<Option<String>>>, WsErr> {
+    conn.query_row(
+        "SELECT coordinator_thread_id, coordinator_name, coordinator_model_selection_json, \
+         coordinator_provider_options_json, worker_routing_json, limits_json, capture_enabled, \
+         enabled, automation_id, revision, created_at, updated_at, disabled_at, goal, icon, \
+         coordinator_icon, coordinator_color, auto_memory_enabled, library_path, \
+         library_remote_url, library_push_on_change, paused_at, archived_at, \
+         paused_automation_ids \
+         FROM project_agent_configs WHERE project_id = ?1",
+        [project_id],
+        |r| {
+            let mut v = Vec::with_capacity(25);
+            for i in 0..24 {
+                let raw = r.get::<_, rusqlite::types::Value>(i)?;
+                v.push(match raw {
+                    rusqlite::types::Value::Null => None,
+                    rusqlite::types::Value::Integer(n) => Some(n.to_string()),
+                    rusqlite::types::Value::Real(f) => Some(f.to_string()),
+                    rusqlite::types::Value::Text(s) => Some(s),
+                    rusqlite::types::Value::Blob(_) => None,
+                });
+            }
+            Ok(v)
+        },
+    )
+    .optional()
+    .map_err(|e| err(e.to_string()))
+}
+
+fn cfg_get(c: &[Option<String>], i: usize) -> Option<String> {
+    c.get(i).cloned().flatten()
+}
+
+fn save_config(
+    conn: &Connection,
+    project_id: &str,
+    c: &[Option<String>],
+    expected_revision: Option<i64>,
+    error_msg: &'static str,
+) -> Result<(), WsErr> {
+    if expected_revision.is_none() {
+        conn.execute(
+            "INSERT INTO project_agent_configs (project_id, coordinator_thread_id, \
+             coordinator_name, coordinator_model_selection_json, \
+             coordinator_provider_options_json, worker_routing_json, limits_json, \
+             capture_enabled, enabled, automation_id, revision, created_at, updated_at, \
+             disabled_at, goal, icon, coordinator_icon, coordinator_color, \
+             auto_memory_enabled, library_path, library_remote_url, library_push_on_change, \
+             paused_at, archived_at, paused_automation_ids) \
+             VALUES (?1,?2,?3,?4,?5,?6,?7,?8,?9,?10,?11,?12,?13,?14,?15,?16,?17,?18,?19,?20,?21,?22,?23,?24,?25)",
+            rusqlite::params![
+                project_id,
+                cfg_get(c, 0), cfg_get(c, 1), cfg_get(c, 2), cfg_get(c, 3), cfg_get(c, 4),
+                cfg_get(c, 5), cfg_get(c, 6), cfg_get(c, 7), cfg_get(c, 8), cfg_get(c, 9),
+                cfg_get(c, 10), cfg_get(c, 11), cfg_get(c, 12), cfg_get(c, 13), cfg_get(c, 14),
+                cfg_get(c, 15), cfg_get(c, 16), cfg_get(c, 17), cfg_get(c, 18), cfg_get(c, 19),
+                cfg_get(c, 20), cfg_get(c, 21), cfg_get(c, 22), cfg_get(c, 23),
+            ],
+        )
+        .map_err(|e| err(e.to_string()))?;
+        return Ok(());
+    }
+    let changed = conn
+        .execute(
+            "UPDATE project_agent_configs SET coordinator_thread_id=?2, coordinator_name=?3, \
+             coordinator_model_selection_json=?4, coordinator_provider_options_json=?5, \
+             worker_routing_json=?6, limits_json=?7, capture_enabled=?8, enabled=?9, \
+             automation_id=?10, revision=?11, created_at=?12, updated_at=?13, disabled_at=?14, \
+             goal=?15, icon=?16, coordinator_icon=?17, coordinator_color=?18, \
+             auto_memory_enabled=?19, library_path=?20, library_remote_url=?21, \
+             library_push_on_change=?22, paused_at=?23, archived_at=?24, \
+             paused_automation_ids=?25 \
+             WHERE project_id=?1 AND revision=?26",
+            rusqlite::params![
+                project_id,
+                cfg_get(c, 0), cfg_get(c, 1), cfg_get(c, 2), cfg_get(c, 3), cfg_get(c, 4),
+                cfg_get(c, 5), cfg_get(c, 6), cfg_get(c, 7), cfg_get(c, 8), cfg_get(c, 9),
+                cfg_get(c, 10), cfg_get(c, 11), cfg_get(c, 12), cfg_get(c, 13), cfg_get(c, 14),
+                cfg_get(c, 15), cfg_get(c, 16), cfg_get(c, 17), cfg_get(c, 18), cfg_get(c, 19),
+                cfg_get(c, 20), cfg_get(c, 21), cfg_get(c, 22), cfg_get(c, 23),
+                expected_revision.unwrap_or(0),
+            ],
+        )
+        .map_err(|e| err(e.to_string()))?;
+    if changed != 1 {
+        return Err(err(error_msg));
+    }
+    Ok(())
+}
+
+fn overview_for(conn: &Connection, project_id: &str) -> Result<Value, WsErr> {
+    // buildOverview inline against a read connection (same shape as get_overview).
+    let cfg_exists = config_row(conn, project_id)?.is_some();
+    if !cfg_exists {
+        return Ok(json!({
+            "projectId": project_id, "configured": false, "config": null,
+            "linkedProjectIds": linked_ids(conn, project_id), "goal": null,
+            "digest": null, "blockers": [], "recentOutcomes": [], "workers": [],
+            "hubWorkItems": [], "coordinatorStatus": "unconfigured",
+        }));
+    }
+    get_overview(&json!({"projectId": project_id}))
+}
+
+fn list_enabled_automation_ids(conn: &Connection, project_id: &str) -> Vec<String> {
+    let mut out = Vec::new();
+    if let Ok(mut stmt) = conn.prepare(
+        "SELECT automation_id FROM automation_definitions \
+         WHERE project_id = ?1 AND enabled = 1 AND archived_at IS NULL",
+    ) {
+        if let Ok(rows) = stmt.query_map([project_id], |r| r.get::<_, String>(0)) {
+            out = rows.flatten().collect();
+        }
+    }
+    out
+}
+
+fn set_automations_enabled(conn: &Connection, ids: &[String], enabled: bool) {
+    for id in ids {
+        let _ = conn.execute(
+            "UPDATE automation_definitions SET enabled = ?2, updated_at = ?3 WHERE automation_id = ?1",
+            rusqlite::params![id, if enabled { 1 } else { 0 }, crate::todo::iso_now_ms()],
+        );
+    }
+}
+
+fn group_thread_ids(conn: &Connection, project_id: &str) -> Vec<(String, bool)> {
+    // (thread_id, archived) for threads living in the project
+    let mut out = Vec::new();
+    if let Ok(mut stmt) = conn.prepare(
+        "SELECT thread_id, archived_at FROM projection_threads WHERE project_id = ?1 AND deleted_at IS NULL",
+    ) {
+        if let Ok(rows) = stmt.query_map([project_id], |r| {
+            Ok((r.get::<_, String>(0)?, r.get::<_, Option<String>>(1)?.is_some()))
+        }) {
+            out = rows.flatten().collect();
+        }
+    }
+    out
+}
+
+fn dispatch_thread(cmd_type: &str, thread_id: &str) {
+    let _ = crate::orchestration_engine::handle(
+        "orchestration.dispatchCommand",
+        &json!({
+            "type": cmd_type,
+            "commandId": crate::orchestration_engine::uuid_v4(),
+            "threadId": thread_id,
+            "createdAt": crate::todo::iso_now_ms(),
+        }),
+    );
+}
+
+fn lifecycle_group(
+    payload: &Value,
+    action: &str,
+    activity_summary: &'static str,
+    fail_msg: &'static str,
+) -> Result<Value, WsErr> {
+    let project_id = payload["projectId"].as_str().unwrap_or_default().to_string();
+    let request_id = payload["requestId"].as_str().unwrap_or_default().to_string();
+    let conn = crate::orchestration_engine::open_state_rw().map_err(|_| err(fail_msg))?;
+    if let Some(r) = replay_receipt(&conn, &request_id, &project_id) {
+        return Ok(r);
+    }
+    require_hub_project(&conn, &project_id)?;
+    let cfg = config_row(&conn, &project_id)?
+        .ok_or_else(|| err("Project Coordinator is not configured."))?;
+    let now = crate::todo::iso_now_ms();
+    match action {
+        "pause" | "archive" => {
+            let flag_at = cfg_get(&cfg, if action == "pause" { 21 } else { 22 });
+            if flag_at.is_none() {
+                let ids = list_enabled_automation_ids(&conn, &project_id);
+                set_automations_enabled(&conn, &ids, false);
+                let mut c = cfg.clone();
+                let mut paused: Vec<Value> = cfg_get(&cfg, 23)
+                    .and_then(|s| serde_json::from_str(&s).ok())
+                    .unwrap_or_default();
+                for id in &ids {
+                    if !paused.iter().any(|v| v.as_str() == Some(id)) {
+                        paused.push(Value::String(id.clone()));
+                    }
+                }
+                let idx = if action == "pause" { 21 } else { 22 };
+                c[idx] = Some(now.clone());
+                c[23] = Some(Value::Array(paused).to_string());
+                c[9] = Some((cfg_get(&cfg, 9).and_then(|r| r.parse::<i64>().ok()).unwrap_or(0) + 1).to_string());
+                c[11] = Some(now.clone());
+                save_config(&conn, &project_id, &c, cfg_get(&cfg, 9).and_then(|r| r.parse().ok()), fail_msg)?;
+                let coord = cfg_get(&cfg, 0).unwrap_or_default();
+                if action == "pause" {
+                    // interrupt live turns on member threads
+                    for (tid, _) in group_thread_ids(&conn, &project_id) {
+                        if let Some(ts) = thread_state(&conn, &tid) {
+                            if ts.working || ts.session_starting {
+                                dispatch_thread("thread.turn.interrupt", &tid);
+                            }
+                        }
+                    }
+                    if !coord.is_empty() {
+                        if let Some(ts) = thread_state(&conn, &coord) {
+                            if ts.working {
+                                dispatch_thread("thread.turn.interrupt", &coord);
+                            }
+                        }
+                    }
+                } else {
+                    // archive: coordinator + group threads
+                    if !coord.is_empty() {
+                        dispatch_thread("thread.archive", &coord);
+                    }
+                    for (tid, arch) in group_thread_ids(&conn, &project_id) {
+                        if !arch && tid != coord {
+                            dispatch_thread("thread.archive", &tid);
+                        }
+                    }
+                }
+                append_activity(&conn, &project_id, "config-updated", "user", None, None, None,
+                    activity_summary, &crate::todo::iso_now_ms())?;
+            }
+        }
+        "resume" | "unarchive" => {
+            let flag_idx = if action == "resume" { 21 } else { 22 };
+            if cfg_get(&cfg, flag_idx).is_some() {
+                let paused_at_set = cfg_get(&cfg, 21).is_some();
+                let restore: Vec<String> = if action == "unarchive" && paused_at_set {
+                    Vec::new()
+                } else {
+                    cfg_get(&cfg, 23)
+                        .and_then(|s| serde_json::from_str::<Vec<String>>(&s).ok())
+                        .unwrap_or_default()
+                };
+                set_automations_enabled(&conn, &restore, true);
+                let mut c = cfg.clone();
+                c[flag_idx] = None;
+                if !(action == "unarchive" && paused_at_set) {
+                    c[23] = Some("[]".to_string());
+                }
+                c[9] = Some((cfg_get(&cfg, 9).and_then(|r| r.parse::<i64>().ok()).unwrap_or(0) + 1).to_string());
+                c[11] = Some(now.clone());
+                save_config(&conn, &project_id, &c, cfg_get(&cfg, 9).and_then(|r| r.parse().ok()), fail_msg)?;
+                if action == "unarchive" {
+                    let coord = cfg_get(&cfg, 0).unwrap_or_default();
+                    if !coord.is_empty() {
+                        dispatch_thread("thread.unarchive", &coord);
+                    }
+                    for (tid, arch) in group_thread_ids(&conn, &project_id) {
+                        if arch && tid != coord {
+                            dispatch_thread("thread.unarchive", &tid);
+                        }
+                    }
+                }
+                append_activity(&conn, &project_id, "config-updated", "user", None, None, None,
+                    activity_summary, &crate::todo::iso_now_ms())?;
+            }
+        }
+        _ => {}
+    }
+    let overview = overview_for(&conn, &project_id)?;
+    store_receipt(&conn, &request_id, &project_id, action, &overview);
+    Ok(overview)
+}
+
+fn link_project(payload: &Value, unlink: bool) -> Result<Value, WsErr> {
+    let project_id = payload["projectId"].as_str().unwrap_or_default().to_string();
+    let linked_id = payload["linkedProjectId"].as_str().unwrap_or_default().to_string();
+    let request_id = payload["requestId"].as_str().unwrap_or_default().to_string();
+    let conn = crate::orchestration_engine::open_state_rw()
+        .map_err(|_| err(if unlink { "Failed to unlink repository." } else { "Failed to link repository." }))?;
+    if let Some(r) = replay_receipt(&conn, &request_id, &project_id) {
+        return Ok(r);
+    }
+    require_hub_project(&conn, &project_id)?;
+    if !unlink {
+        if linked_id == project_id {
+            return Err(err("A hub cannot link to itself."));
+        }
+        let shell = conn
+            .query_row(
+                "SELECT kind, title, workspace_root FROM projection_projects WHERE project_id = ?1",
+                [&linked_id],
+                |r| Ok((r.get::<_, Option<String>>(0)?, r.get::<_, String>(1)?, r.get::<_, Option<String>>(2)?)),
+            )
+            .optional()
+            .map_err(|e| err(e.to_string()))?;
+        let Some((kind, title, wroot)) = shell else {
+            return Err(err(format!("Project \"{linked_id}\" was not found.")));
+        };
+        let home = home_dir();
+        let chat_root = format!("{home}/Documents/Synara");
+        let legacy_home = title == "Home"
+            && (root_within(wroot.as_deref().unwrap_or(""), &chat_root)
+                || root_within(wroot.as_deref().unwrap_or(""), &home));
+        let _ = legacy_home; // equal-or-prefix: ordinary check is kind==project && !legacyHome(root==chatRoot||root==home)
+        let normalized = normalize_root(wroot.as_deref().unwrap_or(""));
+        let is_legacy = title == "Home"
+            && (normalized == normalize_root(&chat_root) || normalized == normalize_root(&home));
+        if kind.as_deref().unwrap_or("project") != "project" || is_legacy {
+            return Err(err("Only ordinary repositories can be linked to a hub."));
+        }
+    }
+    let ids = linked_ids(&conn, &project_id);
+    let has = ids.iter().any(|v| v.as_str() == Some(linked_id.as_str()));
+    if !unlink && !has {
+        conn.execute(
+            "INSERT INTO project_agent_linked_projects (project_id, linked_project_id, created_at) \
+             VALUES (?1, ?2, ?3) ON CONFLICT (project_id, linked_project_id) DO NOTHING",
+            rusqlite::params![&project_id, &linked_id, crate::todo::iso_now_ms()],
+        )
+        .map_err(|e| err(e.to_string()))?;
+        let title: String = conn
+            .query_row(
+                "SELECT title FROM projection_projects WHERE project_id = ?1",
+                [&linked_id],
+                |r| r.get(0),
+            )
+            .unwrap_or_else(|_| linked_id.clone());
+        append_activity(&conn, &project_id, "config-updated", "user", None, None, None,
+            &format!("Linked repository {title}"), &crate::todo::iso_now_ms())?;
+    }
+    if unlink && has {
+        conn.execute(
+            "DELETE FROM project_agent_linked_projects WHERE project_id = ?1 AND linked_project_id = ?2",
+            rusqlite::params![&project_id, &linked_id],
+        )
+        .map_err(|e| err(e.to_string()))?;
+        let title: String = conn
+            .query_row(
+                "SELECT title FROM projection_projects WHERE project_id = ?1",
+                [&linked_id],
+                |r| r.get(0),
+            )
+            .unwrap_or_else(|_| linked_id.clone());
+        append_activity(&conn, &project_id, "config-updated", "user", None, None, None,
+            &format!("Unlinked repository {title}"), &crate::todo::iso_now_ms())?;
+    }
+    if unlink && config_row(&conn, &project_id)?.is_none() {
+        return Err(err("Project Coordinator is not configured."));
+    }
+    let overview = overview_for(&conn, &project_id)?;
+    let op = if unlink { "unlinkProject" } else { "linkProject" };
+    store_receipt(&conn, &request_id, &project_id, op, &overview);
+    Ok(overview)
+}
+
+fn write_document(payload: &Value) -> Result<Value, WsErr> {
+    let project_id = payload["projectId"].as_str().unwrap_or_default().to_string();
+    let request_id = payload["requestId"].as_str().unwrap_or_default().to_string();
+    let conn = crate::orchestration_engine::open_state_rw()
+        .map_err(|_| err("Failed to write project document."))?;
+    require_hub_project(&conn, &project_id)?;
+    if let Some(r) = replay_receipt(&conn, &request_id, &project_id) {
+        return Ok(r);
+    }
+    let logical_path = normalize_doc_path(payload["logicalPath"].as_str().unwrap_or(""))?;
+    let content = payload["content"].as_str().unwrap_or_default().to_string();
+    let head = conn
+        .query_row(
+            "SELECT revision, disk_hash FROM project_agent_document_heads \
+             WHERE project_id = ?1 AND logical_path = ?2",
+            rusqlite::params![&project_id, &logical_path],
+            |r| Ok((r.get::<_, i64>(0)?, r.get::<_, Option<String>>(1)?)),
+        )
+        .optional()
+        .map_err(|e| err(e.to_string()))?;
+    let (current_revision, head_disk) = head
+        .map(|(r, d)| (r, d))
+        .unwrap_or((0, None));
+    if let Some(exp) = payload["expectedRevision"].as_i64() {
+        if exp != current_revision {
+            return Err(err("Document changed. Reload and retry with the latest revision."));
+        }
+    }
+    let disk = std::fs::read_to_string(doc_context_path(&project_id, &logical_path)).ok();
+    let disk_hash = disk
+        .map(|d| format!("{:x}", Sha256::digest(d.as_bytes())))
+        .unwrap_or_else(|| head_disk.clone().unwrap_or_default());
+    let now = crate::todo::iso_now_ms();
+    let content_hash = format!("{:x}", Sha256::digest(content.as_bytes()));
+    let revision_no = current_revision + 1;
+    let rev = json!({
+        "id": crate::orchestration_engine::uuid_v4(),
+        "projectId": project_id,
+        "logicalPath": logical_path,
+        "revision": revision_no,
+        "content": content,
+        "contentHash": content_hash,
+        "authorKind": "user",
+        "authorThreadId": null,
+        "sources": payload["sources"].as_array().cloned().unwrap_or_default(),
+        "createdAt": now,
+    });
+    conn.execute(
+        "INSERT INTO project_agent_documents \
+         (revision_id, project_id, logical_path, revision, content, content_hash, \
+          author_kind, author_thread_id, sources_json, created_at) \
+         VALUES (?1,?2,?3,?4,?5,?6,?7,?8,?9,?10)",
+        rusqlite::params![
+            rev["id"].as_str(), project_id, logical_path, revision_no, content, content_hash,
+            "user", Option::<String>::None, rev["sources"].to_string(), now,
+        ],
+    )
+    .map_err(|e| err(e.to_string()))?;
+    // head upsert keeps the old disk marker until the mirror write confirms
+    conn.execute(
+        "INSERT INTO project_agent_document_heads \
+         (project_id, logical_path, revision, content_hash, disk_hash, conflict_pending, updated_at) \
+         VALUES (?1,?2,?3,?4,?5,0,?6) \
+         ON CONFLICT (project_id, logical_path) DO UPDATE SET \
+           revision=?3, content_hash=?4, disk_hash=?5, conflict_pending=0, updated_at=?6",
+        rusqlite::params![
+            project_id, logical_path, revision_no, content_hash,
+            head_disk.clone().unwrap_or_else(|| content_hash.clone()),
+            now,
+        ],
+    )
+    .map_err(|e| err(e.to_string()))?;
+    // materialize mirror then mark synced
+    let mirror = doc_context_path(&project_id, &logical_path);
+    if let Some(parent) = mirror.parent() {
+        let _ = std::fs::create_dir_all(parent);
+    }
+    std::fs::write(&mirror, &content)
+        .map_err(|_| err("Failed to materialize project document."))?;
+    conn.execute(
+        "UPDATE project_agent_document_heads SET disk_hash = ?3, conflict_pending = 0 \
+         WHERE project_id = ?1 AND logical_path = ?2",
+        rusqlite::params![project_id, logical_path, content_hash],
+    )
+    .map_err(|e| err(e.to_string()))?;
+    let _ = disk_hash;
+    append_activity(&conn, &project_id, "document-written", "user", None, None, None,
+        &format!("Wrote {logical_path}"), &now)?;
+    store_receipt(&conn, &request_id, &project_id, "writeDocument", &rev);
+    Ok(rev)
+}
+
+fn configure(payload: &Value) -> Result<Value, WsErr> {
+    let project_id = payload["projectId"].as_str().unwrap_or_default().to_string();
+    let request_id = payload["requestId"].as_str().unwrap_or_default().to_string();
+    let conn = crate::orchestration_engine::open_state_rw()
+        .map_err(|_| err("Failed to save coordinator configuration."))?;
+    if let Some(r) = replay_receipt(&conn, &request_id, &project_id) {
+        return Ok(r);
+    }
+    require_hub_project(&conn, &project_id)?;
+    let title: String = conn
+        .query_row(
+            "SELECT title FROM projection_projects WHERE project_id = ?1",
+            [&project_id],
+            |r| r.get(0),
+        )
+        .unwrap_or_default();
+    let existing = config_row(&conn, &project_id)
+        .map_err(|_| err("Failed to load project coordinator."))?;
+    // provider enabled + installed
+    let provider = payload["coordinatorModelSelection"]["provider"]
+        .as_str()
+        .unwrap_or_default();
+    let display = match provider {
+        "codex" => "Codex", "claudeAgent" => "Claude", "cursor" => "Cursor",
+        "devin" => "Devin", "antigravity" => "Antigravity", "grok" => "Grok",
+        "droid" => "Droid", "opencode" => "OpenCode", "pi" => "Pi",
+        "omp" => "Oh My Pi", other => other,
+    };
+    let settings = crate::server_settings::current();
+    let pcfg = &settings["providers"][provider];
+    if pcfg.is_object() && pcfg["enabled"].as_bool() == Some(false) {
+        return Err(err(format!("{display} is disabled in Settings > Providers.")));
+    }
+    let binary = pcfg["binaryPath"].as_str().unwrap_or(provider).to_string();
+    let on_path = if binary.contains('/') {
+        std::path::Path::new(&binary).exists()
+    } else {
+        std::env::var_os("PATH")
+            .map(|paths| {
+                std::env::split_paths(&paths).any(|p| p.join(&binary).exists())
+            })
+            .unwrap_or(false)
+    };
+    if !on_path {
+        return Err(err(format!("{display} is not installed or not on PATH.")));
+    }
+    let now = crate::todo::iso_now_ms();
+    let coordinator_name = payload["coordinatorName"]
+        .as_str()
+        .map(str::to_string)
+        .unwrap_or_else(|| title.clone());
+    let mut coord_thread: Option<String> = None;
+    let mut automation_id: Option<String> = None;
+    let mut revision = 1i64;
+    let mut created_at = now.clone();
+    if let Some(e) = &existing {
+        if let Some(exp) = payload["expectedRevision"].as_i64() {
+            if exp != cfg_get(e, 9).and_then(|r| r.parse::<i64>().ok()).unwrap_or(0) {
+                return Err(err("Coordinator settings changed. Reload and retry."));
+            }
+        }
+        coord_thread = cfg_get(e, 0);
+        automation_id = cfg_get(e, 8);
+        revision = cfg_get(e, 9).and_then(|r| r.parse::<i64>().ok()).unwrap_or(0) + 1;
+        created_at = cfg_get(e, 10).unwrap_or_else(|| now.clone());
+    } else {
+        // adopt a pre-existing coordinator thread (title match)
+        coord_thread = conn
+            .query_row(
+                "SELECT thread_id FROM projection_threads WHERE project_id = ?1 AND deleted_at IS NULL \
+                 AND (title = ?2 OR title = ?3) LIMIT 1",
+                rusqlite::params![&project_id, &coordinator_name, format!("{title} Coordinator")],
+                |r| r.get::<_, String>(0),
+            )
+            .optional()
+            .map_err(|e| err(e.to_string()))?;
+        if coord_thread.is_none() {
+            let tid = crate::orchestration_engine::uuid_v4();
+            crate::orchestration_engine::handle(
+                "orchestration.dispatchCommand",
+                &json!({
+                    "type": "thread.create", "commandId": crate::orchestration_engine::uuid_v4(),
+                    "threadId": tid, "projectId": project_id, "title": coordinator_name,
+                    "modelSelection": payload["coordinatorModelSelection"],
+                    "runtimeMode": "approval-required", "interactionMode": "default",
+                    "envMode": "local", "branch": null, "worktreePath": null,
+                    "createdAt": now,
+                }),
+            )
+            .map_err(|_| err("Failed to create coordinator thread."))?;
+            coord_thread = Some(tid);
+        }
+    }
+    if automation_id.is_none() {
+        if let Some(ct) = &coord_thread {
+            automation_id = conn
+                .query_row(
+                    "SELECT automation_id FROM automation_definitions \
+                     WHERE project_id = ?1 AND mode = 'heartbeat' \
+                     AND schedule_json LIKE '%\"project-event\"%' AND source_thread_id = ?2 LIMIT 1",
+                    rusqlite::params![&project_id, ct],
+                    |r| r.get::<_, String>(0),
+                )
+                .optional()
+                .map_err(|e| err(e.to_string()))?;
+        }
+    }
+    // libraryPath must be absolute without '..' segments
+    if let Some(lp) = payload.get("libraryPath") {
+        if !lp.is_null() {
+            let v = lp.as_str().unwrap_or_default();
+            let bad = !v.starts_with('/') && !(v.len() > 1 && v.as_bytes()[1] == b':');
+            if bad || v.split(['/', '\\']).any(|s| s == "..") {
+                return Err(err("libraryPath must be an absolute path without '..' segments."));
+            }
+        }
+    }
+    // merge per-field keep/replace/null-clears semantics
+    let pick = |key: &str, old: Option<String>| -> Option<String> {
+        match payload.get(key) {
+            None => old,
+            Some(v) if v.is_null() => None,
+            Some(v) => Some(v.to_string().trim_matches('"').to_string()),
+        }
+    };
+    let pick_str = |key: &str, old: Option<String>| -> Option<String> {
+        match payload.get(key) {
+            None => old,
+            Some(v) if v.is_null() => None,
+            Some(v) => Some(v.as_str().unwrap_or_default().to_string()),
+        }
+    };
+    let old_limits = existing.as_ref().and_then(|e| cfg_get(e, 5));
+    let limits = match payload.get("limits") {
+        Some(v) => v.to_string(),
+        None => old_limits.unwrap_or_else(|| {
+            json!({"maxConcurrentWorkers":3,"maxNewWorkersPerTurn":8,"maxWorkerCreationsPerGoal":40,
+                   "maxAutomaticContinuationsPerGoal":20,"maxRepairRoundsPerTask":2}).to_string()
+        }),
+    };
+    let mut c: Vec<Option<String>> = vec![None; 24];
+    c[0] = coord_thread.clone();
+    c[1] = Some(coordinator_name.clone());
+    c[2] = Some(payload["coordinatorModelSelection"].to_string());
+    c[3] = pick("coordinatorProviderOptions", existing.as_ref().and_then(|e| cfg_get(e, 3)));
+    c[4] = pick("workerRouting", existing.as_ref().and_then(|e| cfg_get(e, 4)));
+    c[5] = Some(limits);
+    c[6] = Some(
+        payload["captureEnabled"]
+            .as_bool()
+            .or_else(|| existing.as_ref().and_then(|e| cfg_get(e, 6).map(|v| v == "1")))
+            .map(|b| if b { "1" } else { "0" }.to_string())
+            .unwrap_or_else(|| "1".into()),
+    );
+    c[7] = Some("1".into());
+    c[8] = automation_id.clone();
+    c[9] = Some(revision.to_string());
+    c[10] = Some(created_at);
+    c[11] = Some(now.clone());
+    c[12] = None;
+    c[13] = pick_str("goal", existing.as_ref().and_then(|e| cfg_get(e, 13)));
+    c[14] = pick_str("icon", existing.as_ref().and_then(|e| cfg_get(e, 14)));
+    c[15] = pick_str("coordinatorIcon", existing.as_ref().and_then(|e| cfg_get(e, 15)));
+    c[16] = pick_str("coordinatorColor", existing.as_ref().and_then(|e| cfg_get(e, 16)));
+    c[17] = Some(
+        payload["autoMemoryEnabled"]
+            .as_bool()
+            .or_else(|| existing.as_ref().and_then(|e| cfg_get(e, 17).map(|v| v == "1")))
+            .map(|b| if b { "1" } else { "0" }.to_string())
+            .unwrap_or_else(|| "0".into()),
+    );
+    c[18] = pick_str("libraryPath", existing.as_ref().and_then(|e| cfg_get(e, 18)));
+    c[19] = pick_str("libraryRemoteUrl", existing.as_ref().and_then(|e| cfg_get(e, 19)));
+    c[20] = Some(
+        payload["libraryPushOnChange"]
+            .as_bool()
+            .or_else(|| existing.as_ref().and_then(|e| cfg_get(e, 20).map(|v| v == "1")))
+            .map(|b| if b { "1" } else { "0" }.to_string())
+            .unwrap_or_else(|| "0".into()),
+    );
+    c[21] = existing.as_ref().and_then(|e| cfg_get(e, 21));
+    c[22] = existing.as_ref().and_then(|e| cfg_get(e, 22));
+    c[23] = existing.as_ref().and_then(|e| cfg_get(e, 23)).or(Some("[]".into()));
+    save_config(&conn, &project_id, &c,
+        existing.as_ref().and_then(|e| cfg_get(e, 9).and_then(|r| r.parse().ok())),
+        "Failed to save coordinator configuration.")?;
+    // seed docs + digest when there are no document heads
+    let head_count: i64 = conn
+        .query_row(
+            "SELECT COUNT(1) FROM project_agent_document_heads WHERE project_id = ?1",
+            [&project_id],
+            |r| r.get(0),
+        )
+        .unwrap_or(0);
+    if head_count == 0 {
+        for (path, content) in [
+            ("overview.md", "# Overview\n\nCoordinator is not configured.\n"),
+            ("instructions.md", "# Instructions\n\n"),
+            ("notes.md", "# Notes\n\n"),
+            ("decisions.md", "# Decisions\n\n"),
+            ("archived.md", "# Archived\n\n"),
+            ("artifacts/index.md", "# Artifacts\n\n"),
+        ] {
+            let content = if path == "instructions.md" {
+                payload["importedInstructions"]
+                    .as_str()
+                    .filter(|s| !s.trim().is_empty())
+                    .unwrap_or(content)
+            } else {
+                content
+            };
+            let hash = format!("{:x}", Sha256::digest(content.as_bytes()));
+            conn.execute(
+                "INSERT INTO project_agent_documents \
+                 (revision_id, project_id, logical_path, revision, content, content_hash, \
+                  author_kind, author_thread_id, sources_json, created_at) \
+                 VALUES (?1,?2,?3,1,?4,?5,'system',NULL,'[]',?6)",
+                rusqlite::params![
+                    crate::orchestration_engine::uuid_v4(), project_id, path, content, hash, now,
+                ],
+            )
+            .map_err(|e| err(e.to_string()))?;
+            conn.execute(
+                "INSERT INTO project_agent_document_heads \
+                 (project_id, logical_path, revision, content_hash, disk_hash, conflict_pending, updated_at) \
+                 VALUES (?1,?2,1,?3,?3,0,?4)",
+                rusqlite::params![project_id, path, hash, now],
+            )
+            .map_err(|e| err(e.to_string()))?;
+            let mirror = doc_context_path(&project_id, path);
+            if let Some(p) = mirror.parent() {
+                let _ = std::fs::create_dir_all(p);
+            }
+            let _ = std::fs::write(&mirror, content);
+        }
+        if payload["importedInstructions"].as_str().map(|s| !s.trim().is_empty()) == Some(true) {
+            append_activity(&conn, &project_id, "document-written", "user", None, None, None,
+                "Imported existing project instructions without overwriting newer server content.", &now)?;
+        }
+        // index project threads into thread_index
+        let threads = group_thread_ids(&conn, &project_id);
+        let excluded: std::collections::HashSet<String> = {
+            let mut s = std::collections::HashSet::new();
+            if let Ok(mut q) = conn.prepare(
+                "SELECT thread_id FROM project_agent_thread_index WHERE project_id = ?1 AND excluded = 1",
+            ) {
+                if let Ok(rows) = q.query_map([&project_id], |r| r.get::<_, String>(0)) {
+                    s = rows.flatten().collect();
+                }
+            }
+            s
+        };
+        let mut pending = 0i64;
+        let mut summarized = 0i64;
+        for (i, (tid, archived)) in threads.iter().enumerate() {
+            let ex = excluded.contains(tid);
+            let covered = !ex && i < 20;
+            if covered {
+                summarized += 1;
+            } else if !ex {
+                pending += 1;
+            }
+            let status = if ex { "skipped" } else if covered { "covered" } else { "pending" };
+            let _ = conn.execute(
+                "INSERT OR REPLACE INTO project_agent_thread_index \
+                 (project_id, thread_id, excluded, archived, summary_status, last_updated_at, last_summarized_at) \
+                 VALUES (?1,?2,?3,?4,?5,?6,?7)",
+                rusqlite::params![
+                    project_id, tid, if ex { 1 } else { 0 }, if *archived { 1 } else { 0 },
+                    status, now,
+                    if covered { Some(now.clone()) } else { None::<String> },
+                ],
+            );
+        }
+        conn.execute(
+            "INSERT OR REPLACE INTO project_agent_digests \
+             (project_id, summary, focus_items_json, pinned_focus_json, coverage_from_sequence, \
+              coverage_to_sequence, historical_coverage, summarized_thread_count, \
+              pending_thread_count, generation_state, generated_at, last_good_at, last_error) \
+             VALUES (?1,'Coordinator is ready.','[]','[]',0,0,?2,?3,?4,'idle',?5,?5,NULL)",
+            rusqlite::params![
+                project_id,
+                if pending > 0 { "partial" } else { "none" },
+                summarized,
+                pending,
+                now,
+            ],
+        )
+        .map_err(|e| err(e.to_string()))?;
+    }
+    // coordinator greeting (thread.messages.import, welcome id sha1-v5)
+    if let Some(ct) = &coord_thread {
+        let msg_id = welcome_message_id(ct);
+        let has_msg: i64 = conn
+            .query_row(
+                "SELECT COUNT(1) FROM projection_messages WHERE message_id = ?1",
+                [msg_id.as_str()],
+                |r| r.get(0),
+            )
+            .unwrap_or(0);
+        if has_msg == 0 {
+            let name = payload["userDisplayName"]
+                .as_str()
+                .map(str::to_string)
+                .unwrap_or_else(|| {
+                    home_dir()
+                        .trim_end_matches(['/', '\\'])
+                        .rsplit(['/', '\\'])
+                        .next()
+                        .unwrap_or("there")
+                        .to_string()
+                });
+            let text = format!(
+                "Hi {name}, welcome to your new hub. I coordinate the work here: ask for whatever you need, and I'll either answer you directly or start threads to work on things in parallel.\n\nThreads do the work on their own. The Hub panel on the right shows which ones are working, which are done, and which need you. I'll keep an eye on what's running and post updates when something finishes or needs you. You can also ask me to change my instructions, add repositories, or send you scheduled updates."
+            );
+            let _ = crate::orchestration_engine::handle(
+                "orchestration.dispatchCommand",
+                &json!({
+                    "type": "thread.messages.import", "commandId": crate::orchestration_engine::uuid_v4(),
+                    "threadId": ct,
+                    "messages": [{"messageId": msg_id, "role": "assistant", "text": text,
+                                  "createdAt": now, "updatedAt": now}],
+                    "createdAt": now,
+                }),
+            );
+        }
+    }
+    // create heartbeat automation if missing
+    if automation_id.is_none() {
+        if let Some(ct) = &coord_thread {
+            let aid = crate::orchestration_engine::uuid_v4();
+            conn.execute(
+                "INSERT INTO automation_definitions \
+                 (automation_id, project_id, source_thread_id, name, prompt, schedule_json, \
+                  enabled, next_run_at, model_selection_json, runtime_mode, interaction_mode, \
+                  worktree_mode, mode, target_thread_id, stop_on_error, minimum_interval_seconds, \
+                  max_runtime_seconds, retry_policy_json, misfire_policy, acknowledged_risks_json, \
+                  iteration_count, created_at, updated_at, managed_by_project) \
+                 VALUES (?1,?2,?3,?4,?5,?6,1,NULL,?7,'approval-required','default','auto',\
+                  'heartbeat',?8,1,60,3600,'{\"type\":\"none\"}','coalesce','[]',0,?9,?9,1)",
+                rusqlite::params![
+                    aid, project_id, ct,
+                    format!("{coordinator_name} events"),
+                    "Watch this hub's threads. When a thread finishes, dies, errors, hits a quota limit, or is interrupted, reply in this chat with a short status. Review the outcome and update decisions.md.  Do not expand scope. Do not ask the user to start a goal. If everything is on track and nothing needs the user's attention, reply with exactly \"SILENT\" — no other text.",
+                    json!({"type":"project-event","projectId":project_id}).to_string(),
+                    payload["coordinatorModelSelection"].to_string(),
+                    ct,
+                    now,
+                ],
+            )
+            .map_err(|e| err(e.to_string()))?;
+            let mut c2 = c.clone();
+            c2[8] = Some(aid.clone());
+            c2[9] = Some((revision + 1).to_string());
+            c2[11] = Some(crate::todo::iso_now_ms());
+            let _ = save_config(&conn, &project_id, &c2, Some(revision),
+                "Failed to link project automation.");
+        }
+    }
+    // model changed → rebind live thread
+    let old_model = existing.as_ref().and_then(|e| cfg_get(e, 2));
+    if old_model.is_some() && old_model.as_deref() != Some(payload["coordinatorModelSelection"].to_string().as_str()) {
+        if let Some(ct) = &coord_thread {
+            let _ = crate::orchestration_engine::handle(
+                "orchestration.dispatchCommand",
+                &json!({
+                    "type": "thread.meta.update",
+                    "commandId": crate::orchestration_engine::uuid_v4(),
+                    "threadId": ct,
+                    "modelSelection": payload["coordinatorModelSelection"],
+                    "createdAt": now,
+                }),
+            );
+        }
+    }
+    append_activity(&conn, &project_id, "config-updated", "user", None, None, None,
+        if existing.is_some() {
+            "Updated Project Coordinator settings."
+        } else {
+            "Configured Project Coordinator."
+        }, &now)?;
+    let overview = overview_for(&conn, &project_id)?;
+    store_receipt(&conn, &request_id, &project_id, "configure", &overview);
+    Ok(overview)
+}
+
+fn welcome_message_id(thread_id: &str) -> String {
+    // sha1 v5-style: hash `${threadId}:welcome`, set variant+version bits
+    let mut h = sha1::Sha1::new();
+    sha1::Digest::update(&mut h, format!("{thread_id}:welcome").as_bytes());
+    let mut bytes: [u8; 20] = sha1::Digest::finalize(h).into();
+    bytes[6] = (bytes[6] & 0x0f) | 0x50;
+    bytes[8] = (bytes[8] & 0x3f) | 0x80;
+    let hex: String = bytes[..16].iter().map(|b| format!("{b:02x}")).collect();
+    format!(
+        "{}-{}-{}-{}-{}",
+        &hex[0..8], &hex[8..12], &hex[12..16], &hex[16..20], &hex[20..32]
+    )
+}
+
 pub fn handles(tag: &str) -> bool {
     matches!(
         tag,
@@ -2131,6 +2971,14 @@ pub fn handles(tag: &str) -> bool {
             | "projectAgent.resumeGoal"
             | "projectAgent.stopGoal"
             | "projectAgent.excludeThread"
+            | "projectAgent.configure"
+            | "projectAgent.linkProject"
+            | "projectAgent.unlinkProject"
+            | "projectAgent.writeDocument"
+            | "projectAgent.pause"
+            | "projectAgent.resume"
+            | "projectAgent.archive"
+            | "projectAgent.unarchive"
     )
 }
 
@@ -2164,6 +3012,25 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Value, WsErr> {
             "Stopped the project goal. Pending continuations were cancelled.",
         ),
         "projectAgent.excludeThread" => exclude_thread(payload),
+        "projectAgent.configure" => configure(payload),
+        "projectAgent.linkProject" => link_project(payload, false),
+        "projectAgent.unlinkProject" => link_project(payload, true),
+        "projectAgent.writeDocument" => write_document(payload),
+        "projectAgent.pause" => {
+            lifecycle_group(payload, "pause", "Paused hub.", "Failed to pause the hub.")
+        }
+        "projectAgent.resume" => {
+            lifecycle_group(payload, "resume", "Resumed hub.", "Failed to resume the hub.")
+        }
+        "projectAgent.archive" => {
+            lifecycle_group(payload, "archive", "Archived hub.", "Failed to archive the hub.")
+        }
+        "projectAgent.unarchive" => lifecycle_group(
+            payload,
+            "unarchive",
+            "Unarchived hub.",
+            "Failed to unarchive the hub.",
+        ),
         _ => Err(err("Unknown projectAgent method")),
     }
 }

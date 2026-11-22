@@ -26,5 +26,6 @@ http = "1"
 rusqlite = { version = "0.32", features = ["bundled"] }
 sha2 = "0.10"
 portable-pty = "0.9"
+sha1 = "0.10"
 
 [workspace]

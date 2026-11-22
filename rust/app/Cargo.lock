@@ -629,6 +629,7 @@ dependencies = [
  "reqwest",
  "rusqlite",
  "serde_json",
+ "sha1",
  "sha2",
  "staticassets-rs",
  "tokio",

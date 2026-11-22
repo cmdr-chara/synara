@@ -95,6 +95,7 @@ fn intercept_todo(
         && !text.contains("projects.stopDevServer")
         && !text.contains("projects.subscribeDevServerEvents")
         && !text.contains("projects.subscribeFileChange")
+        && !text.contains("projects.provisionFromGitHub")
         && !text.contains("server.upsertKeybinding")
         && !text.contains("server.editKeybindings")
         && !text.contains("server.listLocalServers")
@@ -114,6 +115,9 @@ fn intercept_todo(
         && !text.contains("terminal.")
         && !text.contains("orchestration.")
         && !text.contains("githubInbox.")
+        && !text.contains("provider.listModels")
+        && !text.contains("server.listExternalMcpIntegrations")
+        && !text.contains("server.readThreadDiagnostics")
     {
         return None;
     }
@@ -146,6 +150,7 @@ fn intercept_todo(
         && tag != "projects.stopDevServer"
         && tag != "projects.subscribeDevServerEvents"
         && tag != "projects.subscribeFileChange"
+        && !crate::projects_provision::handles(tag)
         && tag != "server.upsertKeybinding"
         && tag != "server.editKeybindings"
         && tag != "server.listLocalServers"
@@ -169,6 +174,7 @@ fn intercept_todo(
         && tag != "orchestration.subscribeThread"
         && tag != "orchestration.subscribeDomainEvents"
         && !crate::orchestration_reads::handles(tag)
+        && !crate::provider_cache::handles(tag)
         && !tag.starts_with("githubInbox.")
         && !tag.starts_with("stats.")
         && !tag.starts_with("terminal.")
@@ -532,19 +538,26 @@ fn intercept_todo(
         let tx = native_tx.clone();
         let rid = request_id.clone();
         let task = tokio::spawn(async move {
-            let chunk = serde_json::json!({
-                "_tag": "Chunk", "requestId": rid,
-                "values": [{"providers": []}],
-            });
-            // Provider statuses never change natively yet; hold the stream open.
-            if tx
-                .send(ClientMessage::Text(chunk.to_string().into()))
-                .is_err()
-            {
-                return;
-            }
+            // Serve the cached provider-status snapshots upstream writes to
+            // userdata/provider-status/*.json; re-emit when they change.
+            let mut last = String::new();
             loop {
-                tokio::time::sleep(std::time::Duration::from_secs(3600)).await;
+                let providers = crate::provider_cache::provider_statuses();
+                let text = serde_json::to_string(&providers).unwrap_or_default();
+                if text != last {
+                    last = text;
+                    let chunk = serde_json::json!({
+                        "_tag": "Chunk", "requestId": rid,
+                        "values": [{"providers": providers}],
+                    });
+                    if tx
+                        .send(ClientMessage::Text(chunk.to_string().into()))
+                        .is_err()
+                    {
+                        return;
+                    }
+                }
+                tokio::time::sleep(std::time::Duration::from_millis(1500)).await;
             }
         });
         if let Ok(mut map) = streams.lock() {
@@ -762,6 +775,14 @@ fn intercept_todo(
             .map_err(error_json)
     } else if crate::orchestration_reads::handles(tag) {
         crate::orchestration_reads::handle(tag, &payload)
+            .map(Some)
+            .map_err(error_json)
+    } else if crate::provider_cache::handles(tag) {
+        crate::provider_cache::handle(tag, &payload)
+            .map(Some)
+            .map_err(error_json)
+    } else if crate::projects_provision::handles(tag) {
+        crate::projects_provision::handle(tag, &payload)
             .map(Some)
             .map_err(error_json)
     } else if tag.starts_with("githubInbox.") {

@@ -7,6 +7,8 @@ mod native_ws;
 mod orchestration_reads;
 mod orchestration_snapshot;
 mod original;
+mod provider_cache;
+mod projects_provision;
 mod projects_devserver;
 mod projects_fileops;
 mod projects_fs;

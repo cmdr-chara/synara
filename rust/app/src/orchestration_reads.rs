@@ -21,6 +21,7 @@ pub fn handles(tag: &str) -> bool {
             | "orchestration.listProviderDeliveryBlockers"
             | "orchestration.unsubscribeShell"
             | "orchestration.unsubscribeThread"
+            | "server.readThreadDiagnostics"
     )
 }
 
@@ -33,6 +34,7 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Value, WsErr> {
         // Streams are ended by the client interrupting the subscribe request;
         // the unsubscribe calls only release bookkeeping upstream.
         "orchestration.unsubscribeShell" | "orchestration.unsubscribeThread" => Ok(Value::Null),
+        "server.readThreadDiagnostics" => thread_diagnostics(payload),
         _ => Err(err("unhandled orchestration read tag")),
     }
 }
@@ -275,4 +277,234 @@ fn delivery_blockers(payload: &Value) -> Result<Value, WsErr> {
         }));
     }
     Ok(Value::Array(out))
+}
+
+/// `server.readThreadDiagnostics`: backward-paged rows from
+/// `orchestration_events` (source "events") or `provider_runtime_events`
+/// (source "runtime") for one thread. The cursor is the exclusive sequence
+/// bound below which the next page is read, encoded as a decimal string.
+fn thread_diagnostics(payload: &Value) -> Result<Value, WsErr> {
+    let source = str_opt(payload, "source").unwrap_or("events").to_string();
+    let thread_id = str_opt(payload, "threadId")
+        .ok_or_else(|| err("threadId is required"))?
+        .to_string();
+    let limit = i64_arg(payload, "limit").unwrap_or(200).clamp(1, 200);
+    let cursor: Option<i64> = str_opt(payload, "cursor").and_then(|c| c.parse().ok());
+    let event_types: Vec<String> = payload
+        .get("eventTypes")
+        .and_then(|v| v.as_array())
+        .map(|a| a.iter().filter_map(|x| x.as_str().map(String::from)).collect())
+        .unwrap_or_default();
+    let turn_id = str_opt(payload, "turnId");
+    let payload_mode = str_opt(payload, "payloadMode").unwrap_or("summary").to_string();
+    let include_details = payload
+        .get("includeDetails")
+        .and_then(|v| v.as_bool())
+        .unwrap_or(false);
+    let Some(copy) = open_state_copy() else {
+        return Err(err("state.sqlite is unavailable"));
+    };
+    let conn = &copy.conn;
+
+    if source == "runtime" {
+        let mut where_ = vec!["thread_id = ?1".to_string()];
+        let mut args: Vec<String> = vec![thread_id.clone()];
+        if let Some(t) = turn_id {
+            args.push(t.to_string());
+            where_.push(format!("turn_id = ?{}", args.len()));
+        }
+        if !event_types.is_empty() {
+            let start = args.len() + 1;
+            args.extend(event_types.iter().cloned());
+            where_.push(format!(
+                "event_type IN ({})",
+                (start..=args.len())
+                    .map(|i| format!("?{i}"))
+                    .collect::<Vec<_>>()
+                    .join(",")
+            ));
+        }
+        if let Some(c) = cursor {
+            args.push(c.to_string());
+            where_.push(format!("sequence < ?{}", args.len()));
+        }
+        args.push(limit.to_string());
+        let sql = format!(
+            "SELECT sequence, event_json FROM provider_runtime_events WHERE {} \
+             ORDER BY sequence DESC LIMIT ?{}",
+            where_.join(" AND "),
+            args.len()
+        );
+        let mut stmt = conn.prepare(&sql).map_err(|e| err(e.to_string()))?;
+        let mut rows = stmt
+            .query(rusqlite::params_from_iter(args.iter()))
+            .map_err(|e| err(e.to_string()))?;
+        let mut page: Vec<(i64, Value)> = Vec::new();
+        while let Some(row) = rows.next().map_err(|e| err(e.to_string()))? {
+            let seq = row.get::<_, i64>(0).unwrap_or(0);
+            let ev = row
+                .get::<_, String>(1)
+                .ok()
+                .and_then(|s| serde_json::from_str(&s).ok())
+                .unwrap_or(Value::Null);
+            page.push((seq, ev));
+        }
+        page.reverse();
+        let oldest = page.first().map(|(s, _)| *s).unwrap_or(0);
+        let has_older = oldest > 0
+            && conn
+                .query_row(
+                    "SELECT COUNT(*) FROM provider_runtime_events WHERE thread_id=?1 AND sequence<?2",
+                    params![thread_id, oldest],
+                    |r| r.get::<_, i64>(0),
+                )
+                .unwrap_or(0)
+                > 0;
+        let high_water = conn
+            .query_row(
+                "SELECT COALESCE(MAX(sequence),0) FROM provider_runtime_events WHERE thread_id=?1",
+                params![thread_id],
+                |r| r.get::<_, i64>(0),
+            )
+            .unwrap_or(0);
+        let retained = conn
+            .query_row(
+                "SELECT COUNT(*) FROM provider_runtime_events WHERE thread_id=?1",
+                params![thread_id],
+                |r| r.get::<_, i64>(0),
+            )
+            .unwrap_or(0);
+        let oldest_retained = conn
+            .query_row(
+                "SELECT MIN(sequence) FROM provider_runtime_events WHERE thread_id=?1",
+                params![thread_id],
+                |r| r.get::<_, Option<i64>>(0),
+            )
+            .unwrap_or(None);
+        let mut result = json!({
+            "threadId": thread_id,
+            "events": page.iter().map(|(_, e)| e.clone()).collect::<Vec<_>>(),
+            "coverage": {
+                "source": "provider_runtime_events",
+                "highWaterSequence": high_water,
+                "oldestRetainedSequence": oldest_retained,
+                "retainedForThread": retained,
+                "globalAcceptedEventCap": 200000,
+                "sourceComplete": false,
+                "pageHasOlder": has_older,
+            },
+            "requestedLimit": limit,
+            "appliedLimit": limit,
+        });
+        if has_older {
+            result["nextCursor"] = json!(oldest.to_string());
+        }
+        return Ok(result);
+    }
+
+    // source "events": orchestration_events for the thread stream.
+    let mut where_ = vec![
+        "aggregate_kind = 'thread'".to_string(),
+        "stream_id = ?1".to_string(),
+    ];
+    let mut args: Vec<String> = vec![thread_id.clone()];
+    if !event_types.is_empty() {
+        let start = args.len() + 1;
+        args.extend(event_types.iter().cloned());
+        where_.push(format!(
+            "event_type IN ({})",
+            (start..=args.len())
+                .map(|i| format!("?{i}"))
+                .collect::<Vec<_>>()
+                .join(",")
+        ));
+    }
+    if let Some(c) = cursor {
+        args.push(c.to_string());
+        where_.push(format!("sequence < ?{}", args.len()));
+    }
+    args.push(limit.to_string());
+    let sql = format!(
+        "SELECT sequence, event_id, aggregate_kind, stream_id, event_type, occurred_at, \
+                command_id, causation_event_id, correlation_id, payload_json, metadata_json \
+         FROM orchestration_events WHERE {} ORDER BY sequence DESC LIMIT ?{}",
+        where_.join(" AND "),
+        args.len()
+    );
+    let mut stmt = conn.prepare(&sql).map_err(|e| err(e.to_string()))?;
+    let mut rows = stmt
+        .query(rusqlite::params_from_iter(args.iter()))
+        .map_err(|e| err(e.to_string()))?;
+    let mut page: Vec<(i64, Value)> = Vec::new();
+    while let Some(row) = rows.next().map_err(|e| err(e.to_string()))? {
+        let seq = row.get::<_, i64>(0).unwrap_or(0);
+        let mut payload_json = row.get::<_, String>(9).unwrap_or_default();
+        let mut metadata_json = row.get::<_, String>(10).unwrap_or_default();
+        if payload_mode == "none" {
+            payload_json = "null".into();
+            metadata_json = "{}".into();
+        } else if payload_mode == "summary" {
+            if payload_json.chars().count() > 512 {
+                payload_json = serde_json::to_string(&json!({
+                    "_truncated": payload_json.chars().take(512).collect::<String>()
+                }))
+                .unwrap_or_default();
+            }
+            if !include_details {
+                metadata_json = "{}".into();
+            }
+        } else if !include_details {
+            metadata_json = "{}".into();
+        }
+        page.push((
+            seq,
+            event_row(
+                seq,
+                row.get::<_, String>(1).unwrap_or_default(),
+                row.get::<_, String>(2).unwrap_or_default(),
+                row.get::<_, String>(3).unwrap_or_default(),
+                row.get::<_, String>(4).unwrap_or_default(),
+                row.get::<_, String>(5).unwrap_or_default(),
+                row.get::<_, Option<String>>(6).unwrap_or(None),
+                row.get::<_, Option<String>>(7).unwrap_or(None),
+                row.get::<_, Option<String>>(8).unwrap_or(None),
+                payload_json,
+                metadata_json,
+            ),
+        ));
+    }
+    page.reverse();
+    let oldest = page.first().map(|(s, _)| *s).unwrap_or(0);
+    let has_older = oldest > 0
+        && conn
+            .query_row(
+                "SELECT COUNT(*) FROM orchestration_events WHERE aggregate_kind='thread' AND stream_id=?1 AND sequence<?2",
+                params![thread_id, oldest],
+                |r| r.get::<_, i64>(0),
+            )
+            .unwrap_or(0)
+            > 0;
+    let high_water = conn
+        .query_row(
+            "SELECT COALESCE(MAX(sequence),0) FROM orchestration_events WHERE aggregate_kind='thread' AND stream_id=?1",
+            params![thread_id],
+            |r| r.get::<_, i64>(0),
+        )
+        .unwrap_or(0);
+    let mut result = json!({
+        "threadId": thread_id,
+        "events": page.iter().map(|(_, e)| e.clone()).collect::<Vec<_>>(),
+        "coverage": {
+            "source": "orchestration_events",
+            "highWaterSequence": high_water,
+            "durableSourceComplete": true,
+            "pageHasOlder": has_older,
+        },
+        "requestedLimit": limit,
+        "appliedLimit": limit,
+    });
+    if has_older {
+        result["nextCursor"] = json!(oldest.to_string());
+    }
+    Ok(result)
 }

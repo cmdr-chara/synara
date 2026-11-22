@@ -106,6 +106,8 @@ fn intercept_todo(
         && !text.contains("server.getSettings")
         && !text.contains("server.updateSettings")
         && !text.contains("server.subscribeSettings")
+        && !text.contains("server.subscribeConfig")
+        && !text.contains("server.subscribeProviderStatuses")
         && !text.contains("server.subscribeLifecycle")
         && !text.contains("server.subscribeKeepAwake")
         && !text.contains("stats.")
@@ -152,6 +154,8 @@ fn intercept_todo(
         && tag != "server.getSettings"
         && tag != "server.updateSettings"
         && tag != "server.subscribeSettings"
+        && tag != "server.subscribeConfig"
+        && tag != "server.subscribeProviderStatuses"
         && tag != "server.subscribeLifecycle"
         && tag != "server.subscribeKeepAwake"
         && !tag.starts_with("stats.")
@@ -302,6 +306,63 @@ fn intercept_todo(
             let events = crate::server_lifecycle::snapshot_events();
             let chunk = serde_json::json!({"_tag": "Chunk", "requestId": rid, "values": events});
             let _ = tx.send(ClientMessage::Text(chunk.to_string().into()));
+        });
+        if let Ok(mut map) = streams.lock() {
+            map.insert(request_id, task);
+        }
+        return Some(None);
+    }
+    if tag == "server.subscribeConfig" {
+        let mut rx = crate::server_settings::changes();
+        let tx = native_tx.clone();
+        let rid = request_id.clone();
+        let task = tokio::spawn(async move {
+            let event = serde_json::json!({
+                "type": "snapshot",
+                "config": crate::server_lifecycle::get_config(),
+            });
+            let chunk = serde_json::json!({"_tag": "Chunk", "requestId": rid, "values": [event]});
+            if tx
+                .send(ClientMessage::Text(chunk.to_string().into()))
+                .is_err()
+            {
+                return;
+            }
+            while let Ok(settings) = rx.recv().await {
+                let event = serde_json::json!({"type": "settingsUpdated", "payload": {"settings": settings}});
+                let chunk =
+                    serde_json::json!({"_tag": "Chunk", "requestId": rid, "values": [event]});
+                if tx
+                    .send(ClientMessage::Text(chunk.to_string().into()))
+                    .is_err()
+                {
+                    return;
+                }
+            }
+        });
+        if let Ok(mut map) = streams.lock() {
+            map.insert(request_id, task);
+        }
+        return Some(None);
+    }
+    if tag == "server.subscribeProviderStatuses" {
+        let tx = native_tx.clone();
+        let rid = request_id.clone();
+        let task = tokio::spawn(async move {
+            let chunk = serde_json::json!({
+                "_tag": "Chunk", "requestId": rid,
+                "values": [{"providers": []}],
+            });
+            // Provider statuses never change natively yet; hold the stream open.
+            if tx
+                .send(ClientMessage::Text(chunk.to_string().into()))
+                .is_err()
+            {
+                return;
+            }
+            loop {
+                tokio::time::sleep(std::time::Duration::from_secs(3600)).await;
+            }
         });
         if let Ok(mut map) = streams.lock() {
             map.insert(request_id, task);

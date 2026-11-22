@@ -5,7 +5,7 @@
 //! handoffThread, runStackedAction, createDetachedWorktree, summarizeDiff)
 //! still relay upstream.
 
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 use std::process::Command;
 
 use crate::todo::WsErr;
@@ -79,7 +79,7 @@ fn run(cwd: &str, args: &[&str]) -> Result<std::process::Output, WsErr> {
         .map_err(|e| err(format!("failed to spawn git: {e}")))
 }
 
-fn stdout(cwd: &str, args: &[&str], what: &str) -> Result<String, WsErr> {
+pub(crate) fn stdout(cwd: &str, args: &[&str], what: &str) -> Result<String, WsErr> {
     let out = run(cwd, args)?;
     if !out.status.success() {
         let stderr = String::from_utf8_lossy(&out.stderr);
@@ -155,7 +155,10 @@ fn default_branch_ref(cwd: &str) -> Option<String> {
         }
     }
     for name in ["main", "master"] {
-        if ok(cwd, &["show-ref", "--verify", "-q", &format!("refs/heads/{name}")]) {
+        if ok(
+            cwd,
+            &["show-ref", "--verify", "-q", &format!("refs/heads/{name}")],
+        ) {
             return Some(name.to_string());
         }
     }
@@ -166,10 +169,7 @@ fn diff_args(scope: &str, compare_ref: Option<&str>, cwd: &str) -> Vec<String> {
     match scope {
         "unstaged" => vec!["diff".to_string()],
         "staged" => vec!["diff".to_string(), "--cached".to_string()],
-        "branch" => vec![
-            "diff".to_string(),
-            format!("{}...HEAD", branch_base(cwd)),
-        ],
+        "branch" => vec!["diff".to_string(), format!("{}...HEAD", branch_base(cwd))],
         "ref" => {
             let r = compare_ref.unwrap_or("HEAD");
             vec!["diff".to_string(), r.to_string()]
@@ -186,7 +186,12 @@ fn diff_args(scope: &str, compare_ref: Option<&str>, cwd: &str) -> Vec<String> {
     }
 }
 
-fn numstat(cwd: &str, scope: &str, compare_ref: Option<&str>, file: Option<&str>) -> Result<Vec<(String, u64, u64)>, WsErr> {
+fn numstat(
+    cwd: &str,
+    scope: &str,
+    compare_ref: Option<&str>,
+    file: Option<&str>,
+) -> Result<Vec<(String, u64, u64)>, WsErr> {
     let mut args = diff_args(scope, compare_ref, cwd);
     args.insert(1, "--numstat".to_string());
     if let Some(f) = file {
@@ -212,8 +217,12 @@ fn numstat(cwd: &str, scope: &str, compare_ref: Option<&str>, file: Option<&str>
 /// File names with any working-tree change, including untracked entries the
 /// numstat misses.
 fn changed_paths(cwd: &str) -> Vec<String> {
-    let out = stdout(cwd, &["status", "--porcelain=v1", "--untracked-files=all"], "git")
-        .unwrap_or_default();
+    let out = stdout(
+        cwd,
+        &["status", "--porcelain=v1", "--untracked-files=all"],
+        "git",
+    )
+    .unwrap_or_default();
     let mut paths = Vec::new();
     for line in out.lines() {
         if line.len() < 4 {
@@ -230,8 +239,12 @@ fn changed_paths(cwd: &str) -> Vec<String> {
 }
 
 fn untracked_paths(cwd: &str) -> Vec<String> {
-    let out = stdout(cwd, &["status", "--porcelain=v1", "--untracked-files=all"], "git")
-        .unwrap_or_default();
+    let out = stdout(
+        cwd,
+        &["status", "--porcelain=v1", "--untracked-files=all"],
+        "git",
+    )
+    .unwrap_or_default();
     out.lines()
         .filter(|l| l.starts_with("??"))
         .map(|l| l[3..].trim().trim_matches('"').to_string())
@@ -263,8 +276,14 @@ fn git_status(cwd: &str) -> Result<Value, WsErr> {
         .into_iter()
         .map(|(path, insertions, deletions)| json!({"path": path, "insertions": insertions, "deletions": deletions}))
         .collect();
-    let mut additions: u64 = files.iter().map(|f| f["insertions"].as_u64().unwrap_or(0)).sum();
-    let deletions: u64 = files.iter().map(|f| f["deletions"].as_u64().unwrap_or(0)).sum();
+    let mut additions: u64 = files
+        .iter()
+        .map(|f| f["insertions"].as_u64().unwrap_or(0))
+        .sum();
+    let deletions: u64 = files
+        .iter()
+        .map(|f| f["deletions"].as_u64().unwrap_or(0))
+        .sum();
     // Untracked files contribute their line count as insertions.
     for path in untracked_paths(cwd) {
         let full = std::path::Path::new(cwd).join(&path);
@@ -361,7 +380,10 @@ fn parse_github_nwo(url: &str) -> Option<String> {
 
 fn read_working_tree_diff(cwd: &str, payload: &Value) -> Result<Value, WsErr> {
     require_repo(cwd)?;
-    let scope = payload.get("scope").and_then(Value::as_str).unwrap_or("workingTree");
+    let scope = payload
+        .get("scope")
+        .and_then(Value::as_str)
+        .unwrap_or("workingTree");
     let compare_ref = payload.get("compareRef").and_then(Value::as_str);
     if let Some(r) = compare_ref {
         if !rev_ok(r) {
@@ -402,7 +424,10 @@ fn read_working_tree_diff(cwd: &str, payload: &Value) -> Result<Value, WsErr> {
 
 fn working_tree_diff_stats(cwd: &str, payload: &Value) -> Result<Value, WsErr> {
     require_repo(cwd)?;
-    let scope = payload.get("scope").and_then(Value::as_str).unwrap_or("workingTree");
+    let scope = payload
+        .get("scope")
+        .and_then(Value::as_str)
+        .unwrap_or("workingTree");
     let compare_ref = payload.get("compareRef").and_then(Value::as_str);
     let file = payload.get("filePath").and_then(Value::as_str);
     let rows = numstat(cwd, scope, compare_ref, file)?;
@@ -513,16 +538,17 @@ fn read_file_at_rev(cwd: &str, payload: &Value) -> Result<Value, WsErr> {
             (r.clone(), format!("{r}:{file}"))
         }
         _ => {
-            let r = payload
-                .get("rev")
-                .and_then(Value::as_str)
-                .unwrap_or("HEAD");
+            let r = payload.get("rev").and_then(Value::as_str).unwrap_or("HEAD");
             if !rev_ok(r) {
                 return Err(err("invalid `rev`"));
             }
-            let resolved = stdout(cwd, &["rev-parse", "--verify", "-q", r], "git rev-parse failed")
-                .map(|s| s.trim().to_string())
-                .unwrap_or_else(|_| r.to_string());
+            let resolved = stdout(
+                cwd,
+                &["rev-parse", "--verify", "-q", r],
+                "git rev-parse failed",
+            )
+            .map(|s| s.trim().to_string())
+            .unwrap_or_else(|_| r.to_string());
             (resolved, format!("{r}:{file}"))
         }
     };
@@ -578,7 +604,12 @@ fn list_branches(cwd: &str) -> Result<Value, WsErr> {
         .or_else(|| {
             ["main", "master"]
                 .iter()
-                .find(|n| ok(cwd, &["show-ref", "--verify", "-q", &format!("refs/heads/{n}")]))
+                .find(|n| {
+                    ok(
+                        cwd,
+                        &["show-ref", "--verify", "-q", &format!("refs/heads/{n}")],
+                    )
+                })
                 .map(|s| s.to_string())
         });
     let out = stdout(
@@ -767,7 +798,11 @@ fn create_branch(cwd: &str, payload: &Value) -> Result<Option<Value>, WsErr> {
 fn stash_and_checkout(cwd: &str, payload: &Value) -> Result<Option<Value>, WsErr> {
     require_repo(cwd)?;
     let branch = str_arg(payload, "branch")?;
-    stdout(cwd, &["stash", "push", "--include-untracked"], "git stash failed")?;
+    stdout(
+        cwd,
+        &["stash", "push", "--include-untracked"],
+        "git stash failed",
+    )?;
     stdout(cwd, &["checkout", branch], "git checkout failed")?;
     Ok(None)
 }
@@ -843,7 +878,13 @@ fn create_worktree(cwd: &str, payload: &Value) -> Result<Value, WsErr> {
         .unwrap_or_else(|| {
             let safe: String = branch
                 .chars()
-                .map(|c| if c.is_ascii_alphanumeric() || c == '-' || c == '_' { c } else { '-' })
+                .map(|c| {
+                    if c.is_ascii_alphanumeric() || c == '-' || c == '_' {
+                        c
+                    } else {
+                        '-'
+                    }
+                })
                 .collect();
             let repo = std::path::Path::new(cwd)
                 .file_name()
@@ -896,7 +937,11 @@ fn remove_worktree(cwd: &str, payload: &Value) -> Result<Option<Value>, WsErr> {
     }
     args.push(path);
     stdout(cwd, &args, "git worktree remove failed")?;
-    if payload.get("reclaimTemporaryBranch").and_then(Value::as_bool) == Some(true) {
+    if payload
+        .get("reclaimTemporaryBranch")
+        .and_then(Value::as_bool)
+        == Some(true)
+    {
         if let Some(b) = wt_branch {
             // Only managed `synara/*` branches are reclaimed.
             if b.starts_with("synara/") {

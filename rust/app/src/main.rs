@@ -1,5 +1,6 @@
 mod fs_browse;
 mod git_domain;
+mod list_worktrees;
 mod native_ws;
 mod original;
 mod runtime_status;

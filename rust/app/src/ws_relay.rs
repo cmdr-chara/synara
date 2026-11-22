@@ -78,6 +78,7 @@ fn intercept_todo(
         && !text.contains("\"shell.openInEditor\"")
         && !text.contains("\"git.")
         && !text.contains("\"filesystem.browse")
+        && !text.contains("server.listWorktrees")
     {
         return None;
     }
@@ -92,6 +93,7 @@ fn intercept_todo(
         && tag != "shell.openInEditor"
         && !crate::git_domain::handles(tag)
         && tag != "filesystem.browse"
+        && tag != "server.listWorktrees"
     {
         return None;
     }
@@ -143,6 +145,10 @@ fn intercept_todo(
     }
     let outcome = if tag == "filesystem.browse" {
         crate::fs_browse::browse(&payload)
+            .map(Some)
+            .map_err(error_json)
+    } else if tag == "server.listWorktrees" {
+        crate::list_worktrees::list_worktrees()
             .map(Some)
             .map_err(error_json)
     } else if crate::git_domain::handles(tag) {

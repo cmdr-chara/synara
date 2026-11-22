@@ -3,6 +3,7 @@ mod git_domain;
 mod list_worktrees;
 mod native_ws;
 mod original;
+mod projects_devserver;
 mod projects_fileops;
 mod projects_fs;
 mod projects_refs;

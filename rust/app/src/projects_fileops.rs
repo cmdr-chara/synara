@@ -515,7 +515,7 @@ pub fn create_local_file_preview_grant(payload: &Value) -> Result<Value, WsErr> 
     }))
 }
 
-fn iso8601(secs: u64) -> String {
+pub(crate) fn iso8601(secs: u64) -> String {
     let days = secs / 86_400;
     let tod = secs % 86_400;
     let (mut y, mut d) = (1970i64, days as i64);

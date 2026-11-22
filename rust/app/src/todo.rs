@@ -9,8 +9,8 @@
 
 use std::sync::Mutex;
 
-use rusqlite::{params, Connection};
-use serde_json::{json, Map, Value};
+use rusqlite::{Connection, params};
+use serde_json::{Map, Value, json};
 use tokio::sync::broadcast;
 
 const PRIORITIES: &[&str] = &["none", "low", "medium", "high", "urgent"];
@@ -117,15 +117,20 @@ fn is_calendar_day(s: &str) -> bool {
     if b.len() != 10 || b[4] != b'-' || b[7] != b'-' {
         return false;
     }
-    let Ok(y) = s[0..4].parse::<i64>() else { return false };
-    let Ok(m) = s[5..7].parse::<u32>() else { return false };
-    let Ok(d) = s[8..10].parse::<u32>() else { return false };
-    days_from_civil(y, m, d) > i64::MIN && days_from_civil(y, m, d).checked_add(0).is_some()
-        && {
-            // Round-trip: the date must be real (not 2026-02-31).
-            let (ry, rm, rd) = civil_from_days(days_from_civil(y, m, d));
-            (ry, rm, rd) == (y, m, d)
-        }
+    let Ok(y) = s[0..4].parse::<i64>() else {
+        return false;
+    };
+    let Ok(m) = s[5..7].parse::<u32>() else {
+        return false;
+    };
+    let Ok(d) = s[8..10].parse::<u32>() else {
+        return false;
+    };
+    days_from_civil(y, m, d) > i64::MIN && days_from_civil(y, m, d).checked_add(0).is_some() && {
+        // Round-trip: the date must be real (not 2026-02-31).
+        let (ry, rm, rd) = civil_from_days(days_from_civil(y, m, d));
+        (ry, rm, rd) == (y, m, d)
+    }
 }
 
 fn next_todo_updated_at(previous: &str) -> String {
@@ -146,19 +151,27 @@ fn opt_str(v: Option<&Value>) -> Option<String> {
     }
 }
 
-fn validate_create(input: &Map<String, Value>) -> Result<(String, String, String, String, Value, Value), String> {
+fn validate_create(
+    input: &Map<String, Value>,
+) -> Result<(String, String, String, String, Value, Value), String> {
     let id = opt_str(input.get("id")).filter(|s| !s.is_empty());
     let title = opt_str(input.get("title")).map(|t| t.trim().to_string());
-    let Some(id) = id else { return Err("Task id is required.".into()) };
+    let Some(id) = id else {
+        return Err("Task id is required.".into());
+    };
     let Some(title) = title.filter(|t| !t.is_empty()) else {
         return Err("Task title must be a non-empty string.".into());
     };
     if title.chars().count() > TITLE_MAX {
-        return Err(format!("Task title must be at most {TITLE_MAX} characters."));
+        return Err(format!(
+            "Task title must be at most {TITLE_MAX} characters."
+        ));
     }
     let notes = opt_str(input.get("notes")).unwrap_or_default();
     if notes.chars().count() > NOTES_MAX {
-        return Err(format!("Task notes must be at most {NOTES_MAX} characters."));
+        return Err(format!(
+            "Task notes must be at most {NOTES_MAX} characters."
+        ));
     }
     let priority = opt_str(input.get("priority")).unwrap_or_else(|| "none".into());
     if !PRIORITIES.contains(&priority.as_str()) {
@@ -204,8 +217,7 @@ impl TodoStore {
     pub fn open(state_dir: &str) -> std::sync::Arc<Self> {
         let path = std::path::Path::new(state_dir);
         let _ = std::fs::create_dir_all(path);
-        let conn = Connection::open(path.join("native.sqlite"))
-            .expect("opening the native store");
+        let conn = Connection::open(path.join("native.sqlite")).expect("opening the native store");
         conn.execute_batch(
             "PRAGMA journal_mode = WAL;
              CREATE TABLE IF NOT EXISTS todos (
@@ -343,23 +355,37 @@ impl TodoStore {
             };
             if let Some(expected) = obj.get("expectedThreadId") {
                 if current.get("threadId") != Some(expected) {
-                    return Err(err("This task was delegated somewhere else in the meantime."));
+                    return Err(err(
+                        "This task was delegated somewhere else in the meantime.",
+                    ));
                 }
             }
             let updated_at = next_todo_updated_at(
-                current.get("updatedAt").and_then(|v| v.as_str()).unwrap_or(""),
+                current
+                    .get("updatedAt")
+                    .and_then(|v| v.as_str())
+                    .unwrap_or(""),
             );
             // applyTodoPatch (packages/shared/src/todo.ts)
             let mut next = current.clone();
             let m = next.as_object_mut().unwrap();
             let has = |k: &str| obj.get(k).is_some();
             if has("title") {
-                if let Some(t) = opt_str(obj.get("title")).map(|t| t.trim().to_string()).filter(|t| !t.is_empty())
+                if let Some(t) = opt_str(obj.get("title"))
+                    .map(|t| t.trim().to_string())
+                    .filter(|t| !t.is_empty())
                 {
                     m.insert("title".into(), Value::String(t));
                 }
             }
-            for k in ["notes", "priority", "projectId", "dueDate", "threadId", "delegationBaseTurnId"] {
+            for k in [
+                "notes",
+                "priority",
+                "projectId",
+                "dueDate",
+                "threadId",
+                "delegationBaseTurnId",
+            ] {
                 if has(k) {
                     m.insert(k.into(), obj[k].clone());
                 }
@@ -369,7 +395,11 @@ impl TodoStore {
             if has("threadId") && new_thread != old_thread {
                 m.insert(
                     "linkedAt".into(),
-                    if new_thread.is_null() { Value::Null } else { json!(updated_at) },
+                    if new_thread.is_null() {
+                        Value::Null
+                    } else {
+                        json!(updated_at)
+                    },
                 );
                 if !has("delegationBaseTurnId") {
                     m.insert("delegationBaseTurnId".into(), Value::Null);
@@ -442,7 +472,10 @@ impl TodoStore {
                     return Ok(todo);
                 }
                 Ok(_) => continue,
-                Err(e) if e.to_string().contains("idx_todos_open_thread") || e.to_string().contains("todos.thread_id") => {
+                Err(e)
+                    if e.to_string().contains("idx_todos_open_thread")
+                        || e.to_string().contains("todos.thread_id") =>
+                {
                     if links_newly {
                         return Err(err("That chat is already working on another task."));
                     }

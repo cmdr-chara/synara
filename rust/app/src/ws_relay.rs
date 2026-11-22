@@ -90,6 +90,11 @@ fn intercept_todo(
         && !text.contains("projects.writeFile")
         && !text.contains("projects.searchContent")
         && !text.contains("projects.createLocalFilePreviewGrant")
+        && !text.contains("projects.listDevServers")
+        && !text.contains("projects.runDevServer")
+        && !text.contains("projects.stopDevServer")
+        && !text.contains("projects.subscribeDevServerEvents")
+        && !text.contains("projects.subscribeFileChange")
         && !text.contains("server.getSettings")
         && !text.contains("server.updateSettings")
         && !text.contains("server.subscribeSettings")
@@ -120,6 +125,11 @@ fn intercept_todo(
         && tag != "projects.writeFile"
         && tag != "projects.searchContent"
         && tag != "projects.createLocalFilePreviewGrant"
+        && tag != "projects.listDevServers"
+        && tag != "projects.runDevServer"
+        && tag != "projects.stopDevServer"
+        && tag != "projects.subscribeDevServerEvents"
+        && tag != "projects.subscribeFileChange"
         && tag != "server.getSettings"
         && tag != "server.updateSettings"
         && tag != "server.subscribeSettings"
@@ -136,6 +146,81 @@ fn intercept_todo(
         .get("payload")
         .cloned()
         .unwrap_or(serde_json::Value::Null);
+    if tag == "projects.subscribeDevServerEvents" {
+        let mut rx = crate::projects_devserver::subscribe();
+        let tx = native_tx.clone();
+        let rid = request_id.clone();
+        let task = tokio::spawn(async move {
+            let chunk = serde_json::json!({
+                "_tag": "Chunk", "requestId": rid,
+                "values": [crate::projects_devserver::current_snapshot()],
+            });
+            if tx
+                .send(ClientMessage::Text(chunk.to_string().into()))
+                .is_err()
+            {
+                return;
+            }
+            while let Ok(event) = rx.recv().await {
+                let chunk =
+                    serde_json::json!({"_tag": "Chunk", "requestId": rid, "values": [event]});
+                if tx
+                    .send(ClientMessage::Text(chunk.to_string().into()))
+                    .is_err()
+                {
+                    return;
+                }
+            }
+        });
+        if let Ok(mut map) = streams.lock() {
+            map.insert(request_id, task);
+        }
+        return Some(None);
+    }
+    if tag == "projects.subscribeFileChange" {
+        let tx = native_tx.clone();
+        let rid = request_id.clone();
+        let cwd = payload
+            .get("cwd")
+            .and_then(|v| v.as_str())
+            .map(std::path::PathBuf::from);
+        let rel = payload
+            .get("relativePath")
+            .and_then(|v| v.as_str())
+            .map(str::to_string);
+        let (Some(cwd), Some(rel)) = (cwd, rel) else {
+            let exit = serde_json::json!({
+                "_tag": "Failure",
+                "cause": [{
+                    "_tag": "Fail",
+                    "error": error_json(crate::todo::WsErr(
+                        "cwd and relativePath are required".to_string(),
+                        Some("VALIDATION"),
+                    )),
+                }],
+            });
+            let reply = serde_json::json!({
+                "_tag": "Exit", "requestId": request_id, "exit": exit,
+            });
+            return Some(Some(ClientMessage::Text(reply.to_string().into())));
+        };
+        let task = tokio::spawn(async move {
+            let tx2 = tx.clone();
+            let rid2 = rid.clone();
+            let _ = crate::projects_devserver::poll_watch(cwd, rel, move |event| {
+                let chunk = serde_json::json!({
+                    "_tag": "Chunk", "requestId": rid2, "values": [event],
+                });
+                tx2.send(ClientMessage::Text(chunk.to_string().into()))
+                    .is_ok()
+            })
+            .await;
+        });
+        if let Ok(mut map) = streams.lock() {
+            map.insert(request_id, task);
+        }
+        return Some(None);
+    }
     if tag == "terminal.subscribeEvents" {
         let mut rx = crate::terminal::subscribe();
         let tx = native_tx.clone();
@@ -249,6 +334,18 @@ fn intercept_todo(
         || tag == "projects.createLocalFilePreviewGrant"
     {
         crate::projects_fileops::handle(tag, &payload).map_err(error_json)
+    } else if tag == "projects.listDevServers" {
+        crate::projects_devserver::list_dev_servers()
+            .map(Some)
+            .map_err(error_json)
+    } else if tag == "projects.runDevServer" {
+        crate::projects_devserver::run_dev_server(&payload)
+            .map(Some)
+            .map_err(error_json)
+    } else if tag == "projects.stopDevServer" {
+        crate::projects_devserver::stop_dev_server(&payload)
+            .map(Some)
+            .map_err(error_json)
     } else if tag == "projects.resolveWorkspaceFileReferences" {
         crate::projects_refs::resolve_workspace_file_references(&payload)
             .map(Some)

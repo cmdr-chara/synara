@@ -2,7 +2,7 @@
 //! original builds in `environment/Layers/ServerEnvironment.ts`. Values
 //! describe THIS server: the descriptor belongs to whoever answers the RPC.
 
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 use sha2::{Digest, Sha256};
 
 const MACHINE_ID_SALT: &str = "synara-machine-id-v1:";
@@ -97,11 +97,7 @@ fn server_version() -> String {
 fn environment_id(state_dir: &str) -> Option<String> {
     let path = std::path::Path::new(state_dir).join("environment-id");
     let raw = std::fs::read_to_string(path).ok()?.trim().to_string();
-    if raw.is_empty() {
-        None
-    } else {
-        Some(raw)
-    }
+    if raw.is_empty() { None } else { Some(raw) }
 }
 
 /// The full `server.getEnvironment` result.

@@ -126,15 +126,7 @@ impl Original {
              &x-synara-protocol-min-revision=3&x-synara-protocol-max-revision=3",
             self.base
         );
-        let id = self
-            .client
-            .get(url)
-            .send()
-            .await
-            .ok()?
-            .text()
-            .await
-            .ok()?;
+        let id = self.client.get(url).send().await.ok()?.text().await.ok()?;
         let id = serde_json::from_str::<serde_json::Value>(&id)
             .ok()?
             .get("serverInstanceId")

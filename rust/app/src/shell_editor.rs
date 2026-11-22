@@ -67,10 +67,7 @@ pub fn open_in_editor(payload: &Value) -> Result<Value, crate::todo::WsErr> {
         .get("editor")
         .and_then(|v| v.as_str())
         .unwrap_or("vscode");
-    let cwd = payload
-        .get("cwd")
-        .and_then(|v| v.as_str())
-        .unwrap_or("");
+    let cwd = payload.get("cwd").and_then(|v| v.as_str()).unwrap_or("");
 
     if cwd.is_empty() {
         return Err(crate::todo::err_pub("Missing required field: cwd"));
@@ -83,7 +80,9 @@ pub fn open_in_editor(payload: &Value) -> Result<Value, crate::todo::WsErr> {
     }
 
     let Some(def) = EDITORS.iter().find(|e| e.id == editor) else {
-        return Err(crate::todo::err_pub(format!("Unsupported editor: {editor}")));
+        return Err(crate::todo::err_pub(format!(
+            "Unsupported editor: {editor}"
+        )));
     };
 
     for cmd in def.commands {

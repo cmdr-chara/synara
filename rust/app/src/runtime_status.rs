@@ -10,7 +10,7 @@
 //! STALL_MS); gaps we can't measure (e.g. sleep while the process was
 //! suspended) count as discarded idle gaps instead of stalls.
 
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 use std::collections::VecDeque;
 use std::sync::{Mutex, OnceLock};
 use std::time::Instant;

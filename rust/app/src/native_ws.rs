@@ -17,11 +17,11 @@
 
 use std::sync::OnceLock;
 
+use axum::Router;
 use axum::http::{HeaderMap, HeaderValue, Request, StatusCode, Uri};
 use axum::response::{IntoResponse, Response};
 use axum::routing::get;
-use axum::Router;
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 
 use crate::original::Original;
 
@@ -67,9 +67,15 @@ struct Config {
 fn config() -> &'static Config {
     static CONFIG: OnceLock<Config> = OnceLock::new();
     CONFIG.get_or_init(|| Config {
-        host: std::env::var("SYNARA_HOST").ok().filter(|v| !v.trim().is_empty()),
-        public_url: std::env::var("SYNARA_PUBLIC_URL").ok().filter(|v| !v.trim().is_empty()),
-        dev_url: std::env::var("VITE_DEV_SERVER_URL").ok().filter(|v| !v.trim().is_empty()),
+        host: std::env::var("SYNARA_HOST")
+            .ok()
+            .filter(|v| !v.trim().is_empty()),
+        public_url: std::env::var("SYNARA_PUBLIC_URL")
+            .ok()
+            .filter(|v| !v.trim().is_empty()),
+        dev_url: std::env::var("VITE_DEV_SERVER_URL")
+            .ok()
+            .filter(|v| !v.trim().is_empty()),
     })
 }
 
@@ -205,25 +211,13 @@ fn is_trusted_app_origin(origin: Option<&str>, request_origin: &str, cfg: &Confi
     let Some(origin) = origin else {
         return true;
     };
-    if cfg
-        .public_url
-        .as_deref()
-        .and_then(url_origin)
-        .as_deref()
-        == Some(origin)
-    {
+    if cfg.public_url.as_deref().and_then(url_origin).as_deref() == Some(origin) {
         return true;
     }
     if origin == request_origin && is_trusted_request_origin_host(request_origin, cfg) {
         return true;
     }
-    if cfg
-        .dev_url
-        .as_deref()
-        .and_then(url_origin)
-        .as_deref()
-        == Some(origin)
-    {
+    if cfg.dev_url.as_deref().and_then(url_origin).as_deref() == Some(origin) {
         return true;
     }
     DESKTOP_APP_CORS_ORIGINS.contains(&origin)
@@ -315,11 +309,7 @@ pub fn negotiate(
     }))
 }
 
-fn error_body(
-    message: &str,
-    code: &str,
-    action: &str,
-) -> Value {
+fn error_body(message: &str, code: &str, action: &str) -> Value {
     json!({
         "_tag": "WsCompatibilityError",
         "message": message,
@@ -368,9 +358,8 @@ async fn negotiate_route(req: Request<axum::body::Body>) -> Response {
         return (StatusCode::FORBIDDEN, h, "Forbidden").into_response();
     }
 
-    let cors_origin = normalize_cors_origin(raw_origin).filter(|o| {
-        is_trusted_app_origin(Some(o.as_str()), &req_origin, cfg)
-    });
+    let cors_origin = normalize_cors_origin(raw_origin)
+        .filter(|o| is_trusted_app_origin(Some(o.as_str()), &req_origin, cfg));
 
     let query = uri.query().unwrap_or("");
     let mut epoch: Option<i64> = None;
@@ -394,14 +383,16 @@ async fn negotiate_route(req: Request<axum::body::Body>) -> Response {
             "x-synara-protocol-epoch" => epoch = int_ok(&value),
             "x-synara-protocol-min-revision" => min_rev = int_ok(&value),
             "x-synara-protocol-max-revision" => max_rev = int_ok(&value),
-            "x-synara-client-build" => client_build = {
-                let t = value.trim();
-                if t.is_empty() {
-                    None
-                } else {
-                    Some(t.to_string())
+            "x-synara-client-build" => {
+                client_build = {
+                    let t = value.trim();
+                    if t.is_empty() {
+                        None
+                    } else {
+                        Some(t.to_string())
+                    }
                 }
-            },
+            }
             "x-synara-required-capability" => required.push(value),
             _ => {}
         }

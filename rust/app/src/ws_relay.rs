@@ -194,6 +194,7 @@ fn intercept_todo(
         && !crate::pull_requests::handles(tag)
         && !crate::automation::handles(tag)
         && tag != "automation.subscribe"
+        && tag != "projectAgent.subscribe"
         && !crate::studio::handles(tag)
         && !crate::project_agent::handles(tag)
         && !tag.starts_with("stats.")
@@ -471,6 +472,44 @@ fn intercept_todo(
             let mut last: Option<String> = None;
             loop {
                 match crate::automation::snapshot_event(project_id.as_deref(), include_archived) {
+                    Ok(event) => {
+                        let enc = event.to_string();
+                        if last.as_deref() != Some(enc.as_str()) {
+                            last = Some(enc);
+                            let chunk = serde_json::json!({
+                                "_tag": "Chunk", "requestId": rid,
+                                "values": [event],
+                            });
+                            if tx
+                                .send(ClientMessage::Text(chunk.to_string().into()))
+                                .is_err()
+                            {
+                                return;
+                            }
+                        }
+                    }
+                    Err(_) => {}
+                }
+                tokio::time::sleep(std::time::Duration::from_millis(1500)).await;
+            }
+        });
+        if let Ok(mut map) = streams.lock() {
+            map.insert(request_id, task);
+        }
+        return Some(None);
+    }
+    if tag == "projectAgent.subscribe" {
+        let project_id = payload
+            .get("projectId")
+            .and_then(|v| v.as_str())
+            .unwrap_or_default()
+            .to_string();
+        let tx = native_tx.clone();
+        let rid = request_id.clone();
+        let task = tokio::spawn(async move {
+            let mut last: Option<String> = None;
+            loop {
+                match crate::project_agent::snapshot_event(&project_id) {
                     Ok(event) => {
                         let enc = event.to_string();
                         if last.as_deref() != Some(enc.as_str()) {

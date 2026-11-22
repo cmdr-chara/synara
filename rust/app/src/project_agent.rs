@@ -3560,6 +3560,14 @@ fn library_status(payload: &Value) -> Result<Value, WsErr> {
     }))
 }
 
+/// `{type:"snapshot", overview}` for `projectAgent.subscribe`; re-emitted by the
+/// caller whenever the overview payload changes.
+pub fn snapshot_event(project_id: &str) -> Result<Value, WsErr> {
+    let copy = open_state_copy().ok_or_else(|| err("Failed to load project overview."))?;
+    let overview = overview_for(&copy.conn, project_id)?;
+    Ok(json!({ "type": "snapshot", "overview": overview }))
+}
+
 fn welcome_message_id(thread_id: &str) -> String {
     // sha1 v5-style: hash `${threadId}:welcome`, set variant+version bits
     let mut h = sha1::Sha1::new();

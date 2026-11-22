@@ -18,9 +18,11 @@ pub fn handles(tag: &str) -> bool {
         "server.listMcpConnectors"
             | "server.listMcpConnectorProposals"
             | "server.getMcpConnectorSetup"
-            | "server.disconnectMcpConnector"
-            | "server.resolveMcpConnectorProposal"
-    )
+    ) || (std::env::var("SYNARA_NO_UPSTREAM").is_ok()
+        && matches!(
+            tag,
+            "server.disconnectMcpConnector" | "server.resolveMcpConnectorProposal"
+        ))
 }
 
 pub fn handle(tag: &str, payload: &Value) -> Result<Value, WsErr> {
@@ -119,8 +121,11 @@ fn write_document(doc: &Value) -> Result<(), WsErr> {
     std::fs::write(doc_path(), text).map_err(|e| err(e.to_string()))
 }
 
-/// `server.disconnectMcpConnector`: drop the connector from both the HTTP and
-/// stdio lists and persist the document. Missing id -> disconnected:false.
+/// `server.disconnectMcpConnector` — runtime.ts `disconnect`: a stdio entry
+/// is removed first (process teardown is upstream's job; ours owns the doc),
+/// otherwise the HTTP connector row is dropped when present. OAuth token
+/// revocation is a best-effort network call upstream does after saving;
+/// removal itself is the persisted truth. Missing id -> disconnected:false.
 fn disconnect(payload: &Value) -> Result<Value, WsErr> {
     let id = payload
         .get("connectorId")
@@ -134,14 +139,21 @@ fn disconnect(payload: &Value) -> Result<Value, WsErr> {
         "version": 1, "connectors": [], "stdio": [], "proposals": [], "unreadable": []
     }));
     let mut removed = false;
-    for key in ["connectors", "stdio"] {
-        if let Some(list) = doc.get_mut(key).and_then(|v| v.as_array_mut()) {
+    if let Some(list) = doc.get_mut("stdio").and_then(|v| v.as_array_mut()) {
+        let before = list.len();
+        list.retain(|e| e.get("connectorId").and_then(|v| v.as_str()) != Some(id.as_str()));
+        removed = list.len() < before;
+    }
+    if !removed {
+        if let Some(list) = doc.get_mut("connectors").and_then(|v| v.as_array_mut()) {
             let before = list.len();
             list.retain(|e| e.get("connectorId").and_then(|v| v.as_str()) != Some(id.as_str()));
-            removed |= list.len() < before;
+            removed = list.len() < before;
         }
     }
-    write_document(&doc)?;
+    if removed {
+        write_document(&doc)?;
+    }
     Ok(json!({"disconnected": removed}))
 }
 
@@ -207,22 +219,80 @@ fn resolve_proposal(payload: &Value) -> Result<Value, WsErr> {
             let input = entry.get("input").cloned();
             match input {
                 Some(i) if i.get("command").is_some() => {
-                    // stdio add: store the public connector + secret env.
+                    // connectStdio: dedupe on (command, cwd, args); keep an
+                    // existing connectorId/serverName. Status stays
+                    // "unreachable" — no stdio probe runtime here.
+                    let command = i.get("command").cloned().unwrap_or(Value::Null);
+                    let cwd = i.get("cwd").cloned().unwrap_or(Value::Null);
+                    let args = i.get("args").cloned().unwrap_or(json!([]));
+                    let name = i.get("name").and_then(|v| v.as_str()).unwrap_or("Connector");
                     let env = i.get("env").cloned().unwrap_or(json!({}));
-                    let env_keys: Vec<String> = env
+                    let mut env_keys: Vec<String> = env
                         .as_object()
                         .map(|o| o.keys().cloned().collect())
                         .unwrap_or_default();
-                    let mut c = proposal
-                        .get("connector")
-                        .cloned()
-                        .unwrap_or(json!({}));
-                    c["status"] = json!("connected");
-                    c["updatedAt"] = json!(chrono_iso_now());
-                    c["envKeys"] = json!(env_keys);
-                    c["env"] = env;
-                    if let Some(list) = doc.get_mut("stdio").and_then(|v| v.as_array_mut()) {
-                        list.push(c);
+                    env_keys.sort();
+                    let list_len = doc
+                        .get("stdio")
+                        .and_then(|v| v.as_array())
+                        .map(|a| a.len())
+                        .unwrap_or(0)
+                        + doc
+                            .get("connectors")
+                            .and_then(|v| v.as_array())
+                            .map(|a| a.len())
+                            .unwrap_or(0);
+                    let existing_idx = doc
+                        .get("stdio")
+                        .and_then(|v| v.as_array())
+                        .and_then(|a| {
+                            a.iter().position(|e| {
+                                e.get("command") == Some(&command)
+                                    && e.get("cwd").cloned().unwrap_or(Value::Null) == cwd
+                                    && e.get("args").cloned().unwrap_or(json!([])) == args
+                            })
+                        });
+                    if existing_idx.is_none() && list_len >= 30 {
+                        return Err(err("Too many connectors."));
+                    }
+                    let (existing_id, existing_name, existing_created) = existing_idx
+                        .and_then(|ix| doc.pointer(&format!("/stdio/{ix}")).cloned())
+                        .map(|e| {
+                            (
+                                e.get("connectorId").and_then(|v| v.as_str()).map(String::from),
+                                e.get("serverName").and_then(|v| v.as_str()).map(String::from),
+                                e.get("createdAt").and_then(|v| v.as_str()).map(String::from),
+                            )
+                        })
+                        .unwrap_or((None, None, None));
+                    let server_name = existing_name.unwrap_or_else(|| {
+                        unique_server_name(&doc, &mcp_connector_slug(name))
+                    });
+                    let now = chrono_iso_now();
+                    let saved = json!({
+                        "name": name,
+                        "command": command,
+                        "args": args,
+                        "cwd": cwd,
+                        "env": env,
+                        "transport": "stdio",
+                        "connectorId": existing_id
+                            .unwrap_or_else(|| format!("mcp_conn_{}", crate::orchestration_engine::uuid_v4())),
+                        "presetId": Value::Null,
+                        "serverName": server_name,
+                        "authKind": "none",
+                        "status": "unreachable",
+                        "envKeys": env_keys,
+                        "createdAt": existing_created.unwrap_or_else(|| now.clone()),
+                        "updatedAt": now,
+                    });
+                    let list = doc
+                        .get_mut("stdio")
+                        .and_then(|v| v.as_array_mut())
+                        .ok_or_else(|| err("malformed connectors document"))?;
+                    match existing_idx {
+                        Some(ix) => list[ix] = saved,
+                        None => list.push(saved),
                     }
                 }
                 Some(_) => {
@@ -240,6 +310,51 @@ fn resolve_proposal(payload: &Value) -> Result<Value, WsErr> {
     }
     write_document(&doc)?;
     Ok(json!({"proposal": proposal, "authorizationUrl": Value::Null}))
+}
+
+/// `mcpConnectorSlug` (packages/shared): lowercase alnum + single
+/// underscores, must start with a letter, `synara…` names get `custom_`,
+/// max 24 chars.
+fn mcp_connector_slug(name: &str) -> String {
+    let mut slug = String::new();
+    let mut last_us = true;
+    for ch in name.to_lowercase().chars() {
+        if ch.is_ascii_alphanumeric() {
+            slug.push(ch);
+            last_us = false;
+        } else if !last_us {
+            slug.push('_');
+            last_us = true;
+        }
+    }
+    let slug = slug.trim_matches('_').to_string();
+    let slug = if !slug.chars().next().map(|c| c.is_ascii_lowercase()).unwrap_or(false) {
+        format!("mcp_{}", slug.trim_end_matches('_'))
+    } else {
+        slug
+    };
+    let slug = if slug.starts_with("synara") {
+        format!("custom_{slug}")
+    } else {
+        slug
+    };
+    slug.chars().take(24).collect::<String>().trim_end_matches('_').to_string()
+}
+
+/// `uniqueServerName`: `<slug>_connector`, suffixed `_2`, `_3`, ... until free.
+fn unique_server_name(doc: &Value, slug: &str) -> String {
+    let taken: Vec<String> = ["connectors", "stdio"]
+        .iter()
+        .flat_map(|k| doc.get(*k).and_then(|v| v.as_array()).cloned().unwrap_or_default())
+        .filter_map(|e| e.get("serverName").and_then(|v| v.as_str()).map(String::from))
+        .collect();
+    let mut candidate = format!("{slug}_connector");
+    let mut suffix = 2;
+    while taken.iter().any(|t| t == &candidate) {
+        candidate = format!("{slug}_{suffix}_connector");
+        suffix += 1;
+    }
+    candidate
 }
 
 fn chrono_iso_now() -> String {

@@ -1,0 +1,79 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/api/src/billing/",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "billing-rs",
+  "exports": [
+    {
+      "name": "decideRemoteBillingAccess",
+      "file": "apps/api/src/billing/accessPolicy.ts",
+      "line": 26,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "RemoteBillingAccessInput",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "(| { readonly allowed: true; readonly reason: \"allowed\" }\n  | {\n      readonly allowed: false;\n      readonly reason: \"subscription_required\" | \"billing_unavailable\";\n    })",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isProfileBillingEntitled",
+      "file": "apps/api/src/billing/accessPolicy.ts",
+      "line": 86,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly enforcementEnabled?: boolean;\n  readonly stored?: StoredBillingAccess | null | undefined;\n  readonly nowMs?: number;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "BillingCheckoutNotCreatedError",
+      "file": "apps/api/src/billing/polar.ts",
+      "line": 12,
+      "reason": "class: extends another class"
+    },
+    {
+      "name": "BillingCatalogUnavailableError",
+      "file": "apps/api/src/billing/polar.ts",
+      "line": 20,
+      "reason": "class: extends another class"
+    },
+    {
+      "name": "createPolarBillingProvider",
+      "file": "apps/api/src/billing/polar.ts",
+      "line": 75,
+      "reason": "checks `instanceof`: class identity does not survive the bridge"
+    },
+    {
+      "name": "BillingError",
+      "file": "apps/api/src/billing/service.ts",
+      "line": 18,
+      "reason": "class: extends another class, public parameter properties"
+    },
+    {
+      "name": "createBillingService",
+      "file": "apps/api/src/billing/service.ts",
+      "line": 149,
+      "reason": "checks `instanceof`: class identity does not survive the bridge"
+    }
+  ]
+}

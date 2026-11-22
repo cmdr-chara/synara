@@ -18,11 +18,14 @@ fn err(msg: impl Into<String>) -> WsErr {
 
 pub fn handles(tag: &str) -> bool {
     tag == "orchestration.listProjectImports"
+        || (tag == "orchestration.importProject"
+            && std::env::var("SYNARA_NO_UPSTREAM").is_ok())
 }
 
 pub fn handle(tag: &str, payload: &Value) -> Result<Value, WsErr> {
     match tag {
         "orchestration.listProjectImports" => list_project_imports(payload),
+        "orchestration.importProject" => import_project(payload),
         _ => Err(err("unhandled project import tag")),
     }
 }
@@ -1101,6 +1104,7 @@ fn list_project_imports(payload: &Value) -> Result<Value, WsErr> {
         })
         .collect();
 
+    write_import_catalog(&out);
     let mut projects_out: Vec<Value> = Vec::new();
     let mut sorted: Vec<(String, OutProject)> = out.into_iter().collect();
     sorted.sort_by(|a, b| a.1.title.cmp(&b.1.title).then(a.0.cmp(&b.0)));
@@ -1159,6 +1163,210 @@ fn list_project_imports(payload: &Value) -> Result<Value, WsErr> {
         })
         .collect();
     Ok(json!({"projects": projects_out, "sources": sources_out}))
+}
+
+// ── orchestration.importProject (project-linked path) ──
+
+/// Upstream keeps the preview catalog in-process (CATALOG_TTL_MS = 30 min);
+/// ours persists the same shape so stateless handlers can resume it.
+const CATALOG_TTL_MS: i64 = 30 * 60 * 1000;
+
+fn catalog_path() -> PathBuf {
+    PathBuf::from(crate::todo::state_dir()).join("import-catalog.json")
+}
+
+fn write_import_catalog(projects: &HashMap<String, OutProject>) {
+    let now = now_ms();
+    let mut projs = serde_json::Map::new();
+    let mut sessions = serde_json::Map::new();
+    for (ident, p) in projects {
+        let pkey = project_key(&["project", ident]);
+        projs.insert(
+            pkey.clone(),
+            json!({"title": p.title, "workspaceRoot": p.workspace_root,
+                   "expiresAt": now + CATALOG_TTL_MS}),
+        );
+        for t in &p.threads {
+            if let Some(tkey) = t.get("key").and_then(Value::as_str) {
+                sessions.insert(
+                    tkey.to_string(),
+                    json!({"projectKey": pkey,
+                           "provider": t.get("provider").and_then(Value::as_str).unwrap_or(""),
+                           "externalId": t.get("_externalId").and_then(Value::as_str).unwrap_or(""),
+                           "expiresAt": now + CATALOG_TTL_MS}),
+                );
+            }
+        }
+    }
+    let doc = json!({"projects": projs, "sessions": sessions});
+    if let Ok(text) = serde_json::to_string(&doc) {
+        let _ = std::fs::write(catalog_path(), text);
+    }
+}
+
+fn read_import_catalog() -> Option<Value> {
+    let text = std::fs::read_to_string(catalog_path()).ok()?;
+    serde_json::from_str(&text).ok()
+}
+
+fn now_ms() -> i64 {
+    std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .map(|d| d.as_millis() as i64)
+        .unwrap_or(0)
+}
+
+/// `importProject` without a thread selection links (or reuses) a Synara
+/// project for the catalog entry. Thread copies go through
+/// `providerService.importExternalThread`, which has no provider runtime
+/// here — matching upstream's own missing-capability error.
+fn import_project(payload: &Value) -> Result<Value, WsErr> {
+    let project_key_in = payload
+        .get("projectKey")
+        .and_then(Value::as_str)
+        .ok_or_else(|| err("missing projectKey"))?;
+    let catalog = read_import_catalog().unwrap_or(json!({}));
+    let now = now_ms();
+    let cached = catalog
+        .pointer(&format!("/projects/{project_key_in}"))
+        .cloned();
+    let expired = cached
+        .as_ref()
+        .and_then(|c| c.get("expiresAt").and_then(Value::as_i64))
+        .map(|e| e < now)
+        .unwrap_or(true);
+    if cached.is_none() || expired {
+        return Err(err("Refresh the project list before importing."));
+    }
+    let cached = cached.unwrap();
+    let thread_key = payload.get("threadKey").and_then(Value::as_str);
+    let mut source_selected = false;
+    if let Some(tk) = thread_key {
+        let sel = catalog.pointer(&format!("/sessions/{tk}")).cloned();
+        let ok = sel
+            .as_ref()
+            .map(|s| {
+                s.get("projectKey").and_then(Value::as_str) == Some(project_key_in)
+                    && s.get("expiresAt").and_then(Value::as_i64).unwrap_or(0) >= now
+            })
+            .unwrap_or(false);
+        if !ok {
+            return Err(err(
+                "This conversation is no longer in the project preview. Refresh the list.",
+            ));
+        }
+        source_selected = true;
+    }
+
+    let raw_root = payload
+        .get("workspaceRoot")
+        .and_then(Value::as_str)
+        .map(str::trim)
+        .filter(|s| !s.is_empty())
+        .map(String::from)
+        .unwrap_or_else(|| {
+            cached
+                .get("workspaceRoot")
+                .and_then(Value::as_str)
+                .unwrap_or_default()
+                .to_string()
+        });
+    let expanded = if let Some(rest) = raw_root.strip_prefix("~/") {
+        format!("{}/{}", std::env::var("HOME").unwrap_or_default(), rest)
+    } else {
+        raw_root
+    };
+    if !Path::new(&expanded).is_absolute() {
+        return Err(err("Choose an absolute project folder path."));
+    }
+    let workspace_root = canonical_import_path(&expanded);
+    if payload.get("workspaceRoot").is_some() && !dir_exists(&workspace_root) {
+        return Err(err("The selected project folder does not exist."));
+    }
+
+    // Existing live project whose canonical root matches keeps the link.
+    let find_existing = |conn: &Connection| -> Option<String> {
+        let mut stmt = conn
+            .prepare(
+                "SELECT project_id, workspace_root FROM projection_projects \
+                 WHERE deleted_at IS NULL AND kind = 'project'",
+            )
+            .ok()?;
+        let mut rows = stmt.query([]).ok()?;
+        while let Ok(Some(row)) = rows.next() {
+            let id: String = row.get(0).ok()?;
+            let root: String = row.get(1).unwrap_or_default();
+            if path_identity(&canonical_import_path(&root)) == path_identity(&workspace_root) {
+                return Some(id);
+            }
+        }
+        None
+    };
+    let conn = crate::orchestration_engine::open_state_rw()?;
+    let project_id = match find_existing(&conn) {
+        Some(id) => id,
+        None => {
+            let new_id = crate::orchestration_engine::uuid_v4();
+            let mut command = serde_json::Map::new();
+            command.insert("type".into(), json!("project.create"));
+            command.insert(
+                "commandId".into(),
+                json!(crate::orchestration_engine::uuid_v4()),
+            );
+            command.insert("projectId".into(), json!(new_id.clone()));
+            command.insert(
+                "title".into(),
+                cached.get("title").cloned().unwrap_or(json!("Imported project")),
+            );
+            command.insert("workspaceRoot".into(), json!(workspace_root.clone()));
+            command.insert("kind".into(), json!("project"));
+            command.insert("defaultModelSelection".into(), Value::Null);
+            command.insert("preserveExistingProject".into(), json!(true));
+            if let Some(space) = payload.get("spaceId").and_then(Value::as_str) {
+                command.insert("spaceId".into(), json!(space));
+            }
+            command.insert(
+                "createdAt".into(),
+                json!(crate::todo::iso_from_ms(now)),
+            );
+            match crate::orchestration_engine::project_create(&command) {
+                Ok(_) => {
+                    // Read back the projection row; fall back to an existing
+                    // match when the decider preserved an older project.
+                    let mut stmt = conn
+                        .prepare(
+                            "SELECT project_id FROM projection_projects \
+                             WHERE project_id = ?1 AND deleted_at IS NULL",
+                        )
+                        .map_err(|e| err(e.to_string()))?;
+                    let found: Option<String> = stmt
+                        .query_row(rusqlite::params![new_id], |r| r.get(0))
+                        .ok();
+                    match found.or_else(|| find_existing(&conn)) {
+                        Some(id) => id,
+                        None => {
+                            return Err(err("The imported project could not be loaded."));
+                        }
+                    }
+                }
+                Err(e) => match find_existing(&conn) {
+                    Some(id) => id,
+                    None => return Err(e),
+                },
+            }
+        }
+    };
+
+    if !source_selected {
+        return Ok(json!({
+            "projectId": project_id,
+            "threadId": Value::Null,
+            "status": "project-linked",
+        }));
+    }
+    // The project link is already committed, matching upstream's ordering —
+    // the thread copy then fails at the provider-capability check.
+    Err(err("Native conversation copying is unavailable."))
 }
 
 // (existing projects, live thread->project map, live project ids, origins, native bindings)

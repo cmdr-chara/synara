@@ -1505,7 +1505,7 @@ fn project_event(agg_id: &str, event_type: &'static str, occurred_at: &str, payl
     ev
 }
 
-fn project_create(command: &Map<String, Value>) -> Result<Value, WsErr> {
+pub(crate) fn project_create(command: &Map<String, Value>) -> Result<Value, WsErr> {
     let command_id = s(command, "commandId").ok_or_else(|| err("missing commandId"))?;
     let project_id = s(command, "projectId").ok_or_else(|| err("missing projectId"))?;
     let title = s(command, "title").ok_or_else(|| err("missing title"))?;

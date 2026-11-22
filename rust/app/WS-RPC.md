@@ -3,13 +3,14 @@
 Extracted 2026-11-22 from `packages/contracts/src/rpc.ts` (`Rpc.make` declarations, 285 methods).
 Transport: `apps/server/src/wsRpc.ts` over the WS upgrade path; this is the app's real API surface — the 30 HTTP routes in ROUTES.md are auxiliary.
 
-Native coverage in rust/app (relay handles the rest): ~140/285.
+Native coverage in rust/app (relay handles the rest): ~147/285.
 - `bootstrap.negotiate` (HTTP GET /ws/negotiate)
 - `filesystem.browse`
 - `git.*` — 26 of 27 (missing: summarizeDiff)
 - `githubInbox.*` — 3 of 3: list (GraphQL inbox + involvement docs via gh), issueDetail, issueComment; repositories resolved from projection projects' git remotes
 - `orchestration.*` — 17 of 27: listProjectImports (codex state sqlite+desktop json, claude transcript scan, catalog merge vs projection projects + import origins), getInlineVisual (attachments/visuals/<sha256(threadId)>/), getSnapshot, getShellSnapshot (heavy embeds stripped + latestReplyPreview), getThreadDetailSnapshot, searchThreads (LIKE over projection_thread_messages), replayEvents, getTurnDiff + getFullThreadDiff (checkpoint_diff_blobs; ignoreWhitespace unsupported), listProviderDeliveryBlockers, subscribeShell/subscribeThread/subscribeDomainEvents (polled streams) + unsubscribeShell/unsubscribeThread — reads use a byte copy of state.sqlite. Under SYNARA_NO_UPSTREAM the write engine is native too: dispatchCommand (all command types: thread/project/space/message/turn/approval/pinned/usage-limit/sidechat/checkpoint/handoff/fork), settleTurnDispatch (receipt fencing), prepareQuitResume (record + best-effort interrupts + abandon sweep), repairState (event-log replay rebuild of spaces/projects/cursors with staged backup + fence verification), importProject (project-linked path: persisted 30min catalog, canonical-root dedup, verbatim validation errors; thread copies blocked by provider runtime)
 - `projects.*` — 17 of 17 + subscribeDevServerEvents/subscribeFileChange streams (provisionFromGitHub clones via gh repo clone / git clone fallback)
+- `pullRequests.*` — 7 of 7: detail (gh pr view + repo view caps + reviewThreads/stack GraphQL), diff (gh pr diff, too_large → local `git diff base...head` fallback with refs/pull fetch + shallow deepen 64/256/1024), action (merge: caps check + merge-async PUT with 300s poll, 404 → sync `gh pr merge`; ready/draft/close/reopen; reopen refreshes the thread's PR link via thread.pull-request.sync), comment (--body-file stdin), setPinned (project_pull_request_pins, 20-pin cap), getAutoFix/setAutoFix (pull_request_auto_fix; thread-shell + workspace-cwd resolution, open-PR check, cross-thread owner conflict)
 - `server.*` — 24 of 39: getEnvironment, getRuntimeStatus, getConfig, getSettings, updateSettings, subscribeSettings, subscribeConfig, subscribeProviderStatuses (on-disk provider-status snapshots), subscribeLifecycle, subscribeKeepAwake, listWorktrees, upsertKeybinding, editKeybindings, listLocalServers, stopLocalServer, getDiagnostics, listExternalMcpIntegrations (external_mcp_* tables), readThreadDiagnostics (paged orchestration_events + provider_runtime_events), listMcpConnectors/listMcpConnectorProposals/getMcpConnectorSetup (secrets/mcp-connectors.bin, secrets stripped), refreshProviders (re-probes binaries into provider-status files), updateProvider (runs recorded updateCommand), desktopUpdateStatus, desktopUpdate (unsupported: no updater bridge)
 - `shell.openInEditor`
 - `stats.*` — 4 of 4: getProfileStats, getProfileTokenStats, getRecap, getUsageAnalytics (computed over a byte copy of state.sqlite; quota/pricing unavailable)
@@ -17,7 +18,7 @@ Native coverage in rust/app (relay handles the rest): ~140/285.
 - `terminal.*` — 8 of 8 (incl. subscribeEvents stream)
 - `todo.*` — 5 of 5 (incl. subscribe stream)
 
-Deferred with reasons: orchestration/automation/pullRequests/projectAgent/studio contracts or impls are T3-derived (cases-only rule); account/hosts/device need the remote pairing authority; provider.*/getConfig need the provider CLI matrix; readThreadDiagnostics/providerUsage are impl-flagged; voice/generate*/transcribe need the provider runtime; editor.* needs the editor runtime.
+Deferred with reasons: automation/projectAgent/studio contracts are T3-derived (cases-only rule); account/hosts/device need the remote pairing authority; provider.*/getConfig need the provider CLI matrix; readThreadDiagnostics/providerUsage are impl-flagged; voice/generate*/transcribe need the provider runtime; editor.* needs the editor runtime.
 
 
 

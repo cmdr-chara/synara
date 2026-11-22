@@ -19,6 +19,7 @@ mod projects_fileops;
 mod projects_fs;
 mod projects_refs;
 mod projects_search;
+mod pull_requests;
 mod runtime_status;
 mod server_desktop_update;
 mod server_diagnostics;

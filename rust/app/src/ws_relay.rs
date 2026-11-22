@@ -115,6 +115,7 @@ fn intercept_todo(
         && !text.contains("terminal.")
         && !text.contains("orchestration.")
         && !text.contains("githubInbox.")
+        && !text.contains("pullRequests.")
         && !text.contains("provider.")
         && !text.contains("ExternalMcp")
         && !text.contains("server.readThreadDiagnostics")
@@ -187,6 +188,7 @@ fn intercept_todo(
         && !crate::skills_catalog::handles(tag)
         && !crate::project_imports::handles(tag)
         && !tag.starts_with("githubInbox.")
+        && !crate::pull_requests::handles(tag)
         && !tag.starts_with("stats.")
         && !tag.starts_with("terminal.")
     {
@@ -817,6 +819,10 @@ fn intercept_todo(
         crate::mcp_connectors::handle(tag, &payload)
             .map(Some)
             .map_err(error_json)
+    } else if crate::pull_requests::handles(tag) {
+        crate::pull_requests::handle(tag, &payload)
+            .map(Some)
+            .map_err(error_json)
     } else if tag.starts_with("githubInbox.") {
         crate::github_inbox::handle(tag, &payload)
             .map_err(error_json)
@@ -849,6 +855,13 @@ fn intercept_todo(
 }
 
 fn error_json(crate::todo::WsErr(message, code): crate::todo::WsErr) -> serde_json::Value {
+    if let Some(reason) = code.and_then(|c| c.strip_prefix("PR_UNAVAILABLE:")) {
+        return serde_json::json!({
+            "_tag": "PullRequestsUnavailableError",
+            "reason": reason,
+            "message": message,
+        });
+    }
     serde_json::json!({
         "_tag": "WsRpcError",
         "message": message,

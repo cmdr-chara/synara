@@ -74,17 +74,37 @@ pub fn handle(_tag: &str, payload: &Value) -> Result<Value, WsErr> {
             thread_mode_set(command, "interactionMode", "interaction_mode")
         }
         "thread.meta.update" => thread_meta_update(command),
+        "thread.turn.start" => thread_turn_start(command),
         other => Err(err(format!(
             "orchestration.dispatchCommand {other} is not ported yet (native engine slice)"
         ))),
     }
 }
 
-/// (event_type, payload, aggregate thread_id) triple produced by a decider.
+/// One event a decider emits; sequence and stream_version are assigned at commit.
 struct OutEvent {
+    event_id: String,
     event_type: &'static str,
     payload: Value,
     thread_id: String,
+    occurred_at: String,
+    causation_event_id: Option<String>,
+}
+
+fn out_event(
+    event_type: &'static str,
+    thread_id: &str,
+    occurred_at: &str,
+    payload: Value,
+) -> OutEvent {
+    OutEvent {
+        event_id: uuid_v4(),
+        event_type,
+        payload,
+        thread_id: thread_id.to_string(),
+        occurred_at: occurred_at.to_string(),
+        causation_event_id: None,
+    }
 }
 
 struct ThreadRow {
@@ -93,11 +113,20 @@ struct ThreadRow {
     deleted_at: Option<String>,
     interaction_mode: String,
     claude_cache_review: Option<String>,
+    parent_thread_id: Option<String>,
+    snoozed_until: Option<String>,
+    snooze_reminder_at: Option<String>,
+    latest_turn_id: Option<String>,
+    latest_user_message_at: Option<String>,
+    latest_human_message_at: Option<String>,
+    updated_at: String,
 }
 
 fn require_thread(conn: &Connection, thread_id: &str) -> Result<ThreadRow, WsErr> {
     conn.query_row(
-        "SELECT project_id, archived_at, deleted_at, interaction_mode, claude_cache_review_json \
+        "SELECT project_id, archived_at, deleted_at, interaction_mode, claude_cache_review_json, \
+         parent_thread_id, snoozed_until, snooze_reminder_at, latest_turn_id, \
+         latest_user_message_at, latest_human_message_at, updated_at \
          FROM projection_threads WHERE thread_id = ?1",
         params![thread_id],
         |r| {
@@ -107,6 +136,13 @@ fn require_thread(conn: &Connection, thread_id: &str) -> Result<ThreadRow, WsErr
                 deleted_at: r.get(2)?,
                 interaction_mode: r.get(3)?,
                 claude_cache_review: r.get(4)?,
+                parent_thread_id: r.get(5)?,
+                snoozed_until: r.get(6)?,
+                snooze_reminder_at: r.get(7)?,
+                latest_turn_id: r.get(8)?,
+                latest_user_message_at: r.get(9)?,
+                latest_human_message_at: r.get(10)?,
+                updated_at: r.get(11)?,
             })
         },
     )
@@ -118,7 +154,6 @@ fn require_thread(conn: &Connection, thread_id: &str) -> Result<ThreadRow, WsErr
 fn commit_events(
     conn: &Connection,
     events: &[OutEvent],
-    occurred_at: &str,
     command_id: &str,
     last_thread_id: &str,
 ) -> Result<i64, WsErr> {
@@ -139,14 +174,15 @@ fn commit_events(
             "INSERT INTO orchestration_events \
              (event_id, aggregate_kind, stream_id, stream_version, event_type, occurred_at, \
               command_id, causation_event_id, correlation_id, actor_kind, payload_json, metadata_json) \
-             VALUES (?1, 'thread', ?2, ?3, ?4, ?5, ?6, NULL, ?6, 'client', ?7, '{}')",
+             VALUES (?1, 'thread', ?2, ?3, ?4, ?5, ?6, ?7, ?6, 'client', ?8, '{}')",
             params![
-                uuid_v4(),
+                ev.event_id,
                 ev.thread_id,
                 stream_version,
                 ev.event_type,
-                occurred_at,
+                ev.occurred_at,
                 command_id,
+                ev.causation_event_id,
                 ev.payload.to_string(),
             ],
         )
@@ -263,23 +299,11 @@ fn thread_archive(command: &Map<String, Value>, archive: bool) -> Result<Value, 
     let mut events: Vec<OutEvent> = Vec::new();
     for (id, row) in &ids {
         if row.claude_cache_review.is_some() {
-            events.push(OutEvent {
-                event_type: "thread.claude-cache-set",
-                payload: json!({"threadId": id, "review": null, "updatedAt": occurred_at}),
-                thread_id: id.clone(),
-            });
+            events.push(out_event("thread.claude-cache-set", id, &occurred_at, json!({"threadId": id, "review": null, "updatedAt": occurred_at})));
         }
-        events.push(OutEvent {
-            event_type: if archive { "thread.archived" } else { "thread.unarchived" },
-            payload: if archive {
-                json!({"threadId": id, "archivedAt": occurred_at, "updatedAt": occurred_at})
-            } else {
-                json!({"threadId": id, "updatedAt": occurred_at})
-            },
-            thread_id: id.clone(),
-        });
+        events.push(out_event(if archive { "thread.archived" } else { "thread.unarchived" }, id, &occurred_at, if archive { json!({"threadId": id, "archivedAt": occurred_at, "updatedAt": occurred_at}) } else { json!({"threadId": id, "updatedAt": occurred_at}) }));
     }
-    let seq = commit_events(&conn, &events, &occurred_at, &command_id, &thread_id)?;
+    let seq = commit_events(&conn, &events, &command_id, &thread_id)?;
     for (id, row) in &ids {
         let mut sets: Vec<(&str, Value)> = Vec::new();
         if row.claude_cache_review.is_some() {
@@ -302,18 +326,10 @@ fn thread_delete(command: &Map<String, Value>) -> Result<Value, WsErr> {
     let occurred_at = iso_now_ms();
     let mut events: Vec<OutEvent> = Vec::new();
     if row.claude_cache_review.is_some() {
-        events.push(OutEvent {
-            event_type: "thread.claude-cache-set",
-            payload: json!({"threadId": thread_id, "review": null, "updatedAt": occurred_at}),
-            thread_id: thread_id.clone(),
-        });
+        events.push(out_event("thread.claude-cache-set", &thread_id, &occurred_at, json!({"threadId": thread_id, "review": null, "updatedAt": occurred_at})));
     }
-    events.push(OutEvent {
-        event_type: "thread.deleted",
-        payload: json!({"threadId": thread_id, "deletedAt": occurred_at}),
-        thread_id: thread_id.clone(),
-    });
-    let seq = commit_events(&conn, &events, &occurred_at, &command_id, &thread_id)?;
+    events.push(out_event("thread.deleted", &thread_id, &occurred_at, json!({"threadId": thread_id, "deletedAt": occurred_at})));
+    let seq = commit_events(&conn, &events, &command_id, &thread_id)?;
     let mut sets: Vec<(&str, Value)> = vec![("deleted_at", json!(occurred_at))];
     if row.claude_cache_review.is_some() {
         sets.push(("claude_cache_review_json", Value::Null));
@@ -347,12 +363,8 @@ fn thread_mode_set(
     }
     payload.insert(field.to_string(), json!(value));
     payload.insert("updatedAt".into(), json!(occurred_at));
-    let events = vec![OutEvent {
-        event_type,
-        payload: Value::Object(payload),
-        thread_id: thread_id.clone(),
-    }];
-    let seq = commit_events(&conn, &events, &occurred_at, &command_id, &thread_id)?;
+    let events = vec![out_event(event_type, &thread_id, &occurred_at, Value::Object(payload))];
+    let seq = commit_events(&conn, &events, &command_id, &thread_id)?;
     update_projection(
         &conn,
         &thread_id,
@@ -495,12 +507,8 @@ fn thread_meta_update(command: &Map<String, Value>) -> Result<Value, WsErr> {
     ep.insert("updatedAt".into(), json!(occurred_at));
     sets.push(("updated_at", json!(occurred_at)));
 
-    let events = vec![OutEvent {
-        event_type: "thread.meta-updated",
-        payload: Value::Object(ep),
-        thread_id: thread_id.clone(),
-    }];
-    let seq = commit_events(&conn, &events, &occurred_at, &command_id, &thread_id)?;
+    let events = vec![out_event("thread.meta-updated", &thread_id, &occurred_at, Value::Object(ep))];
+    let seq = commit_events(&conn, &events, &command_id, &thread_id)?;
     update_projection(&conn, &thread_id, &sets)?;
     Ok(json!({ "sequence": seq }))
 }
@@ -782,4 +790,195 @@ fn thread_create(command: &Map<String, Value>) -> Result<Value, WsErr> {
 
     tx.commit().map_err(|e| err(e.to_string()))?;
     Ok(json!({ "sequence": sequence }))
+}
+
+const PROVIDER_SEND_TURN_MAX_INPUT_CHARS: usize = 120_000;
+
+fn thread_turn_start(command: &Map<String, Value>) -> Result<Value, WsErr> {
+    let command_id = s(command, "commandId").ok_or_else(|| err("missing commandId"))?;
+    let thread_id = s(command, "threadId").ok_or_else(|| err("missing threadId"))?;
+    for k in [
+        "asyncUserInputResponse",
+        "sourceProposedPlan",
+        "resumePrecondition",
+        "reviewTarget",
+    ] {
+        if command.contains_key(k) {
+            return Err(err(format!(
+                "thread.turn.start with {k} is not ported yet (native engine slice)"
+            )));
+        }
+    }
+    let message = command
+        .get("message")
+        .and_then(Value::as_object)
+        .ok_or_else(|| err("thread.turn.start missing message"))?;
+    let message_id = s(message, "messageId").ok_or_else(|| err("missing message.messageId"))?;
+    let text = s(message, "text").ok_or_else(|| err("missing message.text"))?;
+    if text.len() > PROVIDER_SEND_TURN_MAX_INPUT_CHARS {
+        return Err(err("the message exceeds the maximum message length"));
+    }
+    let created_at =
+        s(command, "createdAt").ok_or_else(|| err("thread.turn.start missing createdAt"))?;
+    let conn = open_state_rw()?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| err(e.to_string()))?;
+    let row = require_thread(&conn, &thread_id)?;
+
+    let dispatch_mode = s(command, "dispatchMode").unwrap_or_else(|| "queue".into());
+    let dispatch_origin = s(command, "dispatchOrigin").unwrap_or_else(|| "user".into());
+    let runtime_mode = opt(command, "runtimeMode");
+    let interaction_mode = opt(command, "interactionMode");
+    // With no native provider sessions yet no turn can be running, so messages
+    // queue only for a claude-cache review gate, exactly like upstream.
+    let should_queue = row.parent_thread_id.is_none() && row.claude_cache_review.is_some();
+
+    let mut events: Vec<OutEvent> = Vec::new();
+    if dispatch_origin == "user"
+        && (row.snoozed_until.is_some() || row.snooze_reminder_at.is_some())
+    {
+        events.push(out_event(
+            "thread.meta-updated",
+            &thread_id,
+            &created_at,
+            json!({
+                "threadId": thread_id,
+                "snoozedUntil": null,
+                "snoozeReminderAt": null,
+                "updatedAt": created_at,
+            }),
+        ));
+    }
+
+    let mut mp = Map::new();
+    mp.insert("threadId".into(), json!(thread_id));
+    mp.insert("messageId".into(), json!(message_id));
+    mp.insert("role".into(), json!("user"));
+    mp.insert("text".into(), json!(text));
+    mp.insert(
+        "attachments".into(),
+        message.get("attachments").cloned().unwrap_or(json!([])),
+    );
+    if let Some(v) = message.get("skills") {
+        mp.insert("skills".into(), v.clone());
+    }
+    if let Some(v) = message.get("mentions") {
+        mp.insert("mentions".into(), v.clone());
+    }
+    mp.insert("dispatchMode".into(), json!(dispatch_mode));
+    mp.insert("dispatchOrigin".into(), json!(dispatch_origin));
+    // isThreadRunning is always false without native sessions: startsNewTurn is
+    // `dispatchMode !== "steer" || !isThreadRunning || shouldQueue` => true.
+    mp.insert("startsNewTurn".into(), json!(true));
+    mp.insert("turnId".into(), Value::Null);
+    mp.insert("streaming".into(), json!(false));
+    mp.insert("source".into(), json!("native"));
+    mp.insert("createdAt".into(), json!(created_at));
+    mp.insert("updatedAt".into(), json!(created_at));
+    let message_event = out_event(
+        "thread.message-sent",
+        &thread_id,
+        &created_at,
+        Value::Object(mp),
+    );
+    let message_event_id = message_event.event_id.clone();
+    events.push(message_event);
+
+    let mut tp = Map::new();
+    tp.insert("threadId".into(), json!(thread_id));
+    tp.insert("messageId".into(), json!(message_id));
+    if let Some(v) = command.get("modelSelection") {
+        tp.insert("modelSelection".into(), v.clone());
+    }
+    if let Some(v) = command.get("providerOptions") {
+        tp.insert("providerOptions".into(), v.clone());
+    }
+    if let Some(v) = command.get("computerControlMode") {
+        tp.insert("computerControlMode".into(), v.clone());
+    }
+    tp.insert(
+        "assistantDeliveryMode".into(),
+        command
+            .get("assistantDeliveryMode")
+            .cloned()
+            .unwrap_or(json!("streaming")),
+    );
+    tp.insert("dispatchMode".into(), json!(dispatch_mode));
+    tp.insert("dispatchOrigin".into(), json!(dispatch_origin));
+    tp.insert("runtimeMode".into(), runtime_mode.clone());
+    tp.insert("interactionMode".into(), interaction_mode.clone());
+    tp.insert("createdAt".into(), json!(created_at));
+    let mut turn_event = out_event(
+        if should_queue {
+            "thread.turn-queued"
+        } else {
+            "thread.turn-start-requested"
+        },
+        &thread_id,
+        &created_at,
+        Value::Object(tp),
+    );
+    turn_event.causation_event_id = Some(message_event_id);
+    events.push(turn_event);
+
+    let seq = commit_events(&conn, &events, &command_id, &thread_id)?;
+
+    // --- projection: message row + thread shell fields ---------------------
+    let attachments = message.get("attachments").cloned().unwrap_or(json!([]));
+    conn.execute(
+        "INSERT OR REPLACE INTO projection_thread_messages \
+         (message_id, thread_id, turn_id, role, text, is_streaming, created_at, updated_at, \
+          attachments_json, source, skills_json, mentions_json, dispatch_mode, dispatch_origin, \
+          starts_new_turn) \
+         VALUES (?1, ?2, NULL, 'user', ?3, 0, ?4, ?4, ?5, 'native', ?6, ?7, ?8, ?9, 1)",
+        params![
+            message_id,
+            thread_id,
+            text,
+            created_at,
+            attachments.to_string(),
+            message.get("skills").map(|v| v.to_string()),
+            message.get("mentions").map(|v| v.to_string()),
+            dispatch_mode,
+            dispatch_origin,
+        ],
+    )
+    .map_err(|e| err(format!("insert message: {e}")))?;
+
+    let mut sets: Vec<(&'static str, Value)> = Vec::new();
+    let created_v = json!(created_at);
+    if row
+        .latest_user_message_at
+        .as_deref()
+        .map_or(true, |v| v < created_at.as_str())
+    {
+        sets.push(("latest_user_message_at", created_v.clone()));
+    }
+    if dispatch_origin == "user"
+        && row
+            .latest_human_message_at
+            .as_deref()
+            .map_or(true, |v| v < created_at.as_str())
+    {
+        sets.push(("latest_human_message_at", created_v.clone()));
+    }
+    if row.updated_at.as_str() < created_at.as_str() {
+        sets.push(("updated_at", created_v.clone()));
+    }
+    if dispatch_origin != "automation" {
+        sets.push(("runtime_mode", runtime_mode.clone()));
+        sets.push(("interaction_mode", interaction_mode.clone()));
+    }
+    // Fresh thread (no turn, no session): adopt the requested model selection.
+    if row.latest_turn_id.is_none()
+        && let Some(ms) = command.get("modelSelection")
+    {
+        sets.push(("model_selection_json", json!(ms.to_string())));
+    }
+    if events.iter().any(|e| e.event_type == "thread.meta-updated") {
+        sets.push(("snoozed_until", Value::Null));
+        sets.push(("snooze_reminder_at", Value::Null));
+    }
+    update_projection(&conn, &thread_id, &sets)?;
+    Ok(json!({ "sequence": seq }))
 }

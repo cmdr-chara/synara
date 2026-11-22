@@ -1272,12 +1272,26 @@ impl Render for Native {
         let turn_state = str_at(get(thread_v, "latestTurn"), "state").to_string();
         let title = str_at(thread_v, "title").to_string();
         if !title.is_empty() {
-            let mut header = h_flex().gap_2().child(
-                div()
-                    .text_sm()
-                    .font_weight(FontWeight::SEMIBOLD)
-                    .child(title),
-            );
+            let mut header = h_flex()
+                .gap_2()
+                .items_center()
+                .child(
+                    Button::new("thread-tab")
+                        .ghost()
+                        .icon(IconName::Bot)
+                        .label(title.clone()),
+                )
+                .child(
+                    Button::new("close-thread")
+                        .ghost()
+                        .compact()
+                        .label("\u{00d7}")
+                        .on_click(cx.listener(|this, _ev, _w, cx| {
+                            this.selected_thread = None;
+                            this.detail = None;
+                            cx.notify();
+                        })),
+                );
             if !session_status.is_empty() && session_status != "idle" {
                 header = header.child(
                     div()
@@ -1355,18 +1369,20 @@ impl Render for Native {
             if text.trim().is_empty() {
                 continue;
             }
-            pane = pane.child(
-                v_flex()
-                    .gap_1()
-                    .child(
+            if role == "user" {
+                pane = pane.child(
+                    h_flex().w_full().justify_end().child(
                         div()
-                            .text_xs()
-                            .font_weight(FontWeight::SEMIBOLD)
-                            .text_color(theme.muted_foreground)
-                            .child(role.to_uppercase()),
-                    )
-                    .children(md_blocks(&text, &theme)),
-            );
+                            .bg(theme.list_active)
+                            .rounded_lg()
+                            .px_3()
+                            .py_2()
+                            .child(div().text_sm().child(text)),
+                    ),
+                );
+            } else {
+                pane = pane.child(v_flex().gap_1().children(md_blocks(&text, &theme)));
+            }
         }
 
         // Activities (tool calls, errors) for the latest turn.
@@ -1380,11 +1396,23 @@ impl Render for Native {
                 "error" => theme.danger,
                 _ => theme.muted_foreground,
             };
+            let label = if summary.is_empty() {
+                kind.to_string()
+            } else if kind.is_empty() {
+                summary.to_string()
+            } else {
+                format!("{kind} — {summary}")
+            };
             pane = pane.child(
-                div()
-                    .text_xs()
-                    .text_color(color)
-                    .child(format!("{kind} — {summary}")),
+                h_flex()
+                    .gap_2()
+                    .child(
+                        div()
+                            .text_xs()
+                            .text_color(theme.muted_foreground)
+                            .child("\u{25e6}"),
+                    )
+                    .child(div().text_xs().text_color(color).child(label)),
             );
         }
 

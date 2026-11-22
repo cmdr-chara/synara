@@ -1,0 +1,15 @@
+[package]
+name = "synara-shell"
+version = "0.1.0"
+edition = "2021"
+publish = false
+description = "Synara desktop shell: gpui-kit (gpui-fast) window embedding the web UI via a native webview while the UI is rebuilt natively"
+license = "MIT"
+
+[dependencies]
+gpui-kit = { version = "0.10", features = ["gpui-fast"] }
+gpui-webview = { version = "0.10", features = ["gpui-fast"] }
+wry = { version = "0.53.3", package = "lb-wry" }
+anyhow = "1"
+
+[workspace]

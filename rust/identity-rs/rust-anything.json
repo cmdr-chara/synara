@@ -1,0 +1,484 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/api/src/identity/",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "identity-rs",
+  "exports": [
+    {
+      "name": "hostEnvironmentLockKey",
+      "file": "apps/api/src/identity/environmentLock.ts",
+      "line": 5,
+      "params": [
+        {
+          "name": "environmentId",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "createHostGrantIssuer",
+      "file": "apps/api/src/identity/grantIssuer.ts",
+      "line": 10,
+      "params": [
+        {
+          "name": "signing",
+          "ts_type": "({\n  issuer: string;\n  currentKid: string;\n  jwks: typeof typeof typeof ApiJwks.Type.Type.Type;\n  sign(input: {\n    typ: string;\n    audience: string;\n    subject: string;\n    expiresInSeconds: number;\n    claims?: JWTPayload;\n  }): Promise<string>;\n  /**\n   * Verifies a token this service issued. The issuer is pinned to our own\n   * configured issuer and is deliberately NOT a caller option: two\n   * deployments sharing a signing seed must not accept each other's tokens\n   * because a call site forgot to pass it.\n   */\n  verify(\n    token: string,\n    options: Omit<{\n  typ: string;\n  audience: string;\n  issuer?: string;\n  algorithms: readonly string[];\n  maxAgeSeconds: number;\n  now?: number;\n}, \"algorithms\" | \"issuer\">,\n  ): Promise<JWTPayload>;\n})",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "{\n  issueGrant(input: { userId: string; host: ({\n  id: string;\n  ownerUserId: string;\n  ownerOrgId: string;\n  environmentId: string;\n  publicKeyJwk: typeof typeof HostPublicKeyJwk.Type.Type | null;\n  keyGeneration: number;\n  discoverable: boolean;\n}); deviceJkt: string }): Promise<string>;\n}",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "hostRecordFromRow",
+      "file": "apps/api/src/identity/hostKeyRegistry.ts",
+      "line": 53,
+      "params": [
+        {
+          "name": "row",
+          "ts_type": "({\n  id: string;\n  ownerUserId: string;\n  ownerOrgId: string;\n  environmentId: string;\n  publicKeyJwk: typeof typeof typeof HostPublicKeyJwk.Type.Type.Type | null;\n  keyGeneration: number;\n  discoverable: boolean;\n})",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "({\n  id: string;\n  ownerUserId: string;\n  ownerOrgId: string;\n  environmentId: string;\n  publicKeyJwk: typeof typeof typeof HostPublicKeyJwk.Type.Type.Type | null;\n  keyGeneration: number;\n  discoverable: boolean;\n})",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isHostProofAuthorization",
+      "file": "apps/api/src/identity/hostKeyRegistry.ts",
+      "line": 69,
+      "params": [
+        {
+          "name": "authorization",
+          "ts_type": "string | undefined | null",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "toAccountHost",
+      "file": "apps/api/src/identity/hostRecords.ts",
+      "line": 7,
+      "params": [
+        {
+          "name": "row",
+          "ts_type": "typeof hosts.$inferSelect",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof AccountHost.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "deleteHostSecretRows",
+      "file": "apps/api/src/identity/hostSecretStore.ts",
+      "line": 46,
+      "params": [
+        {
+          "name": "writer",
+          "ts_type": "Pick<NodePgDatabase<typeof schema>, \"delete\">",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "hostId",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<void>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "createHostSecretStore",
+      "file": "apps/api/src/identity/hostSecretStore.ts",
+      "line": 71,
+      "params": [
+        {
+          "name": "db",
+          "ts_type": "NodePgDatabase<typeof schema>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "({\n  /** The current secret for a host the caller owns, or null when none exists. */\n  read(hostId: string, ownerUserId: string): Promise<typeof typeof typeof StoredHostSecret.Type.Type.Type | null>;\n  /**\n   * Compare-and-swap the current secret, archiving the superseded version.\n   * `expectedVersion` is 0 to claim the row does not exist yet, so create and\n   * update are one path and a first-write race has exactly one winner.\n   */\n  write(input: {\n    hostId: string;\n    ownerUserId: string;\n    expectedVersion: number;\n    envelope: typeof typeof typeof HostSecretEnvelope.Type.Type.Type;\n  }): Promise<(| { ok: true; secret: typeof typeof StoredHostSecret.Type.Type }\n  | { ok: false; currentVersion: number })>;\n  /**\n   * Retained superseded versions, newest first, bounded by the trim on write.\n   * The recovery path for a bad write (spec §3): no route serves this yet —\n   * restoring a clobbered config is an operator action today — but it is the\n   * only reader of the history the write path is already paying to maintain.\n   */\n  history(hostId: string, ownerUserId: string): Promise<typeof typeof typeof StoredHostSecret.Type.Type.Type[]>;\n  /**\n   * Publishes a wrapped Sync Key addressed to one of the owner's devices,\n   * replacing any wrap already waiting for it. Callers must have verified the\n   * recipient device belongs to `ownerUserId`.\n   */\n  putWrap(input: {\n    recipientDeviceId: string;\n    ownerUserId: string;\n    wrap: typeof typeof typeof SyncKeyWrap.Type.Type.Type;\n  }): Promise<{ expiresAt: string }>;\n  /**\n   * Fetches and CONSUMES the wrap waiting for a device — single delivery, so\n   * a second call returns null. Implementations must make the read and the\n   * delete one statement; a select-then-delete would deliver twice under\n   * concurrency, which is the one property pairing must not have.\n   */\n  takeWrap(\n    recipientDeviceId: string,\n    ownerUserId: string,\n  ): Promise<{ wrap: typeof typeof typeof SyncKeyWrap.Type.Type.Type; createdAt: string } | null>;\n})",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "clearOrgCache",
+      "file": "apps/api/src/identity/orgProvisioning.ts",
+      "line": 62,
+      "params": [],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "invalidateOrgCacheForOrganization",
+      "file": "apps/api/src/identity/orgProvisioning.ts",
+      "line": 79,
+      "params": [
+        {
+          "name": "orgId",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "personalOrgName",
+      "file": "apps/api/src/identity/orgProvisioning.ts",
+      "line": 88,
+      "params": [
+        {
+          "name": "email",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "writeRevocationEvents",
+      "file": "apps/api/src/identity/revocationLog.ts",
+      "line": 16,
+      "params": [
+        {
+          "name": "writer",
+          "ts_type": "Pick<NodePgDatabase<typeof schema>, \"insert\">",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "values",
+          "ts_type": "readonly { hostId: string; kind: typeof typeof typeof RevocationKind.Type.Type.Type; subject?: string }[]",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<void>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "verifyBoundedJwt",
+      "file": "apps/api/src/identity/signing.ts",
+      "line": 66,
+      "params": [
+        {
+          "name": "token",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "key",
+          "ts_type": "(CryptoKey | KeyObject | JWK | Uint8Array | JWTVerifyGetKey)",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "options",
+          "ts_type": "{\n  typ: string;\n  audience: string;\n  issuer?: string;\n  algorithms: readonly string[];\n  maxAgeSeconds: number;\n  now?: number;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "verifyJwtWithEmbeddedJwk",
+      "file": "apps/api/src/identity/signing.ts",
+      "line": 90,
+      "params": [
+        {
+          "name": "token",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "options",
+          "ts_type": "{\n  typ: string;\n  audience: string;\n  issuer?: string;\n  algorithms: readonly string[];\n  maxAgeSeconds: number;\n  now?: number;\n} & { publicKeyJwk: typeof typeof typeof typeof DevicePublicKeyJwk.Type.Type.Type.Type }",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "publicJwkThumbprint",
+      "file": "apps/api/src/identity/signing.ts",
+      "line": 105,
+      "params": [
+        {
+          "name": "jwk",
+          "ts_type": "typeof typeof typeof typeof DevicePublicKeyJwk.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<string>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "createApiSigningService",
+      "file": "apps/api/src/identity/signing.ts",
+      "line": 168,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  issuer: string;\n  seed: string;\n  previousSeed?: string;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<({\n  issuer: string;\n  currentKid: string;\n  jwks: typeof typeof typeof ApiJwks.Type.Type.Type;\n  sign(input: {\n    typ: string;\n    audience: string;\n    subject: string;\n    expiresInSeconds: number;\n    claims?: JWTPayload;\n  }): Promise<string>;\n  /**\n   * Verifies a token this service issued. The issuer is pinned to our own\n   * configured issuer and is deliberately NOT a caller option: two\n   * deployments sharing a signing seed must not accept each other's tokens\n   * because a call site forgot to pass it.\n   */\n  verify(\n    token: string,\n    options: Omit<{\n  typ: string;\n  audience: string;\n  issuer?: string;\n  algorithms: readonly string[];\n  maxAgeSeconds: number;\n  now?: number;\n}, \"algorithms\" | \"issuer\">,\n  ): Promise<JWTPayload>;\n})>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "clearUserCache",
+      "file": "apps/api/src/identity/userCache.ts",
+      "line": 111,
+      "params": [],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "invalidateUserCache",
+      "file": "apps/api/src/identity/userCache.ts",
+      "line": 119,
+      "params": [
+        {
+          "name": "userId",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "userCacheSize",
+      "file": "apps/api/src/identity/userCache.ts",
+      "line": 128,
+      "params": [],
+      "returns": "number",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "classifyMagicAuthFailure",
+      "file": "apps/api/src/identity/workos.ts",
+      "line": 242,
+      "params": [
+        {
+          "name": "raw",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(| \"email_verification_required\"\n  | \"sso_required\"\n  /** The grant refused the emailed code itself; retyping it can help. */\n  | \"invalid_verification_code\"\n  /** The code (or its pending token) is spent or expired; only a resend recovers. */\n  | \"verification_expired\"\n  /**\n   * The provider requires the caller to choose between several\n   * organizations. V1 is personal-org-only and fails closed on this: the\n   * refusal becomes a clear \"multiple workspaces aren't supported yet\"\n   * answer, never a silent first-organization pick and never an opaque 502.\n   */\n  | \"organization_selection_required\") | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "classifyAuthorizationCodeFailure",
+      "file": "apps/api/src/identity/workos.ts",
+      "line": 296,
+      "params": [
+        {
+          "name": "raw",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(| \"email_verification_required\"\n  | \"sso_required\"\n  /** The grant refused the emailed code itself; retyping it can help. */\n  | \"invalid_verification_code\"\n  /** The code (or its pending token) is spent or expired; only a resend recovers. */\n  | \"verification_expired\"\n  /**\n   * The provider requires the caller to choose between several\n   * organizations. V1 is personal-org-only and fails closed on this: the\n   * refusal becomes a clear \"multiple workspaces aren't supported yet\"\n   * answer, never a silent first-organization pick and never an opaque 502.\n   */\n  | \"organization_selection_required\") | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "parseWorkosIdentityMap",
+      "file": "apps/api/src/identity/workosIdentityMap.ts",
+      "line": 15,
+      "params": [
+        {
+          "name": "raw",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "clientId",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof IdentityMap.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "createDevIdentityProvider",
+      "file": "apps/api/src/identity/devProvider.ts",
+      "line": 23,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "createDeviceRegistry",
+      "file": "apps/api/src/identity/deviceRegistry.ts",
+      "line": 41,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "createHostKeyRegistry",
+      "file": "apps/api/src/identity/hostKeyRegistry.ts",
+      "line": 119,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "isUniqueViolation",
+      "file": "apps/api/src/identity/hostRecords.ts",
+      "line": 26,
+      "reason": "checks `instanceof`: class identity does not survive the bridge"
+    },
+    {
+      "name": "createIdentityAdapters",
+      "file": "apps/api/src/identity/index.ts",
+      "line": 22,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "IdentityAuthError",
+      "file": "apps/api/src/identity/interfaces.ts",
+      "line": 89,
+      "reason": "class: extends another class, public parameter properties"
+    },
+    {
+      "name": "IdentityProviderError",
+      "file": "apps/api/src/identity/interfaces.ts",
+      "line": 103,
+      "reason": "class: extends another class, public parameter properties"
+    },
+    {
+      "name": "RefreshRejectedError",
+      "file": "apps/api/src/identity/interfaces.ts",
+      "line": 144,
+      "reason": "class: extends another class"
+    },
+    {
+      "name": "HostAuthDomainError",
+      "file": "apps/api/src/identity/interfaces.ts",
+      "line": 327,
+      "reason": "class: extends another class, public parameter properties"
+    },
+    {
+      "name": "listUserOrganizations",
+      "file": "apps/api/src/identity/orgProvisioning.ts",
+      "line": 109,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "ensurePersonalOrg",
+      "file": "apps/api/src/identity/orgProvisioning.ts",
+      "line": 169,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "getCachedUser",
+      "file": "apps/api/src/identity/userCache.ts",
+      "line": 184,
+      "reason": "checks `instanceof`: class identity does not survive the bridge"
+    },
+    {
+      "name": "createWorkosIdentityProvider",
+      "file": "apps/api/src/identity/workos.ts",
+      "line": 363,
+      "reason": "checks `instanceof`: class identity does not survive the bridge"
+    }
+  ]
+}

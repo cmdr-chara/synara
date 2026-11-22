@@ -1,0 +1,17 @@
+{
+  "unit": "apps/api/src/identity/",
+  "files": 20,
+  "fingerprint": "c6b0e9be918e4c43",
+  "coverage": {
+    "lines": 7,
+    "reached": 7,
+    "files": [
+      {
+        "file": "apps/api/src/identity/environmentLock.ts",
+        "lines": 7,
+        "reached": 7,
+        "missed": ""
+      }
+    ]
+  }
+}

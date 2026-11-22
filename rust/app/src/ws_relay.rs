@@ -105,6 +105,7 @@ fn intercept_todo(
         && !text.contains("server.subscribeSettings")
         && !text.contains("server.subscribeLifecycle")
         && !text.contains("server.subscribeKeepAwake")
+        && !text.contains("stats.")
         && !text.contains("terminal.")
     {
         return None;
@@ -147,6 +148,7 @@ fn intercept_todo(
         && tag != "server.subscribeSettings"
         && tag != "server.subscribeLifecycle"
         && tag != "server.subscribeKeepAwake"
+        && !tag.starts_with("stats.")
         && !tag.starts_with("terminal.")
     {
         return None;
@@ -401,6 +403,10 @@ fn intercept_todo(
             .map_err(error_json)
     } else if tag == "server.stopLocalServer" {
         crate::server_local_servers::stop_local_server(&payload)
+            .map(Some)
+            .map_err(error_json)
+    } else if tag.starts_with("stats.") {
+        crate::stats::handle(tag, &payload)
             .map(Some)
             .map_err(error_json)
     } else if tag == "server.getSettings" {

@@ -15,6 +15,10 @@ reqwest = { version = "0.12", default-features = false }
 tokio = { version = "1", features = ["macros", "net", "rt-multi-thread", "signal", "time"] }
 staticassets-rs = { path = "../staticassets-rs" }
 keybindingrules-rs = { path = "../keybindingrules-rs" }
+profilestats-rs = { path = "../profilestats-rs" }
+profilestatsarchive-rs = { path = "../profilestatsarchive-rs" }
+recapstats-rs = { path = "../recapstats-rs" }
+usageanalyticsstats-rs = { path = "../usageanalyticsstats-rs" }
 serde_json = "1"
 futures-util = "0.3"
 tokio-tungstenite = "0.26"

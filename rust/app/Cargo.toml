@@ -19,5 +19,6 @@ futures-util = "0.3"
 tokio-tungstenite = "0.26"
 http = "1"
 rusqlite = { version = "0.32", features = ["bundled"] }
+sha2 = "0.10"
 
 [workspace]

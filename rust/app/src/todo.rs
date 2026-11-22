@@ -28,6 +28,11 @@ fn err(message: impl Into<String>) -> WsErr {
     WsErr(message.into(), None)
 }
 
+/// `server_env` maps its errors through the same wire shape.
+pub fn err_pub(message: impl Into<String>) -> WsErr {
+    err(message)
+}
+
 fn tasks_unavailable() -> WsErr {
     WsErr(
         "Tasks is unavailable on this server.".into(),
@@ -467,5 +472,11 @@ pub fn state_dir() -> String {
         i += 1;
     }
     let home = home.unwrap_or_else(|| "./.rec-home".to_string());
+    // `--home-dir` is relative to the repo root, same as the child's cwd.
+    let home = if std::path::Path::new(&home).is_relative() {
+        format!("{}/{home}", concat!(env!("CARGO_MANIFEST_DIR"), "/../.."))
+    } else {
+        home
+    };
     format!("{home}/userdata")
 }

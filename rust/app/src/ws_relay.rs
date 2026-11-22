@@ -71,7 +71,7 @@ fn intercept_todo(
         std::sync::Mutex<std::collections::HashMap<String, tokio::task::JoinHandle<()>>>,
     >,
 ) -> Option<Option<ClientMessage>> {
-    if !text.contains("\"todo.") {
+    if !text.contains("\"todo.") && !text.contains("\"server.getEnvironment\"") {
         return None;
     }
     let msg: serde_json::Value = serde_json::from_str(text).ok()?;
@@ -79,7 +79,7 @@ fn intercept_todo(
         return None;
     }
     let tag = msg.get("tag")?.as_str()?;
-    if !tag.starts_with("todo.") {
+    if !tag.starts_with("todo.") && tag != "server.getEnvironment" {
         return None;
     }
     let request_id = msg
@@ -115,7 +115,11 @@ fn intercept_todo(
         }
         return Some(None);
     }
-    let exit = match todos.handle(tag, payload) {
+    let exit = match if tag == "server.getEnvironment" {
+        crate::server_env::get_environment(&crate::todo::state_dir()).map_err(crate::todo::err_pub)
+    } else {
+        todos.handle(tag, payload)
+    } {
         Ok(value) => serde_json::json!({"_tag": "Success", "value": value}),
         Err(crate::todo::WsErr(message, code)) => serde_json::json!({
             "_tag": "Failure",

@@ -1,0 +1,53 @@
+{
+  "unit": "scripts/computer-use-fixtures/",
+  "files": 42,
+  "fingerprint": "1579e9ca61d907a7",
+  "coverage": {
+    "lines": 2257,
+    "reached": 509,
+    "files": [
+      {
+        "file": "apps/desktop/src/cuaFixtures/focusProbe.ts",
+        "lines": 476,
+        "reached": 186,
+        "missed": "157, 160, 166-219, 221, 228-265, 268-273, 277-283, 285, 287-292, 294-295, 297-301, 303-325, 327-333, 335-350, 352-369, 371-394, 396, 398-415, 417, 452-511"
+      },
+      {
+        "file": "scripts/computer-use-fixtures/browser-benchmark-evidence.ts",
+        "lines": 552,
+        "reached": 83,
+        "missed": "9-12, 14, 16-29, 31-32, 97-109, 112-184, 189-209, 211-212, 217-349, 351, 353-430, 435-466, 469-485, 488-490, 492, 494-536, 538, 540-569"
+      },
+      {
+        "file": "scripts/computer-use-fixtures/browser-benchmark-observer.ts",
+        "lines": 591,
+        "reached": 37,
+        "missed": "19-33, 39-222, 224, 234-255, 257, 259-260, 262, 264-333, 336-352, 354, 356-407, 412-432, 434, 436-601"
+      },
+      {
+        "file": "scripts/computer-use-fixtures/packaged-client.ts",
+        "lines": 175,
+        "reached": 35,
+        "missed": "24-35, 41-56, 59-116, 122, 128-180"
+      },
+      {
+        "file": "scripts/computer-use-fixtures/packaged-evidence.ts",
+        "lines": 208,
+        "reached": 38,
+        "missed": "12-15, 17-18, 30-45, 47, 56-66, 69-92, 95-105, 108-115, 121-147, 153-218"
+      },
+      {
+        "file": "scripts/computer-use-fixtures/packaged-fixture.ts",
+        "lines": 107,
+        "reached": 51,
+        "missed": "18, 39-68, 71-75, 78-91, 105-110"
+      },
+      {
+        "file": "scripts/computer-use-fixtures/resource-sampling.ts",
+        "lines": 148,
+        "reached": 79,
+        "missed": "24-26, 28-30, 45-51, 54-55, 57-70, 89-123, 125, 151, 153-155"
+      }
+    ]
+  }
+}

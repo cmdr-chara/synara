@@ -1,0 +1,757 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "scripts/computer-use-fixtures/",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "computer-use-fixtures-rs",
+  "exports": [
+    {
+      "name": "canaryOpenArgs",
+      "file": "scripts/computer-use-fixtures/belief-canary.mjs",
+      "line": 121,
+      "params": [
+        {
+          "name": "app",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "envAssignment",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "parseBrowserBenchmarkRunCount",
+      "file": "scripts/computer-use-fixtures/browser-benchmark-evidence.ts",
+      "line": 8,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "string | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "1 | 2",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "assessBrowserBenchmarkRuns",
+      "file": "scripts/computer-use-fixtures/browser-benchmark-evidence.ts",
+      "line": 14,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  requestedRuns: 1 | 2;\n  completedRuns: number;\n  accepted: boolean;\n  cleanupProven: boolean;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "parseNeweggPrice",
+      "file": "scripts/computer-use-fixtures/browser-benchmark-evidence.ts",
+      "line": 96,
+      "params": [
+        {
+          "name": "text",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "currencyHint",
+          "ts_type": "string | null",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "parseNeweggPageEvidence",
+      "file": "scripts/computer-use-fixtures/browser-benchmark-evidence.ts",
+      "line": 111,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "NeweggPageEvidence | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "observedNeweggCategory",
+      "file": "scripts/computer-use-fixtures/browser-benchmark-evidence.ts",
+      "line": 188,
+      "params": [
+        {
+          "name": "product",
+          "ts_type": "NeweggProduct",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "((typeof NEWEGG_CORE_CATEGORIES)[number] | \"cooler\") | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "assessNeweggCompletion",
+      "file": "scripts/computer-use-fixtures/browser-benchmark-evidence.ts",
+      "line": 351,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  evidence: NeweggRunEvidence;\n  finalObservationStartedAtMs: number;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "parseBrowserWitness",
+      "file": "scripts/computer-use-fixtures/browser-benchmark-evidence.ts",
+      "line": 434,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "BrowserWitness | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "parsePullRequestTitles",
+      "file": "scripts/computer-use-fixtures/browser-benchmark-evidence.ts",
+      "line": 468,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "PullRequestTitle[] | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "assessGitHubCompletion",
+      "file": "scripts/computer-use-fixtures/browser-benchmark-evidence.ts",
+      "line": 492,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  before: PullRequestTitle[][] | null;\n  after: PullRequestTitle[][] | null;\n  witnesses: readonly BrowserWitness[];\n  finalText: string;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "browserBenchmarkPrompt",
+      "file": "scripts/computer-use-fixtures/browser-benchmark-evidence.ts",
+      "line": 538,
+      "params": [
+        {
+          "name": "task",
+          "ts_type": "(\"github-running\" | \"github-isolated\" | \"newegg\")",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "profileName",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "repo",
+          "ts_type": "string",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "neweggItemIdFromUrl",
+      "file": "scripts/computer-use-fixtures/browser-benchmark-observer.ts",
+      "line": 18,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "parseObserverDescriptor",
+      "file": "scripts/computer-use-fixtures/browser-benchmark-observer.ts",
+      "line": 231,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "profileName",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "BrowserObserverDescriptor",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "readGitHubReference",
+      "file": "scripts/computer-use-fixtures/browser-benchmark-observer.ts",
+      "line": 410,
+      "params": [
+        {
+          "name": "repo",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "createBrowserObserver",
+      "file": "scripts/computer-use-fixtures/browser-benchmark-observer.ts",
+      "line": 434,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  descriptorPath: string;\n  profileRoot: string;\n  profileName: string;\n  startedAtMs: number;\n  task: (\"github-running\" | \"github-isolated\" | \"newegg\");\n  repo?: string;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "assertPackagedAppInstallation",
+      "file": "scripts/computer-use-fixtures/packaged-artifact.ts",
+      "line": 35,
+      "params": [
+        {
+          "name": "bundle",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "registeredBundle",
+          "ts_type": "string | null",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "artifactIdentity",
+      "file": "scripts/computer-use-fixtures/packaged-artifact.ts",
+      "line": 61,
+      "params": [
+        {
+          "name": "bundle",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "assertLoopbackUrl",
+      "file": "scripts/computer-use-fixtures/packaged-client.ts",
+      "line": 23,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "protocol",
+          "ts_type": "\"http:\" | \"ws:\"",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "URL",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "connectPackagedOwner",
+      "file": "scripts/computer-use-fixtures/packaged-client.ts",
+      "line": 120,
+      "params": [
+        {
+          "name": "cdpPort",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "connectOwnerUrl",
+      "file": "scripts/computer-use-fixtures/packaged-client.ts",
+      "line": 126,
+      "params": [
+        {
+          "name": "rawUrl",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "assertPassiveComputerReady",
+      "file": "scripts/computer-use-fixtures/packaged-evidence.ts",
+      "line": 10,
+      "params": [
+        {
+          "name": "status",
+          "ts_type": "Pick<typeof typeof typeof typeof ComputerStatusResult.Type.Type.Type.Type, \"availability\" | \"health\">",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveFixtureComputerWindow",
+      "file": "scripts/computer-use-fixtures/packaged-evidence.ts",
+      "line": 28,
+      "params": [
+        {
+          "name": "windows",
+          "ts_type": "readonly typeof typeof typeof typeof ComputerWindow.Type.Type.Type.Type[]",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "fixture",
+          "ts_type": "FixtureState",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ComputerWindow.Type.Type.Type.Type & { appName: string }",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "assessFixtureReportCoverage",
+      "file": "scripts/computer-use-fixtures/packaged-evidence.ts",
+      "line": 54,
+      "params": [
+        {
+          "name": "reports",
+          "ts_type": "readonly FixtureReportVerdict[]",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "expectedCompletedRuns",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "parseFixtureState",
+      "file": "scripts/computer-use-fixtures/packaged-evidence.ts",
+      "line": 68,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "FixtureState | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "verifyFixtureClick",
+      "file": "scripts/computer-use-fixtures/packaged-evidence.ts",
+      "line": 94,
+      "params": [
+        {
+          "name": "before",
+          "ts_type": "FixtureState",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "after",
+          "ts_type": "FixtureState",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "fixtureUnchanged",
+      "file": "scripts/computer-use-fixtures/packaged-evidence.ts",
+      "line": 107,
+      "params": [
+        {
+          "name": "before",
+          "ts_type": "FixtureState",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "after",
+          "ts_type": "FixtureState",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "fixtureReceiptTiming",
+      "file": "scripts/computer-use-fixtures/packaged-evidence.ts",
+      "line": 119,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  dispatchStartedMs: number;\n  beforeClicks: number;\n  changes: readonly { clicks: number; receivedAtMs: number }[];\n  lastObservedMs: number | null;\n  stopRequestedMs: number | null;\n  terminalObservedMs: number;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "assessContinuousFocus",
+      "file": "scripts/computer-use-fixtures/packaged-evidence.ts",
+      "line": 151,
+      "params": [
+        {
+          "name": "result",
+          "ts_type": "FocusProbeRunResult",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "expected",
+          "ts_type": "FocusProbeExpect",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "interval",
+          "ts_type": "{ startEpochMs: number; endEpochMs: number }",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "delay",
+      "file": "scripts/computer-use-fixtures/packaged-fixture.ts",
+      "line": 4,
+      "params": [
+        {
+          "name": "ms",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "startNativeTarget",
+      "file": "scripts/computer-use-fixtures/packaged-fixture.ts",
+      "line": 22,
+      "params": [
+        {
+          "name": "binary",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "parseLifetimeCpuSeconds",
+      "file": "scripts/computer-use-fixtures/resource-sampling.ts",
+      "line": 13,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "number",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "parseResourceSnapshot",
+      "file": "scripts/computer-use-fixtures/resource-sampling.ts",
+      "line": 33,
+      "params": [
+        {
+          "name": "output",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ResourceProcess[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resourceIdentity",
+      "file": "scripts/computer-use-fixtures/resource-sampling.ts",
+      "line": 72,
+      "params": [
+        {
+          "name": "process",
+          "ts_type": "Pick<ResourceProcess, \"pid\" | \"startedAt\">",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "makeResourceTracker",
+      "file": "scripts/computer-use-fixtures/resource-sampling.ts",
+      "line": 86,
+      "params": [
+        {
+          "name": "root",
+          "ts_type": "ResourceProcess",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resourceSamplingOptions",
+      "file": "scripts/computer-use-fixtures/resource-sampling.ts",
+      "line": 131,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly pid?: string | undefined;\n  readonly seconds?: string | undefined;\n  readonly intervalMs?: string | undefined;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ResourceSamplingOptions",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "readNeweggPageDom",
+      "file": "scripts/computer-use-fixtures/browser-benchmark-observer.ts",
+      "line": 37,
+      "reason": "checks `instanceof`: class identity does not survive the bridge"
+    },
+    {
+      "name": "prepareComputerRunDiagnostics",
+      "file": "scripts/computer-use-fixtures/measurement.ts",
+      "line": 319,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "collectComputerRun",
+      "file": "scripts/computer-use-fixtures/measurement.ts",
+      "line": 366,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "PackagedAppInstallationError",
+      "file": "scripts/computer-use-fixtures/packaged-artifact.ts",
+      "line": 19,
+      "reason": "class: extends another class"
+    },
+    {
+      "name": "waitForSelectedProvider",
+      "file": "scripts/computer-use-fixtures/packaged-client.ts",
+      "line": 39,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "waitUntil",
+      "file": "scripts/computer-use-fixtures/packaged-fixture.ts",
+      "line": 6,
+      "reason": "takes or returns a function"
+    }
+  ]
+}

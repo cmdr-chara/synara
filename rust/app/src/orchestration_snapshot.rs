@@ -473,3 +473,206 @@ pub fn get_snapshot() -> Result<Value, WsErr> {
         "updatedAt": now_iso(),
     }))
 }
+
+/// Heavy embeds carried by the full read model that the shell snapshot drops;
+/// `session` and `latestTurn` are shell fields and stay.
+const THREAD_HEAVY_KEYS: &[&str] = &[
+    "messages",
+    "activities",
+    "pendingInteractions",
+    "proposedPlans",
+    "activeTools",
+    "checkpoints",
+    "turnDiffSummaries",
+];
+
+/// Plain-text start of the newest finished assistant message: markup stripped,
+/// whitespace collapsed, at most 240 UTF-16 units ending in "…" when cut.
+fn latest_reply_preview(messages: &[Value]) -> Value {
+    let mut best: Option<&str> = None;
+    for m in messages {
+        if get(m, "role").as_str() == Some("assistant")
+            && !get(m, "streaming").as_bool().unwrap_or(false)
+        {
+            if let Some(t) = get(m, "text").as_str() {
+                if !t.trim().is_empty() {
+                    best = Some(t);
+                }
+            }
+        }
+    }
+    let Some(raw) = best else { return Value::Null };
+    let mut cleaned = String::with_capacity(raw.len().min(320));
+    let mut in_fence = false;
+    let mut last_ws = true;
+    for line in raw.lines() {
+        let t = line.trim();
+        if t.starts_with("```") {
+            in_fence = !in_fence;
+            continue;
+        }
+        for ch in t.chars() {
+            if !in_fence && matches!(ch, '#' | '*' | '_' | '`' | '[' | ']' | '(' | ')' | '~') {
+                continue;
+            }
+            if ch.is_whitespace() {
+                if !last_ws {
+                    cleaned.push(' ');
+                    last_ws = true;
+                }
+            } else {
+                cleaned.push(ch);
+                last_ws = false;
+            }
+        }
+        if !last_ws {
+            cleaned.push(' ');
+            last_ws = true;
+        }
+    }
+    let cleaned = cleaned.trim_end().to_string();
+    if cleaned.is_empty() {
+        return Value::Null;
+    }
+    if cleaned.chars().count() > 240 {
+        let cut: String = cleaned.chars().take(240).collect();
+        Value::String(format!("{cut}…"))
+    } else {
+        Value::String(cleaned)
+    }
+}
+
+fn to_thread_shell(thread: &Value) -> Value {
+    let Some(obj) = thread.as_object() else { return thread.clone() };
+    let preview = latest_reply_preview(
+        obj.get("messages").and_then(|m| m.as_array()).map(Vec::as_slice).unwrap_or(&[]),
+    );
+    let mut shell = Map::new();
+    for (k, v) in obj {
+        if !THREAD_HEAVY_KEYS.contains(&k.as_str()) {
+            shell.insert(k.clone(), v.clone());
+        }
+    }
+    shell.insert("latestReplyPreview".into(), preview);
+    shell.insert("pendingBackgroundTaskCount".into(), json!(0));
+    Value::Object(shell)
+}
+
+pub fn get_shell_snapshot() -> Result<Value, WsErr> {
+    let snap = get_snapshot()?;
+    let threads = snap
+        .get("threads")
+        .and_then(|t| t.as_array())
+        .cloned()
+        .unwrap_or_default()
+        .iter()
+        .map(to_thread_shell)
+        .collect::<Vec<_>>();
+    Ok(json!({
+        "snapshotSequence": snap.get("snapshotSequence"),
+        "spaces": snap.get("spaces"),
+        "projects": snap.get("projects"),
+        "threads": threads,
+        "updatedAt": snap.get("updatedAt"),
+    }))
+}
+
+pub fn get_thread_detail_snapshot(payload: &Value) -> Result<Value, WsErr> {
+    let thread_id = payload
+        .get("threadId")
+        .and_then(|v| v.as_str())
+        .unwrap_or_default()
+        .to_string();
+    if thread_id.is_empty() {
+        return Err(err("threadId is required"));
+    }
+    let Some(copy) = open_state_copy() else {
+        return Err(err("state.sqlite is unavailable"));
+    };
+    let conn = &copy.conn;
+    let sequence = snapshot_sequence(conn);
+    for thread in load_threads(conn) {
+        if get(&thread, "id").as_str() == Some(thread_id.as_str()) {
+            return Ok(json!({
+                "snapshotSequence": sequence,
+                "thread": thread,
+            }));
+        }
+    }
+    Ok(Value::Null)
+}
+
+const SEARCH_MAX_EXCERPT: usize = 320;
+
+/// `orchestration.searchThreads`: message-content search over persisted history.
+/// Returns one match row per thread: first-hit excerpt and count of matching messages.
+pub fn search_threads(payload: &Value) -> Result<Value, WsErr> {
+    let query = payload
+        .get("query")
+        .and_then(|v| v.as_str())
+        .unwrap_or_default()
+        .trim()
+        .to_string();
+    if query.chars().count() < 2 || query.chars().count() > 200 {
+        return Err(err("query must be 2-200 characters"));
+    }
+    let limit = payload
+        .get("limit")
+        .and_then(|v| v.as_i64())
+        .unwrap_or(20)
+        .clamp(1, 50) as usize;
+    let Some(copy) = open_state_copy() else {
+        return Err(err("state.sqlite is unavailable"));
+    };
+    let conn = &copy.conn;
+    let escaped = query.replace('%', "\\%").replace('_', "\\_");
+    let mut stmt = conn
+        .prepare(
+            "SELECT thread_id, text FROM projection_thread_messages \
+             WHERE text LIKE ?1 ESCAPE '\\' ORDER BY created_at",
+        )
+        .map_err(|e| err(e.to_string()))?;
+    let needle = format!("%{escaped}%");
+    let rows = stmt
+        .query_map([needle.as_str()], |r| {
+            Ok((r.get::<_, String>(0)?, r.get::<_, String>(1)?))
+        })
+        .map_err(|e| err(e.to_string()))?;
+    let mut by_thread: std::collections::BTreeMap<String, (String, i64)> = std::collections::BTreeMap::new();
+    for row in rows.flatten() {
+        let (tid, text) = row;
+        let entry = by_thread
+            .entry(tid)
+            .or_insert_with(|| (text.clone(), 0));
+        entry.1 += 1;
+        if entry.0.len() > text.len() {
+            // Keep the earliest matching message's text for the excerpt.
+            entry.0 = text;
+        }
+    }
+    let mut matches = Vec::new();
+    for (tid, (text, count)) in by_thread.into_iter().take(limit) {
+        let lower_q = query.to_lowercase();
+        let excerpt: String = if let Some(pos) = text.to_lowercase().find(&lower_q) {
+            let char_pos = text[..pos].chars().count();
+            let start = char_pos.saturating_sub(80);
+            let end = (char_pos + lower_q.chars().count() + 240).min(text.chars().count());
+            let mut s: String = text.chars().skip(start).take(end - start).collect();
+            if start > 0 {
+                s = format!("…{s}");
+            }
+            if end < text.chars().count() {
+                s = format!("{s}…");
+            }
+            s.chars().take(SEARCH_MAX_EXCERPT).collect()
+        } else {
+            text.chars().take(SEARCH_MAX_EXCERPT).collect()
+        };
+        matches.push(json!({
+            "threadId": tid,
+            "excerpt": excerpt,
+            "matchCount": count,
+        }));
+    }
+    Ok(json!({ "matches": matches }))
+}

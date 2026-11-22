@@ -113,6 +113,9 @@ fn intercept_todo(
         && !text.contains("stats.")
         && !text.contains("terminal.")
         && !text.contains("orchestration.getSnapshot")
+        && !text.contains("orchestration.getShellSnapshot")
+        && !text.contains("orchestration.getThreadDetailSnapshot")
+        && !text.contains("orchestration.searchThreads")
         && !text.contains("githubInbox.")
     {
         return None;
@@ -161,6 +164,9 @@ fn intercept_todo(
         && tag != "server.subscribeLifecycle"
         && tag != "server.subscribeKeepAwake"
         && tag != "orchestration.getSnapshot"
+        && tag != "orchestration.getShellSnapshot"
+        && tag != "orchestration.getThreadDetailSnapshot"
+        && tag != "orchestration.searchThreads"
         && !tag.starts_with("githubInbox.")
         && !tag.starts_with("stats.")
         && !tag.starts_with("terminal.")
@@ -562,6 +568,18 @@ fn intercept_todo(
             .map_err(error_json)
     } else if tag == "orchestration.getSnapshot" {
         crate::orchestration_snapshot::get_snapshot()
+            .map(Some)
+            .map_err(error_json)
+    } else if tag == "orchestration.getShellSnapshot" {
+        crate::orchestration_snapshot::get_shell_snapshot()
+            .map(Some)
+            .map_err(error_json)
+    } else if tag == "orchestration.getThreadDetailSnapshot" {
+        crate::orchestration_snapshot::get_thread_detail_snapshot(&payload)
+            .map(Some)
+            .map_err(error_json)
+    } else if tag == "orchestration.searchThreads" {
+        crate::orchestration_snapshot::search_threads(&payload)
             .map(Some)
             .map_err(error_json)
     } else if tag.starts_with("githubInbox.") {

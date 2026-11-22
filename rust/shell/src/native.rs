@@ -1139,6 +1139,48 @@ impl Render for Native {
             );
         }
 
+        // Active tools currently running.
+        for t in arr(thread_v, "activeTools") {
+            let item = str_at(t, "item_id");
+            if item.is_empty() {
+                continue;
+            }
+            pane = pane.child(
+                div()
+                    .text_xs()
+                    .text_color(theme.accent)
+                    .child(format!("\u{25cf} tool running: {item}")),
+            );
+        }
+
+        // Proposed plans (rendered as markdown cards).
+        for p in arr(thread_v, "proposedPlans") {
+            let md = str_at(p, "plan_markdown");
+            if md.trim().is_empty() {
+                continue;
+            }
+            let implemented = !get(p, "implemented_at").is_null();
+            let mut card = v_flex()
+                .gap_1()
+                .w_full()
+                .bg(theme.list_active)
+                .rounded_md()
+                .p_2()
+                .child(
+                    div()
+                        .text_xs()
+                        .font_weight(FontWeight::SEMIBOLD)
+                        .text_color(theme.accent)
+                        .child(if implemented {
+                            "PROPOSED PLAN (implemented)".to_string()
+                        } else {
+                            "PROPOSED PLAN".to_string()
+                        }),
+                );
+            card = card.children(md_blocks(md, theme));
+            pane = pane.child(card);
+        }
+
         // Pending interactions (approvals awaiting a decision).
         for p in arr(thread_v, "pendingInteractions") {
             if str_at(p, "status") != "pending" {

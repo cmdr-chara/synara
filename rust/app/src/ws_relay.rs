@@ -103,6 +103,8 @@ fn intercept_todo(
         && !text.contains("server.getSettings")
         && !text.contains("server.updateSettings")
         && !text.contains("server.subscribeSettings")
+        && !text.contains("server.subscribeLifecycle")
+        && !text.contains("server.subscribeKeepAwake")
         && !text.contains("terminal.")
     {
         return None;
@@ -143,6 +145,8 @@ fn intercept_todo(
         && tag != "server.getSettings"
         && tag != "server.updateSettings"
         && tag != "server.subscribeSettings"
+        && tag != "server.subscribeLifecycle"
+        && tag != "server.subscribeKeepAwake"
         && !tag.starts_with("terminal.")
     {
         return None;
@@ -275,6 +279,55 @@ fn intercept_todo(
                     .is_err()
                 {
                     return;
+                }
+            }
+        });
+        if let Ok(mut map) = streams.lock() {
+            map.insert(request_id, task);
+        }
+        return Some(None);
+    }
+    if tag == "server.subscribeLifecycle" {
+        let tx = native_tx.clone();
+        let rid = request_id.clone();
+        let task = tokio::spawn(async move {
+            let events = crate::server_lifecycle::snapshot_events();
+            let chunk = serde_json::json!({"_tag": "Chunk", "requestId": rid, "values": events});
+            let _ = tx.send(ClientMessage::Text(chunk.to_string().into()));
+        });
+        if let Ok(mut map) = streams.lock() {
+            map.insert(request_id, task);
+        }
+        return Some(None);
+    }
+    if tag == "server.subscribeKeepAwake" {
+        let tx = native_tx.clone();
+        let rid = request_id.clone();
+        let task = tokio::spawn(async move {
+            let mut last_mode: Option<String> = None;
+            let mut rx = crate::server_settings::changes();
+            let send_state = |mode_hint: &mut Option<String>| -> Option<String> {
+                let state = crate::server_lifecycle::keep_awake_state();
+                let mode = state
+                    .get("mode")
+                    .and_then(serde_json::Value::as_str)
+                    .map(str::to_owned);
+                if mode == *mode_hint {
+                    return None;
+                }
+                *mode_hint = mode;
+                Some(serde_json::json!({"_tag": "Chunk", "requestId": rid, "values": [{"keepAwake": state}]}).to_string())
+            };
+            if let Some(chunk) = send_state(&mut last_mode) {
+                if tx.send(ClientMessage::Text(chunk.into())).is_err() {
+                    return;
+                }
+            }
+            while let Ok(_settings) = rx.recv().await {
+                if let Some(chunk) = send_state(&mut last_mode) {
+                    if tx.send(ClientMessage::Text(chunk.into())).is_err() {
+                        return;
+                    }
                 }
             }
         });

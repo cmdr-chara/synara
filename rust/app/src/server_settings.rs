@@ -240,6 +240,14 @@ pub fn subscribe() -> (Value, broadcast::Receiver<Value>) {
     (snapshot, STORE.changes.subscribe())
 }
 
+pub fn current() -> Value {
+    STORE.doc.lock().unwrap().settings.clone()
+}
+
+pub fn changes() -> broadcast::Receiver<Value> {
+    STORE.changes.subscribe()
+}
+
 pub fn update_settings(payload: &Value) -> Result<Value, WsErr> {
     let legacy_ack = payload.get("legacyProviders").is_some()
         || payload.get("legacyProviderInstances").is_some();

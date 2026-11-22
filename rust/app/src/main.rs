@@ -12,6 +12,7 @@ mod runtime_status;
 mod server_diagnostics;
 mod server_env;
 mod server_keybindings;
+mod server_lifecycle;
 mod server_local_servers;
 mod server_settings;
 mod shell_editor;

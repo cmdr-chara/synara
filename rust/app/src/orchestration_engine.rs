@@ -93,6 +93,11 @@ pub fn handle(_tag: &str, payload: &Value) -> Result<Value, WsErr> {
         "project.delete" => project_delete(command),
         "thread.checkpoint.revert" => checkpoint_revert(command),
         "thread.conversation.rollback" => conversation_rollback(command),
+        "space.create" => space_create(command),
+        "space.meta.update" => space_meta_update(command),
+        "space.reorder" => space_reorder(command),
+        "space.delete" => space_delete(command),
+        "space.projects.assign" => space_projects_assign(command),
         other => Err(err(format!(
             "orchestration.dispatchCommand {other} is not ported yet (native engine slice)"
         ))),
@@ -2218,5 +2223,333 @@ fn conversation_rollback(command: &Map<String, Value>) -> Result<Value, WsErr> {
         json!({"threadId": thread_id, "messageId": message_id, "numTurns": num_turns, "createdAt": created_at}),
     )];
     let seq = commit_events(&conn, &events, &command_id)?;
+    Ok(json!({ "sequence": seq }))
+}
+
+// ---- space.* ----
+
+const SPACES_MAX_COUNT: i64 = 50;
+const RESERVED_VOID_SPACE_ID: &str = "void";
+
+fn space_event(agg_id: &str, event_type: &'static str, occurred_at: &str, payload: Value) -> OutEvent {
+    let mut ev = out_event(event_type, agg_id, occurred_at, payload);
+    ev.agg_kind = "space";
+    ev
+}
+
+fn require_space(conn: &Connection, space_id: &str, command_type: &str) -> Result<(), WsErr> {
+    let row: Option<Option<String>> = conn
+        .query_row(
+            "SELECT deleted_at FROM projection_spaces WHERE space_id = ?1",
+            params![space_id],
+            |r| r.get(0),
+        )
+        .ok();
+    match row {
+        Some(None) => Ok(()),
+        Some(Some(_)) => Err(err(format!(
+            "Space '{space_id}' was deleted and cannot handle command '{command_type}'."
+        ))),
+        None => Err(err(format!(
+            "Space '{space_id}' does not exist for command '{command_type}'."
+        ))),
+    }
+}
+
+fn require_space_name_available(
+    conn: &Connection,
+    name: &str,
+    exclude: Option<&str>,
+    command_type: &str,
+) -> Result<(), WsErr> {
+    let normalized = name.trim().to_lowercase();
+    if normalized == "void" {
+        return Err(err("'Void' is reserved for unassigned projects."));
+    }
+    let mut st = conn
+        .prepare(
+            "SELECT space_id, name FROM projection_spaces WHERE deleted_at IS NULL",
+        )
+        .map_err(|e| err(e.to_string()))?;
+    let rows: Vec<(String, String)> = st
+        .query_map([], |r| Ok((r.get(0)?, r.get(1)?)))
+        .map_err(|e| err(e.to_string()))?
+        .collect::<Result<_, _>>()
+        .map_err(|e| err(e.to_string()))?;
+    for (sid, sname) in rows {
+        if Some(sid.as_str()) != exclude && sname.trim().to_lowercase() == normalized {
+            let _ = command_type;
+            return Err(err(format!("A space named '{name}' already exists.")));
+        }
+    }
+    Ok(())
+}
+
+fn space_create(command: &Map<String, Value>) -> Result<Value, WsErr> {
+    let command_id = s(command, "commandId").ok_or_else(|| err("missing commandId"))?;
+    let space_id = s(command, "spaceId").ok_or_else(|| err("missing spaceId"))?;
+    let name = s(command, "name").ok_or_else(|| err("missing name"))?;
+    let icon = s(command, "icon").ok_or_else(|| err("missing icon"))?;
+    let created_at = s(command, "createdAt").ok_or_else(|| err("missing createdAt"))?;
+    let conn = open_state_rw()?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| err(e.to_string()))?;
+    let exists: bool = conn
+        .query_row(
+            "SELECT COUNT(*) > 0 FROM projection_spaces WHERE space_id = ?1",
+            params![space_id],
+            |r| r.get(0),
+        )
+        .unwrap_or(false);
+    if exists {
+        return Err(err(format!(
+            "Space '{space_id}' already exists and cannot be created twice."
+        )));
+    }
+    if space_id == RESERVED_VOID_SPACE_ID {
+        return Err(err(
+            "The reserved Void identity cannot be used for a custom space.",
+        ));
+    }
+    require_space_name_available(&conn, &name, None, "space.create")?;
+    let (count, max_order): (i64, Option<i64>) = conn
+        .query_row(
+            "SELECT COUNT(*), MAX(sort_order) FROM projection_spaces WHERE deleted_at IS NULL",
+            [],
+            |r| Ok((r.get(0)?, r.get(1)?)),
+        )
+        .map_err(|e| err(e.to_string()))?;
+    if count >= SPACES_MAX_COUNT {
+        return Err(err(format!(
+            "A maximum of {SPACES_MAX_COUNT} custom spaces is supported."
+        )));
+    }
+    let sort_order = max_order.unwrap_or(-1) + 1;
+    let events = vec![space_event(
+        &space_id,
+        "space.created",
+        &created_at,
+        json!({"spaceId": space_id, "name": name, "icon": icon, "sortOrder": sort_order, "createdAt": created_at, "updatedAt": created_at}),
+    )];
+    let seq = commit_events(&conn, &events, &command_id)?;
+    conn.execute(
+        "INSERT INTO projection_spaces \
+         (space_id, name, icon, sort_order, created_at, updated_at, deleted_at) \
+         VALUES (?1, ?2, ?3, ?4, ?5, ?5, NULL)",
+        params![space_id, name, icon, sort_order, created_at],
+    )
+    .map_err(|e| err(format!("space projection insert: {e}")))?;
+    Ok(json!({ "sequence": seq }))
+}
+
+fn space_meta_update(command: &Map<String, Value>) -> Result<Value, WsErr> {
+    let command_id = s(command, "commandId").ok_or_else(|| err("missing commandId"))?;
+    let space_id = s(command, "spaceId").ok_or_else(|| err("missing spaceId"))?;
+    let conn = open_state_rw()?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| err(e.to_string()))?;
+    require_space(&conn, &space_id, "space.meta.update")?;
+    let (cur_name, cur_icon): (String, String) = conn
+        .query_row(
+            "SELECT name, icon FROM projection_spaces WHERE space_id = ?1",
+            params![space_id],
+            |r| Ok((r.get(0)?, r.get(1)?)),
+        )
+        .map_err(|e| err(e.to_string()))?;
+    let next_name = s(command, "name").filter(|n| n != &cur_name);
+    let next_icon = s(command, "icon").filter(|i| i != &cur_icon);
+    if next_name.is_none() && next_icon.is_none() {
+        return Err(err("Space metadata update must change a name or icon."));
+    }
+    if let Some(n) = &next_name {
+        require_space_name_available(&conn, n, Some(&space_id), "space.meta.update")?;
+    }
+    let occurred_at = iso_now_ms();
+    let mut payload = Map::new();
+    payload.insert("spaceId".into(), json!(space_id));
+    if let Some(n) = &next_name {
+        payload.insert("name".into(), json!(n));
+    }
+    if let Some(i) = &next_icon {
+        payload.insert("icon".into(), json!(i));
+    }
+    payload.insert("updatedAt".into(), json!(occurred_at));
+    let events = vec![space_event(
+        &space_id,
+        "space.meta-updated",
+        &occurred_at,
+        Value::Object(payload),
+    )];
+    let seq = commit_events(&conn, &events, &command_id)?;
+    let mut sets: Vec<(&str, Value)> = vec![("updated_at", json!(occurred_at))];
+    if let Some(n) = next_name {
+        sets.push(("name", json!(n)));
+    }
+    if let Some(i) = next_icon {
+        sets.push(("icon", json!(i)));
+    }
+    let assignments: Vec<String> = sets
+        .iter()
+        .enumerate()
+        .map(|(i, (c, _))| format!("{c} = ?{}", i + 2))
+        .collect();
+    let mut params_vec: Vec<rusqlite::types::Value> =
+        vec![rusqlite::types::Value::Text(space_id.clone())];
+    for (_, v) in &sets {
+        params_vec.push(json_to_sql(v));
+    }
+    conn.execute(
+        &format!(
+            "UPDATE projection_spaces SET {} WHERE space_id = ?1",
+            assignments.join(", ")
+        ),
+        rusqlite::params_from_iter(params_vec),
+    )
+    .map_err(|e| err(e.to_string()))?;
+    Ok(json!({ "sequence": seq }))
+}
+
+fn space_reorder(command: &Map<String, Value>) -> Result<Value, WsErr> {
+    let command_id = s(command, "commandId").ok_or_else(|| err("missing commandId"))?;
+    let space_id = s(command, "spaceId").ok_or_else(|| err("missing spaceId"))?;
+    let ordered: Vec<String> = command
+        .get("orderedSpaceIds")
+        .and_then(Value::as_array)
+        .map(|a| a.iter().filter_map(|v| v.as_str().map(String::from)).collect())
+        .unwrap_or_default();
+    let conn = open_state_rw()?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| err(e.to_string()))?;
+    require_space(&conn, &space_id, "space.reorder")?;
+    let mut st = conn
+        .prepare("SELECT space_id FROM projection_spaces WHERE deleted_at IS NULL")
+        .map_err(|e| err(e.to_string()))?;
+    let active: Vec<String> = st
+        .query_map([], |r| r.get(0))
+        .map_err(|e| err(e.to_string()))?
+        .collect::<Result<_, _>>()
+        .map_err(|e| err(e.to_string()))?;
+    let unique: std::collections::HashSet<&String> = ordered.iter().collect();
+    let exact = ordered.len() == active.len()
+        && unique.len() == active.len()
+        && active.iter().all(|id| unique.contains(id));
+    if !exact {
+        return Err(err(
+            "Space order must contain every active custom space exactly once.",
+        ));
+    }
+    let occurred_at = iso_now_ms();
+    let events = vec![space_event(
+        &space_id,
+        "space.order-updated",
+        &occurred_at,
+        json!({"spaceId": space_id, "orderedSpaceIds": ordered, "updatedAt": occurred_at}),
+    )];
+    let seq = commit_events(&conn, &events, &command_id)?;
+    for (i, sid) in ordered.iter().enumerate() {
+        conn.execute(
+            "UPDATE projection_spaces SET sort_order = ?2, updated_at = ?3 \
+             WHERE space_id = ?1 AND sort_order != ?2",
+            params![sid, i as i64, occurred_at],
+        )
+        .map_err(|e| err(e.to_string()))?;
+    }
+    Ok(json!({ "sequence": seq }))
+}
+
+fn space_delete(command: &Map<String, Value>) -> Result<Value, WsErr> {
+    let command_id = s(command, "commandId").ok_or_else(|| err("missing commandId"))?;
+    let space_id = s(command, "spaceId").ok_or_else(|| err("missing spaceId"))?;
+    let conn = open_state_rw()?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| err(e.to_string()))?;
+    require_space(&conn, &space_id, "space.delete")?;
+    let occurred_at = iso_now_ms();
+    let events = vec![space_event(
+        &space_id,
+        "space.deleted",
+        &occurred_at,
+        json!({"spaceId": space_id, "deletedAt": occurred_at}),
+    )];
+    let seq = commit_events(&conn, &events, &command_id)?;
+    conn.execute(
+        "UPDATE projection_spaces SET deleted_at = ?2, updated_at = ?2 WHERE space_id = ?1",
+        params![space_id, occurred_at],
+    )
+    .map_err(|e| err(e.to_string()))?;
+    // The deletion event owns the re-filing invariant: clear every assignment in
+    // one pass, including soft-deleted projects.
+    conn.execute(
+        "UPDATE projection_projects SET space_id = NULL WHERE space_id = ?1",
+        params![space_id],
+    )
+    .map_err(|e| err(e.to_string()))?;
+    Ok(json!({ "sequence": seq }))
+}
+
+fn space_projects_assign(command: &Map<String, Value>) -> Result<Value, WsErr> {
+    let command_id = s(command, "commandId").ok_or_else(|| err("missing commandId"))?;
+    let space_id = s(command, "spaceId").ok_or_else(|| err("missing spaceId"))?;
+    let project_ids: Vec<String> = command
+        .get("projectIds")
+        .and_then(Value::as_array)
+        .map(|a| a.iter().filter_map(|v| v.as_str().map(String::from)).collect())
+        .unwrap_or_default();
+    let conn = open_state_rw()?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| err(e.to_string()))?;
+    require_space(&conn, &space_id, "space.projects.assign")?;
+    let occurred_at = iso_now_ms();
+    let mut seen: std::collections::HashSet<String> = std::collections::HashSet::new();
+    let mut events: Vec<OutEvent> = Vec::new();
+    for pid in project_ids {
+        if !seen.insert(pid.clone()) {
+            continue;
+        }
+        let row: Option<(Option<String>, String, String, Option<String>, Option<String>)> = conn
+            .query_row(
+                "SELECT kind, title, workspace_root, space_id, deleted_at \
+                 FROM projection_projects WHERE project_id = ?1",
+                params![pid],
+                |r| Ok((r.get(0)?, r.get(1)?, r.get(2)?, r.get(3)?, r.get(4)?)),
+            )
+            .ok();
+        let (kind, title, root, cur_space, deleted_at) = row.ok_or_else(|| {
+            err(format!(
+                "Project '{pid}' does not exist for command 'space.projects.assign'."
+            ))
+        })?;
+        if deleted_at.is_some() || cur_space.as_deref() == Some(space_id.as_str()) {
+            continue;
+        }
+        if kind.as_deref().unwrap_or("project") != "project" {
+            return Err(err("Only ordinary projects can be assigned to a space."));
+        }
+        if is_legacy_home_row(&title, &root) {
+            return Err(err(
+                "The Chats container is reachable from every space and cannot be assigned to one.",
+            ));
+        }
+        events.push(project_event(
+            &pid,
+            "project.meta-updated",
+            &occurred_at,
+            json!({"projectId": pid, "spaceId": space_id, "updatedAt": occurred_at}),
+        ));
+    }
+    if events.is_empty() {
+        return Err(err(
+            "None of the selected projects need to be assigned to this space.",
+        ));
+    }
+    let assigned: Vec<String> = events.iter().map(|e| e.thread_id.clone()).collect();
+    let seq = commit_events(&conn, &events, &command_id)?;
+    for pid in assigned {
+        conn.execute(
+            "UPDATE projection_projects SET space_id = ?2, updated_at = ?3 WHERE project_id = ?1",
+            params![pid, space_id, occurred_at],
+        )
+        .map_err(|e| err(e.to_string()))?;
+    }
     Ok(json!({ "sequence": seq }))
 }

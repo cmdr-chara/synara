@@ -1,0 +1,49 @@
+{"fn":"parseFrontmatter","args":[{}],"error":"source.replaceAll is not a function"}
+{"fn":"parseFrontmatter","args":["x"],"ok":{"error":"file must begin with a frontmatter block"}}
+{"fn":"parseFrontmatter","args":[["a",1]],"error":"source.replaceAll is not a function"}
+{"fn":"parseFrontmatter","args":[{"a":"b"}],"error":"source.replaceAll is not a function"}
+{"fn":"parseFrontmatter","args":[true],"error":"source.replaceAll is not a function"}
+{"fn":"parseFrontmatter","args":[{"a":{"b":"c"}}],"error":"source.replaceAll is not a function"}
+{"fn":"parseFrontmatter","args":[[]],"error":"source.replaceAll is not a function"}
+{"fn":"parseFrontmatter","args":[null],"error":"Cannot read properties of null (reading 'replaceAll')"}
+{"fn":"parseFrontmatter","args":[0],"error":"source.replaceAll is not a function"}
+{"fn":"parseFrontmatter","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6}],"error":"source.replaceAll is not a function"}
+{"fn":"parseFrontmatter","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7}],"error":"source.replaceAll is not a function"}
+{"fn":"parseFrontmatter","args":[[3,1,2]],"error":"source.replaceAll is not a function"}
+{"fn":"findUnbalancedCodeFences","args":[0],"error":"source.replaceAll is not a function"}
+{"fn":"findUnbalancedCodeFences","args":[true],"error":"source.replaceAll is not a function"}
+{"fn":"findUnbalancedCodeFences","args":[{"a":{"b":"c"}}],"error":"source.replaceAll is not a function"}
+{"fn":"findUnbalancedCodeFences","args":[{}],"error":"source.replaceAll is not a function"}
+{"fn":"findUnbalancedCodeFences","args":["x"],"ok":[]}
+{"fn":"findUnbalancedCodeFences","args":[[]],"error":"source.replaceAll is not a function"}
+{"fn":"findUnbalancedCodeFences","args":[null],"error":"Cannot read properties of null (reading 'replaceAll')"}
+{"fn":"findUnbalancedCodeFences","args":[{"a":"b"}],"error":"source.replaceAll is not a function"}
+{"fn":"findUnbalancedCodeFences","args":[["a",1]],"error":"source.replaceAll is not a function"}
+{"fn":"findUnbalancedCodeFences","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6}],"error":"source.replaceAll is not a function"}
+{"fn":"findUnbalancedCodeFences","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7}],"error":"source.replaceAll is not a function"}
+{"fn":"findUnbalancedCodeFences","args":[[3,1,2]],"error":"source.replaceAll is not a function"}
+{"fn":"findUnbalancedMdxComponents","args":[null],"error":"Cannot read properties of null (reading 'match')"}
+{"fn":"findUnbalancedMdxComponents","args":[0],"error":"source.match is not a function"}
+{"fn":"findUnbalancedMdxComponents","args":["x"],"ok":[]}
+{"fn":"findUnbalancedMdxComponents","args":[["a",1]],"error":"source.match is not a function"}
+{"fn":"findUnbalancedMdxComponents","args":[{"a":{"b":"c"}}],"error":"source.match is not a function"}
+{"fn":"findUnbalancedMdxComponents","args":[{"a":"b"}],"error":"source.match is not a function"}
+{"fn":"findUnbalancedMdxComponents","args":[true],"error":"source.match is not a function"}
+{"fn":"findUnbalancedMdxComponents","args":[[]],"error":"source.match is not a function"}
+{"fn":"findUnbalancedMdxComponents","args":[{}],"error":"source.match is not a function"}
+{"fn":"findUnbalancedMdxComponents","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6}],"error":"source.match is not a function"}
+{"fn":"findUnbalancedMdxComponents","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7}],"error":"source.match is not a function"}
+{"fn":"findUnbalancedMdxComponents","args":[[3,1,2]],"error":"source.match is not a function"}
+{"fn":"extractInternalLinks","args":[{"a":{"b":"c"}}],"error":"source.matchAll is not a function or its return value is not iterable"}
+{"fn":"extractInternalLinks","args":[[]],"error":"source.matchAll is not a function or its return value is not iterable"}
+{"fn":"extractInternalLinks","args":[["a",1]],"error":"source.matchAll is not a function or its return value is not iterable"}
+{"fn":"extractInternalLinks","args":[{"a":"b"}],"error":"source.matchAll is not a function or its return value is not iterable"}
+{"fn":"extractInternalLinks","args":[{}],"error":"source.matchAll is not a function or its return value is not iterable"}
+{"fn":"extractInternalLinks","args":[true],"error":"source.matchAll is not a function or its return value is not iterable"}
+{"fn":"extractInternalLinks","args":[null],"error":"Cannot read properties of null (reading 'matchAll')"}
+{"fn":"extractInternalLinks","args":["x"],"ok":[]}
+{"fn":"extractInternalLinks","args":[0],"error":"source.matchAll is not a function or its return value is not iterable"}
+{"fn":"extractInternalLinks","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6}],"error":"source.matchAll is not a function or its return value is not iterable"}
+{"fn":"extractInternalLinks","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7}],"error":"source.matchAll is not a function or its return value is not iterable"}
+{"fn":"extractInternalLinks","args":[[3,1,2]],"error":"source.matchAll is not a function or its return value is not iterable"}
+{"fn":"main","args":[],"ok":{"$undefined":true}}

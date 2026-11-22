@@ -1,0 +1,95 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/marketing/scripts/",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "scripts-rs",
+  "exports": [
+    {
+      "name": "parseFrontmatter",
+      "file": "apps/marketing/scripts/check-docs.mjs",
+      "line": 42,
+      "params": [
+        {
+          "name": "source",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "findUnbalancedCodeFences",
+      "file": "apps/marketing/scripts/check-docs.mjs",
+      "line": 68,
+      "params": [
+        {
+          "name": "source",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "findUnbalancedMdxComponents",
+      "file": "apps/marketing/scripts/check-docs.mjs",
+      "line": 76,
+      "params": [
+        {
+          "name": "source",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "extractInternalLinks",
+      "file": "apps/marketing/scripts/check-docs.mjs",
+      "line": 104,
+      "params": [
+        {
+          "name": "source",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "main",
+      "file": "apps/marketing/scripts/check-docs.mjs",
+      "line": 212,
+      "params": [],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

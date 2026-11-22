@@ -1,0 +1,17 @@
+{
+  "unit": "apps/marketing/scripts/",
+  "files": 15,
+  "fingerprint": "aab5846ed35deca6",
+  "coverage": {
+    "lines": 193,
+    "reached": 160,
+    "files": [
+      {
+        "file": "apps/marketing/scripts/check-docs.mjs",
+        "lines": 193,
+        "reached": 160,
+        "missed": "50-51, 82-83, 101, 123-124, 133-136, 148-151, 155-158, 174-176, 183-184, 193, 197, 199-200, 215-219"
+      }
+    ]
+  }
+}

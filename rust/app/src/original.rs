@@ -77,36 +77,45 @@ impl Original {
             .ok()
             .and_then(|p| p.parse().ok())
             .unwrap_or(4773u16);
-        let (program, rest) = RUN.split_first().expect("the original's command");
-        let mut child = Command::new(resolve(program, port))
-            .args(rest.iter().map(|w| resolve(w, port)))
-            .args(std::env::args_os().skip(1))
-            .current_dir(ROOT)
-            .env("PORT", port.to_string())
-            .env("SYNARA_MODE", "desktop")
-            .env("SYNARA_DESKTOP_PARENT_STDIN", "1")
-            .env("SYNARA_STATIC_DIR", Path::new(ROOT).join("apps/web/dist"))
-            .env_remove(FALLBACK_LOG)
-            // Desktop-parent marker: stdin stays open for the child's lifetime
-            // (its watchdog exits when this closes) and enables desktop mode,
-            // where the startup token is a bootstrap credential.
-            .stdin(Stdio::piped())
-            .spawn()
-            .expect("starting the original");
-        let deadline = Instant::now() + Duration::from_secs(60);
-        while tokio::net::TcpStream::connect(("127.0.0.1", port))
-            .await
-            .is_err()
-        {
-            if let Ok(Some(status)) = child.try_wait() {
-                panic!("the original exited ({status}) before listening on port {port}");
+        // SYNARA_NO_UPSTREAM=1: run without the original server entirely —
+        // state.sqlite stays unlocked so the native engine can own writes.
+        // Relayed calls then fail fast (connection refused on `base`).
+        let child: Option<Child> = if std::env::var("SYNARA_NO_UPSTREAM").is_ok() {
+            eprintln!("front door: SYNARA_NO_UPSTREAM set, the original is not started");
+            None
+        } else {
+            let (program, rest) = RUN.split_first().expect("the original's command");
+            let mut child = Command::new(resolve(program, port))
+                .args(rest.iter().map(|w| resolve(w, port)))
+                .args(std::env::args_os().skip(1))
+                .current_dir(ROOT)
+                .env("PORT", port.to_string())
+                .env("SYNARA_MODE", "desktop")
+                .env("SYNARA_DESKTOP_PARENT_STDIN", "1")
+                .env("SYNARA_STATIC_DIR", Path::new(ROOT).join("apps/web/dist"))
+                .env_remove(FALLBACK_LOG)
+                // Desktop-parent marker: stdin stays open for the child's lifetime
+                // (its watchdog exits when this closes) and enables desktop mode,
+                // where the startup token is a bootstrap credential.
+                .stdin(Stdio::piped())
+                .spawn()
+                .expect("starting the original");
+            let deadline = Instant::now() + Duration::from_secs(60);
+            while tokio::net::TcpStream::connect(("127.0.0.1", port))
+                .await
+                .is_err()
+            {
+                if let Ok(Some(status)) = child.try_wait() {
+                    panic!("the original exited ({status}) before listening on port {port}");
+                }
+                assert!(
+                    Instant::now() < deadline,
+                    "the original did not listen on port {port}"
+                );
+                tokio::time::sleep(Duration::from_millis(50)).await;
             }
-            assert!(
-                Instant::now() < deadline,
-                "the original did not listen on port {port}"
-            );
-            tokio::time::sleep(Duration::from_millis(50)).await;
-        }
+            Some(child)
+        };
         let client = reqwest::Client::builder()
             .no_proxy()
             .redirect(reqwest::redirect::Policy::none())
@@ -115,7 +124,7 @@ impl Original {
         Original {
             base: format!("http://127.0.0.1:{port}"),
             client,
-            child: Arc::new(Mutex::new(Some(child))),
+            child: Arc::new(Mutex::new(child)),
             instance: Arc::new(Mutex::new(None)),
             todos: crate::todo::TodoStore::open(&crate::todo::state_dir()),
         }

@@ -10,7 +10,7 @@ use rusqlite::{params, Connection, OptionalExtension};
 use serde_json::{json, Map, Value};
 use std::path::PathBuf;
 
-use crate::todo::{iso_now_ms, state_dir, WsErr};
+use crate::todo::{iso_from_ms, iso_now_ms, state_dir, WsErr};
 
 fn err(message: impl Into<String>) -> WsErr {
     WsErr(message.into(), None)
@@ -114,6 +114,9 @@ pub fn handle(_tag: &str, payload: &Value) -> Result<Value, WsErr> {
         "thread.turn.diff.complete" => turn_diff_complete(command),
         "thread.revert.complete" => revert_complete(command),
         "thread.conversation.rollback.complete" => conversation_rollback_complete(command),
+        "thread.sidechat.activity.record" => sidechat_activity(command),
+        "thread.sidechat.expire" => sidechat_expire(command),
+        t if t.starts_with("thread.usage-limit.") => usage_limit_dispatch(command),
         other => Err(err(format!(
             "orchestration.dispatchCommand {other} is not ported yet (native engine slice)"
         ))),
@@ -4028,5 +4031,680 @@ fn conversation_rollback_complete(command: &Map<String, Value>) -> Result<Value,
         Value::Object(payload),
     )];
     let seq = commit_events(&conn, &events, &command_id)?;
+    Ok(json!({ "sequence": seq }))
+}
+
+// ---- thread.usage-limit.* ----
+
+fn iso_ms(s: &str) -> Option<i64> {
+    // "YYYY-MM-DDTHH:MM:SS.mmm(Z|+hh:mm)" → epoch ms; enough for comparisons.
+    let b = s.as_bytes();
+    if b.len() < 20 {
+        return None;
+    }
+    let n = |a: usize, b: usize| -> Option<i64> { s.get(a..b)?.parse().ok() };
+    let (y, mo, d) = (n(0, 4)?, n(5, 7)?, n(8, 10)?);
+    let (h, mi, sec) = (n(11, 13)?, n(14, 16)?, n(17, 19)?);
+    let mut ms = n(20, 23).unwrap_or(0);
+    if !(19..b.len()).contains(&20) || b.get(19) != Some(&b'.') {
+        ms = 0;
+    }
+    // days since epoch (civil)
+    let days = {
+        let y = if mo <= 2 { y - 1 } else { y };
+        let era = if y >= 0 { y } else { y - 399 } / 400;
+        let yoe = y - era * 400;
+        let mp = (mo + 9) % 12;
+        let doy = (153 * mp + 2) / 5 + d - 1;
+        let doe = yoe * 365 + yoe / 4 - yoe / 100 + doy;
+        era * 146097 + doe - 719468
+    };
+    let mut total = days * 86_400_000 + h * 3_600_000 + mi * 60_000 + sec * 1_000 + ms;
+    if let Some(off) = s.rfind('+').or_else(|| s[19..].rfind('-').map(|i| i + 19)) {
+        if let (Some(oh), Some(om)) = (s.get(off + 1..off + 3), s.get(off + 4..off + 6)) {
+            if let (Ok(oh), Ok(om)) = (oh.parse::<i64>(), om.parse::<i64>()) {
+                total -= (oh * 60 + om) * 60_000;
+            }
+        }
+    }
+    Some(total)
+}
+
+#[derive(Default)]
+struct UsageCtx {
+    recovery: Value,
+    recovery_source: Value,
+    cancelled_at: Option<String>,
+    cancelled_turn_id: Option<String>,
+    last_reset_at: Option<String>,
+    goal: Option<String>,
+    goal_started_at: Option<String>,
+    goal_paused_at: Option<String>,
+    archived_at: Option<String>,
+    settled_at: Option<String>,
+    parent_thread_id: Option<String>,
+    interaction_mode: String,
+    model_selection: Value,
+    latest_turn_id: Option<String>,
+    session_active_turn_id: Option<String>,
+    session_status: Option<String>,
+    snoozed_until: Option<String>,
+    sidechat_expired: bool,
+    claude_cache_review: Option<String>,
+    pending_approvals: i64,
+    pending_inputs: i64,
+}
+
+fn usage_ctx(conn: &Connection, thread_id: &str) -> Result<UsageCtx, WsErr> {
+    let row = conn
+        .query_row(
+            "SELECT usage_limit_recovery_json, usage_limit_recovery_source_json, \
+                    usage_limit_recovery_cancelled_at, usage_limit_recovery_cancelled_turn_id, \
+                    usage_limit_recovery_last_reset_at, goal, goal_started_at, goal_paused_at, \
+                    archived_at, settled_at, parent_thread_id, interaction_mode, \
+                    model_selection_json, latest_turn_id, sidechat_expired_at, \
+                    claude_cache_review_json, pending_approval_count, pending_user_input_count, \
+                    snoozed_until \
+             FROM projection_threads WHERE thread_id = ?1",
+            params![thread_id],
+            |r| {
+                Ok(UsageCtx {
+                    recovery: r
+                        .get::<_, Option<String>>(0)?
+                        .and_then(|j| serde_json::from_str(&j).ok())
+                        .unwrap_or(Value::Null),
+                    recovery_source: r
+                        .get::<_, Option<String>>(1)?
+                        .and_then(|j| serde_json::from_str(&j).ok())
+                        .unwrap_or(Value::Null),
+                    cancelled_at: r.get(2)?,
+                    cancelled_turn_id: r.get(3)?,
+                    last_reset_at: r.get(4)?,
+                    goal: r.get(5)?,
+                    goal_started_at: r.get(6)?,
+                    goal_paused_at: r.get(7)?,
+                    archived_at: r.get(8)?,
+                    settled_at: r.get(9)?,
+                    parent_thread_id: r.get(10)?,
+                    interaction_mode: r.get::<_, Option<String>>(11)?.unwrap_or_default(),
+                    model_selection: r
+                        .get::<_, Option<String>>(12)?
+                        .and_then(|j| serde_json::from_str(&j).ok())
+                        .unwrap_or(Value::Null),
+                    latest_turn_id: r.get(13)?,
+                    session_active_turn_id: None,
+                    session_status: None,
+                    snoozed_until: r.get(18)?,
+                    sidechat_expired: r.get::<_, Option<String>>(14)?.is_some(),
+                    claude_cache_review: r.get(15)?,
+                    pending_approvals: r.get(16)?,
+                    pending_inputs: r.get(17)?,
+                })
+            },
+        )
+        .map_err(|e| err(format!("Thread '{thread_id}' does not exist: {e}")))?;
+    Ok(row)
+}
+
+fn usage_ctx_session(conn: &Connection, thread_id: &str, ctx: &mut UsageCtx) {
+    if let Some((status, active)) = conn
+        .query_row(
+            "SELECT status, active_turn_id FROM projection_thread_sessions WHERE thread_id = ?1",
+            params![thread_id],
+            |r| Ok((r.get::<_, String>(0)?, r.get::<_, Option<String>>(1)?)),
+        )
+        .ok()
+    {
+        ctx.session_status = Some(status);
+        ctx.session_active_turn_id = active;
+    }
+}
+
+fn latest_turn(conn: &Connection, thread_id: &str) -> Option<(String, String, String)> {
+    conn.query_row(
+        "SELECT turn_id, state, requested_at FROM projection_turns WHERE thread_id = ?1 \
+         ORDER BY requested_at DESC LIMIT 1",
+        params![thread_id],
+        |r| Ok((r.get(0)?, r.get(1)?, r.get(2)?)),
+    )
+    .ok()
+}
+
+fn usage_limit_meta_event(thread_id: &str, occurred_at: &str, patch: &Map<String, Value>) -> OutEvent {
+    let mut payload = Map::new();
+    payload.insert("threadId".into(), json!(thread_id));
+    payload.insert("updatedAt".into(), json!(occurred_at));
+    for (k, v) in patch {
+        payload.insert(k.clone(), v.clone());
+    }
+    out_event("thread.meta-updated", thread_id, occurred_at, Value::Object(payload))
+}
+
+const USAGE_PATCH_COLS: &[(&str, &str)] = &[
+    ("usageLimitRecovery", "usage_limit_recovery_json"),
+    ("usageLimitRecoverySource", "usage_limit_recovery_source_json"),
+    ("usageLimitRecoveryCancelledAt", "usage_limit_recovery_cancelled_at"),
+    ("usageLimitRecoveryCancelledTurnId", "usage_limit_recovery_cancelled_turn_id"),
+    ("usageLimitRecoveryLastResetAt", "usage_limit_recovery_last_reset_at"),
+    ("goalPausedAt", "goal_paused_at"),
+    ("goalStartedAt", "goal_started_at"),
+    ("goal", "goal"),
+    ("goalAchievements", "goal_achievements_json"),
+];
+
+fn usage_limit_dispatch(command: &Map<String, Value>) -> Result<Value, WsErr> {
+    let command_id = s(command, "commandId").ok_or_else(|| err("missing commandId"))?;
+    let thread_id = s(command, "threadId").ok_or_else(|| err("missing threadId"))?;
+    let created_at = s(command, "createdAt").unwrap_or_else(iso_now_ms);
+    let command_type = s(command, "type").unwrap_or_default();
+    let conn = open_state_rw()?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| err(e.to_string()))?;
+    require_thread(&conn, &thread_id)?;
+    let mut ctx = usage_ctx(&conn, &thread_id)?;
+    usage_ctx_session(&conn, &thread_id, &mut ctx);
+    let occurred_at = iso_now_ms();
+    let gv = |v: &Value, k: &str| v.get(k).cloned().unwrap_or(Value::Null);
+    let gc = |k: &str| command.get(k).cloned().unwrap_or(Value::Null);
+    let gs = |v: &Value, k: &str| v.get(k).and_then(Value::as_str).map(String::from);
+    let mut patch = Map::new();
+    let mut extra_events: Vec<OutEvent> = Vec::new();
+
+    match command_type.as_str() {
+        "thread.usage-limit.admit" => {
+            let recovery_id = command.get("recoveryId").and_then(Value::as_str);
+            let bad_recovery = recovery_id.is_some_and(|rid| {
+                gs(&ctx.recovery, "id").as_deref() != Some(rid)
+                    || gs(&ctx.recovery, "state").as_deref() != Some("resuming")
+                    || gv(&ctx.recovery, "policyEpoch") != gc("policyEpoch")
+            });
+            if !bad_recovery {
+                let current = gv(&ctx.recovery_source, "admissionSequence").as_i64();
+                let incoming = gc("admissionSequence").as_i64().unwrap_or(0);
+                if current.map_or(true, |c| c <= incoming) {
+                    patch.insert(
+                        "usageLimitRecoverySource".into(),
+                        json!({
+                            "turnId": format!("pending:{incoming}"),
+                            "bindingKey": "admission",
+                            "admissionSequence": incoming,
+                            "policyEpoch": gc("policyEpoch"),
+                        }),
+                    );
+                }
+            }
+        }
+        "thread.usage-limit.source" => {
+            let source = gc("source");
+            let binding_ok = command
+                .get("expectedBindingKey")
+                .map_or(true, |e| gv(&ctx.recovery_source, "bindingKey") == *e);
+            if ctx.session_active_turn_id.as_deref()
+                == source.get("turnId").and_then(Value::as_str)
+                && binding_ok
+            {
+                patch.insert("usageLimitRecoverySource".into(), source);
+            }
+        }
+        "thread.usage-limit.defer" => {
+            let paused_at = ctx
+                .goal
+                .as_deref()
+                .map(|g| g.trim())
+                .filter(|g| !g.is_empty())
+                .map(|_| occurred_at.clone());
+            if gs(&ctx.recovery, "id") == s(command, "recoveryId")
+                && gs(&ctx.recovery, "state").as_deref() == Some("resuming")
+                && ctx.recovery.get("resumedTurnId").is_none()
+            {
+                let mut next = ctx.recovery.clone();
+                next["state"] = json!("waiting");
+                if let Some(pa) = &paused_at {
+                    next["goalStartedAt"] =
+                        ctx.goal_started_at.clone().map_or(Value::Null, |v| json!(v));
+                    next["goalPausedAt"] = json!(pa);
+                }
+                patch.insert("usageLimitRecovery".into(), next);
+                if let Some(pa) = paused_at {
+                    patch.insert("goalPausedAt".into(), json!(pa));
+                }
+            }
+        }
+        "thread.usage-limit.started" | "thread.usage-limit.finish" => {
+            let valid = !ctx.recovery.is_null()
+                && gs(&ctx.recovery, "id") == s(command, "recoveryId")
+                && gs(&ctx.recovery, "state").as_deref() == Some("resuming")
+                && (ctx.recovery.get("resumedTurnId").is_none()
+                    || gs(&ctx.recovery, "resumedTurnId") == s(command, "turnId"));
+            if valid {
+                if command_type.ends_with("finish") {
+                    patch.insert("usageLimitRecovery".into(), Value::Null);
+                } else {
+                    let mut next = ctx.recovery.clone();
+                    next["resumedTurnId"] = gc("turnId");
+                    patch.insert("usageLimitRecovery".into(), next);
+                }
+            }
+        }
+        "thread.usage-limit.cancel-turn" => {
+            let lt = latest_turn(&conn, &thread_id);
+            let latest_id = lt.as_ref().map(|(id, ..)| id.as_str());
+            let turn_id = s(command, "turnId").unwrap_or_default();
+            let source_turn = s(command, "sourceTurnId").unwrap_or_default();
+            let matches_turn = latest_id == Some(turn_id.as_str())
+                || latest_id == Some(source_turn.as_str())
+                || ctx.session_active_turn_id.as_deref() == Some(turn_id.as_str());
+            if matches_turn {
+                patch.insert("usageLimitRecoveryCancelledAt".into(), json!(iso_now_ms()));
+                patch.insert(
+                    "usageLimitRecoveryCancelledTurnId".into(),
+                    json!(turn_id),
+                );
+                let rec_match = !ctx.recovery.is_null()
+                    && (gs(&ctx.recovery, "id") == s(command, "recoveryId")
+                        || gs(&ctx.recovery, "turnId").as_deref() == Some(turn_id.as_str())
+                        || gs(&ctx.recovery, "resumedTurnId").as_deref()
+                            == Some(turn_id.as_str()));
+                if rec_match {
+                    patch.insert("usageLimitRecovery".into(), Value::Null);
+                    let goal_active = ctx
+                        .goal
+                        .as_deref()
+                        .map(|g| !g.trim().is_empty())
+                        .unwrap_or(false);
+                    if ctx.recovery.get("goalPausedAt").is_some()
+                        && ctx.goal_paused_at.is_none()
+                        && goal_active
+                    {
+                        patch.insert("goalPausedAt".into(), json!(iso_now_ms()));
+                    }
+                }
+            }
+        }
+        "thread.usage-limit.cancel" => {
+            let matches = command
+                .get("recoveryId")
+                .map_or(true, |rid| gv(&ctx.recovery, "id") == *rid);
+            if matches {
+                patch.insert("usageLimitRecovery".into(), Value::Null);
+                patch.insert("usageLimitRecoverySource".into(), Value::Null);
+                patch.insert("usageLimitRecoveryCancelledAt".into(), json!(iso_now_ms()));
+                let lt = latest_turn(&conn, &thread_id);
+                let cancelled_turn = ctx
+                    .session_active_turn_id
+                    .clone()
+                    .or_else(|| lt.as_ref().map(|(id, ..)| id.clone()));
+                patch.insert(
+                    "usageLimitRecoveryCancelledTurnId".into(),
+                    cancelled_turn.map_or(Value::Null, |v| json!(v)),
+                );
+                let goal_active = ctx
+                    .goal
+                    .as_deref()
+                    .map(|g| !g.trim().is_empty())
+                    .unwrap_or(false);
+                if ctx.recovery.get("goalPausedAt").is_some()
+                    && ctx.goal_paused_at.is_none()
+                    && goal_active
+                {
+                    patch.insert("goalPausedAt".into(), json!(iso_now_ms()));
+                }
+            }
+        }
+        "thread.usage-limit.schedule" => {
+            let recovery = gc("recovery");
+            let lt = latest_turn(&conn, &thread_id);
+            let reset_ms = recovery
+                .get("resetAt")
+                .and_then(Value::as_str)
+                .and_then(iso_ms);
+            let cancelled = ctx.cancelled_turn_id.as_deref()
+                == recovery.get("turnId").and_then(Value::as_str)
+                || (ctx.cancelled_turn_id.is_none()
+                    && ctx.cancelled_at.is_some()
+                    && lt.as_ref().map_or(false, |(_, _, req)| {
+                        req.as_str() <= ctx.cancelled_at.as_deref().unwrap_or("")
+                    }));
+            let source = &ctx.recovery_source;
+            let model = &ctx.model_selection;
+            let goal_active = ctx
+                .goal
+                .as_deref()
+                .map(|g| !g.trim().is_empty())
+                .unwrap_or(false);
+            let reject = source.is_null()
+                || gs(source, "bindingKey").as_deref() == Some("pending")
+                || gv(source, "turnId") != gv(&recovery, "turnId")
+                || gv(source, "bindingKey") != gv(&recovery, "bindingKey")
+                || gv(source, "policyEpoch") != gv(&recovery, "policyEpoch")
+                || lt.is_none()
+                || lt.as_ref().map(|(id, ..)| id.as_str())
+                    != recovery.get("turnId").and_then(Value::as_str)
+                || lt.as_ref().map(|(_, st, _)| st.as_str()) != Some("error")
+                || cancelled
+                || ctx.archived_at.is_some()
+                || ctx.settled_at.is_some()
+                || ctx.parent_thread_id.is_some()
+                || ctx.interaction_mode == "plan"
+                || ctx.sidechat_expired
+                || ctx.claude_cache_review.is_some()
+                || reset_ms.is_none()
+                || reset_ms.unwrap() <= iso_ms(&created_at).unwrap_or(0)
+                || (ctx.last_reset_at.is_some()
+                    && reset_ms.unwrap()
+                        <= iso_ms(ctx.last_reset_at.as_deref().unwrap_or("")).unwrap_or(0))
+                || gs(model, "provider") != gs(&recovery, "provider")
+                || gs(model, "instanceId").unwrap_or_else(|| gs(model, "provider").unwrap_or_default())
+                    != gs(&recovery, "providerInstanceId").unwrap_or_default()
+                || gs(model, "model") != gs(&recovery, "model")
+                || (goal_active && ctx.goal_paused_at.is_some());
+            if !reject {
+                let paused_at = goal_active.then(|| occurred_at.clone());
+                let mut next = recovery.clone();
+                next["state"] = json!("waiting");
+                if let Some(pa) = &paused_at {
+                    next["goalStartedAt"] =
+                        ctx.goal_started_at.clone().map_or(Value::Null, |v| json!(v));
+                    next["goalPausedAt"] = json!(pa);
+                }
+                patch.insert("usageLimitRecovery".into(), next);
+                if let Some(pa) = paused_at {
+                    patch.insert("goalPausedAt".into(), json!(pa));
+                }
+            }
+        }
+        "thread.usage-limit.resume" => {
+            let recovery = ctx.recovery.clone();
+            let rid_ok = !recovery.is_null()
+                && gs(&recovery, "id") == s(command, "recoveryId")
+                && gs(&recovery, "state").as_deref() != Some("resuming");
+            if !rid_ok {
+                // emit meta-updated with empty patch
+            } else {
+                let lt = latest_turn(&conn, &thread_id);
+                let model = &ctx.model_selection;
+                let rec_paused = recovery.get("goalPausedAt").and_then(Value::as_str);
+                let goal_mismatch = rec_paused.is_some()
+                    && (ctx.goal_paused_at.as_deref() != rec_paused
+                        || ctx.goal_started_at != gs(&recovery, "goalStartedAt"));
+                let stale = gv(&recovery, "policyEpoch") != gc("policyEpoch")
+                    || ctx.archived_at.is_some()
+                    || ctx.settled_at.is_some()
+                    || ctx.parent_thread_id.is_some()
+                    || ctx.sidechat_expired
+                    || lt.as_ref().map(|(id, ..)| id.as_str())
+                        != recovery.get("turnId").and_then(Value::as_str)
+                    || lt.as_ref().map(|(_, st, _)| st.as_str()) != Some("error")
+                    || gs(model, "provider") != gs(&recovery, "provider")
+                    || gs(model, "instanceId")
+                        .unwrap_or_else(|| gs(model, "provider").unwrap_or_default())
+                        != gs(&recovery, "providerInstanceId").unwrap_or_default()
+                    || gs(model, "model") != gs(&recovery, "model")
+                    || goal_mismatch;
+                if stale {
+                    patch.insert("usageLimitRecovery".into(), Value::Null);
+                } else {
+                    let now_ms = iso_ms(&iso_now_ms()).unwrap_or(0);
+                    let not_ready = recovery
+                        .get("resetAt")
+                        .and_then(Value::as_str)
+                        .and_then(iso_ms)
+                        .map_or(false, |r| r > now_ms)
+                        || thread_has_in_flight(&conn, &thread_id)?
+                        || ctx.pending_approvals > 0
+                        || ctx.pending_inputs > 0
+                        || ctx.claude_cache_review.is_some()
+                        || thread_has_revert_in_progress(&conn, &thread_id)?
+                        || ctx.interaction_mode == "plan"
+                        || ctx
+                            .snoozed_until
+                            .as_deref()
+                            .and_then(iso_ms)
+                            .map_or(false, |s| s > now_ms);
+                    if not_ready {
+                        return Err(err("Usage-limit recovery is not ready."));
+                    }
+                    // goalPatch for goalPaused=false
+                    let mut goal_patch = Map::new();
+                    if rec_paused.is_some() {
+                        let goal_active = ctx
+                            .goal
+                            .as_deref()
+                            .map(|g| !g.trim().is_empty())
+                            .unwrap_or(false);
+                        if goal_active && ctx.goal_paused_at.is_some() {
+                            let started_ms = ctx
+                                .goal_started_at
+                                .as_deref()
+                                .and_then(iso_ms)
+                                .unwrap_or(0);
+                            let paused_ms =
+                                ctx.goal_paused_at.as_deref().and_then(iso_ms).unwrap_or(0);
+                            let occurred_ms = iso_ms(&occurred_at).unwrap_or(0);
+                            let rebased = if started_ms > 0 && paused_ms > 0 {
+                                occurred_ms - (paused_ms - started_ms).max(0)
+                            } else {
+                                occurred_ms
+                            };
+                            goal_patch.insert(
+                                "goalStartedAt".into(),
+                                json!(iso_from_ms(rebased)),
+                            );
+                            goal_patch.insert("goalPausedAt".into(), Value::Null);
+                        }
+                    }
+                    let mut next_recovery = recovery.clone();
+                    next_recovery["state"] = json!("resuming");
+                    patch.insert("usageLimitRecovery".into(), next_recovery.clone());
+                    patch.insert(
+                        "usageLimitRecoveryLastResetAt".into(),
+                        gv(&recovery, "resetAt"),
+                    );
+                    for (k, v) in &goal_patch {
+                        patch.insert(k.clone(), v.clone());
+                    }
+                    let goal_started = goal_patch
+                        .get("goalStartedAt")
+                        .cloned()
+                        .unwrap_or_else(|| {
+                            ctx.goal_started_at.clone().map_or(Value::Null, |v| json!(v))
+                        });
+                    let mut cont = out_event(
+                        "thread.goal-continuation-requested",
+                        &thread_id,
+                        &created_at,
+                        json!({
+                            "threadId": thread_id,
+                            "goalStartedAt": goal_started,
+                            "trigger": "turn-completed",
+                            "sourceTurnId": gv(&recovery, "turnId"),
+                            "usageLimitRecovery": next_recovery,
+                            "createdAt": created_at,
+                        }),
+                    );
+                    cont.causation_event_id = None;
+                    extra_events.push(cont);
+                }
+            }
+        }
+        _ => return Err(err(format!("unsupported usage-limit command {command_type}"))),
+    }
+
+    let meta = usage_limit_meta_event(&thread_id, &occurred_at, &patch);
+    let causation = meta.event_id.clone();
+    for ev in &mut extra_events {
+        if ev.causation_event_id.is_none() {
+            ev.causation_event_id = Some(causation.clone());
+        }
+    }
+    let mut events = vec![meta];
+    events.extend(extra_events);
+    let seq = commit_events(&conn, &events, &command_id)?;
+    // Projection: apply patched columns.
+    for (key, col) in USAGE_PATCH_COLS {
+        if let Some(v) = patch.get(*key) {
+            let sql_val = if matches!(*key, "usageLimitRecovery" | "usageLimitRecoverySource" | "goalAchievements") {
+                json_to_sql(&json!(v.to_string()))
+            } else {
+                json_to_sql(v)
+            };
+            conn.execute(
+                &format!("UPDATE projection_threads SET {col} = ?1, updated_at = ?2 WHERE thread_id = ?3"),
+                params![sql_val, occurred_at, thread_id],
+            )
+            .map_err(|e| err(format!("usage-limit projection: {e}")))?;
+        }
+    }
+    if !patch.is_empty() {
+        conn.execute(
+            "UPDATE projection_threads SET updated_at = ?1 WHERE thread_id = ?2",
+            params![occurred_at, thread_id],
+        )
+        .ok();
+    }
+    Ok(json!({ "sequence": seq }))
+}
+
+// ---- sidechat.* ----
+
+fn thread_is_sidechat(conn: &Connection, thread_id: &str) -> bool {
+    conn.query_row(
+        "SELECT sidechat_source_thread_id IS NOT NULL OR sidechat_context_json IS NOT NULL \
+         FROM projection_threads WHERE thread_id = ?1",
+        params![thread_id],
+        |r| r.get::<_, bool>(0),
+    )
+    .unwrap_or(false)
+}
+
+fn sidechat_activity(command: &Map<String, Value>) -> Result<Value, WsErr> {
+    let command_id = s(command, "commandId").ok_or_else(|| err("missing commandId"))?;
+    let thread_id = s(command, "threadId").ok_or_else(|| err("missing threadId"))?;
+    let conn = open_state_rw()?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| err(e.to_string()))?;
+    require_thread(&conn, &thread_id)?;
+    if !thread_is_sidechat(&conn, &thread_id) {
+        return Err(err(format!("Thread '{thread_id}' is not a side chat.")));
+    }
+    if sidechat_expired(&conn, &thread_id) {
+        return Err(err(format!("Side chat '{thread_id}' already expired.")));
+    }
+    let activity_at = s(command, "activityAt").unwrap_or_else(iso_now_ms);
+    let current: Option<String> = conn
+        .query_row(
+            "SELECT sidechat_last_activity_at FROM projection_threads WHERE thread_id = ?1",
+            params![thread_id],
+            |r| r.get(0),
+        )
+        .ok()
+        .flatten();
+    let last = match (&current, iso_ms(&activity_at)) {
+        (Some(c), Some(a)) => {
+            if iso_ms(c).map_or(true, |cm| a > cm) {
+                activity_at.clone()
+            } else {
+                c.clone()
+            }
+        }
+        (Some(c), None) => c.clone(),
+        (None, _) => activity_at.clone(),
+    };
+    let events = vec![out_event(
+        "thread.sidechat-activity-recorded",
+        &thread_id,
+        &last,
+        json!({"threadId": thread_id, "lastActivityAt": last}),
+    )];
+    let seq = commit_events(&conn, &events, &command_id)?;
+    update_projection(
+        &conn,
+        &thread_id,
+        &[
+            ("sidechat_last_activity_at", json!(last)),
+            ("updated_at", json!(iso_now_ms())),
+        ],
+    )?;
+    Ok(json!({ "sequence": seq }))
+}
+
+fn sidechat_expire(command: &Map<String, Value>) -> Result<Value, WsErr> {
+    let command_id = s(command, "commandId").ok_or_else(|| err("missing commandId"))?;
+    let thread_id = s(command, "threadId").ok_or_else(|| err("missing threadId"))?;
+    let conn = open_state_rw()?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| err(e.to_string()))?;
+    let thread = require_thread(&conn, &thread_id)?;
+    if !thread_is_sidechat(&conn, &thread_id) {
+        return Err(err(format!("Thread '{thread_id}' is not a side chat.")));
+    }
+    if sidechat_expired(&conn, &thread_id) {
+        return Err(err(format!("Side chat '{thread_id}' already expired.")));
+    }
+    let last_activity: Option<String> = conn
+        .query_row(
+            "SELECT sidechat_last_activity_at FROM projection_threads WHERE thread_id = ?1",
+            params![thread_id],
+            |r| r.get(0),
+        )
+        .ok()
+        .flatten();
+    let last = last_activity.unwrap_or_else(|| thread.updated_at.clone());
+    let expected = s(command, "expectedLastActivityAt").unwrap_or_default();
+    let instants_equal = match (iso_ms(&last), iso_ms(&expected)) {
+        (Some(a), Some(b)) => a == b,
+        _ => last == expected,
+    };
+    if !instants_equal {
+        return Err(err(format!(
+            "Side chat '{thread_id}' became active before expiry."
+        )));
+    }
+    let latest_running = latest_turn(&conn, &thread_id)
+        .map(|(_, st, _)| st == "running")
+        .unwrap_or(false);
+    let session = session_row(&conn, &thread_id);
+    let session_live = session
+        .as_ref()
+        .map(|(st, _, _)| st == "starting" || st == "running")
+        .unwrap_or(false);
+    if latest_running || session_live {
+        return Err(err(format!(
+            "Side chat '{thread_id}' still has a running turn."
+        )));
+    }
+    let (approvals, inputs): (i64, i64) = conn
+        .query_row(
+            "SELECT pending_approval_count, pending_user_input_count \
+             FROM projection_threads WHERE thread_id = ?1",
+            params![thread_id],
+            |r| Ok((r.get(0)?, r.get(1)?)),
+        )
+        .unwrap_or((0, 0));
+    if approvals > 0 || inputs > 0 {
+        return Err(err(format!(
+            "Side chat '{thread_id}' still has a pending interaction."
+        )));
+    }
+    let expired_at = s(command, "expiredAt").unwrap_or_else(iso_now_ms);
+    let events = vec![out_event(
+        "thread.sidechat-expired",
+        &thread_id,
+        &expired_at,
+        json!({
+            "threadId": thread_id,
+            "expectedLastActivityAt": expected,
+            "expiredAt": expired_at,
+        }),
+    )];
+    let seq = commit_events(&conn, &events, &command_id)?;
+    update_projection(
+        &conn,
+        &thread_id,
+        &[
+            ("sidechat_expired_at", json!(expired_at)),
+            ("updated_at", json!(iso_now_ms())),
+        ],
+    )?;
     Ok(json!({ "sequence": seq }))
 }

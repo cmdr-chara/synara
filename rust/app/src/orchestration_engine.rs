@@ -106,6 +106,14 @@ pub fn handle(_tag: &str, payload: &Value) -> Result<Value, WsErr> {
         "thread.pull-request.link" | "thread.pull-request.unlink" | "thread.pull-request.sync" => {
             pull_request_command(command)
         }
+        "thread.claude-cache.set" => claude_cache_set(command),
+        "thread.claude-cache.compacted" => claude_cache_followup(command, true),
+        "thread.claude-cache.respond" => claude_cache_followup(command, false),
+        "thread.turn.dispatch-queued" => dispatch_queued(command),
+        "thread.proposed-plan.upsert" => proposed_plan_upsert(command),
+        "thread.turn.diff.complete" => turn_diff_complete(command),
+        "thread.revert.complete" => revert_complete(command),
+        "thread.conversation.rollback.complete" => conversation_rollback_complete(command),
         other => Err(err(format!(
             "orchestration.dispatchCommand {other} is not ported yet (native engine slice)"
         ))),
@@ -3529,6 +3537,496 @@ fn pull_request_command(command: &Map<String, Value>) -> Result<Value, WsErr> {
     if events.is_empty() {
         return Err(err("Command produced no events."));
     }
+    let seq = commit_events(&conn, &events, &command_id)?;
+    Ok(json!({ "sequence": seq }))
+}
+
+// ---- claude-cache.* / dispatch-queued / proposed-plan / diff+revert complete ----
+
+fn append_activity_projection(
+    conn: &Connection,
+    thread_id: &str,
+    activity: &Value,
+    event_sequence: i64,
+) -> Result<(), WsErr> {
+    let activity_id = activity
+        .get("id")
+        .and_then(Value::as_str)
+        .unwrap_or("")
+        .to_string();
+    let sequence = match activity.get("sequence").and_then(Value::as_i64) {
+        Some(n) => n,
+        None => event_sequence,
+    };
+    conn.execute(
+        "INSERT OR REPLACE INTO projection_thread_activities \
+         (activity_id, thread_id, turn_id, tone, kind, summary, payload_json, created_at, sequence) \
+         VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)",
+        params![
+            activity_id,
+            thread_id,
+            json_to_sql(&activity.get("turnId").cloned().unwrap_or(Value::Null)),
+            json_to_sql(&activity.get("tone").cloned().unwrap_or(json!("info"))),
+            json_to_sql(&activity.get("kind").cloned().unwrap_or(Value::Null)),
+            json_to_sql(&activity.get("summary").cloned().unwrap_or(Value::Null)),
+            activity.get("payload").cloned().unwrap_or(Value::Null).to_string(),
+            json_to_sql(&activity.get("createdAt").cloned().unwrap_or(Value::Null)),
+            sequence,
+        ],
+    )
+    .map_err(|e| err(format!("activity projection: {e}")))?;
+    Ok(())
+}
+
+fn revert_succeeded_activity(command_id: &str, thread_id: &str, turn_count: i64, created_at: &str, causation: &str) -> OutEvent {
+    let mut ev = out_event(
+        "thread.activity-appended",
+        thread_id,
+        created_at,
+        json!({
+            "threadId": thread_id,
+            "activity": {
+                "id": uuid_v4(),
+                "tone": "info",
+                "kind": "checkpoint.revert.succeeded",
+                "summary": "Checkpoint revert completed",
+                "payload": {"turnCount": turn_count},
+                "turnId": null,
+                "createdAt": created_at,
+            }
+        }),
+    );
+    ev.causation_event_id = Some(causation.to_string());
+    let _ = command_id;
+    ev
+}
+
+fn claude_cache_set(command: &Map<String, Value>) -> Result<Value, WsErr> {
+    let command_id = s(command, "commandId").ok_or_else(|| err("missing commandId"))?;
+    let thread_id = s(command, "threadId").ok_or_else(|| err("missing threadId"))?;
+    let created_at = s(command, "createdAt").ok_or_else(|| err("missing createdAt"))?;
+    let conn = open_state_rw()?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| err(e.to_string()))?;
+    let thread = require_thread(&conn, &thread_id)?;
+    let hold = command.get("hold").cloned().unwrap_or(Value::Null);
+    if !hold.is_null() {
+        let hold_session = hold.get("session").cloned().unwrap_or(Value::Null);
+        let review = command.get("review").cloned().unwrap_or(Value::Null);
+        let review_valid = if review.is_null() {
+            true
+        } else {
+            let status_ok = review.get("status").and_then(Value::as_str) == Some("pending");
+            let msg_id = review.get("messageId").and_then(Value::as_str).unwrap_or("");
+            let msg_exists: bool = conn
+                .query_row(
+                    "SELECT COUNT(*) FROM projection_thread_messages \
+                     WHERE thread_id = ?1 AND message_id = ?2 AND role = 'user'",
+                    params![thread_id, msg_id],
+                    |r| r.get::<_, i64>(0),
+                )
+                .unwrap_or(0)
+                    > 0;
+            status_ok && msg_exists
+        };
+        let rejected = thread.deleted_at.is_some()
+            || thread.archived_at.is_some()
+            || sidechat_expired(&conn, &thread_id)
+            || hold_session.get("threadId").and_then(Value::as_str) != Some(thread_id.as_str())
+            || hold_session.get("status").and_then(Value::as_str) != Some("ready")
+            || !review_valid;
+        if rejected {
+            return Err(err("Command produced no events."));
+        }
+    }
+    if let Some(expected) = command.get("expectedReviewId") {
+        let current = thread
+            .claude_cache_review
+            .as_ref()
+            .and_then(|r| serde_json::from_str::<Value>(r).ok())
+            .and_then(|v| v.get("reviewId").cloned())
+            .unwrap_or(Value::Null);
+        if &current != expected {
+            return Err(err("Command produced no events."));
+        }
+    }
+    let review = command.get("review").cloned().unwrap_or(Value::Null);
+    let review_ev = out_event(
+        "thread.claude-cache-set",
+        &thread_id,
+        &created_at,
+        json!({"threadId": thread_id, "review": review, "updatedAt": created_at}),
+    );
+    let mut events = vec![review_ev];
+    if !hold.is_null() {
+        let mut sess_ev = out_event(
+            "thread.session-set",
+            &thread_id,
+            &created_at,
+            json!({"threadId": thread_id, "session": hold.get("session").cloned().unwrap_or(Value::Null)}),
+        );
+        sess_ev.causation_event_id = Some(events[0].event_id.clone());
+        events.push(sess_ev);
+    }
+    let seq = commit_events(&conn, &events, &command_id)?;
+    update_projection(
+        &conn,
+        &thread_id,
+        &[
+            ("claude_cache_review_json", review),
+            ("updated_at", json!(created_at)),
+        ],
+    )?;
+    if events.len() == 2 {
+        let session = events[1]
+            .payload
+            .get("session")
+            .cloned()
+            .unwrap_or(Value::Null);
+        let g = |k: &str| json_to_sql(&session.get(k).cloned().unwrap_or(Value::Null));
+        conn.execute(
+            "INSERT INTO projection_thread_sessions \
+             (thread_id, status, provider_name, provider_session_id, provider_thread_id, \
+              active_turn_id, last_error, updated_at, runtime_mode, provider_instance_id) \
+             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10) \
+             ON CONFLICT(thread_id) DO UPDATE SET \
+              status=excluded.status, provider_name=excluded.provider_name, \
+              provider_session_id=excluded.provider_session_id, \
+              provider_thread_id=excluded.provider_thread_id, \
+              active_turn_id=excluded.active_turn_id, last_error=excluded.last_error, \
+              updated_at=excluded.updated_at, runtime_mode=excluded.runtime_mode, \
+              provider_instance_id=excluded.provider_instance_id",
+            params![
+                thread_id,
+                g("status"),
+                g("providerName"),
+                g("providerSessionId"),
+                g("providerThreadId"),
+                g("activeTurnId"),
+                g("lastError"),
+                g("updatedAt"),
+                g("runtimeMode"),
+                g("providerInstanceId"),
+            ],
+        )
+        .map_err(|e| err(format!("session projection: {e}")))?;
+    }
+    Ok(json!({ "sequence": seq }))
+}
+
+fn claude_cache_review_thread(conn: &Connection, thread_id: &str) -> Option<Value> {
+    conn.query_row(
+        "SELECT claude_cache_review_json FROM projection_threads WHERE thread_id = ?1",
+        params![thread_id],
+        |r| r.get::<_, Option<String>>(0),
+    )
+    .ok()
+    .flatten()
+    .and_then(|j| serde_json::from_str(&j).ok())
+    .filter(|v: &Value| !v.is_null())
+}
+
+fn claude_cache_followup(command: &Map<String, Value>, compacted: bool) -> Result<Value, WsErr> {
+    let command_id = s(command, "commandId").ok_or_else(|| err("missing commandId"))?;
+    let thread_id = s(command, "threadId").ok_or_else(|| err("missing threadId"))?;
+    let created_at = s(command, "createdAt").ok_or_else(|| err("missing createdAt"))?;
+    let conn = open_state_rw()?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| err(e.to_string()))?;
+    let thread = require_thread(&conn, &thread_id)?;
+    let review = claude_cache_review_thread(&conn, &thread_id);
+    let command_type = s(command, "type").unwrap_or_default();
+    let ok = match (&review, compacted) {
+        (Some(r), true) => {
+            r.get("reviewId").and_then(Value::as_str)
+                == command.get("reviewId").and_then(Value::as_str)
+                && matches!(
+                    r.get("status").and_then(Value::as_str),
+                    Some("compacting") | Some("uncertain")
+                )
+                && r.get("compactionTurnId").and_then(Value::as_str)
+                    == command.get("turnId").and_then(Value::as_str)
+                && thread.archived_at.is_none()
+        }
+        (Some(r), false) => {
+            r.get("reviewId").and_then(Value::as_str)
+                == command.get("reviewId").and_then(Value::as_str)
+                && r.get("messageId").and_then(Value::as_str)
+                    == command.get("messageId").and_then(Value::as_str)
+                && matches!(
+                    r.get("status").and_then(Value::as_str),
+                    Some("pending") | Some("failed")
+                )
+        }
+        _ => false,
+    };
+    if !ok {
+        return Err(err("Command produced no events."));
+    }
+    let review = review.unwrap();
+    let mut next_review = review.clone();
+    next_review["status"] = json!("responding");
+    if !compacted {
+        if let Some(obj) = next_review.as_object_mut() {
+            obj.remove("error");
+        }
+    }
+    let decision = if compacted {
+        json!("continue")
+    } else {
+        command.get("decision").cloned().unwrap_or(Value::Null)
+    };
+    let set_ev = out_event(
+        "thread.claude-cache-set",
+        &thread_id,
+        &created_at,
+        json!({"threadId": thread_id, "review": next_review, "updatedAt": created_at}),
+    );
+    let mut respond_ev = out_event(
+        "thread.claude-cache-response-requested",
+        &thread_id,
+        &created_at,
+        json!({
+            "threadId": thread_id,
+            "review": review,
+            "decision": decision,
+            "createdAt": created_at,
+        }),
+    );
+    respond_ev.causation_event_id = Some(set_ev.event_id.clone());
+    let events = vec![set_ev, respond_ev];
+    let seq = commit_events(&conn, &events, &command_id)?;
+    update_projection(
+        &conn,
+        &thread_id,
+        &[
+            ("claude_cache_review_json", next_review),
+            ("updated_at", json!(created_at)),
+        ],
+    )?;
+    let _ = command_type;
+    Ok(json!({ "sequence": seq }))
+}
+
+fn dispatch_queued(command: &Map<String, Value>) -> Result<Value, WsErr> {
+    let command_id = s(command, "commandId").ok_or_else(|| err("missing commandId"))?;
+    let thread_id = s(command, "threadId").ok_or_else(|| err("missing threadId"))?;
+    let created_at = s(command, "createdAt").ok_or_else(|| err("missing createdAt"))?;
+    let conn = open_state_rw()?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| err(e.to_string()))?;
+    require_thread(&conn, &thread_id)?;
+    require_sidechat_live(&conn, &thread_id)?;
+    if thread_has_revert_in_progress(&conn, &thread_id)? {
+        return Err(err(format!(
+            "Thread '{thread_id}' already has a checkpoint revert in progress."
+        )));
+    }
+    let runtime_mode = s(command, "runtimeMode").unwrap_or_else(|| "full-access".into());
+    let model_sel = command
+        .get("modelSelection")
+        .cloned()
+        .filter(|v| !v.is_null())
+        .unwrap_or_else(|| thread_model_selection(&conn, &thread_id));
+    if let Some(issue) = auto_runtime_issue(&runtime_mode, &model_sel) {
+        return Err(err(issue));
+    }
+    let mut payload = Map::new();
+    payload.insert("threadId".into(), json!(thread_id));
+    if let Some(v) = command.get("messageId") {
+        payload.insert("messageId".into(), v.clone());
+    }
+    for k in [
+        "initialGoalStartedAt",
+        "modelSelection",
+        "providerOptions",
+        "reviewTarget",
+        "enableComputerControl",
+        "computerControlMode",
+        "computerControlGeneration",
+        "sourceProposedPlan",
+    ] {
+        if let Some(v) = command.get(k) {
+            payload.insert(k.to_string(), v.clone());
+        }
+    }
+    payload.insert(
+        "assistantDeliveryMode".into(),
+        command
+            .get("assistantDeliveryMode")
+            .cloned()
+            .unwrap_or(json!("queue")),
+    );
+    payload.insert(
+        "dispatchMode".into(),
+        command.get("dispatchMode").cloned().unwrap_or(json!("queue")),
+    );
+    payload.insert(
+        "dispatchOrigin".into(),
+        command
+            .get("dispatchOrigin")
+            .cloned()
+            .unwrap_or(json!("user")),
+    );
+    payload.insert(
+        "runtimeMode".into(),
+        command.get("runtimeMode").cloned().unwrap_or(Value::Null),
+    );
+    payload.insert(
+        "interactionMode".into(),
+        command
+            .get("interactionMode")
+            .cloned()
+            .unwrap_or(Value::Null),
+    );
+    payload.insert("createdAt".into(), json!(created_at));
+    let events = vec![out_event(
+        "thread.turn-start-requested",
+        &thread_id,
+        &created_at,
+        Value::Object(payload),
+    )];
+    let seq = commit_events(&conn, &events, &command_id)?;
+    Ok(json!({ "sequence": seq }))
+}
+
+fn proposed_plan_upsert(command: &Map<String, Value>) -> Result<Value, WsErr> {
+    let command_id = s(command, "commandId").ok_or_else(|| err("missing commandId"))?;
+    let thread_id = s(command, "threadId").ok_or_else(|| err("missing threadId"))?;
+    let created_at = s(command, "createdAt").ok_or_else(|| err("missing createdAt"))?;
+    let conn = open_state_rw()?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| err(e.to_string()))?;
+    require_thread(&conn, &thread_id)?;
+    let events = vec![out_event(
+        "thread.proposed-plan-upserted",
+        &thread_id,
+        &created_at,
+        json!({
+            "threadId": thread_id,
+            "proposedPlan": command.get("proposedPlan").cloned().unwrap_or(Value::Null),
+        }),
+    )];
+    let seq = commit_events(&conn, &events, &command_id)?;
+    Ok(json!({ "sequence": seq }))
+}
+
+fn turn_diff_complete(command: &Map<String, Value>) -> Result<Value, WsErr> {
+    let command_id = s(command, "commandId").ok_or_else(|| err("missing commandId"))?;
+    let thread_id = s(command, "threadId").ok_or_else(|| err("missing threadId"))?;
+    let created_at = s(command, "createdAt").ok_or_else(|| err("missing createdAt"))?;
+    let conn = open_state_rw()?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| err(e.to_string()))?;
+    require_thread(&conn, &thread_id)?;
+    let mut payload = Map::new();
+    payload.insert("threadId".into(), json!(thread_id));
+    for k in [
+        "turnId",
+        "checkpointTurnCount",
+        "checkpointRef",
+        "status",
+        "files",
+        "completedAt",
+    ] {
+        payload.insert(k.to_string(), command.get(k).cloned().unwrap_or(Value::Null));
+    }
+    payload.insert(
+        "assistantMessageId".into(),
+        command
+            .get("assistantMessageId")
+            .cloned()
+            .unwrap_or(Value::Null),
+    );
+    if command.get("preserveLatestTurn").and_then(Value::as_bool) == Some(true) {
+        payload.insert("preserveLatestTurn".into(), json!(true));
+    }
+    let diff_ev = out_event(
+        "thread.turn-diff-completed",
+        &thread_id,
+        &created_at,
+        Value::Object(payload),
+    );
+    let mut events = vec![diff_ev];
+    if let Some(turn_count) = command.get("checkpointRevertTurnCount").and_then(Value::as_i64) {
+        let succ = revert_succeeded_activity(
+            &command_id,
+            &thread_id,
+            turn_count,
+            &created_at,
+            &events[0].event_id.clone(),
+        );
+        events.push(succ);
+    }
+    let seq = commit_events(&conn, &events, &command_id)?;
+    if events.len() == 2 {
+        let activity = events[1]
+            .payload
+            .get("activity")
+            .cloned()
+            .unwrap_or(Value::Null);
+        append_activity_projection(&conn, &thread_id, &activity, seq)?;
+    }
+    Ok(json!({ "sequence": seq }))
+}
+
+fn revert_complete(command: &Map<String, Value>) -> Result<Value, WsErr> {
+    let command_id = s(command, "commandId").ok_or_else(|| err("missing commandId"))?;
+    let thread_id = s(command, "threadId").ok_or_else(|| err("missing threadId"))?;
+    let created_at = s(command, "createdAt").ok_or_else(|| err("missing createdAt"))?;
+    let turn_count = command
+        .get("turnCount")
+        .and_then(Value::as_i64)
+        .unwrap_or(0);
+    let conn = open_state_rw()?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| err(e.to_string()))?;
+    require_thread(&conn, &thread_id)?;
+    let reverted = out_event(
+        "thread.reverted",
+        &thread_id,
+        &created_at,
+        json!({"threadId": thread_id, "turnCount": turn_count}),
+    );
+    let succ = revert_succeeded_activity(
+        &command_id,
+        &thread_id,
+        turn_count,
+        &created_at,
+        &reverted.event_id,
+    );
+    let events = vec![reverted, succ];
+    let seq = commit_events(&conn, &events, &command_id)?;
+    let activity = events[1]
+        .payload
+        .get("activity")
+        .cloned()
+        .unwrap_or(Value::Null);
+    append_activity_projection(&conn, &thread_id, &activity, seq)?;
+    Ok(json!({ "sequence": seq }))
+}
+
+fn conversation_rollback_complete(command: &Map<String, Value>) -> Result<Value, WsErr> {
+    let command_id = s(command, "commandId").ok_or_else(|| err("missing commandId"))?;
+    let thread_id = s(command, "threadId").ok_or_else(|| err("missing threadId"))?;
+    let created_at = s(command, "createdAt").ok_or_else(|| err("missing createdAt"))?;
+    let conn = open_state_rw()?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| err(e.to_string()))?;
+    require_thread(&conn, &thread_id)?;
+    let mut payload = Map::new();
+    payload.insert("threadId".into(), json!(thread_id));
+    for k in ["messageId", "numTurns", "removedTurnIds"] {
+        if let Some(v) = command.get(k) {
+            payload.insert(k.to_string(), v.clone());
+        }
+    }
+    let events = vec![out_event(
+        "thread.conversation-rolled-back",
+        &thread_id,
+        &created_at,
+        Value::Object(payload),
+    )];
     let seq = commit_events(&conn, &events, &command_id)?;
     Ok(json!({ "sequence": seq }))
 }

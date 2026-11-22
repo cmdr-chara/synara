@@ -66,6 +66,11 @@ pub struct Native {
     pinned_threads: Vec<String>,
     renaming: bool,
     rename_input: Option<Entity<InputState>>,
+    view_changes: bool,
+    changes_files: Vec<Value>,
+    changes_diff: Option<(String, String)>,
+    changes_loading: bool,
+    changes_unavailable: bool,
 }
 
 fn get<'a>(v: &'a Value, k: &str) -> &'a Value {
@@ -187,6 +192,11 @@ impl Native {
                 pinned_threads: Vec::new(),
                 renaming: false,
                 rename_input: None,
+                view_changes: false,
+                changes_files: Vec::new(),
+                changes_diff: None,
+                changes_loading: false,
+                changes_unavailable: false,
             };
             this.refresh(cx);
             this
@@ -481,6 +491,87 @@ impl Native {
             self.fetch_inbox(cx);
         }
         cx.notify();
+    }
+
+    fn toggle_changes(&mut self, cx: &mut Context<Self>) {
+        self.view_changes = !self.view_changes;
+        if self.view_changes {
+            self.fetch_changes(cx);
+        }
+        cx.notify();
+    }
+
+    fn fetch_changes(&mut self, cx: &mut Context<Self>) {
+        let Some(cwd) = self.files_root() else {
+            self.changes_unavailable = true;
+            cx.notify();
+            return;
+        };
+        self.changes_loading = true;
+        self.changes_unavailable = false;
+        let client = self.client.clone();
+        cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
+            let cell = client.clone();
+            let client = cx
+                .background_executor()
+                .spawn(async move { ensure_client(&cell) })
+                .await;
+            let Some(client) = client else { return };
+            let c = client.clone();
+            let c2 = cwd.clone();
+            let res = cx
+                .background_executor()
+                .spawn(async move { c.call("git.status", json!({"cwd": c2})) })
+                .await;
+            let _ = this.update(cx, |this: &mut Self, cx| {
+                this.changes_loading = false;
+                match res {
+                    Some(v) => {
+                        this.changes_unavailable = false;
+                        this.changes_files = arr(get(&v, "workingTree"), "files").to_vec();
+                    }
+                    None => {
+                        this.changes_unavailable = true;
+                        this.changes_files = Vec::new();
+                    }
+                }
+                cx.notify();
+            });
+        })
+        .detach();
+        cx.notify();
+    }
+
+    fn open_diff(&mut self, path: String, cx: &mut Context<Self>) {
+        let Some(cwd) = self.files_root() else {
+            return;
+        };
+        let client = self.client.clone();
+        cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
+            let cell = client.clone();
+            let client = cx
+                .background_executor()
+                .spawn(async move { ensure_client(&cell) })
+                .await;
+            let Some(client) = client else { return };
+            let p = path.clone();
+            let res = cx
+                .background_executor()
+                .spawn(async move {
+                    client.call(
+                        "git.readWorkingTreeDiff",
+                        json!({"cwd": cwd, "filePath": p}),
+                    )
+                })
+                .await;
+            let _ = this.update(cx, |this: &mut Self, cx| {
+                if let Some(v) = res {
+                    this.changes_diff = Some((path.clone(), str_at(&v, "patch").to_string()));
+                }
+                cx.notify();
+            });
+        })
+        .detach();
     }
 
     /// "+" button: native file picker -> upload each file -> chip in composer.
@@ -2439,6 +2530,131 @@ impl Render for Native {
                 .child(composer_bar);
         }
 
+        // ---- changes dock (right pane) ----
+        let mut changes_pane = v_flex()
+            .w(px(300.))
+            .h_full()
+            .p_3()
+            .gap_2()
+            .child(
+                h_flex()
+                    .items_center()
+                    .justify_between()
+                    .child(
+                        div()
+                            .text_xs()
+                            .font_weight(FontWeight::SEMIBOLD)
+                            .text_color(theme.muted_foreground)
+                            .child("CHANGES"),
+                    )
+                    .child(
+                        Button::new("changes-refresh")
+                            .ghost()
+                            .compact()
+                            .icon(IconName::RefreshCw)
+                            .on_click(cx.listener(|this, _ev, _w, cx| {
+                                this.changes_diff = None;
+                                this.fetch_changes(cx);
+                            })),
+                    ),
+            );
+        if self.changes_loading {
+            changes_pane = changes_pane.child(
+                div()
+                    .text_xs()
+                    .text_color(theme.muted_foreground)
+                    .child("Loading\u{2026}"),
+            );
+        } else if self.changes_unavailable {
+            changes_pane = changes_pane.child(
+                div()
+                    .text_xs()
+                    .text_color(theme.muted_foreground)
+                    .child("Not a git repository."),
+            );
+        } else if self.changes_files.is_empty() {
+            changes_pane = changes_pane.child(
+                div()
+                    .text_xs()
+                    .text_color(theme.muted_foreground)
+                    .child("No working tree changes."),
+            );
+        } else {
+            for f in self.changes_files.clone() {
+                let path = str_at(&f, "path").to_string();
+                let ins = get(&f, "insertions").as_i64().unwrap_or(0);
+                let del = get(&f, "deletions").as_i64().unwrap_or(0);
+                let p = path.clone();
+                changes_pane = changes_pane.child(
+                    h_flex()
+                        .id(ElementId::Name(format!("chg-{path}").into()))
+                        .gap_2()
+                        .items_center()
+                        .cursor_pointer()
+                        .child(div().flex_1().text_xs().child(path))
+                        .child(
+                            div()
+                                .text_xs()
+                                .text_color(theme.success)
+                                .child(format!("+{ins}")),
+                        )
+                        .child(
+                            div()
+                                .text_xs()
+                                .text_color(theme.danger)
+                                .child(format!("-{del}")),
+                        )
+                        .on_click(cx.listener(move |this, _ev, _w, cx| {
+                            this.open_diff(p.clone(), cx);
+                        })),
+                );
+            }
+        }
+        if let Some((path, patch)) = &self.changes_diff {
+            changes_pane = changes_pane.child(
+                h_flex()
+                    .items_center()
+                    .justify_between()
+                    .child(div().text_xs().child(path.clone()))
+                    .child(
+                        Button::new("diff-close")
+                            .ghost()
+                            .compact()
+                            .label("\u{00d7}")
+                            .on_click(cx.listener(|this, _ev, _w, cx| {
+                                this.changes_diff = None;
+                                cx.notify();
+                            })),
+                    ),
+            );
+            let mut diff_view = v_flex().gap_0();
+            for line in patch.lines().take(400) {
+                let color = if line.starts_with('+') && !line.starts_with("+++") {
+                    theme.success
+                } else if line.starts_with('-') && !line.starts_with("---") {
+                    theme.danger
+                } else if line.starts_with("@@") {
+                    theme.accent
+                } else {
+                    theme.muted_foreground
+                };
+                diff_view = diff_view.child(
+                    div()
+                        .text_xs()
+                        .font_family(theme.mono_font_family.clone())
+                        .text_color(color)
+                        .child(line.to_string()),
+                );
+            }
+            changes_pane = changes_pane.child(
+                div()
+                    .flex_1()
+                    .id("diff-scroll")
+                    .overflow_y_scrollbar()
+                    .child(diff_view),
+            );
+        }
+
         // ---- icon rail ----
         let rail_btn = |id: &'static str, icon: IconName, active: bool| {
             let b = Button::new(ElementId::Name(id.into())).icon(icon);
@@ -2494,6 +2710,15 @@ impl Render for Native {
                         this.toggle_files(cx);
                     })),
             )
+            .child(
+                {
+                    let b = Button::new("nav-changes").icon(AssetIcon::FileDiff);
+                    if self.view_changes { b.outline() } else { b.ghost() }
+                }
+                .on_click(cx.listener(|this, _ev, _w, cx| {
+                    this.toggle_changes(cx);
+                })),
+            )
             .child(div().flex_1())
             .child(
                 rail_btn("nav-settings", IconName::Settings, self.view_settings)
@@ -2529,12 +2754,16 @@ impl Render for Native {
                     })),
             );
 
-        h_flex()
+        let mut root = h_flex()
             .size_full()
             .bg(theme.background)
             .text_color(theme.foreground)
             .child(rail.border_r_1().border_color(theme.border))
             .child(sidebar.border_r_1().border_color(theme.border))
-            .child(main)
+            .child(main);
+        if self.view_changes {
+            root = root.child(changes_pane.border_l_1().border_color(theme.border));
+        }
+        root
     }
 }

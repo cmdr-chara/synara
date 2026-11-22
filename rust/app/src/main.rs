@@ -1,4 +1,5 @@
 mod native_ws;
+mod runtime_status;
 mod server_env;
 mod todo;
 mod ws_relay;
@@ -13,6 +14,7 @@ use original::shutdown_signal;
 #[tokio::main]
 async fn main() {
     original::report_fallbacks();
+    runtime_status::start_sampler();
     let original = original::Original::start().await;
     let app = units::router()
         .merge(native_ws::router())

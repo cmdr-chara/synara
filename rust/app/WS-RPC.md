@@ -18,8 +18,11 @@ Native coverage in rust/app (relay handles the rest): ~147/285.
 - `provider.*` — 6 of 10: listModels (cached catalog), listSkillsCatalog, listSkills (cross-provider skill root scan + SKILL.md frontmatter), getComposerCapabilities (static adapter table), listPlugins, readPlugin (Factory marketplaces; droid only). Missing: listCommands/listAgents (live SDK), providerUsage (live fetch), setDefaultModel (settings write? check)
 - `terminal.*` — 8 of 8 (incl. subscribeEvents stream)
 - `todo.*` — 5 of 5 (incl. subscribe stream)
+- `automation.*` — 7 of 11: list, getMemory, markRunRead, archiveRun, cancelRun, delete, subscribe (snapshot stream). Missing: create/update/resolveProposal/runNow (scheduler + run dispatch runtime)
+- `projectAgent.*` — 6 of 38: listTasks (deps + base64url cursor paging), listActivity (sequence cursor), listDocuments (prefix filter), readDocument (head+revision+history, disk-mirror sha256 conflict detection, verbatim path errors), listThreadIndex, listEvidence (task-scope guards). Missing: writes/goal+group controls/library (git store)/getOverview+listSummaries (coordinator status resolution)/subscribe + runtime-bound ops
+- `studio.*` — 1 of 1: listThreadOutputs (checkpoint + activity file paths, managed-tree exclusions, scaffold self-heal)
 
-Deferred with reasons: automation/projectAgent/studio contracts are T3-derived (cases-only rule); account/hosts/device need the remote pairing authority; provider.*/getConfig need the provider CLI matrix; readThreadDiagnostics/providerUsage are impl-flagged; voice/generate*/transcribe need the provider runtime; editor.* needs the editor runtime.
+Deferred with reasons: projectAgent writes + coordinator runtime, automation run dispatch; account/hosts/device need the remote pairing authority; provider.*/getConfig need the provider CLI matrix; readThreadDiagnostics/providerUsage are impl-flagged; voice/generate*/transcribe need the provider runtime; editor.* needs the editor runtime.
 
 
 

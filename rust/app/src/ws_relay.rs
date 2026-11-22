@@ -118,6 +118,7 @@ fn intercept_todo(
         && !text.contains("pullRequests.")
         && !text.contains("automation.")
         && !text.contains("studio.")
+        && !text.contains("projectAgent.")
         && !text.contains("provider.")
         && !text.contains("ExternalMcp")
         && !text.contains("server.readThreadDiagnostics")
@@ -194,6 +195,7 @@ fn intercept_todo(
         && !crate::automation::handles(tag)
         && tag != "automation.subscribe"
         && !crate::studio::handles(tag)
+        && !crate::project_agent::handles(tag)
         && !tag.starts_with("stats.")
         && !tag.starts_with("terminal.")
     {
@@ -867,6 +869,10 @@ fn intercept_todo(
             .map_err(error_json)
     } else if crate::studio::handles(tag) {
         crate::studio::handle(tag, &payload)
+            .map(Some)
+            .map_err(error_json)
+    } else if crate::project_agent::handles(tag) {
+        crate::project_agent::handle(tag, &payload)
             .map(Some)
             .map_err(error_json)
     } else if crate::automation::handles(tag) {

@@ -13,6 +13,7 @@ mod mcp_connectors;
 mod provider_cache;
 mod skills_catalog;
 mod orchestration_engine;
+mod project_agent;
 mod project_imports;
 mod projects_provision;
 mod projects_devserver;

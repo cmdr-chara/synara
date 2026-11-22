@@ -115,7 +115,7 @@ fn intercept_todo(
         && !text.contains("terminal.")
         && !text.contains("orchestration.")
         && !text.contains("githubInbox.")
-        && !text.contains("provider.listModels")
+        && !text.contains("provider.")
         && !text.contains("server.listExternalMcpIntegrations")
         && !text.contains("server.readThreadDiagnostics")
         && !text.contains("server.listMcp")

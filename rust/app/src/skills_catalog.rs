@@ -13,7 +13,11 @@ use crate::todo::WsErr;
 pub(crate) fn handles(tag: &str) -> bool {
     matches!(
         tag,
-        "provider.listSkillsCatalog" | "provider.listSkills" | "provider.getComposerCapabilities"
+        "provider.listSkillsCatalog"
+            | "provider.listSkills"
+            | "provider.getComposerCapabilities"
+            | "provider.listPlugins"
+            | "provider.readPlugin"
     )
 }
 
@@ -22,6 +26,8 @@ pub(crate) fn handle(tag: &str, payload: &Value) -> Result<Value, WsErr> {
         "provider.listSkillsCatalog" => list_skills_catalog(payload),
         "provider.listSkills" => list_skills(payload),
         "provider.getComposerCapabilities" => composer_capabilities(payload),
+        "provider.listPlugins" => list_plugins(payload),
+        "provider.readPlugin" => read_plugin(payload),
         _ => Err(err(format!("unhandled native tag {tag}"))),
     }
 }
@@ -832,4 +838,293 @@ fn composer_capabilities(payload: &Value) -> Result<Value, WsErr> {
         "supportsThreadCompaction": enabled && caps.4,
         "supportsThreadImport": enabled && caps.5,
     }))
+}
+
+// ── Factory (droid) plugin marketplaces ──────────────────────────────
+// Mirrors FactoryPluginDiscovery.ts: `~/.factory/plugins/known_marketplaces.json`
+// registers install locations; each marketplace has
+// `.factory-plugin/marketplace.json` listing plugins, each plugin dir has
+// `.factory-plugin/plugin.json`. Enabled state comes from layered settings
+// files' `enabledPlugins` maps.
+
+fn read_json_record(path: &Path) -> Option<serde_json::Map<String, Value>> {
+    let v: Value = serde_json::from_str(&fs::read_to_string(path).ok()?).ok()?;
+    v.as_object().cloned()
+}
+
+fn str_field(v: Option<&Value>) -> Option<String> {
+    v.and_then(|v| v.as_str())
+        .map(str::trim)
+        .filter(|s| !s.is_empty())
+        .map(str::to_string)
+}
+
+fn factory_enabled_plugins(factory_dir: &Path, cwd: Option<&str>) -> std::collections::HashMap<String, bool> {
+    let mut enabled = std::collections::HashMap::new();
+    let mut sources: Vec<Option<Value>> = Vec::new();
+    if let Some(flags) = read_json_record(&factory_dir.join("cache/feature-flags.json")) {
+        let cli_defaults = flags
+            .get("configs")
+            .and_then(|c| c.get("cli_default_settings"))
+            .and_then(|d| d.get("enabledPlugins"))
+            .cloned();
+        sources.push(cli_defaults);
+    }
+    sources.push(
+        read_json_record(&factory_dir.join("settings.json")).and_then(|r| r.get("enabledPlugins").cloned()),
+    );
+    sources.push(
+        read_json_record(&factory_dir.join("settings.local.json")).and_then(|r| r.get("enabledPlugins").cloned()),
+    );
+    if let Some(cwd) = cwd {
+        let base = Path::new(cwd).join(".factory");
+        sources.push(
+            read_json_record(&base.join("settings.json")).and_then(|r| r.get("enabledPlugins").cloned()),
+        );
+        sources.push(
+            read_json_record(&base.join("settings.local.json")).and_then(|r| r.get("enabledPlugins").cloned()),
+        );
+    }
+    for source in sources.into_iter().flatten() {
+        if let Some(map) = source.as_object() {
+            for (id, value) in map {
+                if let Some(b) = value.as_bool() {
+                    enabled.insert(id.clone(), b);
+                }
+            }
+        }
+    }
+    enabled
+}
+
+fn marketplace_registrations(factory_dir: &Path) -> Vec<(String, PathBuf)> {
+    let Some(known) = read_json_record(&factory_dir.join("plugins/known_marketplaces.json")) else {
+        return Vec::new();
+    };
+    let mut out = Vec::new();
+    for (name, raw) in &known {
+        if let Some(path) = str_field(raw.get("installLocation")) {
+            out.push((name.clone(), factory_dir.join(path)));
+        }
+    }
+    out
+}
+
+fn resolve_plugin_path(marketplace: &Path, source: &str) -> Option<PathBuf> {
+    let resolved = marketplace.join(source);
+    let normalized = resolved.canonicalize().unwrap_or(resolved);
+    if path_within(marketplace, &normalized) {
+        Some(normalized)
+    } else {
+        None
+    }
+}
+
+fn plugin_descriptor(
+    marketplace_name: &str,
+    marketplace_path: &Path,
+    entry: &Value,
+    enabled: &std::collections::HashMap<String, bool>,
+) -> Option<Value> {
+    let name = str_field(entry.get("name"))?;
+    let source = str_field(entry.get("source"))?;
+    let path = resolve_plugin_path(marketplace_path, &source)?;
+    let manifest = read_json_record(&path.join(".factory-plugin/plugin.json"));
+    let id = format!("{name}@{marketplace_name}");
+    let installed = enabled.contains_key(&id);
+    let description = manifest
+        .as_ref()
+        .and_then(|m| str_field(m.get("description")))
+        .or_else(|| str_field(entry.get("description")));
+    let developer_name = manifest
+        .as_ref()
+        .and_then(|m| m.get("author"))
+        .and_then(|a| str_field(a.get("name")));
+    let category = str_field(entry.get("category"));
+    let display = manifest
+        .as_ref()
+        .and_then(|m| str_field(m.get("name")))
+        .unwrap_or_else(|| name.clone());
+    let mut interface = json!({"displayName": display});
+    if let Some(d) = description.clone() {
+        interface["shortDescription"] = json!(d);
+    }
+    if let Some(d) = developer_name {
+        interface["developerName"] = json!(d);
+    }
+    if let Some(c) = category {
+        interface["category"] = json!(c);
+    }
+    Some(json!({
+        "id": id,
+        "name": name,
+        "source": {"type": "local", "path": path.to_string_lossy()},
+        "installed": installed,
+        "enabled": enabled.get(&format!("{name}@{marketplace_name}")).copied().unwrap_or(false),
+        "installPolicy": if installed { "INSTALLED_BY_DEFAULT" } else { "AVAILABLE" },
+        "authPolicy": "ON_USE",
+        "interface": interface,
+    }))
+}
+
+fn factory_dir() -> PathBuf {
+    home_dir().join(".factory")
+}
+
+fn list_factory_plugins(cwd: Option<&str>) -> Value {
+    let factory = factory_dir();
+    let registrations = marketplace_registrations(&factory);
+    let enabled = factory_enabled_plugins(&factory, cwd);
+    let mut errors = Vec::new();
+    let mut marketplaces = Vec::new();
+    for (name, path) in registrations {
+        let manifest = read_json_record(&path.join(".factory-plugin/marketplace.json"));
+        let Some(manifest) = manifest else {
+            errors.push(json!({
+                "marketplacePath": path.to_string_lossy(),
+                "message": "Factory marketplace manifest is missing or invalid.",
+            }));
+            continue;
+        };
+        let plugins: Vec<Value> = manifest
+            .get("plugins")
+            .and_then(|p| p.as_array())
+            .map(|a| {
+                a.iter()
+                    .filter_map(|e| plugin_descriptor(&name, &path, e, &enabled))
+                    .collect()
+            })
+            .unwrap_or_default();
+        let display = str_field(manifest.get("name")).unwrap_or_else(|| name.clone());
+        marketplaces.push(json!({
+            "name": name,
+            "path": path.to_string_lossy(),
+            "interface": {"displayName": display},
+            "plugins": plugins,
+        }));
+    }
+    json!({
+        "marketplaces": marketplaces,
+        "marketplaceLoadErrors": errors,
+        "remoteSyncError": Value::Null,
+        "featuredPluginIds": [],
+        "source": "factory-local-marketplaces",
+        "cached": false,
+    })
+}
+
+fn read_factory_plugin(marketplace_path: &str, plugin_name: &str, cwd: Option<&str>) -> Option<Value> {
+    let factory = factory_dir();
+    let resolved = canon(Path::new(marketplace_path)).unwrap_or_else(|| PathBuf::from(marketplace_path));
+    let (mp_name, mp_path) = marketplace_registrations(&factory)
+        .into_iter()
+        .find(|(_, p)| canon(p).unwrap_or_else(|| p.clone()) == resolved)?;
+    let manifest = read_json_record(&mp_path.join(".factory-plugin/marketplace.json"))?;
+    let entry = manifest
+        .get("plugins")?
+        .as_array()?
+        .iter()
+        .find(|p| str_field(p.get("name")).as_deref() == Some(plugin_name))?
+        .clone();
+    let source = str_field(entry.get("source"))?;
+    let path = resolve_plugin_path(&mp_path, &source)?;
+    let enabled = factory_enabled_plugins(&factory, cwd);
+    let summary = plugin_descriptor(&mp_name, &mp_path, &entry, &enabled)?;
+    let plugin_manifest = read_json_record(&path.join(".factory-plugin/plugin.json"));
+    let description = plugin_manifest
+        .as_ref()
+        .and_then(|m| str_field(m.get("description")))
+        .or_else(|| str_field(entry.get("description")));
+    let root = SkillRoot {
+        path: path.join("skills"),
+        scope: "project",
+        include_md: false,
+        follow_symlinks: true,
+        namespace: None,
+    };
+    // Scope label is provider-specific ("factory-plugin:<name>"); patch after scan.
+    let skills: Vec<Value> = descriptors_from_roots(&[root])
+        .into_iter()
+        .map(|mut s| {
+            s["scope"] = json!(format!("factory-plugin:{plugin_name}"));
+            s
+        })
+        .collect();
+    let mut plugin = json!({
+        "marketplaceName": mp_name,
+        "marketplacePath": mp_path.to_string_lossy(),
+        "summary": summary,
+        "skills": skills,
+        "apps": [],
+        "mcpServers": [],
+    });
+    if let Some(d) = description {
+        plugin["description"] = json!(d);
+    }
+    Some(json!({
+        "plugin": plugin,
+        "source": "factory-local-marketplace",
+        "cached": false,
+    }))
+}
+
+fn list_plugins(payload: &Value) -> Result<Value, WsErr> {
+    let provider = payload
+        .get("provider")
+        .and_then(|v| v.as_str())
+        .ok_or_else(|| err("provider is required"))?;
+    let empty = |source: &str| {
+        json!({
+            "marketplaces": [],
+            "marketplaceLoadErrors": [],
+            "remoteSyncError": Value::Null,
+            "featuredPluginIds": [],
+            "source": source,
+            "cached": false,
+        })
+    };
+    if !provider_enabled(payload)? {
+        return Ok(empty("disabled"));
+    }
+    if provider != "droid" {
+        return Ok(empty("unsupported"));
+    }
+    Ok(list_factory_plugins(
+        payload.get("cwd").and_then(|v| v.as_str()),
+    ))
+}
+
+fn read_plugin(payload: &Value) -> Result<Value, WsErr> {
+    let provider = payload
+        .get("provider")
+        .and_then(|v| v.as_str())
+        .ok_or_else(|| err("provider is required"))?;
+    if !provider_enabled(payload)? {
+        return Err(err(format!(
+            "Provider instance '{}' is disabled in Synara settings.",
+            payload
+                .get("instanceId")
+                .and_then(|v| v.as_str())
+                .unwrap_or(provider)
+        )));
+    }
+    if provider != "droid" {
+        return Err(err(format!(
+            "Plugin discovery is unavailable for provider '{provider}'."
+        )));
+    }
+    let marketplace_path = payload
+        .get("marketplacePath")
+        .and_then(|v| v.as_str())
+        .ok_or_else(|| err("marketplacePath is required"))?;
+    let plugin_name = payload
+        .get("pluginName")
+        .and_then(|v| v.as_str())
+        .ok_or_else(|| err("pluginName is required"))?;
+    read_factory_plugin(
+        marketplace_path,
+        plugin_name,
+        payload.get("cwd").and_then(|v| v.as_str()),
+    )
+    .ok_or_else(|| err("Failed to read the Factory plugin."))
 }

@@ -1,0 +1,17 @@
+{
+  "unit": "apps/marketing/src/app/ai.txt/",
+  "files": 1,
+  "fingerprint": "d4da76b56a987ada",
+  "coverage": {
+    "lines": 13,
+    "reached": 13,
+    "files": [
+      {
+        "file": "apps/marketing/src/app/ai.txt/route.ts",
+        "lines": 13,
+        "reached": 13,
+        "missed": ""
+      }
+    ]
+  }
+}

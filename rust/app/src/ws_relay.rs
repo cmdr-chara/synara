@@ -60,6 +60,74 @@ async fn upgrade(
     ws.on_upgrade(move |socket| relay(socket, original, uri, headers, intercept))
 }
 
+/// `todo.*` requests served by the native store; the string check is a fast
+/// prefilter so ordinary traffic still takes the relay path unparsed.
+/// `Some(None)` marks a handled stream request (the reply is the chunk flow).
+fn intercept_todo(
+    text: &str,
+    todos: &std::sync::Arc<crate::todo::TodoStore>,
+    native_tx: &tokio::sync::mpsc::UnboundedSender<ClientMessage>,
+) -> Option<Option<ClientMessage>> {
+    if !text.contains("\"todo.") {
+        return None;
+    }
+    let msg: serde_json::Value = serde_json::from_str(text).ok()?;
+    if msg.get("_tag")?.as_str()? != "Request" {
+        return None;
+    }
+    let tag = msg.get("tag")?.as_str()?;
+    if !tag.starts_with("todo.") {
+        return None;
+    }
+    let request_id = msg
+        .get("id")
+        .and_then(|v| v.as_str())
+        .unwrap_or("")
+        .to_string();
+    let payload = msg.get("payload").cloned().unwrap_or(serde_json::Value::Null);
+    if tag == "todo.subscribe" {
+        // Snapshot first, then every change — mirrors `streamChanges`
+        // (subscribe-then-read ordering is preserved by the store lock).
+        let todos = todos.clone();
+        let tx = native_tx.clone();
+        let rid = request_id;
+        tokio::spawn(async move {
+            let mut rx = todos.subscribe();
+            if let Ok(serde_json::Value::Object(mut snapshot)) = todos.handle("todo.list", serde_json::Value::Null) {
+                let event = serde_json::json!({"type": "snapshot", "todos": snapshot.remove("todos").unwrap_or(serde_json::json!([]))});
+                let chunk = serde_json::json!({"_tag": "Chunk", "requestId": rid, "values": [event]});
+                if tx.send(ClientMessage::Text(chunk.to_string().into())).is_err() {
+                    return;
+                }
+            }
+            while let Ok(event) = rx.recv().await {
+                let chunk = serde_json::json!({"_tag": "Chunk", "requestId": rid, "values": [event]});
+                if tx.send(ClientMessage::Text(chunk.to_string().into())).is_err() {
+                    return;
+                }
+            }
+        });
+        return Some(None);
+    }
+    let exit = match todos.handle(tag, payload) {
+        Ok(value) => serde_json::json!({"_tag": "Success", "value": value}),
+        Err(crate::todo::WsErr(message, code)) => serde_json::json!({
+            "_tag": "Failure",
+            "cause": [{
+                "_tag": "Fail",
+                "error": {
+                    "_tag": "WsRpcError",
+                    "message": message,
+                    "code": code,
+                    "retryable": false,
+                }
+            }]
+        }),
+    };
+    let reply = serde_json::json!({"_tag": "Exit", "requestId": request_id, "exit": exit});
+    Some(Some(ClientMessage::Text(reply.to_string().into())))
+}
+
 /// A `bootstrap.negotiate` request answered natively, or `None` to relay.
 fn intercept_bootstrap(text: &str) -> Option<(String, ClientMessage)> {
     let msg: serde_json::Value = serde_json::from_str(text).ok()?;
@@ -97,6 +165,43 @@ fn intercept_bootstrap(text: &str) -> Option<(String, ClientMessage)> {
     ))
 }
 
+/// Replaces the `x-synara-server-instance` query value in a socket target.
+fn rewrite_server_instance(target: &str, id: &str) -> String {
+    let Some((base, query)) = target.split_once('?') else {
+        return target.to_string();
+    };
+    let mut params: Vec<String> = query
+        .split('&')
+        .filter(|p| !p.starts_with("x-synara-server-instance="))
+        .map(str::to_string)
+        .collect();
+    params.push(format!("x-synara-server-instance={id}"));
+    format!("{base}?{}", params.join("&"))
+}
+
+/// Client request for the upstream socket with the admission headers copied.
+fn build_upstream_request(
+    target: &str,
+    headers: &HeaderMap,
+) -> Option<tokio_tungstenite::tungstenite::handshake::client::Request> {
+    let mut request = target.into_client_request().ok()?;
+    for name in FORWARDED {
+        if let Some(value) = headers.get(*name)
+            && let Ok(header_name) =
+                tokio_tungstenite::tungstenite::http::header::HeaderName::from_bytes(
+                    name.as_bytes(),
+                )
+            && let Ok(header_value) =
+                tokio_tungstenite::tungstenite::http::header::HeaderValue::from_bytes(
+                    value.as_bytes(),
+                )
+        {
+            request.headers_mut().insert(header_name, header_value);
+        }
+    }
+    Some(request)
+}
+
 async fn relay(
     client: WebSocket,
     original: Original,
@@ -104,41 +209,46 @@ async fn relay(
     headers: HeaderMap,
     intercept: bool,
 ) {
-    let target = format!(
+    let todos = original.todos.clone();
+    // The native `/ws/negotiate` issues OUR server-instance id, but upstream
+    // gates upgrades on its own — swap the param so relayed sockets pass the
+    // generation check (fetched lazily; refetched once after a 426).
+    let mut target = format!(
         "{}{}",
         original.ws_base(),
         uri.path_and_query().map_or("/ws", |p| p.as_str())
     );
-    let mut request = match target.as_str().into_client_request() {
-        Ok(r) => r,
-        Err(e) => {
-            eprintln!("ws_relay: request build failed: {e}");
-            return;
-        }
-    };
-    for name in FORWARDED {
-        if let Some(value) = headers.get(*name) {
-            request.headers_mut().insert(
-                tokio_tungstenite::tungstenite::http::header::HeaderName::from_bytes(
-                    name.as_bytes(),
-                )
-                .unwrap(),
-                tokio_tungstenite::tungstenite::http::header::HeaderValue::from_bytes(
-                    value.as_bytes(),
-                )
-                .unwrap(),
-            );
-        }
+    let mut refreshed = false;
+    if target.contains("x-synara-server-instance=")
+        && let Some(id) = original.upstream_instance(false).await
+    {
+        target = rewrite_server_instance(&target, &id);
     }
-    let (upstream, resp) = match connect_async(request).await {
-        Ok(pair) => pair,
-        Err(e) => {
-            eprintln!("ws_relay: upstream connect to {target} failed: {e}");
-            return;
+    let (upstream, resp) = loop {
+        let request = match build_upstream_request(&target, &headers) {
+            Some(r) => r,
+            None => {
+                eprintln!("ws_relay: request build failed for {target}");
+                return;
+            }
+        };
+        match connect_async(request).await {
+            Ok(pair) => break pair,
+            Err(e) => {
+                if !refreshed
+                    && target.contains("x-synara-server-instance=")
+                    && let Some(id) = original.upstream_instance(true).await
+                {
+                    refreshed = true;
+                    target = rewrite_server_instance(&target, &id);
+                    continue;
+                }
+                eprintln!("ws_relay: upstream connect to {target} failed: {e}");
+                return;
+            }
         }
     };
     let _ = resp;
-
     let (mut client_tx, mut client_rx) = client.split();
     let (mut up_tx, mut up_rx) = upstream.split();
     let (native_tx, mut native_rx) = unbounded_channel::<ClientMessage>();
@@ -156,6 +266,12 @@ async fn relay(
                             let _ = native_tx.send(reply);
                             continue;
                         }
+                    }
+                    if let Some(reply) = intercept_todo(&t, &todos, &native_tx) {
+                        if let Some(reply) = reply {
+                            let _ = native_tx.send(reply);
+                        }
+                        continue;
                     }
                     UpstreamMessage::Text(t.to_string().into())
                 }

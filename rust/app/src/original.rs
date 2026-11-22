@@ -61,6 +61,11 @@ pub struct Original {
     base: String,
     client: reqwest::Client,
     child: Arc<Mutex<Option<Child>>>,
+    /// The original's `x-synara-server-instance`, fetched on first use; a child
+    /// restart mints a fresh UUID, so callers refetch after a 426.
+    instance: Arc<Mutex<Option<String>>>,
+    /// Native-owned domains: the `todo.*` WS-RPC handlers.
+    pub todos: Arc<crate::todo::TodoStore>,
 }
 
 impl Original {
@@ -102,7 +107,43 @@ impl Original {
             base: format!("http://127.0.0.1:{port}"),
             client,
             child: Arc::new(Mutex::new(Some(child))),
+            instance: Arc::new(Mutex::new(None)),
+            todos: crate::todo::TodoStore::open(&crate::todo::state_dir()),
         }
+    }
+
+    /// The original's server-instance UUID, negotiated over HTTP. `refresh`
+    /// forces a refetch after a generation change (426).
+    pub async fn upstream_instance(&self, refresh: bool) -> Option<String> {
+        if !refresh
+            && let Ok(guard) = self.instance.lock()
+            && let Some(cached) = guard.as_ref()
+        {
+            return Some(cached.clone());
+        }
+        let url = format!(
+            "{}/ws/negotiate?x-synara-client-build=rust&x-synara-protocol-epoch=1\
+             &x-synara-protocol-min-revision=3&x-synara-protocol-max-revision=3",
+            self.base
+        );
+        let id = self
+            .client
+            .get(url)
+            .send()
+            .await
+            .ok()?
+            .text()
+            .await
+            .ok()?;
+        let id = serde_json::from_str::<serde_json::Value>(&id)
+            .ok()?
+            .get("serverInstanceId")
+            .and_then(|v| v.as_str())
+            .map(str::to_string)?;
+        if let Ok(mut guard) = self.instance.lock() {
+            *guard = Some(id.clone());
+        }
+        Some(id)
     }
 
     /// WebSocket URL of the original (the `base` with a `ws` scheme).

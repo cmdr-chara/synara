@@ -1177,7 +1177,7 @@ impl Render for Native {
                             "PROPOSED PLAN".to_string()
                         }),
                 );
-            card = card.children(md_blocks(md, theme));
+            card = card.children(md_blocks(md, &theme));
             pane = pane.child(card);
         }
 

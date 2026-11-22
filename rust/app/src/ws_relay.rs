@@ -99,6 +99,7 @@ fn intercept_todo(
         && !text.contains("server.editKeybindings")
         && !text.contains("server.listLocalServers")
         && !text.contains("server.stopLocalServer")
+        && !text.contains("server.getDiagnostics")
         && !text.contains("server.getSettings")
         && !text.contains("server.updateSettings")
         && !text.contains("server.subscribeSettings")
@@ -138,6 +139,7 @@ fn intercept_todo(
         && tag != "server.editKeybindings"
         && tag != "server.listLocalServers"
         && tag != "server.stopLocalServer"
+        && tag != "server.getDiagnostics"
         && tag != "server.getSettings"
         && tag != "server.updateSettings"
         && tag != "server.subscribeSettings"
@@ -334,6 +336,10 @@ fn intercept_todo(
             .map_err(error_json)
     } else if tag == "server.editKeybindings" {
         crate::server_keybindings::edit_keybindings(&payload)
+            .map(Some)
+            .map_err(error_json)
+    } else if tag == "server.getDiagnostics" {
+        crate::server_diagnostics::get_diagnostics()
             .map(Some)
             .map_err(error_json)
     } else if tag == "server.listLocalServers" {

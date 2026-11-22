@@ -84,7 +84,7 @@ fn proc_cwd(pid: u32) -> Option<String> {
         .map(|l| l[1..].to_string())
 }
 
-fn iso_now() -> String {
+pub(crate) fn iso_now() -> String {
     let secs = std::time::SystemTime::now()
         .duration_since(std::time::UNIX_EPOCH)
         .map(|d| d.as_secs())

@@ -29,6 +29,11 @@ pub struct Native {
     composer: Entity<InputState>,
     search: Entity<InputState>,
     sending: bool,
+    view_files: bool,
+    files_dir: String,
+    files: Vec<Value>,
+    open_file: Option<(String, String)>,
+    files_loading: bool,
 }
 
 fn get<'a>(v: &'a Value, k: &str) -> &'a Value {
@@ -103,6 +108,11 @@ impl Native {
                 composer,
                 search,
                 sending: false,
+                view_files: false,
+                files_dir: String::new(),
+                files: Vec::new(),
+                open_file: None,
+                files_loading: false,
             };
             this.refresh(cx);
             this
@@ -258,6 +268,114 @@ impl Native {
         }
         self.selected_thread = None;
         self.detail = None;
+        cx.notify();
+    }
+
+    /// Workspace root of the first project — the file browser starts there.
+    fn files_root(&self) -> Option<String> {
+        let p = arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "projects")
+            .first()?;
+        let root = {
+            let r = str_at(p, "workspaceRoot");
+            if r.is_empty() {
+                str_at(p, "workspace_root")
+            } else {
+                r
+            }
+        };
+        if root.is_empty() {
+            None
+        } else {
+            Some(root.to_string())
+        }
+    }
+
+    fn toggle_files(&mut self, cx: &mut Context<Self>) {
+        self.view_files = !self.view_files;
+        if self.view_files && self.files_dir.is_empty() {
+            if let Some(root) = self.files_root() {
+                self.load_dir(root, cx);
+            }
+        }
+        cx.notify();
+    }
+
+    /// Blocking RPC: list one directory level (dirs + files).
+    fn load_dir(&mut self, dir: String, cx: &mut Context<Self>) {
+        self.files_loading = true;
+        self.open_file = None;
+        let client = self.client.clone();
+        cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
+            let cell = client.clone();
+            let d = dir.clone();
+            let entries = cx
+                .background_executor()
+                .spawn(async move {
+                    ensure_client(&cell).and_then(|c| {
+                        c.call(
+                            "projects.listDirectories",
+                            json!({"cwd": d, "depth": 1, "includeFiles": true}),
+                        )
+                    })
+                })
+                .await;
+            let _ = this.update(cx, |this: &mut Self, cx| {
+                this.files_loading = false;
+                if let Some(v) = entries {
+                    this.files = arr(&v, "entries").to_vec();
+                    this.files_dir = dir;
+                }
+                cx.notify();
+            });
+        })
+        .detach();
+        cx.notify();
+    }
+
+    /// Open a file entry for reading, or descend into a directory entry.
+    fn open_entry(&mut self, entry: Value, cx: &mut Context<Self>) {
+        let kind = str_at(&entry, "kind").to_string();
+        let path = str_at(&entry, "path").to_string();
+        if kind == "directory" {
+            self.load_dir(path, cx);
+            return;
+        }
+        if kind != "file" {
+            return;
+        }
+        let client = self.client.clone();
+        cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
+            let cell = client.clone();
+            let p = path.clone();
+            let v = cx
+                .background_executor()
+                .spawn(async move {
+                    let dir = p
+                        .rsplit_once('/')
+                        .map(|(d, _)| d.to_string())
+                        .unwrap_or_else(|| p.clone());
+                    let name = p.rsplit('/').next().unwrap_or(&p).to_string();
+                    ensure_client(&cell).and_then(|c| {
+                        c.call(
+                            "projects.readFile",
+                            json!({"cwd": dir, "relativePath": name}),
+                        )
+                    })
+                })
+                .await;
+            let _ = this.update(cx, |this: &mut Self, cx| {
+                if let Some(v) = v {
+                    let text = str_at(&v, "contents").to_string();
+                    this.open_file = Some((path, text));
+                }
+                cx.notify();
+            });
+        })
+        .detach();
+    }
+
+    fn close_file(&mut self, cx: &mut Context<Self>) {
+        self.open_file = None;
         cx.notify();
     }
 
@@ -423,6 +541,12 @@ impl Render for Native {
                         .ghost()
                         .label("+")
                         .on_click(cx.listener(|this, _ev, _w, cx| this.new_thread(cx))),
+                )
+                .child(
+                    Button::new("toggle-files")
+                        .ghost()
+                        .label(if self.view_files { "Chat" } else { "Files" })
+                        .on_click(cx.listener(|this, _ev, _w, cx| this.toggle_files(cx))),
                 ),
         );
         for space in arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "spaces") {
@@ -596,6 +720,100 @@ impl Render for Native {
             );
         }
 
+        // ---- files browser / viewer ----
+        let mut files_pane = v_flex().flex_1().h_full().p_4().gap_1();
+        if self.view_files {
+            if let Some((path, text)) = &self.open_file {
+                let p = path.clone();
+                files_pane = files_pane
+                    .child(
+                        h_flex()
+                            .gap_2()
+                            .child(
+                                Button::new("close-file")
+                                    .ghost()
+                                    .label("x")
+                                    .on_click(
+                                        cx.listener(|this, _ev, _w, cx| this.close_file(cx)),
+                                    ),
+                            )
+                            .child(
+                                div()
+                                    .text_xs()
+                                    .text_color(theme.muted_foreground)
+                                    .child(p),
+                            ),
+                    )
+                    .child(
+                        div()
+                            .text_sm()
+                            .font_family("monospace")
+                            .child(text.clone()),
+                    );
+            } else {
+                let parent = self
+                    .files_dir
+                    .rsplit_once('/')
+                    .map(|(d, _)| d.to_string())
+                    .filter(|d| !d.is_empty());
+                let mut header = h_flex().gap_2().child(
+                    div()
+                        .text_xs()
+                        .font_weight(FontWeight::SEMIBOLD)
+                        .text_color(theme.muted_foreground)
+                        .child(self.files_dir.clone()),
+                );
+                if let Some(parent) = parent {
+                    header = header.child(
+                        div()
+                            .id("files-up")
+                            .cursor_pointer()
+                            .text_xs()
+                            .text_color(theme.accent)
+                            .child("..")
+                            .on_click(cx.listener(move |this, _ev, _w, cx| {
+                                this.load_dir(parent.clone(), cx)
+                            })),
+                    );
+                }
+                files_pane = files_pane.child(header);
+                if self.files_loading {
+                    files_pane = files_pane.child(
+                        div()
+                            .text_sm()
+                            .text_color(theme.muted_foreground)
+                            .child("loading\u{2026}"),
+                    );
+                }
+                for entry in self.files.clone() {
+                    let name = str_at(&entry, "name").to_string();
+                    let is_dir = str_at(&entry, "kind") == "directory";
+                    files_pane = files_pane.child(
+                        div()
+                            .id(ElementId::Name(format!("file-{name}").into()))
+                            .cursor_pointer()
+                            .px_2()
+                            .py_1()
+                            .rounded_md()
+                            .text_sm()
+                            .text_color(if is_dir {
+                                theme.accent
+                            } else {
+                                theme.foreground
+                            })
+                            .child(if is_dir {
+                                format!("{name}/")
+                            } else {
+                                name
+                            })
+                            .on_click(cx.listener(move |this, _ev, _w, cx| {
+                                this.open_entry(entry.clone(), cx)
+                            })),
+                    );
+                }
+            }
+        }
+
         // ---- composer ----
         let composer_bar = h_flex()
             .w_full()
@@ -611,11 +829,14 @@ impl Render for Native {
                     .on_click(cx.listener(|this, _ev, w, cx| this.send(w, cx))),
             );
 
-        let main = v_flex()
-            .flex_1()
-            .h_full()
-            .child(div().flex_1().child(pane.overflow_y_scrollbar()))
-            .child(composer_bar);
+        let mut main = v_flex().flex_1().h_full();
+        if self.view_files {
+            main = main.child(div().flex_1().child(files_pane.overflow_y_scrollbar()));
+        } else {
+            main = main
+                .child(div().flex_1().child(pane.overflow_y_scrollbar()))
+                .child(composer_bar);
+        }
 
         h_flex()
             .size_full()

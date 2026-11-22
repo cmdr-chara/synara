@@ -1,0 +1,889 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/device/",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "device-rs",
+  "exports": [
+    {
+      "name": "fitDeviceMessage",
+      "file": "apps/server/src/device/DeviceBackend.ts",
+      "line": 55,
+      "params": [
+        {
+          "name": "message",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "parseSimctlDevices",
+      "file": "apps/server/src/device/IosSimulatorBackend.ts",
+      "line": 212,
+      "params": [
+        {
+          "name": "json",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "catalogue",
+          "ts_type": "ReadonlyMap<string, DeviceTypeProfile>",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "readonly typeof typeof typeof typeof DeviceDescriptor.Type.Type.Type.Type[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "hasBootableIosRuntime",
+      "file": "apps/server/src/device/IosSimulatorBackend.ts",
+      "line": 258,
+      "params": [
+        {
+          "name": "devices",
+          "ts_type": "readonly typeof typeof typeof typeof DeviceDescriptor.Type.Type.Type.Type[]",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "orderXcodeAppCandidates",
+      "file": "apps/server/src/device/IosSimulatorBackend.ts",
+      "line": 269,
+      "params": [
+        {
+          "name": "entries",
+          "ts_type": "readonly string[]",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "readonly string[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "selectRecordingDirectory",
+      "file": "apps/server/src/device/IosSimulatorBackend.ts",
+      "line": 279,
+      "params": [
+        {
+          "name": "candidates",
+          "ts_type": "readonly string[]",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "fallback",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<string>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "normalizeUiNode",
+      "file": "apps/server/src/device/IosSimulatorBackend.ts",
+      "line": 2036,
+      "params": [
+        {
+          "name": "raw",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "DeviceUiNode",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "readPngDimensions",
+      "file": "apps/server/src/device/IosSimulatorBackend.ts",
+      "line": 2095,
+      "params": [
+        {
+          "name": "bytes",
+          "ts_type": "Buffer",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "{ readonly width: number; readonly height: number } | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "processIsAlive",
+      "file": "apps/server/src/device/bootOwnership.ts",
+      "line": 106,
+      "params": [
+        {
+          "name": "pid",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "decodeResyncRequest",
+      "file": "apps/server/src/device/deviceFrameRoute.ts",
+      "line": 47,
+      "params": [
+        {
+          "name": "message",
+          "ts_type": "string | Uint8Array",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "\"resync\" | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "unifiedLogArguments",
+      "file": "apps/server/src/device/deviceLogs.ts",
+      "line": 36,
+      "params": [
+        {
+          "name": "executable",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "query",
+          "ts_type": "DeviceLogQuery",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "tailLines",
+      "file": "apps/server/src/device/deviceLogs.ts",
+      "line": 64,
+      "params": [
+        {
+          "name": "lines",
+          "ts_type": "readonly string[]",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "limit",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "{ readonly lines: readonly string[]; readonly omitted: number }",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "readCrashReports",
+      "file": "apps/server/src/device/deviceLogs.ts",
+      "line": 84,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly directory: string;\n  readonly executable: string;\n  readonly udid: string;\n  readonly sinceMs: number;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<readonly DeviceCrashReport[]>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "parseCrashReport",
+      "file": "apps/server/src/device/deviceLogs.ts",
+      "line": 122,
+      "params": [
+        {
+          "name": "text",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "{\n  readonly procPath: string | null;\n  readonly exception: string | null;\n  readonly reason: string | null;\n}",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "parseSimctlDeviceTypes",
+      "file": "apps/server/src/device/deviceTypeCatalogue.ts",
+      "line": 67,
+      "params": [
+        {
+          "name": "json",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "readonly ParsedDeviceType[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "parseDeviceTypeProfile",
+      "file": "apps/server/src/device/deviceTypeCatalogue.ts",
+      "line": 100,
+      "params": [
+        {
+          "name": "json",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "NonNullable<typeof typeof typeof DeviceDescriptor.Type.Type.Type[\"geometry\"]> | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "readDeviceTypeCatalogue",
+      "file": "apps/server/src/device/deviceTypeCatalogue.ts",
+      "line": 131,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly run: typeof runProcess;\n  readonly env?: NodeJS.ProcessEnv | undefined;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<ReadonlyMap<string, DeviceTypeProfile>>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "effectiveValue",
+      "file": "apps/server/src/device/deviceUiSnapshot.ts",
+      "line": 51,
+      "params": [
+        {
+          "name": "node",
+          "ts_type": "DeviceUiNode",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "formatUiSnapshot",
+      "file": "apps/server/src/device/deviceUiSnapshot.ts",
+      "line": 88,
+      "params": [
+        {
+          "name": "root",
+          "ts_type": "DeviceUiNode",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "options",
+          "ts_type": "{ readonly maxElements?: number }",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "uiFingerprint",
+      "file": "apps/server/src/device/deviceUiSnapshot.ts",
+      "line": 149,
+      "params": [
+        {
+          "name": "root",
+          "ts_type": "DeviceUiNode",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "findFocusedNode",
+      "file": "apps/server/src/device/deviceUiSnapshot.ts",
+      "line": 172,
+      "params": [
+        {
+          "name": "root",
+          "ts_type": "DeviceUiNode",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "DeviceUiNode | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isSecureField",
+      "file": "apps/server/src/device/deviceUiSnapshot.ts",
+      "line": 177,
+      "params": [
+        {
+          "name": "node",
+          "ts_type": "DeviceUiNode",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "parseHelperProbe",
+      "file": "apps/server/src/device/helperCapabilities.ts",
+      "line": 88,
+      "params": [
+        {
+          "name": "stdout",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "HelperProbeResult",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "availabilityFromProbe",
+      "file": "apps/server/src/device/helperCapabilities.ts",
+      "line": 154,
+      "params": [
+        {
+          "name": "probe",
+          "ts_type": "HelperProbeResult",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof DeviceAvailability.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "describeToolchain",
+      "file": "apps/server/src/device/helperCapabilities.ts",
+      "line": 180,
+      "params": [
+        {
+          "name": "toolchain",
+          "ts_type": "typeof typeof typeof typeof DeviceToolchain.Type.Type.Type.Type | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "describeBrokenCapabilities",
+      "file": "apps/server/src/device/helperCapabilities.ts",
+      "line": 191,
+      "params": [
+        {
+          "name": "broken",
+          "ts_type": "readonly typeof typeof typeof typeof DeviceCapabilityStatus.Type.Type.Type.Type[]",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "toolchain",
+          "ts_type": "typeof typeof typeof typeof DeviceToolchain.Type.Type.Type.Type | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "capabilityUnavailableMessage",
+      "file": "apps/server/src/device/helperCapabilities.ts",
+      "line": 210,
+      "params": [
+        {
+          "name": "capability",
+          "ts_type": "typeof typeof typeof typeof DeviceCapabilityStatus.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "toolchain",
+          "ts_type": "typeof typeof typeof typeof DeviceToolchain.Type.Type.Type.Type | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "xcodeAppRoot",
+      "file": "apps/server/src/device/helperSandbox.ts",
+      "line": 53,
+      "params": [
+        {
+          "name": "developerDir",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "sandboxDisabled",
+      "file": "apps/server/src/device/helperSandbox.ts",
+      "line": 72,
+      "params": [
+        {
+          "name": "env",
+          "ts_type": "NodeJS.ProcessEnv",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "sandboxedHelperCommand",
+      "file": "apps/server/src/device/helperSandbox.ts",
+      "line": 85,
+      "params": [
+        {
+          "name": "argv",
+          "ts_type": "readonly string[]",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "context",
+          "ts_type": "HelperSandboxContext",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<HelperSandboxCommand>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "describeSandboxSuspicion",
+      "file": "apps/server/src/device/helperSandbox.ts",
+      "line": 149,
+      "params": [
+        {
+          "name": "profilePath",
+          "ts_type": "string | null",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "targetPhrase",
+      "file": "apps/server/src/device/uiTreeTargeting.ts",
+      "line": 49,
+      "params": [
+        {
+          "name": "target",
+          "ts_type": "DeviceUiTarget",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "describeTarget",
+      "file": "apps/server/src/device/uiTreeTargeting.ts",
+      "line": 56,
+      "params": [
+        {
+          "name": "target",
+          "ts_type": "DeviceUiTarget",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isTargetable",
+      "file": "apps/server/src/device/uiTreeTargeting.ts",
+      "line": 109,
+      "params": [
+        {
+          "name": "node",
+          "ts_type": "DeviceUiNode",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "visibleLabels",
+      "file": "apps/server/src/device/uiTreeTargeting.ts",
+      "line": 128,
+      "params": [
+        {
+          "name": "root",
+          "ts_type": "DeviceUiNode",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isOnScreen",
+      "file": "apps/server/src/device/uiTreeTargeting.ts",
+      "line": 149,
+      "params": [
+        {
+          "name": "node",
+          "ts_type": "DeviceUiNode",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "root",
+          "ts_type": "DeviceUiNode",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "findTarget",
+      "file": "apps/server/src/device/uiTreeTargeting.ts",
+      "line": 177,
+      "params": [
+        {
+          "name": "root",
+          "ts_type": "DeviceUiNode",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "target",
+          "ts_type": "DeviceUiTarget",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "DeviceUiTargetMatch",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "deviceKeyboardTop",
+      "file": "apps/server/src/device/uiTreeTargeting.ts",
+      "line": 241,
+      "params": [
+        {
+          "name": "root",
+          "ts_type": "DeviceUiNode",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "number | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "planScrollStep",
+      "file": "apps/server/src/device/uiTreeTargeting.ts",
+      "line": 316,
+      "params": [
+        {
+          "name": "node",
+          "ts_type": "DeviceUiNode",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "root",
+          "ts_type": "DeviceUiNode",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "DeviceScrollStep | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "readTapRequest",
+      "file": "apps/server/src/device/uiTreeTargeting.ts",
+      "line": 354,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly x?: number | undefined;\n  readonly y?: number | undefined;\n  readonly label?: string | undefined;\n  readonly identifier?: string | undefined;\n  readonly role?: string | undefined;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(| { readonly kind: \"point\"; readonly x: number; readonly y: number }\n  | { readonly kind: \"element\"; readonly target: DeviceUiTarget })",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "DeviceBackendError",
+      "file": "apps/server/src/device/DeviceBackend.ts",
+      "line": 68,
+      "reason": "class: extends another class, public field `retryable`"
+    },
+    {
+      "name": "DeviceManager",
+      "file": "apps/server/src/device/DeviceManager.ts",
+      "line": 237,
+      "reason": "class: async or generator method `reclaimOrphanedBoots`, async or generator method `availability`, async or generator method `list`, async or generator method `getThreadState`, async or generator method `synaraBootedDevices`, async or generator method `boot`, async or generator method `ensureBooted`, async or generator method `shutdown`, async or generator method `attach`, async or generator method `ensureThreadAttached`, async or generator method `detach`, async or generator method `handleThreadRemoved`, async or generator method `tap`, async or generator method `tapElement`, async or generator method `scrollToElement`, async or generator method `swipe`, async or generator method `typeText`, async or generator method `enterText`, async or generator method `waitForSettle`, async or generator method `observe`, async or generator method `waitFor`, async or generator method `keyEvent`, async or generator method `pressButton`, async or generator method `install`, async or generator method `launch`, async or generator method `configure`, async or generator method `readLogs`, async or generator method `openUrl`, async or generator method `screenshot`, async or generator method `startRecording`, async or generator method `stopRecording`, async or generator method `describeUi`, async or generator method `pointSize`, async or generator method `withAgentActivity`, async or generator method `surfaceDeviceForAgent`, async or generator method `recordThreadError`, async or generator method `dispose`, async or generator method `requestKeyframe`"
+    },
+    {
+      "name": "isTransientAttachFailure",
+      "file": "apps/server/src/device/DeviceManager.ts",
+      "line": 122,
+      "reason": "checks `instanceof`: class identity does not survive the bridge"
+    },
+    {
+      "name": "errorMessage",
+      "file": "apps/server/src/device/DeviceManager.ts",
+      "line": 1893,
+      "reason": "checks `instanceof`: class identity does not survive the bridge"
+    },
+    {
+      "name": "FakeDeviceBackend",
+      "file": "apps/server/src/device/FakeDeviceBackend.ts",
+      "line": 118,
+      "reason": "class: public field `platform`, public field `calls`, public field `failures`, public field `disposed`, public field `usKeyboardLayout`, async or generator method `boot`, async or generator method `shutdown`, async or generator method `install`, async or generator method `launch`, async or generator method `openUrl`, async or generator method `tap`, async or generator method `swipe`, async or generator method `typeText`, async or generator method `setFocusedValue`, async or generator method `usesUsKeyboardLayout`, async or generator method `configure`, async or generator method `readLogs`, async or generator method `keyEvent`, async or generator method `pressButton`, async or generator method `screenshot`, async or generator method `startRecording`, async or generator method `stopRecording`, async or generator method `describeUi`, async or generator method `attachStream`, async or generator method `detachStream`, async or generator method `dispose`"
+    },
+    {
+      "name": "IosSimulatorBackend",
+      "file": "apps/server/src/device/IosSimulatorBackend.ts",
+      "line": 309,
+      "reason": "class: public field `platform`, async or generator method `availability`, async or generator method `assertCapability`, async or generator method `listDevices`, async or generator method `boot`, async or generator method `shutdown`, async or generator method `install`, async or generator method `launch`, async or generator method `openUrl`, async or generator method `screenshot`, async or generator method `startRecording`, async or generator method `stopRecording`, async or generator method `tap`, async or generator method `swipe`, async or generator method `typeText`, async or generator method `setFocusedValue`, async or generator method `usesUsKeyboardLayout`, async or generator method `configure`, async or generator method `readLogs`, async or generator method `keyEvent`, async or generator method `pressButton`, async or generator method `describeUi`, async or generator method `attachStream`, async or generator method `detachStream`, async or generator method `dispose`, async or generator method `compileHelperIfNeeded`"
+    },
+    {
+      "name": "resolveDeviceHelperSourceDir",
+      "file": "apps/server/src/device/IosSimulatorBackend.ts",
+      "line": 125,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "isStaleDescriptorError",
+      "file": "apps/server/src/device/IosSimulatorBackend.ts",
+      "line": 2018,
+      "reason": "checks `instanceof`: class identity does not survive the bridge"
+    },
+    {
+      "name": "makeBootOwnershipStore",
+      "file": "apps/server/src/device/bootOwnership.ts",
+      "line": 45,
+      "reason": "uses `BootOwnershipStore`, which has function members"
+    },
+    {
+      "name": "orphanedBootUdids",
+      "file": "apps/server/src/device/bootOwnership.ts",
+      "line": 94,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "makeDeviceFrameSink",
+      "file": "apps/server/src/device/deviceFrameRoute.ts",
+      "line": 61,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "makeDeviceFrameRouteLayer",
+      "file": "apps/server/src/device/deviceFrameRoute.ts",
+      "line": 73,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "DeviceFrameTransport",
+      "file": "apps/server/src/device/deviceFrameTransport.ts",
+      "line": 28,
+      "reason": "class: extends another class"
+    },
+    {
+      "name": "DeviceHelperError",
+      "file": "apps/server/src/device/helperClient.ts",
+      "line": 70,
+      "reason": "class: extends another class, public field `code`"
+    },
+    {
+      "name": "DeviceFramePrefixParser",
+      "file": "apps/server/src/device/helperClient.ts",
+      "line": 153,
+      "reason": "class: `push`: checks `instanceof`: class identity does not survive the bridge"
+    },
+    {
+      "name": "HelperClient",
+      "file": "apps/server/src/device/helperClient.ts",
+      "line": 179,
+      "reason": "class: accessor `running`, accessor `attachedDevice`, async or generator method `request`, async or generator method `attach`, async or generator method `startStream`, async or generator method `stopStream`"
+    },
+    {
+      "name": "DeviceUiTargetError",
+      "file": "apps/server/src/device/uiTreeTargeting.ts",
+      "line": 71,
+      "reason": "class: extends another class, public field `candidates`, public field `notFound`"
+    },
+    {
+      "name": "makeWsDeviceHandlers",
+      "file": "apps/server/src/device/wsDeviceHandlers.ts",
+      "line": 144,
+      "reason": "uses `WsDeviceHandlers`, which has function members"
+    }
+  ]
+}

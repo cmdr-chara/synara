@@ -46,7 +46,7 @@ fn tasks_enabled() -> bool {
     true
 }
 
-fn iso_now_ms() -> String {
+pub(crate) fn iso_now_ms() -> String {
     // JS `new Date().toISOString()` — millis precision.
     let ms = std::time::SystemTime::now()
         .duration_since(std::time::UNIX_EPOCH)

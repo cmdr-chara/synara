@@ -181,6 +181,7 @@ fn intercept_todo(
         && tag != "orchestration.subscribeThread"
         && tag != "orchestration.subscribeDomainEvents"
         && !crate::orchestration_reads::handles(tag)
+        && !crate::orchestration_engine::handles(tag)
         && !crate::provider_cache::handles(tag)
         && !crate::skills_catalog::handles(tag)
         && !crate::project_imports::handles(tag)
@@ -782,6 +783,10 @@ fn intercept_todo(
         crate::orchestration_snapshot::search_threads(&payload)
             .map(Some)
             .map_err(error_json)
+    } else if crate::orchestration_engine::handles(tag) {
+        crate::orchestration_engine::handle(tag, &payload)
+            .map(Some)
+            .map_err(error_json)
     } else if crate::orchestration_reads::handles(tag) {
         crate::orchestration_reads::handle(tag, &payload)
             .map(Some)
@@ -932,6 +937,63 @@ async fn relay(
     intercept: bool,
 ) {
     let todos = original.todos.clone();
+    if std::env::var("SYNARA_NO_UPSTREAM").is_ok() {
+        // No original is running: serve every frame natively. Handled tags get
+        // their normal reply; anything else answers an Exit failure so callers
+        // never hang waiting for an upstream that does not exist.
+        eprintln!("ws_relay: SYNARA_NO_UPSTREAM set, serving socket natively");
+        let (mut client_tx, mut client_rx) = client.split();
+        let (native_tx, mut native_rx) = unbounded_channel::<ClientMessage>();
+        let streams: std::sync::Arc<
+            std::sync::Mutex<std::collections::HashMap<String, tokio::task::JoinHandle<()>>>,
+        > = std::sync::Arc::new(std::sync::Mutex::new(std::collections::HashMap::new()));
+        let streams_in = streams.clone();
+        let writer = tokio::spawn(async move {
+            while let Some(m) = native_rx.recv().await {
+                if client_tx.send(m).await.is_err() {
+                    break;
+                }
+            }
+        });
+        while let Some(msg) = client_rx.next().await {
+            match msg {
+                Ok(ClientMessage::Text(t)) => {
+                    if let Some(reply) = intercept_todo(&t, &todos, &native_tx, &streams_in) {
+                        if let Some(reply) = reply {
+                            let _ = native_tx.send(reply);
+                        }
+                        continue;
+                    }
+                    if let Ok(m2) = serde_json::from_str::<serde_json::Value>(&t)
+                        && m2.get("_tag").and_then(|v| v.as_str()) == Some("Request")
+                    {
+                        let rid = m2
+                            .get("id")
+                            .and_then(|v| v.as_str())
+                            .unwrap_or("")
+                            .to_string();
+                        let tag_s = m2.get("tag").and_then(|v| v.as_str()).unwrap_or("");
+                        let reply = serde_json::json!({
+                            "_tag": "Exit", "requestId": rid,
+                            "exit": {"_tag": "Failure", "cause": [{"_tag": "Fail", "error": {
+                                "_tag": "WsRpcError",
+                                "message": format!("{tag_s} requires the original server, which is not running (SYNARA_NO_UPSTREAM)"),
+                                "code": null, "retryable": false}}]}
+                        });
+                        let _ = native_tx.send(ClientMessage::Text(reply.to_string().into()));
+                    }
+                }
+                Ok(ClientMessage::Ping(p)) => {
+                    let _ = native_tx.send(ClientMessage::Pong(p));
+                }
+                Ok(ClientMessage::Close(_)) | Err(_) => break,
+                _ => {}
+            }
+        }
+        drop(native_tx);
+        let _ = writer.await;
+        return;
+    }
     // The native `/ws/negotiate` issues OUR server-instance id, but upstream
     // gates upgrades on its own — swap the param so relayed sockets pass the
     // generation check (fetched lazily; refetched once after a 426).

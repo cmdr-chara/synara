@@ -1290,6 +1290,828 @@ fn get_overview(payload: &Value) -> Result<Value, WsErr> {
     })
 }
 
+// ---- write methods (state writes gated on SYNARA_NO_UPSTREAM via open_state_rw) ----
+
+fn goal_row(row: &rusqlite::Row) -> Result<Value, rusqlite::Error> {
+    goal_wire(row)
+}
+
+fn get_goal(conn: &Connection, goal_id: &str) -> Result<Option<Value>, WsErr> {
+    conn.query_row(
+        &format!("SELECT {GOAL_COLS} FROM project_agent_goals WHERE goal_id = ?1"),
+        [goal_id],
+        goal_row,
+    )
+    .optional()
+    .map_err(|e| err(e.to_string()))
+}
+
+fn get_active_goal(conn: &Connection, project_id: &str) -> Result<Option<Value>, WsErr> {
+    conn.query_row(
+        &format!(
+            "SELECT {GOAL_COLS} FROM project_agent_goals WHERE project_id = ?1 \
+             AND status IN ('active','paused') ORDER BY updated_at DESC, goal_id DESC LIMIT 1"
+        ),
+        [project_id],
+        goal_row,
+    )
+    .optional()
+    .map_err(|e| err(e.to_string()))
+}
+
+fn save_goal(
+    conn: &Connection,
+    g: &Value,
+    expected_revision: Option<i64>,
+) -> Result<(), WsErr> {
+    let cols = "goal_id, project_id, objective, authorization_source, scope_version, \
+                acceptance_criteria, limits_json, status, continuation_count, \
+                worker_creation_count, authorized_at, revision, created_at, updated_at";
+    let params = rusqlite::params![
+        g["id"].as_str(),
+        g["projectId"].as_str(),
+        g["objective"].as_str(),
+        g["authorizationSource"].as_str(),
+        g["scopeVersion"].as_i64().unwrap_or(1),
+        g["acceptanceCriteria"].as_str(),
+        g["limits"].to_string(),
+        g["status"].as_str(),
+        g["continuationCount"].as_i64().unwrap_or(0),
+        g["workerCreationCount"].as_i64().unwrap_or(0),
+        g["authorizedAt"].as_str(),
+        g["revision"].as_i64().unwrap_or(1),
+        g["createdAt"].as_str(),
+        g["updatedAt"].as_str(),
+    ];
+    if expected_revision.is_none() {
+        conn.execute(
+            &format!("INSERT INTO project_agent_goals ({cols}) VALUES (?1,?2,?3,?4,?5,?6,?7,?8,?9,?10,?11,?12,?13,?14)"),
+            params,
+        )
+        .map_err(|e| err(e.to_string()))?;
+        return Ok(());
+    }
+    let changed = conn
+        .execute(
+            &format!("UPDATE project_agent_goals SET ({cols}) = (?1,?2,?3,?4,?5,?6,?7,?8,?9,?10,?11,?12,?13,?14) WHERE goal_id = ?1 AND revision = ?15"),
+            rusqlite::params![
+                g["id"].as_str(),
+                g["projectId"].as_str(),
+                g["objective"].as_str(),
+                g["authorizationSource"].as_str(),
+                g["scopeVersion"].as_i64().unwrap_or(1),
+                g["acceptanceCriteria"].as_str(),
+                g["limits"].to_string(),
+                g["status"].as_str(),
+                g["continuationCount"].as_i64().unwrap_or(0),
+                g["workerCreationCount"].as_i64().unwrap_or(0),
+                g["authorizedAt"].as_str(),
+                g["revision"].as_i64().unwrap_or(1),
+                g["createdAt"].as_str(),
+                g["updatedAt"].as_str(),
+                expected_revision.unwrap_or(0),
+            ],
+        )
+        .map_err(|e| err(e.to_string()))?;
+    if changed != 1 {
+        return Err(err("Failed to update project goal."));
+    }
+    Ok(())
+}
+
+fn get_task(conn: &Connection, task_id: &str) -> Result<Option<Value>, WsErr> {
+    conn.query_row(
+        "SELECT task_id, project_id, goal_id, title, description, acceptance_criteria, \
+         status, assigned_thread_id, repair_count, archived_at, revision, created_at, updated_at \
+         FROM project_agent_tasks WHERE task_id = ?1",
+        [task_id],
+        |row| task_row(conn, row).map_err(|e| {
+            rusqlite::Error::ToSqlConversionFailure(Box::new(std::io::Error::new(
+                std::io::ErrorKind::Other,
+                e.0,
+            )))
+        }),
+    )
+    .optional()
+    .map_err(|e| err(e.to_string()))
+}
+
+fn save_task(conn: &Connection, t: &Value, expected_revision: Option<i64>) -> Result<(), WsErr> {
+    if expected_revision.is_none() {
+        conn.execute(
+            "INSERT INTO project_agent_tasks (task_id, project_id, goal_id, title, description, \
+             acceptance_criteria, status, assigned_thread_id, repair_count, archived_at, revision, \
+             created_at, updated_at) VALUES (?1,?2,?3,?4,?5,?6,?7,?8,?9,?10,?11,?12,?13)",
+            rusqlite::params![
+                t["id"].as_str(),
+                t["projectId"].as_str(),
+                t["goalId"].as_str(),
+                t["title"].as_str(),
+                t["description"].as_str(),
+                t["acceptanceCriteria"].as_str(),
+                t["status"].as_str(),
+                t["assignedThreadId"].as_str(),
+                t["repairCount"].as_i64().unwrap_or(0),
+                t["archivedAt"].as_str(),
+                t["revision"].as_i64().unwrap_or(1),
+                t["createdAt"].as_str(),
+                t["updatedAt"].as_str(),
+            ],
+        )
+        .map_err(|e| err(e.to_string()))?;
+    } else {
+        let changed = conn
+            .execute(
+                "UPDATE project_agent_tasks SET goal_id=?3, title=?4, description=?5, \
+                 acceptance_criteria=?6, status=?7, assigned_thread_id=?8, repair_count=?9, \
+                 archived_at=?10, revision=?11, updated_at=?13 \
+                 WHERE task_id=?1 AND project_id=?2 AND revision=?14",
+                rusqlite::params![
+                    t["id"].as_str(),
+                    t["projectId"].as_str(),
+                    t["goalId"].as_str(),
+                    t["title"].as_str(),
+                    t["description"].as_str(),
+                    t["acceptanceCriteria"].as_str(),
+                    t["status"].as_str(),
+                    t["assignedThreadId"].as_str(),
+                    t["repairCount"].as_i64().unwrap_or(0),
+                    t["archivedAt"].as_str(),
+                    t["revision"].as_i64().unwrap_or(1),
+                    t["createdAt"].as_str(),
+                    t["updatedAt"].as_str(),
+                    expected_revision.unwrap_or(0),
+                ],
+            )
+            .map_err(|e| err(e.to_string()))?;
+        if changed != 1 {
+            return Err(err("Failed to update project task."));
+        }
+    }
+    let task_id = t["id"].as_str().unwrap_or_default();
+    let project_id = t["projectId"].as_str().unwrap_or_default();
+    conn.execute(
+        "DELETE FROM project_agent_task_dependencies WHERE task_id = ?1",
+        [task_id],
+    )
+    .map_err(|e| err(e.to_string()))?;
+    if let Some(deps) = t["dependsOnTaskIds"].as_array() {
+        for d in deps {
+            conn.execute(
+                "INSERT INTO project_agent_task_dependencies (task_id, depends_on_task_id, project_id) \
+                 VALUES (?1, ?2, ?3)",
+                rusqlite::params![task_id, d.as_str(), project_id],
+            )
+            .map_err(|e| err(e.to_string()))?;
+        }
+    }
+    Ok(())
+}
+
+fn task_edges(conn: &Connection, project_id: &str) -> Result<Vec<(String, String)>, WsErr> {
+    let mut stmt = conn
+        .prepare("SELECT task_id, depends_on_task_id FROM project_agent_task_dependencies WHERE project_id = ?1")
+        .map_err(|e| err(e.to_string()))?;
+    let rows = stmt
+        .query_map([project_id], |r| Ok((r.get::<_, String>(0)?, r.get::<_, String>(1)?)))
+        .map_err(|e| err(e.to_string()))?;
+    Ok(rows.filter_map(|r| r.ok()).collect())
+}
+
+fn deps_cycle(task_id: &str, deps: &[String], edges: &[(String, String)]) -> bool {
+    use std::collections::HashMap;
+    let mut adj: HashMap<&str, Vec<&str>> = HashMap::new();
+    for (t, d) in edges {
+        adj.entry(t.as_str()).or_default().push(d.as_str());
+    }
+    adj.insert(task_id, deps.iter().map(String::as_str).collect());
+    fn visit<'a>(
+        node: &'a str,
+        adj: &HashMap<&'a str, Vec<&'a str>>,
+        visiting: &mut std::collections::HashSet<&'a str>,
+        visited: &mut std::collections::HashSet<&'a str>,
+    ) -> bool {
+        if visiting.contains(node) {
+            return true;
+        }
+        if visited.contains(node) {
+            return false;
+        }
+        visiting.insert(node);
+        if let Some(next) = adj.get(node) {
+            for n in next {
+                if visit(n, adj, visiting, visited) {
+                    return true;
+                }
+            }
+        }
+        visiting.remove(node);
+        visited.insert(node);
+        false
+    }
+    visit(
+        task_id,
+        &adj,
+        &mut std::collections::HashSet::new(),
+        &mut std::collections::HashSet::new(),
+    )
+}
+
+fn append_activity(
+    conn: &Connection,
+    project_id: &str,
+    kind: &str,
+    actor_kind: &str,
+    actor_thread_id: Option<&str>,
+    goal_id: Option<&str>,
+    task_id: Option<&str>,
+    summary: &str,
+    created_at: &str,
+) -> Result<(), WsErr> {
+    conn.execute(
+        "INSERT INTO project_agent_activity \
+         (activity_id, project_id, sequence, kind, actor_kind, actor_thread_id, goal_id, task_id, \
+          source_json, summary, created_at) \
+         SELECT ?1, ?2, COALESCE((SELECT MAX(sequence) FROM project_agent_activity \
+            WHERE project_id = ?2), 0) + 1, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10",
+        rusqlite::params![
+            crate::orchestration_engine::uuid_v4(),
+            project_id,
+            kind,
+            actor_kind,
+            actor_thread_id,
+            goal_id,
+            task_id,
+            Value::Null.to_string(),
+            summary,
+            created_at,
+        ],
+    )
+    .map_err(|e| err(e.to_string()))?;
+    Ok(())
+}
+
+fn replay_receipt(conn: &Connection, request_id: &str, project_id: &str) -> Option<Value> {
+    conn.query_row(
+        "SELECT result_json FROM project_agent_receipts WHERE request_id = ?1 AND project_id = ?2",
+        rusqlite::params![request_id, project_id],
+        |r| r.get::<_, String>(0),
+    )
+    .optional()
+    .ok()
+    .flatten()
+    .and_then(|s| serde_json::from_str(&s).ok())
+}
+
+fn store_receipt(
+    conn: &Connection,
+    request_id: &str,
+    project_id: &str,
+    operation: &str,
+    result: &Value,
+) {
+    let _ = conn.execute(
+        "INSERT OR REPLACE INTO project_agent_receipts (request_id, project_id, operation, result_json, created_at) \
+         VALUES (?1, ?2, ?3, ?4, ?5)",
+        rusqlite::params![
+            request_id,
+            project_id,
+            operation,
+            result.to_string(),
+            crate::todo::iso_now_ms()
+        ],
+    );
+}
+
+fn require_hub_project(conn: &Connection, project_id: &str) -> Result<(), WsErr> {
+    let shell = conn
+        .query_row(
+            "SELECT kind, workspace_root FROM projection_projects WHERE project_id = ?1",
+            [project_id],
+            |r| Ok((r.get::<_, Option<String>>(0)?, r.get::<_, Option<String>>(1)?)),
+        )
+        .optional()
+        .map_err(|e| err(e.to_string()))?;
+    let Some((kind, wroot)) = shell else {
+        return Err(err(format!("Project \"{project_id}\" was not found.")));
+    };
+    if !is_group_coordinator_host(kind.as_deref(), wroot.as_deref()) {
+        return Err(err("The coordinator is only available on hubs."));
+    }
+    Ok(())
+}
+
+fn require_config_exists(conn: &Connection, project_id: &str) -> Result<(), WsErr> {
+    let exists: bool = conn
+        .query_row(
+            "SELECT COUNT(1) FROM project_agent_configs WHERE project_id = ?1",
+            [project_id],
+            |r| r.get::<_, i64>(0),
+        )
+        .map(|n| n > 0)
+        .unwrap_or(false);
+    if !exists {
+        return Err(err("Project Coordinator is not configured."));
+    }
+    Ok(())
+}
+
+fn create_task(payload: &Value) -> Result<Value, WsErr> {
+    let project_id = payload["projectId"].as_str().unwrap_or_default().to_string();
+    let goal_id = payload["goalId"].as_str().unwrap_or_default().to_string();
+    let request_id = payload["requestId"].as_str().unwrap_or_default().to_string();
+    let deps: Vec<String> = payload["dependsOnTaskIds"]
+        .as_array()
+        .map(|a| a.iter().filter_map(|v| v.as_str().map(str::to_string)).collect())
+        .unwrap_or_default();
+    let title = payload["title"].as_str().unwrap_or_default().to_string();
+    let description = payload["description"].as_str().map(str::to_string);
+    let criteria = payload["acceptanceCriteria"].as_str().map(str::to_string);
+    let conn = crate::orchestration_engine::open_state_rw()
+        .map_err(|_| err("Failed to create project task."))?;
+    if let Some(r) = replay_receipt(&conn, &request_id, &project_id) {
+        return Ok(r);
+    }
+    let goal = get_goal(&conn, &goal_id)?
+        .ok_or_else(|| err("Goal was not found."))?;
+    if goal["projectId"].as_str() != Some(project_id.as_str()) {
+        return Err(err("Goal does not belong to this project."));
+    }
+    if goal["status"].as_str() != Some("active") {
+        return Err(err("Tasks can only be created for an active goal."));
+    }
+    let task_id = crate::orchestration_engine::uuid_v4();
+    let edges = task_edges(&conn, &project_id)
+        .map_err(|_| err("Failed to load task dependencies."))?;
+    if deps_cycle(&task_id, &deps, &edges) {
+        return Err(err("Task dependencies cannot form a cycle."));
+    }
+    let mut all_done = true;
+    for dep in &deps {
+        match get_task(&conn, dep).map_err(|_| err("Failed to load task dependency."))? {
+            Some(t) if t["projectId"].as_str() == Some(project_id.as_str()) => {
+                if t["status"].as_str() != Some("done") {
+                    all_done = false;
+                }
+            }
+            _ => return Err(err("Task dependencies must belong to the same project.")),
+        }
+    }
+    let now = crate::todo::iso_now_ms();
+    let task = json!({
+        "id": task_id,
+        "projectId": project_id,
+        "goalId": goal_id,
+        "title": title,
+        "description": description.map(Value::String).unwrap_or(Value::Null),
+        "acceptanceCriteria": criteria.map(Value::String).unwrap_or(Value::Null),
+        "status": if deps.is_empty() || all_done { "ready" } else { "planned" },
+        "dependsOnTaskIds": deps,
+        "assignedThreadId": null,
+        "repairCount": 0,
+        "archivedAt": null,
+        "revision": 1,
+        "createdAt": now,
+        "updatedAt": now,
+    });
+    save_task(&conn, &task, None).map_err(|_| err("Failed to create project task."))?;
+    append_activity(
+        &conn,
+        &project_id,
+        "task-created",
+        "user",
+        None,
+        Some(&goal_id),
+        Some(task["id"].as_str().unwrap_or_default()),
+        &format!("Created task: {}", task["title"].as_str().unwrap_or_default()),
+        &now,
+    )?;
+    store_receipt(&conn, &request_id, &project_id, "createTask", &task);
+    Ok(task)
+}
+
+fn update_task(payload: &Value) -> Result<Value, WsErr> {
+    let project_id = payload["projectId"].as_str().unwrap_or_default().to_string();
+    let task_id = payload["taskId"].as_str().unwrap_or_default().to_string();
+    let request_id = payload["requestId"].as_str().unwrap_or_default().to_string();
+    let conn = crate::orchestration_engine::open_state_rw()
+        .map_err(|_| err("Failed to update project task."))?;
+    if let Some(r) = replay_receipt(&conn, &request_id, &project_id) {
+        return Ok(r);
+    }
+    let current = get_task(&conn, &task_id)
+        .map_err(|_| err("Failed to load project task."))?
+        .ok_or_else(|| err("Task was not found."))?;
+    if current["projectId"].as_str() != Some(project_id.as_str()) {
+        return Err(err("Task does not belong to this project."));
+    }
+    let wants_accept =
+        payload["accept"].as_bool() == Some(true) || payload["status"].as_str() == Some("done");
+    if wants_accept {
+        let st = current["status"].as_str().unwrap_or_default();
+        if st != "review" && st != "ready" && st != "running" {
+            return Err(err("Only reviewed work can be accepted against recorded evidence."));
+        }
+        let n: i64 = conn
+            .query_row(
+                "SELECT COUNT(1) FROM project_agent_evidence WHERE task_id = ?1",
+                [&task_id],
+                |r| r.get(0),
+            )
+            .map_err(|e| err(e.to_string()))?;
+        if n == 0 {
+            return Err(err("Acceptance requires recorded evidence."));
+        }
+    }
+    let deps: Vec<String> = if payload.get("dependsOnTaskIds").is_some() {
+        let d: Vec<String> = payload["dependsOnTaskIds"]
+            .as_array()
+            .map(|a| a.iter().filter_map(|v| v.as_str().map(str::to_string)).collect())
+            .unwrap_or_default();
+        let edges = task_edges(&conn, &project_id)
+            .map_err(|_| err("Failed to load task dependencies."))?;
+        if deps_cycle(&task_id, &d, &edges) {
+            return Err(err("Task dependencies cannot form a cycle."));
+        }
+        for dep in &d {
+            match get_task(&conn, dep).map_err(|_| err("Failed to load a task dependency."))? {
+                Some(t) if t["projectId"].as_str() == Some(project_id.as_str()) => {}
+                _ => return Err(err("Task dependencies must belong to the same project.")),
+            }
+        }
+        d
+    } else {
+        current["dependsOnTaskIds"]
+            .as_array()
+            .map(|a| a.iter().filter_map(|v| v.as_str().map(str::to_string)).collect())
+            .unwrap_or_default()
+    };
+    let now = crate::todo::iso_now_ms();
+    let mut updated = current.clone();
+    let o = updated.as_object_mut().unwrap();
+    if let Some(t) = payload["title"].as_str() {
+        o.insert("title".into(), Value::String(t.to_string()));
+    }
+    if let Some(d) = payload.get("description") {
+        o.insert("description".into(), d.clone());
+    }
+    if let Some(c) = payload.get("acceptanceCriteria") {
+        o.insert("acceptanceCriteria".into(), c.clone());
+    }
+    o.insert(
+        "status".into(),
+        Value::String(
+            if wants_accept {
+                "done"
+            } else {
+                payload["status"].as_str().unwrap_or_else(|| {
+                    current["status"].as_str().unwrap_or_default()
+                })
+            }
+            .to_string(),
+        ),
+    );
+    o.insert("dependsOnTaskIds".into(), json!(deps));
+    if let Some(a) = payload.get("archived") {
+        o.insert(
+            "archivedAt".into(),
+            if a.as_bool() == Some(true) {
+                if current["archivedAt"].is_string() {
+                    current["archivedAt"].clone()
+                } else {
+                    Value::String(now.clone())
+                }
+            } else {
+                Value::Null
+            },
+        );
+    }
+    o.insert(
+        "revision".into(),
+        json!(current["revision"].as_i64().unwrap_or(0) + 1),
+    );
+    o.insert("updatedAt".into(), Value::String(now.clone()));
+    let expected = payload["expectedRevision"].as_i64();
+    save_task(&conn, &updated, expected)
+        .map_err(|_| err("Failed to update project task."))?;
+    if wants_accept {
+        // unblockDependents: planned/blocked tasks whose deps are all done
+        let tasks = query_tasks(&conn, &project_id, None, false, 100, None)
+            .map_err(|_| err("Failed to load dependent tasks."))?;
+        for task in &tasks {
+            let st = task["status"].as_str().unwrap_or_default();
+            if st != "planned" && st != "blocked" {
+                continue;
+            }
+            let deps: Vec<String> = task["dependsOnTaskIds"]
+                .as_array()
+                .map(|a| a.iter().filter_map(|v| v.as_str().map(str::to_string)).collect())
+                .unwrap_or_default();
+            if !deps.iter().any(|d| d == &task_id) {
+                continue;
+            }
+            let ready = deps.iter().all(|id| {
+                get_task(&conn, id)
+                    .ok()
+                    .flatten()
+                    .map(|t| t["status"].as_str() == Some("done"))
+                    .unwrap_or(false)
+            });
+            if !ready {
+                continue;
+            }
+            let mut dep_task = task.clone();
+            let d = dep_task.as_object_mut().unwrap();
+            d.insert("status".into(), Value::String("ready".into()));
+            d.insert(
+                "revision".into(),
+                json!(task["revision"].as_i64().unwrap_or(0) + 1),
+            );
+            d.insert("updatedAt".into(), Value::String(now.clone()));
+            let _ = save_task(
+                &conn,
+                &dep_task,
+                Some(task["revision"].as_i64().unwrap_or(0)),
+            );
+        }
+    }
+    let kind = if wants_accept { "task-accepted" } else { "task-updated" };
+    let summary = if wants_accept {
+        format!("Accepted task: {}", updated["title"].as_str().unwrap_or_default())
+    } else {
+        format!("Updated task: {}", updated["title"].as_str().unwrap_or_default())
+    };
+    append_activity(
+        &conn,
+        &project_id,
+        kind,
+        "user",
+        None,
+        updated["goalId"].as_str(),
+        Some(&task_id),
+        &summary,
+        &now,
+    )?;
+    store_receipt(&conn, &request_id, &project_id, "updateTask", &updated);
+    Ok(updated)
+}
+
+fn start_goal(payload: &Value) -> Result<Value, WsErr> {
+    let project_id = payload["projectId"].as_str().unwrap_or_default().to_string();
+    let request_id = payload["requestId"].as_str().unwrap_or_default().to_string();
+    let objective = payload["objective"].as_str().unwrap_or_default().to_string();
+    let conn = crate::orchestration_engine::open_state_rw()
+        .map_err(|_| err("Failed to start project goal."))?;
+    if let Some(r) = replay_receipt(&conn, &request_id, &project_id) {
+        return Ok(r);
+    }
+    require_hub_project(&conn, &project_id)?;
+    require_config_exists(&conn, &project_id)?;
+    if get_active_goal(&conn, &project_id)
+        .map_err(|_| err("Failed to load project goal."))?
+        .is_some()
+    {
+        return Err(err("This project already has an active or paused goal."));
+    }
+    // limits: input.limits ?? config.limits ?? DEFAULT_PROJECT_AGENT_LIMITS
+    let limits = if let Some(l) = payload.get("limits") {
+        l.clone()
+    } else {
+        let cfg_limits = conn
+            .query_row(
+                "SELECT limits_json FROM project_agent_configs WHERE project_id = ?1",
+                [&project_id],
+                |r| r.get::<_, Option<String>>(0),
+            )
+            .optional()
+            .ok()
+            .flatten()
+            .flatten()
+            .and_then(|s| serde_json::from_str::<Value>(&s).ok())
+            .filter(|v| !v.is_null());
+        cfg_limits.unwrap_or_else(|| {
+            json!({
+                "maxConcurrentWorkers": 3,
+                "maxOutstandingTasks": 50,
+                "maxTaskAttempts": 3,
+                "workerStaleMs": 900000,
+                "workerContextChars": 12000,
+                "reviewInstructions": null,
+            })
+        })
+    };
+    let now = crate::todo::iso_now_ms();
+    let goal = json!({
+        "id": crate::orchestration_engine::uuid_v4(),
+        "projectId": project_id,
+        "objective": objective,
+        "authorizationSource": "user",
+        "scopeVersion": 1,
+        "acceptanceCriteria": payload["acceptanceCriteria"].clone(),
+        "limits": limits,
+        "status": "active",
+        "continuationCount": 0,
+        "workerCreationCount": 0,
+        "authorizedAt": now,
+        "revision": 1,
+        "createdAt": now,
+        "updatedAt": now,
+    });
+    save_goal(&conn, &goal, None).map_err(|_| err("Failed to start project goal."))?;
+    append_activity(
+        &conn,
+        &project_id,
+        "goal-started",
+        "user",
+        None,
+        goal["id"].as_str(),
+        None,
+        &format!("Started goal: {}", goal["objective"].as_str().unwrap_or_default()),
+        &now,
+    )?;
+    store_receipt(&conn, &request_id, &project_id, "startGoal", &goal);
+    Ok(goal)
+}
+
+fn update_goal(payload: &Value) -> Result<Value, WsErr> {
+    let project_id = payload["projectId"].as_str().unwrap_or_default().to_string();
+    let goal_id = payload["goalId"].as_str().unwrap_or_default().to_string();
+    let request_id = payload["requestId"].as_str().unwrap_or_default().to_string();
+    let conn = crate::orchestration_engine::open_state_rw()
+        .map_err(|_| err("Failed to update project goal."))?;
+    if let Some(r) = replay_receipt(&conn, &request_id, &project_id) {
+        return Ok(r);
+    }
+    require_hub_project(&conn, &project_id)?;
+    let current = get_goal(&conn, &goal_id)
+        .map_err(|_| err("Failed to load project goal."))?
+        .ok_or_else(|| err("Goal was not found."))?;
+    if current["projectId"].as_str() != Some(project_id.as_str()) {
+        return Err(err("Goal does not belong to this project."));
+    }
+    let now = crate::todo::iso_now_ms();
+    let mut updated = current.clone();
+    let o = updated.as_object_mut().unwrap();
+    if let Some(v) = payload["objective"].as_str() {
+        o.insert("objective".into(), Value::String(v.to_string()));
+    }
+    if let Some(v) = payload.get("acceptanceCriteria") {
+        o.insert("acceptanceCriteria".into(), v.clone());
+    }
+    if let Some(v) = payload["scopeVersion"].as_i64() {
+        o.insert("scopeVersion".into(), json!(v));
+    }
+    o.insert(
+        "revision".into(),
+        json!(current["revision"].as_i64().unwrap_or(0) + 1),
+    );
+    o.insert("updatedAt".into(), Value::String(now));
+    let expected = payload["expectedRevision"].as_i64();
+    save_goal(&conn, &updated, expected)
+        .map_err(|_| err("Failed to update project goal."))?;
+    append_activity(
+        &conn,
+        &project_id,
+        "goal-updated",
+        "user",
+        None,
+        Some(&goal_id),
+        None,
+        "Updated authorized goal scope.",
+        &updated["updatedAt"].as_str().unwrap_or_default().to_string(),
+    )?;
+    store_receipt(&conn, &request_id, &project_id, "updateGoal", &updated);
+    Ok(updated)
+}
+
+fn update_goal_status(payload: &Value, status: &str, kind: &str, summary: &str) -> Result<Value, WsErr> {
+    let project_id = payload["projectId"].as_str().unwrap_or_default().to_string();
+    let goal_id = payload["goalId"].as_str().unwrap_or_default().to_string();
+    let conn = crate::orchestration_engine::open_state_rw()
+        .map_err(|_| err("Failed to update project goal."))?;
+    require_hub_project(&conn, &project_id)?;
+    let current = get_goal(&conn, &goal_id)
+        .map_err(|_| err("Failed to load project goal."))?
+        .ok_or_else(|| err("Goal was not found."))?;
+    if current["projectId"].as_str() != Some(project_id.as_str()) {
+        return Err(err("Goal does not belong to this project."));
+    }
+    if status == "active" && current["status"].as_str() == Some("stopped") {
+        return Err(err("A stopped goal cannot be resumed."));
+    }
+    let now = crate::todo::iso_now_ms();
+    let mut updated = current.clone();
+    let o = updated.as_object_mut().unwrap();
+    o.insert("status".into(), Value::String(status.to_string()));
+    o.insert(
+        "revision".into(),
+        json!(current["revision"].as_i64().unwrap_or(0) + 1),
+    );
+    o.insert("updatedAt".into(), Value::String(now.clone()));
+    let expected = payload["expectedRevision"].as_i64();
+    save_goal(&conn, &updated, expected)
+        .map_err(|_| err("Failed to update project goal."))?;
+    if status == "stopped" && current["status"].as_str() != Some("stopped") {
+        // interrupt coordinator + running worker turns (best effort)
+        if let Some(ct) = conn
+            .query_row(
+                "SELECT coordinator_thread_id FROM project_agent_configs WHERE project_id = ?1",
+                [&project_id],
+                |r| r.get::<_, String>(0),
+            )
+            .optional()
+            .ok()
+            .flatten()
+        {
+            let _ = crate::orchestration_engine::handle(
+                "orchestration.dispatchCommand",
+                &json!({"type":"thread.turn.interrupt","commandId":crate::orchestration_engine::uuid_v4(),"threadId":ct,"createdAt":now}),
+            );
+        }
+        let tasks = query_tasks(&conn, &project_id, Some(&goal_id), false, 100, None)
+            .unwrap_or_default();
+        for task in &tasks {
+            let st = task["status"].as_str().unwrap_or_default();
+            if st == "done" || st == "cancelled" {
+                continue;
+            }
+            if let Some(tid) = task["assignedThreadId"].as_str() {
+                let _ = crate::orchestration_engine::handle(
+                    "orchestration.dispatchCommand",
+                    &json!({"type":"thread.turn.interrupt","commandId":crate::orchestration_engine::uuid_v4(),"threadId":tid,"createdAt":now}),
+                );
+            }
+        }
+    }
+    append_activity(
+        &conn,
+        &project_id,
+        kind,
+        "user",
+        None,
+        Some(&goal_id),
+        None,
+        summary,
+        &updated["updatedAt"].as_str().unwrap_or_default().to_string(),
+    )?;
+    Ok(updated)
+}
+
+fn exclude_thread(payload: &Value) -> Result<Value, WsErr> {
+    let project_id = payload["projectId"].as_str().unwrap_or_default().to_string();
+    let thread_id = payload["threadId"].as_str().unwrap_or_default().to_string();
+    let excluded = payload["excluded"].as_bool().unwrap_or(false);
+    let conn = crate::orchestration_engine::open_state_rw()
+        .map_err(|_| err("Failed to update thread coverage."))?;
+    require_hub_project(&conn, &project_id)?;
+    require_config_exists(&conn, &project_id)?;
+    let current = conn
+        .query_row(
+            "SELECT archived, summary_status, last_summarized_at FROM project_agent_thread_index \
+             WHERE project_id = ?1 AND thread_id = ?2",
+            rusqlite::params![&project_id, &thread_id],
+            |r| {
+                Ok((
+                    r.get::<_, i64>(0)?,
+                    r.get::<_, String>(1)?,
+                    r.get::<_, Option<String>>(2)?,
+                ))
+            },
+        )
+        .optional()
+        .map_err(|e| err(e.to_string()))?;
+    let now = crate::todo::iso_now_ms();
+    let entry = json!({
+        "projectId": project_id,
+        "threadId": thread_id,
+        "excluded": excluded,
+        "archived": current.as_ref().map(|(a,_,_)| *a == 1).unwrap_or(false),
+        "summaryStatus": if excluded {
+            "skipped"
+        } else {
+            current.as_ref().map(|(_,s,_)| s.as_str()).unwrap_or("pending")
+        },
+        "lastUpdatedAt": now,
+        "lastSummarizedAt": current.as_ref().and_then(|(_,_,l)| l.clone()).map(Value::String).unwrap_or(Value::Null),
+    });
+    conn.execute(
+        "INSERT OR REPLACE INTO project_agent_thread_index \
+         (project_id, thread_id, excluded, archived, summary_status, last_updated_at, last_summarized_at) \
+         VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)",
+        rusqlite::params![
+            project_id,
+            thread_id,
+            if excluded { 1 } else { 0 },
+            if entry["archived"].as_bool() == Some(true) { 1 } else { 0 },
+            entry["summaryStatus"].as_str(),
+            entry["lastUpdatedAt"].as_str(),
+            entry["lastSummarizedAt"].as_str(),
+        ],
+    )
+    .map_err(|e| err(e.to_string()))?;
+    Ok(entry)
+}
+
 pub fn handles(tag: &str) -> bool {
     matches!(
         tag,
@@ -1301,6 +2123,14 @@ pub fn handles(tag: &str) -> bool {
             | "projectAgent.listEvidence"
             | "projectAgent.listSummaries"
             | "projectAgent.getOverview"
+            | "projectAgent.createTask"
+            | "projectAgent.updateTask"
+            | "projectAgent.startGoal"
+            | "projectAgent.updateGoal"
+            | "projectAgent.pauseGoal"
+            | "projectAgent.resumeGoal"
+            | "projectAgent.stopGoal"
+            | "projectAgent.excludeThread"
     )
 }
 
@@ -1314,6 +2144,26 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Value, WsErr> {
         "projectAgent.listEvidence" => list_evidence(payload),
         "projectAgent.listSummaries" => list_summaries(payload),
         "projectAgent.getOverview" => get_overview(payload),
+        "projectAgent.createTask" => create_task(payload),
+        "projectAgent.updateTask" => update_task(payload),
+        "projectAgent.startGoal" => start_goal(payload),
+        "projectAgent.updateGoal" => update_goal(payload),
+        "projectAgent.pauseGoal" => update_goal_status(
+            payload,
+            "paused",
+            "goal-paused",
+            "Paused the project goal. Current tasks may settle.",
+        ),
+        "projectAgent.resumeGoal" => {
+            update_goal_status(payload, "active", "goal-resumed", "Resumed the project goal.")
+        }
+        "projectAgent.stopGoal" => update_goal_status(
+            payload,
+            "stopped",
+            "goal-stopped",
+            "Stopped the project goal. Pending continuations were cancelled.",
+        ),
+        "projectAgent.excludeThread" => exclude_thread(payload),
         _ => Err(err("Unknown projectAgent method")),
     }
 }

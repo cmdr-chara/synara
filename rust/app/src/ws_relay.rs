@@ -84,6 +84,8 @@ fn intercept_todo(
         && !text.contains("projects.prewarmSearchIndex")
         && !text.contains("projects.searchEntries")
         && !text.contains("projects.searchLocalEntries")
+        && !text.contains("projects.resolveWorkspaceFileReferences")
+        && !text.contains("projects.resolveOutOfRootFileReference")
     {
         return None;
     }
@@ -104,6 +106,8 @@ fn intercept_todo(
         && tag != "projects.prewarmSearchIndex"
         && tag != "projects.searchEntries"
         && tag != "projects.searchLocalEntries"
+        && tag != "projects.resolveWorkspaceFileReferences"
+        && tag != "projects.resolveOutOfRootFileReference"
     {
         return None;
     }
@@ -159,6 +163,14 @@ fn intercept_todo(
             .map_err(error_json)
     } else if tag == "server.listWorktrees" {
         crate::list_worktrees::list_worktrees()
+            .map(Some)
+            .map_err(error_json)
+    } else if tag == "projects.resolveWorkspaceFileReferences" {
+        crate::projects_refs::resolve_workspace_file_references(&payload)
+            .map(Some)
+            .map_err(error_json)
+    } else if tag == "projects.resolveOutOfRootFileReference" {
+        crate::projects_refs::resolve_out_of_root_file_reference(&payload)
             .map(Some)
             .map_err(error_json)
     } else if tag == "projects.prewarmSearchIndex" {

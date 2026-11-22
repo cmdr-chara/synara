@@ -23,9 +23,9 @@ const LOCAL_DEFAULT_LIMIT: usize = 50;
 const INDEX_TTL: Duration = Duration::from_secs(30);
 const WALK_MAX_ENTRIES: usize = 100_000;
 
-struct IndexEntry {
-    rel: String,
-    kind: &'static str,
+pub struct IndexEntry {
+    pub rel: String,
+    pub kind: &'static str,
 }
 
 struct Index {
@@ -126,6 +126,25 @@ fn build_index(root: &Path) -> Index {
 
 fn index_fresh(index: &Index) -> bool {
     index.built_at.elapsed() < INDEX_TTL
+}
+
+/// The index entries for `root`, building or refreshing the cache entry.
+pub fn index_entries(root: &Path) -> Vec<IndexEntry> {
+    index_for(root);
+    INDEXES
+        .lock()
+        .unwrap()
+        .get(root)
+        .map(|i| {
+            i.entries
+                .iter()
+                .map(|e| IndexEntry {
+                    rel: e.rel.clone(),
+                    kind: e.kind,
+                })
+                .collect()
+        })
+        .unwrap_or_default()
 }
 
 fn index_for(root: &Path) -> usize {

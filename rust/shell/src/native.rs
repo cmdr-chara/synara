@@ -23,6 +23,8 @@ use gpui_kit::assets::IconName as AssetIcon;
 
 use crate::ws_client::Client;
 
+actions!(native, [ToggleFind]);
+
 type SharedClient = Arc<Mutex<Option<Arc<Client>>>>;
 
 pub struct Native {
@@ -77,6 +79,9 @@ pub struct Native {
     term_status: Option<String>,
     term_input: Option<Entity<InputState>>,
     term_events: bool,
+    find_open: bool,
+    find_input: Option<Entity<InputState>>,
+    find_query: String,
 }
 
 fn get<'a>(v: &'a Value, k: &str) -> &'a Value {
@@ -197,6 +202,7 @@ impl Native {
                 },
             )
             .detach();
+            cx.bind_keys([KeyBinding::new("cmd-f", ToggleFind, Some("native"))]);
             let this = Self {
                 focus_handle: cx.focus_handle(),
                 client: Arc::new(Mutex::new(None)),
@@ -251,6 +257,9 @@ impl Native {
                 term_status: None,
                 term_input: None,
                 term_events: false,
+                find_open: false,
+                find_input: None,
+                find_query: String::new(),
             };
             this.refresh(cx);
             this
@@ -626,6 +635,30 @@ impl Native {
             });
         })
         .detach();
+    }
+
+    /// Cmd+F: transcript find-bar. Highlights matching messages with an accent
+    /// bar and shows the match count, like the web find-in-thread bar.
+    fn toggle_find(&mut self, window: &mut Window, cx: &mut Context<Self>) {
+        self.find_open = !self.find_open;
+        if self.find_open {
+            let input = cx.new(|cx| {
+                InputState::new(window, cx).placeholder("Find in thread")
+            });
+            cx.subscribe_in(&input, window, |this: &mut Self, state, ev, _w, cx| {
+                if let InputEvent::Change = ev {
+                    this.find_query = state.read(cx).value().to_string();
+                    cx.notify();
+                }
+            })
+            .detach();
+            input.update(cx, |s, cx| s.focus_handle(cx).focus(window, cx));
+            self.find_input = Some(input);
+        } else {
+            self.find_input = None;
+            self.find_query.clear();
+        }
+        cx.notify();
     }
 
     /// Rail button: toggle the bottom terminal drawer. Opening spawns a PTY
@@ -2085,6 +2118,7 @@ impl Render for Native {
             pane = pane.child(header);
         }
         let messages = arr(thread_v, "messages");
+        let find_q = self.find_query.to_lowercase();
         if messages.is_empty() && self.selected_thread.is_some() {
             pane = pane.child(
                 div()
@@ -2110,25 +2144,34 @@ impl Render for Native {
             if text.trim().is_empty() {
                 continue;
             }
+            let is_match = !find_q.is_empty() && text.to_lowercase().contains(&find_q);
             if role == "user" {
+                let mut pill = div()
+                    .bg(theme.list_active)
+                    .rounded_lg()
+                    .px_3()
+                    .py_2();
+                if is_match {
+                    pill = pill.border_1().border_color(theme.warning);
+                }
                 pane = pane.child(
-                    h_flex().w_full().justify_end().child(
-                        div()
-                            .bg(theme.list_active)
-                            .rounded_lg()
-                            .px_3()
-                            .py_2()
-                            .child(div().text_sm().child(text)),
-                    ),
+                    h_flex()
+                        .w_full()
+                        .justify_end()
+                        .child(pill.child(div().text_sm().child(text))),
                 );
             } else {
-                pane = pane.child(
+                let mut wrap = div();
+                if is_match {
+                    wrap = wrap.border_l_2().border_color(theme.warning).pl_2();
+                }
+                pane = pane.child(wrap.child(
                     TextView::markdown(
                         ElementId::Name(format!("md-{i}-{}", str_at(m, "id")).into()),
                         text,
                     )
                     .selectable(true),
-                );
+                ));
             }
         }
 
@@ -2885,6 +2928,70 @@ impl Render for Native {
             );
         }
 
+        // ---- transcript find bar (Cmd+F) ----
+        let mut find_bar = h_flex()
+            .px_2()
+            .py_1()
+            .gap_2()
+            .items_center()
+            .border_b_1()
+            .border_color(theme.border);
+        if let Some(fi) = &self.find_input {
+            let detail = self.detail.clone().unwrap_or(Value::Null);
+            let tv = get(&detail, "thread");
+            let q = self.find_query.to_lowercase();
+            let count = if q.is_empty() {
+                0
+            } else {
+                arr(tv, "messages")
+                    .iter()
+                    .filter(|m| {
+                        let t = str_at(m, "text").to_string();
+                        let t = if t.trim().is_empty() {
+                            get(m, "textSegments")
+                                .as_array()
+                                .map(|segs| {
+                                    segs.iter()
+                                        .filter_map(|s| {
+                                            s.get("text").and_then(Value::as_str)
+                                        })
+                                        .collect::<Vec<_>>()
+                                        .join("")
+                                })
+                                .unwrap_or_default()
+                        } else {
+                            t
+                        };
+                        t.to_lowercase().contains(&q)
+                    })
+                    .count()
+            };
+            find_bar = find_bar
+                .child(
+                    div()
+                        .text_xs()
+                        .text_color(theme.muted_foreground)
+                        .child("Find"),
+                )
+                .child(div().w(px(220.)).child(Input::new(fi)))
+                .child(
+                    div()
+                        .text_xs()
+                        .text_color(theme.muted_foreground)
+                        .child(format!("{count} matches")),
+                )
+                .child(div().flex_1())
+                .child(
+                    Button::new("find-close")
+                        .ghost()
+                        .compact()
+                        .label("\u{00d7}")
+                        .on_click(cx.listener(|this, _ev, w, cx| {
+                            this.toggle_find(w, cx);
+                        })),
+                );
+        }
+
         let mut main = v_flex().flex_1().h_full();
         if self.view_settings {
             main = main.child(div().flex_1().child(settings_pane.overflow_y_scrollbar()));
@@ -2895,6 +3002,9 @@ impl Render for Native {
         } else if self.view_inbox {
             main = main.child(div().flex_1().child(inbox_pane.overflow_y_scrollbar()));
         } else {
+            if self.find_open {
+                main = main.child(find_bar);
+            }
             main = main.child(div().flex_1().child(pane.overflow_y_scrollbar()));
             if self.view_terminal {
                 main = main.child(term_drawer);
@@ -3137,6 +3247,10 @@ impl Render for Native {
 
         let mut root = h_flex()
             .size_full()
+            .key_context("native")
+            .on_action(cx.listener(|this, _: &ToggleFind, w, cx| {
+                this.toggle_find(w, cx);
+            }))
             .bg(theme.background)
             .text_color(theme.foreground)
             .child(rail.border_r_1().border_color(theme.border))

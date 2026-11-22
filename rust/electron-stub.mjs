@@ -121,6 +121,78 @@ function namesFor(specifier, parentURL, resolvedURL) {
   return [...names];
 }
 
+// Node strip-types rejects TS parameter properties. Expand
+// constructor(private readonly x) into a field + plain param + this.x = x.
+function fixParamProps(src) {
+  let out = src;
+  let idx = 0;
+  while (true) {
+    const ci = out.indexOf("constructor", idx);
+    if (ci < 0) break;
+    let p = ci + "constructor".length;
+    while (p < out.length && /\\s/.test(out[p])) p++;
+    if (out[p] !== "(") { idx = p; continue; }
+    const start = p;
+    let depth = 0;
+    let end = -1;
+    let str = "";
+    for (let i = start; i < out.length; i++) {
+      const c = out[i];
+      if (str) {
+        if (c === "\\\\") { i++; continue; }
+        if (c === str) str = "";
+        continue;
+      }
+      if (c === '"' || c === "'") { str = c; continue; }
+      if (c === "(") depth++;
+      else if (c === ")") { depth--; if (depth === 0) { end = i; break; } }
+    }
+    if (end < 0) break;
+    let q = end + 1;
+    while (q < out.length && /\\s/.test(out[q])) q++;
+    if (out[q] !== "{") { idx = q; continue; }
+    const inner = out.slice(start + 1, end);
+    const params = [];
+    let cur = "";
+    let d2 = 0;
+    str = "";
+    for (let j = 0; j < inner.length; j++) {
+      const ch = inner[j];
+      if (str) {
+        cur += ch;
+        if (ch === "\\\\") { cur += inner[++j]; continue; }
+        if (ch === str) str = "";
+        continue;
+      }
+      if (ch === '"' || ch === "'") { str = ch; cur += ch; continue; }
+      if (ch === "(" || ch === "[" || ch === "<" || ch === "{") d2++;
+      if (ch === ")" || ch === "]" || ch === ">" || ch === "}") d2--;
+      if (ch === "," && d2 === 0) { params.push(cur); cur = ""; continue; }
+      cur += ch;
+    }
+    if (cur.trim()) params.push(cur);
+    const fields = [];
+    const plain = [];
+    let changed = false;
+    for (const param of params) {
+      const mm = param.match(/^\\s*((?:(?:private|public|protected|readonly)\\s+)+)([A-Za-z_$][A-Za-z0-9_$]*)/);
+      if (mm && /\\b(private|public|protected|readonly)\\b/.test(mm[1])) {
+        changed = true;
+        fields.push(mm[2]);
+        plain.push(mm[2] + param.slice(mm[0].length));
+      } else {
+        plain.push(param);
+      }
+    }
+    if (!changed) { idx = q; continue; }
+    const decls = fields.map((f) => f + ";").join("");
+    const assigns = fields.map((f) => "this." + f + "=" + f + ";").join("");
+    out = out.slice(0, ci) + decls + "constructor(" + plain.join(",") + "){" + assigns + out.slice(q + 1);
+    idx = ci;
+  }
+  return out;
+}
+
 export async function resolve(specifier, context, next) {
   if (Object.hasOwn(SOURCES, specifier) || Object.hasOwn(STUB_MAP, specifier)) {
     return { url: \`ra-stub:\${specifier}\`, shortCircuit: true };
@@ -213,6 +285,7 @@ export async function load(url, context, next) {
             result.format === "module-typescript"
               ? "import.meta.env ??= {DEV:false,PROD:true,MODE:\\"production\\"};\\n"
               : "";
+          let extras = "";
           if (typeNames.size) {
             const locals = new Set();
             for (const lm of orig.matchAll(
@@ -220,31 +293,26 @@ export async function load(url, context, next) {
             )) {
               locals.add(lm[1]);
             }
-            const extras = [...typeNames]
-              .map((n) =>
-                locals.has(n)
-                  ? \`export { \${n} };\`
-                  : \`export const \${n} = undefined;\`,
-              )
-              .join("\\n");
-            const base =
-              typeof result.source === "string"
-                ? result.source
-                : new TextDecoder().decode(result.source);
-            return {
-              format: result.format,
-              source: envHeader + base + "\\n" + extras + "\\n",
-              shortCircuit: true,
-            };
+            extras =
+              "\\n" +
+              [...typeNames]
+                .map((n) =>
+                  locals.has(n)
+                    ? \`export { \${n} };\`
+                    : \`export const \${n} = undefined;\`,
+                )
+                .join("\\n") +
+              "\\n";
           }
-          if (envHeader) {
-            const base =
-              typeof result.source === "string"
-                ? result.source
-                : new TextDecoder().decode(result.source);
+          const base =
+            typeof result.source === "string"
+              ? result.source
+              : new TextDecoder().decode(result.source);
+          const fixed = fixParamProps(base);
+          if (typeNames.size || envHeader || fixed !== base) {
             return {
               format: result.format,
-              source: envHeader + base,
+              source: envHeader + fixed + extras,
               shortCircuit: true,
             };
           }

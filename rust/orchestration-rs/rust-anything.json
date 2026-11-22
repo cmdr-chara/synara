@@ -1,0 +1,2707 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/orchestration/",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "orchestration-rs",
+  "exports": [
+    {
+      "name": "threadModelSelectionChangedDetail",
+      "file": "apps/server/src/orchestration/Errors.ts",
+      "line": 9,
+      "params": [
+        {
+          "name": "threadId",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "toProjectorDecodeError",
+      "file": "apps/server/src/orchestration/Errors.ts",
+      "line": 130,
+      "params": [
+        {
+          "name": "eventType",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "fingerprintOrchestrationCommand",
+      "file": "apps/server/src/orchestration/commandFingerprint.ts",
+      "line": 59,
+      "params": [
+        {
+          "name": "command",
+          "ts_type": "Command",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "OrchestrationCommandFingerprint",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "threadHasInFlightTurn",
+      "file": "apps/server/src/orchestration/commandInvariants.ts",
+      "line": 48,
+      "params": [
+        {
+          "name": "thread",
+          "ts_type": "{\n  readonly session: Pick<typeof typeof typeof typeof OrchestrationSession.Type.Type.Type.Type, \"status\" | \"activeTurnId\"> | null;\n  readonly latestTurn: Pick<typeof typeof typeof typeof OrchestrationLatestTurn.Type.Type.Type.Type, \"state\"> | null;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "checkpointRevertActiveTurnDetail",
+      "file": "apps/server/src/orchestration/commandInvariants.ts",
+      "line": 61,
+      "params": [
+        {
+          "name": "threadId",
+          "ts_type": "typeof typeof typeof typeof ThreadId.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "threadHasCheckpointRevertInProgress",
+      "file": "apps/server/src/orchestration/commandInvariants.ts",
+      "line": 75,
+      "params": [
+        {
+          "name": "thread",
+          "ts_type": "{\n  readonly activities: ReadonlyArray<\n    Pick<typeof typeof typeof typeof OrchestrationThreadActivity.Type.Type.Type.Type, \"createdAt\" | \"id\" | \"kind\" | \"sequence\">\n  >;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "checkpointRevertInProgressDetail",
+      "file": "apps/server/src/orchestration/commandInvariants.ts",
+      "line": 92,
+      "params": [
+        {
+          "name": "threadId",
+          "ts_type": "typeof typeof typeof typeof ThreadId.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "checkpointRevertDeleteInProgressDetail",
+      "file": "apps/server/src/orchestration/commandInvariants.ts",
+      "line": 96,
+      "params": [
+        {
+          "name": "threadId",
+          "ts_type": "typeof typeof typeof typeof ThreadId.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "findThreadById",
+      "file": "apps/server/src/orchestration/commandInvariants.ts",
+      "line": 100,
+      "params": [
+        {
+          "name": "readModel",
+          "ts_type": "typeof typeof typeof typeof OrchestrationReadModel.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "threadId",
+          "ts_type": "typeof typeof typeof typeof ThreadId.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof OrchestrationThread.Type.Type.Type.Type | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "findProjectById",
+      "file": "apps/server/src/orchestration/commandInvariants.ts",
+      "line": 107,
+      "params": [
+        {
+          "name": "readModel",
+          "ts_type": "typeof typeof typeof typeof OrchestrationReadModel.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "projectId",
+          "ts_type": "typeof typeof typeof typeof ProjectId.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof OrchestrationProject.Type.Type.Type.Type | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "findSpaceById",
+      "file": "apps/server/src/orchestration/commandInvariants.ts",
+      "line": 114,
+      "params": [
+        {
+          "name": "readModel",
+          "ts_type": "typeof typeof typeof typeof OrchestrationReadModel.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "spaceId",
+          "ts_type": "typeof typeof typeof typeof SpaceId.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof OrchestrationSpace.Type.Type.Type.Type | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "listActiveSpaces",
+      "file": "apps/server/src/orchestration/commandInvariants.ts",
+      "line": 121,
+      "params": [
+        {
+          "name": "readModel",
+          "ts_type": "typeof typeof typeof typeof OrchestrationReadModel.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ReadonlyArray<typeof typeof typeof typeof OrchestrationSpace.Type.Type.Type.Type>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "requireSpace",
+      "file": "apps/server/src/orchestration/commandInvariants.ts",
+      "line": 129,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly readModel: typeof typeof typeof typeof OrchestrationReadModel.Type.Type.Type.Type;\n  readonly command: typeof typeof typeof typeof OrchestrationCommand.Type.Type.Type.Type;\n  readonly spaceId: typeof typeof typeof typeof SpaceId.Type.Type.Type.Type;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Effect.Effect<typeof typeof typeof typeof OrchestrationSpace.Type.Type.Type.Type, OrchestrationCommandInvariantError>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "requireSpaceAbsent",
+      "file": "apps/server/src/orchestration/commandInvariants.ts",
+      "line": 148,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly readModel: typeof typeof typeof typeof OrchestrationReadModel.Type.Type.Type.Type;\n  readonly command: typeof typeof typeof typeof OrchestrationCommand.Type.Type.Type.Type;\n  readonly spaceId: typeof typeof typeof typeof SpaceId.Type.Type.Type.Type;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Effect.Effect<void, OrchestrationCommandInvariantError>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "requireSpaceNameAvailable",
+      "file": "apps/server/src/orchestration/commandInvariants.ts",
+      "line": 167,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly readModel: typeof typeof typeof typeof OrchestrationReadModel.Type.Type.Type.Type;\n  readonly command: typeof typeof typeof typeof OrchestrationCommand.Type.Type.Type.Type;\n  readonly name: string;\n  readonly excludeSpaceId?: typeof typeof typeof typeof SpaceId.Type.Type.Type.Type;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Effect.Effect<void, OrchestrationCommandInvariantError>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isLegacyHomeChatContainerRow",
+      "file": "apps/server/src/orchestration/commandInvariants.ts",
+      "line": 206,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly projectTitle: string;\n  readonly projectWorkspaceRoot: string;\n  readonly workspacePaths: SpaceAssignmentWorkspacePaths | undefined;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isOrdinaryProjectRow",
+      "file": "apps/server/src/orchestration/commandInvariants.ts",
+      "line": 227,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly projectKind: typeof typeof typeof typeof ProjectKind.Type.Type.Type.Type | undefined;\n  readonly projectTitle: string;\n  readonly projectWorkspaceRoot: string;\n  readonly workspacePaths: SpaceAssignmentWorkspacePaths | undefined;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "requireSpaceAssignableProject",
+      "file": "apps/server/src/orchestration/commandInvariants.ts",
+      "line": 249,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly command: typeof typeof typeof typeof OrchestrationCommand.Type.Type.Type.Type;\n  readonly projectTitle: string;\n  readonly projectWorkspaceRoot: string;\n  readonly workspacePaths: SpaceAssignmentWorkspacePaths | undefined;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Effect.Effect<void, OrchestrationCommandInvariantError>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "listActiveProjectsByWorkspaceRoot",
+      "file": "apps/server/src/orchestration/commandInvariants.ts",
+      "line": 267,
+      "params": [
+        {
+          "name": "readModel",
+          "ts_type": "typeof typeof typeof typeof OrchestrationReadModel.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "workspaceRoot",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "options",
+          "ts_type": "{ readonly kinds?: ReadonlySet<typeof typeof typeof typeof ProjectKind.Type.Type.Type.Type> }",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "ReadonlyArray<typeof typeof typeof typeof OrchestrationProject.Type.Type.Type.Type>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "listThreadsByProjectId",
+      "file": "apps/server/src/orchestration/commandInvariants.ts",
+      "line": 286,
+      "params": [
+        {
+          "name": "readModel",
+          "ts_type": "typeof typeof typeof typeof OrchestrationReadModel.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "projectId",
+          "ts_type": "typeof typeof typeof typeof ProjectId.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ReadonlyArray<typeof typeof typeof typeof OrchestrationThread.Type.Type.Type.Type>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "requireProject",
+      "file": "apps/server/src/orchestration/commandInvariants.ts",
+      "line": 293,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly readModel: typeof typeof typeof typeof OrchestrationReadModel.Type.Type.Type.Type;\n  readonly command: typeof typeof typeof typeof OrchestrationCommand.Type.Type.Type.Type;\n  readonly projectId: typeof typeof typeof typeof ProjectId.Type.Type.Type.Type;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Effect.Effect<typeof typeof typeof typeof OrchestrationProject.Type.Type.Type.Type, OrchestrationCommandInvariantError>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "requireProjectAbsent",
+      "file": "apps/server/src/orchestration/commandInvariants.ts",
+      "line": 310,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly readModel: typeof typeof typeof typeof OrchestrationReadModel.Type.Type.Type.Type;\n  readonly command: typeof typeof typeof typeof OrchestrationCommand.Type.Type.Type.Type;\n  readonly projectId: typeof typeof typeof typeof ProjectId.Type.Type.Type.Type;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Effect.Effect<void, OrchestrationCommandInvariantError>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "requireValidProjectFolders",
+      "file": "apps/server/src/orchestration/commandInvariants.ts",
+      "line": 330,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly command: typeof typeof typeof typeof OrchestrationCommand.Type.Type.Type.Type;\n  readonly kind: typeof typeof typeof typeof ProjectKind.Type.Type.Type.Type;\n  readonly workspaceRoot: string;\n  readonly additionalFolders: ReadonlyArray<string>;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Effect.Effect<void, OrchestrationCommandInvariantError>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "requireProjectWorkspaceRootAvailable",
+      "file": "apps/server/src/orchestration/commandInvariants.ts",
+      "line": 348,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly readModel: typeof typeof typeof typeof OrchestrationReadModel.Type.Type.Type.Type;\n  readonly command: typeof typeof typeof typeof OrchestrationCommand.Type.Type.Type.Type;\n  readonly workspaceRoot: string;\n  readonly excludeProjectId?: typeof typeof typeof typeof ProjectId.Type.Type.Type.Type;\n  readonly kinds?: ReadonlySet<typeof typeof typeof typeof ProjectKind.Type.Type.Type.Type>;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Effect.Effect<void, OrchestrationCommandInvariantError>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "requireProjectHasNoThreads",
+      "file": "apps/server/src/orchestration/commandInvariants.ts",
+      "line": 373,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly readModel: typeof typeof typeof typeof OrchestrationReadModel.Type.Type.Type.Type;\n  readonly command: typeof typeof typeof typeof OrchestrationCommand.Type.Type.Type.Type;\n  readonly projectId: typeof typeof typeof typeof ProjectId.Type.Type.Type.Type;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Effect.Effect<void, OrchestrationCommandInvariantError>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "requireThread",
+      "file": "apps/server/src/orchestration/commandInvariants.ts",
+      "line": 392,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly readModel: typeof typeof typeof typeof OrchestrationReadModel.Type.Type.Type.Type;\n  readonly command: typeof typeof typeof typeof OrchestrationCommand.Type.Type.Type.Type;\n  readonly threadId: typeof typeof typeof typeof ThreadId.Type.Type.Type.Type;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Effect.Effect<typeof typeof typeof typeof OrchestrationThread.Type.Type.Type.Type, OrchestrationCommandInvariantError>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "requireApprovalNotResponded",
+      "file": "apps/server/src/orchestration/commandInvariants.ts",
+      "line": 411,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly readModel: typeof typeof typeof typeof OrchestrationReadModel.Type.Type.Type.Type;\n  readonly command: typeof typeof typeof typeof OrchestrationCommand.Type.Type.Type.Type;\n  readonly threadId: typeof typeof typeof typeof ThreadId.Type.Type.Type.Type;\n  readonly requestId: typeof typeof typeof typeof ApprovalRequestId.Type.Type.Type.Type;\n  readonly lifecycleGeneration?: string;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Effect.Effect<void, OrchestrationCommandInvariantError>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "requireThreadAbsent",
+      "file": "apps/server/src/orchestration/commandInvariants.ts",
+      "line": 437,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly readModel: typeof typeof typeof typeof OrchestrationReadModel.Type.Type.Type.Type;\n  readonly command: typeof typeof typeof typeof OrchestrationCommand.Type.Type.Type.Type;\n  readonly threadId: typeof typeof typeof typeof ThreadId.Type.Type.Type.Type;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Effect.Effect<void, OrchestrationCommandInvariantError>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "requireThreadArchived",
+      "file": "apps/server/src/orchestration/commandInvariants.ts",
+      "line": 453,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly readModel: typeof typeof typeof typeof OrchestrationReadModel.Type.Type.Type.Type;\n  readonly command: typeof typeof typeof typeof OrchestrationCommand.Type.Type.Type.Type;\n  readonly threadId: typeof typeof typeof typeof ThreadId.Type.Type.Type.Type;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Effect.Effect<typeof typeof typeof typeof OrchestrationThread.Type.Type.Type.Type, OrchestrationCommandInvariantError>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "requireThreadNotArchived",
+      "file": "apps/server/src/orchestration/commandInvariants.ts",
+      "line": 472,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly readModel: typeof typeof typeof typeof OrchestrationReadModel.Type.Type.Type.Type;\n  readonly command: typeof typeof typeof typeof OrchestrationCommand.Type.Type.Type.Type;\n  readonly threadId: typeof typeof typeof typeof ThreadId.Type.Type.Type.Type;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Effect.Effect<typeof typeof typeof typeof OrchestrationThread.Type.Type.Type.Type, OrchestrationCommandInvariantError>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "threadResumePreconditionViolation",
+      "file": "apps/server/src/orchestration/commandInvariants.ts",
+      "line": 513,
+      "params": [
+        {
+          "name": "thread",
+          "ts_type": "{\n    readonly archivedAt?: string | null | undefined;\n    readonly session: Pick<typeof typeof typeof typeof OrchestrationSession.Type.Type.Type.Type, \"status\" | \"activeTurnId\"> | null;\n    readonly latestTurn: Pick<\n      typeof typeof typeof typeof OrchestrationLatestTurn.Type.Type.Type.Type,\n      \"turnId\" | \"state\" | \"requestedAt\" | \"startedAt\" | \"completedAt\"\n    > | null;\n  }",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "precondition",
+          "ts_type": "ThreadResumePrecondition",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(| \"thread-archived\"\n  | \"turn-completed\"\n  | \"turn-in-flight\"\n  | \"turn-replaced\") | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "threadResumePreconditionDetail",
+      "file": "apps/server/src/orchestration/commandInvariants.ts",
+      "line": 556,
+      "params": [
+        {
+          "name": "threadId",
+          "ts_type": "typeof typeof typeof typeof ThreadId.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "violation",
+          "ts_type": "(| \"thread-archived\"\n  | \"turn-completed\"\n  | \"turn-in-flight\"\n  | \"turn-replaced\")",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "withoutRemoteResumeComputerGrant",
+      "file": "apps/server/src/orchestration/dispatchCommandNormalization.ts",
+      "line": 18,
+      "params": [
+        {
+          "name": "command",
+          "ts_type": "typeof typeof typeof typeof ClientOrchestrationCommand.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "principalOwnerId",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ClientOrchestrationCommand.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "threadArchiveFileName",
+      "file": "apps/server/src/orchestration/exportThreadArchive.ts",
+      "line": 242,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly title: string;\n  readonly isoTimestamp: string;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveForkSourceCutoff",
+      "file": "apps/server/src/orchestration/forkSourceCutoff.ts",
+      "line": 23,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly throughMessageId: typeof typeof typeof typeof MessageId.Type.Type.Type.Type | null | undefined;\n  readonly sourceMessages:\n    | ReadonlyArray<Pick<typeof typeof typeof typeof OrchestrationMessage.Type.Type.Type.Type, \"id\" | \"role\" | \"turnId\">>\n    | undefined;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(| { readonly kind: \"latest\" }\n  | { readonly kind: \"turn\"; readonly turnId: typeof typeof typeof TurnId.Type.Type.Type }\n  | { readonly kind: \"unavailable\"; readonly reason: string })",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "buildForkThreadTitle",
+      "file": "apps/server/src/orchestration/forkThreadTitle.ts",
+      "line": 58,
+      "params": [
+        {
+          "name": "source",
+          "ts_type": "ForkLineageThread",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "projectThreads",
+          "ts_type": "readonly ForkLineageThread[]",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "listImportedHandoffMessages",
+      "file": "apps/server/src/orchestration/handoff.ts",
+      "line": 45,
+      "params": [
+        {
+          "name": "thread",
+          "ts_type": "Pick<typeof typeof typeof typeof OrchestrationThread.Type.Type.Type.Type, \"messages\">",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ReadonlyArray<typeof typeof typeof typeof OrchestrationMessage.Type.Type.Type.Type>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "listImportedForkMessages",
+      "file": "apps/server/src/orchestration/handoff.ts",
+      "line": 56,
+      "params": [
+        {
+          "name": "thread",
+          "ts_type": "Pick<typeof typeof typeof typeof OrchestrationThread.Type.Type.Type.Type, \"messages\">",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ReadonlyArray<typeof typeof typeof typeof OrchestrationMessage.Type.Type.Type.Type>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "hasNativeHandoffMessages",
+      "file": "apps/server/src/orchestration/handoff.ts",
+      "line": 67,
+      "params": [
+        {
+          "name": "thread",
+          "ts_type": "Pick<typeof typeof typeof typeof OrchestrationThread.Type.Type.Type.Type, \"messages\">",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "hasNativeAssistantMessagesBefore",
+      "file": "apps/server/src/orchestration/handoff.ts",
+      "line": 76,
+      "params": [
+        {
+          "name": "thread",
+          "ts_type": "Pick<typeof typeof typeof typeof OrchestrationThread.Type.Type.Type.Type, \"messages\">",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "currentMessageId",
+          "ts_type": "string",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "listPriorTranscriptMessages",
+      "file": "apps/server/src/orchestration/handoff.ts",
+      "line": 94,
+      "params": [
+        {
+          "name": "thread",
+          "ts_type": "Pick<typeof typeof typeof typeof OrchestrationThread.Type.Type.Type.Type, \"messages\">",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "currentMessageId",
+          "ts_type": "string",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "ReadonlyArray<typeof typeof typeof typeof OrchestrationMessage.Type.Type.Type.Type>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "buildHandoffBootstrapText",
+      "file": "apps/server/src/orchestration/handoff.ts",
+      "line": 229,
+      "params": [
+        {
+          "name": "thread",
+          "ts_type": "Pick<typeof typeof typeof typeof OrchestrationThread.Type.Type.Type.Type, \"title\" | \"branch\" | \"worktreePath\" | \"handoff\" | \"messages\">",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "maxChars",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "buildPriorTranscriptBootstrapText",
+      "file": "apps/server/src/orchestration/handoff.ts",
+      "line": 248,
+      "params": [
+        {
+          "name": "thread",
+          "ts_type": "Pick<typeof typeof typeof typeof OrchestrationThread.Type.Type.Type.Type, \"title\" | \"branch\" | \"worktreePath\" | \"messages\">",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "currentMessageId",
+          "ts_type": "string | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "maxChars",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "buildPriorTranscriptBootstrap",
+      "file": "apps/server/src/orchestration/handoff.ts",
+      "line": 256,
+      "params": [
+        {
+          "name": "thread",
+          "ts_type": "Pick<typeof typeof typeof typeof OrchestrationThread.Type.Type.Type.Type, \"title\" | \"branch\" | \"worktreePath\" | \"messages\">",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "currentMessageId",
+          "ts_type": "string | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "maxChars",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "TranscriptBootstrap | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "buildForkBootstrapText",
+      "file": "apps/server/src/orchestration/handoff.ts",
+      "line": 275,
+      "params": [
+        {
+          "name": "thread",
+          "ts_type": "Pick<typeof typeof typeof typeof OrchestrationThread.Type.Type.Type.Type, \"title\" | \"branch\" | \"worktreePath\" | \"messages\">",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "maxChars",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "claudeHistoricalSessionChildEnvironment",
+      "file": "apps/server/src/orchestration/importThreadRoute.ts",
+      "line": 110,
+      "params": [
+        {
+          "name": "environment",
+          "ts_type": "NodeJS.ProcessEnv",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "NodeJS.ProcessEnv",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "readClaudeSessionMessagePageInEnvironment",
+      "file": "apps/server/src/orchestration/importThreadRoute.ts",
+      "line": 167,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly sessionId: string;\n  readonly dir: string | undefined;\n  readonly environment: NodeJS.ProcessEnv | undefined;\n  readonly before?: string;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<ClaudeHistoryPage>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "listClaudeSessionsInEnvironment",
+      "file": "apps/server/src/orchestration/importThreadRoute.ts",
+      "line": 180,
+      "params": [
+        {
+          "name": "environment",
+          "ts_type": "NodeJS.ProcessEnv",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<ReadonlyArray<SDKSessionInfo>>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "readClaudeSessionMessagesInEnvironment",
+      "file": "apps/server/src/orchestration/importThreadRoute.ts",
+      "line": 192,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly sessionId: string;\n  readonly dir: string | undefined;\n  readonly environment: NodeJS.ProcessEnv | undefined;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<ReadonlyArray<SessionMessage>>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "claudeHistoricalSessionEnvironment",
+      "file": "apps/server/src/orchestration/importThreadRoute.ts",
+      "line": 234,
+      "params": [
+        {
+          "name": "providerOptions",
+          "ts_type": "typeof typeof typeof typeof ProviderStartOptions.Type.Type.Type.Type | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "input",
+          "ts_type": "{\n    readonly homeDir?: string;\n    readonly isolationRootDir?: string;\n    readonly providerInstanceId?: typeof typeof typeof typeof ProviderInstanceId.Type.Type.Type.Type;\n  }",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "NodeJS.ProcessEnv | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveImportedThreadProviderOptionsForSettings",
+      "file": "apps/server/src/orchestration/importThreadRoute.ts",
+      "line": 271,
+      "params": [
+        {
+          "name": "settings",
+          "ts_type": "typeof typeof typeof typeof ServerSettings.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "modelSelection",
+          "ts_type": "typeof typeof typeof typeof ModelSelection.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "{\n  readonly instance: ResolvedProviderInstance;\n  readonly providerOptions: typeof typeof typeof typeof ProviderStartOptions.Type.Type.Type.Type | undefined;\n}",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "mapCodexSnapshotMessages",
+      "file": "apps/server/src/orchestration/importedThreadMessages.ts",
+      "line": 96,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly importedAt: string;\n  readonly threadId: typeof typeof typeof typeof ThreadId.Type.Type.Type.Type;\n  readonly turns: ReadonlyArray<CodexImportTurn>;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ReadonlyArray<typeof typeof typeof typeof ThreadHandoffImportedMessage.Type.Type.Type.Type>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "mapClaudeSessionMessages",
+      "file": "apps/server/src/orchestration/importedThreadMessages.ts",
+      "line": 161,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly importedAt: string;\n  readonly threadId: typeof typeof typeof typeof ThreadId.Type.Type.Type.Type;\n  readonly messages: ReadonlyArray<ClaudeSessionMessage & {\n  // The SDK omits timestamps; the import reader can recover these by UUID from JSONL.\n  readonly timestamp?: unknown;\n  readonly createdAt?: unknown;\n  readonly updatedAt?: unknown;\n}>;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ReadonlyArray<typeof typeof typeof typeof ThreadHandoffImportedMessage.Type.Type.Type.Type>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "mapOpenCodeSnapshotMessages",
+      "file": "apps/server/src/orchestration/importedThreadMessages.ts",
+      "line": 204,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly importedAt: string;\n  readonly threadId: typeof typeof typeof typeof ThreadId.Type.Type.Type.Type;\n  readonly turns: ReadonlyArray<{\n    readonly items: ReadonlyArray<unknown>;\n  }>;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ReadonlyArray<typeof typeof typeof typeof ThreadHandoffImportedMessage.Type.Type.Type.Type>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "mapFactorySnapshotMessages",
+      "file": "apps/server/src/orchestration/importedThreadMessages.ts",
+      "line": 253,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly importedAt: string;\n  readonly threadId: typeof typeof typeof typeof ThreadId.Type.Type.Type.Type;\n  readonly turns: ReadonlyArray<{ readonly items: ReadonlyArray<unknown> }>;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ReadonlyArray<typeof typeof typeof typeof ThreadHandoffImportedMessage.Type.Type.Type.Type>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "mapOmpSnapshotMessages",
+      "file": "apps/server/src/orchestration/importedThreadMessages.ts",
+      "line": 300,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly importedAt: string;\n  readonly threadId: typeof typeof typeof typeof ThreadId.Type.Type.Type.Type;\n  readonly turns: ReadonlyArray<{ readonly items: ReadonlyArray<unknown> }>;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ReadonlyArray<typeof typeof typeof typeof ThreadHandoffImportedMessage.Type.Type.Type.Type>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveStableMessageTurnId",
+      "file": "apps/server/src/orchestration/messageTurnId.ts",
+      "line": 3,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly existingTurnId?: typeof typeof typeof typeof TurnId.Type.Type.Type.Type | null | undefined;\n  readonly incomingTurnId?: typeof typeof typeof typeof TurnId.Type.Type.Type.Type | null | undefined;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof TurnId.Type.Type.Type.Type | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "usesReservedCommandAdmission",
+      "file": "apps/server/src/orchestration/orchestrationAdmission.ts",
+      "line": 34,
+      "params": [
+        {
+          "name": "type",
+          "ts_type": "typeof typeof typeof typeof OrchestrationCommand.Type.Type.Type.Type[\"type\"]",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isQuiescingCommandAdmissible",
+      "file": "apps/server/src/orchestration/orchestrationAdmission.ts",
+      "line": 56,
+      "params": [
+        {
+          "name": "type",
+          "ts_type": "typeof typeof typeof typeof OrchestrationCommand.Type.Type.Type.Type[\"type\"]",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "orchestrationCommandLane",
+      "file": "apps/server/src/orchestration/orchestrationAdmission.ts",
+      "line": 62,
+      "params": [
+        {
+          "name": "type",
+          "ts_type": "typeof typeof typeof typeof OrchestrationCommand.Type.Type.Type.Type[\"type\"]",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(\"control\" | \"user\" | \"normal\")",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "buildProjectImportCatalog",
+      "file": "apps/server/src/orchestration/projectImportCatalog.ts",
+      "line": 87,
+      "params": [
+        {
+          "name": "sources",
+          "ts_type": "ReadonlyArray<{\n    provider: typeof typeof typeof typeof ProjectImportProvider.Type.Type.Type.Type;\n    catalog: NativeProjectImportCatalog;\n    providerInstanceId?: typeof typeof typeof typeof ProviderInstanceId.Type.Type.Type.Type;\n  }>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "existingProjects",
+          "ts_type": "ReadonlyArray<ExistingProject>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<ResolvedImportProject[]>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "makeProjectImportDestinations",
+      "file": "apps/server/src/orchestration/projectImportDestinations.ts",
+      "line": 5,
+      "params": [
+        {
+          "name": "model",
+          "ts_type": "Pick<typeof typeof typeof typeof OrchestrationReadModel.Type.Type.Type.Type, \"projects\" | \"threads\">",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "nativeImportId",
+      "file": "apps/server/src/orchestration/projectImportHistory.ts",
+      "line": 25,
+      "params": [
+        {
+          "name": "provider",
+          "ts_type": "typeof typeof typeof typeof ProjectImportProvider.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "cursor",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "projectImportKey",
+      "file": "apps/server/src/orchestration/projectImportPaths.ts",
+      "line": 7,
+      "params": [
+        {
+          "name": "parts",
+          "ts_type": "ReadonlyArray<string>",
+          "optional": true,
+          "rest": true
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "normalizeWindowsImportPath",
+      "file": "apps/server/src/orchestration/projectImportPaths.ts",
+      "line": 13,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "canonicalImportPath",
+      "file": "apps/server/src/orchestration/projectImportPaths.ts",
+      "line": 20,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<string>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "importPathIdentity",
+      "file": "apps/server/src/orchestration/projectImportPaths.ts",
+      "line": 36,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "importDirectoryExists",
+      "file": "apps/server/src/orchestration/projectImportPaths.ts",
+      "line": 40,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<boolean>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "findImportGitWorkspace",
+      "file": "apps/server/src/orchestration/projectImportPaths.ts",
+      "line": 50,
+      "params": [
+        {
+          "name": "cwd",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<{ root: string; worktree: string | null } | null>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveProjectImportSources",
+      "file": "apps/server/src/orchestration/projectImportSources.ts",
+      "line": 57,
+      "params": [
+        {
+          "name": "settings",
+          "ts_type": "typeof typeof typeof typeof ServerSettings.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "providers",
+          "ts_type": "ReadonlyArray<typeof typeof typeof typeof ProjectImportProvider.Type.Type.Type.Type>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "paths",
+          "ts_type": "{ readonly homeDir?: string | undefined; readonly stateDir?: string | undefined }",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "ReadonlyArray<ProjectImportSource>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveProjectImportSourceHome",
+      "file": "apps/server/src/orchestration/projectImportSources.ts",
+      "line": 122,
+      "params": [
+        {
+          "name": "source",
+          "ts_type": "ProjectImportSource",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<string>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "relocateProjectPath",
+      "file": "apps/server/src/orchestration/projectRelocationPaths.ts",
+      "line": 11,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "string | null | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "previousRoot",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "nextRoot",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "platform",
+          "ts_type": "NodeJS.Platform",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string | null | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "providerWorkspaceChanged",
+      "file": "apps/server/src/orchestration/projectRelocationPaths.ts",
+      "line": 31,
+      "params": [
+        {
+          "name": "currentCwd",
+          "ts_type": "string | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "requestedCwd",
+          "ts_type": "string | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "platform",
+          "ts_type": "NodeJS.Platform",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "canProjectTurnModelSelectionForSession",
+      "file": "apps/server/src/orchestration/projector.ts",
+      "line": 133,
+      "params": [
+        {
+          "name": "session",
+          "ts_type": "ProjectedProviderSessionBinding | null | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "requestedInstanceId",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "createEmptyReadModel",
+      "file": "apps/server/src/orchestration/projector.ts",
+      "line": 330,
+      "params": [
+        {
+          "name": "nowIso",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof OrchestrationReadModel.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "projectEvent",
+      "file": "apps/server/src/orchestration/projector.ts",
+      "line": 409,
+      "params": [
+        {
+          "name": "model",
+          "ts_type": "typeof typeof typeof typeof OrchestrationReadModel.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "event",
+          "ts_type": "typeof typeof typeof typeof OrchestrationEvent.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Effect.Effect<typeof typeof typeof typeof OrchestrationReadModel.Type.Type.Type.Type, OrchestrationProjectorDecodeError>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isProviderIntentEventType",
+      "file": "apps/server/src/orchestration/providerIntentClassification.ts",
+      "line": 53,
+      "params": [
+        {
+          "name": "eventType",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "eventType is (Extract<\n  typeof typeof typeof OrchestrationEvent.Type.Type.Type,\n  {\n    type:\n      | \"thread.created\"\n      | \"thread.deleted\"\n      | \"thread.archived\"\n      | \"thread.unarchived\"\n      | \"thread.meta-updated\"\n      | \"thread.session-set\"\n      | \"thread.runtime-mode-set\"\n      | \"thread.interaction-mode-set\"\n      | \"thread.turn-queued\"\n      | \"thread.turn-start-requested\"\n      | \"thread.claude-cache-response-requested\"\n      | \"thread.goal-continuation-requested\"\n      | \"thread.turn-interrupt-requested\"\n      | \"thread.task-stop-requested\"\n      | \"thread.task-background-requested\"\n      | \"thread.approval-response-requested\"\n      | \"thread.user-input-response-requested\"\n      | \"thread.conversation-rollback-requested\"\n      | \"thread.message-edit-resend-requested\"\n      | \"thread.session-stop-requested\";\n  }\n>)[\"type\"]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isProviderIntentEvent",
+      "file": "apps/server/src/orchestration/providerIntentClassification.ts",
+      "line": 58,
+      "params": [
+        {
+          "name": "event",
+          "ts_type": "typeof typeof typeof typeof OrchestrationEvent.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "event is (Extract<\n  typeof typeof typeof OrchestrationEvent.Type.Type.Type,\n  {\n    type:\n      | \"thread.created\"\n      | \"thread.deleted\"\n      | \"thread.archived\"\n      | \"thread.unarchived\"\n      | \"thread.meta-updated\"\n      | \"thread.session-set\"\n      | \"thread.runtime-mode-set\"\n      | \"thread.interaction-mode-set\"\n      | \"thread.turn-queued\"\n      | \"thread.turn-start-requested\"\n      | \"thread.claude-cache-response-requested\"\n      | \"thread.goal-continuation-requested\"\n      | \"thread.turn-interrupt-requested\"\n      | \"thread.task-stop-requested\"\n      | \"thread.task-background-requested\"\n      | \"thread.approval-response-requested\"\n      | \"thread.user-input-response-requested\"\n      | \"thread.conversation-rollback-requested\"\n      | \"thread.message-edit-resend-requested\"\n      | \"thread.session-stop-requested\";\n  }\n>)",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isReplaySafeClaimedProviderIntent",
+      "file": "apps/server/src/orchestration/providerIntentClassification.ts",
+      "line": 61,
+      "params": [
+        {
+          "name": "event",
+          "ts_type": "(Extract<\n  typeof typeof typeof OrchestrationEvent.Type.Type.Type,\n  {\n    type:\n      | \"thread.created\"\n      | \"thread.deleted\"\n      | \"thread.archived\"\n      | \"thread.unarchived\"\n      | \"thread.meta-updated\"\n      | \"thread.session-set\"\n      | \"thread.runtime-mode-set\"\n      | \"thread.interaction-mode-set\"\n      | \"thread.turn-queued\"\n      | \"thread.turn-start-requested\"\n      | \"thread.claude-cache-response-requested\"\n      | \"thread.goal-continuation-requested\"\n      | \"thread.turn-interrupt-requested\"\n      | \"thread.task-stop-requested\"\n      | \"thread.task-background-requested\"\n      | \"thread.approval-response-requested\"\n      | \"thread.user-input-response-requested\"\n      | \"thread.conversation-rollback-requested\"\n      | \"thread.message-edit-resend-requested\"\n      | \"thread.session-stop-requested\";\n  }\n>)",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isProviderSideEffectIntent",
+      "file": "apps/server/src/orchestration/providerIntentClassification.ts",
+      "line": 70,
+      "params": [
+        {
+          "name": "event",
+          "ts_type": "(Extract<\n  typeof typeof typeof OrchestrationEvent.Type.Type.Type,\n  {\n    type:\n      | \"thread.created\"\n      | \"thread.deleted\"\n      | \"thread.archived\"\n      | \"thread.unarchived\"\n      | \"thread.meta-updated\"\n      | \"thread.session-set\"\n      | \"thread.runtime-mode-set\"\n      | \"thread.interaction-mode-set\"\n      | \"thread.turn-queued\"\n      | \"thread.turn-start-requested\"\n      | \"thread.claude-cache-response-requested\"\n      | \"thread.goal-continuation-requested\"\n      | \"thread.turn-interrupt-requested\"\n      | \"thread.task-stop-requested\"\n      | \"thread.task-background-requested\"\n      | \"thread.approval-response-requested\"\n      | \"thread.user-input-response-requested\"\n      | \"thread.conversation-rollback-requested\"\n      | \"thread.message-edit-resend-requested\"\n      | \"thread.session-stop-requested\";\n  }\n>)",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isClaimedProviderIntent",
+      "file": "apps/server/src/orchestration/providerIntentClassification.ts",
+      "line": 79,
+      "params": [
+        {
+          "name": "event",
+          "ts_type": "(Extract<\n  typeof typeof typeof OrchestrationEvent.Type.Type.Type,\n  {\n    type:\n      | \"thread.created\"\n      | \"thread.deleted\"\n      | \"thread.archived\"\n      | \"thread.unarchived\"\n      | \"thread.meta-updated\"\n      | \"thread.session-set\"\n      | \"thread.runtime-mode-set\"\n      | \"thread.interaction-mode-set\"\n      | \"thread.turn-queued\"\n      | \"thread.turn-start-requested\"\n      | \"thread.claude-cache-response-requested\"\n      | \"thread.goal-continuation-requested\"\n      | \"thread.turn-interrupt-requested\"\n      | \"thread.task-stop-requested\"\n      | \"thread.task-background-requested\"\n      | \"thread.approval-response-requested\"\n      | \"thread.user-input-response-requested\"\n      | \"thread.conversation-rollback-requested\"\n      | \"thread.message-edit-resend-requested\"\n      | \"thread.session-stop-requested\";\n  }\n>)",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isQuarantineExemptProviderIntent",
+      "file": "apps/server/src/orchestration/providerIntentClassification.ts",
+      "line": 87,
+      "params": [
+        {
+          "name": "event",
+          "ts_type": "(Extract<\n  typeof typeof typeof OrchestrationEvent.Type.Type.Type,\n  {\n    type:\n      | \"thread.created\"\n      | \"thread.deleted\"\n      | \"thread.archived\"\n      | \"thread.unarchived\"\n      | \"thread.meta-updated\"\n      | \"thread.session-set\"\n      | \"thread.runtime-mode-set\"\n      | \"thread.interaction-mode-set\"\n      | \"thread.turn-queued\"\n      | \"thread.turn-start-requested\"\n      | \"thread.claude-cache-response-requested\"\n      | \"thread.goal-continuation-requested\"\n      | \"thread.turn-interrupt-requested\"\n      | \"thread.task-stop-requested\"\n      | \"thread.task-background-requested\"\n      | \"thread.approval-response-requested\"\n      | \"thread.user-input-response-requested\"\n      | \"thread.conversation-rollback-requested\"\n      | \"thread.message-edit-resend-requested\"\n      | \"thread.session-stop-requested\";\n  }\n>)",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "sanitizeProviderStartOptionsForPersistence",
+      "file": "apps/server/src/orchestration/providerOptionsSecurity.ts",
+      "line": 70,
+      "params": [
+        {
+          "name": "providerOptions",
+          "ts_type": "typeof typeof typeof typeof ProviderStartOptions.Type.Type.Type.Type | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ProviderStartOptions.Type.Type.Type.Type | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "readableReasoningDetail",
+      "file": "apps/server/src/orchestration/providerRuntimeActivityProjection.ts",
+      "line": 368,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "string | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "runtimePayloadRecord",
+      "file": "apps/server/src/orchestration/providerRuntimeActivityProjection.ts",
+      "line": 518,
+      "params": [
+        {
+          "name": "event",
+          "ts_type": "typeof typeof typeof ProviderRuntimeEventV2.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Record<string, unknown> | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "runtimeTurnState",
+      "file": "apps/server/src/orchestration/providerRuntimeActivityProjection.ts",
+      "line": 525,
+      "params": [
+        {
+          "name": "event",
+          "ts_type": "typeof typeof typeof ProviderRuntimeEventV2.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "\"completed\" | \"failed\" | \"interrupted\" | \"cancelled\"",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "projectProviderRuntimeActivities",
+      "file": "apps/server/src/orchestration/providerRuntimeActivityProjection.ts",
+      "line": 675,
+      "params": [
+        {
+          "name": "event",
+          "ts_type": "typeof typeof typeof ProviderRuntimeEventV2.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "sessionSequence",
+          "ts_type": "number",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "ReadonlyArray<typeof typeof typeof typeof OrchestrationThreadActivity.Type.Type.Type.Type>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "providerActivityUpdateDedupeKey",
+      "file": "apps/server/src/orchestration/providerRuntimeActivityProjection.ts",
+      "line": 1616,
+      "params": [
+        {
+          "name": "event",
+          "ts_type": "typeof typeof typeof ProviderRuntimeEventV2.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "threadId",
+          "ts_type": "typeof typeof typeof typeof ThreadId.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "activity",
+          "ts_type": "typeof typeof typeof typeof OrchestrationThreadActivity.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "providerActivityUpdateFingerprint",
+      "file": "apps/server/src/orchestration/providerRuntimeActivityProjection.ts",
+      "line": 1657,
+      "params": [
+        {
+          "name": "activity",
+          "ts_type": "typeof typeof typeof typeof OrchestrationThreadActivity.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "providerRuntimeProgressKey",
+      "file": "apps/server/src/orchestration/providerRuntimeProgressCoalescing.ts",
+      "line": 11,
+      "params": [
+        {
+          "name": "event",
+          "ts_type": "typeof typeof typeof ProviderRuntimeEventV2.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "providerRuntimeCommandProgressKey",
+      "file": "apps/server/src/orchestration/providerRuntimeProgressCoalescing.ts",
+      "line": 47,
+      "params": [
+        {
+          "name": "event",
+          "ts_type": "typeof typeof typeof ProviderRuntimeEventV2.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "coalesceProviderRuntimeProgress",
+      "file": "apps/server/src/orchestration/providerRuntimeProgressCoalescing.ts",
+      "line": 78,
+      "params": [
+        {
+          "name": "page",
+          "ts_type": "ReadonlyArray<({ readonly event: typeof typeof typeof ProviderRuntimeEventV2.Type.Type.Type })>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ReadonlyArray<({ readonly event: typeof typeof typeof ProviderRuntimeEventV2.Type.Type.Type })>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "detectCreatedPullRequestUrls",
+      "file": "apps/server/src/orchestration/pullRequestCommandDetection.ts",
+      "line": 124,
+      "params": [
+        {
+          "name": "payload",
+          "ts_type": "{\n  readonly itemType: string;\n  readonly status?: string | undefined;\n  readonly data?: unknown;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "buildQuitResumeRecord",
+      "file": "apps/server/src/orchestration/quitResume.ts",
+      "line": 167,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly request: typeof typeof typeof typeof OrchestrationPrepareQuitResumeInput.Type.Type.Type.Type;\n  readonly threads: ReadonlyArray<(Pick<\n  typeof typeof typeof OrchestrationThread.Type.Type.Type,\n  \"id\" | \"deletedAt\" | \"latestTurn\" | \"session\"\n>)>;\n  readonly recordId: string;\n  readonly now: string;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof QuitResumeRecord.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "buildQuitInterruptCommand",
+      "file": "apps/server/src/orchestration/quitResume.ts",
+      "line": 308,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly threadId: typeof typeof typeof typeof ThreadId.Type.Type.Type.Type;\n  readonly turnId: typeof typeof typeof typeof TurnId.Type.Type.Type.Type | null;\n  readonly recordId: string;\n  readonly recordedAt: string;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Extract<\n  typeof typeof typeof OrchestrationCommand.Type.Type.Type,\n  { readonly type: \"thread.turn.interrupt\" }\n>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "planQuitResumeTurns",
+      "file": "apps/server/src/orchestration/quitResume.ts",
+      "line": 335,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly record: typeof typeof typeof typeof QuitResumeRecord.Type.Type.Type.Type;\n  readonly threads: ReadonlyArray<(Pick<\n  typeof typeof typeof OrchestrationThread.Type.Type.Type,\n  | \"id\"\n  | \"projectId\"\n  | \"deletedAt\"\n  | \"archivedAt\"\n  | \"latestTurn\"\n  | \"session\"\n  | \"runtimeMode\"\n  | \"interactionMode\"\n>)>;\n  readonly projects: ReadonlyArray<(Pick<typeof typeof typeof OrchestrationProject.Type.Type.Type, \"id\" | \"deletedAt\">)>;\n  readonly now: string;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "QuitResumePlan",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "persistQuitResumeRecord",
+      "file": "apps/server/src/orchestration/quitResume.ts",
+      "line": 390,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly path: string;\n  readonly record: typeof typeof typeof typeof QuitResumeRecord.Type.Type.Type.Type;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "clearQuitResumeRecord",
+      "file": "apps/server/src/orchestration/quitResume.ts",
+      "line": 399,
+      "params": [
+        {
+          "name": "path",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "persistCrashResumeRecord",
+      "file": "apps/server/src/orchestration/quitResume.ts",
+      "line": 411,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly path: string;\n  readonly record: typeof typeof typeof typeof QuitResumeRecord.Type.Type.Type.Type;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Effect.Effect<(| { readonly kind: \"absent\" }\n  | { readonly kind: \"invalid\" }\n  | { readonly kind: \"record\"; readonly record: typeof typeof typeof QuitResumeRecord.Type.Type.Type }), never, FileSystem.FileSystem>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "readQuitResumeRecord",
+      "file": "apps/server/src/orchestration/quitResume.ts",
+      "line": 428,
+      "params": [
+        {
+          "name": "path",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Effect.Effect<(| { readonly kind: \"absent\" }\n  | { readonly kind: \"invalid\" }\n  | { readonly kind: \"record\"; readonly record: typeof typeof typeof QuitResumeRecord.Type.Type.Type }), never, FileSystem.FileSystem>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "claimQuitResumeRecord",
+      "file": "apps/server/src/orchestration/quitResume.ts",
+      "line": 455,
+      "params": [
+        {
+          "name": "path",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Effect.Effect<(| { readonly kind: \"absent\" }\n  | { readonly kind: \"invalid\" }\n  | { readonly kind: \"record\"; readonly record: typeof typeof typeof QuitResumeRecord.Type.Type.Type }), never, FileSystem.FileSystem>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resumeQuitInterruptedChats",
+      "file": "apps/server/src/orchestration/quitResume.ts",
+      "line": 621,
+      "params": [
+        {
+          "name": "claimed",
+          "ts_type": "(| { readonly kind: \"absent\" }\n  | { readonly kind: \"invalid\" }\n  | { readonly kind: \"record\"; readonly record: typeof typeof typeof QuitResumeRecord.Type.Type.Type })",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Effect.Effect<void, never, OrchestrationEngineService>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isExpiredSidechat",
+      "file": "apps/server/src/orchestration/sidechatLifecycle.ts",
+      "line": 8,
+      "params": [
+        {
+          "name": "thread",
+          "ts_type": "Pick<typeof typeof typeof OrchestrationThread.Type.Type.Type, \"sidechatExpiredAt\">",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "latestSidechatActivityAt",
+      "file": "apps/server/src/orchestration/sidechatLifecycle.ts",
+      "line": 17,
+      "params": [
+        {
+          "name": "current",
+          "ts_type": "string | null | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "candidate",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "sidechatActivityInstantsEqual",
+      "file": "apps/server/src/orchestration/sidechatLifecycle.ts",
+      "line": 28,
+      "params": [
+        {
+          "name": "left",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "right",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isUnsettledPendingInteraction",
+      "file": "apps/server/src/orchestration/stalePendingInteractions.ts",
+      "line": 43,
+      "params": [
+        {
+          "name": "row",
+          "ts_type": "Pick<typeof typeof typeof typeof ProjectionPendingInteraction.Type.Type.Type.Type, \"status\">",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "pendingInteractionRequestKind",
+      "file": "apps/server/src/orchestration/stalePendingInteractions.ts",
+      "line": 49,
+      "params": [
+        {
+          "name": "interactionKind",
+          "ts_type": "typeof typeof typeof typeof ProjectionPendingInteraction.Type.Type.Type.Type[\"interactionKind\"]",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(\"approval\" | \"user-input\")",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "buildStalePendingRequestSettlementCommand",
+      "file": "apps/server/src/orchestration/stalePendingInteractions.ts",
+      "line": 64,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly threadId: typeof typeof typeof typeof ThreadId.Type.Type.Type.Type;\n  readonly commandId: typeof typeof typeof typeof CommandId.Type.Type.Type.Type;\n  readonly requestKind: (\"approval\" | \"user-input\");\n  readonly requestId: string;\n  readonly lifecycleGeneration?: string | null;\n  readonly now: string;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Extract<\n  typeof typeof typeof OrchestrationCommand.Type.Type.Type,\n  { readonly type: \"thread.activity.append\" }\n>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "findRestartOrphanedTasks",
+      "file": "apps/server/src/orchestration/startupTurnReconciliation.ts",
+      "line": 312,
+      "params": [
+        {
+          "name": "activities",
+          "ts_type": "NonNullable<ReconcilableThread[\"activities\"]>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "startedBefore",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ReadonlyArray<RestartOrphanedTask>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "planRestartTurnReconciliation",
+      "file": "apps/server/src/orchestration/startupTurnReconciliation.ts",
+      "line": 462,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly threads: ReadonlyArray<ReconcilableThread>;\n  readonly pendingInteractions?: ReadonlyArray<(Pick<\n  typeof typeof typeof ProjectionPendingInteraction.Type.Type.Type,\n  \"threadId\" | \"interactionKind\" | \"requestId\" | \"status\"\n>)>;\n  readonly now: string;\n  /** When this process started: tasks opened before it are retired as stopped. */\n  readonly retireTasksStartedBefore?: string;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ReadonlyArray<(| Extract<\n  typeof typeof OrchestrationCommand.Type.Type,\n  { readonly type: \"thread.session.set\" }\n>\n  | Extract<\n  typeof typeof OrchestrationCommand.Type.Type,\n  { readonly type: \"thread.activity.append\" }\n>\n  | Extract<\n  typeof typeof OrchestrationCommand.Type.Type,\n  { readonly type: \"thread.message.assistant.complete\" }\n>)>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "deriveThreadGitMetadataPatch",
+      "file": "apps/server/src/orchestration/threadGitMetadata.ts",
+      "line": 37,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly currentBranch: string | null;\n  /** The thread's current branch-managed PR (not the overall current PR). */\n  readonly currentPullRequest: typeof typeof typeof typeof OrchestrationThreadPullRequest.Type.Type.Type.Type | null;\n  readonly observedBranch: string | null;\n  readonly pullRequestLookup: (| {\n      readonly status: \"resolved\";\n      readonly pullRequest: typeof typeof typeof OrchestrationThreadPullRequest.Type.Type.Type | null;\n    }\n  | { readonly status: \"unavailable\" });\n  readonly dedicatedWorktree?: {\n    readonly cwd: string;\n    readonly currentPath: string | null;\n    readonly currentBranch: string | null;\n  };\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ThreadGitMetadataPatch | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isOversizedThreadGoal",
+      "file": "apps/server/src/orchestration/threadGoalMaterialization.ts",
+      "line": 18,
+      "params": [
+        {
+          "name": "goal",
+          "ts_type": "string | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "goal is string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "threadGoalFileName",
+      "file": "apps/server/src/orchestration/threadGoalMaterialization.ts",
+      "line": 33,
+      "params": [
+        {
+          "name": "commandId",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "threadGoalFileReference",
+      "file": "apps/server/src/orchestration/threadGoalMaterialization.ts",
+      "line": 48,
+      "params": [
+        {
+          "name": "filePath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "materializeThreadGoalFile",
+      "file": "apps/server/src/orchestration/threadGoalMaterialization.ts",
+      "line": 56,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly stateDir: string;\n  readonly threadId: string;\n  readonly commandId: string;\n  readonly goal: string;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<string>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "pruneThreadGoalFiles",
+      "file": "apps/server/src/orchestration/threadGoalMaterialization.ts",
+      "line": 76,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly stateDir: string;\n  readonly threadId: string;\n  readonly keepFileName?: string | undefined;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<void>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "discardMaterializedThreadGoalFile",
+      "file": "apps/server/src/orchestration/threadGoalMaterialization.ts",
+      "line": 101,
+      "params": [
+        {
+          "name": "filePath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<void>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "threadGoalFileNameFromReference",
+      "file": "apps/server/src/orchestration/threadGoalMaterialization.ts",
+      "line": 112,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly stateDir: string;\n  readonly threadId: string;\n  readonly goal: string;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "readMaterializedThreadGoalText",
+      "file": "apps/server/src/orchestration/threadGoalMaterialization.ts",
+      "line": 129,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly stateDir: string;\n  readonly threadId: string;\n  readonly goal: string;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<string | null>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "formatThreadLatestReplyPreview",
+      "file": "apps/server/src/orchestration/threadLatestReplyPreview.ts",
+      "line": 50,
+      "params": [
+        {
+          "name": "source",
+          "ts_type": "ThreadLatestReplyPreviewSource",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "shouldApplyThreadsProjection",
+      "file": "apps/server/src/orchestration/threadShellEvents.ts",
+      "line": 54,
+      "params": [
+        {
+          "name": "event",
+          "ts_type": "typeof typeof typeof typeof OrchestrationEvent.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "shouldApplyDeferredThreadShellSummary",
+      "file": "apps/server/src/orchestration/threadShellEvents.ts",
+      "line": 65,
+      "params": [
+        {
+          "name": "event",
+          "ts_type": "typeof typeof typeof typeof OrchestrationEvent.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "shouldPublishThreadShellForEvent",
+      "file": "apps/server/src/orchestration/threadShellEvents.ts",
+      "line": 73,
+      "params": [
+        {
+          "name": "event",
+          "ts_type": "typeof typeof typeof typeof OrchestrationEvent.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "settleTurnStateFromSession",
+      "file": "apps/server/src/orchestration/turnLifecycle.ts",
+      "line": 9,
+      "params": [
+        {
+          "name": "session",
+          "ts_type": "Pick<typeof typeof typeof typeof OrchestrationSession.Type.Type.Type.Type, \"status\" | \"activeTurnId\">",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "existingState",
+          "ts_type": "(\"pending\" | \"running\" | \"completed\" | \"interrupted\" | \"error\")",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Exclude<(\"pending\" | \"running\" | \"completed\" | \"interrupted\" | \"error\"), \"pending\" | \"running\"> | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "maxIso",
+      "file": "apps/server/src/orchestration/turnLifecycle.ts",
+      "line": 41,
+      "params": [
+        {
+          "name": "left",
+          "ts_type": "string | null",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "right",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "deriveTurnStartModelSelection",
+      "file": "apps/server/src/orchestration/turnStartSession.ts",
+      "line": 9,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly currentModelSelection: typeof typeof typeof typeof ModelSelection.Type.Type.Type.Type;\n  readonly requestedModelSelection: typeof typeof typeof typeof ModelSelection.Type.Type.Type.Type | undefined;\n  readonly canAdoptRequestedProvider: boolean;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ModelSelection.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "countNativeTurnStartMessages",
+      "file": "apps/server/src/orchestration/turnStartSession.ts",
+      "line": 24,
+      "params": [
+        {
+          "name": "messages",
+          "ts_type": "ReadonlyArray<{ readonly source?: string | null }>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "number",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "canAdoptFirstTurnProvider",
+      "file": "apps/server/src/orchestration/turnStartSession.ts",
+      "line": 36,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly hasLatestTurn: boolean;\n  readonly hasSession: boolean;\n  readonly messages: ReadonlyArray<{ readonly source?: string | null }>;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "deriveTurnStartSession",
+      "file": "apps/server/src/orchestration/turnStartSession.ts",
+      "line": 46,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly threadId: typeof typeof typeof typeof ThreadId.Type.Type.Type.Type;\n  readonly currentSession:\n    | typeof typeof typeof typeof OrchestrationSession.Type.Type.Type.Type\n    | (Omit<typeof typeof typeof typeof OrchestrationSession.Type.Type.Type.Type, \"providerInstanceId\"> & {\n        readonly providerInstanceId: typeof typeof typeof typeof ProviderInstanceId.Type.Type.Type.Type | null;\n      })\n    | null;\n  readonly providerName: typeof typeof typeof typeof OrchestrationSession.Type.Type.Type.Type[\"providerName\"];\n  readonly providerInstanceId?: typeof typeof typeof typeof ProviderInstanceId.Type.Type.Type.Type;\n  readonly requestedRuntimeMode: typeof typeof typeof typeof RuntimeMode.Type.Type.Type.Type;\n  readonly requestedAt: string;\n  /**\n   * Whether the projected session's provider binding is established (running,\n   * ready, or has already produced a turn). A pre-turn optimistic placeholder\n   * row can carry a stale provider; when this is false the session's own\n   * providerName is ignored in favor of input.providerName.\n   */\n  readonly sessionProviderEstablished?: boolean;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof OrchestrationSession.Type.Type.Type.Type | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "OrchestrationCommandInvariantError",
+      "file": "apps/server/src/orchestration/Errors.ts",
+      "line": 12,
+      "reason": "class: extends another class, accessor `message`"
+    },
+    {
+      "name": "OrchestrationCommandPreviouslyRejectedError",
+      "file": "apps/server/src/orchestration/Errors.ts",
+      "line": 25,
+      "reason": "class: extends another class, accessor `message`"
+    },
+    {
+      "name": "OrchestrationCommandIdentityCollisionError",
+      "file": "apps/server/src/orchestration/Errors.ts",
+      "line": 38,
+      "reason": "class: extends another class, accessor `message`"
+    },
+    {
+      "name": "OrchestrationCommandTimeoutError",
+      "file": "apps/server/src/orchestration/Errors.ts",
+      "line": 50,
+      "reason": "class: extends another class, accessor `message`"
+    },
+    {
+      "name": "OrchestrationCommandAdmissionError",
+      "file": "apps/server/src/orchestration/Errors.ts",
+      "line": 64,
+      "reason": "class: extends another class, accessor `message`"
+    },
+    {
+      "name": "OrchestrationCommandInternalError",
+      "file": "apps/server/src/orchestration/Errors.ts",
+      "line": 81,
+      "reason": "class: extends another class, accessor `message`"
+    },
+    {
+      "name": "OrchestrationProjectorDecodeError",
+      "file": "apps/server/src/orchestration/Errors.ts",
+      "line": 95,
+      "reason": "class: extends another class, accessor `message`"
+    },
+    {
+      "name": "ProviderDeliveryRecoveryError",
+      "file": "apps/server/src/orchestration/Errors.ts",
+      "line": 109,
+      "reason": "class: extends another class, accessor `message`"
+    },
+    {
+      "name": "makeDispatchCommandNormalizer",
+      "file": "apps/server/src/orchestration/dispatchCommandNormalization.ts",
+      "line": 81,
+      "reason": "uses `DispatchCommandNormalizerOptions`, which has function members"
+    },
+    {
+      "name": "threadArchiveChunks",
+      "file": "apps/server/src/orchestration/exportThreadArchive.ts",
+      "line": 201,
+      "reason": "generator: returns a lazy iterator"
+    },
+    {
+      "name": "makeImportThreadHandler",
+      "file": "apps/server/src/orchestration/importThreadRoute.ts",
+      "line": 301,
+      "reason": "checks `instanceof`: class identity does not survive the bridge"
+    },
+    {
+      "name": "ProjectImportError",
+      "file": "apps/server/src/orchestration/projectImportHistory.ts",
+      "line": 14,
+      "reason": "class: extends another class"
+    },
+    {
+      "name": "projectImportPromise",
+      "file": "apps/server/src/orchestration/projectImportHistory.ts",
+      "line": 18,
+      "reason": "checks `instanceof`: class identity does not survive the bridge"
+    },
+    {
+      "name": "makeProjectImportHistoryReader",
+      "file": "apps/server/src/orchestration/projectImportHistory.ts",
+      "line": 75,
+      "reason": "uses `ProviderAdapterRegistryShape`, which has function members"
+    },
+    {
+      "name": "makeProjectImportHandlers",
+      "file": "apps/server/src/orchestration/projectImportRoute.ts",
+      "line": 75,
+      "reason": "checks `instanceof`: class identity does not survive the bridge"
+    },
+    {
+      "name": "applyProjectMetadataProjection",
+      "file": "apps/server/src/orchestration/projectMetadataProjection.ts",
+      "line": 24,
+      "reason": "uses `ProjectionProjectRepositoryShape`, which has function members"
+    },
+    {
+      "name": "advanceProjectMetadataSnapshotState",
+      "file": "apps/server/src/orchestration/projectMetadataProjection.ts",
+      "line": 98,
+      "reason": "uses `ProjectionStateRepositoryShape`, which has function members"
+    },
+    {
+      "name": "sanitizeOrchestrationEventProviderOptions",
+      "file": "apps/server/src/orchestration/providerOptionsSecurity.ts",
+      "line": 80,
+      "reason": "generic over `Event`: values of any shape, functions included"
+    },
+    {
+      "name": "restoreTransientOrchestrationEventProviderOptions",
+      "file": "apps/server/src/orchestration/providerOptionsSecurity.ts",
+      "line": 102,
+      "reason": "generic over `Event`: values of any shape, functions included"
+    },
+    {
+      "name": "resolveProviderSessionThread",
+      "file": "apps/server/src/orchestration/providerSessionThread.ts",
+      "line": 16,
+      "reason": "uses `ProjectionSnapshotQueryShape`, which has function members"
+    },
+    {
+      "name": "prepareQuitResume",
+      "file": "apps/server/src/orchestration/quitResume.ts",
+      "line": 511,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "makeRuntimeJournalPoisonGate",
+      "file": "apps/server/src/orchestration/runtimeJournalPoisonGate.ts",
+      "line": 37,
+      "reason": "uses `RuntimeJournalPoisonGate`, which has function members"
+    },
+    {
+      "name": "applySpaceMetadataProjection",
+      "file": "apps/server/src/orchestration/spaceMetadataProjection.ts",
+      "line": 14,
+      "reason": "uses `ProjectionSpaceRepositoryShape`, which has function members"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "unit": "apps/server/src/orchestration/",
+  "files": 158,
+  "fingerprint": "8cb3172f1f5fdb08",
+  "coverage": {
+    "lines": 124,
+    "reached": 100,
+    "files": [
+      {
+        "file": "apps/server/src/orchestration/Errors.ts",
+        "lines": 124,
+        "reached": 100,
+        "missed": "21-22, 34-35, 46-47, 60-61, 75-78, 91-92, 104-105, 114-117, 132-135"
+      }
+    ]
+  }
+}

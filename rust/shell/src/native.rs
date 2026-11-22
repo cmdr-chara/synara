@@ -11,6 +11,7 @@ use gpui_kit::component::{
     input::{Editor, EditorState, Input, InputEvent, InputState},
     menu::{DropdownMenu as _, PopupMenuItem},
     scroll::ScrollableElement as _,
+    text::TextView,
     theme::{Theme, ThemeMode},
     v_flex,
     ActiveTheme as _, IconName,
@@ -70,86 +71,6 @@ fn now_iso() -> String {
 
 fn uuid() -> String {
     uuid::Uuid::new_v4().to_string()
-}
-
-/// Minimal markdown renderer: fenced code blocks, headings, bullets,
-/// blockquotes and plain paragraphs. Inline markup is left literal.
-fn md_blocks(text: &str, theme: &gpui_kit::component::theme::Theme) -> Vec<Div> {
-    let mut out: Vec<Div> = Vec::new();
-    let mut in_code = false;
-    let mut code_lines: Vec<String> = Vec::new();
-    let flush_code = |code_lines: &mut Vec<String>, out: &mut Vec<Div>| {
-        out.push(
-            div()
-                .w_full()
-                .text_xs()
-                .font_family("monospace")
-                .bg(theme.list_active)
-                .rounded_md()
-                .p_2()
-                .child(code_lines.join("\n")),
-        );
-        code_lines.clear();
-    };
-    for line in text.lines() {
-        let t = line.trim_end();
-        if t.trim_start().starts_with("```") {
-            if in_code {
-                flush_code(&mut code_lines, &mut out);
-            }
-            in_code = !in_code;
-            continue;
-        }
-        if in_code {
-            code_lines.push(line.to_string());
-            continue;
-        }
-        if t.is_empty() {
-            out.push(div().h_2());
-            continue;
-        }
-        let heading = t
-            .strip_prefix("### ")
-            .or_else(|| t.strip_prefix("## "))
-            .or_else(|| t.strip_prefix("# "));
-        if let Some(h) = heading {
-            out.push(
-                div()
-                    .text_sm()
-                    .font_weight(FontWeight::SEMIBOLD)
-                    .child(h.to_string()),
-            );
-            continue;
-        }
-        if let Some(q) = t.strip_prefix("> ") {
-            out.push(
-                div()
-                    .text_sm()
-                    .text_color(theme.muted_foreground)
-                    .border_l_2()
-                    .border_color(theme.border)
-                    .pl_2()
-                    .child(q.to_string()),
-            );
-            continue;
-        }
-        let bullet = t
-            .strip_prefix("- ")
-            .or_else(|| t.strip_prefix("* "))
-            .map(|b| format!("\u{2022} {b}"))
-            .or_else(|| {
-                t.split_once(". ").and_then(|(n, rest)| {
-                    n.chars()
-                        .all(|c| c.is_ascii_digit())
-                        .then(|| format!("{n}. {rest}"))
-                })
-            });
-        out.push(div().text_sm().child(bullet.unwrap_or_else(|| t.to_string())));
-    }
-    if in_code {
-        flush_code(&mut code_lines, &mut out);
-    }
-    out
 }
 
 /// Blocking: connect (once) and clone the shared client. Run on a background
@@ -1439,7 +1360,7 @@ impl Render for Native {
                     .child("Select a thread or type below"),
             );
         }
-        for m in messages {
+        for (i, m) in messages.iter().enumerate() {
             let role = str_at(m, "role");
             let mut text = str_at(m, "text").to_string();
             if text.trim().is_empty() {
@@ -1468,7 +1389,13 @@ impl Render for Native {
                     ),
                 );
             } else {
-                pane = pane.child(v_flex().gap_1().children(md_blocks(&text, &theme)));
+                pane = pane.child(
+                    TextView::markdown(
+                        ElementId::Name(format!("md-{i}-{}", str_at(m, "id")).into()),
+                        text,
+                    )
+                    .selectable(true),
+                );
             }
         }
 
@@ -1541,7 +1468,13 @@ impl Render for Native {
                             "PROPOSED PLAN".to_string()
                         }),
                 );
-            card = card.children(md_blocks(md, &theme));
+            card = card.child(
+                TextView::markdown(
+                    ElementId::Name(format!("plan-{}", str_at(p, "id")).into()),
+                    md.to_string(),
+                )
+                .selectable(true),
+            );
             pane = pane.child(card);
         }
 

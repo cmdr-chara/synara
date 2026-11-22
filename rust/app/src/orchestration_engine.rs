@@ -36,7 +36,10 @@ fn uuid_v4() -> String {
 }
 
 pub fn handles(tag: &str) -> bool {
-    tag == "orchestration.dispatchCommand" && std::env::var("SYNARA_NO_UPSTREAM").is_ok()
+    matches!(
+        tag,
+        "orchestration.dispatchCommand" | "orchestration.settleTurnDispatch"
+    ) && std::env::var("SYNARA_NO_UPSTREAM").is_ok()
 }
 
 fn open_state_rw() -> Result<Connection, WsErr> {
@@ -56,7 +59,16 @@ fn is_group_container_kind(kind: &str) -> bool {
     kind == "group" || kind == "studio"
 }
 
-pub fn handle(_tag: &str, payload: &Value) -> Result<Value, WsErr> {
+pub fn handle(tag: &str, payload: &Value) -> Result<Value, WsErr> {
+    if tag == "orchestration.settleTurnDispatch" {
+        let command = payload
+            .get("command")
+            .and_then(Value::as_object)
+            .ok_or_else(|| {
+                err("orchestration.settleTurnDispatch expects a command object")
+            })?;
+        return settle_turn_dispatch(command);
+    }
     let command = payload
         .as_object()
         .ok_or_else(|| err("orchestration.dispatchCommand expects a command object"))?;
@@ -5437,4 +5449,55 @@ fn lineage_create(command: &Map<String, Value>, is_handoff: bool) -> Result<Valu
     }
     let seq = commit_events(&conn, &events, &command_id)?;
     Ok(json!({ "sequence": seq }))
+}
+
+fn settle_turn_dispatch(command: &Map<String, Value>) -> Result<Value, WsErr> {
+    let command_id = s(command, "commandId").ok_or_else(|| err("missing commandId"))?;
+    let conn = open_state_rw()?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| err(e.to_string()))?;
+
+    let receipt: Option<(String, i64, Option<String>)> = conn
+        .query_row(
+            "SELECT status, result_sequence, error FROM orchestration_command_receipts \
+             WHERE command_id = ?1",
+            params![command_id],
+            |r| Ok((r.get(0)?, r.get(1)?, r.get(2)?)),
+        )
+        .optional()
+        .map_err(|e| err(e.to_string()))?;
+
+    if let Some((status, result_sequence, error)) = receipt {
+        if status == "accepted" {
+            return Ok(json!({ "status": "accepted", "sequence": result_sequence }));
+        }
+        return Err(err(error.unwrap_or_else(|| "Previously rejected.".into())));
+    }
+
+    let detail =
+        "The connection was interrupted before this message was accepted. Please send it again.";
+    let ctype = s(command, "type").unwrap_or_default();
+    let (agg_kind, agg_id) = if ctype.starts_with("space.") {
+        ("space", s(command, "spaceId").unwrap_or_default())
+    } else if ctype.starts_with("project.") {
+        ("project", s(command, "projectId").unwrap_or_default())
+    } else {
+        ("thread", s(command, "threadId").unwrap_or_default())
+    };
+    let snapshot_sequence: i64 = conn
+        .query_row(
+            "SELECT COALESCE(MAX(sequence), 0) FROM orchestration_events",
+            [],
+            |r| r.get(0),
+        )
+        .map_err(|e| err(e.to_string()))?;
+    conn.execute(
+        "INSERT INTO orchestration_command_receipts \
+         (command_id, aggregate_kind, aggregate_id, accepted_at, result_sequence, status, error, \
+          fingerprint_version, command_fingerprint) \
+         VALUES (?1, ?2, ?3, ?4, ?5, 'rejected', ?6, NULL, NULL)",
+        params![command_id, agg_kind, agg_id, iso_now_ms(), snapshot_sequence, detail],
+    )
+    .map_err(|_| err("Failed to settle the original message."))?;
+    Err(err(detail))
 }

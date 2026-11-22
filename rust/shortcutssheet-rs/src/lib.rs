@@ -190,11 +190,7 @@ static S_LIST_SHORTCUT_EDITOR_DEFINITIONS_OUT: wire::Schema =
 pub fn list_shortcut_editor_definitions_wire() -> napi::Result<f64> {
     wire_io(|_r, w| {
         let out = &port::list_shortcut_editor_definitions()?;
-        w.tag(1);
-        w.count(out.len());
-        for x0 in out.iter() {
-            wire::write_value(w, x0, S_LIST_SHORTCUT_EDITOR_DEFINITIONS_OUT.inner())?;
-        }
+        wire::write_value(w, out, &S_LIST_SHORTCUT_EDITOR_DEFINITIONS_OUT)?;
         Ok(())
     })
 }
@@ -244,11 +240,7 @@ pub fn build_shortcut_sheet_sections_wire() -> napi::Result<f64> {
     wire_io(|r, w| {
         let options: Value = wire::read_value(r, &S_BUILD_SHORTCUT_SHEET_SECTIONS_0)?;
         let out = &port::build_shortcut_sheet_sections(options)?;
-        w.tag(1);
-        w.count(out.len());
-        for x0 in out.iter() {
-            wire::write_value(w, x0, S_BUILD_SHORTCUT_SHEET_SECTIONS_OUT.inner())?;
-        }
+        wire::write_value(w, out, &S_BUILD_SHORTCUT_SHEET_SECTIONS_OUT)?;
         Ok(())
     })
 }
@@ -280,11 +272,7 @@ pub fn filter_shortcut_sheet_sections_wire() -> napi::Result<f64> {
         let sections: Value = wire::read_value(r, &S_FILTER_SHORTCUT_SHEET_SECTIONS_0)?;
         let query: String = r.string16()?;
         let out = &port::filter_shortcut_sheet_sections(sections, query)?;
-        w.tag(1);
-        w.count(out.len());
-        for x0 in out.iter() {
-            wire::write_value(w, x0, S_FILTER_SHORTCUT_SHEET_SECTIONS_OUT.inner())?;
-        }
+        wire::write_value(w, out, &S_FILTER_SHORTCUT_SHEET_SECTIONS_OUT)?;
         Ok(())
     })
 }

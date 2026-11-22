@@ -86,6 +86,9 @@ fn intercept_todo(
         && !text.contains("projects.searchLocalEntries")
         && !text.contains("projects.resolveWorkspaceFileReferences")
         && !text.contains("projects.resolveOutOfRootFileReference")
+        && !text.contains("server.getSettings")
+        && !text.contains("server.updateSettings")
+        && !text.contains("server.subscribeSettings")
     {
         return None;
     }
@@ -108,6 +111,9 @@ fn intercept_todo(
         && tag != "projects.searchLocalEntries"
         && tag != "projects.resolveWorkspaceFileReferences"
         && tag != "projects.resolveOutOfRootFileReference"
+        && tag != "server.getSettings"
+        && tag != "server.updateSettings"
+        && tag != "server.subscribeSettings"
     {
         return None;
     }
@@ -120,6 +126,37 @@ fn intercept_todo(
         .get("payload")
         .cloned()
         .unwrap_or(serde_json::Value::Null);
+    if tag == "server.subscribeSettings" {
+        let (snapshot, mut rx) = crate::server_settings::subscribe();
+        let tx = native_tx.clone();
+        let rid = request_id.clone();
+        let task = tokio::spawn(async move {
+            let event =
+                serde_json::json!({"type": "settingsUpdated", "payload": {"settings": snapshot}});
+            let chunk = serde_json::json!({"_tag": "Chunk", "requestId": rid, "values": [event]});
+            if tx
+                .send(ClientMessage::Text(chunk.to_string().into()))
+                .is_err()
+            {
+                return;
+            }
+            while let Ok(settings) = rx.recv().await {
+                let event = serde_json::json!({"type": "settingsUpdated", "payload": {"settings": settings}});
+                let chunk =
+                    serde_json::json!({"_tag": "Chunk", "requestId": rid, "values": [event]});
+                if tx
+                    .send(ClientMessage::Text(chunk.to_string().into()))
+                    .is_err()
+                {
+                    return;
+                }
+            }
+        });
+        if let Ok(mut map) = streams.lock() {
+            map.insert(request_id, task);
+        }
+        return Some(None);
+    }
     if tag == "todo.subscribe" {
         // Snapshot first, then every change — mirrors `streamChanges`
         // (subscribe-then-read ordering is preserved by the store lock).
@@ -163,6 +200,14 @@ fn intercept_todo(
             .map_err(error_json)
     } else if tag == "server.listWorktrees" {
         crate::list_worktrees::list_worktrees()
+            .map(Some)
+            .map_err(error_json)
+    } else if tag == "server.getSettings" {
+        crate::server_settings::get_settings(&payload)
+            .map(Some)
+            .map_err(error_json)
+    } else if tag == "server.updateSettings" {
+        crate::server_settings::update_settings(&payload)
             .map(Some)
             .map_err(error_json)
     } else if tag == "projects.resolveWorkspaceFileReferences" {

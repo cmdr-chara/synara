@@ -1,6 +1,6 @@
 # App replay
 
-Build: `/Users/devin/repos/synara/rust/app/target/debug/index`
+Build: `./rust/app/target/debug/index`
 
 Passed: 179/179
 

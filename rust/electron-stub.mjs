@@ -10,7 +10,14 @@
 //  - load `.json` files without an import attribute (bundler leniency).
 // Optional: RA_STUB_MAP='{"specifier":"/abs/stub.mjs"}' serves extra stubs.
 
-import { register } from "node:module";
+import { register, createRequire } from "node:module";
+
+// Detached promise rejections inside recorded code (async helpers called
+// without await during module init, stray timers) must not kill record.
+process.on("unhandledRejection", () => {});
+process.on("uncaughtException", (err) => {
+  console.error("stub: swallowed uncaughtException", err && err.message);
+});
 
 const PROXY = `
 const __deep = new Proxy(function () {}, {
@@ -42,15 +49,16 @@ const ELECTRON_SOURCE =
 const GENERIC_SOURCE = `${PROXY}\nexport const __generic = __deep;\n`;
 
 // Frozen crypto: real module via createRequire (bypasses these hooks), with
-// randomBytes/randomUUID overridden for deterministic recordings.
-const cryptoNames = [
-  "argon2", "argon2Sync", "checkPrime", "checkPrimeSync", "createCipheriv",
-  "createDecipheriv", "createDiffieHellman", "createDiffieHellmanGroup",
-  "createECDH", "createHash", "createHmac", "createPrivateKey",
-  "createPublicKey", "createSecretKey", "createSign", "createVerify",
-  "diffieHellman", "generatePrime", "generatePrimeSync", "getCiphers",
-  "getCipherInfo", "getCurves", "getDiffieHellman", "getHashes",
-];
+// randomBytes/randomUUID overridden for deterministic recordings. Every real
+// export is re-exported so named imports (X509Certificate, timingSafeEqual, ...)
+// resolve.
+const __cryptoRequire = createRequire("file:///ra-stub-base.mjs");
+const cryptoNames = Object.getOwnPropertyNames(__cryptoRequire("node:crypto"))
+  .filter(
+    (n) =>
+      !["default", "randomBytes", "randomUUID", "__esModule"].includes(n) &&
+      /^[A-Za-z_$][A-Za-z0-9_$]*$/.test(n),
+  );
 const CRYPTO_SOURCE = `
 import { createRequire } from "node:module";
 const crypto = createRequire("file:///ra-stub-base.mjs")("node:crypto");
@@ -63,30 +71,83 @@ ${cryptoNames.map((n) => `export const ${n} = crypto[${JSON.stringify(n)}];`).jo
 
 const HOOKS = `
 import { readFile } from "node:fs/promises";
+import { readFileSync } from "node:fs";
 const STUB_MAP = JSON.parse(process.env.RA_STUB_MAP ?? "{}");
+const WANTED = new Map();
+const RESERVED = new Set(
+  "break case catch class const continue debugger default delete do else export extends finally for function if import in instanceof new return super switch this throw try typeof var void while with yield enum implements interface package private protected public static let await null true false".split(" "),
+);
 const SOURCES = ${JSON.stringify({
   electron: ELECTRON_SOURCE,
   "node:crypto": CRYPTO_SOURCE,
 })};
 const GENERIC = ${JSON.stringify(GENERIC_SOURCE)};
 
+// Named imports a generic stub must provide, parsed from the importing file
+// and carried in the stub URL query so each importer gets a module instance
+// exporting the names it asks for.
+const NAME_RE = /import\\s*\\{([^}]*)\\}\\s*from\\s*["']([^"']+)["']|export\\s*\\{([^}]*)\\}\\s*from\\s*["']([^"']+)["']/g;
+const RESOLVE_SUFFIXES = ["", ".ts", ".tsx", ".mts", ".cts", ".js", ".mjs", "/index.ts", "/index.tsx", "/index.mts", "/index.js"];
+function namesFor(specifier, parentURL, resolvedURL) {
+  if (!parentURL || !parentURL.startsWith("file:")) return [];
+  let text;
+  try {
+    text = readFileSync(new URL(parentURL), "utf8");
+  } catch {
+    return [];
+  }
+  const names = new Set();
+  for (const m of text.matchAll(NAME_RE)) {
+    const spec = m[2] ?? m[4];
+    let hit = spec === specifier;
+    if (!hit && resolvedURL && spec) {
+      try {
+        const abs = new URL(spec, parentURL).pathname;
+        hit = RESOLVE_SUFFIXES.some(
+          (suffix) => abs + suffix === resolvedURL.pathname,
+        );
+      } catch {}
+    }
+    if (!hit) continue;
+    const list = (m[1] ?? m[3] ?? "").split(",");
+    for (const item of list) {
+      const trimmed = item.trim().replace(/^type\\s+/, "");
+      if (!trimmed) continue;
+      const parts = trimmed.split(/\\s+as\\s+/);
+      const name = (parts[parts.length - 1] ?? "").trim();
+      if (/^[A-Za-z_$][A-Za-z0-9_$]*$/.test(name)) names.add(name);
+    }
+  }
+  return [...names];
+}
+
 export async function resolve(specifier, context, next) {
   if (Object.hasOwn(SOURCES, specifier) || Object.hasOwn(STUB_MAP, specifier)) {
     return { url: \`ra-stub:\${specifier}\`, shortCircuit: true };
   }
   try {
-    return await next(specifier, context);
+    const resolved = await next(specifier, context);
+    const names = namesFor(specifier, context.parentURL, resolved?.url ? new URL(resolved.url) : undefined);
+    if (names.length && resolved && resolved.url) WANTED.set(resolved.url, names);
+    if (process.env.RA_DEBUG && specifier.includes("central"))
+      console.error("RA_RES", specifier, "->", resolved && resolved.url, "names:", names.join(","), "parent:", context.parentURL);
+    return resolved;
   } catch (err) {
     if (err && (err.code === "ERR_MODULE_NOT_FOUND" || err.code === "ERR_UNKNOWN_FILE_EXTENSION")) {
-      return { url: \`ra-stub:\${specifier}\`, shortCircuit: true };
+      const names = namesFor(specifier, context.parentURL);
+      if (process.env.RA_DEBUG)
+        console.error("RA_STUB", specifier, "parent:", context.parentURL, "names:", names.join(","));
+      const q = names.length ? \`?names=\${names.join(",")}\` : "";
+      return { url: \`ra-stub:\${specifier}\${q}\`, shortCircuit: true };
     }
     throw err;
   }
 }
 
 export async function load(url, context, next) {
+  if (process.env.RA_DEBUG) console.error("RA_LOAD", url);
   if (url.startsWith("ra-stub:")) {
-    const specifier = url.slice("ra-stub:".length);
+    const [specifier, query] = url.slice("ra-stub:".length).split("?");
     if (Object.hasOwn(SOURCES, specifier)) {
       return { format: "module", source: SOURCES[specifier], shortCircuit: true };
     }
@@ -94,14 +155,16 @@ export async function load(url, context, next) {
       const source = await readFile(STUB_MAP[specifier], "utf8");
       return { format: "module", source, shortCircuit: true };
     }
-    return { format: "module", source: GENERIC, shortCircuit: true };
+    const names = (query ?? "").replace(/^names=/, "").split(",").filter(Boolean);
+    const named = names.map((n) => \`export const \${n} = __deep;\`).join("\\n");
+    return { format: "module", source: GENERIC + named, shortCircuit: true };
   }
   if (url.split("?")[0].endsWith(".json")) {
     const text = await readFile(new URL(url), "utf8");
     const data = JSON.parse(text);
     const keys = data && typeof data === "object" && !Array.isArray(data) ? Object.keys(data) : [];
     const named = keys
-      .filter((k) => /^[A-Za-z_$][A-Za-z0-9_$]*$/.test(k))
+      .filter((k) => /^[A-Za-z_$][A-Za-z0-9_$]*$/.test(k) && !RESERVED.has(k))
       .map((k) => \`export const \${k} = __json[\${JSON.stringify(k)}];\`)
       .join("\\n");
     return {
@@ -111,10 +174,116 @@ export async function load(url, context, next) {
     };
   }
   try {
-    return await next(url, context);
+    const result = await next(url, context);
+    if (process.env.RA_DEBUG && url.includes("Errors.ts"))
+      console.error("RA_DEBUG", url, result.format, typeof result.source);
+    // Plain "import { X }" of an "export type X" survives type stripping and
+    // fails to link; satisfy it with a dummy runtime export.
+    if (
+      url.startsWith("file:") &&
+      (result.format === "module" || result.format === "module-typescript") &&
+      result.source != null
+    ) {
+      const m = url.match(/\\.(ts|mts|cts|tsx)$/);
+      if (m) {
+        try {
+          const orig = await readFile(new URL(url), "utf8");
+          const typeNames = new Set();
+          for (const tm of orig.matchAll(
+            /export\\s+(?:declare\\s+)?(?:type|interface)\\s+([A-Za-z_$][A-Za-z0-9_$]*)/g,
+          )) {
+            typeNames.add(tm[1]);
+          }
+          for (const tm of orig.matchAll(
+            /export\\s+(?:const|let|var|function|class|async\\s+function)\\s+([A-Za-z_$][A-Za-z0-9_$]*)/g,
+          )) {
+            typeNames.delete(tm[1]);
+          }
+          for (const tm of orig.matchAll(/export\\s*\\{([^}]*)\\}/g)) {
+            for (const part of tm[1].split(",")) {
+              const nm = part
+                .trim()
+                .replace(/^type\\s+/, "")
+                .split(/\\s+as\\s+/);
+              const name = (nm[nm.length - 1] ?? "").trim();
+              if (/^[A-Za-z_$][A-Za-z0-9_$]*$/.test(name)) typeNames.delete(name);
+            }
+          }
+          const envHeader =
+            result.format === "module-typescript"
+              ? "import.meta.env ??= {DEV:false,PROD:true,MODE:\\"production\\"};\\n"
+              : "";
+          if (typeNames.size) {
+            const locals = new Set();
+            for (const lm of orig.matchAll(
+              /[^A-Za-z0-9_$](?:const|let|var|function|class|async\\s+function)\\s+([A-Za-z_$][A-Za-z0-9_$]*)/g,
+            )) {
+              locals.add(lm[1]);
+            }
+            const extras = [...typeNames]
+              .map((n) =>
+                locals.has(n)
+                  ? \`export { \${n} };\`
+                  : \`export const \${n} = undefined;\`,
+              )
+              .join("\\n");
+            const base =
+              typeof result.source === "string"
+                ? result.source
+                : new TextDecoder().decode(result.source);
+            return {
+              format: result.format,
+              source: envHeader + base + "\\n" + extras + "\\n",
+              shortCircuit: true,
+            };
+          }
+          if (envHeader) {
+            const base =
+              typeof result.source === "string"
+                ? result.source
+                : new TextDecoder().decode(result.source);
+            return {
+              format: result.format,
+              source: envHeader + base,
+              shortCircuit: true,
+            };
+          }
+        } catch {}
+      }
+    }
+    return result;
   } catch (err) {
     if (err && (err.code === "ERR_UNKNOWN_FILE_EXTENSION" || err.code === "ERR_MODULE_NOT_FOUND" || err.code === "ERR_IMPORT_ATTRIBUTE_MISSING")) {
-      return { format: "module", source: GENERIC, shortCircuit: true };
+      let source = GENERIC;
+      try {
+        const text = await readFile(new URL(url), "utf8");
+        const names = new Set();
+        let hasDefault = false;
+        for (const m of text.matchAll(
+          /export\\s+(?:default\\s+)?(?:async\\s+)?(?:const|let|var|function|class|type|interface|enum)\\s*([A-Za-z_$][A-Za-z0-9_$]*)?/g,
+        )) {
+          if (m[0].includes("default")) hasDefault = true;
+          else if (m[1]) names.add(m[1]);
+        }
+        for (const m of text.matchAll(/export\\s*\\{([^}]*)\\}/g)) {
+          for (const part of m[1].split(",")) {
+            const p = part.trim().replace(/^type\\s+/, "").split(/\\s+as\\s+/);
+            const nm = (p[p.length - 1] ?? "").trim();
+            if (/^[A-Za-z_$][A-Za-z0-9_$]*$/.test(nm) && !RESERVED.has(nm)) names.add(nm);
+          }
+        }
+        const named = [...names]
+          .map((n) => \`export const \${n} = __deep;\`)
+          .join("\\n");
+        source = GENERIC + named + (hasDefault ? "" : "");
+      } catch {
+        const names = WANTED.get(url) ?? [];
+        const named = names
+          .map((n) => \`export const \${n} = __deep;\`)
+          .join("\\n");
+        source = GENERIC + named;
+      }
+      return { format: "module", source, shortCircuit: true };
     }
     throw err;
   }

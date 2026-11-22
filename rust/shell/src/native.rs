@@ -34,6 +34,8 @@ pub struct Native {
     files: Vec<Value>,
     open_file: Option<(String, String)>,
     files_loading: bool,
+    git_status: Option<Value>,
+    file_stream_id: Option<String>,
 }
 
 fn get<'a>(v: &'a Value, k: &str) -> &'a Value {
@@ -113,6 +115,8 @@ impl Native {
                 files: Vec::new(),
                 open_file: None,
                 files_loading: false,
+                git_status: None,
+                file_stream_id: None,
             };
             this.refresh(cx);
             this
@@ -145,6 +149,7 @@ impl Native {
                     if let Some(s) = snapshot {
                         this.snapshot = Some(s);
                     }
+                    this.fetch_git_status(cx);
                     cx.notify();
                 });
                 // Live updates: subscribeShell streams shell-domain events; on
@@ -300,6 +305,28 @@ impl Native {
         cx.notify();
     }
 
+    /// Fetch git.status of the first project's workspace root.
+    fn fetch_git_status(&self, cx: &mut Context<Self>) {
+        let Some(root) = self.files_root() else {
+            return;
+        };
+        let cell = self.client.clone();
+        cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
+            let v = cx
+                .background_executor()
+                .spawn(async move {
+                    ensure_client(&cell)
+                        .and_then(|c| c.call("git.status", json!({"cwd": root})))
+                })
+                .await;
+            let _ = this.update(cx, |this: &mut Self, cx| {
+                this.git_status = v;
+                cx.notify();
+            });
+        })
+        .detach();
+    }
+
     /// Blocking RPC: list one directory level (dirs + files).
     fn load_dir(&mut self, dir: String, cx: &mut Context<Self>) {
         self.files_loading = true;
@@ -322,7 +349,15 @@ impl Native {
             let _ = this.update(cx, |this: &mut Self, cx| {
                 this.files_loading = false;
                 if let Some(v) = entries {
-                    this.files = arr(&v, "entries").to_vec();
+                    let mut es = arr(&v, "entries").to_vec();
+                    es.sort_by_key(|e| {
+                        if str_at(e, "kind") == "directory" {
+                            0
+                        } else {
+                            1
+                        }
+                    });
+                    this.files = es;
                     this.files_dir = dir;
                 }
                 cx.notify();
@@ -367,6 +402,7 @@ impl Native {
                 if let Some(v) = v {
                     let text = str_at(&v, "contents").to_string();
                     this.open_file = Some((path, text));
+                    this.watch_open_file(cx);
                 }
                 cx.notify();
             });
@@ -374,7 +410,107 @@ impl Native {
         .detach();
     }
 
+    /// Subscribe to change events for the currently open file; each event
+    /// triggers a re-read so the viewer stays live.
+    fn watch_open_file(&mut self, cx: &mut Context<Self>) {
+        self.stop_file_watch();
+        let Some((path, _)) = self.open_file.clone() else {
+            return;
+        };
+        let cell = self.client.clone();
+        cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
+            let (tx, rx) = async_channel::unbounded::<()>();
+            let cell2 = cell.clone();
+            let p = path.clone();
+            let got = cx
+                .background_executor()
+                .spawn(async move {
+                    let dir = p
+                        .rsplit_once('/')
+                        .map(|(d, _)| d.to_string())
+                        .unwrap_or_else(|| p.clone());
+                    let name = p.rsplit('/').next().unwrap_or(&p).to_string();
+                    ensure_client(&cell2).and_then(|c| {
+                        c.request(
+                            "projects.subscribeFileChange",
+                            json!({"cwd": dir, "relativePath": name}),
+                        )
+                    })
+                })
+                .await;
+            let Some((rid, frames)) = got else {
+                return;
+            };
+            let _ = this.update(cx, |this: &mut Self, _cx| {
+                this.file_stream_id = Some(rid);
+            });
+            cx.background_executor()
+                .spawn(async move {
+                    while let Ok(msg) = frames.recv() {
+                        match msg.get("_tag").and_then(Value::as_str) {
+                            Some("Chunk") => {
+                                let _ = tx.send_blocking(());
+                            }
+                            Some("Exit") => break,
+                            _ => {}
+                        }
+                    }
+                })
+                .detach();
+            while rx.recv().await.is_ok() {
+                let cell3 = cell.clone();
+                let p2 = path.clone();
+                let v = cx
+                    .background_executor()
+                    .spawn(async move {
+                        let dir = p2
+                            .rsplit_once('/')
+                            .map(|(d, _)| d.to_string())
+                            .unwrap_or_else(|| p2.clone());
+                        let name = p2.rsplit('/').next().unwrap_or(&p2).to_string();
+                        ensure_client(&cell3).and_then(|c| {
+                            c.call(
+                                "projects.readFile",
+                                json!({"cwd": dir, "relativePath": name}),
+                            )
+                        })
+                    })
+                    .await;
+                let still_open = this
+                    .update(cx, |this: &mut Self, cx| {
+                        if let Some(v) = v {
+                            if this
+                                .open_file
+                                .as_ref()
+                                .is_some_and(|(p, _)| *p == path)
+                            {
+                                let text = str_at(&v, "contents").to_string();
+                                this.open_file = Some((path.clone(), text));
+                            }
+                        }
+                        cx.notify();
+                    })
+                    .is_ok();
+                if !still_open {
+                    break;
+                }
+            }
+        })
+        .detach();
+    }
+
+    fn stop_file_watch(&mut self) {
+        if let Some(old) = self.file_stream_id.take() {
+            if let Ok(g) = self.client.lock() {
+                if let Some(c) = g.as_ref() {
+                    c.interrupt(&old);
+                }
+            }
+        }
+    }
+
     fn close_file(&mut self, cx: &mut Context<Self>) {
+        self.stop_file_watch();
         self.open_file = None;
         cx.notify();
     }
@@ -559,12 +695,35 @@ impl Render for Native {
             );
         }
         for project in arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "projects") {
-            sidebar = sidebar.child(
+            let mut proj_head = v_flex().gap_0().child(
                 div()
                     .text_sm()
                     .font_weight(FontWeight::SEMIBOLD)
                     .child(str_at(project, "title").to_string()),
             );
+            if let Some(status) = &self.git_status {
+                let branch = str_at(status, "branch");
+                if !branch.is_empty() {
+                    let dirty = get(status, "hasWorkingTreeChanges")
+                        .as_bool()
+                        .unwrap_or(false);
+                    proj_head = proj_head.child(
+                        div()
+                            .text_xs()
+                            .text_color(if dirty {
+                                theme.warning
+                            } else {
+                                theme.muted_foreground
+                            })
+                            .child(if dirty {
+                                format!("{branch} (dirty)")
+                            } else {
+                                branch.to_string()
+                            }),
+                    );
+                }
+            }
+            sidebar = sidebar.child(proj_head);
             let pid = str_at(project, "id").to_string();
             for thread in arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "threads")
                 .iter()

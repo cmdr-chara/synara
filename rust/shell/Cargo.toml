@@ -15,5 +15,8 @@ serde_json = "1"
 tungstenite = "0.26"
 ureq = { version = "2", features = ["json"] }
 http = "1"
+uuid = { version = "1", features = ["v4"] }
+chrono = { version = "0.4", default-features = false, features = ["clock", "std"] }
+async-channel = "2"
 
 [workspace]

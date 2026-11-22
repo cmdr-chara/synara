@@ -7359,6 +7359,8 @@ name = "synara-shell"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "async-channel",
+ "chrono",
  "gpui-kit",
  "gpui-webview",
  "http",
@@ -7366,6 +7368,7 @@ dependencies = [
  "serde_json",
  "tungstenite",
  "ureq",
+ "uuid",
 ]
 
 [[package]]

@@ -907,6 +907,7 @@ async fn relay(
                             ClientMessage::Binary(p)
                         },
                         UpstreamMessage::Close(c) => {
+                            eprintln!("ws_relay: upstream close: {c:?}");
                             let _ = client_tx
                                 .send(ClientMessage::Close(c.map(|f| {
                                     axum::extract::ws::CloseFrame {

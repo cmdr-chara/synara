@@ -1,18 +1,26 @@
-//! Minimal blocking WS-RPC client for the native shell UI.
+//! Blocking WS-RPC client for the native shell UI.
 //!
-//! Speaks the `{"_tag":"Request"|"Success"|"Failure", ...}` wire protocol used by
-//! rust/app's native WS-RPC layer. Blocking: always drive it from a background
-//! executor, never the UI thread.
+//! Speaks the `{"_tag":"Request"|"Exit"|"Chunk", ...}` wire protocol used by
+//! rust/app's native WS-RPC layer and by the relayed upstream server. One TCP
+//! connection, split into a reader thread that routes frames by `requestId` to
+//! per-request channels: `call` waits for `Exit`, `call_stream` also receives
+//! `Chunk` values. Blocking: always drive it from a background executor, never
+//! the UI thread.
 
 use serde_json::{json, Value};
-use std::io::ErrorKind;
+use std::collections::HashMap;
 use std::net::TcpStream;
-use tungstenite::stream::MaybeTlsStream;
-use tungstenite::{connect, Message};
+use std::sync::atomic::{AtomicU64, Ordering};
+use std::sync::mpsc::{channel, Receiver, Sender};
+use std::sync::{Arc, Mutex};
+use std::thread;
+use std::time::Duration;
+use tungstenite::{connect, Message, WebSocket};
 
 pub struct Client {
-    sock: tungstenite::WebSocket<MaybeTlsStream<TcpStream>>,
-    next_id: u64,
+    writer: Arc<Mutex<WebSocket<TcpStream>>>,
+    pending: Arc<Mutex<HashMap<String, Sender<Value>>>>,
+    next_id: AtomicU64,
 }
 
 impl Client {
@@ -48,7 +56,7 @@ impl Client {
         (cookie, token.unwrap_or_else(|| "rectoken".to_string()))
     }
 
-    pub fn connect() -> Option<Self> {
+    pub fn connect() -> Option<Arc<Self>> {
         let base = std::env::var("SYNARA_HTTP").unwrap_or_else(|_| "http://127.0.0.1:8080".into());
         let (cookie, token) = Self::mint_session(&base);
         let url = std::env::var("SYNARA_WS").unwrap_or_else(|_| {
@@ -78,47 +86,199 @@ impl Client {
                 return None;
             }
         };
-        match connect(req) {
-            Ok((sock, _resp)) => Some(Self { sock, next_id: 0 }),
+        let (mut sock, _resp) = match connect(req) {
+            Ok(ok) => ok,
             Err(e) => {
                 eprintln!("ws_client: connect failed: {e}");
-                None
+                return None;
             }
-        }
-    }
-
-    /// One request -> one Success value (or None on failure/timeout).
-    pub fn call(&mut self, tag: &str, payload: Value) -> Option<Value> {
-        self.next_id += 1;
-        let id = format!("native-{}", self.next_id);
-        let req = json!({"_tag": "Request", "id": id, "tag": tag, "payload": payload, "headers": []});
-        if let Err(e) = self.sock.send(Message::Text(req.to_string().into())) {
-            eprintln!("ws_client: send failed: {e}");
-            return None;
-        }
-        for _ in 0..200 {
-            match self.sock.read() {
+        };
+        // Split the socket: the upgraded stream is a plain TcpStream locally;
+        // a second client-role WebSocket on a cloned stream writes while the
+        // original reads.
+        let raw = match sock.get_mut() {
+            tungstenite::stream::MaybeTlsStream::Plain(s) => match s.try_clone() {
+                Ok(c) => c,
+                Err(e) => {
+                    eprintln!("ws_client: try_clone failed: {e}");
+                    return None;
+                }
+            },
+            _ => {
+                eprintln!("ws_client: non-plain stream, cannot split");
+                return None;
+            }
+        };
+        let writer = Arc::new(Mutex::new(WebSocket::from_raw_socket(
+            raw,
+            tungstenite::protocol::Role::Client,
+            None,
+        )));
+        let pending: Arc<Mutex<HashMap<String, Sender<Value>>>> =
+            Arc::new(Mutex::new(HashMap::new()));
+        let pending_reader = pending.clone();
+        let pong_writer = writer.clone();
+        thread::spawn(move || loop {
+            match sock.read() {
                 Ok(Message::Text(text)) => {
                     let Ok(msg) = serde_json::from_str::<Value>(&text) else {
                         continue;
                     };
-                    if msg.get("_tag").and_then(Value::as_str) != Some("Exit")
-                        || msg.get("requestId").and_then(Value::as_str) != Some(id.as_str())
-                    {
+                    let rid = msg
+                        .get("requestId")
+                        .and_then(Value::as_str)
+                        .map(str::to_owned);
+                    if let Some(rid) = rid {
+                        if let Some(tx) = pending_reader.lock().ok().and_then(|m| m.get(&rid).cloned()) {
+                            let _ = tx.send(msg);
+                        }
+                    }
+                }
+                Ok(Message::Ping(p)) => {
+                    if let Ok(mut w) = pong_writer.lock() {
+                        let _ = w.send(Message::Pong(p));
+                    }
+                }
+                Ok(Message::Close(c)) => {
+                    eprintln!("ws_client: close frame: {c:?}");
+                    break;
+                }
+                Err(e) => {
+                    eprintln!("ws_client: read error: {e}");
+                    break;
+                }
+                Ok(_) => {}
+            }
+        });
+        // The upstream closes relayed sockets after ~40s of silence; the
+        // browser keeps them alive with an application-level Ping frame.
+        let heartbeat_writer = writer.clone();
+        thread::spawn(move || loop {
+            thread::sleep(Duration::from_secs(15));
+            let frame = json!({"_tag": "Ping"});
+            let ok = heartbeat_writer
+                .lock()
+                .map(|mut w| w.send(Message::Text(frame.to_string().into())).is_ok())
+                .unwrap_or(false);
+            if !ok {
+                break;
+            }
+        });
+        Some(Arc::new(Self {
+            writer,
+            pending,
+            next_id: AtomicU64::new(0),
+        }))
+    }
+
+    /// Issue a Request frame; returns (request_id, receiver for its frames).
+    /// Caller drains the receiver (or drops it) and later calls
+    /// [`Self::finish_request`] to unregister.
+    pub fn request(&self, tag: &str, payload: Value) -> Option<(String, Receiver<Value>)> {
+        // RequestId is a bigint on the wire: ids must be numeric strings.
+        let id = format!(
+            "{}",
+            9_000_000_000u64 + self.next_id.fetch_add(1, Ordering::Relaxed) + 1
+        );
+        let (tx, rx) = channel();
+        self.pending.lock().ok()?.insert(id.clone(), tx);
+        let req = json!({"_tag": "Request", "id": id, "tag": tag, "payload": payload, "headers": []});
+        let sent = self
+            .writer
+            .lock()
+            .ok()
+            .map(|mut w| w.send(Message::Text(req.to_string().into())));
+        match sent {
+            Some(Ok(())) => {}
+            other => {
+                eprintln!("ws_client: send failed for {tag}: {other:?}");
+                let _ = self.pending.lock().map(|mut m| m.remove(&id));
+                return None;
+            }
+        }
+        Some((id, rx))
+    }
+
+    /// Drop the per-request routing entry once its frames are done.
+    pub fn finish_request(&self, request_id: &str) {
+        let _ = self.pending.lock().map(|mut m| m.remove(request_id));
+    }
+
+    /// One request -> one Success value (or None on failure/timeout).
+    pub fn call(&self, tag: &str, payload: Value) -> Option<Value> {
+        let (id, rx) = self.request(tag, payload)?;
+        let mut out = None;
+        for _ in 0..600 {
+            match rx.recv_timeout(Duration::from_millis(100)) {
+                Ok(msg) => {
+                    if msg.get("_tag").and_then(Value::as_str) != Some("Exit") {
                         continue;
                     }
                     let exit = msg.get("exit").cloned().unwrap_or(Value::Null);
                     if exit.get("_tag").and_then(Value::as_str) == Some("Success") {
-                        return Some(exit.get("value").cloned().unwrap_or(Value::Null));
+                        out = Some(exit.get("value").cloned().unwrap_or(Value::Null));
+                    } else {
+                        eprintln!("ws_client: {tag} failed: {msg}");
                     }
-                    eprintln!("ws_client: {tag} failed: {}", &text[..text.len().min(300)]);
-                    return None;
+                    break;
                 }
-                Ok(_) => continue,
-                Err(tungstenite::Error::Io(e)) if e.kind() == ErrorKind::WouldBlock => continue,
-                Err(_) => return None,
+                Err(std::sync::mpsc::RecvTimeoutError::Timeout) => continue,
+                Err(_) => break,
             }
         }
-        None
+        let _ = self.pending.lock().map(|mut m| m.remove(&id));
+        out
+    }
+
+    /// Ask the server to stop an in-flight request or stream.
+    pub fn interrupt(&self, request_id: &str) {
+        let _ = self.pending.lock().map(|mut m| m.remove(request_id));
+        let frame = json!({"_tag": "Interrupt", "requestId": request_id});
+        if let Ok(mut w) = self.writer.lock() {
+            let _ = w.send(Message::Text(frame.to_string().into()));
+        }
+    }
+
+    /// One request -> Chunk values streamed to `on_chunk` until Exit.
+    /// Returns (request_id, final Exit's Success value if any).
+    pub fn call_stream(
+        &self,
+        tag: &str,
+        payload: Value,
+        mut on_chunk: impl FnMut(Vec<Value>),
+    ) -> (Option<String>, Option<Value>) {
+        let Some((id, rx)) = self.request(tag, payload) else {
+            return (None, None);
+        };
+        let mut out = None;
+        loop {
+            match rx.recv() {
+                Ok(msg) => match msg.get("_tag").and_then(Value::as_str) {
+                    Some("Chunk") => {
+                        let values = msg
+                            .get("values")
+                            .and_then(Value::as_array)
+                            .cloned()
+                            .unwrap_or_default();
+                        if !values.is_empty() {
+                            on_chunk(values);
+                        }
+                    }
+                    Some("Exit") => {
+                        let exit = msg.get("exit").cloned().unwrap_or(Value::Null);
+                        if exit.get("_tag").and_then(Value::as_str) == Some("Success") {
+                            out = exit.get("value").cloned();
+                        } else {
+                            eprintln!("ws_client: {tag} stream failed: {msg}");
+                        }
+                        break;
+                    }
+                    _ => continue,
+                },
+                Err(_) => break,
+            }
+        }
+        let _ = self.pending.lock().map(|mut m| m.remove(&id));
+        (Some(id), out)
     }
 }

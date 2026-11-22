@@ -1,0 +1,276 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/platform/",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "platform-rs",
+  "exports": [
+    {
+      "name": "makeEffectProcessCommand",
+      "file": "apps/server/src/platform/effectProcessRuntime.ts",
+      "line": 73,
+      "params": [
+        {
+          "name": "command",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "args",
+          "ts_type": "ReadonlyArray<string>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "options",
+          "ts_type": "(Omit<\n  ChildProcess.CommandOptions,\n  \"shell\" | \"windowsVerbatimArguments\"\n> &\n  (Pick<ProcessLaunchInput, \"platform\" | \"lowerPriority\">))",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "ReturnType<typeof ChildProcess.make>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "parseProcessChildrenMap",
+      "file": "apps/server/src/platform/processTreeController.ts",
+      "line": 81,
+      "params": [
+        {
+          "name": "psOutput",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "includeStartTime",
+          "ts_type": "boolean",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "Map<number, Array<CapturedProcess>>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "collectDescendantProcesses",
+      "file": "apps/server/src/platform/processTreeController.ts",
+      "line": 101,
+      "params": [
+        {
+          "name": "parentPid",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "childrenByParentPid",
+          "ts_type": "Map<number, Array<CapturedProcess>>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "CapturedProcess[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "signalOwnedChildProcess",
+      "file": "apps/server/src/platform/processTreeController.ts",
+      "line": 493,
+      "params": [
+        {
+          "name": "child",
+          "ts_type": "{ readonly pid?: number | undefined; kill(signal?: NodeJS.Signals): unknown }",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "signal",
+          "ts_type": "(\"SIGTERM\" | \"SIGKILL\")",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "platform",
+          "ts_type": "NodeJS.Platform",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "teardownEffectProcessTree",
+      "file": "apps/server/src/platform/supervisedProcessTeardown.ts",
+      "line": 184,
+      "params": [
+        {
+          "name": "process",
+          "ts_type": "EffectProcessExitHandle",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "teardownProcessTree",
+          "ts_type": "typeof teardownProviderProcessTree",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<SupervisedProcessTeardownResult>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "parseWindowsProcessSnapshotLine",
+      "file": "apps/server/src/platform/windowsProcessSnapshot.ts",
+      "line": 142,
+      "params": [
+        {
+          "name": "line",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "{ pid: number; ppid: number; command: string; startedAt?: string } | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "captureWindowsProcessChildrenMap",
+      "file": "apps/server/src/platform/windowsProcessSnapshot.ts",
+      "line": 518,
+      "params": [],
+      "returns": "Promise<Map<number, Array<CapturedProcess>> | null>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "spawnProviderProcess",
+      "file": "apps/server/src/platform/effectProcessRuntime.ts",
+      "line": 15,
+      "reason": "checks `instanceof`: class identity does not survive the bridge"
+    },
+    {
+      "name": "McpStdioTransport",
+      "file": "apps/server/src/platform/mcpStdioTransport.ts",
+      "line": 13,
+      "reason": "class: public field `onclose`, public field `onerror`, public field `onmessage`, async or generator method `start`, async or generator method `send`, async or generator method `close`"
+    },
+    {
+      "name": "createProcessTreeKiller",
+      "file": "apps/server/src/platform/processTreeController.ts",
+      "line": 265,
+      "reason": "uses `ProcessTreeKillerDependencies`, which has function members"
+    },
+    {
+      "name": "captureProcessTree",
+      "file": "apps/server/src/platform/processTreeController.ts",
+      "line": 373,
+      "reason": "uses `PlatformProcessTreeOptions`, which has function members"
+    },
+    {
+      "name": "isProcessRunning",
+      "file": "apps/server/src/platform/processTreeController.ts",
+      "line": 405,
+      "reason": "uses `PlatformProcessTreeOptions`, which has function members"
+    },
+    {
+      "name": "inspectProcessTree",
+      "file": "apps/server/src/platform/processTreeController.ts",
+      "line": 431,
+      "reason": "uses `PlatformProcessTreeOptions`, which has function members"
+    },
+    {
+      "name": "signalProcessTree",
+      "file": "apps/server/src/platform/processTreeController.ts",
+      "line": 463,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "createProtocolProcessTeardown",
+      "file": "apps/server/src/platform/protocolProcessTeardown.ts",
+      "line": 28,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "ProviderProcessExitUnprovenError",
+      "file": "apps/server/src/platform/supervisedProcessTeardown.ts",
+      "line": 121,
+      "reason": "class: extends another class, public field `rootPid`, public field `rootExited`, public field `remainingDescendantPids`, public field `captureComplete`"
+    },
+    {
+      "name": "prepareProviderProcessTeardown",
+      "file": "apps/server/src/platform/supervisedProcessTeardown.ts",
+      "line": 84,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "teardownChildProcessTree",
+      "file": "apps/server/src/platform/supervisedProcessTeardown.ts",
+      "line": 167,
+      "reason": "uses `ProcessExitHandle`, which has function members"
+    },
+    {
+      "name": "forceTeardownEffectProcessTree",
+      "file": "apps/server/src/platform/supervisedProcessTeardown.ts",
+      "line": 199,
+      "reason": "checks `instanceof`: class identity does not survive the bridge"
+    },
+    {
+      "name": "teardownProviderProcessTree",
+      "file": "apps/server/src/platform/supervisedProcessTeardown.ts",
+      "line": 279,
+      "reason": "uses `SupervisedProcessTeardownDependencies`, which has function members"
+    },
+    {
+      "name": "createPowerShellProcessSnapshotWorker",
+      "file": "apps/server/src/platform/windowsProcessSnapshot.ts",
+      "line": 289,
+      "reason": "uses `PowerShellProcessSnapshotWorkerOptions`, which has function members"
+    },
+    {
+      "name": "createWindowsProcessSnapshotObserver",
+      "file": "apps/server/src/platform/windowsProcessSnapshot.ts",
+      "line": 320,
+      "reason": "uses `WindowsProcessSnapshotObserverOptions`, which has function members"
+    },
+    {
+      "name": "createWindowsTeardownProcessSnapshotObserver",
+      "file": "apps/server/src/platform/windowsProcessSnapshot.ts",
+      "line": 391,
+      "reason": "uses `WindowsProcessSnapshotObserverOptions`, which has function members"
+    },
+    {
+      "name": "createPreparedWindowsTeardownProcessSnapshotObserver",
+      "file": "apps/server/src/platform/windowsProcessSnapshot.ts",
+      "line": 455,
+      "reason": "uses `WindowsProcessSnapshotObserverOptions`, which has function members"
+    }
+  ]
+}

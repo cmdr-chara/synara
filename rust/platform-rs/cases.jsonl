@@ -1,0 +1,1253 @@
+{"fn":"makeEffectProcessCommand","args":["ab",["emoji 👍🏽 mixns:key.path","helloa.b.c"],{"a":{"b":"c"}}],"ok":{"_tag":"StandardCommand","command":"ab","args":["emoji 👍🏽 mixns:key.path","helloa.b.c"],"options":{"a":{"b":"c"},"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["line1\nline2{name} has {count} items",["  padded  日本語のテキスト","abc","abline1\nline2"],{"$undefined":true}],"ok":{"_tag":"StandardCommand","command":"line1\nline2{name} has {count} items","args":["  padded  日本語のテキスト","abc","abline1\nline2"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["{name} has {count} items",["a😀b😀c","İstanbul","ns:key.path"],["a",1]],"ok":{"_tag":"StandardCommand","command":"{name} has {count} items","args":["a😀b😀c","İstanbul","ns:key.path"],"options":{"0":"a","1":1,"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["src/a/b.ts",[],[]],"ok":{"_tag":"StandardCommand","command":"src/a/b.ts","args":[],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["./x/**/*.json",[],["a",1]],"ok":{"_tag":"StandardCommand","command":"./x/**/*.json","args":[],"options":{"0":"a","1":1,"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["abcİstanbul",["hello world","a😀b😀c﻿bom"],{"$undefined":true}],"ok":{"_tag":"StandardCommand","command":"abcİstanbul","args":["hello world","a😀b😀c﻿bom"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["src/a/b.ts",["./x/**/*.jsonünïcödé"],[]],"ok":{"_tag":"StandardCommand","command":"src/a/b.ts","args":["./x/**/*.jsonünïcödé"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["straße",["abcé","a😀b😀c","é"],{"a":{"b":"c"}}],"ok":{"_tag":"StandardCommand","command":"straße","args":["abcé","a😀b😀c","é"],"options":{"a":{"b":"c"},"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["a.b.c",["  padded  ","line1\nline2"],[]],"ok":{"_tag":"StandardCommand","command":"a.b.c","args":["  padded  ","line1\nline2"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["./x/**/*.json",["abc","a..b","a..b"],[]],"ok":{"_tag":"StandardCommand","command":"./x/**/*.json","args":["abc","a..b","a..b"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["Hello World",["日本語のテキスト","日本語のテキスト","ΣΊΣΥΦΟΣ"],true],"ok":{"_tag":"StandardCommand","command":"Hello World","args":["日本語のテキスト","日本語のテキスト","ΣΊΣΥΦΟΣ"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["hello world﻿bom",["  padded  "],true],"ok":{"_tag":"StandardCommand","command":"hello world﻿bom","args":["  padded  "],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["tab\tseparated  padded  ",["ünïcödé"],true],"ok":{"_tag":"StandardCommand","command":"tab\tseparated  padded  ","args":["ünïcödé"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["a..b",["é","a😀b😀c"],["a",1]],"ok":{"_tag":"StandardCommand","command":"a..b","args":["é","a😀b😀c"],"options":{"0":"a","1":1,"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["HELLO",["emoji 👍🏽 mix","src/a/b.ts"],"HELLO"],"ok":{"_tag":"StandardCommand","command":"HELLO","args":["emoji 👍🏽 mix","src/a/b.ts"],"options":{"0":"H","1":"E","2":"L","3":"L","4":"O","shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["trailing.",["abc","a"],0],"ok":{"_tag":"StandardCommand","command":"trailing.","args":["abc","a"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":[".leading",["a:b:c",":","hello world"],{"a":"b"}],"ok":{"_tag":"StandardCommand","command":".leading","args":["a:b:c",":","hello world"],"options":{"a":"b","shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["ünïcödé",["line1\nline2emoji 👍🏽 mix","日本語のテキスト","HELLO"],[]],"ok":{"_tag":"StandardCommand","command":"ünïcödé","args":["line1\nline2emoji 👍🏽 mix","日本語のテキスト","HELLO"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["ünïcödé",["a.b.c","line1\nline2","HELLO"],{"a":"b"}],"ok":{"_tag":"StandardCommand","command":"ünïcödé","args":["a.b.c","line1\nline2","HELLO"],"options":{"a":"b","shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["./x/**/*.jsonhello",["abc","tab\tseparated","  padded  "],{"$undefined":true}],"ok":{"_tag":"StandardCommand","command":"./x/**/*.jsonhello","args":["abc","tab\tseparated","  padded  "],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["ns:key.path",["a:b:c","  padded  ﻿bom"]],"ok":{"_tag":"StandardCommand","command":"ns:key.path","args":["a:b:c","  padded  ﻿bom"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["HELLO",[],{}],"ok":{"_tag":"StandardCommand","command":"HELLO","args":[],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["tab\tseparated",["ab","Hello Worldsrc/a/b.ts"],{"a":"b"}],"ok":{"_tag":"StandardCommand","command":"tab\tseparated","args":["ab","Hello Worldsrc/a/b.ts"],"options":{"a":"b","shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["emoji 👍🏽 mix",[],{"a":"b"}],"ok":{"_tag":"StandardCommand","command":"emoji 👍🏽 mix","args":[],"options":{"a":"b","shell":false}}}
+{"fn":"makeEffectProcessCommand","args":[".leading",[]],"ok":{"_tag":"StandardCommand","command":".leading","args":[],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["a:b:c",["a😀b😀c"],["a",1]],"ok":{"_tag":"StandardCommand","command":"a:b:c","args":["a😀b😀c"],"options":{"0":"a","1":1,"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["abc",[],{"a":"b"}],"ok":{"_tag":"StandardCommand","command":"abc","args":[],"options":{"a":"b","shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["ns:key.pathns:key.path",["a😀b😀c","line1\nline2"],null],"error":"Cannot destructure property 'platform' of 'options' as it is null."}
+{"fn":"makeEffectProcessCommand","args":["é",["ünïcödé"],[]],"ok":{"_tag":"StandardCommand","command":"é","args":["ünïcödé"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["emoji 👍🏽 mix",[]],"ok":{"_tag":"StandardCommand","command":"emoji 👍🏽 mix","args":[],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["x",["  padded  ","./x/**/*.jsonab","  padded  "],"x"],"ok":{"_tag":"StandardCommand","command":"x","args":["  padded  ","./x/**/*.jsonab","  padded  "],"options":{"0":"x","shell":false}}}
+{"fn":"makeEffectProcessCommand","args":[".leading",["trailing."],{"a":{"b":"c"}}],"ok":{"_tag":"StandardCommand","command":".leading","args":["trailing."],"options":{"a":{"b":"c"},"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["﻿bom",["é"],null],"error":"Cannot destructure property 'platform' of 'options' as it is null."}
+{"fn":"makeEffectProcessCommand","args":["a",["hello worlda..b"],true],"ok":{"_tag":"StandardCommand","command":"a","args":["hello worlda..b"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["a",[],{}],"ok":{"_tag":"StandardCommand","command":"a","args":[],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["HELLO",[],{"a":{"b":"c"}}],"ok":{"_tag":"StandardCommand","command":"HELLO","args":[],"options":{"a":{"b":"c"},"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["ns:key.path",["{name} has {count} items","ünïcödé"],null],"error":"Cannot destructure property 'platform' of 'options' as it is null."}
+{"fn":"makeEffectProcessCommand","args":["ns:key.path",["HELLO","trailing.","ab"],{"a":"b"}],"ok":{"_tag":"StandardCommand","command":"ns:key.path","args":["HELLO","trailing.","ab"],"options":{"a":"b","shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["İstanbul",[],{}],"ok":{"_tag":"StandardCommand","command":"İstanbul","args":[],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["hello",[":","hello","hello"],true],"ok":{"_tag":"StandardCommand","command":"hello","args":[":","hello","hello"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["hello",["ünïcödé","a"],{"a":{"b":"c"}}],"ok":{"_tag":"StandardCommand","command":"hello","args":["ünïcödé","a"],"options":{"a":{"b":"c"},"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["日本語のテキストa:b:c",["trailing.emoji 👍🏽 mix","ünïcödé","straße"],[]],"ok":{"_tag":"StandardCommand","command":"日本語のテキストa:b:c","args":["trailing.emoji 👍🏽 mix","ünïcödé","straße"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["HELLO",[]],"ok":{"_tag":"StandardCommand","command":"HELLO","args":[],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["日本語のテキスト",["İstanbul","a.b.c"],[]],"ok":{"_tag":"StandardCommand","command":"日本語のテキスト","args":["İstanbul","a.b.c"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["straße",["a:b:c","日本語のテキスト","ab"],0],"ok":{"_tag":"StandardCommand","command":"straße","args":["a:b:c","日本語のテキスト","ab"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["a😀b😀c",["ab","aünïcödé","ab"],{"$undefined":true}],"ok":{"_tag":"StandardCommand","command":"a😀b😀c","args":["ab","aünïcödé","ab"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["hello world",["ΣΊΣΥΦΟΣ","a.b.c","ünïcödé"]],"ok":{"_tag":"StandardCommand","command":"hello world","args":["ΣΊΣΥΦΟΣ","a.b.c","ünïcödé"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["a😀b😀c",["abc","HELLOemoji 👍🏽 mix"],[]],"ok":{"_tag":"StandardCommand","command":"a😀b😀c","args":["abc","HELLOemoji 👍🏽 mix"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["abc",[]],"ok":{"_tag":"StandardCommand","command":"abc","args":[],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["",["a😀b😀c",":","﻿bom"],true],"ok":{"_tag":"StandardCommand","command":"","args":["a😀b😀c",":","﻿bom"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["  padded  ",["hello world"],{"a":"b"}],"ok":{"_tag":"StandardCommand","command":"  padded  ","args":["hello world"],"options":{"a":"b","shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["hello",[],{"a":"b"}],"ok":{"_tag":"StandardCommand","command":"hello","args":[],"options":{"a":"b","shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["{name} has {count} items",[],{"$undefined":true}],"ok":{"_tag":"StandardCommand","command":"{name} has {count} items","args":[],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["İstanbul",["a:b:c"]],"ok":{"_tag":"StandardCommand","command":"İstanbul","args":["a:b:c"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["﻿bom",["trailing.","abca"],null],"error":"Cannot destructure property 'platform' of 'options' as it is null."}
+{"fn":"makeEffectProcessCommand","args":["  padded  Hello World",["é","ΣΊΣΥΦΟΣemoji 👍🏽 mix"],["a",1]],"ok":{"_tag":"StandardCommand","command":"  padded  Hello World","args":["é","ΣΊΣΥΦΟΣemoji 👍🏽 mix"],"options":{"0":"a","1":1,"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["emoji 👍🏽 mix",[],[]],"ok":{"_tag":"StandardCommand","command":"emoji 👍🏽 mix","args":[],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["a.b.cns:key.path",[],0],"ok":{"_tag":"StandardCommand","command":"a.b.cns:key.path","args":[],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":[":",["trailing."],[]],"ok":{"_tag":"StandardCommand","command":":","args":["trailing."],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["./x/**/*.jsona:b:c",["line1\nline2"],{"a":{"b":"c"}}],"ok":{"_tag":"StandardCommand","command":"./x/**/*.jsona:b:c","args":["line1\nline2"],"options":{"a":{"b":"c"},"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["line1\nline2",[""],"x"],"ok":{"_tag":"StandardCommand","command":"line1\nline2","args":[""],"options":{"0":"x","shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["😀a.b.c",["a:b:c","straße"],{"$undefined":true}],"ok":{"_tag":"StandardCommand","command":"😀a.b.c","args":["a:b:c","straße"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["key_name-1.leading",[],{"a":"b"}],"ok":{"_tag":"StandardCommand","command":"key_name-1.leading","args":[],"options":{"a":"b","shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["{name} has {count} items",["hello","  padded  ","line1\nline2a:b:c"],{"a":"b"}],"ok":{"_tag":"StandardCommand","command":"{name} has {count} items","args":["hello","  padded  ","line1\nline2a:b:c"],"options":{"a":"b","shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["😀tab\tseparated",["ab","İstanbul","key_name-1ΣΊΣΥΦΟΣ"]],"ok":{"_tag":"StandardCommand","command":"😀tab\tseparated","args":["ab","İstanbul","key_name-1ΣΊΣΥΦΟΣ"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["﻿bom",[],true],"ok":{"_tag":"StandardCommand","command":"﻿bom","args":[],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["HELLO",["é","trailing.","日本語のテキスト"],"x"],"ok":{"_tag":"StandardCommand","command":"HELLO","args":["é","trailing.","日本語のテキスト"],"options":{"0":"x","shell":false}}}
+{"fn":"makeEffectProcessCommand","args":[".leading",["hello world"],true],"ok":{"_tag":"StandardCommand","command":".leading","args":["hello world"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["straße",["éHELLO","a😀b😀c"],true],"ok":{"_tag":"StandardCommand","command":"straße","args":["éHELLO","a😀b😀c"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["ΣΊΣΥΦΟΣ",["{name} has {count} items"],{}],"ok":{"_tag":"StandardCommand","command":"ΣΊΣΥΦΟΣ","args":["{name} has {count} items"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["HELLO",["src/a/b.ts","日本語のテキストé","./x/**/*.jsonHELLO"],{"a":{"b":"c"}}],"ok":{"_tag":"StandardCommand","command":"HELLO","args":["src/a/b.ts","日本語のテキストé","./x/**/*.jsonHELLO"],"options":{"a":{"b":"c"},"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["ns:key.path",["İstanbulhello world","{name} has {count} items",".leadinga.b.c"],{"$undefined":true}],"ok":{"_tag":"StandardCommand","command":"ns:key.path","args":["İstanbulhello world","{name} has {count} items",".leadinga.b.c"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["a😀b😀c",[],null],"error":"Cannot destructure property 'platform' of 'options' as it is null."}
+{"fn":"makeEffectProcessCommand","args":["src/a/b.ts",["Hello World","hello world"],[]],"ok":{"_tag":"StandardCommand","command":"src/a/b.ts","args":["Hello World","hello world"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["",["a.b.c"],["a",1]],"ok":{"_tag":"StandardCommand","command":"","args":["a.b.c"],"options":{"0":"a","1":1,"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["日本語のテキスト",[],{"$undefined":true}],"ok":{"_tag":"StandardCommand","command":"日本語のテキスト","args":[],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["./x/**/*.jsona..b",["a..b"],{}],"ok":{"_tag":"StandardCommand","command":"./x/**/*.jsona..b","args":["a..b"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["  padded  trailing.",["hello worldünïcödé"],true],"ok":{"_tag":"StandardCommand","command":"  padded  trailing.","args":["hello worldünïcödé"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["a",[".leading"]],"ok":{"_tag":"StandardCommand","command":"a","args":[".leading"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["ns:key.path",[]],"ok":{"_tag":"StandardCommand","command":"ns:key.path","args":[],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["straßea:b:c",["ΣΊΣΥΦΟΣ"],["a",1]],"ok":{"_tag":"StandardCommand","command":"straßea:b:c","args":["ΣΊΣΥΦΟΣ"],"options":{"0":"a","1":1,"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["{name} has {count} items",[],[]],"ok":{"_tag":"StandardCommand","command":"{name} has {count} items","args":[],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["emoji 👍🏽 mix",[".leading","","a.b.c"],"x"],"ok":{"_tag":"StandardCommand","command":"emoji 👍🏽 mix","args":[".leading","","a.b.c"],"options":{"0":"x","shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["a:b:c",["HELLO","Hello World","日本語のテキスト"]],"ok":{"_tag":"StandardCommand","command":"a:b:c","args":["HELLO","Hello World","日本語のテキスト"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["a",["./x/**/*.json"],[]],"ok":{"_tag":"StandardCommand","command":"a","args":["./x/**/*.json"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["ab",[],null],"error":"Cannot destructure property 'platform' of 'options' as it is null."}
+{"fn":"makeEffectProcessCommand","args":["{name} has {count} items",["İstanbul"],{}],"ok":{"_tag":"StandardCommand","command":"{name} has {count} items","args":["İstanbul"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["hello",["  padded  日本語のテキスト"],[]],"ok":{"_tag":"StandardCommand","command":"hello","args":["  padded  日本語のテキスト"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["straße",[],{"a":{"b":"c"}}],"ok":{"_tag":"StandardCommand","command":"straße","args":[],"options":{"a":{"b":"c"},"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["a😀b😀c",[".leading","a.b.c","😀tab\tseparated"]],"ok":{"_tag":"StandardCommand","command":"a😀b😀c","args":[".leading","a.b.c","😀tab\tseparated"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["abc",["ΣΊΣΥΦΟΣ","emoji 👍🏽 mixemoji 👍🏽 mix","HELLO"],null],"error":"Cannot destructure property 'platform' of 'options' as it is null."}
+{"fn":"makeEffectProcessCommand","args":["ünïcödé",["  padded  ","😀a.b.c"],{}],"ok":{"_tag":"StandardCommand","command":"ünïcödé","args":["  padded  ","😀a.b.c"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["Hello World",["a.b.c","helloHello World"]],"ok":{"_tag":"StandardCommand","command":"Hello World","args":["a.b.c","helloHello World"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["{name} has {count} items",["abc","line1\nline2ΣΊΣΥΦΟΣ"],[]],"ok":{"_tag":"StandardCommand","command":"{name} has {count} items","args":["abc","line1\nline2ΣΊΣΥΦΟΣ"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["ΣΊΣΥΦΟΣ",["ns:key.path"],[]],"ok":{"_tag":"StandardCommand","command":"ΣΊΣΥΦΟΣ","args":["ns:key.path"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["  padded  ",["abtab\tseparated","a.b.c","straße"],"x"],"ok":{"_tag":"StandardCommand","command":"  padded  ","args":["abtab\tseparated","a.b.c","straße"],"options":{"0":"x","shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["./x/**/*.jsona😀b😀c",[],{"$undefined":true}],"ok":{"_tag":"StandardCommand","command":"./x/**/*.jsona😀b😀c","args":[],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["key_name-1hello world",["line1\nline2"]],"ok":{"_tag":"StandardCommand","command":"key_name-1hello world","args":["line1\nline2"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["é",["ns:key.pathemoji 👍🏽 mix","  padded  "],[]],"ok":{"_tag":"StandardCommand","command":"é","args":["ns:key.pathemoji 👍🏽 mix","  padded  "],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["ΣΊΣΥΦΟΣ",["straße","é"]],"ok":{"_tag":"StandardCommand","command":"ΣΊΣΥΦΟΣ","args":["straße","é"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["İstanbul",[]],"ok":{"_tag":"StandardCommand","command":"İstanbul","args":[],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["key_name-1",["﻿bom"]],"ok":{"_tag":"StandardCommand","command":"key_name-1","args":["﻿bom"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["key_name-1",[],{}],"ok":{"_tag":"StandardCommand","command":"key_name-1","args":[],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["hello world",["﻿bom"],{"a":"b"}],"ok":{"_tag":"StandardCommand","command":"hello world","args":["﻿bom"],"options":{"a":"b","shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["x",["a:b:c"],"x"],"ok":{"_tag":"StandardCommand","command":"x","args":["a:b:c"],"options":{"0":"x","shell":false}}}
+{"fn":"makeEffectProcessCommand","args":[".leading",["ΣΊΣΥΦΟΣ","a..b"],{"$undefined":true}],"ok":{"_tag":"StandardCommand","command":".leading","args":["ΣΊΣΥΦΟΣ","a..b"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["helloHello World",["日本語のテキストa..b","{name} has {count} items","abchello world"],true],"ok":{"_tag":"StandardCommand","command":"helloHello World","args":["日本語のテキストa..b","{name} has {count} items","abchello world"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":[":",[],{"a":"b"}],"ok":{"_tag":"StandardCommand","command":":","args":[],"options":{"a":"b","shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["./x/**/*.json",["😀"],{"a":"b"}],"ok":{"_tag":"StandardCommand","command":"./x/**/*.json","args":["😀"],"options":{"a":"b","shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["  padded  ",[],{}],"ok":{"_tag":"StandardCommand","command":"  padded  ","args":[],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["a:b:c  padded  ",[":a..b"],{"a":{"b":"c"}}],"ok":{"_tag":"StandardCommand","command":"a:b:c  padded  ","args":[":a..b"],"options":{"a":{"b":"c"},"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["😀",["a:b:cİstanbul","a  padded  ","src/a/b.ts"],{"a":"b"}],"ok":{"_tag":"StandardCommand","command":"😀","args":["a:b:cİstanbul","a  padded  ","src/a/b.ts"],"options":{"a":"b","shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["a😀b😀c",["./x/**/*.json","hello worlda..b"],["a",1]],"ok":{"_tag":"StandardCommand","command":"a😀b😀c","args":["./x/**/*.json","hello worlda..b"],"options":{"0":"a","1":1,"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["straße",["tab\tseparateda:b:c","😀"],[]],"ok":{"_tag":"StandardCommand","command":"straße","args":["tab\tseparateda:b:c","😀"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["a:b:c",[],["a",1]],"ok":{"_tag":"StandardCommand","command":"a:b:c","args":[],"options":{"0":"a","1":1,"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["HELLO",["a","ünïcödé./x/**/*.json"],"O"],"ok":{"_tag":"StandardCommand","command":"HELLO","args":["a","ünïcödé./x/**/*.json"],"options":{"0":"O","shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["Hello World",["Hello World:","straße","abc"],0],"ok":{"_tag":"StandardCommand","command":"Hello World","args":["Hello World:","straße","abc"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":[".leading",["ΣΊΣΥΦΟΣ","a..b"]],"ok":{"_tag":"StandardCommand","command":".leading","args":["ΣΊΣΥΦΟΣ","a..b"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["😀",[],"x"],"ok":{"_tag":"StandardCommand","command":"😀","args":[],"options":{"0":"x","shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["",[":","straße"],[]],"ok":{"_tag":"StandardCommand","command":"","args":[":","straße"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["a:b:c",["a.b.c"],["a",1]],"ok":{"_tag":"StandardCommand","command":"a:b:c","args":["a.b.c"],"options":{"0":"a","1":1,"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":[".leading:",["a","line1\nline2"],0],"ok":{"_tag":"StandardCommand","command":".leading:","args":["a","line1\nline2"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["{name} has {count} items",["./x/**/*.json",".leading","日本語のテキスト"],null],"error":"Cannot destructure property 'platform' of 'options' as it is null."}
+{"fn":"makeEffectProcessCommand","args":[".leading",["日本語のテキスト"],{}],"ok":{"_tag":"StandardCommand","command":".leading","args":["日本語のテキスト"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["﻿bom",["trailing.","src/a/b.ts"],true],"ok":{"_tag":"StandardCommand","command":"﻿bom","args":["trailing.","src/a/b.ts"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["ab",["a:b:c","trailing."],true],"ok":{"_tag":"StandardCommand","command":"ab","args":["a:b:c","trailing."],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["﻿bom",["","日本語のテキスト"],[]],"ok":{"_tag":"StandardCommand","command":"﻿bom","args":["","日本語のテキスト"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["./x/**/*.json",[],{"$undefined":true}],"ok":{"_tag":"StandardCommand","command":"./x/**/*.json","args":[],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["ünïcödé",[],true],"ok":{"_tag":"StandardCommand","command":"ünïcödé","args":[],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":[":",["  padded  ","Hello Worldİstanbul","İstanbul"],[]],"ok":{"_tag":"StandardCommand","command":":","args":["  padded  ","Hello Worldİstanbul","İstanbul"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["ünïcödé",["{name} has {count} items"],null],"error":"Cannot destructure property 'platform' of 'options' as it is null."}
+{"fn":"makeEffectProcessCommand","args":["é.leading",["hello","src/a/b.ts","ünïcödé"],{"$undefined":true}],"ok":{"_tag":"StandardCommand","command":"é.leading","args":["hello","src/a/b.ts","ünïcödé"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["hello world",["abc"],{"a":"b"}],"ok":{"_tag":"StandardCommand","command":"hello world","args":["abc"],"options":{"a":"b","shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["src/a/b.tsstraße",["./x/**/*.json.leading","ns:key.path","a..b"],{"a":{"b":"c"}}],"ok":{"_tag":"StandardCommand","command":"src/a/b.tsstraße","args":["./x/**/*.json.leading","ns:key.path","a..b"],"options":{"a":{"b":"c"},"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["hello world",["","{name} has {count} itemsa😀b😀c","hello world"],[]],"ok":{"_tag":"StandardCommand","command":"hello world","args":["","{name} has {count} itemsa😀b😀c","hello world"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["  padded  ",["./x/**/*.json","日本語のテキスト","﻿bom"],null],"error":"Cannot destructure property 'platform' of 'options' as it is null."}
+{"fn":"makeEffectProcessCommand","args":["a",["a:b:c","hello world","😀"],0],"ok":{"_tag":"StandardCommand","command":"a","args":["a:b:c","hello world","😀"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["a😀b😀c",["key_name-1","日本語のテキスト","a..b.leading"],{"a":{"b":"c"}}],"ok":{"_tag":"StandardCommand","command":"a😀b😀c","args":["key_name-1","日本語のテキスト","a..b.leading"],"options":{"a":{"b":"c"},"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["aabc",[],{"$undefined":true}],"ok":{"_tag":"StandardCommand","command":"aabc","args":[],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["line1\nline2src/a/b.ts",["key_name-1","tab\tseparated"],{"$undefined":true}],"ok":{"_tag":"StandardCommand","command":"line1\nline2src/a/b.ts","args":["key_name-1","tab\tseparated"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["abc",["HELLO",":","./x/**/*.json"],"x"],"ok":{"_tag":"StandardCommand","command":"abc","args":["HELLO",":","./x/**/*.json"],"options":{"0":"x","shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["Hello World",["hello","😀"],"x"],"ok":{"_tag":"StandardCommand","command":"Hello World","args":["hello","😀"],"options":{"0":"x","shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["日本語のテキスト",[".leading","emoji 👍🏽 mixline1\nline2"],{"$undefined":true}],"ok":{"_tag":"StandardCommand","command":"日本語のテキスト","args":[".leading","emoji 👍🏽 mixline1\nline2"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["  padded  ",["ünïcödé","a","abc"]],"ok":{"_tag":"StandardCommand","command":"  padded  ","args":["ünïcödé","a","abc"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["a.b.chello world",["Hello World","ns:key.patha"],"x"],"ok":{"_tag":"StandardCommand","command":"a.b.chello world","args":["Hello World","ns:key.patha"],"options":{"0":"x","shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["é",["a😀b😀ca.b.c",":","HELLO"],{"a":{"b":"c"}}],"ok":{"_tag":"StandardCommand","command":"é","args":["a😀b😀ca.b.c",":","HELLO"],"options":{"a":{"b":"c"},"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["hello",["é"],{"a":{"b":"c"}}],"ok":{"_tag":"StandardCommand","command":"hello","args":["é"],"options":{"a":{"b":"c"},"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["trailing.",["😀"],null],"error":"Cannot destructure property 'platform' of 'options' as it is null."}
+{"fn":"makeEffectProcessCommand","args":["hello",["key_name-1","  padded  Hello World"],true],"ok":{"_tag":"StandardCommand","command":"hello","args":["key_name-1","  padded  Hello World"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":[".leading",["a:b:c","  padded  ","﻿bom"],{"a":{"b":"c"}}],"ok":{"_tag":"StandardCommand","command":".leading","args":["a:b:c","  padded  ","﻿bom"],"options":{"a":{"b":"c"},"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["ünïcödé:",["trailing.straße","  padded  "],[]],"ok":{"_tag":"StandardCommand","command":"ünïcödé:","args":["trailing.straße","  padded  "],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["﻿bom",["ΣΊΣΥΦΟΣ","Hello World"],0],"ok":{"_tag":"StandardCommand","command":"﻿bom","args":["ΣΊΣΥΦΟΣ","Hello World"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["é",[],{"a":"b"}],"ok":{"_tag":"StandardCommand","command":"é","args":[],"options":{"a":"b","shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["",[":","ns:key.path","a.b.c.leading"],"x"],"ok":{"_tag":"StandardCommand","command":"","args":[":","ns:key.path","a.b.c.leading"],"options":{"0":"x","shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["abc",["a","emoji 👍🏽 mix"]],"ok":{"_tag":"StandardCommand","command":"abc","args":["a","emoji 👍🏽 mix"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["ab  padded  ",["a.b.c","trailing."],{}],"ok":{"_tag":"StandardCommand","command":"ab  padded  ","args":["a.b.c","trailing."],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["key_name-1",["tab\tseparated﻿bom","é",":"],{"a":{"b":"c"}}],"ok":{"_tag":"StandardCommand","command":"key_name-1","args":["tab\tseparated﻿bom","é",":"],"options":{"a":{"b":"c"},"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["key_name-1abc",["./x/**/*.json"],0],"ok":{"_tag":"StandardCommand","command":"key_name-1abc","args":["./x/**/*.json"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["straße",[".leading","./x/**/*.json","İstanbul"],{"a":{"b":"c"}}],"ok":{"_tag":"StandardCommand","command":"straße","args":[".leading","./x/**/*.json","İstanbul"],"options":{"a":{"b":"c"},"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["  padded  ",["HELLO","日本語のテキスト"],["a",1]],"ok":{"_tag":"StandardCommand","command":"  padded  ","args":["HELLO","日本語のテキスト"],"options":{"0":"a","1":1,"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["ab",["straße","hello"],{"a":{"b":"c"}}],"ok":{"_tag":"StandardCommand","command":"ab","args":["straße","hello"],"options":{"a":{"b":"c"},"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["  padded  ",["a..b{name} has {count} items",".leading","a:b:c"],[]],"ok":{"_tag":"StandardCommand","command":"  padded  ","args":["a..b{name} has {count} items",".leading","a:b:c"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["ns:key.path",[],{}],"ok":{"_tag":"StandardCommand","command":"ns:key.path","args":[],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["ünïcödéünïcödé",[],{"$undefined":true}],"ok":{"_tag":"StandardCommand","command":"ünïcödéünïcödé","args":[],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["a:b:c",["emoji 👍🏽 mixabc","hello","trailing."],0],"ok":{"_tag":"StandardCommand","command":"a:b:c","args":["emoji 👍🏽 mixabc","hello","trailing."],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["",["ab"],{"a":{"b":"c"}}],"ok":{"_tag":"StandardCommand","command":"","args":["ab"],"options":{"a":{"b":"c"},"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["./x/**/*.json",["a.b.c","abtab\tseparated"],null],"error":"Cannot destructure property 'platform' of 'options' as it is null."}
+{"fn":"makeEffectProcessCommand","args":["a:b:c{name} has {count} items",[],{"a":"b"}],"ok":{"_tag":"StandardCommand","command":"a:b:c{name} has {count} items","args":[],"options":{"a":"b","shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["hello world",["﻿bomline1\nline2","ns:key.path"],[]],"ok":{"_tag":"StandardCommand","command":"hello world","args":["﻿bomline1\nline2","ns:key.path"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["a.b.c",["tab\tseparated"],0],"ok":{"_tag":"StandardCommand","command":"a.b.c","args":["tab\tseparated"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["ünïcödé",[],null],"error":"Cannot destructure property 'platform' of 'options' as it is null."}
+{"fn":"makeEffectProcessCommand","args":["hello world",["a:b:c","ünïcödé","ΣΊΣΥΦΟΣa.b.c"],{}],"ok":{"_tag":"StandardCommand","command":"hello world","args":["a:b:c","ünïcödé","ΣΊΣΥΦΟΣa.b.c"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":[".leading",[""]],"ok":{"_tag":"StandardCommand","command":".leading","args":[""],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["straße",["emoji 👍🏽 mix"],["a",1]],"ok":{"_tag":"StandardCommand","command":"straße","args":["emoji 👍🏽 mix"],"options":{"0":"a","1":1,"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":[":",["key_name-1","line1\nline2","a..b"],{"a":{"b":"c"}}],"ok":{"_tag":"StandardCommand","command":":","args":["key_name-1","line1\nline2","a..b"],"options":{"a":{"b":"c"},"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["tab\tseparated",["key_name-1"],null],"error":"Cannot destructure property 'platform' of 'options' as it is null."}
+{"fn":"makeEffectProcessCommand","args":["{name} has {count} items",[],true],"ok":{"_tag":"StandardCommand","command":"{name} has {count} items","args":[],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["abcab",["日本語のテキスト","./x/**/*.json","HELLO"],{"a":{"b":"c"}}],"ok":{"_tag":"StandardCommand","command":"abcab","args":["日本語のテキスト","./x/**/*.json","HELLO"],"options":{"a":{"b":"c"},"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["😀a:b:c",[],null],"error":"Cannot destructure property 'platform' of 'options' as it is null."}
+{"fn":"makeEffectProcessCommand","args":["key_name-1",["é","a😀b😀c"],["a",1]],"ok":{"_tag":"StandardCommand","command":"key_name-1","args":["é","a😀b😀c"],"options":{"0":"a","1":1,"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["abc",[],true],"ok":{"_tag":"StandardCommand","command":"abc","args":[],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":[".leading",["😀","Hello World","İstanbul"],{"a":{"b":"c"}}],"ok":{"_tag":"StandardCommand","command":".leading","args":["😀","Hello World","İstanbul"],"options":{"a":{"b":"c"},"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["src/a/b.ts",["{name} has {count} items"],{"a":{"b":"c"}}],"ok":{"_tag":"StandardCommand","command":"src/a/b.ts","args":["{name} has {count} items"],"options":{"a":{"b":"c"},"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["﻿bom",["hello world","ΣΊΣΥΦΟΣHello World"],true],"ok":{"_tag":"StandardCommand","command":"﻿bom","args":["hello world","ΣΊΣΥΦΟΣHello World"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["ab",["key_name-1"],0],"ok":{"_tag":"StandardCommand","command":"ab","args":["key_name-1"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["a:b:cİstanbul",["{name} has {count} items","{name} has {count} items",":"],{"$undefined":true}],"ok":{"_tag":"StandardCommand","command":"a:b:cİstanbul","args":["{name} has {count} items","{name} has {count} items",":"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["a..b",[],["a",1]],"ok":{"_tag":"StandardCommand","command":"a..b","args":[],"options":{"0":"a","1":1,"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["line1\nline2.leading",["tab\tseparated"],"x"],"ok":{"_tag":"StandardCommand","command":"line1\nline2.leading","args":["tab\tseparated"],"options":{"0":"x","shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["a..b",["a..ba😀b😀c","ΣΊΣΥΦΟΣ😀","é"],true],"ok":{"_tag":"StandardCommand","command":"a..b","args":["a..ba😀b😀c","ΣΊΣΥΦΟΣ😀","é"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["{name} has {count} items",["abc","a","ΣΊΣΥΦΟΣ"],[]],"ok":{"_tag":"StandardCommand","command":"{name} has {count} items","args":["abc","a","ΣΊΣΥΦΟΣ"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["日本語のテキスト",["line1\nline2trailing."],true],"ok":{"_tag":"StandardCommand","command":"日本語のテキスト","args":["line1\nline2trailing."],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["key_name-1",["ünïcödé","a.b.c","./x/**/*.json"]],"ok":{"_tag":"StandardCommand","command":"key_name-1","args":["ünïcödé","a.b.c","./x/**/*.json"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["a  padded  ",["hello world"],{}],"ok":{"_tag":"StandardCommand","command":"a  padded  ","args":["hello world"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["hello",["é","abc","{name} has {count} items"],{"a":"b"}],"ok":{"_tag":"StandardCommand","command":"hello","args":["é","abc","{name} has {count} items"],"options":{"a":"b","shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["a😀b😀c",["key_name-1","trailing.","abc"]],"ok":{"_tag":"StandardCommand","command":"a😀b😀c","args":["key_name-1","trailing.","abc"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["Hello World",["İstanbul",":ΣΊΣΥΦΟΣ"],{"$undefined":true}],"ok":{"_tag":"StandardCommand","command":"Hello World","args":["İstanbul",":ΣΊΣΥΦΟΣ"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["日本語のテキスト",[],null],"error":"Cannot destructure property 'platform' of 'options' as it is null."}
+{"fn":"makeEffectProcessCommand","args":["abcΣΊΣΥΦΟΣ",["ab","a.b.cİstanbul","Hello World"],{}],"ok":{"_tag":"StandardCommand","command":"abcΣΊΣΥΦΟΣ","args":["ab","a.b.cİstanbul","Hello World"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["ns:key.pathkey_name-1",["日本語のテキスト"],{}],"ok":{"_tag":"StandardCommand","command":"ns:key.pathkey_name-1","args":["日本語のテキスト"],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["key_name-1İstanbul",[],{"$undefined":true}],"ok":{"_tag":"StandardCommand","command":"key_name-1İstanbul","args":[],"options":{"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["héllo wörld",["emoji 👍🏽 mixns:key.path","helloa.b.c"],{"a":{"b":"c"}}],"ok":{"_tag":"StandardCommand","command":"héllo wörld","args":["emoji 👍🏽 mixns:key.path","helloa.b.c"],"options":{"a":{"b":"c"},"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["👍🏽 thumbs",["emoji 👍🏽 mixns:key.path","helloa.b.c"],{"a":{"b":"c"}}],"ok":{"_tag":"StandardCommand","command":"👍🏽 thumbs","args":["emoji 👍🏽 mixns:key.path","helloa.b.c"],"options":{"a":{"b":"c"},"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["日本語",["emoji 👍🏽 mixns:key.path","helloa.b.c"],{"a":{"b":"c"}}],"ok":{"_tag":"StandardCommand","command":"日本語","args":["emoji 👍🏽 mixns:key.path","helloa.b.c"],"options":{"a":{"b":"c"},"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["",["emoji 👍🏽 mixns:key.path","helloa.b.c"],{"a":{"b":"c"}}],"ok":{"_tag":"StandardCommand","command":"","args":["emoji 👍🏽 mixns:key.path","helloa.b.c"],"options":{"a":{"b":"c"},"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["é",["emoji 👍🏽 mixns:key.path","helloa.b.c"],{"a":{"b":"c"}}],"ok":{"_tag":"StandardCommand","command":"é","args":["emoji 👍🏽 mixns:key.path","helloa.b.c"],"options":{"a":{"b":"c"},"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["İstanbul",["emoji 👍🏽 mixns:key.path","helloa.b.c"],{"a":{"b":"c"}}],"ok":{"_tag":"StandardCommand","command":"İstanbul","args":["emoji 👍🏽 mixns:key.path","helloa.b.c"],"options":{"a":{"b":"c"},"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["straße",["emoji 👍🏽 mixns:key.path","helloa.b.c"],{"a":{"b":"c"}}],"ok":{"_tag":"StandardCommand","command":"straße","args":["emoji 👍🏽 mixns:key.path","helloa.b.c"],"options":{"a":{"b":"c"},"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["ılık ırmak",["emoji 👍🏽 mixns:key.path","helloa.b.c"],{"a":{"b":"c"}}],"ok":{"_tag":"StandardCommand","command":"ılık ırmak","args":["emoji 👍🏽 mixns:key.path","helloa.b.c"],"options":{"a":{"b":"c"},"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["👨‍👩‍👧 family",["emoji 👍🏽 mixns:key.path","helloa.b.c"],{"a":{"b":"c"}}],"ok":{"_tag":"StandardCommand","command":"👨‍👩‍👧 family","args":["emoji 👍🏽 mixns:key.path","helloa.b.c"],"options":{"a":{"b":"c"},"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["a b",["emoji 👍🏽 mixns:key.path","helloa.b.c"],{"a":{"b":"c"}}],"ok":{"_tag":"StandardCommand","command":"a b","args":["emoji 👍🏽 mixns:key.path","helloa.b.c"],"options":{"a":{"b":"c"},"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["ΣΊΣΥΦΟΣ",["emoji 👍🏽 mixns:key.path","helloa.b.c"],{"a":{"b":"c"}}],"ok":{"_tag":"StandardCommand","command":"ΣΊΣΥΦΟΣ","args":["emoji 👍🏽 mixns:key.path","helloa.b.c"],"options":{"a":{"b":"c"},"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["a😀b",["emoji 👍🏽 mixns:key.path","helloa.b.c"],{"a":{"b":"c"}}],"ok":{"_tag":"StandardCommand","command":"a😀b","args":["emoji 👍🏽 mixns:key.path","helloa.b.c"],"options":{"a":{"b":"c"},"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["﻿bom",["emoji 👍🏽 mixns:key.path","helloa.b.c"],{"a":{"b":"c"}}],"ok":{"_tag":"StandardCommand","command":"﻿bom","args":["emoji 👍🏽 mixns:key.path","helloa.b.c"],"options":{"a":{"b":"c"},"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["a²b x½ y①",["emoji 👍🏽 mixns:key.path","helloa.b.c"],{"a":{"b":"c"}}],"ok":{"_tag":"StandardCommand","command":"a²b x½ y①","args":["emoji 👍🏽 mixns:key.path","helloa.b.c"],"options":{"a":{"b":"c"},"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["aⅠb Ⅻ",["emoji 👍🏽 mixns:key.path","helloa.b.c"],{"a":{"b":"c"}}],"ok":{"_tag":"StandardCommand","command":"aⅠb Ⅻ","args":["emoji 👍🏽 mixns:key.path","helloa.b.c"],"options":{"a":{"b":"c"},"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["a𐐀b 𝐀bc",["emoji 👍🏽 mixns:key.path","helloa.b.c"],{"a":{"b":"c"}}],"ok":{"_tag":"StandardCommand","command":"a𐐀b 𝐀bc","args":["emoji 👍🏽 mixns:key.path","helloa.b.c"],"options":{"a":{"b":"c"},"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["कि ٣٤",["emoji 👍🏽 mixns:key.path","helloa.b.c"],{"a":{"b":"c"}}],"ok":{"_tag":"StandardCommand","command":"कि ٣٤","args":["emoji 👍🏽 mixns:key.path","helloa.b.c"],"options":{"a":{"b":"c"},"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["ab",[],{"a":{"b":"c"}}],"ok":{"_tag":"StandardCommand","command":"ab","args":[],"options":{"a":{"b":"c"},"shell":false}}}
+{"fn":"makeEffectProcessCommand","args":["ab",["b","a","B","é","10","9","a"],{"a":{"b":"c"}}],"ok":{"_tag":"StandardCommand","command":"ab","args":["b","a","B","é","10","9","a"],"options":{"a":{"b":"c"},"shell":false}}}
+{"fn":"parseProcessChildrenMap","args":["straße",{"$undefined":true}],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["{name} has {count} items",true],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["{name} has {count} itemsa.b.c",true],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["é",false],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["HELLO",{"$undefined":true}],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["é"],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["Hello Worldstraße",{"$undefined":true}],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["a",true],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["a😀b😀c",true],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["emoji 👍🏽 mix",false],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["emoji 👍🏽 mixa..b",true],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["é",{"$undefined":true}],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["{name} has {count} items",false],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["",true],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["abc",{"$undefined":true}],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["日本語のテキスト",true],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["hellokey_name-1"],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["",false],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["abcstraße",false],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["abc"],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["a.b.cΣΊΣΥΦΟΣ"],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["  padded  ",{"$undefined":true}],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["aİstanbul"],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["ΣΊΣΥΦΟΣ"],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":[".leading",false],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["hello world",{"$undefined":true}],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["a"],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["﻿bom",true],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["tab\tseparated",false],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["tab\tseparated",true],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":[".leadingHello World",{"$undefined":true}],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["tab\tseparated"],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["a.b.c",false],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["ns:key.path",false],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["key_name-1",false],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["aa.b.c",true],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["straße./x/**/*.json",true],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["abc",true],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["日本語のテキスト",false],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["  padded  "],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["  padded  ",false],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["Hello World",{"$undefined":true}],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["﻿bom",false],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["abca",true],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["ab",{"$undefined":true}],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["ab",true],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["ünïcödé",true],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["a😀b😀c",{"$undefined":true}],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["a..b",false],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["hellotrailing.",{"$undefined":true}],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["hello",true],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["a:b:c",false],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["é",true],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["hello"],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["İstanbul"],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["key_name-1",true],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["emoji 👍🏽 mix",true],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["a:b:c",true],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["./x/**/*.json",false],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["emoji 👍🏽 mix",{"$undefined":true}],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["😀hello",false],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["helloΣΊΣΥΦΟΣ",false],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["İstanbulHELLO",false],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["trailing."],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["日本語のテキスト"],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["😀ns:key.path"],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["a😀b😀c",false],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["a..b",true],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":[".leading",true],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["hello",false],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["line1\nline2",{"$undefined":true}],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":[".leading"],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["ab",false],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["  padded  ./x/**/*.json",true],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["line1\nline2",true],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["😀",false],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["İstanbul  padded  ",true],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["Hello World"],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["line1\nline2",false],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["HELLO",true],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["ns:key.pathHELLO"],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["aab"],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["./x/**/*.json",true],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["Hello World",false],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["hello world"],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["﻿bomé"],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["ünïcödéİstanbul",false],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["key_name-1trailing.",false],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["{name} has {count} items.leading",true],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":[":",false],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":[":"],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":[""],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["ns:key.path",{"$undefined":true}],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["trailing.",true],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":[":",{"$undefined":true}],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["ΣΊΣΥΦΟΣ",true],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["ΣΊΣΥΦΟΣ",false],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["ünïcödé",{"$undefined":true}],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["helloemoji 👍🏽 mix",false],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["abc",false],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["hello worlda..b",true],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["日本語のテキストhello world",true],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["ΣΊΣΥΦΟΣ.leading",false],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":[":日本語のテキスト",false],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["ΣΊΣΥΦΟΣstraße",true],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["src/a/b.ts"],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["straße",true],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["a😀b😀cünïcödé",false],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["line1\nline2"],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["ünïcödéa",false],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["  padded  tab\tseparated",true],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["line1\nline2abc",true],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":[".leading",{"$undefined":true}],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["trailing.",false],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["abcabc",false],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["hellostraße",false],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["emoji 👍🏽 mixé",false],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["a.b.ctrailing.",false],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["{name} has {count} items",{"$undefined":true}],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["tab\tseparatedİstanbul",true],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["{name} has {count} itemsé"],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":[".leadingé",false],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["a.b.c",true],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["Hello World",true],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["İstanbul",{"$undefined":true}],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":[":./x/**/*.json",true],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["{name} has {count} items日本語のテキスト",true],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["src/a/b.tsstraße",true],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":[":",true],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["a",false],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["abΣΊΣΥΦΟΣ",true],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["src/a/b.ts  padded  ",false],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["İstanbulstraße",false],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["ünïcödé",false],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["src/a/b.ts日本語のテキスト",{"$undefined":true}],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["hello",{"$undefined":true}],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["hello world",true],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["İstanbul",true],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["ünïcödé"],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["trailing.abc",false],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["straßens:key.path",true],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["src/a/b.ts",{"$undefined":true}],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["HELLO",false],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["./x/**/*.json",{"$undefined":true}],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["key_name-1a",false],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["aab",false],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["a:b:c"],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["İstanbul",false],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["emoji 👍🏽 mixΣΊΣΥΦΟΣ",true],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["a😀b😀c"],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["  padded  ",true],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["日本語のテキストHELLO",true],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["straße",false],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["trailing.",{"$undefined":true}],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["  padded  日本語のテキスト",true],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["emoji 👍🏽 mixhello world",{"$undefined":true}],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["a.b.c:",true],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["ns:key.path",true],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["a..b"],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["a.b.ckey_name-1",false],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["😀"],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["{name} has {count} items"],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["hello world:",false],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["a.b.c",{"$undefined":true}],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["emoji 👍🏽 mixΣΊΣΥΦΟΣ"],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["ab:",true],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["emoji 👍🏽 mixkey_name-1",true],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["src/a/b.ts",false],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["{name} has {count} items😀",true],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["hello worlda😀b😀c",true],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["straße{name} has {count} items",true],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["é:"],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["tab\tseparatedns:key.path",false],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["hello worldemoji 👍🏽 mix",false],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["日本語のテキストab"],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["﻿bom"],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["emoji 👍🏽 mixa:b:c",false],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["hello worldİstanbul",true],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["éemoji 👍🏽 mix",false],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["ünïcödéünïcödé",true],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["a😀b😀c.leading",{"$undefined":true}],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["HELLO日本語のテキスト",true],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["key_name-1{name} has {count} items",false],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["src/a/b.ts",true],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["line1\nline2日本語のテキスト",true],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["😀",true],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":[":key_name-1",true],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["ünïcödé./x/**/*.json",true],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["emoji 👍🏽 mixline1\nline2"],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":[".leadingΣΊΣΥΦΟΣ",true],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":[".leading:",false],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["emoji 👍🏽 mix"],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["hello worldkey_name-1"],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["{name} has {count} items😀",false],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["hello.leading",true],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["./x/**/*.json😀",true],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["Hello WorldΣΊΣΥΦΟΣ",false],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["😀",{"$undefined":true}],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["ns:key.patha:b:c",true],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["trailing.a.b.c",false],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["héllo wörld",{"$undefined":true}],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["👍🏽 thumbs",{"$undefined":true}],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["日本語",{"$undefined":true}],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["",{"$undefined":true}],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["ılık ırmak",{"$undefined":true}],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["👨‍👩‍👧 family",{"$undefined":true}],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["a b",{"$undefined":true}],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["ΣΊΣΥΦΟΣ",{"$undefined":true}],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["a😀b",{"$undefined":true}],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["﻿bom",{"$undefined":true}],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["a²b x½ y①",{"$undefined":true}],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["aⅠb Ⅻ",{"$undefined":true}],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["a𐐀b 𝐀bc",{"$undefined":true}],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["कि ٣٤",{"$undefined":true}],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["Iı İi",{"$undefined":true}],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["K K k",{"$undefined":true}],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["ſ s S",{"$undefined":true}],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["x‍y 👨‍👩‍👧",{"$undefined":true}],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["a b c　d",{"$undefined":true}],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["١٢٣ ٤٥",{"$undefined":true}],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["𝟘𝟙 ²³",{"$undefined":true}],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["snake_case foo-bar o'neil",{"$undefined":true}],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["ǅungla Ǆ",{"$undefined":true}],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["one\r\ntwo threefour",{"$undefined":true}],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["café café",{"$undefined":true}],"ok":{"$map":[]}}
+{"fn":"parseProcessChildrenMap","args":["ΣΑΣ σας ς",{"$undefined":true}],"ok":{"$map":[]}}
+{"fn":"collectDescendantProcesses","args":[1000,null],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"collectDescendantProcesses","args":[2,null],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"collectDescendantProcesses","args":[0.5,true],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[100,0],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[{"$num":"-0"},"x"],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[{"$num":"NaN"},{"a":{"b":"c"}}],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[3,{"a":{"b":"c"}}],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[{"$num":"NaN"},true],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[-1,null],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"collectDescendantProcesses","args":[-1,{"a":"b"}],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[-2.5,[]],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[1,["a",1]],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[{"$num":"-0"},["a",1]],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[42,"x"],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[-2.5,true],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[{"$num":"-0"},null],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"collectDescendantProcesses","args":[9007199254740992,true],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[{"$num":"-Infinity"},[]],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[1,[]],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[100,null],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"collectDescendantProcesses","args":[{"$num":"-0"},[]],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[3,0],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[1,{"a":{"b":"c"}}],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[10,{"a":{"b":"c"}}],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[2,[]],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[2147483648,{}],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[0.5,{"a":{"b":"c"}}],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[-1,true],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[1000000,{"a":"b"}],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[3,true],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[-1,["a",1]],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[{"$num":"-Infinity"},{}],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[2147483648,null],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"collectDescendantProcesses","args":[1000,0],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[10,[]],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[{"$num":"-0"},true],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[1000,true],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[100,{"a":{"b":"c"}}],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[9007199254740992,[]],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[1000,"x"],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[2147483648,[]],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[{"$num":"NaN"},0],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[{"$num":"NaN"},{}],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[3,["a",1]],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[{"$num":"Infinity"},[]],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[{"$num":"Infinity"},true],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[2,true],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[2147483648,true],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[-1,[]],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[{"$num":"-Infinity"},["a",1]],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[1000000,true],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[0.5,null],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"collectDescendantProcesses","args":[{"$num":"-Infinity"},true],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[10,"x"],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[{"$num":"-Infinity"},{"a":"b"}],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[10,["a",1]],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[3,null],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"collectDescendantProcesses","args":[1000,{"a":"b"}],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[100,{}],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[9007199254740992,{"a":{"b":"c"}}],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[{"$num":"-0"},{"a":{"b":"c"}}],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[1000000,{"a":{"b":"c"}}],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[2,"x"],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[2,{"a":{"b":"c"}}],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[1000000,[]],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[42,{"a":"b"}],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[-1,0],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[100,"x"],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[100,[]],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[{"$num":"-0"},0],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[1000,["a",1]],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[0,{}],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[{"$num":"Infinity"},{}],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[42,{"a":{"b":"c"}}],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[1,null],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"collectDescendantProcesses","args":[0.5,{}],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[42,{}],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[1000,{}],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[{"$num":"NaN"},"x"],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[-2.5,0],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[2147483648,0],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[100,true],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[0.5,0],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[-2.5,{}],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[{"$num":"-0"},{}],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[42,["a",1]],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[10,0],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[42,null],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"collectDescendantProcesses","args":[0.5,{"a":"b"}],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[3,"x"],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[9007199254740992,{}],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[0,{"a":"b"}],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[42,true],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[0,["a",1]],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[{"$num":"Infinity"},null],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"collectDescendantProcesses","args":[1,true],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[{"$num":"-Infinity"},"x"],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[2147483648,{"a":"b"}],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[1000000,0],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[2,{"a":"b"}],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[1000000,["a",1]],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[-1,{"a":{"b":"c"}}],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[{"$num":"NaN"},null],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"collectDescendantProcesses","args":[{"$num":"Infinity"},{"a":"b"}],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[2147483648,"x"],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[10,true],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[-1,{}],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[42,0],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[-2.5,null],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"collectDescendantProcesses","args":[3,{}],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[10,{"a":"b"}],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[100,{"a":"b"}],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[2,{}],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[0.5,[]],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[1000000,{}],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[{"$num":"-0"},{"a":"b"}],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[9007199254740992,{"a":"b"}],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[9007199254740992,["a",1]],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[{"$num":"Infinity"},["a",1]],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[1,"x"],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[0,"x"],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[-2.5,["a",1]],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[9007199254740992,null],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"collectDescendantProcesses","args":[1,{"a":"b"}],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[-2.5,{"a":"b"}],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[9007199254740992,"x"],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[1,0],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[{"$num":"-Infinity"},null],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"collectDescendantProcesses","args":[{"$num":"Infinity"},"x"],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[0,0],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[100,["a",1]],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[0,null],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"collectDescendantProcesses","args":[-1,"x"],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[0,{"a":{"b":"c"}}],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[10,null],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"collectDescendantProcesses","args":[9007199254740992,0],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[2,0],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[{"$num":"NaN"},[]],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[2147483648,{"a":{"b":"c"}}],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[0,true],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[{"$num":"Infinity"},{"a":{"b":"c"}}],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[-2.5,{"a":{"b":"c"}}],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[{"$num":"-Infinity"},0],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[10,{}],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[{"$num":"-Infinity"},{"a":{"b":"c"}}],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[2147483648,["a",1]],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[2,["a",1]],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[{"$num":"Infinity"},0],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[0.5,["a",1]],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[0.5,"x"],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[0,[]],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[{"$num":"NaN"},["a",1]],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[1000000,null],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"collectDescendantProcesses","args":[1000000,"x"],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[3,{"a":"b"}],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[1000,[]],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[1,{}],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[3,[]],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[42,[]],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[{"$num":"NaN"},{"a":"b"}],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[1000,{"a":{"b":"c"}}],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[-2.5,"x"],"error":"childrenByParentPid.get is not a function"}
+{"fn":"collectDescendantProcesses","args":[-7.5,null],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"collectDescendantProcesses","args":[0.1,null],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"collectDescendantProcesses","args":[0.30000000000000004,null],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"collectDescendantProcesses","args":[1e+21,null],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"collectDescendantProcesses","args":[1e-7,null],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"collectDescendantProcesses","args":[5e-324,null],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"collectDescendantProcesses","args":[1.7976931348623157e+308,null],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"signalOwnedChildProcess","args":[{"pid":1000},"ns:key.path","x"],"error":"child.kill is not a function"}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$undefined":true}},"abc","bc"],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[["a",1],"src/a/b.ts",0],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{},"a..b"],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":1000000},""],"error":"child.kill is not a function"}
+{"fn":"signalOwnedChildProcess","args":[0,"abc","x"],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$undefined":true}},":",{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":9007199254740992},"","x"],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$undefined":true}},"ΣΊΣΥΦΟΣ",{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":9007199254740992},"line1\nline2",{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{},"ΣΊΣΥΦΟΣ",{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":0},"trailing."],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$undefined":true}},"",{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$undefined":true}},"src/a/b.ts",{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[["a",1],"  padded  "],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$undefined":true}},"ab",{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$undefined":true}},"emoji 👍🏽 mix",[]],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":0.5},"  padded  :",[]],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{},"hello",{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{},"hello world",{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":["x","x",true],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$undefined":true}},"ΣΊΣΥΦΟΣ","x"],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":-2.5},"{name} has {count} items",true],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$undefined":true}},"",true],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$undefined":true}},"{name} has {count} items"],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":-1},"İstanbul"],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$undefined":true}},"a.b.c",true],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":0.5},"line1\nline2","x"],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$undefined":true}},"é",0],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[true,"a","x"],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[0,"  padded  ",0],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$undefined":true}},"HELLO",[]],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":-2.5},"a..b","x"],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{},"{name} has {count} items",true],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$num":"-0"}},"Hello World"],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":0.5},"ns:key.patha..b",{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":1000},"ΣΊΣΥΦΟΣ",{"a":{"b":"c"}}],"error":"child.kill is not a function"}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$undefined":true}},"étab\tseparated",["a",1]],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$undefined":true}},"a:b:c",null],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":1000},"emoji 👍🏽 mix",{"a":"b"}],"error":"child.kill is not a function"}
+{"fn":"signalOwnedChildProcess","args":[{"pid":-1},"a😀b😀c",0],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":42},"ab",true],"error":"child.kill is not a function"}
+{"fn":"signalOwnedChildProcess","args":[{"pid":0.5},"  padded  ",{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[[],"trailing.",[]],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":-2.5},"./x/**/*.json",true],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$num":"NaN"}},"Hello World"],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":1000000},"a",null],"error":"child.kill is not a function"}
+{"fn":"signalOwnedChildProcess","args":[true,"éabc",null],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$undefined":true}},"./x/**/*.json﻿bom",true],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$num":"-Infinity"}},"ns:key.path",[]],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":["x","x",["a",1]],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$undefined":true}},"key_name-1","x"],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$undefined":true}},".leading",{}],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$undefined":true}},"ünïcödé"],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":2},"a😀b😀c",{"a":{"b":"c"}}],"error":"child.kill is not a function"}
+{"fn":"signalOwnedChildProcess","args":[{"pid":0.5},"﻿bom",{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{},"abc",["a",1]],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[["a",1],"src/a/b.ts",null],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$num":"-0"}},"a..b",{}],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":1000000},"HELLOa","x"],"error":"child.kill is not a function"}
+{"fn":"signalOwnedChildProcess","args":[{},"﻿bom"],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":-1},"a",{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$undefined":true}},"ab",0],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$num":"NaN"}},"",true],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{},"ünïcödé﻿bom",null],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{},"  padded  ",null],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":2},"abc",{"a":"b"}],"error":"child.kill is not a function"}
+{"fn":"signalOwnedChildProcess","args":[{},"tab\tseparated",null],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$undefined":true}},"tab\tseparatedtab\tseparated",{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"a":{"b":"c"}},"a",0],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$undefined":true}},"😀",{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"a":{"b":"c"}},"a",["a",1]],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$num":"-0"}},"HELLO",null],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{},"a",{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$undefined":true}},"trailing.trailing.",true],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$undefined":true}},"HELLO",{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{},"  padded  a:b:c",["a",1]],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{},"Hello World./x/**/*.json",true],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$num":"NaN"}},"é"],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{},"a",0],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":-1},"hello",{}],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$undefined":true}},"",null],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{},"a.b.ca.b.c",{}],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":42},"Hello World",true],"error":"child.kill is not a function"}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$undefined":true}},"a.b.cünïcödé",{}],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$num":"NaN"}},":",{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[["a",1],"ab",{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":2147483648},"a.b.c",null],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$undefined":true}},"ns:key.path",{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$num":"-0"}},"emoji 👍🏽 mix",{}],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$undefined":true}},"  padded  ",{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":9007199254740992},"",{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$undefined":true}},"key_name-1",{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$undefined":true}},"tab\tseparated",{}],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{},"src/a/b.ts","x"],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":1},".leading"],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":["x","trailing.日本語のテキスト",0],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$undefined":true}},"a..b",null],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[null,"a😀b😀c",0],"error":"Cannot read properties of null (reading 'pid')"}
+{"fn":"signalOwnedChildProcess","args":[{"pid":1000000},"Hello World",[]],"error":"child.kill is not a function"}
+{"fn":"signalOwnedChildProcess","args":[{},"HELLO","x"],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$undefined":true}},"",[]],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":1000000},"a:b:c",{"a":"b"}],"error":"child.kill is not a function"}
+{"fn":"signalOwnedChildProcess","args":[{"pid":1},"emoji 👍🏽 mixa😀b😀c",["a",1]],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":0.5},"./x/**/*.json",0],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":["x","HELLOünïcödé"],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":1000},"./x/**/*.jsonhello",{"a":{"b":"c"}}],"error":"child.kill is not a function"}
+{"fn":"signalOwnedChildProcess","args":[{},"a😀b😀c",null],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{},".leading",{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{},"hello world",{}],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{},"😀",{}],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{},"line1\nline2",{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[true,"hello",0],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{},"é﻿bom",{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$undefined":true}},"hello world"],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$num":"-0"}},"a.b.c",{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$undefined":true}},"line1\nline2",null],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$num":"-0"}},"straßea..b",{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{},"emoji 👍🏽 mix",{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{},"日本語のテキスト",true],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":1000},"  padded  hello",["a",1]],"error":"child.kill is not a function"}
+{"fn":"signalOwnedChildProcess","args":[{"a":"b"},"ns:key.path"],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$undefined":true}},"trailing.","x"],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":42},"key_name-1",{"a":{"b":"c"}}],"error":"child.kill is not a function"}
+{"fn":"signalOwnedChildProcess","args":[{"pid":3},"line1\nline2:",{"$undefined":true}],"error":"child.kill is not a function"}
+{"fn":"signalOwnedChildProcess","args":[{},"key_name-1日本語のテキスト",{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":["x","a",{}],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[["a",1],"İstanbul",{}],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$undefined":true}},"emoji 👍🏽 mix",null],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$undefined":true}},"İstanbul",{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{},"a.b.c"],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"a":"b"},"ab",["a",1]],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":["x","emoji 👍🏽 mixΣΊΣΥΦΟΣ",["a",1]],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$undefined":true}},"ünïcödé﻿bom",null],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":-1},"a",true],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$undefined":true}},"straße",[]],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":2},"a:b:c",{"a":"b"}],"error":"child.kill is not a function"}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$undefined":true}},"ΣΊΣΥΦΟΣ",["a",1]],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{},"İstanbul",null],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":-2.5},"a:b:c","x"],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$num":"-0"}},"./x/**/*.json",null],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":10},"./x/**/*.json",true],"error":"child.kill is not a function"}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$undefined":true}},"src/a/b.ts"],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":42},"hellotab\tseparated",0],"error":"child.kill is not a function"}
+{"fn":"signalOwnedChildProcess","args":[{"pid":0},"straße",["a",1]],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$undefined":true}},"tab\tseparated","x"],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":0.5},"a:b:c",[]],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$undefined":true}},"x","x"],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$num":"-0"}},"line1\nline2",{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":9007199254740992},"line1\nline2",true],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$num":"-Infinity"}},"./x/**/*.json",{}],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":1},"tab\tseparated",{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":1000},"ns:key.pathHELLO",true],"error":"child.kill is not a function"}
+{"fn":"signalOwnedChildProcess","args":[{"pid":1000000},"a..b",null],"error":"child.kill is not a function"}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$undefined":true}},"a:b:c",[]],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$undefined":true}},"a:b:c",0],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":10},"ünïcödéa.b.c","x"],"error":"child.kill is not a function"}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$undefined":true}},"ünïcödé",{}],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{},"Hello Worldemoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{},"ab",[]],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{},"﻿bom",{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{},"./x/**/*.json",[]],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$undefined":true}},"key_name-1",[]],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":2},"line1\nline2",["a",1]],"error":"child.kill is not a function"}
+{"fn":"signalOwnedChildProcess","args":[{},"atrailing.",0],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$undefined":true}},"./x/**/*.json",{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":1000000},"ab",null],"error":"child.kill is not a function"}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$undefined":true}},"line1\nline2",{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{},"abc"],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":1000},"😀","x"],"error":"child.kill is not a function"}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$undefined":true}},"a.b.c","x"],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":1000},"ns:key.path",true],"error":"child.kill is not a function"}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$undefined":true}},".leading",{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$undefined":true}},"a😀b😀ca😀b😀c",{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$undefined":true}},"abc.leading",true],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{},"line1\nline2",{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":1000000},"ünïcödé",["a",1]],"error":"child.kill is not a function"}
+{"fn":"signalOwnedChildProcess","args":[{"pid":3},"a..b",true],"error":"child.kill is not a function"}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$undefined":true}},"a😀b😀c",{}],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$undefined":true}},"HELLO"],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"a":{"b":"c"}},"./x/**/*.jsonabc",{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":10},"abc﻿bom",null],"error":"child.kill is not a function"}
+{"fn":"signalOwnedChildProcess","args":[{},"abc:",{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{},"trailing.",["a",1]],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$undefined":true}},":",null],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":-1},"a..b",true],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{},"{name} has {count} itemstab\tseparated",{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{},"a..b","x"],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[["a",1],"key_name-1a😀b😀c",{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{},"emoji 👍🏽 mix",{}],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$num":"NaN"}},"a😀b😀c",[]],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$undefined":true}},"é",{}],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[null,"İstanbul",{}],"error":"Cannot read properties of null (reading 'pid')"}
+{"fn":"signalOwnedChildProcess","args":[{"pid":{"$undefined":true}},"tab\tseparated",{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{},"ünïcödé","x"],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{},"straße"],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":["x","Hello World","x"],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{},"a:b:cns:key.path",0],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[null,"😀",true],"error":"Cannot read properties of null (reading 'pid')"}
+{"fn":"signalOwnedChildProcess","args":[{},"HELLOa",[]],"ok":{"$undefined":true}}
+{"fn":"signalOwnedChildProcess","args":[{"pid":1000},"héllo wörld","x"],"error":"child.kill is not a function"}
+{"fn":"signalOwnedChildProcess","args":[{"pid":1000},"👍🏽 thumbs","x"],"error":"child.kill is not a function"}
+{"fn":"signalOwnedChildProcess","args":[{"pid":1000},"日本語","x"],"error":"child.kill is not a function"}
+{"fn":"signalOwnedChildProcess","args":[{"pid":1000},"","x"],"error":"child.kill is not a function"}
+{"fn":"signalOwnedChildProcess","args":[{"pid":1000},"é","x"],"error":"child.kill is not a function"}
+{"fn":"signalOwnedChildProcess","args":[{"pid":1000},"İstanbul","x"],"error":"child.kill is not a function"}
+{"fn":"signalOwnedChildProcess","args":[{"pid":1000},"straße","x"],"error":"child.kill is not a function"}
+{"fn":"signalOwnedChildProcess","args":[{"pid":1000},"ılık ırmak","x"],"error":"child.kill is not a function"}
+{"fn":"signalOwnedChildProcess","args":[{"pid":1000},"👨‍👩‍👧 family","x"],"error":"child.kill is not a function"}
+{"fn":"signalOwnedChildProcess","args":[{"pid":1000},"a b","x"],"error":"child.kill is not a function"}
+{"fn":"signalOwnedChildProcess","args":[{"pid":1000},"ΣΊΣΥΦΟΣ","x"],"error":"child.kill is not a function"}
+{"fn":"signalOwnedChildProcess","args":[{"pid":1000},"a😀b","x"],"error":"child.kill is not a function"}
+{"fn":"signalOwnedChildProcess","args":[{"pid":1000},"﻿bom","x"],"error":"child.kill is not a function"}
+{"fn":"signalOwnedChildProcess","args":[{"pid":1000},"a²b x½ y①","x"],"error":"child.kill is not a function"}
+{"fn":"signalOwnedChildProcess","args":[{"pid":1000},"aⅠb Ⅻ","x"],"error":"child.kill is not a function"}
+{"fn":"signalOwnedChildProcess","args":[{"pid":1000},"a𐐀b 𝐀bc","x"],"error":"child.kill is not a function"}
+{"fn":"signalOwnedChildProcess","args":[{"pid":1000},"कि ٣٤","x"],"error":"child.kill is not a function"}
+{"fn":"signalOwnedChildProcess","args":[{"pid":1000},"Iı İi","x"],"error":"child.kill is not a function"}
+{"fn":"signalOwnedChildProcess","args":[{"pid":1000},"K K k","x"],"error":"child.kill is not a function"}
+{"fn":"signalOwnedChildProcess","args":[{"pid":1000},"ſ s S","x"],"error":"child.kill is not a function"}
+{"fn":"signalOwnedChildProcess","args":[{"pid":1000},"x‍y 👨‍👩‍👧","x"],"error":"child.kill is not a function"}
+{"fn":"signalOwnedChildProcess","args":[{"pid":1000},"a b c　d","x"],"error":"child.kill is not a function"}
+{"fn":"signalOwnedChildProcess","args":[{"pid":1000},"١٢٣ ٤٥","x"],"error":"child.kill is not a function"}
+{"fn":"signalOwnedChildProcess","args":[{"pid":1000},"𝟘𝟙 ²³","x"],"error":"child.kill is not a function"}
+{"fn":"signalOwnedChildProcess","args":[{"pid":1000},"snake_case foo-bar o'neil","x"],"error":"child.kill is not a function"}
+{"fn":"signalOwnedChildProcess","args":[{"pid":1000},"ǅungla Ǆ","x"],"error":"child.kill is not a function"}
+{"fn":"signalOwnedChildProcess","args":[{"pid":1000},"one\r\ntwo threefour","x"],"error":"child.kill is not a function"}
+{"fn":"signalOwnedChildProcess","args":[{"pid":1000},"café café","x"],"error":"child.kill is not a function"}
+{"fn":"signalOwnedChildProcess","args":[{"pid":1000},"ΣΑΣ σας ς","x"],"error":"child.kill is not a function"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":2147483648,"exitCode":[]},"x"],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":100,"exitCode":{"a":{"b":"c"}}},{"a":{"b":"c"}}],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[0,0],"error":"Cannot use 'in' operator to search for '~effect/Exit' in undefined"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":0,"exitCode":["a",1]},{"$undefined":true}],"error":"Provider process root PID must be a positive integer, got 0."}
+{"fn":"teardownEffectProcessTree","args":[{"pid":{"$num":"-Infinity"},"exitCode":true},{"a":"b"}],"error":"Cannot use 'in' operator to search for '~effect/Exit' in true"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":-1,"exitCode":[]}],"error":"Provider process root PID must be a positive integer, got -1."}
+{"fn":"teardownEffectProcessTree","args":[true],"error":"Cannot use 'in' operator to search for '~effect/Exit' in undefined"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":-2.5,"exitCode":[]},{"a":{"b":"c"}}],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":100,"exitCode":{"a":"b"}},[]],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":{"$num":"NaN"},"exitCode":null},{}],"error":"Cannot use 'in' operator to search for '~effect/Exit' in null"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":10,"exitCode":"x"},null],"error":"Cannot use 'in' operator to search for '~effect/Exit' in x"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":{"$num":"-0"},"exitCode":{"a":{"b":"c"}}},0],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":2,"exitCode":null},0],"error":"Cannot use 'in' operator to search for '~effect/Exit' in null"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":3,"exitCode":{"a":{"b":"c"}}},"x"],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":0.5,"exitCode":["a",1]},[]],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":-2.5,"exitCode":[]},0],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":2,"exitCode":["a",1]},{"a":{"b":"c"}}],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":{"$num":"-0"},"exitCode":true},null],"error":"Cannot use 'in' operator to search for '~effect/Exit' in true"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":3,"exitCode":[]},{"a":{"b":"c"}}],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[{"a":"b"},0],"error":"Cannot use 'in' operator to search for '~effect/Exit' in undefined"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":{"$num":"Infinity"},"exitCode":null},{"a":{"b":"c"}}],"error":"Cannot use 'in' operator to search for '~effect/Exit' in null"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":1000000,"exitCode":{"a":"b"}},0],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":2,"exitCode":0},{"a":{"b":"c"}}],"error":"Cannot use 'in' operator to search for '~effect/Exit' in 0"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":1000000,"exitCode":{}},null],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":-2.5,"exitCode":{"a":"b"}},{"a":{"b":"c"}}],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[{"a":"b"}],"error":"Cannot use 'in' operator to search for '~effect/Exit' in undefined"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":42,"exitCode":["a",1]},true],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":42,"exitCode":["a",1]},{"a":"b"}],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":2,"exitCode":true},{"a":"b"}],"error":"Cannot use 'in' operator to search for '~effect/Exit' in true"}
+{"fn":"teardownEffectProcessTree","args":[{"a":{"b":"c"}},true],"error":"Cannot use 'in' operator to search for '~effect/Exit' in undefined"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":0.5,"exitCode":"x"},{}],"error":"Cannot use 'in' operator to search for '~effect/Exit' in x"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":9007199254740992,"exitCode":0},["a",1]],"error":"Cannot use 'in' operator to search for '~effect/Exit' in 0"}
+{"fn":"teardownEffectProcessTree","args":[["a",1],{}],"error":"Cannot use 'in' operator to search for '~effect/Exit' in undefined"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":{"$num":"Infinity"},"exitCode":"x"},[]],"error":"Cannot use 'in' operator to search for '~effect/Exit' in x"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":9007199254740992,"exitCode":{}},{"a":"b"}],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":3,"exitCode":[]},null],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":10,"exitCode":[]},0],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[null,{"$undefined":true}],"error":"Cannot read properties of null (reading 'pid')"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":-2.5,"exitCode":{"a":{"b":"c"}}},true],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":0.5,"exitCode":0},"x"],"error":"Cannot use 'in' operator to search for '~effect/Exit' in 0"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":-1,"exitCode":{"a":{"b":"c"}}},{"a":"b"}],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":0.5,"exitCode":{"a":"b"}},{"a":{"b":"c"}}],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":42,"exitCode":{"a":{"b":"c"}}},true],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":9007199254740992,"exitCode":["a",1]},0],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":9007199254740992,"exitCode":null}],"error":"Cannot use 'in' operator to search for '~effect/Exit' in null"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":-2.5,"exitCode":[]}],"error":"Provider process root PID must be a positive integer, got -2.5."}
+{"fn":"teardownEffectProcessTree","args":[{"pid":1000000,"exitCode":null},[]],"error":"Cannot use 'in' operator to search for '~effect/Exit' in null"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":1000,"exitCode":true}],"error":"Cannot use 'in' operator to search for '~effect/Exit' in true"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":1000000,"exitCode":null},true],"error":"Cannot use 'in' operator to search for '~effect/Exit' in null"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":-1,"exitCode":{"a":"b"}},{"a":"b"}],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":1,"exitCode":null},["a",1]],"error":"Cannot use 'in' operator to search for '~effect/Exit' in null"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":{"$num":"Infinity"},"exitCode":["a",1]},{"a":{"b":"c"}}],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[{"a":{"b":"c"}},{}],"error":"Cannot use 'in' operator to search for '~effect/Exit' in undefined"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":1,"exitCode":"x"},{}],"error":"Cannot use 'in' operator to search for '~effect/Exit' in x"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":1000000,"exitCode":null},"x"],"error":"Cannot use 'in' operator to search for '~effect/Exit' in null"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":1000000,"exitCode":0},0],"error":"Cannot use 'in' operator to search for '~effect/Exit' in 0"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":100,"exitCode":{}},{"a":"b"}],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":-1,"exitCode":{"a":{"b":"c"}}},{"$undefined":true}],"error":"Provider process root PID must be a positive integer, got -1."}
+{"fn":"teardownEffectProcessTree","args":[{"pid":{"$num":"NaN"},"exitCode":"x"}],"error":"Cannot use 'in' operator to search for '~effect/Exit' in x"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":2147483648,"exitCode":{"a":"b"}},[]],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[{"a":"b"},[]],"error":"Cannot use 'in' operator to search for '~effect/Exit' in undefined"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":{"$num":"-0"},"exitCode":null},{}],"error":"Cannot use 'in' operator to search for '~effect/Exit' in null"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":10,"exitCode":{"a":"b"}},[]],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":0.5,"exitCode":true}],"error":"Cannot use 'in' operator to search for '~effect/Exit' in true"}
+{"fn":"teardownEffectProcessTree","args":[null,0],"error":"Cannot read properties of null (reading 'pid')"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":0.5,"exitCode":["a",1]},null],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":{"$num":"Infinity"},"exitCode":{}},0],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":2147483648,"exitCode":{}},{}],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":0.5,"exitCode":[]},{}],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":1,"exitCode":[]},null],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":-1,"exitCode":["a",1]},{"$undefined":true}],"error":"Provider process root PID must be a positive integer, got -1."}
+{"fn":"teardownEffectProcessTree","args":[{"pid":1000,"exitCode":{"a":{"b":"c"}}},["a",1]],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":{"$num":"Infinity"},"exitCode":true},0],"error":"Cannot use 'in' operator to search for '~effect/Exit' in true"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":1,"exitCode":{"a":"b"}},[]],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":-1,"exitCode":true}],"error":"Cannot use 'in' operator to search for '~effect/Exit' in true"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":{"$num":"-Infinity"},"exitCode":true},["a",1]],"error":"Cannot use 'in' operator to search for '~effect/Exit' in true"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":{"$num":"-0"},"exitCode":true},["a",1]],"error":"Cannot use 'in' operator to search for '~effect/Exit' in true"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":3,"exitCode":null},0],"error":"Cannot use 'in' operator to search for '~effect/Exit' in null"}
+{"fn":"teardownEffectProcessTree","args":[true,{"a":{"b":"c"}}],"error":"Cannot use 'in' operator to search for '~effect/Exit' in undefined"}
+{"fn":"teardownEffectProcessTree","args":[{"a":{"b":"c"}},[]],"error":"Cannot use 'in' operator to search for '~effect/Exit' in undefined"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":0,"exitCode":[]},{"a":{"b":"c"}}],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":0.5,"exitCode":true},{"a":"b"}],"error":"Cannot use 'in' operator to search for '~effect/Exit' in true"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":1000,"exitCode":0},0],"error":"Cannot use 'in' operator to search for '~effect/Exit' in 0"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":2,"exitCode":"x"},["a",1]],"error":"Cannot use 'in' operator to search for '~effect/Exit' in x"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":2147483648,"exitCode":true},{"$undefined":true}],"error":"Cannot use 'in' operator to search for '~effect/Exit' in true"}
+{"fn":"teardownEffectProcessTree","args":[{},null],"error":"Cannot use 'in' operator to search for '~effect/Exit' in undefined"}
+{"fn":"teardownEffectProcessTree","args":[null,{"a":{"b":"c"}}],"error":"Cannot read properties of null (reading 'pid')"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":-2.5,"exitCode":"x"},{}],"error":"Cannot use 'in' operator to search for '~effect/Exit' in x"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":0.5,"exitCode":true},null],"error":"Cannot use 'in' operator to search for '~effect/Exit' in true"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":1000000,"exitCode":null},{"$undefined":true}],"error":"Cannot use 'in' operator to search for '~effect/Exit' in null"}
+{"fn":"teardownEffectProcessTree","args":[{}],"error":"Cannot use 'in' operator to search for '~effect/Exit' in undefined"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":2,"exitCode":null},true],"error":"Cannot use 'in' operator to search for '~effect/Exit' in null"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":{"$num":"Infinity"},"exitCode":{"a":"b"}},{"$undefined":true}],"error":"Provider process root PID must be a positive integer, got Infinity."}
+{"fn":"teardownEffectProcessTree","args":[{"pid":0.5,"exitCode":{"a":"b"}},{"a":"b"}],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":{"$num":"NaN"},"exitCode":0},[]],"error":"Cannot use 'in' operator to search for '~effect/Exit' in 0"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":3,"exitCode":true}],"error":"Cannot use 'in' operator to search for '~effect/Exit' in true"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":42,"exitCode":0},{}],"error":"Cannot use 'in' operator to search for '~effect/Exit' in 0"}
+{"fn":"teardownEffectProcessTree","args":[[],true],"error":"Cannot use 'in' operator to search for '~effect/Exit' in undefined"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":10,"exitCode":0},[]],"error":"Cannot use 'in' operator to search for '~effect/Exit' in 0"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":{"$num":"NaN"},"exitCode":"x"},{"$undefined":true}],"error":"Cannot use 'in' operator to search for '~effect/Exit' in x"}
+{"fn":"teardownEffectProcessTree","args":[0,["a",1]],"error":"Cannot use 'in' operator to search for '~effect/Exit' in undefined"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":{"$num":"-Infinity"},"exitCode":true},[]],"error":"Cannot use 'in' operator to search for '~effect/Exit' in true"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":{"$num":"-0"},"exitCode":[]},{"a":"b"}],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":3,"exitCode":{}},{"a":"b"}],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":{"$num":"NaN"},"exitCode":{"a":{"b":"c"}}},null],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":{"$num":"Infinity"},"exitCode":[]},{"a":{"b":"c"}}],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":3,"exitCode":null},{}],"error":"Cannot use 'in' operator to search for '~effect/Exit' in null"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":{"$num":"Infinity"},"exitCode":[]},{"$undefined":true}],"error":"Provider process root PID must be a positive integer, got Infinity."}
+{"fn":"teardownEffectProcessTree","args":[{"pid":{"$num":"-0"},"exitCode":null},true],"error":"Cannot use 'in' operator to search for '~effect/Exit' in null"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":9007199254740992,"exitCode":null},{"$undefined":true}],"error":"Cannot use 'in' operator to search for '~effect/Exit' in null"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":10,"exitCode":"x"},"x"],"error":"Cannot use 'in' operator to search for '~effect/Exit' in x"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":-2.5,"exitCode":["a",1]},{"a":"b"}],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":{"$num":"Infinity"},"exitCode":{}}],"error":"Provider process root PID must be a positive integer, got Infinity."}
+{"fn":"teardownEffectProcessTree","args":[[],"x"],"error":"Cannot use 'in' operator to search for '~effect/Exit' in undefined"}
+{"fn":"teardownEffectProcessTree","args":[["a",1],{"a":{"b":"c"}}],"error":"Cannot use 'in' operator to search for '~effect/Exit' in undefined"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":-2.5,"exitCode":{"a":"b"}},"x"],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":{"$num":"-0"},"exitCode":[]},[]],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":100,"exitCode":[]},["a",1]],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":42,"exitCode":"x"},true],"error":"Cannot use 'in' operator to search for '~effect/Exit' in x"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":3,"exitCode":0},["a",1]],"error":"Cannot use 'in' operator to search for '~effect/Exit' in 0"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":0,"exitCode":null},"x"],"error":"Cannot use 'in' operator to search for '~effect/Exit' in null"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":2147483648,"exitCode":{}},0],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":2147483648,"exitCode":0}],"error":"Cannot use 'in' operator to search for '~effect/Exit' in 0"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":-2.5,"exitCode":["a",1]},[]],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":{"$num":"Infinity"},"exitCode":0},"x"],"error":"Cannot use 'in' operator to search for '~effect/Exit' in 0"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":-1,"exitCode":{}},["a",1]],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":{"$num":"Infinity"},"exitCode":{"a":"b"}},{"a":{"b":"c"}}],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":{"$num":"-0"},"exitCode":{"a":"b"}},["a",1]],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":-2.5,"exitCode":{"a":{"b":"c"}}},[]],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":2,"exitCode":{}},["a",1]],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[{"a":"b"},["a",1]],"error":"Cannot use 'in' operator to search for '~effect/Exit' in undefined"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":10,"exitCode":null},true],"error":"Cannot use 'in' operator to search for '~effect/Exit' in null"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":-2.5,"exitCode":{}},{}],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":1,"exitCode":null},{"a":"b"}],"error":"Cannot use 'in' operator to search for '~effect/Exit' in null"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":2,"exitCode":true},[]],"error":"Cannot use 'in' operator to search for '~effect/Exit' in true"}
+{"fn":"teardownEffectProcessTree","args":[true,{}],"error":"Cannot use 'in' operator to search for '~effect/Exit' in undefined"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":-2.5,"exitCode":0},{"a":{"b":"c"}}],"error":"Cannot use 'in' operator to search for '~effect/Exit' in 0"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":2,"exitCode":true},{"a":{"b":"c"}}],"error":"Cannot use 'in' operator to search for '~effect/Exit' in true"}
+{"fn":"teardownEffectProcessTree","args":[null,{}],"error":"Cannot read properties of null (reading 'pid')"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":1000000,"exitCode":{"a":{"b":"c"}}},[]],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":3,"exitCode":["a",1]},{"a":"b"}],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":10,"exitCode":0},{}],"error":"Cannot use 'in' operator to search for '~effect/Exit' in 0"}
+{"fn":"teardownEffectProcessTree","args":[["a",1],"x"],"error":"Cannot use 'in' operator to search for '~effect/Exit' in undefined"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":1000000,"exitCode":["a",1]},{}],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":{"$num":"-Infinity"},"exitCode":null},{"a":"b"}],"error":"Cannot use 'in' operator to search for '~effect/Exit' in null"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":9007199254740992,"exitCode":true},null],"error":"Cannot use 'in' operator to search for '~effect/Exit' in true"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":10,"exitCode":0},{"a":"b"}],"error":"Cannot use 'in' operator to search for '~effect/Exit' in 0"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":2147483648,"exitCode":"x"},0],"error":"Cannot use 'in' operator to search for '~effect/Exit' in x"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":0.5,"exitCode":["a",1]}],"error":"Provider process root PID must be a positive integer, got 0.5."}
+{"fn":"teardownEffectProcessTree","args":[true,"x"],"error":"Cannot use 'in' operator to search for '~effect/Exit' in undefined"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":{"$num":"-Infinity"},"exitCode":{"a":{"b":"c"}}},{}],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":{"$num":"NaN"},"exitCode":[]},{"a":{"b":"c"}}],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":100,"exitCode":0},0],"error":"Cannot use 'in' operator to search for '~effect/Exit' in 0"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":10,"exitCode":true},[]],"error":"Cannot use 'in' operator to search for '~effect/Exit' in true"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":-1,"exitCode":null},["a",1]],"error":"Cannot use 'in' operator to search for '~effect/Exit' in null"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":42,"exitCode":"x"},{"a":{"b":"c"}}],"error":"Cannot use 'in' operator to search for '~effect/Exit' in x"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":{"$num":"-0"},"exitCode":["a",1]},true],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":1000000,"exitCode":0},null],"error":"Cannot use 'in' operator to search for '~effect/Exit' in 0"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":1,"exitCode":{"a":"b"}},true],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":1000,"exitCode":{"a":{"b":"c"}}},0],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":{"$num":"-0"},"exitCode":{"a":"b"}},"x"],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":0,"exitCode":{"a":{"b":"c"}}},0],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":{"$num":"Infinity"},"exitCode":["a",1]},0],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":{"$num":"NaN"},"exitCode":["a",1]},null],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[null],"error":"Cannot read properties of null (reading 'pid')"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":1000,"exitCode":{"a":"b"}},true],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":9007199254740992,"exitCode":"x"},0],"error":"Cannot use 'in' operator to search for '~effect/Exit' in x"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":3,"exitCode":"x"},"x"],"error":"Cannot use 'in' operator to search for '~effect/Exit' in x"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":2,"exitCode":{}},{"a":{"b":"c"}}],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[[],[]],"error":"Cannot use 'in' operator to search for '~effect/Exit' in undefined"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":0,"exitCode":[]},{"a":"b"}],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":-1,"exitCode":{}},{"$undefined":true}],"error":"Provider process root PID must be a positive integer, got -1."}
+{"fn":"teardownEffectProcessTree","args":[{"pid":-1,"exitCode":{"a":{"b":"c"}}},null],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":42,"exitCode":null},null],"error":"Cannot use 'in' operator to search for '~effect/Exit' in null"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":2,"exitCode":[]},0],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":1,"exitCode":{"a":{"b":"c"}}},{"a":"b"}],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":-2.5,"exitCode":true},{"a":{"b":"c"}}],"error":"Cannot use 'in' operator to search for '~effect/Exit' in true"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":3,"exitCode":0},[]],"error":"Cannot use 'in' operator to search for '~effect/Exit' in 0"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":1,"exitCode":{"a":{"b":"c"}}},null],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":0.5,"exitCode":"x"}],"error":"Cannot use 'in' operator to search for '~effect/Exit' in x"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":3,"exitCode":true},[]],"error":"Cannot use 'in' operator to search for '~effect/Exit' in true"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":100,"exitCode":0},"x"],"error":"Cannot use 'in' operator to search for '~effect/Exit' in 0"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":{"$num":"-0"},"exitCode":["a",1]},["a",1]],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":2147483648,"exitCode":["a",1]},[]],"error":"teardownProcessTree is not a function"}
+{"fn":"teardownEffectProcessTree","args":[true,0],"error":"Cannot use 'in' operator to search for '~effect/Exit' in undefined"}
+{"fn":"teardownEffectProcessTree","args":[{"pid":0.5,"exitCode":true},"x"],"error":"Cannot use 'in' operator to search for '~effect/Exit' in true"}
+{"fn":"parseWindowsProcessSnapshotLine","args":["trailing."],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["key_name-1a😀b😀c"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["./x/**/*.json"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["a.b.cHELLO"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["é"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["a..bHello World"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":[""],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["Hello World"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["a..b"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["a:b:c"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["straßeΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["ns:key.path"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["ünïcödé"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["a..b😀"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["{name} has {count} items日本語のテキスト"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["a:b:cstraße"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["emoji 👍🏽 mix"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["a😀b😀c"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["ΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["src/a/b.ts"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":[":"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["straße"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":[".leadingline1\nline2"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["﻿bom"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["日本語のテキスト"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["ab"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["hello world"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["straße  padded  "],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["{name} has {count} items"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["étrailing."],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["abcstraße"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":[".leading"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["HELLO:"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["﻿bom  padded  "],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["😀"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["😀ΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["İstanbul"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["straßeabc"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["line1\nline2"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["hello"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["tab\tseparated"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["straße:"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["key_name-1"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["Hello Worldİstanbul"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["a😀b😀cline1\nline2"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["straßetab\tseparated"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["😀src/a/b.ts"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["trailing.a😀b😀c"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["Hello Worldemoji 👍🏽 mix"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["abc"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["a..ba..b"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":[".leadingİstanbul"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["  padded  "],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["a"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["日本語のテキストİstanbul"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["HELLO"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["hello worldtab\tseparated"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":[".leadinga.b.c"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["a.b.c"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["a:b:cİstanbul"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["./x/**/*.jsonsrc/a/b.ts"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["HELLO日本語のテキスト"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["trailing.ab"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["straßeline1\nline2"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["日本語のテキスト日本語のテキスト"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["abchello world"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["tab\tseparateda:b:c"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["ns:key.pathstraße"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":[".leadingtab\tseparated"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["{name} has {count} items./x/**/*.json"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["{name} has {count} itemshello world"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["line1\nline2日本語のテキスト"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["src/a/b.ts  padded  "],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["  padded  key_name-1"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["ΣΊΣΥΦΟΣİstanbul"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":[":line1\nline2"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["atab\tseparated"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["ns:key.path{name} has {count} items"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["aa"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["src/a/b.tsİstanbul"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["a.b.c﻿bom"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["HELLO😀"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["ns:key.path./x/**/*.json"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["Hello Worldstraße"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["key_name-1HELLO"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["ünïcödéHello World"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["ΣΊΣΥΦΟΣa"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["ns:key.pathab"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["tab\tseparatedΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["日本語のテキストa:b:c"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["hellosrc/a/b.ts"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["Hello Worldhello"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["./x/**/*.jsona.b.c"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["İstanbula:b:c"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["HELLOline1\nline2"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["a.b.cé"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["tab\tseparatedabc"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["ünïcödé.leading"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":[":./x/**/*.json"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["line1\nline2./x/**/*.json"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["tab\tseparated  padded  "],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["a.b.ca:b:c"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["ns:key.patha..b"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["abcns:key.path"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["ΣΊΣΥΦΟΣΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["abtrailing."],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["{name} has {count} items{name} has {count} items"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["abkey_name-1"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["straßeHELLO"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["a:b:ca.b.c"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["😀日本語のテキスト"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["tab\tseparatedhello"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["éns:key.path"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["日本語のテキストsrc/a/b.ts"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["a..bhello"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["Hello Worldsrc/a/b.ts"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["a.b.c./x/**/*.json"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["{name} has {count} itemskey_name-1"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["  padded  emoji 👍🏽 mix"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["ünïcödéa😀b😀c"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["trailing.é"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["ΣΊΣΥΦΟΣünïcödé"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["abcHELLO"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["tab\tseparatedé"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["ünïcödétrailing."],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["a.leading"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["key_name-1line1\nline2"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["src/a/b.tsline1\nline2"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["a.b.cHello World"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["atrailing."],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["{name} has {count} items:"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["tab\tseparateda"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":[":a😀b😀c"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["İstanbulkey_name-1"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["src/a/b.tsa:b:c"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["a😀"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["a.b.c  padded  "],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["HELLOhello"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["abc﻿bom"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["aba..b"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["Hello Worlda:b:c"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["  padded  a😀b😀c"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["src/a/b.ts{name} has {count} items"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["trailing.:"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["trailing.tab\tseparated"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["emoji 👍🏽 mixHELLO"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["  padded  trailing."],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["ΣΊΣΥΦΟΣhello world"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["İstanbulabc"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["src/a/b.tsa😀b😀c"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["{name} has {count} itemssrc/a/b.ts"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["ünïcödéemoji 👍🏽 mix"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["a.b.csrc/a/b.ts"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["helloΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["İstanbultrailing."],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["tab\tseparated日本語のテキスト"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["a:b:cΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["ünïcödé:"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["line1\nline2hello"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["﻿bom.leading"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["key_name-1hello"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["a.b.ca"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["aabc"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["a..b  padded  "],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["{name} has {count} itemsa.b.c"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["{name} has {count} itemsΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["trailing.a..b"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["{name} has {count} itemsabc"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["日本語のテキストHello World"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["ab  padded  "],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["key_name-1key_name-1"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":[":abc"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["日本語のテキストünïcödé"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["ns:key.path日本語のテキスト"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["line1\nline2HELLO"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["trailing.trailing."],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["😀a😀b😀c"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["HELLOtab\tseparated"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["éab"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["HELLO.leading"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["line1\nline2trailing."],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["abab"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["İstanbulünïcödé"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["HELLOstraße"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["abΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["key_name-1hello world"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["ünïcödéΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["a😀b😀cHELLO"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["İstanbul😀"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["key_name-1日本語のテキスト"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["straßeab"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["tab\tseparated.leading"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["hellohello world"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["ünïcödé./x/**/*.json"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["a:b:ca..b"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["ünïcödé  padded  "],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":[":tab\tseparated"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["éünïcödé"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["ΣΊΣΥΦΟΣa..b"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["straßea"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["héllo wörld"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["👍🏽 thumbs"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["日本語"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["ılık ırmak"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["👨‍👩‍👧 family"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["a b"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["a😀b"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["a²b x½ y①"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["aⅠb Ⅻ"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["a𐐀b 𝐀bc"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["कि ٣٤"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["Iı İi"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["K K k"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["ſ s S"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["x‍y 👨‍👩‍👧"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["a b c　d"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["١٢٣ ٤٥"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["𝟘𝟙 ²³"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["snake_case foo-bar o'neil"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["ǅungla Ǆ"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["one\r\ntwo threefour"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["café café"],"ok":null}
+{"fn":"parseWindowsProcessSnapshotLine","args":["ΣΑΣ σας ς"],"ok":null}
+{"fn":"captureWindowsProcessChildrenMap","args":[],"ok":null}

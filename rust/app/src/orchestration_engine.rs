@@ -6,7 +6,7 @@
 // orchestration_events, receipted and projected in one transaction.
 // Without the flag every command keeps relaying to the original server.
 
-use rusqlite::{params, Connection};
+use rusqlite::{params, Connection, OptionalExtension};
 use serde_json::{json, Map, Value};
 use std::path::PathBuf;
 
@@ -98,6 +98,11 @@ pub fn handle(_tag: &str, payload: &Value) -> Result<Value, WsErr> {
         "space.reorder" => space_reorder(command),
         "space.delete" => space_delete(command),
         "space.projects.assign" => space_projects_assign(command),
+        "thread.message.edit-and-resend" => message_edit_resend(command),
+        "thread.session.stop" => session_stop(command),
+        "thread.session.set" => session_set(command),
+        "thread.goal.continue" => goal_continue(command),
+        "thread.turn.resume" => turn_resume(command),
         other => Err(err(format!(
             "orchestration.dispatchCommand {other} is not ported yet (native engine slice)"
         ))),
@@ -2551,5 +2556,572 @@ fn space_projects_assign(command: &Map<String, Value>) -> Result<Value, WsErr> {
         )
         .map_err(|e| err(e.to_string()))?;
     }
+    Ok(json!({ "sequence": seq }))
+}
+
+// ---- edit-and-resend / session.* / goal.continue / turn.resume ----
+
+fn require_thread_not_archived(
+    conn: &Connection,
+    thread_id: &str,
+    command_type: &str,
+) -> Result<(), WsErr> {
+    let exists = conn
+        .query_row(
+            "SELECT 1 FROM projection_threads WHERE thread_id = ?1",
+            params![thread_id],
+            |r| r.get::<_, i64>(0),
+        )
+        .optional()
+        .map_err(|e| err(e.to_string()))?
+        .is_some();
+    if exists {
+        Ok(())
+    } else {
+        Err(err(format!(
+            "Thread '{thread_id}' does not exist for command '{command_type}'."
+        )))
+    }
+}
+
+fn sidechat_expired(conn: &Connection, thread_id: &str) -> bool {
+    conn.query_row(
+        "SELECT sidechat_expired_at IS NOT NULL FROM projection_threads WHERE thread_id = ?1",
+        params![thread_id],
+        |r| r.get::<_, bool>(0),
+    )
+    .unwrap_or(false)
+}
+
+fn require_sidechat_live(conn: &Connection, thread_id: &str) -> Result<(), WsErr> {
+    if sidechat_expired(conn, thread_id) {
+        return Err(err(
+            "This side chat expired after a period of inactivity. Start a new side chat.",
+        ));
+    }
+    Ok(())
+}
+
+fn auto_runtime_issue(runtime_mode: &str, model_sel: &Value) -> Option<String> {
+    if runtime_mode != "auto" {
+        return None;
+    }
+    let provider = model_sel
+        .get("provider")
+        .and_then(Value::as_str)
+        .unwrap_or("");
+    let supported = provider == "codex" || provider == "claudeAgent";
+    if !supported {
+        return Some(format!(
+            "Provider \"{provider}\" does not support Auto runtime mode. Auto is available only for Codex and Claude Code."
+        ));
+    }
+    if provider == "claudeAgent"
+        && model_sel.get("supportsAutoMode").and_then(Value::as_bool) != Some(true)
+    {
+        let model = model_sel.get("model").and_then(Value::as_str).unwrap_or("");
+        return Some(
+            if model_sel.get("supportsAutoMode").and_then(Value::as_bool) == Some(false) {
+                format!("Claude model \"{model}\" does not support Auto mode.")
+            } else {
+                format!(
+                    "Claude model \"{model}\" has not been verified to support Auto mode."
+                )
+            },
+        );
+    }
+    None
+}
+
+fn thread_model_selection(conn: &Connection, thread_id: &str) -> Value {
+    conn.query_row(
+        "SELECT model_selection_json FROM projection_threads WHERE thread_id = ?1",
+        params![thread_id],
+        |r| r.get::<_, Option<String>>(0),
+    )
+    .ok()
+    .flatten()
+    .and_then(|j| serde_json::from_str(&j).ok())
+    .unwrap_or(Value::Null)
+}
+
+fn session_row(conn: &Connection, thread_id: &str) -> Option<(String, Option<String>, Option<String>)> {
+    conn.query_row(
+        "SELECT status, active_turn_id, provider_name FROM projection_thread_sessions \
+         WHERE thread_id = ?1",
+        params![thread_id],
+        |r| Ok((r.get(0)?, r.get(1)?, r.get(2)?)),
+    )
+    .ok()
+}
+
+fn message_edit_resend(command: &Map<String, Value>) -> Result<Value, WsErr> {
+    let command_id = s(command, "commandId").ok_or_else(|| err("missing commandId"))?;
+    let thread_id = s(command, "threadId").ok_or_else(|| err("missing threadId"))?;
+    let message_id = s(command, "messageId").ok_or_else(|| err("missing messageId"))?;
+    let text = s(command, "text").ok_or_else(|| err("missing text"))?;
+    let created_at = s(command, "createdAt").ok_or_else(|| err("missing createdAt"))?;
+    let conn = open_state_rw()?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| err(e.to_string()))?;
+    require_thread(&conn, &thread_id)?;
+    require_sidechat_live(&conn, &thread_id)?;
+    if thread_has_revert_in_progress(&conn, &thread_id)? {
+        return Err(err(format!(
+            "Thread '{thread_id}' already has a checkpoint revert in progress."
+        )));
+    }
+    let runtime_mode = s(command, "runtimeMode").unwrap_or_else(|| "full-access".into());
+    let model_sel = command
+        .get("modelSelection")
+        .cloned()
+        .filter(|v| !v.is_null())
+        .unwrap_or_else(|| thread_model_selection(&conn, &thread_id));
+    if let Some(issue) = auto_runtime_issue(&runtime_mode, &model_sel) {
+        return Err(err(issue));
+    }
+    let mut st = conn
+        .prepare(
+            "SELECT message_id, role, turn_id, source, async_user_input_json \
+             FROM projection_thread_messages WHERE thread_id = ?1 \
+             ORDER BY created_at, message_id",
+        )
+        .map_err(|e| err(e.to_string()))?;
+    let messages: Vec<(String, String, Option<String>, String, Option<String>)> = st
+        .query_map(params![thread_id], |r| {
+            Ok((r.get(0)?, r.get(1)?, r.get(2)?, r.get(3)?, r.get(4)?))
+        })
+        .map_err(|e| err(e.to_string()))?
+        .collect::<Result<_, _>>()
+        .map_err(|e| err(e.to_string()))?;
+    let session = session_row(&conn, &thread_id);
+    let active_turn_id: Option<String> = session
+        .as_ref()
+        .filter(|(status, _, _)| status == "running")
+        .and_then(|(_, t, _)| t.clone());
+
+    // resolveTailUserMessageEditTarget
+    let idx = messages.iter().position(|(id, ..)| id == &message_id);
+    let reject = |reason: &str| -> WsErr {
+        err(format!(
+            "Only the latest rollbackable user message can be edited and resent ({reason})."
+        ))
+    };
+    let i = match idx {
+        None => return Err(reject("missing-message")),
+        Some(i) => i,
+    };
+    let (_, role, _, source, _) = &messages[i];
+    if role != "user" {
+        return Err(reject("not-user-message"));
+    }
+    if source != "native" {
+        return Err(reject("non-native-message"));
+    }
+    let answered = messages.iter().any(|(_, _, _, _, aui)| {
+        aui.as_deref()
+            .and_then(|j| serde_json::from_str::<Value>(j).ok())
+            .and_then(|v| {
+                v.get("response")
+                    .and_then(|r| r.get("messageId"))
+                    .and_then(Value::as_str)
+                    .map(String::from)
+            })
+            .as_deref()
+            == Some(message_id.as_str())
+    });
+    if answered {
+        return Err(reject("structured-answer"));
+    }
+    let latest_native = messages.iter().rposition(|(_, role, _, src, _)| {
+        role == "user" && (src == "native" || src.is_empty())
+    });
+    if latest_native != Some(i) {
+        return Err(reject("not-latest-native-user-message"));
+    }
+    let mut removed_turns: Vec<String> = Vec::new();
+    for (_, _, tid, _, _) in &messages[i..] {
+        if let Some(t) = tid {
+            if !removed_turns.contains(t) {
+                removed_turns.push(t.clone());
+            }
+        }
+    }
+    if removed_turns.len() > 1 {
+        return Err(reject("spans-multiple-turns"));
+    }
+    let rollback_count = removed_turns.len() as i64;
+    if removed_turns.is_empty() && active_turn_id.is_none() {
+        return Err(reject("missing-turn-metadata"));
+    }
+    let removed: Vec<String> = if removed_turns.is_empty() {
+        Vec::new()
+    } else {
+        removed_turns
+    };
+
+    let mut payload = Map::new();
+    payload.insert("threadId".into(), json!(thread_id));
+    payload.insert("messageId".into(), json!(message_id));
+    payload.insert("text".into(), json!(text));
+    payload.insert("rollbackTurnCount".into(), json!(rollback_count));
+    payload.insert("removedTurnIds".into(), json!(removed));
+    for k in ["modelSelection", "providerOptions", "assistantDeliveryMode"] {
+        if let Some(v) = command.get(k) {
+            payload.insert(k.to_string(), v.clone());
+        }
+    }
+    // computerActivationMetadata passthrough fields
+    for k in ["enableComputerControl", "computerControlMode", "computerControlGeneration"] {
+        if let Some(v) = command.get(k) {
+            payload.insert(k.to_string(), v.clone());
+        }
+    }
+    payload.insert(
+        "runtimeMode".into(),
+        command
+            .get("runtimeMode")
+            .cloned()
+            .unwrap_or(Value::Null),
+    );
+    payload.insert(
+        "interactionMode".into(),
+        command
+            .get("interactionMode")
+            .cloned()
+            .unwrap_or(Value::Null),
+    );
+    payload.insert("createdAt".into(), json!(created_at));
+    let mut requested = out_event(
+        "thread.message-edit-resend-requested",
+        &thread_id,
+        &created_at,
+        Value::Object(payload),
+    );
+    let session_status = session.as_ref().map(|(st, _, _)| st.as_str()).unwrap_or("");
+    let mut events: Vec<OutEvent> = Vec::new();
+    if session_status == "starting" || session_status == "running" {
+        events.push(requested);
+    } else {
+        let provider = session
+            .as_ref()
+            .and_then(|(_, _, p)| p.clone())
+            .or_else(|| {
+                model_sel
+                    .get("provider")
+                    .and_then(Value::as_str)
+                    .map(String::from)
+            });
+        let starting = out_event(
+            "thread.session-set",
+            &thread_id,
+            &created_at,
+            json!({
+                "threadId": thread_id,
+                "session": {
+                    "threadId": thread_id,
+                    "status": "starting",
+                    "providerName": provider,
+                    "runtimeMode": command.get("runtimeMode").cloned().unwrap_or(Value::Null),
+                    "activeTurnId": null,
+                    "lastError": null,
+                    "updatedAt": created_at,
+                }
+            }),
+        );
+        requested.causation_event_id = Some(starting.event_id.clone());
+        events.push(starting.clone_shallow());
+        events.push(requested);
+    }
+    let seq = commit_events(&conn, &events, &command_id)?;
+    // Session projection when we wrote the starting event.
+    if events.len() == 2 {
+        let provider = events[0]
+            .payload
+            .get("session")
+            .and_then(|s| s.get("providerName"))
+            .cloned()
+            .unwrap_or(Value::Null);
+        conn.execute(
+            "INSERT OR REPLACE INTO projection_thread_sessions \
+             (thread_id, status, provider_name, provider_session_id, provider_thread_id, \
+              active_turn_id, last_error, updated_at, runtime_mode) \
+             VALUES (?1, 'starting', ?2, NULL, NULL, NULL, NULL, ?3, ?4)",
+            params![
+                thread_id,
+                if provider.is_null() {
+                    None
+                } else {
+                    provider.as_str().map(String::from)
+                },
+                created_at,
+                s(command, "runtimeMode").unwrap_or_else(|| "full-access".into())
+            ],
+        )
+        .map_err(|e| err(e.to_string()))?;
+    }
+    Ok(json!({ "sequence": seq }))
+}
+
+fn session_stop(command: &Map<String, Value>) -> Result<Value, WsErr> {
+    let command_id = s(command, "commandId").ok_or_else(|| err("missing commandId"))?;
+    let thread_id = s(command, "threadId").ok_or_else(|| err("missing threadId"))?;
+    let created_at = s(command, "createdAt").ok_or_else(|| err("missing createdAt"))?;
+    let conn = open_state_rw()?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| err(e.to_string()))?;
+    let thread = require_thread(&conn, &thread_id)?;
+    let stop = out_event(
+        "thread.session-stop-requested",
+        &thread_id,
+        &created_at,
+        json!({"threadId": thread_id, "createdAt": created_at}),
+    );
+    let mut events: Vec<OutEvent> = Vec::new();
+    if thread.claude_cache_review.is_some() {
+        let mut cache = out_event(
+            "thread.claude-cache-set",
+            &thread_id,
+            &created_at,
+            json!({"threadId": thread_id, "review": null, "updatedAt": created_at}),
+        );
+        cache.causation_event_id = None;
+        events.push(cache);
+    }
+    let mut stop_ev = stop;
+    if let Some(first) = events.last() {
+        stop_ev.causation_event_id = Some(first.event_id.clone());
+    }
+    events.push(stop_ev);
+    let had_review = events.len() == 2;
+    let seq = commit_events(&conn, &events, &command_id)?;
+    if had_review {
+        update_projection(
+            &conn,
+            &thread_id,
+            &[("claude_cache_review_json", Value::Null), ("updated_at", json!(created_at))],
+        )?;
+    }
+    Ok(json!({ "sequence": seq }))
+}
+
+fn session_set(command: &Map<String, Value>) -> Result<Value, WsErr> {
+    let command_id = s(command, "commandId").ok_or_else(|| err("missing commandId"))?;
+    let thread_id = s(command, "threadId").ok_or_else(|| err("missing threadId"))?;
+    let created_at = s(command, "createdAt").ok_or_else(|| err("missing createdAt"))?;
+    let conn = open_state_rw()?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| err(e.to_string()))?;
+    require_thread(&conn, &thread_id)?;
+    if command.get("expectedSessionStatus").is_some()
+        || command.get("expectedSessionUpdatedAt").is_some()
+    {
+        let (cur_status, cur_updated): (Option<String>, Option<String>) = conn
+            .query_row(
+                "SELECT status, updated_at FROM projection_thread_sessions WHERE thread_id = ?1",
+                params![thread_id],
+                |r| Ok((r.get(0)?, r.get(1)?)),
+            )
+            .unwrap_or((None, None));
+        let changed = (command.get("expectedSessionStatus").is_some()
+            && command.get("expectedSessionStatus").and_then(Value::as_str)
+                != cur_status.as_deref())
+            || (command.get("expectedSessionUpdatedAt").is_some()
+                && command.get("expectedSessionUpdatedAt").and_then(Value::as_str)
+                    != cur_updated.as_deref());
+        if changed {
+            return Err(err(format!(
+                "Thread '{thread_id}' session changed before the conditional update."
+            )));
+        }
+    }
+    let session = command
+        .get("session")
+        .cloned()
+        .unwrap_or(Value::Null);
+    let mut payload = Map::new();
+    payload.insert("threadId".into(), json!(thread_id));
+    payload.insert("session".into(), session.clone());
+    if session.get("status").and_then(Value::as_str) == Some("starting") {
+        if let Some(v) = command.get("pendingResumeMessageId") {
+            payload.insert("pendingResumeMessageId".into(), v.clone());
+        }
+    }
+    let events = vec![out_event(
+        "thread.session-set",
+        &thread_id,
+        &created_at,
+        Value::Object(payload),
+    )];
+    let seq = commit_events(&conn, &events, &command_id)?;
+    // Projection: upsert the session row.
+    let g = |k: &str| session.get(k).cloned().unwrap_or(Value::Null);
+    conn.execute(
+        "INSERT INTO projection_thread_sessions \
+         (thread_id, status, provider_name, provider_session_id, provider_thread_id, \
+          active_turn_id, last_error, updated_at, runtime_mode, provider_instance_id) \
+         VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10) \
+         ON CONFLICT(thread_id) DO UPDATE SET \
+          status=excluded.status, provider_name=excluded.provider_name, \
+          provider_session_id=excluded.provider_session_id, \
+          provider_thread_id=excluded.provider_thread_id, \
+          active_turn_id=excluded.active_turn_id, last_error=excluded.last_error, \
+          updated_at=excluded.updated_at, runtime_mode=excluded.runtime_mode, \
+          provider_instance_id=excluded.provider_instance_id",
+        params![
+            thread_id,
+            json_to_sql(&g("status")),
+            json_to_sql(&g("providerName")),
+            json_to_sql(&g("providerSessionId")),
+            json_to_sql(&g("providerThreadId")),
+            json_to_sql(&g("activeTurnId")),
+            json_to_sql(&g("lastError")),
+            json_to_sql(&g("updatedAt")),
+            json_to_sql(&g("runtimeMode")),
+            json_to_sql(&g("providerInstanceId")),
+        ],
+    )
+    .map_err(|e| err(format!("session projection: {e}")))?;
+    Ok(json!({ "sequence": seq }))
+}
+
+fn goal_continue(command: &Map<String, Value>) -> Result<Value, WsErr> {
+    let command_id = s(command, "commandId").ok_or_else(|| err("missing commandId"))?;
+    let thread_id = s(command, "threadId").ok_or_else(|| err("missing threadId"))?;
+    let created_at = s(command, "createdAt").ok_or_else(|| err("missing createdAt"))?;
+    let conn = open_state_rw()?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| err(e.to_string()))?;
+    require_thread(&conn, &thread_id)?;
+    require_sidechat_live(&conn, &thread_id)?;
+    let mut payload = Map::new();
+    payload.insert("threadId".into(), json!(thread_id));
+    payload.insert(
+        "goalStartedAt".into(),
+        command.get("goalStartedAt").cloned().unwrap_or(Value::Null),
+    );
+    payload.insert(
+        "trigger".into(),
+        command.get("trigger").cloned().unwrap_or(Value::Null),
+    );
+    if let Some(v) = command.get("sourceTurnId") {
+        payload.insert("sourceTurnId".into(), v.clone());
+    }
+    payload.insert("createdAt".into(), json!(created_at));
+    let events = vec![out_event(
+        "thread.goal-continuation-requested",
+        &thread_id,
+        &created_at,
+        Value::Object(payload),
+    )];
+    let seq = commit_events(&conn, &events, &command_id)?;
+    Ok(json!({ "sequence": seq }))
+}
+
+fn turn_resume(command: &Map<String, Value>) -> Result<Value, WsErr> {
+    let command_id = s(command, "commandId").ok_or_else(|| err("missing commandId"))?;
+    let thread_id = s(command, "threadId").ok_or_else(|| err("missing threadId"))?;
+    let created_at = s(command, "createdAt").ok_or_else(|| err("missing createdAt"))?;
+    let conn = open_state_rw()?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| err(e.to_string()))?;
+    require_thread_not_archived(&conn, &thread_id, "thread.turn.resume")?;
+    require_sidechat_live(&conn, &thread_id)?;
+
+    // Latest turn (by requested_at desc) for precondition + sourceTurnId.
+    let latest_turn: Option<(String, String, String, Option<String>, Option<String>)> = conn
+        .query_row(
+            "SELECT turn_id, state, requested_at, started_at, completed_at \
+             FROM projection_turns WHERE thread_id = ?1 \
+             ORDER BY requested_at DESC LIMIT 1",
+            params![thread_id],
+            |r| Ok((r.get(0)?, r.get(1)?, r.get(2)?, r.get(3)?, r.get(4)?)),
+        )
+        .ok();
+    if let Some(pre) = command.get("resumePrecondition") {
+        let recorded_turn = pre.get("recordedTurnId").and_then(Value::as_str);
+        let recorded_at = pre.get("recordedAt").and_then(Value::as_str).unwrap_or("");
+        let violation: Option<&str> = if thread_has_in_flight(&conn, &thread_id)? {
+            Some("turn-in-flight")
+        } else if let Some((tid, state, req, started, completed)) = &latest_turn {
+            if state == "completed"
+                && (Some(tid.as_str()) == recorded_turn
+                    || completed.is_none()
+                    || completed.as_deref().unwrap_or("") >= recorded_at)
+            {
+                Some("turn-completed")
+            } else if state != "completed"
+                && Some(tid.as_str()) != recorded_turn
+                && (req.as_str() >= recorded_at
+                    || (recorded_turn.is_some()
+                        && started.as_deref().unwrap_or("") >= recorded_at))
+            {
+                Some("turn-replaced")
+            } else {
+                None
+            }
+        } else {
+            None
+        };
+        if let Some(v) = violation {
+            return Err(err(format!(
+                "Thread '{thread_id}' resume precondition failed: {v}."
+            )));
+        }
+    }
+    let refusal = if thread_has_in_flight(&conn, &thread_id)? {
+        Some(format!("Thread '{thread_id}' already has a turn in flight."))
+    } else if thread_has_revert_in_progress(&conn, &thread_id)? {
+        Some(format!(
+            "Thread '{thread_id}' already has a checkpoint revert in progress."
+        ))
+    } else {
+        let (approvals, inputs, recovery, creation_source): (i64, i64, Option<String>, Option<String>) =
+            conn.query_row(
+                "SELECT pending_approval_count, pending_user_input_count, \
+                        usage_limit_recovery_json, creation_source \
+                 FROM projection_threads WHERE thread_id = ?1",
+                params![thread_id],
+                |r| Ok((r.get(0)?, r.get(1)?, r.get(2)?, r.get(3)?)),
+            )
+            .map_err(|e| err(e.to_string()))?;
+        if approvals > 0 || inputs > 0 {
+            Some(format!("Thread '{thread_id}' is waiting for an answer."))
+        } else if recovery.is_some() && recovery.as_deref() != Some("null") {
+            Some(format!(
+                "Thread '{thread_id}' resumes on its own after the usage limit."
+            ))
+        } else if creation_source.as_deref() == Some("provider_native")
+            || thread_id.starts_with("subagent:")
+        {
+            Some(format!("Subagent '{thread_id}' cannot be resumed."))
+        } else {
+            None
+        }
+    };
+    if let Some(r) = refusal {
+        return Err(err(r));
+    }
+    let mut payload = Map::new();
+    payload.insert("threadId".into(), json!(thread_id));
+    payload.insert("goalStartedAt".into(), Value::Null);
+    payload.insert("trigger".into(), json!("manual-resume"));
+    if let Some((tid, ..)) = &latest_turn {
+        payload.insert("sourceTurnId".into(), json!(tid));
+    }
+    if let Some(v) = command.get("continuationPrompt") {
+        payload.insert("resumePrompt".into(), v.clone());
+    }
+    if let Some(v) = command.get("computerControlGeneration") {
+        payload.insert("resumeComputerControlGeneration".into(), v.clone());
+    }
+    payload.insert("createdAt".into(), json!(created_at));
+    let events = vec![out_event(
+        "thread.goal-continuation-requested",
+        &thread_id,
+        &created_at,
+        Value::Object(payload),
+    )];
+    let seq = commit_events(&conn, &events, &command_id)?;
     Ok(json!({ "sequence": seq }))
 }

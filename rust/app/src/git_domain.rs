@@ -571,7 +571,7 @@ fn read_file_at_rev(cwd: &str, payload: &Value) -> Result<Value, WsErr> {
     }))
 }
 
-fn list_branches(cwd: &str) -> Result<Value, WsErr> {
+pub(crate) fn list_branches(cwd: &str) -> Result<Value, WsErr> {
     let is_repo = ok(cwd, &["rev-parse", "--is-inside-work-tree"]);
     if !is_repo {
         return Ok(json!({"branches": [], "isRepo": false, "hasOriginRemote": false}));
@@ -854,7 +854,7 @@ fn init(cwd: &str) -> Result<Option<Value>, WsErr> {
     Ok(None)
 }
 
-fn worktrees_dir() -> String {
+pub(crate) fn worktrees_dir() -> String {
     let state = crate::todo::state_dir();
     // state_dir() is `<home>/userdata`; worktrees sit at `<home>/worktrees`.
     match state.strip_suffix("/userdata") {

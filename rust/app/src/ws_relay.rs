@@ -138,6 +138,7 @@ fn intercept_todo(
         && tag != "shell.openInEditor"
         && !crate::git_domain::handles(tag)
         && !crate::git_pr::handles(tag)
+        && !crate::git_handoff::handles(tag)
         && tag != "filesystem.browse"
         && tag != "server.listWorktrees"
         && tag != "projects.listDirectories"
@@ -746,9 +747,14 @@ fn intercept_todo(
         crate::projects_fs::list_directories(&payload)
             .map(Some)
             .map_err(error_json)
-    } else if crate::git_domain::handles(tag) || crate::git_pr::handles(tag) {
+    } else if crate::git_domain::handles(tag)
+        || crate::git_pr::handles(tag)
+        || crate::git_handoff::handles(tag)
+    {
         let result = if crate::git_pr::handles(tag) {
             crate::git_pr::handle(tag, &payload)
+        } else if crate::git_handoff::handles(tag) {
+            crate::git_handoff::handle(&payload).map(Some)
         } else {
             crate::git_domain::handle(tag, &payload)
         };

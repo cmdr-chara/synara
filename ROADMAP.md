@@ -71,9 +71,9 @@ Full generated plan with every unit, wave, readiness score and risk: [rust/plan.
 | -------------------- | -------------------------------------------------------------- |
 | 0 — Analysis         | done — 881 units planned                                       |
 | 1 — Decisions        | done — ADR-001 clean-room, ADR-002 T3 cases-only rule          |
-| 2 — Record           | in progress — cases recorded per bridged unit                  |
-| 3 — Front door       | pending                                                        |
-| 4 — Port (789 units) | in progress — 399 ported+gate-green; ~45% units unbridgeable   |
+| 2 — Record           | done — app record 179/179 + cases per bridged unit             |
+| 3 — Front door       | done — `rust/app` axum (179/179 replay, 100% fallback) + `rust/shell` gpui-kit (gpui-fast) webview shell |
+| 4 — Port (789 units) | in progress — 402 ported+gate-green; ~45% units unbridgeable   |
 | 5 — Lift             | pending                                                        |
 
 ## Provenance (T3Code audit)

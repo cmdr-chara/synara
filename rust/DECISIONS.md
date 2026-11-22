@@ -42,3 +42,9 @@ Status: accepted (2026-11-22)
 Context: Some exports emit values that differ on every run — pids (`processruntime-rs`, `serverruntimestate-rs`), timestamps, secrets. The diff comparator is exact, so a real volatile value can never match its recording.
 Decision: The recorded corpus keeps volatile fields frozen to constants (`pid` = 424242, `startedAt` = a fixed instant, secret = `volatile-secret-...`). The port returns `env(VAR).unwrap_or(real_value)` for each — `SYNARA_SPAWN_PID` (processruntime), `SYNARA_STATE_PID`/`SYNARA_STATE_NOW_MS`/`SYNARA_STATE_SECRET` (serverruntimestate). `diff`/`gate` run with the env vars set to the frozen constants; production wiring leaves them unset and gets real values.
 Consequences: Behavior is verified byte-exact while the port stays honest about producing real values at runtime.
+
+## ADR-005: Desktop shell is gpui-kit `gpui-fast` + `gpui-webview` (wry) embedding the web UI
+
+Status: accepted (2026-11-22)
+Context: Phase 3 needs a native desktop front door while the 87 React UI units are rebuilt in gpui-kit. The user requires the `gpui-fast` backend.
+Decision: `rust/shell` (bin `synara-shell`) is a gpui-kit 0.10 app with `gpui-fast` on both `gpui-kit` and `gpui-webview` (a feature mismatch fails to compile). The window hosts a single full-surface wry (`lb-wry` 0.53) WebView pointed at `SYNARA_URL` (default `http://127.0.0.1:4577`, the `rust/app` front door), plus a minimal navigation chrome (back/forward/reload/address). GPUI overlays render above the page via gpui-fast window composition on macOS/Linux; Linux builds must use `platform::linux(WindowingModes::X11)` since WebKitGTK cannot embed in Wayland. This is scaffolding — each UI unit replaced natively removes webview area, not adds to it.

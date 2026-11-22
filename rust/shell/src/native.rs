@@ -11,11 +11,12 @@ use gpui_kit::component::{
     input::{Editor, EditorState, Input, InputEvent, InputState},
     menu::{DropdownMenu as _, PopupMenuItem},
     scroll::ScrollableElement as _,
+    spinner::Spinner,
     text::TextView,
     theme::{Theme, ThemeMode},
     v_flex,
     Icon,
-    ActiveTheme as _, IconName,
+    ActiveTheme as _, IconName, Sizable as _,
 };
 use gpui_kit::*;
 use gpui_kit::assets::IconName as AssetIcon;
@@ -61,6 +62,10 @@ pub struct Native {
     pending_attachments: Vec<Value>,
     composer_thread_id: Option<String>,
     uploading: bool,
+    open_threads: Vec<String>,
+    pinned_threads: Vec<String>,
+    renaming: bool,
+    rename_input: Option<Entity<InputState>>,
 }
 
 fn get<'a>(v: &'a Value, k: &str) -> &'a Value {
@@ -178,6 +183,10 @@ impl Native {
                 pending_attachments: Vec::new(),
                 composer_thread_id: None,
                 uploading: false,
+                open_threads: Vec::new(),
+                pinned_threads: Vec::new(),
+                renaming: false,
+                rename_input: None,
             };
             this.refresh(cx);
             this
@@ -251,6 +260,10 @@ impl Native {
         // Close the previous thread stream if any.
         let old = self.thread_stream_id.take();
         self.selected_thread = Some(thread_id.clone());
+        self.renaming = false;
+        if !self.open_threads.contains(&thread_id) {
+            self.open_threads.push(thread_id.clone());
+        }
         self.detail = None;
         let client = self.client.clone();
         let tid = thread_id;
@@ -334,6 +347,85 @@ impl Native {
         }
         self.selected_thread = None;
         self.detail = None;
+        self.renaming = false;
+        cx.notify();
+    }
+
+    /// Close one open tab; if it was selected, open the last remaining tab.
+    fn close_tab(&mut self, thread_id: String, cx: &mut Context<Self>) {
+        self.open_threads.retain(|t| t != &thread_id);
+        if self.selected_thread.as_deref() == Some(thread_id.as_str()) {
+            match self.open_threads.last().cloned() {
+                Some(next) => self.open_thread(next, cx),
+                None => self.new_thread(cx),
+            }
+        } else {
+            cx.notify();
+        }
+    }
+
+    fn toggle_pin(&mut self, thread_id: String, cx: &mut Context<Self>) {
+        if self.pinned_threads.contains(&thread_id) {
+            self.pinned_threads.retain(|t| t != &thread_id);
+        } else {
+            self.pinned_threads.push(thread_id);
+        }
+        cx.notify();
+    }
+
+    fn start_rename(&mut self, window: &mut Window, cx: &mut Context<Self>) {
+        let title = str_at(
+            get(self.detail.as_ref().unwrap_or(&Value::Null), "thread"),
+            "title",
+        )
+        .to_string();
+        let input = cx.new(|cx| InputState::new(window, cx).placeholder("Thread title"));
+        input.update(cx, |s, cx| {
+            s.set_value(title, window, cx);
+        });
+        self.rename_input = Some(input);
+        self.renaming = true;
+        cx.notify();
+    }
+
+    fn commit_rename(&mut self, cx: &mut Context<Self>) {
+        let Some(input) = self.rename_input.take() else {
+            return;
+        };
+        let title = input.read(cx).value().trim().to_string();
+        self.renaming = false;
+        if title.is_empty() {
+            cx.notify();
+            return;
+        }
+        let Some(tid) = self.selected_thread.clone() else {
+            cx.notify();
+            return;
+        };
+        if let Some(detail) = self.detail.as_mut() {
+            if let Some(t) = detail.get_mut("thread") {
+                t["title"] = json!(title);
+            }
+        }
+        let client = self.client.clone();
+        cx.spawn(async move |_this, cx: &mut AsyncApp| {
+            let cell = client.clone();
+            let client = cx
+                .background_executor()
+                .spawn(async move { ensure_client(&cell) })
+                .await;
+            let Some(client) = client else { return };
+            let payload = json!({
+                "type": "thread.meta.update",
+                "commandId": uuid(),
+                "threadId": tid,
+                "title": title,
+            });
+            cx.background_executor()
+                .spawn(async move { client.call("orchestration.dispatchCommand", payload) })
+                .detach();
+        })
+        .detach();
         cx.notify();
     }
 
@@ -1313,14 +1405,21 @@ impl Render for Native {
                 .cloned()
                 .collect()
         };
+        let mut chat_threads = chat_threads;
+        let pinned = &self.pinned_threads;
+        chat_threads.sort_by_key(|t| {
+            if pinned.contains(&str_at(t, "id").to_string()) { 0 } else { 1 }
+        });
         for thread in chat_threads {
             let tid = str_at(&thread, "id").to_string();
             let title = str_at(&thread, "title");
+            let is_pinned = pinned.contains(&tid);
             let preview = str_at(&thread, "latestReplyPreview");
             let selected = self.selected_thread.as_deref() == Some(tid.as_str());
+            let marker = if is_pinned { "\u{25c6}" } else { "\u{25c9}" };
             sidebar = sidebar.child(row(
                 ElementId::Name(format!("thread-{tid}").into()),
-                if title.is_empty() { "\u{25c9} (untitled)".to_string() } else { format!("\u{25c9} {title}") },
+                if title.is_empty() { format!("{marker} (untitled)") } else { format!("{marker} {title}") },
                 preview.chars().take(80).collect(),
                 selected,
                 cx,
@@ -1432,31 +1531,120 @@ impl Render for Native {
                         .child("What should we work on?"),
                 );
         }
+        // ---- open tabs strip ----
+        if !self.open_threads.is_empty() {
+            let all_threads = arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "threads");
+            let mut strip = h_flex().gap_1().items_center().flex_wrap();
+            for ot in self.open_threads.clone() {
+                let active = self.selected_thread.as_deref() == Some(ot.as_str());
+                let ot_title = all_threads
+                    .iter()
+                    .find(|t| str_at(t, "id") == ot)
+                    .map(|t| str_at(t, "title").to_string())
+                    .filter(|t| !t.is_empty())
+                    .unwrap_or_else(|| ot.chars().take(8).collect());
+                let sel = ot.clone();
+                let close = ot.clone();
+                let mut tab = Button::new(ElementId::Name(format!("tab-{ot}").into()))
+                    .ghost()
+                    .compact()
+                    .icon(IconName::Bot)
+                    .label(ot_title);
+                if active {
+                    tab = tab.outline();
+                }
+                strip = strip
+                    .child(tab.on_click(cx.listener(move |this, _ev, _w, cx| {
+                        if this.selected_thread.as_deref() != Some(sel.as_str()) {
+                            this.open_thread(sel.clone(), cx);
+                        }
+                    })))
+                    .child(
+                        Button::new(ElementId::Name(format!("tab-close-{close}").into()))
+                            .ghost()
+                            .compact()
+                            .label("\u{00d7}")
+                            .on_click(cx.listener(move |this, _ev, _w, cx| {
+                                this.close_tab(close.clone(), cx);
+                            })),
+                    );
+            }
+            pane = pane.child(strip);
+        }
         let thread_v = get(self.detail.as_ref().unwrap_or(&Value::Null), "thread");
         let session_status = str_at(get(thread_v, "session"), "status").to_string();
         let turn_state = str_at(get(thread_v, "latestTurn"), "state").to_string();
         let title = str_at(thread_v, "title").to_string();
         if !title.is_empty() {
-            let mut header = h_flex()
-                .gap_2()
-                .items_center()
-                .child(
-                    Button::new("thread-tab")
-                        .ghost()
-                        .icon(IconName::Bot)
-                        .label(title.clone()),
-                )
-                .child(
-                    Button::new("close-thread")
-                        .ghost()
-                        .compact()
-                        .label("\u{00d7}")
-                        .on_click(cx.listener(|this, _ev, _w, cx| {
-                            this.selected_thread = None;
-                            this.detail = None;
-                            cx.notify();
-                        })),
-                );
+            let tid_now = self.selected_thread.clone().unwrap_or_default();
+            let pinned = self.pinned_threads.contains(&tid_now);
+            let mut header = h_flex().gap_2().items_center();
+            if self.renaming {
+                if let Some(input) = &self.rename_input {
+                    header = header
+                        .child(div().w(px(240.)).child(Input::new(input)))
+                        .child(
+                            Button::new("rename-ok")
+                                .ghost()
+                                .compact()
+                                .label("\u{2713}")
+                                .on_click(cx.listener(|this, _ev, _w, cx| {
+                                    this.commit_rename(cx);
+                                })),
+                        )
+                        .child(
+                            Button::new("rename-cancel")
+                                .ghost()
+                                .compact()
+                                .label("\u{00d7}")
+                                .on_click(cx.listener(|this, _ev, _w, cx| {
+                                    this.renaming = false;
+                                    this.rename_input = None;
+                                    cx.notify();
+                                })),
+                        );
+                }
+            } else {
+                header = header
+                    .child(
+                        Button::new("thread-tab")
+                            .ghost()
+                            .icon(IconName::Bot)
+                            .label(title.clone()),
+                    )
+                    .child(
+                        Button::new("thread-menu")
+                            .ghost()
+                            .compact()
+                            .label("\u{22ef}")
+                            .dropdown_menu({
+                                let this = cx.entity();
+                                let tid = tid_now.clone();
+                                let pin_label = if pinned { "Unpin" } else { "Pin" };
+                                move |mut menu, _, _| {
+                                    let t = this.clone();
+                                    let t_pin = this.clone();
+                                    let t2 = tid.clone();
+                                    menu = menu
+                                        .item(PopupMenuItem::new("Rename").on_click(
+                                            move |_, window, cx| {
+                                                t.update(cx, |this, cx| {
+                                                    this.start_rename(window, cx);
+                                                });
+                                            },
+                                        ))
+                                        .item(PopupMenuItem::new(pin_label).on_click(
+                                            move |_, _, cx| {
+                                                t_pin.update(cx, |this, cx| {
+                                                    this.toggle_pin(t2.clone(), cx);
+                                                });
+                                            },
+                                        ));
+                                    menu
+                                }
+                            }),
+                    );
+            }
             if !session_status.is_empty() && session_status != "idle" {
                 header = header.child(
                     div()
@@ -1466,12 +1654,14 @@ impl Render for Native {
                 );
             }
             if turn_state == "pending" || turn_state == "running" {
-                header = header.child(
-                    div()
-                        .text_xs()
-                        .text_color(theme.warning)
-                        .child("working\u{2026}"),
-                );
+                header = header
+                    .child(Spinner::new().small())
+                    .child(
+                        div()
+                            .text_xs()
+                            .text_color(theme.warning)
+                            .child("working\u{2026}"),
+                    );
             } else if turn_state == "error" || turn_state == "interrupted" {
                 header = header.child(
                     div()

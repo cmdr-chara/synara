@@ -1,0 +1,180 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/editor/",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "editor-rs",
+  "exports": [
+    {
+      "name": "dapObject",
+      "file": "apps/server/src/editor/dapConnection.ts",
+      "line": 4,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Record<string, unknown>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "dapNumber",
+      "file": "apps/server/src/editor/dapConnection.ts",
+      "line": 6,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "fallback",
+          "ts_type": "number",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "number",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "dapString",
+      "file": "apps/server/src/editor/dapConnection.ts",
+      "line": 8,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "dapArray",
+      "file": "apps/server/src/editor/dapConnection.ts",
+      "line": 9,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Record<string, unknown>[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "ensureDebugAdapter",
+      "file": "apps/server/src/editor/debugAdapterInstaller.ts",
+      "line": 80,
+      "params": [
+        {
+          "name": "stateDir",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "signal",
+          "ts_type": "AbortSignal",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<string>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "nativeEditorUnavailableError",
+      "file": "apps/server/src/editor/nativeEditorGate.ts",
+      "line": 17,
+      "params": [
+        {
+          "name": "flavor",
+          "ts_type": "(| \"production\"\n  | \"development\"\n  | \"canary\"\n  | \"cua\"\n  | \"beta\"\n  | \"remote\") | \"unknown\"",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "WsRpcError | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "verifyEditorLanguageRuntime",
+      "file": "apps/server/src/editor/runtimeSmoke.ts",
+      "line": 8,
+      "params": [],
+      "returns": "Promise<void>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "createTypeScriptService",
+      "file": "apps/server/src/editor/typescriptService.ts",
+      "line": 19,
+      "params": [
+        {
+          "name": "workspaceRoot",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "DapConnection",
+      "file": "apps/server/src/editor/dapConnection.ts",
+      "line": 14,
+      "reason": "class: public field `onEvent`, public field `onRequest`, public field `onClose`"
+    },
+    {
+      "name": "EditorDebugService",
+      "file": "apps/server/src/editor/debugService.ts",
+      "line": 60,
+      "reason": "class: async or generator method `action`, async or generator method `dispose`"
+    },
+    {
+      "name": "EditorLanguageService",
+      "file": "apps/server/src/editor/languageService.ts",
+      "line": 23,
+      "reason": "class: async or generator method `request`"
+    }
+  ]
+}

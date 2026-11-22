@@ -1,0 +1,23 @@
+{
+  "unit": "apps/server/src/editor/",
+  "files": 15,
+  "fingerprint": "ed2230736c4ed291",
+  "coverage": {
+    "lines": 284,
+    "reached": 149,
+    "files": [
+      {
+        "file": "apps/server/src/editor/dapConnection.ts",
+        "lines": 141,
+        "reached": 17,
+        "missed": "16-30, 33-45, 47-70, 72-143"
+      },
+      {
+        "file": "apps/server/src/editor/debugAdapterInstaller.ts",
+        "lines": 143,
+        "reached": 132,
+        "missed": "18-19, 44-45, 97, 102, 105, 115, 136-138"
+      }
+    ]
+  }
+}

@@ -18,6 +18,7 @@ fn err(msg: impl Into<String>) -> WsErr {
 
 pub fn handles(tag: &str) -> bool {
     tag == "orchestration.listProjectImports"
+        || tag == "orchestration.loadProjectImportHistory"
         || (tag == "orchestration.importProject"
             && std::env::var("SYNARA_NO_UPSTREAM").is_ok())
 }
@@ -26,8 +27,120 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Value, WsErr> {
     match tag {
         "orchestration.listProjectImports" => list_project_imports(payload),
         "orchestration.importProject" => import_project(payload),
+        "orchestration.loadProjectImportHistory" => load_project_import_history(payload),
         _ => Err(err("unhandled project import tag")),
     }
+}
+
+// ── loadProjectImportHistory (projectImportRoute.ts) ──
+// Paged reads of an imported thread's older history. Pages already fetched by
+// the provider side are persisted in project_import_history.state_json.pending
+// and served verbatim; advancing past them requires a live provider session
+// reader, which this build does not run.
+fn load_project_import_history(payload: &Value) -> Result<Value, WsErr> {
+    let thread_id = payload
+        .get("threadId")
+        .and_then(Value::as_str)
+        .unwrap_or_default()
+        .to_string();
+    let copy = crate::orchestration_snapshot::open_state_copy()
+        .ok_or_else(|| err("Failed to load imported history."))?;
+    let conn = &copy.conn;
+    let alive: bool = conn
+        .query_row(
+            "SELECT COUNT(*) FROM projection_threads WHERE thread_id=?1 AND deleted_at IS NULL",
+            [&thread_id],
+            |r| r.get::<_, i64>(0),
+        )
+        .map(|n| n > 0)
+        .unwrap_or(false);
+    if !alive {
+        return Err(err("The imported conversation no longer exists."));
+    }
+    let completed: bool = conn
+        .query_row(
+            "SELECT status FROM project_import_origins WHERE thread_id=?1",
+            [&thread_id],
+            |r| r.get::<_, String>(0),
+        )
+        .map(|s| s == "completed")
+        .unwrap_or(false);
+    if !completed {
+        return Ok(json!({"nextCursor": Value::Null, "messages": []}));
+    }
+    let get_history = |revision: i64| -> Option<Value> {
+        conn.query_row(
+            "SELECT h.state_json FROM project_import_history h \
+             JOIN project_import_origins o ON o.thread_id = h.thread_id \
+             WHERE h.thread_id=?1 AND h.revision=?2",
+            rusqlite::params![thread_id, revision],
+            |r| r.get::<_, String>(0),
+        )
+        .ok()
+        .and_then(|s| serde_json::from_str::<Value>(&s).ok())
+    };
+    let cursor = payload.get("cursor").and_then(Value::as_str);
+    let Some(cursor) = cursor else {
+        let next = get_history(0)
+            .and_then(|s| s.get("cursor").and_then(|c| c.as_str()).map(String::from));
+        return Ok(json!({
+            "nextCursor": if next.is_some() { Value::from("1") } else { Value::Null },
+            "messages": [],
+        }));
+    };
+    let revision: i64 = cursor.parse().unwrap_or(-1);
+    if revision < 1 || cursor.parse::<i64>().ok() != Some(revision) || cursor != revision.to_string()
+    {
+        return Err(err("Invalid imported history cursor."));
+    }
+    let Some(state) = get_history(revision) else {
+        return Err(err("This imported history page is unavailable."));
+    };
+    if state.get("cursor").is_none_or(Value::is_null) {
+        return Err(err("This imported history page is unavailable."));
+    }
+    let pending = state.get("pending").cloned().unwrap_or(Value::Null);
+    if pending.is_null() {
+        // Upstream advances the cursor through the live provider session
+        // readers; without them older pages cannot be fetched.
+        return Err(err(
+            "The source account is unavailable. Enable it to load older messages.",
+        ));
+    }
+    // Cache the boundary for the page after this one so a later request finds
+    // its state row ready.
+    if pending
+        .get("nextCursor")
+        .and_then(Value::as_str)
+        .is_some()
+        && get_history(revision + 1).is_none()
+    {
+        let mut next = state.clone();
+        next["pending"] = Value::Null;
+        next["cursor"] = pending["nextCursor"].clone();
+        next["before"] = pending
+            .get("messages")
+            .and_then(Value::as_array)
+            .and_then(|m| m.first())
+            .and_then(|m| m.get("createdAt").cloned())
+            .or_else(|| state.get("before").cloned())
+            .unwrap_or(Value::Null);
+        next["revision"] = json!(revision + 1);
+        let _ = conn.execute(
+            "INSERT INTO project_import_history (thread_id, revision, state_json) \
+             VALUES (?1,?2,?3) ON CONFLICT(thread_id, revision) \
+             DO UPDATE SET state_json = excluded.state_json",
+            rusqlite::params![thread_id, revision + 1, next.to_string()],
+        );
+    }
+    Ok(json!({
+        "nextCursor": if pending.get("nextCursor").and_then(Value::as_str).is_some() {
+            Value::from((revision + 1).to_string())
+        } else {
+            Value::Null
+        },
+        "messages": pending.get("messages").cloned().unwrap_or(json!([])),
+    }))
 }
 
 // ── Path identity helpers (projectImportPaths.ts + threadWorkspace.ts) ──

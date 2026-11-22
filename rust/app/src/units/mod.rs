@@ -18,8 +18,155 @@ fn sent_to_original(unit: &str) -> bool {
 
 pub fn router() -> Router<Original> {
     Router::new()
-        .route("/", get(route_1).fallback(original::proxy))
-        .route("/index.html", get(route_0).fallback(original::proxy))
+        .route("/", get(route_0).fallback(original::proxy))
+        .route("/api/", get(route_1).fallback(original::proxy))
+        .route("/api/%C4%B0stanbul", get(route_2).fallback(original::proxy))
+        .route(
+            "/api/%C4%B0stanbul/clients",
+            get(route_3).fallback(original::proxy),
+        )
+        .route(
+            "/api/%C4%B0stanbul/pairing-links",
+            get(route_4).fallback(original::proxy),
+        )
+        .route(
+            "/api/%C4%B0stanbul/session",
+            get(route_5).fallback(original::proxy),
+        )
+        .route(
+            "/api/%C4%B1l%C4%B1k%20%C4%B1rmak",
+            get(route_6).fallback(original::proxy),
+        )
+        .route(
+            "/api/%C4%B1l%C4%B1k%20%C4%B1rmak/clients",
+            get(route_7).fallback(original::proxy),
+        )
+        .route(
+            "/api/%C4%B1l%C4%B1k%20%C4%B1rmak/pairing-links",
+            get(route_8).fallback(original::proxy),
+        )
+        .route(
+            "/api/%C4%B1l%C4%B1k%20%C4%B1rmak/session",
+            get(route_9).fallback(original::proxy),
+        )
+        .route(
+            "/api/%E6%97%A5%E6%9C%AC%E8%AA%9E",
+            get(route_10).fallback(original::proxy),
+        )
+        .route(
+            "/api/%E6%97%A5%E6%9C%AC%E8%AA%9E/clients",
+            get(route_11).fallback(original::proxy),
+        )
+        .route(
+            "/api/%E6%97%A5%E6%9C%AC%E8%AA%9E/pairing-links",
+            get(route_12).fallback(original::proxy),
+        )
+        .route(
+            "/api/%E6%97%A5%E6%9C%AC%E8%AA%9E/session",
+            get(route_13).fallback(original::proxy),
+        )
+        .route(
+            "/api/%F0%9F%91%8D%F0%9F%8F%BD%20thumbs",
+            get(route_14).fallback(original::proxy),
+        )
+        .route(
+            "/api/%F0%9F%91%8D%F0%9F%8F%BD%20thumbs/clients",
+            get(route_15).fallback(original::proxy),
+        )
+        .route(
+            "/api/%F0%9F%91%8D%F0%9F%8F%BD%20thumbs/pairing-links",
+            get(route_16).fallback(original::proxy),
+        )
+        .route(
+            "/api/%F0%9F%91%8D%F0%9F%8F%BD%20thumbs/session",
+            get(route_17).fallback(original::proxy),
+        )
+        .route(
+            "/api/%F0%9F%91%A8%E2%80%8D%F0%9F%91%A9%E2%80%8D%F0%9F%91%A7%20family",
+            get(route_18).fallback(original::proxy),
+        )
+        .route(
+            "/api/%F0%9F%91%A8%E2%80%8D%F0%9F%91%A9%E2%80%8D%F0%9F%91%A7%20family/clients",
+            get(route_19).fallback(original::proxy),
+        )
+        .route(
+            "/api/%F0%9F%91%A8%E2%80%8D%F0%9F%91%A9%E2%80%8D%F0%9F%91%A7%20family/pairing-links",
+            get(route_20).fallback(original::proxy),
+        )
+        .route(
+            "/api/%F0%9F%91%A8%E2%80%8D%F0%9F%91%A9%E2%80%8D%F0%9F%91%A7%20family/session",
+            get(route_21).fallback(original::proxy),
+        )
+        .route("/api//clients", get(route_22).fallback(original::proxy))
+        .route(
+            "/api//pairing-links",
+            get(route_23).fallback(original::proxy),
+        )
+        .route("/api//session", get(route_24).fallback(original::proxy))
+        .route("/api/a%C2%A0b", get(route_25).fallback(original::proxy))
+        .route(
+            "/api/a%C2%A0b/clients",
+            get(route_26).fallback(original::proxy),
+        )
+        .route(
+            "/api/a%C2%A0b/pairing-links",
+            get(route_27).fallback(original::proxy),
+        )
+        .route(
+            "/api/a%C2%A0b/session",
+            get(route_28).fallback(original::proxy),
+        )
+        .route(
+            "/api/does-not-exist",
+            get(route_29).fallback(original::proxy),
+        )
+        .route("/api/e%CC%81", get(route_30).fallback(original::proxy))
+        .route(
+            "/api/e%CC%81/clients",
+            get(route_31).fallback(original::proxy),
+        )
+        .route(
+            "/api/e%CC%81/pairing-links",
+            get(route_32).fallback(original::proxy),
+        )
+        .route(
+            "/api/e%CC%81/session",
+            get(route_33).fallback(original::proxy),
+        )
+        .route(
+            "/api/h%C3%A9llo%20w%C3%B6rld",
+            get(route_34).fallback(original::proxy),
+        )
+        .route(
+            "/api/h%C3%A9llo%20w%C3%B6rld/clients",
+            get(route_35).fallback(original::proxy),
+        )
+        .route(
+            "/api/h%C3%A9llo%20w%C3%B6rld/pairing-links",
+            get(route_36).fallback(original::proxy),
+        )
+        .route(
+            "/api/h%C3%A9llo%20w%C3%B6rld/session",
+            get(route_37).fallback(original::proxy),
+        )
+        .route("/api/stra%C3%9Fe", get(route_38).fallback(original::proxy))
+        .route(
+            "/api/stra%C3%9Fe/clients",
+            get(route_39).fallback(original::proxy),
+        )
+        .route(
+            "/api/stra%C3%9Fe/pairing-links",
+            get(route_40).fallback(original::proxy),
+        )
+        .route(
+            "/api/stra%C3%9Fe/session",
+            get(route_41).fallback(original::proxy),
+        )
+        .route("/index.html", get(route_42).fallback(original::proxy))
+        .route(
+            "/rust-anything-missing",
+            get(route_43).fallback(original::proxy),
+        )
         .fallback(original::proxy)
 }
 
@@ -27,12 +174,391 @@ async fn route_0(State(original): State<Original>, req: Request) -> Response {
     if sent_to_original("STATICASSETS") {
         return original::proxy(State(original), req).await;
     }
-    staticassets::handle("GET /index.html", HashMap::new(), req).await
+    staticassets::handle("GET /", HashMap::new(), req).await
 }
 
 async fn route_1(State(original): State<Original>, req: Request) -> Response {
     if sent_to_original("STATICASSETS") {
         return original::proxy(State(original), req).await;
     }
-    staticassets::handle("GET /", HashMap::new(), req).await
+    staticassets::handle("GET /api/", HashMap::new(), req).await
+}
+
+async fn route_2(State(original): State<Original>, req: Request) -> Response {
+    if sent_to_original("STATICASSETS") {
+        return original::proxy(State(original), req).await;
+    }
+    staticassets::handle("GET /api/%C4%B0stanbul", HashMap::new(), req).await
+}
+
+async fn route_3(State(original): State<Original>, req: Request) -> Response {
+    if sent_to_original("STATICASSETS") {
+        return original::proxy(State(original), req).await;
+    }
+    staticassets::handle("GET /api/%C4%B0stanbul/clients", HashMap::new(), req).await
+}
+
+async fn route_4(State(original): State<Original>, req: Request) -> Response {
+    if sent_to_original("STATICASSETS") {
+        return original::proxy(State(original), req).await;
+    }
+    staticassets::handle("GET /api/%C4%B0stanbul/pairing-links", HashMap::new(), req).await
+}
+
+async fn route_5(State(original): State<Original>, req: Request) -> Response {
+    if sent_to_original("STATICASSETS") {
+        return original::proxy(State(original), req).await;
+    }
+    staticassets::handle("GET /api/%C4%B0stanbul/session", HashMap::new(), req).await
+}
+
+async fn route_6(State(original): State<Original>, req: Request) -> Response {
+    if sent_to_original("STATICASSETS") {
+        return original::proxy(State(original), req).await;
+    }
+    staticassets::handle("GET /api/%C4%B1l%C4%B1k%20%C4%B1rmak", HashMap::new(), req).await
+}
+
+async fn route_7(State(original): State<Original>, req: Request) -> Response {
+    if sent_to_original("STATICASSETS") {
+        return original::proxy(State(original), req).await;
+    }
+    staticassets::handle(
+        "GET /api/%C4%B1l%C4%B1k%20%C4%B1rmak/clients",
+        HashMap::new(),
+        req,
+    )
+    .await
+}
+
+async fn route_8(State(original): State<Original>, req: Request) -> Response {
+    if sent_to_original("STATICASSETS") {
+        return original::proxy(State(original), req).await;
+    }
+    staticassets::handle(
+        "GET /api/%C4%B1l%C4%B1k%20%C4%B1rmak/pairing-links",
+        HashMap::new(),
+        req,
+    )
+    .await
+}
+
+async fn route_9(State(original): State<Original>, req: Request) -> Response {
+    if sent_to_original("STATICASSETS") {
+        return original::proxy(State(original), req).await;
+    }
+    staticassets::handle(
+        "GET /api/%C4%B1l%C4%B1k%20%C4%B1rmak/session",
+        HashMap::new(),
+        req,
+    )
+    .await
+}
+
+async fn route_10(State(original): State<Original>, req: Request) -> Response {
+    if sent_to_original("STATICASSETS") {
+        return original::proxy(State(original), req).await;
+    }
+    staticassets::handle("GET /api/%E6%97%A5%E6%9C%AC%E8%AA%9E", HashMap::new(), req).await
+}
+
+async fn route_11(State(original): State<Original>, req: Request) -> Response {
+    if sent_to_original("STATICASSETS") {
+        return original::proxy(State(original), req).await;
+    }
+    staticassets::handle(
+        "GET /api/%E6%97%A5%E6%9C%AC%E8%AA%9E/clients",
+        HashMap::new(),
+        req,
+    )
+    .await
+}
+
+async fn route_12(State(original): State<Original>, req: Request) -> Response {
+    if sent_to_original("STATICASSETS") {
+        return original::proxy(State(original), req).await;
+    }
+    staticassets::handle(
+        "GET /api/%E6%97%A5%E6%9C%AC%E8%AA%9E/pairing-links",
+        HashMap::new(),
+        req,
+    )
+    .await
+}
+
+async fn route_13(State(original): State<Original>, req: Request) -> Response {
+    if sent_to_original("STATICASSETS") {
+        return original::proxy(State(original), req).await;
+    }
+    staticassets::handle(
+        "GET /api/%E6%97%A5%E6%9C%AC%E8%AA%9E/session",
+        HashMap::new(),
+        req,
+    )
+    .await
+}
+
+async fn route_14(State(original): State<Original>, req: Request) -> Response {
+    if sent_to_original("STATICASSETS") {
+        return original::proxy(State(original), req).await;
+    }
+    staticassets::handle(
+        "GET /api/%F0%9F%91%8D%F0%9F%8F%BD%20thumbs",
+        HashMap::new(),
+        req,
+    )
+    .await
+}
+
+async fn route_15(State(original): State<Original>, req: Request) -> Response {
+    if sent_to_original("STATICASSETS") {
+        return original::proxy(State(original), req).await;
+    }
+    staticassets::handle(
+        "GET /api/%F0%9F%91%8D%F0%9F%8F%BD%20thumbs/clients",
+        HashMap::new(),
+        req,
+    )
+    .await
+}
+
+async fn route_16(State(original): State<Original>, req: Request) -> Response {
+    if sent_to_original("STATICASSETS") {
+        return original::proxy(State(original), req).await;
+    }
+    staticassets::handle(
+        "GET /api/%F0%9F%91%8D%F0%9F%8F%BD%20thumbs/pairing-links",
+        HashMap::new(),
+        req,
+    )
+    .await
+}
+
+async fn route_17(State(original): State<Original>, req: Request) -> Response {
+    if sent_to_original("STATICASSETS") {
+        return original::proxy(State(original), req).await;
+    }
+    staticassets::handle(
+        "GET /api/%F0%9F%91%8D%F0%9F%8F%BD%20thumbs/session",
+        HashMap::new(),
+        req,
+    )
+    .await
+}
+
+async fn route_18(State(original): State<Original>, req: Request) -> Response {
+    if sent_to_original("STATICASSETS") {
+        return original::proxy(State(original), req).await;
+    }
+    staticassets::handle(
+        "GET /api/%F0%9F%91%A8%E2%80%8D%F0%9F%91%A9%E2%80%8D%F0%9F%91%A7%20family",
+        HashMap::new(),
+        req,
+    )
+    .await
+}
+
+async fn route_19(State(original): State<Original>, req: Request) -> Response {
+    if sent_to_original("STATICASSETS") {
+        return original::proxy(State(original), req).await;
+    }
+    staticassets::handle(
+        "GET /api/%F0%9F%91%A8%E2%80%8D%F0%9F%91%A9%E2%80%8D%F0%9F%91%A7%20family/clients",
+        HashMap::new(),
+        req,
+    )
+    .await
+}
+
+async fn route_20(State(original): State<Original>, req: Request) -> Response {
+    if sent_to_original("STATICASSETS") {
+        return original::proxy(State(original), req).await;
+    }
+    staticassets::handle(
+        "GET /api/%F0%9F%91%A8%E2%80%8D%F0%9F%91%A9%E2%80%8D%F0%9F%91%A7%20family/pairing-links",
+        HashMap::new(),
+        req,
+    )
+    .await
+}
+
+async fn route_21(State(original): State<Original>, req: Request) -> Response {
+    if sent_to_original("STATICASSETS") {
+        return original::proxy(State(original), req).await;
+    }
+    staticassets::handle(
+        "GET /api/%F0%9F%91%A8%E2%80%8D%F0%9F%91%A9%E2%80%8D%F0%9F%91%A7%20family/session",
+        HashMap::new(),
+        req,
+    )
+    .await
+}
+
+async fn route_22(State(original): State<Original>, req: Request) -> Response {
+    if sent_to_original("STATICASSETS") {
+        return original::proxy(State(original), req).await;
+    }
+    staticassets::handle("GET /api//clients", HashMap::new(), req).await
+}
+
+async fn route_23(State(original): State<Original>, req: Request) -> Response {
+    if sent_to_original("STATICASSETS") {
+        return original::proxy(State(original), req).await;
+    }
+    staticassets::handle("GET /api//pairing-links", HashMap::new(), req).await
+}
+
+async fn route_24(State(original): State<Original>, req: Request) -> Response {
+    if sent_to_original("STATICASSETS") {
+        return original::proxy(State(original), req).await;
+    }
+    staticassets::handle("GET /api//session", HashMap::new(), req).await
+}
+
+async fn route_25(State(original): State<Original>, req: Request) -> Response {
+    if sent_to_original("STATICASSETS") {
+        return original::proxy(State(original), req).await;
+    }
+    staticassets::handle("GET /api/a%C2%A0b", HashMap::new(), req).await
+}
+
+async fn route_26(State(original): State<Original>, req: Request) -> Response {
+    if sent_to_original("STATICASSETS") {
+        return original::proxy(State(original), req).await;
+    }
+    staticassets::handle("GET /api/a%C2%A0b/clients", HashMap::new(), req).await
+}
+
+async fn route_27(State(original): State<Original>, req: Request) -> Response {
+    if sent_to_original("STATICASSETS") {
+        return original::proxy(State(original), req).await;
+    }
+    staticassets::handle("GET /api/a%C2%A0b/pairing-links", HashMap::new(), req).await
+}
+
+async fn route_28(State(original): State<Original>, req: Request) -> Response {
+    if sent_to_original("STATICASSETS") {
+        return original::proxy(State(original), req).await;
+    }
+    staticassets::handle("GET /api/a%C2%A0b/session", HashMap::new(), req).await
+}
+
+async fn route_29(State(original): State<Original>, req: Request) -> Response {
+    if sent_to_original("STATICASSETS") {
+        return original::proxy(State(original), req).await;
+    }
+    staticassets::handle("GET /api/does-not-exist", HashMap::new(), req).await
+}
+
+async fn route_30(State(original): State<Original>, req: Request) -> Response {
+    if sent_to_original("STATICASSETS") {
+        return original::proxy(State(original), req).await;
+    }
+    staticassets::handle("GET /api/e%CC%81", HashMap::new(), req).await
+}
+
+async fn route_31(State(original): State<Original>, req: Request) -> Response {
+    if sent_to_original("STATICASSETS") {
+        return original::proxy(State(original), req).await;
+    }
+    staticassets::handle("GET /api/e%CC%81/clients", HashMap::new(), req).await
+}
+
+async fn route_32(State(original): State<Original>, req: Request) -> Response {
+    if sent_to_original("STATICASSETS") {
+        return original::proxy(State(original), req).await;
+    }
+    staticassets::handle("GET /api/e%CC%81/pairing-links", HashMap::new(), req).await
+}
+
+async fn route_33(State(original): State<Original>, req: Request) -> Response {
+    if sent_to_original("STATICASSETS") {
+        return original::proxy(State(original), req).await;
+    }
+    staticassets::handle("GET /api/e%CC%81/session", HashMap::new(), req).await
+}
+
+async fn route_34(State(original): State<Original>, req: Request) -> Response {
+    if sent_to_original("STATICASSETS") {
+        return original::proxy(State(original), req).await;
+    }
+    staticassets::handle("GET /api/h%C3%A9llo%20w%C3%B6rld", HashMap::new(), req).await
+}
+
+async fn route_35(State(original): State<Original>, req: Request) -> Response {
+    if sent_to_original("STATICASSETS") {
+        return original::proxy(State(original), req).await;
+    }
+    staticassets::handle(
+        "GET /api/h%C3%A9llo%20w%C3%B6rld/clients",
+        HashMap::new(),
+        req,
+    )
+    .await
+}
+
+async fn route_36(State(original): State<Original>, req: Request) -> Response {
+    if sent_to_original("STATICASSETS") {
+        return original::proxy(State(original), req).await;
+    }
+    staticassets::handle(
+        "GET /api/h%C3%A9llo%20w%C3%B6rld/pairing-links",
+        HashMap::new(),
+        req,
+    )
+    .await
+}
+
+async fn route_37(State(original): State<Original>, req: Request) -> Response {
+    if sent_to_original("STATICASSETS") {
+        return original::proxy(State(original), req).await;
+    }
+    staticassets::handle(
+        "GET /api/h%C3%A9llo%20w%C3%B6rld/session",
+        HashMap::new(),
+        req,
+    )
+    .await
+}
+
+async fn route_38(State(original): State<Original>, req: Request) -> Response {
+    if sent_to_original("STATICASSETS") {
+        return original::proxy(State(original), req).await;
+    }
+    staticassets::handle("GET /api/stra%C3%9Fe", HashMap::new(), req).await
+}
+
+async fn route_39(State(original): State<Original>, req: Request) -> Response {
+    if sent_to_original("STATICASSETS") {
+        return original::proxy(State(original), req).await;
+    }
+    staticassets::handle("GET /api/stra%C3%9Fe/clients", HashMap::new(), req).await
+}
+
+async fn route_40(State(original): State<Original>, req: Request) -> Response {
+    if sent_to_original("STATICASSETS") {
+        return original::proxy(State(original), req).await;
+    }
+    staticassets::handle("GET /api/stra%C3%9Fe/pairing-links", HashMap::new(), req).await
+}
+
+async fn route_41(State(original): State<Original>, req: Request) -> Response {
+    if sent_to_original("STATICASSETS") {
+        return original::proxy(State(original), req).await;
+    }
+    staticassets::handle("GET /api/stra%C3%9Fe/session", HashMap::new(), req).await
+}
+
+async fn route_42(State(original): State<Original>, req: Request) -> Response {
+    if sent_to_original("STATICASSETS") {
+        return original::proxy(State(original), req).await;
+    }
+    staticassets::handle("GET /index.html", HashMap::new(), req).await
+}
+
+async fn route_43(State(original): State<Original>, req: Request) -> Response {
+    if sent_to_original("STATICASSETS") {
+        return original::proxy(State(original), req).await;
+    }
+    staticassets::handle("GET /rust-anything-missing", HashMap::new(), req).await
 }

@@ -120,6 +120,8 @@ fn intercept_todo(
         && !text.contains("server.readThreadDiagnostics")
         && !text.contains("server.listMcp")
         && !text.contains("server.getMcp")
+        && !text.contains("server.disconnectMcp")
+        && !text.contains("server.resolveMcp")
         && !text.contains("server.refreshProviders")
         && !text.contains("server.updateProvider")
     {

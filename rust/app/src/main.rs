@@ -1,4 +1,5 @@
 mod native_ws;
+mod ws_relay;
 mod original;
 mod units;
 
@@ -13,6 +14,7 @@ async fn main() {
     let original = original::Original::start().await;
     let app = units::router()
         .merge(native_ws::router())
+        .merge(ws_relay::router())
         .with_state(original.clone());
     let port = std::env::var("PORT")
         .ok()

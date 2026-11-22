@@ -105,6 +105,11 @@ impl Original {
         }
     }
 
+    /// WebSocket URL of the original (the `base` with a `ws` scheme).
+    pub fn ws_base(&self) -> String {
+        self.base.replacen("http", "ws", 1)
+    }
+
     pub fn stop(&self) {
         if let Ok(mut slot) = self.child.lock()
             && let Some(mut child) = slot.take()

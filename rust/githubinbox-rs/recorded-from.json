@@ -1,0 +1,47 @@
+{
+  "unit": "apps/server/src/githubInbox/",
+  "files": 5,
+  "fingerprint": "29329f46a2454e57",
+  "coverage": {
+    "lines": 877,
+    "reached": 341,
+    "files": [
+      {
+        "file": "apps/server/src/git/Errors.ts",
+        "lines": 82,
+        "reached": 71,
+        "missed": "14-15, 30-32, 47-48, 63-64, 76-77"
+      },
+      {
+        "file": "apps/server/src/githubInbox/githubInbox.logic.ts",
+        "lines": 191,
+        "reached": 138,
+        "missed": "116-120, 129-174, 198-199"
+      },
+      {
+        "file": "apps/server/src/githubInbox/githubInboxSnapshotStore.ts",
+        "lines": 393,
+        "reached": 81,
+        "missed": "77-79, 81-87, 98-113, 117-133, 135-140, 142-143, 145-155, 157-165, 167-181, 183-214, 216-232, 234-255, 257-286, 288-307, 309-329, 331-339, 341-362, 364-394, 396-406, 408-418"
+      },
+      {
+        "file": "apps/server/src/pullRequests/KeyedSingleFlightCache.ts",
+        "lines": 5,
+        "reached": 5,
+        "missed": ""
+      },
+      {
+        "file": "apps/server/src/pullRequests/projectRepositoryAccess.ts",
+        "lines": 69,
+        "reached": 19,
+        "missed": "17-18, 24-28, 31-32, 35-48, 50-55, 57-75, 77-78"
+      },
+      {
+        "file": "apps/server/src/pullRequests.logic.ts",
+        "lines": 137,
+        "reached": 27,
+        "missed": "14-18, 24-29, 35-66, 71-112, 117-124, 127-138, 141-145"
+      }
+    ]
+  }
+}

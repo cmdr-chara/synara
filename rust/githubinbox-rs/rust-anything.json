@@ -1,0 +1,199 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/githubInbox/",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "githubinbox-rs",
+  "exports": [
+    {
+      "name": "githubInboxFailureBackoffMs",
+      "file": "apps/server/src/githubInbox/githubInbox.logic.ts",
+      "line": 45,
+      "params": [
+        {
+          "name": "consecutiveFailures",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "number",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "githubInboxRemoteItemState",
+      "file": "apps/server/src/githubInbox/githubInbox.logic.ts",
+      "line": 54,
+      "params": [
+        {
+          "name": "item",
+          "ts_type": "(| { readonly kind: \"pullRequest\"; readonly item: GitHubInboxPullRequest }\n  | { readonly kind: \"issue\"; readonly item: GitHubInboxIssue })",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof GitHubInboxState.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "githubViewerInvolvement",
+      "file": "apps/server/src/githubInbox/githubInbox.logic.ts",
+      "line": 63,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  author: typeof typeof typeof typeof PullRequestActor.Type.Type.Type.Type | null;\n  assignees: ReadonlyArray<typeof typeof typeof typeof PullRequestActor.Type.Type.Type.Type>;\n  viewer: string;\n  /** Matched GitHub's `involves:@me` search. */\n  matchedInvolvesSearch: boolean;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof GitHubViewerInvolvement.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "buildIssueListEntry",
+      "file": "apps/server/src/githubInbox/githubInbox.logic.ts",
+      "line": 75,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  project: { id: typeof typeof typeof typeof GitHubIssueListEntry.Type.Type.Type.Type[\"projectId\"]; title: string };\n  repository: string;\n  issue: GitHubInboxIssue;\n  viewerInvolvement: typeof typeof typeof typeof GitHubViewerInvolvement.Type.Type.Type.Type;\n  isPinned: boolean;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof GitHubIssueListEntry.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "buildGitHubInboxItem",
+      "file": "apps/server/src/githubInbox/githubInbox.logic.ts",
+      "line": 123,
+      "params": [
+        {
+          "name": "context",
+          "ts_type": "GitHubInboxRowContext",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "remote",
+          "ts_type": "(| { readonly kind: \"pullRequest\"; readonly item: GitHubInboxPullRequest }\n  | { readonly kind: \"issue\"; readonly item: GitHubInboxIssue })",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof GitHubInboxItem.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "githubItemCacheKey",
+      "file": "apps/server/src/githubInbox/githubInbox.logic.ts",
+      "line": 179,
+      "params": [
+        {
+          "name": "repository",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "number",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "githubInboxItemIdentityKey",
+      "file": "apps/server/src/githubInbox/githubInbox.logic.ts",
+      "line": 184,
+      "params": [
+        {
+          "name": "item",
+          "ts_type": "{\n  readonly repository: string;\n  readonly number: number;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "summarizeGitHubInboxError",
+      "file": "apps/server/src/githubInbox/githubInbox.logic.ts",
+      "line": 195,
+      "params": [
+        {
+          "name": "error",
+          "ts_type": "GitHubCliError",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "mergeRepositoryInbox",
+      "file": "apps/server/src/githubInbox/githubInboxSnapshotStore.ts",
+      "line": 91,
+      "params": [
+        {
+          "name": "lists",
+          "ts_type": "Omit<GitHubRepositoryInboxSnapshot, \"involvedNumbers\">",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "involvement",
+          "ts_type": "GitHubRepositoryInboxInvolvement | null",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "GitHubRepositoryInboxSnapshot",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "makeGitHubInboxSnapshotStore",
+      "file": "apps/server/src/githubInbox/githubInboxSnapshotStore.ts",
+      "line": 116,
+      "reason": "takes or returns a function"
+    }
+  ]
+}

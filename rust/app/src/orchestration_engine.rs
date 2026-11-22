@@ -41,6 +41,7 @@ pub fn handles(tag: &str) -> bool {
         "orchestration.dispatchCommand"
             | "orchestration.settleTurnDispatch"
             | "orchestration.prepareQuitResume"
+            | "orchestration.repairState"
     ) && std::env::var("SYNARA_NO_UPSTREAM").is_ok()
 }
 
@@ -64,6 +65,9 @@ fn is_group_container_kind(kind: &str) -> bool {
 pub fn handle(tag: &str, payload: &Value) -> Result<Value, WsErr> {
     if tag == "orchestration.prepareQuitResume" {
         return prepare_quit_resume(payload);
+    }
+    if tag == "orchestration.repairState" {
+        return repair_state();
     }
     if tag == "orchestration.settleTurnDispatch" {
         let command = payload
@@ -5626,4 +5630,595 @@ fn prepare_quit_resume(payload: &Value) -> Result<Value, WsErr> {
         "recordedThreadIds": recorded.iter().map(|(tid, _)| tid).collect::<Vec<_>>(),
         "recordedAt": now,
     }))
+}
+
+// ---- orchestration.repairState ----
+//
+// Rebuilds the derived projection state from the event log, matching upstream
+// runProjectionRepair: capture the durable event fence, stage spaces/projects/
+// projection_state into temp tables, clear them, replay every stored event
+// through the projection writers, stamp every required projector cursor at the
+// fence, then verify and return the refreshed read model. On any failure the
+// staged backup is restored.
+
+const REPAIR_METADATA_PROJECTORS: &[&str] = &[
+    "projection.hot",
+    "projection.projects",
+    "projection.threads",
+    "projection.thread-messages",
+    "projection.thread-proposed-plans",
+    "projection.thread-activities",
+    "projection.thread-sessions",
+    "projection.checkpoints",
+];
+
+const REPAIR_REQUIRED_PROJECTORS: &[&str] = &[
+    "projection.hot",
+    "projection.projects",
+    "projection.threads",
+    "projection.thread-shell-summaries",
+    "projection.thread-messages",
+    "projection.thread-proposed-plans",
+    "projection.thread-activities",
+    "projection.thread-sessions",
+    "projection.thread-turns",
+    "projection.checkpoints",
+    "projection.pending-approvals",
+];
+
+/// thread.meta-updated payload key -> projection_threads column.
+const META_PATCH_COLS: &[(&str, &str)] = &[
+    ("title", "title"),
+    ("parentThreadId", "parent_thread_id"),
+    ("subagentAgentId", "subagent_agent_id"),
+    ("subagentNickname", "subagent_nickname"),
+    ("subagentRole", "subagent_role"),
+    ("notes", "notes"),
+    ("isPinned", "is_pinned"),
+    ("settledAt", "settled_at"),
+    ("snoozedUntil", "snoozed_until"),
+    ("snoozeReminderAt", "snooze_reminder_at"),
+    ("envMode", "env_mode"),
+    ("branch", "branch"),
+    ("worktreePath", "worktree_path"),
+    ("workingDirectory", "working_directory"),
+    ("associatedWorktreePath", "associated_worktree_path"),
+    ("associatedWorktreeBranch", "associated_worktree_branch"),
+    ("associatedWorktreeRef", "associated_worktree_ref"),
+    ("goal", "goal"),
+    ("goalStartedAt", "goal_started_at"),
+    ("goalPausedAt", "goal_paused_at"),
+    ("usageLimitRecoveryCancelledAt", "usage_limit_recovery_cancelled_at"),
+    ("usageLimitRecoveryCancelledTurnId", "usage_limit_recovery_cancelled_turn_id"),
+    ("usageLimitRecoveryLastResetAt", "usage_limit_recovery_last_reset_at"),
+    ("updatedAt", "updated_at"),
+];
+
+/// thread.meta-updated payload keys stored as JSON text columns.
+const META_JSON_COLS: &[(&str, &str)] = &[
+    ("modelSelection", "model_selection_json"),
+    ("handoff", "handoff_json"),
+    ("pinnedMessages", "pinned_messages_json"),
+    ("pullRequests", "pull_requests_json"),
+    ("lastKnownPr", "last_known_pr_json"),
+    ("goalAchievements", "goal_achievements_json"),
+    ("usageLimitRecovery", "usage_limit_recovery_json"),
+    ("usageLimitRecoverySource", "usage_limit_recovery_source_json"),
+];
+
+fn replay_session_projection(
+    conn: &Connection,
+    thread_id: &str,
+    session: &Value,
+) -> Result<(), WsErr> {
+    let g = |k: &str| json_to_sql(&session.get(k).cloned().unwrap_or(Value::Null));
+    conn.execute(
+        "INSERT INTO projection_thread_sessions \
+         (thread_id, status, provider_name, provider_session_id, provider_thread_id, \
+          active_turn_id, last_error, updated_at, runtime_mode, provider_instance_id) \
+         VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10) \
+         ON CONFLICT(thread_id) DO UPDATE SET \
+          status=excluded.status, provider_name=excluded.provider_name, \
+          provider_session_id=excluded.provider_session_id, \
+          provider_thread_id=excluded.provider_thread_id, \
+          active_turn_id=excluded.active_turn_id, last_error=excluded.last_error, \
+          updated_at=excluded.updated_at, runtime_mode=excluded.runtime_mode, \
+          provider_instance_id=excluded.provider_instance_id",
+        params![
+            thread_id,
+            g("status"),
+            g("providerName"),
+            g("providerSessionId"),
+            g("providerThreadId"),
+            g("activeTurnId"),
+            g("lastError"),
+            g("updatedAt"),
+            g("runtimeMode"),
+            g("providerInstanceId"),
+        ],
+    )
+    .map_err(|e| err(format!("session projection: {e}")))?;
+    Ok(())
+}
+
+fn replay_pinned_projection(
+    conn: &Connection,
+    event_type: &str,
+    thread_id: &str,
+    p: &Value,
+    updated_at: &str,
+) -> Result<(), WsErr> {
+    let pins_json: Option<String> = conn
+        .query_row(
+            "SELECT pinned_messages_json FROM projection_threads WHERE thread_id = ?1",
+            params![thread_id],
+            |r| r.get(0),
+        )
+        .unwrap_or(None);
+    let mut pins: Vec<Value> = pins_json
+        .as_deref()
+        .and_then(|j| serde_json::from_str(j).ok())
+        .unwrap_or_default();
+    match event_type {
+        "thread.pinned-message-added" => {
+            if let Some(pin) = p.get("pin") {
+                let mid = pin.get("messageId").and_then(Value::as_str).unwrap_or("");
+                if !pins
+                    .iter()
+                    .any(|x| x.get("messageId").and_then(Value::as_str) == Some(mid))
+                {
+                    pins.push(pin.clone());
+                }
+            }
+        }
+        "thread.pinned-message-removed" => {
+            let mid = p.get("messageId").and_then(Value::as_str).unwrap_or("");
+            pins.retain(|x| x.get("messageId").and_then(Value::as_str) != Some(mid));
+        }
+        "thread.pinned-message-done-set" | "thread.pinned-message-label-set" => {
+            let mid = p.get("messageId").and_then(Value::as_str).unwrap_or("");
+            if let Some(pin) = pins
+                .iter_mut()
+                .find(|x| x.get("messageId").and_then(Value::as_str) == Some(mid))
+            {
+                if event_type == "thread.pinned-message-done-set" {
+                    pin["done"] = p.get("done").cloned().unwrap_or(Value::Null);
+                } else {
+                    pin["label"] = p.get("label").cloned().unwrap_or(Value::Null);
+                }
+            }
+        }
+        _ => {}
+    }
+    update_projection(
+        conn,
+        thread_id,
+        &[
+            ("pinned_messages_json", json!(Value::Array(pins).to_string())),
+            ("updated_at", json!(updated_at)),
+        ],
+    )
+}
+
+/// Re-apply one stored event's projection writes. Mirrors exactly what the
+/// dispatch-time writers emit so a replay rebuilds the same read model.
+fn replay_projection_event(
+    conn: &Connection,
+    event_type: &str,
+    stream_id: &str,
+    payload: &Value,
+    sequence: i64,
+    occurred_at: &str,
+) -> Result<(), WsErr> {
+    let pg = |k: &str| payload.get(k).cloned().unwrap_or(Value::Null);
+    let ps = |k: &str| payload.get(k).and_then(Value::as_str).unwrap_or("");
+    match event_type {
+        "space.created" => {
+            conn.execute(
+                "INSERT OR REPLACE INTO projection_spaces \
+                 (space_id, name, icon, sort_order, created_at, updated_at, deleted_at) \
+                 VALUES (?1, ?2, ?3, ?4, ?5, ?6, NULL)",
+                params![
+                    ps("spaceId"),
+                    ps("name"),
+                    ps("icon"),
+                    payload.get("sortOrder").and_then(Value::as_i64).unwrap_or(0),
+                    json_to_sql(&pg("createdAt")),
+                    json_to_sql(&pg("updatedAt")),
+                ],
+            )
+            .map_err(|e| err(format!("space projection: {e}")))?;
+        }
+        "space.meta-updated" => {
+            let mut sets: Vec<(&str, Value)> = Vec::new();
+            for (k, col) in [("name", "name"), ("icon", "icon"), ("updatedAt", "updated_at")] {
+                if let Some(v) = payload.get(k) {
+                    sets.push((col, v.clone()));
+                }
+            }
+            let assignments: Vec<String> = sets
+                .iter()
+                .enumerate()
+                .map(|(i, (c, _))| format!("{c} = ?{}", i + 2))
+                .collect();
+            if !assignments.is_empty() {
+                let mut params_vec: Vec<rusqlite::types::Value> =
+                    vec![rusqlite::types::Value::Text(stream_id.to_string())];
+                for (_, v) in &sets {
+                    params_vec.push(json_to_sql(v));
+                }
+                conn.execute(
+                    &format!(
+                        "UPDATE projection_spaces SET {} WHERE space_id = ?1",
+                        assignments.join(", ")
+                    ),
+                    rusqlite::params_from_iter(params_vec),
+                )
+                .map_err(|e| err(e.to_string()))?;
+            }
+        }
+        "space.order-updated" => {
+            let ordered: Vec<String> = payload
+                .get("orderedSpaceIds")
+                .and_then(Value::as_array)
+                .map(|a| {
+                    a.iter()
+                        .filter_map(|v| v.as_str().map(String::from))
+                        .collect()
+                })
+                .unwrap_or_default();
+            for (i, sid) in ordered.iter().enumerate() {
+                conn.execute(
+                    "UPDATE projection_spaces SET sort_order = ?2, updated_at = ?3 \
+                     WHERE space_id = ?1 AND sort_order != ?2",
+                    params![sid, i as i64, json_to_sql(&pg("updatedAt"))],
+                )
+                .map_err(|e| err(e.to_string()))?;
+            }
+        }
+        "space.deleted" => {
+            conn.execute(
+                "UPDATE projection_spaces SET deleted_at = ?2, updated_at = ?2 WHERE space_id = ?1",
+                params![stream_id, json_to_sql(&pg("deletedAt"))],
+            )
+            .map_err(|e| err(e.to_string()))?;
+            conn.execute(
+                "UPDATE projection_projects SET space_id = NULL WHERE space_id = ?1",
+                params![stream_id],
+            )
+            .map_err(|e| err(e.to_string()))?;
+        }
+        "project.created" => {
+            conn.execute(
+                "INSERT OR REPLACE INTO projection_projects \
+                 (project_id, kind, title, workspace_root, scripts_json, created_at, updated_at, \
+                  deleted_at, default_model_selection_json, is_pinned, space_id, additional_folders_json) \
+                 VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, NULL, ?8, ?9, ?10, ?11)",
+                params![
+                    ps("projectId"),
+                    if payload.get("kind").is_some() { ps("kind").to_string() } else { "project".to_string() },
+                    ps("title"),
+                    ps("workspaceRoot"),
+                    payload.get("scripts").map(|v| v.to_string()).unwrap_or_else(|| "[]".into()),
+                    json_to_sql(&pg("createdAt")),
+                    json_to_sql(&pg("updatedAt")),
+                    payload.get("defaultModelSelection").map(|v| v.to_string()),
+                    payload.get("isPinned").and_then(Value::as_bool).unwrap_or(false) as i64,
+                    json_to_sql(&pg("spaceId")),
+                    payload.get("additionalFolders").map(|v| v.to_string()).unwrap_or_else(|| "[]".into()),
+                ],
+            )
+            .map_err(|e| err(format!("project projection: {e}")))?;
+        }
+        "project.meta-updated" => {
+            let mut sets: Vec<(&str, Value)> = Vec::new();
+            for (k, col) in [
+                ("kind", "kind"),
+                ("title", "title"),
+                ("workspaceRoot", "workspace_root"),
+                ("spaceId", "space_id"),
+                ("updatedAt", "updated_at"),
+            ] {
+                if let Some(v) = payload.get(k) {
+                    sets.push((col, v.clone()));
+                }
+            }
+            for (k, col) in [
+                ("defaultModelSelection", "default_model_selection_json"),
+                ("scripts", "scripts_json"),
+                ("additionalFolders", "additional_folders_json"),
+            ] {
+                if let Some(v) = payload.get(k) {
+                    sets.push((
+                        col,
+                        if v.is_null() { Value::Null } else { json!(v.to_string()) },
+                    ));
+                }
+            }
+            if let Some(v) = payload.get("isPinned") {
+                sets.push(("is_pinned", json!(v.as_bool().unwrap_or(false) as i64)));
+            }
+            let assignments: Vec<String> = sets
+                .iter()
+                .enumerate()
+                .map(|(i, (c, _))| format!("{c} = ?{}", i + 2))
+                .collect();
+            if !assignments.is_empty() {
+                let mut params_vec: Vec<rusqlite::types::Value> =
+                    vec![rusqlite::types::Value::Text(stream_id.to_string())];
+                for (_, v) in &sets {
+                    params_vec.push(json_to_sql(v));
+                }
+                conn.execute(
+                    &format!(
+                        "UPDATE projection_projects SET {} WHERE project_id = ?1",
+                        assignments.join(", ")
+                    ),
+                    rusqlite::params_from_iter(params_vec),
+                )
+                .map_err(|e| err(e.to_string()))?;
+            }
+        }
+        "project.deleted" => {
+            conn.execute(
+                "UPDATE projection_projects SET deleted_at = ?2, updated_at = ?2 \
+                 WHERE project_id = ?1",
+                params![stream_id, json_to_sql(&pg("deletedAt"))],
+            )
+            .map_err(|e| err(e.to_string()))?;
+        }
+        "thread.created" => {
+            // The repair keeps existing thread rows: replay only heals missing
+            // ones, mirroring the idempotent bootstrap apply upstream.
+            let exists: bool = conn
+                .query_row(
+                    "SELECT COUNT(*) > 0 FROM projection_threads WHERE thread_id = ?1",
+                    params![stream_id],
+                    |r| r.get(0),
+                )
+                .unwrap_or(false);
+            if !exists
+                && let Some(obj) = payload.as_object()
+            {
+                project_thread_created(conn, obj)?;
+            }
+        }
+        "thread.deleted" => {
+            update_projection(
+                conn,
+                stream_id,
+                &[("deleted_at", pg("deletedAt"))],
+            )?;
+        }
+        "thread.archived" => {
+            update_projection(
+                conn,
+                stream_id,
+                &[("archived_at", pg("archivedAt")), ("updated_at", pg("updatedAt"))],
+            )?;
+        }
+        "thread.unarchived" => {
+            update_projection(
+                conn,
+                stream_id,
+                &[("archived_at", Value::Null), ("updated_at", pg("updatedAt"))],
+            )?;
+        }
+        "thread.meta-updated" => {
+            let mut sets: Vec<(&str, Value)> = Vec::new();
+            for (k, col) in META_PATCH_COLS {
+                if let Some(v) = payload.get(*k) {
+                    sets.push((col, v.clone()));
+                }
+            }
+            for (k, col) in META_JSON_COLS {
+                if let Some(v) = payload.get(*k) {
+                    sets.push((
+                        col,
+                        if v.is_null() { Value::Null } else { json!(v.to_string()) },
+                    ));
+                }
+            }
+            update_projection(conn, stream_id, &sets)?;
+        }
+        "thread.runtime-mode-set" => {
+            update_projection(
+                conn,
+                stream_id,
+                &[("runtime_mode", pg("runtimeMode")), ("updated_at", pg("updatedAt"))],
+            )?;
+        }
+        "thread.interaction-mode-set" => {
+            update_projection(
+                conn,
+                stream_id,
+                &[("interaction_mode", pg("interactionMode")), ("updated_at", pg("updatedAt"))],
+            )?;
+        }
+        "thread.claude-cache-set" => {
+            update_projection(
+                conn,
+                stream_id,
+                &[
+                    ("claude_cache_review_json", pg("review")),
+                    ("updated_at", pg("updatedAt")),
+                ],
+            )?;
+        }
+        "thread.sidechat-activity-recorded" => {
+            update_projection(
+                conn,
+                stream_id,
+                &[
+                    ("sidechat_last_activity_at", pg("lastActivityAt")),
+                    ("updated_at", json!(occurred_at)),
+                ],
+            )?;
+        }
+        "thread.sidechat-expired" => {
+            update_projection(
+                conn,
+                stream_id,
+                &[
+                    ("sidechat_expired_at", pg("expiredAt")),
+                    ("updated_at", json!(occurred_at)),
+                ],
+            )?;
+        }
+        "thread.pinned-message-added"
+        | "thread.pinned-message-removed"
+        | "thread.pinned-message-done-set"
+        | "thread.pinned-message-label-set" => {
+            replay_pinned_projection(conn, event_type, stream_id, payload, occurred_at)?;
+        }
+        "thread.session-set" => {
+            replay_session_projection(conn, stream_id, &pg("session"))?;
+        }
+        "thread.message-sent" => {
+            project_message_sent(conn, stream_id, payload)?;
+        }
+        "thread.activity-appended" => {
+            let activity = pg("activity");
+            if !activity.is_null() {
+                append_activity_projection(conn, stream_id, &activity, sequence)?;
+            }
+        }
+        // Request/record events and lifecycle markers with no projection writes.
+        _ => {}
+    }
+    Ok(())
+}
+
+fn repair_state() -> Result<Value, WsErr> {
+    let conn = open_state_rw()?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| err(e.to_string()))?;
+
+    let repair_fence: i64 = conn
+        .query_row(
+            "SELECT COALESCE(MAX(sequence), 0) FROM orchestration_events",
+            [],
+            |r| r.get(0),
+        )
+        .map_err(|e| {
+            err(format!(
+                "Failed to capture the durable event fence before repair: {e}"
+            ))
+        })?;
+
+    // Stage the derived projection state for rollback.
+    conn.execute_batch(
+        "DROP TABLE IF EXISTS temp_repair_projection_spaces;\
+         DROP TABLE IF EXISTS temp_repair_projection_projects;\
+         DROP TABLE IF EXISTS temp_repair_projection_state;\
+         CREATE TEMP TABLE temp_repair_projection_spaces AS SELECT * FROM projection_spaces;\
+         CREATE TEMP TABLE temp_repair_projection_projects AS SELECT * FROM projection_projects;\
+         CREATE TEMP TABLE temp_repair_projection_state AS SELECT * FROM projection_state;",
+    )
+    .map_err(|_| err("Failed to stage the current local state before rebuilding it."))?;
+
+    let restore = |conn: &Connection| {
+        let _ = conn.execute_batch(
+            "DELETE FROM projection_spaces;\
+             INSERT INTO projection_spaces SELECT * FROM temp_repair_projection_spaces;\
+             DELETE FROM projection_projects;\
+             INSERT INTO projection_projects SELECT * FROM temp_repair_projection_projects;\
+             DELETE FROM projection_state;\
+             INSERT INTO projection_state SELECT * FROM temp_repair_projection_state;",
+        );
+    };
+
+    // Clear the derived rows the replay rebuilds.
+    let metadata_list = REPAIR_METADATA_PROJECTORS
+        .iter()
+        .map(|p| format!("'{p}'"))
+        .collect::<Vec<_>>()
+        .join(",");
+    if let Err(e) = conn.execute_batch(&format!(
+        "DELETE FROM projection_spaces;\
+         DELETE FROM projection_projects;\
+         DELETE FROM projection_state WHERE projector IN ({metadata_list});"
+    )) {
+        restore(&conn);
+        return Err(err(format!(
+            "Failed to clear the local projection cache before rebuilding it: {e}"
+        )));
+    }
+
+    // Replay the whole event log through the projection writers.
+    let replay_result = (|| -> Result<(), WsErr> {
+        let mut st = conn
+            .prepare(
+                "SELECT event_type, stream_id, payload_json, sequence, occurred_at \
+                 FROM orchestration_events ORDER BY sequence",
+            )
+            .map_err(|e| err(e.to_string()))?;
+        let mut rows = st
+            .query([])
+            .map_err(|e| err(e.to_string()))?;
+        while let Some(row) = rows.next().map_err(|e| err(e.to_string()))? {
+            let event_type: String = row.get(0).map_err(|e| err(e.to_string()))?;
+            let stream_id: String = row.get(1).map_err(|e| err(e.to_string()))?;
+            let payload_json: String = row.get(2).map_err(|e| err(e.to_string()))?;
+            let sequence: i64 = row.get(3).map_err(|e| err(e.to_string()))?;
+            let occurred_at: String = row.get(4).map_err(|e| err(e.to_string()))?;
+            let payload: Value = serde_json::from_str(&payload_json).unwrap_or(Value::Null);
+            replay_projection_event(
+                &conn, &event_type, &stream_id, &payload, sequence, &occurred_at,
+            )?;
+        }
+        Ok(())
+    })();
+
+    if let Err(e) = replay_result {
+        restore(&conn);
+        return Err(e);
+    }
+
+    // Stamp every required projector cursor at the captured fence.
+    let now = iso_now_ms();
+    for name in REPAIR_REQUIRED_PROJECTORS {
+        if let Err(e) = conn.execute(
+            "INSERT OR REPLACE INTO projection_state \
+             (projector, last_applied_sequence, updated_at) VALUES (?1, ?2, ?3)",
+            params![name, repair_fence, now],
+        ) {
+            restore(&conn);
+            return Err(err(format!(
+                "Failed to rebuild local projections from the saved event history: {e}"
+            )));
+        }
+    }
+
+    // Verify the rebuilt projections reached the fence.
+    let mut lagging: Vec<String> = Vec::new();
+    for name in REPAIR_REQUIRED_PROJECTORS {
+        let cursor: i64 = conn
+            .query_row(
+                "SELECT last_applied_sequence FROM projection_state WHERE projector = ?1",
+                params![name],
+                |r| r.get(0),
+            )
+            .unwrap_or(-1);
+        if cursor < repair_fence {
+            lagging.push(name.to_string());
+        }
+    }
+    if !lagging.is_empty() {
+        restore(&conn);
+        return Err(err(format!(
+            "Rebuilt local projections did not reach captured event fence {repair_fence}. \
+             Lagging projectors: {}.",
+            lagging.join(", ")
+        )));
+    }
+
+    let _ = conn.execute_batch(
+        "DROP TABLE IF EXISTS temp_repair_projection_spaces;\
+         DROP TABLE IF EXISTS temp_repair_projection_projects;\
+         DROP TABLE IF EXISTS temp_repair_projection_state;",
+    );
+
+    // Return the refreshed read model (same shape as orchestration.getSnapshot).
+    crate::orchestration_snapshot::get_snapshot()
 }

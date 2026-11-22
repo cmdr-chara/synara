@@ -3,6 +3,19 @@
 Extracted 2026-11-22 from `packages/contracts/src/rpc.ts` (`Rpc.make` declarations, 285 methods).
 Transport: `apps/server/src/wsRpc.ts` over the WS upgrade path; this is the app's real API surface — the 30 HTTP routes in ROUTES.md are auxiliary.
 
+Native coverage in rust/app (relay handles the rest): ~66/285.
+- `bootstrap.negotiate` (HTTP GET /ws/negotiate)
+- `filesystem.browse`
+- `git.*` — 20 of 27 (missing: summarizeDiff, runStackedAction, createDetachedWorktree, resolvePullRequest, pullRequestSnapshot, preparePullRequestThread, handoffThread)
+- `projects.*` — 15 of 17 + subscribeDevServerEvents/subscribeFileChange streams (missing: provisionFromGitHub + one)
+- `server.*` — 14 of 39: getEnvironment, getRuntimeStatus, getSettings, updateSettings, subscribeSettings, subscribeLifecycle, subscribeKeepAwake, listWorktrees, upsertKeybinding, editKeybindings, listLocalServers, stopLocalServer, getDiagnostics
+- `shell.openInEditor`
+- `terminal.*` — 8 of 8 (incl. subscribeEvents stream)
+- `todo.*` — 5 of 5 (incl. subscribe stream)
+
+Deferred with reasons: orchestration/automation/pullRequests/projectAgent/studio contracts or impls are T3-derived (cases-only rule); account/hosts/device need the remote pairing authority; provider.*/getConfig need the provider CLI matrix; readThreadDiagnostics/providerUsage are impl-flagged; voice/generate*/transcribe need the provider runtime; editor.* needs the editor runtime.
+
+
 
 ## account (19)
 

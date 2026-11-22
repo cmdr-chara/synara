@@ -9,6 +9,7 @@ pub mod wire;
 
 #[allow(unused_imports)]
 use serde_json::Value;
+pub mod corpus;
 pub mod utf16;
 
 fn panic_message(payload: &(dyn std::any::Any + Send)) -> String {

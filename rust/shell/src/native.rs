@@ -639,6 +639,60 @@ impl Native {
         cx.notify();
     }
 
+    /// Dispatch a simple thread command (interrupt, archive, delete, ...).
+    fn dispatch_thread_cmd(&mut self, cmd_type: &'static str, cx: &mut Context<Self>) {
+        let Some(tid) = self.selected_thread.clone() else {
+            return;
+        };
+        let client = self.client.clone();
+        cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
+            let cell = client.clone();
+            let cmd = json!({
+                "type": cmd_type,
+                "commandId": uuid(),
+                "threadId": tid,
+                "createdAt": now_iso(),
+            });
+            let r = cx
+                .background_executor()
+                .spawn(async move {
+                    ensure_client(&cell)
+                        .and_then(|c| c.call("orchestration.dispatchCommand", cmd))
+                })
+                .await;
+            if r.is_none() {
+                eprintln!("native: {cmd_type} dispatch failed");
+            }
+            let cell = client.clone();
+            let s = cx
+                .background_executor()
+                .spawn(async move {
+                    ensure_client(&cell)
+                        .and_then(|c| c.call("orchestration.getShellSnapshot", json!({})))
+                })
+                .await;
+            let cell = client.clone();
+            let p = json!({"threadId": tid});
+            let d = cx
+                .background_executor()
+                .spawn(async move {
+                    ensure_client(&cell)
+                        .and_then(|c| c.call("orchestration.getThreadDetailSnapshot", p))
+                })
+                .await;
+            let _ = this.update(cx, |this: &mut Self, cx| {
+                if let Some(s) = s {
+                    this.snapshot = Some(s);
+                }
+                if let Some(d) = d {
+                    this.detail = Some(d);
+                }
+                cx.notify();
+            });
+        })
+        .detach();
+    }
+
     /// Dispatch thread.approval.respond for a pending interaction.
     fn respond_approval(&mut self, request_id: String, decision: &str, cx: &mut Context<Self>) {
         let Some(tid) = self.selected_thread.clone() else {
@@ -992,7 +1046,10 @@ impl Render for Native {
                 );
             } else if turn_state == "error" || turn_state == "interrupted" {
                 header = header.child(
-                    div().text_xs().text_color(theme.danger).child(turn_state),
+                    div()
+                        .text_xs()
+                        .text_color(theme.danger)
+                        .child(turn_state.clone()),
                 );
             }
             if get(thread_v, "hasPendingApprovals").as_bool().unwrap_or(false) {
@@ -1003,6 +1060,24 @@ impl Render for Native {
                         .child("approval required"),
                 );
             }
+            if turn_state == "pending" || turn_state == "running" {
+                header = header.child(
+                    Button::new("stop-turn")
+                        .ghost()
+                        .label("Stop")
+                        .on_click(cx.listener(|this, _ev, _w, cx| {
+                            this.dispatch_thread_cmd("thread.turn.interrupt", cx)
+                        })),
+                );
+            }
+            header = header.child(
+                Button::new("archive-thread")
+                    .ghost()
+                    .label("Archive")
+                    .on_click(cx.listener(|this, _ev, _w, cx| {
+                        this.dispatch_thread_cmd("thread.archive", cx)
+                    })),
+            );
             pane = pane.child(header);
         }
         let messages = arr(thread_v, "messages");

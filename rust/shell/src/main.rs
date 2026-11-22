@@ -8,11 +8,15 @@ use gpui_kit::component::{
 use gpui_kit::*;
 use gpui_webview::WebView;
 
+mod native;
+mod ws_client;
+
 const DEFAULT_URL: &str = "http://127.0.0.1:4577";
 
 pub struct Shell {
     focus_handle: FocusHandle,
     webview: Entity<WebView>,
+    native: Entity<native::Native>,
     address_input: Entity<InputState>,
 }
 
@@ -37,6 +41,7 @@ impl Shell {
             let this = Self {
                 focus_handle: cx.focus_handle(),
                 webview,
+                native: native::Native::new(window, cx),
                 address_input: address_input.clone(),
             };
 
@@ -79,6 +84,12 @@ impl Focusable for Shell {
 impl Render for Shell {
     fn render(&mut self, _: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
         let webview = self.webview.clone();
+        let native_ui = std::env::var("SYNARA_NATIVE").is_ok();
+        if native_ui {
+            return v_flex()
+                .size_full()
+                .child(self.native.clone());
+        }
 
         v_flex()
             .size_full()

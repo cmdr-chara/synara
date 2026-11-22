@@ -8,10 +8,10 @@ use std::sync::{Arc, Mutex};
 use gpui_kit::component::{
     button::{Button, ButtonVariants as _},
     h_flex,
-    input::{Input, InputEvent, InputState},
+    input::{Editor, EditorState, Input, InputEvent, InputState},
     scroll::ScrollableElement as _,
     v_flex,
-    ActiveTheme as _,
+    ActiveTheme as _, IconName,
 };
 use gpui_kit::*;
 
@@ -33,6 +33,10 @@ pub struct Native {
     files_dir: String,
     files: Vec<Value>,
     open_file: Option<(String, String)>,
+    open_file_meta: Option<(String, String, String)>,
+    file_editor: Option<Entity<EditorState>>,
+    editor_synced: Option<String>,
+    editing_file: bool,
     files_loading: bool,
     git_status: Option<Value>,
     file_stream_id: Option<String>,
@@ -199,6 +203,10 @@ impl Native {
                 files_dir: String::new(),
                 files: Vec::new(),
                 open_file: None,
+                open_file_meta: None,
+                file_editor: None,
+                editor_synced: None,
+                editing_file: false,
                 files_loading: false,
                 git_status: None,
                 file_stream_id: None,
@@ -622,6 +630,11 @@ impl Native {
             let _ = this.update(cx, |this: &mut Self, cx| {
                 if let Some(v) = v {
                     let text = str_at(&v, "contents").to_string();
+                    this.open_file_meta = Some((
+                        str_at(&v, "version").to_string(),
+                        str_at(&v, "encoding").to_string(),
+                        str_at(&v, "lineEnding").to_string(),
+                    ));
                     this.open_file = Some((path, text));
                     this.watch_open_file(cx);
                 }
@@ -706,6 +719,11 @@ impl Native {
                                 .is_some_and(|(p, _)| *p == path)
                             {
                                 let text = str_at(&v, "contents").to_string();
+                                this.open_file_meta = Some((
+                                    str_at(&v, "version").to_string(),
+                                    str_at(&v, "encoding").to_string(),
+                                    str_at(&v, "lineEnding").to_string(),
+                                ));
                                 this.open_file = Some((path.clone(), text));
                             }
                         }
@@ -733,7 +751,91 @@ impl Native {
     fn close_file(&mut self, cx: &mut Context<Self>) {
         self.stop_file_watch();
         self.open_file = None;
+        self.open_file_meta = None;
+        self.file_editor = None;
+        self.editor_synced = None;
+        self.editing_file = false;
         cx.notify();
+    }
+
+    /// Map a file path to an editor language id for highlighting.
+    fn editor_language(path: &str) -> &'static str {
+        let ext = path.rsplit('.').next().unwrap_or("");
+        match ext {
+            "rs" => "rust",
+            "ts" | "tsx" => "typescript",
+            "js" | "jsx" | "mjs" | "cjs" => "javascript",
+            "json" => "json",
+            "md" => "markdown",
+            "py" => "python",
+            "toml" => "toml",
+            "yaml" | "yml" => "yaml",
+            "html" => "html",
+            "css" => "css",
+            "sh" | "bash" | "zsh" => "shell",
+            _ => "",
+        }
+    }
+
+    /// Save the edited file back via projects.writeFile, guarded by the
+    /// version reported by the last read.
+    fn save_file(&mut self, cx: &mut Context<Self>) {
+        let Some((path, _)) = self.open_file.clone() else {
+            return;
+        };
+        let Some(editor) = self.file_editor.clone() else {
+            return;
+        };
+        let contents = editor.read(cx).value().to_string();
+        let (version, encoding, line_ending) =
+            self.open_file_meta.clone().unwrap_or_default();
+        let dir = path
+            .rsplit_once('/')
+            .map(|(d, _)| d.to_string())
+            .unwrap_or_else(|| path.clone());
+        let name = path.rsplit('/').next().unwrap_or(&path).to_string();
+        let client = self.client.clone();
+        cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
+            let cell = client.clone();
+            let p = path.clone();
+            let v = cx
+                .background_executor()
+                .spawn(async move {
+                    let mut payload = json!({
+                        "cwd": dir,
+                        "relativePath": name,
+                        "contents": contents,
+                    });
+                    if !version.is_empty() {
+                        payload["expectedVersion"] = json!(version);
+                        if !encoding.is_empty() {
+                            payload["encoding"] = json!(encoding);
+                        }
+                        if !line_ending.is_empty() {
+                            payload["lineEnding"] = json!(line_ending);
+                        }
+                    }
+                    ensure_client(&cell)
+                        .and_then(|c| c.call("projects.writeFile", payload))
+                })
+                .await;
+            let _ = this.update(cx, |this: &mut Self, cx| {
+                if let Some(v) = v {
+                    if let Some(ed) = &this.file_editor {
+                        let text = ed.read(cx).value().to_string();
+                        this.open_file = Some((p, text));
+                    }
+                    let meta = this.open_file_meta.get_or_insert_default();
+                    if let Some(ver) = v.get("version").and_then(|x| x.as_str()) {
+                        meta.0 = ver.to_string();
+                        this.editor_synced = Some(ver.to_string());
+                    }
+                    this.editing_file = false;
+                }
+                cx.notify();
+            });
+        })
+        .detach();
     }
 
     /// Dispatch a simple thread command (interrupt, archive, delete, ...).
@@ -978,7 +1080,7 @@ fn row(
 }
 
 impl Render for Native {
-    fn render(&mut self, _window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
+    fn render(&mut self, window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
         let theme = cx.theme().clone();
 
         // ---- sidebar ----
@@ -992,35 +1094,24 @@ impl Render for Native {
         sidebar = sidebar.child(
             h_flex()
                 .gap_2()
-                .child(div().flex_1().child(Input::new(&self.search)))
-                .child(
-                    Button::new("new-thread")
-                        .ghost()
-                        .label("+")
-                        .on_click(cx.listener(|this, _ev, _w, cx| this.new_thread(cx))),
-                )
-                .child(
-                    Button::new("toggle-files")
-                        .ghost()
-                        .label(if self.view_files { "Chat" } else { "Files" })
-                        .on_click(cx.listener(|this, _ev, _w, cx| this.toggle_files(cx))),
-                )
-                .child(
-                    Button::new("toggle-dev")
-                        .ghost()
-                        .label(if self.view_dev { "Chat" } else { "Dev" })
-                        .on_click(cx.listener(|this, _ev, _w, cx| this.toggle_dev(cx))),
-                ),
+                .child(div().flex_1().child(Input::new(&self.search))),
         );
-        for space in arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "spaces") {
-            sidebar = sidebar.child(
-                div()
-                    .text_xs()
-                    .font_weight(FontWeight::SEMIBOLD)
-                    .text_color(theme.muted_foreground)
-                    .child(str_at(space, "name").to_uppercase()),
-            );
-        }
+        sidebar = sidebar.child(
+            Button::new("new-thread")
+                .outline()
+                .icon(IconName::Plus)
+                .label("New thread")
+                .w_full()
+                .on_click(cx.listener(|this, _ev, _w, cx| this.new_thread(cx))),
+        );
+        sidebar = sidebar.child(
+            div()
+                .mt_2()
+                .text_xs()
+                .font_weight(FontWeight::SEMIBOLD)
+                .text_color(theme.muted_foreground)
+                .child("PROJECTS"),
+        );
         for project in arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "projects") {
             let mut proj_head = v_flex().gap_0().child(
                 div()
@@ -1051,36 +1142,42 @@ impl Render for Native {
                 }
             }
             sidebar = sidebar.child(proj_head);
-            let pid = str_at(project, "id").to_string();
-            for thread in arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "threads")
-                .iter()
-                .filter(|t| str_at(t, "projectId") == pid)
-                .filter(|t| {
-                    get(t, "deletedAt").is_null() && get(t, "archivedAt").is_null()
-                })
-                .filter(|t| {
-                    query.is_empty()
-                        || str_at(t, "title").to_lowercase().contains(&query)
-                        || str_at(t, "latestReplyPreview")
-                            .to_lowercase()
-                            .contains(&query)
-                })
-                .cloned()
-                .collect::<Vec<_>>()
-            {
-                let tid = str_at(&thread, "id").to_string();
-                let title = str_at(&thread, "title");
-                let preview = str_at(&thread, "latestReplyPreview");
-                let selected = self.selected_thread.as_deref() == Some(tid.as_str());
-                sidebar = sidebar.child(row(
-                    ElementId::Name(format!("thread-{tid}").into()),
-                    if title.is_empty() { "(untitled)".to_string() } else { title.to_string() },
-                    preview.chars().take(80).collect(),
-                    selected,
-                    cx,
-                    move |this, _ev, _w, cx| this.open_thread(tid.clone(), cx),
-                ));
-            }
+        }
+        sidebar = sidebar.child(
+            div()
+                .mt_2()
+                .text_xs()
+                .font_weight(FontWeight::SEMIBOLD)
+                .text_color(theme.muted_foreground)
+                .child("CHATS"),
+        );
+        for thread in arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "threads")
+            .iter()
+            .filter(|t| {
+                get(t, "deletedAt").is_null() && get(t, "archivedAt").is_null()
+            })
+            .filter(|t| {
+                query.is_empty()
+                    || str_at(t, "title").to_lowercase().contains(&query)
+                    || str_at(t, "latestReplyPreview")
+                        .to_lowercase()
+                        .contains(&query)
+            })
+            .cloned()
+            .collect::<Vec<_>>()
+        {
+            let tid = str_at(&thread, "id").to_string();
+            let title = str_at(&thread, "title");
+            let preview = str_at(&thread, "latestReplyPreview");
+            let selected = self.selected_thread.as_deref() == Some(tid.as_str());
+            sidebar = sidebar.child(row(
+                ElementId::Name(format!("thread-{tid}").into()),
+                if title.is_empty() { "(untitled)".to_string() } else { title.to_string() },
+                preview.chars().take(80).collect(),
+                selected,
+                cx,
+                move |this, _ev, _w, cx| this.open_thread(tid.clone(), cx),
+            ));
         }
         // Server-side content matches (searchThreads).
         if !self.search_hits.is_empty() {
@@ -1112,15 +1209,28 @@ impl Render for Native {
                 ));
             }
         }
-        sidebar = sidebar.child(
-            Button::new("refresh")
-                .ghost()
-                .label("Refresh")
-                .on_click(cx.listener(|this, _ev, _w, cx| this.refresh(cx))),
-        );
-
         // ---- transcript ----
         let mut pane = v_flex().flex_1().h_full().p_4().gap_2();
+        if self.selected_thread.is_none() {
+            pane = pane
+                .items_center()
+                .justify_center()
+                .gap_3()
+                .child(div().text_2xl().child("\u{3a5}"))
+                .child(
+                    div()
+                        .text_xl()
+                        .font_weight(FontWeight::SEMIBOLD)
+                        .child("What should we work on?"),
+                )
+                .child(
+                    Button::new("work-in-project")
+                        .outline()
+                        .icon(IconName::FolderClosed)
+                        .label("Work in a project")
+                        .on_click(cx.listener(|this, _ev, _w, cx| this.toggle_files(cx))),
+                );
+        }
         let thread_v = get(self.detail.as_ref().unwrap_or(&Value::Null), "thread");
         let session_status = str_at(get(thread_v, "session"), "status").to_string();
         let turn_state = str_at(get(thread_v, "latestTurn"), "state").to_string();
@@ -1184,7 +1294,7 @@ impl Render for Native {
             pane = pane.child(header);
         }
         let messages = arr(thread_v, "messages");
-        if messages.is_empty() {
+        if messages.is_empty() && self.selected_thread.is_some() {
             pane = pane.child(
                 div()
                     .text_sm()
@@ -1319,32 +1429,81 @@ impl Render for Native {
         // ---- files browser / viewer ----
         let mut files_pane = v_flex().flex_1().h_full().p_4().gap_1();
         if self.view_files {
-            if let Some((path, text)) = &self.open_file {
+            if let Some((path, text)) = self.open_file.clone() {
+                if self.file_editor.is_none() {
+                    self.file_editor = Some(cx.new(|cx| EditorState::new(window, cx)));
+                }
+                let editor = self.file_editor.clone().unwrap();
+                let sync_key = format!(
+                    "{}:{}",
+                    path,
+                    self.open_file_meta
+                        .as_ref()
+                        .map(|m| m.0.as_str())
+                        .unwrap_or("")
+                );
+                if !self.editing_file && self.editor_synced.as_deref() != Some(&sync_key) {
+                    let lang = Self::editor_language(&path);
+                    let t = text.clone();
+                    editor.update(cx, |s, cx| {
+                        s.set_highlighter(lang, cx);
+                        s.set_value(t, window, cx);
+                    });
+                    self.editor_synced = Some(sync_key);
+                }
                 let p = path.clone();
-                files_pane = files_pane
+                let editing = self.editing_file;
+                let mut header = h_flex()
+                    .gap_2()
                     .child(
-                        h_flex()
-                            .gap_2()
-                            .child(
-                                Button::new("close-file")
-                                    .ghost()
-                                    .label("x")
-                                    .on_click(
-                                        cx.listener(|this, _ev, _w, cx| this.close_file(cx)),
-                                    ),
-                            )
-                            .child(
-                                div()
-                                    .text_xs()
-                                    .text_color(theme.muted_foreground)
-                                    .child(p),
-                            ),
+                        Button::new("close-file")
+                            .ghost()
+                            .label("x")
+                            .on_click(cx.listener(|this, _ev, _w, cx| this.close_file(cx))),
                     )
                     .child(
                         div()
-                            .text_sm()
-                            .font_family("monospace")
-                            .child(text.clone()),
+                            .flex_1()
+                            .text_xs()
+                            .text_color(theme.muted_foreground)
+                            .child(p),
+                    );
+                if editing {
+                    header = header
+                        .child(
+                            Button::new("save-file")
+                                .primary()
+                                .label("Save")
+                                .on_click(cx.listener(|this, _ev, _w, cx| this.save_file(cx))),
+                        )
+                        .child(
+                            Button::new("cancel-edit")
+                                .ghost()
+                                .label("Cancel")
+                                .on_click(cx.listener(|this, _ev, _w, cx| {
+                                    this.editing_file = false;
+                                    this.editor_synced = None;
+                                    cx.notify();
+                                })),
+                        );
+                } else {
+                    header = header.child(
+                        Button::new("edit-file")
+                            .ghost()
+                            .label("Edit")
+                            .on_click(cx.listener(|this, _ev, _w, cx| {
+                                this.editing_file = true;
+                                cx.notify();
+                            })),
+                    );
+                }
+                files_pane = files_pane
+                    .child(header)
+                    .child(
+                        div()
+                            .flex_1()
+                            .h_full()
+                            .child(Editor::new(&editor).readonly(!editing)),
                     );
             } else {
                 let parent = self
@@ -1490,19 +1649,44 @@ impl Render for Native {
         }
 
         // ---- composer ----
-        let composer_bar = h_flex()
+        let composer_card = v_flex()
+            .w_full()
+            .max_w(px(640.))
+            .border_1()
+            .border_color(theme.border)
+            .rounded_lg()
+            .bg(theme.background)
+            .p_2()
+            .gap_1()
+            .child(Input::new(&self.composer).appearance(false))
+            .child(
+                h_flex()
+                    .gap_2()
+                    .items_center()
+                    .child(
+                        Button::new("composer-mode")
+                            .ghost()
+                            .compact()
+                            .label("Full access \u{25be}"),
+                    )
+                    .child(div().flex_1())
+                    .child(
+                        Button::new("composer-model")
+                            .ghost()
+                            .compact()
+                            .label("Astra Medium \u{25be}"),
+                    )
+                    .child(
+                        Button::new("send")
+                            .primary()
+                            .icon(IconName::ArrowUp)
+                            .on_click(cx.listener(|this, _ev, w, cx| this.send(w, cx))),
+                    ),
+            );
+        let composer_bar = div()
             .w_full()
             .p_3()
-            .gap_2()
-            .border_t_1()
-            .border_color(theme.border)
-            .child(div().flex_1().child(Input::new(&self.composer)))
-            .child(
-                Button::new("send")
-                    .primary()
-                    .label(if self.sending { "Sending..." } else { "Send" })
-                    .on_click(cx.listener(|this, _ev, w, cx| this.send(w, cx))),
-            );
+            .child(h_flex().justify_center().child(composer_card));
 
         let mut main = v_flex().flex_1().h_full();
         if self.view_dev {
@@ -1515,10 +1699,44 @@ impl Render for Native {
                 .child(composer_bar);
         }
 
+        // ---- icon rail ----
+        let rail_btn = |id: &'static str, icon: IconName, active: bool| {
+            let b = Button::new(ElementId::Name(id.into())).icon(icon);
+            if active { b.outline() } else { b.ghost() }
+        };
+        let rail = v_flex()
+            .w(px(44.))
+            .h_full()
+            .py_2()
+            .items_center()
+            .gap_1()
+            .child(
+                rail_btn("nav-chat", IconName::LayoutDashboard, !self.view_files && !self.view_dev)
+                    .on_click(cx.listener(|this, _ev, _w, cx| {
+                        this.view_files = false;
+                        this.view_dev = false;
+                        cx.notify();
+                    })),
+            )
+            .child(
+                rail_btn("nav-files", IconName::FolderClosed, self.view_files)
+                    .on_click(cx.listener(|this, _ev, _w, cx| this.toggle_files(cx))),
+            )
+            .child(
+                rail_btn("nav-dev", IconName::SquareTerminal, self.view_dev)
+                    .on_click(cx.listener(|this, _ev, _w, cx| this.toggle_dev(cx))),
+            )
+            .child(div().flex_1())
+            .child(
+                rail_btn("nav-refresh", IconName::RefreshCw, false)
+                    .on_click(cx.listener(|this, _ev, _w, cx| this.refresh(cx))),
+            );
+
         h_flex()
             .size_full()
             .bg(theme.background)
             .text_color(theme.foreground)
+            .child(rail.border_r_1().border_color(theme.border))
             .child(sidebar.border_r_1().border_color(theme.border))
             .child(main)
     }

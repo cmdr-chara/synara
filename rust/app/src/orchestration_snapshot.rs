@@ -418,7 +418,7 @@ fn load_threads(conn: &Connection) -> Vec<Value> {
     threads
 }
 
-fn snapshot_sequence(conn: &Connection) -> i64 {
+pub(crate) fn snapshot_sequence(conn: &Connection) -> i64 {
     conn.query_row(
         "SELECT COALESCE(MAX(last_applied_sequence), 0) FROM projection_state",
         [],

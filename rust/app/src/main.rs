@@ -4,6 +4,7 @@ mod git_pr;
 mod github_inbox;
 mod list_worktrees;
 mod native_ws;
+mod orchestration_reads;
 mod orchestration_snapshot;
 mod original;
 mod projects_devserver;

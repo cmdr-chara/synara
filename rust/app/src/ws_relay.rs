@@ -112,10 +112,7 @@ fn intercept_todo(
         && !text.contains("server.subscribeKeepAwake")
         && !text.contains("stats.")
         && !text.contains("terminal.")
-        && !text.contains("orchestration.getSnapshot")
-        && !text.contains("orchestration.getShellSnapshot")
-        && !text.contains("orchestration.getThreadDetailSnapshot")
-        && !text.contains("orchestration.searchThreads")
+        && !text.contains("orchestration.")
         && !text.contains("githubInbox.")
     {
         return None;
@@ -168,6 +165,10 @@ fn intercept_todo(
         && tag != "orchestration.getShellSnapshot"
         && tag != "orchestration.getThreadDetailSnapshot"
         && tag != "orchestration.searchThreads"
+        && tag != "orchestration.subscribeShell"
+        && tag != "orchestration.subscribeThread"
+        && tag != "orchestration.subscribeDomainEvents"
+        && !crate::orchestration_reads::handles(tag)
         && !tag.starts_with("githubInbox.")
         && !tag.starts_with("stats.")
         && !tag.starts_with("terminal.")
@@ -252,6 +253,177 @@ fn intercept_todo(
                     .is_ok()
             })
             .await;
+        });
+        if let Ok(mut map) = streams.lock() {
+            map.insert(request_id, task);
+        }
+        return Some(None);
+    }
+    if tag == "orchestration.subscribeShell" {
+        let tx = native_tx.clone();
+        let rid = request_id.clone();
+        let task = tokio::spawn(async move {
+            let mut last = String::new();
+            loop {
+                if let Ok(snapshot) = crate::orchestration_snapshot::get_shell_snapshot() {
+                    let text = snapshot.to_string();
+                    if text != last {
+                        last = text;
+                        let chunk = serde_json::json!({
+                            "_tag": "Chunk", "requestId": rid,
+                            "values": [{"kind": "snapshot", "snapshot": snapshot}],
+                        });
+                        if tx
+                            .send(ClientMessage::Text(chunk.to_string().into()))
+                            .is_err()
+                        {
+                            return;
+                        }
+                    }
+                }
+                tokio::time::sleep(std::time::Duration::from_millis(1200)).await;
+            }
+        });
+        if let Ok(mut map) = streams.lock() {
+            map.insert(request_id, task);
+        }
+        return Some(None);
+    }
+    if tag == "orchestration.subscribeThread" {
+        let thread_id = payload
+            .get("threadId")
+            .and_then(|v| v.as_str())
+            .map(str::to_string);
+        let Some(thread_id) = thread_id else {
+            let exit = serde_json::json!({
+                "_tag": "Failure",
+                "cause": [{
+                    "_tag": "Fail",
+                    "error": error_json(crate::todo::WsErr(
+                        "threadId is required".to_string(),
+                        Some("VALIDATION"),
+                    )),
+                }],
+            });
+            let reply = serde_json::json!({
+                "_tag": "Exit", "requestId": request_id, "exit": exit,
+            });
+            return Some(Some(ClientMessage::Text(reply.to_string().into())));
+        };
+        let after_seq = payload.get("afterSequence").and_then(|v| v.as_i64());
+        let batch_replay = payload
+            .get("batchReplay")
+            .and_then(|v| v.as_bool())
+            .unwrap_or(false);
+        let tx = native_tx.clone();
+        let rid = request_id.clone();
+        let task = tokio::spawn(async move {
+            fn send(tx: &tokio::sync::mpsc::UnboundedSender<ClientMessage>, chunk: serde_json::Value) -> bool {
+                tx.send(ClientMessage::Text(chunk.to_string().into())).is_ok()
+            }
+            let mut last_seen: i64;
+            if let Some(after) = after_seq {
+                // Cursor resume: replay the gap instead of a full snapshot.
+                match crate::orchestration_reads::thread_events_after(&thread_id, after) {
+                    Ok(events) => {
+                        last_seen = events.last().map(|(s, _)| *s).unwrap_or(after);
+                        if batch_replay {
+                            let items: Vec<serde_json::Value> =
+                                events.into_iter().map(|(_, e)| e).collect();
+                            let chunk = serde_json::json!({
+                                "_tag": "Chunk", "requestId": rid,
+                                "values": [{"kind": "replay", "events": items}],
+                            });
+                            if !send(&tx, chunk) {
+                                return;
+                            }
+                        } else {
+                            for (_, event) in events {
+                                let chunk = serde_json::json!({
+                                    "_tag": "Chunk", "requestId": rid,
+                                    "values": [{"kind": "event", "event": event}],
+                                });
+                                if !send(&tx, chunk) {
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                    Err(_) => {
+                        last_seen = after;
+                    }
+                }
+            } else {
+                // Snapshot first, then live events past its sequence.
+                let snapshot = crate::orchestration_snapshot::get_thread_detail_snapshot(
+                    &serde_json::json!({"threadId": thread_id}),
+                )
+                .unwrap_or(serde_json::Value::Null);
+                last_seen = snapshot
+                    .get("snapshotSequence")
+                    .and_then(|v| v.as_i64())
+                    .unwrap_or(0);
+                let chunk = serde_json::json!({
+                    "_tag": "Chunk", "requestId": rid,
+                    "values": [{"kind": "snapshot", "snapshot": snapshot}],
+                });
+                if !send(&tx, chunk) {
+                    return;
+                }
+            }
+            loop {
+                tokio::time::sleep(std::time::Duration::from_millis(1000)).await;
+                match crate::orchestration_reads::thread_events_after(&thread_id, last_seen) {
+                    Ok(events) => {
+                        for (seq, event) in events {
+                            last_seen = last_seen.max(seq);
+                            let chunk = serde_json::json!({
+                                "_tag": "Chunk", "requestId": rid,
+                                "values": [{"kind": "event", "event": event}],
+                            });
+                            if !send(&tx, chunk) {
+                                return;
+                            }
+                        }
+                    }
+                    Err(_) => {}
+                }
+            }
+        });
+        if let Ok(mut map) = streams.lock() {
+            map.insert(request_id, task);
+        }
+        return Some(None);
+    }
+    if tag == "orchestration.subscribeDomainEvents" {
+        let mut last_seen = payload
+            .get("afterSequence")
+            .and_then(|v| v.as_i64())
+            .unwrap_or(0);
+        let tx = native_tx.clone();
+        let rid = request_id.clone();
+        let task = tokio::spawn(async move {
+            loop {
+                match crate::orchestration_reads::domain_events_after(last_seen) {
+                    Ok(events) => {
+                        for (seq, event) in events {
+                            last_seen = last_seen.max(seq);
+                            let chunk = serde_json::json!({
+                                "_tag": "Chunk", "requestId": rid,
+                                "values": [event],
+                            });
+                            if tx
+                                .send(ClientMessage::Text(chunk.to_string().into()))
+                                .is_err()
+                            {
+                                return;
+                            }
+                        }
+                    }
+                    Err(_) => {}
+                }
+                tokio::time::sleep(std::time::Duration::from_millis(1200)).await;
+            }
         });
         if let Ok(mut map) = streams.lock() {
             map.insert(request_id, task);
@@ -586,6 +758,10 @@ fn intercept_todo(
             .map_err(error_json)
     } else if tag == "orchestration.searchThreads" {
         crate::orchestration_snapshot::search_threads(&payload)
+            .map(Some)
+            .map_err(error_json)
+    } else if crate::orchestration_reads::handles(tag) {
+        crate::orchestration_reads::handle(tag, &payload)
             .map(Some)
             .map_err(error_json)
     } else if tag.starts_with("githubInbox.") {

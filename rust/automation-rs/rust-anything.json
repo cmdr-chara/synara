@@ -1,0 +1,343 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/automation/",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "automation-rs",
+  "exports": [
+    {
+      "name": "automationProposalActivityId",
+      "file": "apps/server/src/automation/proposalActivity.ts",
+      "line": 11,
+      "params": [
+        {
+          "name": "automationId",
+          "ts_type": "typeof typeof typeof typeof AutomationDefinition.Type.Type.Type.Type[\"id\"]",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof EventId.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "automationCadenceLabel",
+      "file": "apps/server/src/automation/proposalActivity.ts",
+      "line": 15,
+      "params": [
+        {
+          "name": "schedule",
+          "ts_type": "typeof typeof typeof typeof AutomationSchedule.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "buildAutomationProposalActivity",
+      "file": "apps/server/src/automation/proposalActivity.ts",
+      "line": 38,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly definition: typeof typeof typeof typeof AutomationDefinition.Type.Type.Type.Type;\n  readonly proposalState: typeof typeof typeof typeof AutomationProposalState.Type.Type.Type.Type;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "automationMemoryForEnvelope",
+      "file": "apps/server/src/automation/runEnvelope.ts",
+      "line": 10,
+      "params": [
+        {
+          "name": "content",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "buildAutomationRunEnvelope",
+      "file": "apps/server/src/automation/runEnvelope.ts",
+      "line": 62,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly definition: typeof typeof typeof typeof AutomationDefinition.Type.Type.Type.Type;\n  readonly run: typeof typeof typeof typeof AutomationRun.Type.Type.Type.Type;\n  readonly memoryContent: string;\n  readonly lastRunAt: string | null;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "automationRunResultSummary",
+      "file": "apps/server/src/automation/runResult.ts",
+      "line": 16,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "string | null | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "fallback",
+          "ts_type": "string",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "automationRunResultSummaryWithNotice",
+      "file": "apps/server/src/automation/runResult.ts",
+      "line": 25,
+      "params": [
+        {
+          "name": "baseSummary",
+          "ts_type": "string | null | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "notice",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "normalizeAutomationCompletionReason",
+      "file": "apps/server/src/automation/runResult.ts",
+      "line": 42,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "string | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "failedAutomationCompletionEvaluation",
+      "file": "apps/server/src/automation/runResult.ts",
+      "line": 47,
+      "params": [
+        {
+          "name": "reason",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "NonNullable<\n  typeof typeof typeof AutomationRunResult.Type.Type.Type[\"completionEvaluation\"]\n>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "automationCompletionRunResult",
+      "file": "apps/server/src/automation/runResult.ts",
+      "line": 58,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly baseResult: typeof typeof typeof typeof AutomationRunResult.Type.Type.Type.Type | null;\n  readonly evaluation: NonNullable<\n  typeof typeof typeof AutomationRunResult.Type.Type.Type[\"completionEvaluation\"]\n>;\n  readonly matched: boolean;\n  readonly summary?: string;\n  readonly severity?: NonNullable<typeof typeof typeof typeof AutomationRunResult.Type.Type.Type.Type[\"severity\"]>;\n  readonly unread?: boolean;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof AutomationRunResult.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "deterministicAutomationJitterSeconds",
+      "file": "apps/server/src/automation/schedule.ts",
+      "line": 26,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly installSalt: string;\n  readonly automationId: typeof typeof typeof typeof AutomationId.Type.Type.Type.Type;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "number",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "computeNextAutomationRunAt",
+      "file": "apps/server/src/automation/schedule.ts",
+      "line": 410,
+      "params": [
+        {
+          "name": "schedule",
+          "ts_type": "typeof typeof typeof typeof AutomationSchedule.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "fromIso",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "jitterContext",
+          "ts_type": "AutomationScheduleJitterContext",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "computeNextAutomationRunAtAfter",
+      "file": "apps/server/src/automation/schedule.ts",
+      "line": 451,
+      "params": [
+        {
+          "name": "schedule",
+          "ts_type": "typeof typeof typeof typeof AutomationSchedule.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "fromIso",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "notBeforeIso",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "jitterContext",
+          "ts_type": "AutomationScheduleJitterContext",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "computeAutomationScheduleSpacingSeconds",
+      "file": "apps/server/src/automation/schedule.ts",
+      "line": 486,
+      "params": [
+        {
+          "name": "schedule",
+          "ts_type": "typeof typeof typeof typeof AutomationSchedule.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "fromIso",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "number | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveAutomationStopPolicy",
+      "file": "apps/server/src/automation/stopPolicy.ts",
+      "line": 3,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n    readonly stopAfterConsecutiveFailures?: number | null | undefined;\n    readonly stopOnError?: boolean | undefined;\n  }",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "fallback",
+          "ts_type": "number | null",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "number | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "AutomationServiceError",
+      "file": "apps/server/src/automation/Errors.ts",
+      "line": 3,
+      "reason": "class: extends another class"
+    }
+  ]
+}

@@ -436,6 +436,9 @@ impl Render for Native {
                 .iter()
                 .filter(|t| str_at(t, "projectId") == pid)
                 .filter(|t| {
+                    get(t, "deletedAt").is_null() && get(t, "archivedAt").is_null()
+                })
+                .filter(|t| {
                     query.is_empty()
                         || str_at(t, "title").to_lowercase().contains(&query)
                         || str_at(t, "latestReplyPreview")
@@ -516,7 +519,18 @@ impl Render for Native {
         }
         for m in messages {
             let role = str_at(m, "role");
-            let text = str_at(m, "text");
+            let mut text = str_at(m, "text").to_string();
+            if text.trim().is_empty() {
+                text = get(m, "textSegments")
+                    .as_array()
+                    .map(|segs| {
+                        segs.iter()
+                            .filter_map(|s| s.get("text").and_then(Value::as_str))
+                            .collect::<Vec<_>>()
+                            .join("")
+                    })
+                    .unwrap_or_default();
+            }
             if text.trim().is_empty() {
                 continue;
             }

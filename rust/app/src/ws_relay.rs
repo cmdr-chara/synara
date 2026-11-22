@@ -113,6 +113,7 @@ fn intercept_todo(
         && !text.contains("stats.")
         && !text.contains("terminal.")
         && !text.contains("orchestration.getSnapshot")
+        && !text.contains("githubInbox.")
     {
         return None;
     }
@@ -160,6 +161,7 @@ fn intercept_todo(
         && tag != "server.subscribeLifecycle"
         && tag != "server.subscribeKeepAwake"
         && tag != "orchestration.getSnapshot"
+        && !tag.starts_with("githubInbox.")
         && !tag.starts_with("stats.")
         && !tag.starts_with("terminal.")
     {
@@ -562,6 +564,16 @@ fn intercept_todo(
         crate::orchestration_snapshot::get_snapshot()
             .map(Some)
             .map_err(error_json)
+    } else if tag.starts_with("githubInbox.") {
+        crate::github_inbox::handle(tag, &payload)
+            .map_err(error_json)
+            .and_then(|v| match v {
+                Some(v) => Ok(Some(v)),
+                None => Err(error_json(crate::todo::WsErr(
+                    format!("unhandled native tag {tag}"),
+                    Some("DISPATCH"),
+                ))),
+            })
     } else {
         todos.handle(tag, payload).map(Some).map_err(error_json)
     };

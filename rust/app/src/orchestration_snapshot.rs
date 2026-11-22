@@ -18,8 +18,8 @@ fn err(msg: impl Into<String>) -> WsErr {
 /// Same byte-copy trick as `stats`: upstream keeps `state.sqlite` under
 /// `PRAGMA locking_mode = EXCLUSIVE`, so we copy db + WAL to a temp file and
 /// read that.
-struct StateCopy {
-    conn: Connection,
+pub(crate) struct StateCopy {
+    pub(crate) conn: Connection,
     db: PathBuf,
     wal: PathBuf,
 }
@@ -31,7 +31,7 @@ impl Drop for StateCopy {
     }
 }
 
-fn open_state_copy() -> Option<StateCopy> {
+pub(crate) fn open_state_copy() -> Option<StateCopy> {
     let db = PathBuf::from(state_dir()).join("state.sqlite");
     let tmp = std::env::temp_dir().join(format!("synara-orch-snap-{}.sqlite", std::process::id()));
     let tmp_wal = PathBuf::from(format!("{}-wal", tmp.display()));
@@ -95,7 +95,7 @@ fn row_value(v: rusqlite::types::ValueRef<'_>, parse_json: bool, to_bool: bool) 
 /// snake_case->camelCase key, `json_cols` are `*_json` columns whose contents
 /// are parsed (key emitted without the suffix), `bool_cols` are 0/1 integers
 /// emitted as booleans.
-fn query_objects(
+pub(crate) fn query_objects(
     conn: &Connection,
     sql: &str,
     renames: &[(&str, &str)],
@@ -427,7 +427,7 @@ fn snapshot_sequence(conn: &Connection) -> i64 {
     .unwrap_or(0)
 }
 
-fn now_iso() -> String {
+pub(crate) fn now_iso() -> String {
     let secs = std::time::SystemTime::now()
         .duration_since(std::time::UNIX_EPOCH)
         .map(|d| d.as_millis() as f64 / 1000.0)

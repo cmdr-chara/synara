@@ -1,5 +1,6 @@
 mod fs_browse;
 mod git_domain;
+mod github_inbox;
 mod list_worktrees;
 mod native_ws;
 mod orchestration_snapshot;

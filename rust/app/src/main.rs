@@ -1,6 +1,7 @@
 mod native_ws;
 mod runtime_status;
 mod server_env;
+mod shell_editor;
 mod todo;
 mod ws_relay;
 mod original;

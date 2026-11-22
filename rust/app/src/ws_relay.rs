@@ -67,6 +67,9 @@ fn intercept_todo(
     text: &str,
     todos: &std::sync::Arc<crate::todo::TodoStore>,
     native_tx: &tokio::sync::mpsc::UnboundedSender<ClientMessage>,
+    streams: &std::sync::Arc<
+        std::sync::Mutex<std::collections::HashMap<String, tokio::task::JoinHandle<()>>>,
+    >,
 ) -> Option<Option<ClientMessage>> {
     if !text.contains("\"todo.") {
         return None;
@@ -90,8 +93,8 @@ fn intercept_todo(
         // (subscribe-then-read ordering is preserved by the store lock).
         let todos = todos.clone();
         let tx = native_tx.clone();
-        let rid = request_id;
-        tokio::spawn(async move {
+        let rid = request_id.clone();
+        let task = tokio::spawn(async move {
             let mut rx = todos.subscribe();
             if let Ok(serde_json::Value::Object(mut snapshot)) = todos.handle("todo.list", serde_json::Value::Null) {
                 let event = serde_json::json!({"type": "snapshot", "todos": snapshot.remove("todos").unwrap_or(serde_json::json!([]))});
@@ -107,6 +110,9 @@ fn intercept_todo(
                 }
             }
         });
+        if let Ok(mut map) = streams.lock() {
+            map.insert(request_id, task);
+        }
         return Some(None);
     }
     let exit = match todos.handle(tag, payload) {
@@ -252,6 +258,10 @@ async fn relay(
     let (mut client_tx, mut client_rx) = client.split();
     let (mut up_tx, mut up_rx) = upstream.split();
     let (native_tx, mut native_rx) = unbounded_channel::<ClientMessage>();
+    let streams: std::sync::Arc<
+        std::sync::Mutex<std::collections::HashMap<String, tokio::task::JoinHandle<()>>>,
+    > = std::sync::Arc::new(std::sync::Mutex::new(std::collections::HashMap::new()));
+    let streams_in = streams.clone();
 
     let to_upstream = async move {
         while let Some(msg) = client_rx.next().await {
@@ -267,11 +277,39 @@ async fn relay(
                             continue;
                         }
                     }
-                    if let Some(reply) = intercept_todo(&t, &todos, &native_tx) {
+                    if let Some(reply) = intercept_todo(&t, &todos, &native_tx, &streams_in) {
                         if let Some(reply) = reply {
                             let _ = native_tx.send(reply);
                         }
                         continue;
+                    }
+                    // `Interrupt`/`Eof` addressed at a native stream: abort the
+                    // pump and swallow the frame; anything else relays upstream.
+                    if (t.contains("\"Interrupt\"") || t.contains("\"Eof\""))
+                        && let Ok(msg) = serde_json::from_str::<serde_json::Value>(&t)
+                    {
+                        let tag = msg.get("_tag").and_then(|v| v.as_str()).unwrap_or("");
+                        if tag == "Interrupt" || tag == "Eof" {
+                            let rid = msg
+                                .get("requestId")
+                                .and_then(|v| v.as_str())
+                                .unwrap_or("");
+                            let owned = if let Ok(mut map) = streams_in.lock() {
+                                if tag == "Eof" {
+                                    map.drain().map(|(_, h)| h).collect::<Vec<_>>()
+                                } else {
+                                    map.remove(rid).into_iter().collect::<Vec<_>>()
+                                }
+                            } else {
+                                Vec::new()
+                            };
+                            if !owned.is_empty() {
+                                for h in owned {
+                                    h.abort();
+                                }
+                                continue;
+                            }
+                        }
                     }
                     UpstreamMessage::Text(t.to_string().into())
                 }

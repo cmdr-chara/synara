@@ -283,9 +283,10 @@ fn intercept_todo(
         let tx = native_tx.clone();
         let rid = request_id.clone();
         let task = tokio::spawn(async move {
-            let event =
-                serde_json::json!({"type": "settingsUpdated", "payload": {"settings": snapshot}});
-            let chunk = serde_json::json!({"_tag": "Chunk", "requestId": rid, "values": [event]});
+            // Upstream subscribeServerSettings streams raw {settings} objects
+            // (the typed settingsUpdated envelope belongs to subscribeConfig).
+            let chunk =
+                serde_json::json!({"_tag": "Chunk", "requestId": rid, "values": [{"settings": snapshot}]});
             if tx
                 .send(ClientMessage::Text(chunk.to_string().into()))
                 .is_err()
@@ -293,9 +294,8 @@ fn intercept_todo(
                 return;
             }
             while let Ok(settings) = rx.recv().await {
-                let event = serde_json::json!({"type": "settingsUpdated", "payload": {"settings": settings}});
                 let chunk =
-                    serde_json::json!({"_tag": "Chunk", "requestId": rid, "values": [event]});
+                    serde_json::json!({"_tag": "Chunk", "requestId": rid, "values": [{"settings": settings}]});
                 if tx
                     .send(ClientMessage::Text(chunk.to_string().into()))
                     .is_err()
@@ -774,38 +774,52 @@ async fn relay(
         while let Some(msg) = client_rx.next().await {
             let msg = match msg {
                 Ok(m) => m,
-                Err(_) => break,
+                Err(e) => {
+                    eprintln!("ws_relay: client read error: {e}");
+                    break;
+                }
             };
             let out = match msg {
                 ClientMessage::Text(t) => {
                     if intercept && t.contains(BOOTSTRAP_NEGOTIATE) {
                         if let Some((_, reply)) = intercept_bootstrap(&t) {
+                            eprintln!("ws_relay: native bootstrap.negotiate reply sent");
                             let _ = native_tx.send(reply);
                             continue;
                         }
                     }
                     if let Some(reply) = intercept_todo(&t, &todos, &native_tx, &streams_in) {
+                        eprintln!("ws_relay: native todo reply");
                         if let Some(reply) = reply {
                             let _ = native_tx.send(reply);
                         }
                         continue;
                     }
-                    // `Interrupt`/`Eof` addressed at a native stream: abort the
-                    // pump and swallow the frame; anything else relays upstream.
-                    if (t.contains("\"Interrupt\"") || t.contains("\"Eof\""))
+                    // `Ack`/`Interrupt`/`Eof` addressed at a native stream stay
+                    // on this side: upstream never saw the request id, so the
+                    // frame would be a protocol violation there and poison the
+                    // whole socket. Interrupt aborts the pump; Eof drains all.
+                    if (t.contains("\"Interrupt\"") || t.contains("\"Eof\"") || t.contains("\"Ack\""))
                         && let Ok(msg) = serde_json::from_str::<serde_json::Value>(&t)
                     {
                         let tag = msg.get("_tag").and_then(|v| v.as_str()).unwrap_or("");
-                        if tag == "Interrupt" || tag == "Eof" {
+                        if tag == "Interrupt" || tag == "Eof" || tag == "Ack" {
                             let rid = msg.get("requestId").and_then(|v| v.as_str()).unwrap_or("");
                             let owned = if let Ok(mut map) = streams_in.lock() {
                                 if tag == "Eof" {
                                     map.drain().map(|(_, h)| h).collect::<Vec<_>>()
-                                } else {
+                                } else if tag == "Interrupt" {
                                     map.remove(rid).into_iter().collect::<Vec<_>>()
+                                } else {
+                                    Vec::new()
                                 }
                             } else {
                                 Vec::new()
+                            };
+                            let known_native = if let Ok(map) = streams_in.lock() {
+                                map.contains_key(rid)
+                            } else {
+                                false
                             };
                             if !owned.is_empty() {
                                 for h in owned {
@@ -813,15 +827,29 @@ async fn relay(
                                 }
                                 continue;
                             }
+                            if known_native {
+                                continue;
+                            }
                         }
                     }
                     tap_out(">", &t);
                     UpstreamMessage::Text(t.to_string().into())
                 }
-                ClientMessage::Binary(b) => UpstreamMessage::Binary(b),
+                ClientMessage::Binary(b) => {
+                    tap_out(">", &format!(
+                        "[bin {}B] {}",
+                        b.len(),
+                        b.iter()
+                            .take(160)
+                            .map(|x| format!("{x:02x}"))
+                            .collect::<String>()
+                    ));
+                    UpstreamMessage::Binary(b)
+                },
                 ClientMessage::Ping(p) => UpstreamMessage::Ping(p),
                 ClientMessage::Pong(p) => UpstreamMessage::Pong(p),
                 ClientMessage::Close(c) => {
+                    eprintln!("ws_relay: client closed socket: {c:?}");
                     let _ = up_tx
                         .send(UpstreamMessage::Close(c.map(|f| {
                             tokio_tungstenite::tungstenite::protocol::CloseFrame {
@@ -836,24 +864,48 @@ async fn relay(
                 }
             };
             if up_tx.send(out).await.is_err() {
+                eprintln!("ws_relay: upstream send channel closed");
                 break;
             }
         }
+        eprintln!("ws_relay: client->upstream loop ended");
     };
 
     let to_client = async move {
         loop {
             let out = tokio::select! {
                 msg = up_rx.next() => match msg {
+                    Some(Err(e)) => {
+                        eprintln!("ws_relay: upstream read error: {e}");
+                        break;
+                    }
+                    None => {
+                        eprintln!("ws_relay: upstream socket ended");
+                        break;
+                    }
                     Some(Ok(m)) => match m {
                         UpstreamMessage::Text(t) => {
                             tap("<", &t);
                             ClientMessage::Text(t.to_string().into())
                         },
-                        UpstreamMessage::Binary(b) => ClientMessage::Binary(b),
+                        UpstreamMessage::Binary(b) => {
+                            tap("<", &format!(
+                                "[bin {}B] {}",
+                                b.len(),
+                                b.iter()
+                                    .take(160)
+                                    .map(|x| format!("{x:02x}"))
+                                    .collect::<String>()
+                            ));
+                            ClientMessage::Binary(b)
+                        },
                         UpstreamMessage::Ping(p) => ClientMessage::Ping(p),
                         UpstreamMessage::Pong(p) => ClientMessage::Pong(p),
-                        UpstreamMessage::Frame(f) => ClientMessage::Binary(f.into_payload()),
+                        UpstreamMessage::Frame(f) => {
+                            let p = f.into_payload();
+                            tap("<", &format!("[frame {}B]", p.len()));
+                            ClientMessage::Binary(p)
+                        },
                         UpstreamMessage::Close(c) => {
                             let _ = client_tx
                                 .send(ClientMessage::Close(c.map(|f| {
@@ -866,10 +918,14 @@ async fn relay(
                             break;
                         }
                     },
-                    _ => break,
                 },
                 msg = native_rx.recv() => match msg {
-                    Some(m) => m,
+                    Some(m) => {
+                        if let ClientMessage::Text(t) = &m {
+                            tap("<", t);
+                        }
+                        m
+                    }
                     None => continue,
                 },
             };

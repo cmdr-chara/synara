@@ -184,23 +184,40 @@ pub async fn proxy(State(original): State<Original>, req: Request) -> Response {
         .client
         .request(parts.method, format!("{}{target}", original.base))
         .body(body);
+    let tap_client = std::env::var_os("SYNARA_TAP_CLIENT").is_some();
     for (name, value) in &parts.headers {
+        if tap_client
+            && (name == header::IF_NONE_MATCH
+                || name.as_str() == "if-modified-since"
+                || name == header::ACCEPT_ENCODING)
+        {
+            continue; // rewritten bodies must not be served from the browser's cache
+        }
         // Keep the client-facing Host: upstream derives requestOrigin from it
         // for the CSRF origin gate, which must match the browser's Origin.
         request = request.header(name, value);
     }
     match request.send().await {
         Ok(answer) => {
-            let mut response = Response::builder().status(answer.status());
+            let status = answer.status();
+            let content_type = answer_content_type(answer.headers());
+            let mut headers = axum::http::HeaderMap::new();
             for (name, value) in answer.headers() {
-                if name != header::TRANSFER_ENCODING && name != header::CONNECTION {
-                    response = response.header(name, value);
+                if name == header::TRANSFER_ENCODING || name == header::CONNECTION {
+                    continue;
                 }
+                if name == header::CONTENT_LENGTH || name == header::ETAG || name.as_str() == "last-modified" {
+                    continue; // body may be rewritten; stale validators/length must not leak
+                }
+                headers.insert(name, value.clone());
             }
-            let body = answer.bytes().await.unwrap_or_default();
-            response
+            let body = maybe_inject_client_tap(content_type, answer.bytes().await.unwrap_or_default());
+            let mut out = Response::builder()
+                .status(status)
                 .body(Body::from(body))
-                .unwrap_or_else(|_| StatusCode::BAD_GATEWAY.into_response())
+                .unwrap_or_else(|_| StatusCode::BAD_GATEWAY.into_response());
+            out.headers_mut().clone_from(&headers);
+            out
         }
         Err(e) => (
             StatusCode::BAD_GATEWAY,
@@ -208,6 +225,98 @@ pub async fn proxy(State(original): State<Original>, req: Request) -> Response {
         )
             .into_response(),
     }
+}
+
+fn answer_content_type(headers: &axum::http::HeaderMap) -> String {
+    headers
+        .get(header::CONTENT_TYPE)
+        .and_then(|v| v.to_str().ok())
+        .unwrap_or("")
+        .to_string()
+}
+
+/// Debug aid (SYNARA_TAP_CLIENT=1): wraps window.WebSocket and console.warn/
+/// console.error in every HTML page we serve, posting frames and failures to
+/// POST /__tap_client. Lets us see exactly what the client receives before it
+/// defects.
+const CLIENT_TAP_SCRIPT: &str = r##"<script>
+(() => {
+  const send = (line) => { try { navigator.sendBeacon('/__tap_client', line); } catch(e){} };
+  const OW = window.WebSocket;
+  let n = 0;
+  window.WebSocket = class extends OW {
+    constructor(url, p) {
+      super(url, p);
+      this.__tag = 'ws' + (++n);
+      this.binaryType = 'arraybuffer';
+      send('OPEN ' + this.__tag + ' ' + url);
+      this.addEventListener('open', () => send('open ' + this.__tag));
+      this.addEventListener('error', () => send('error ' + this.__tag));
+      this.addEventListener('close', (e) => send('close ' + this.__tag + ' ' + e.code + ' ' + (e.reason||'')));
+      this.addEventListener('message', (e) => {
+        let d = e.data;
+        if (d instanceof ArrayBuffer) {
+          const u = new Uint8Array(d);
+          d = '[bin ' + u.length + 'B] ' + Array.from(u.slice(0, 80)).map(b => b.toString(16).padStart(2, '0')).join('');
+        } else if (d instanceof Blob) {
+          d = '[blob ' + d.size + 'B]';
+        } else {
+          d = String(d).slice(0, 400);
+        }
+        send('< ' + this.__tag + ' ' + d);
+      });
+    }
+    send(d) {
+      let s;
+      if (typeof d === 'string') s = d.slice(0, 400);
+      else s = '[bin ' + (d.byteLength || d.size || 0) + 'B]';
+      send('> ' + this.__tag + ' ' + s);
+      return super.send(d);
+    }
+  };
+  for (const k of ['warn', 'error']) {
+    const orig = console[k].bind(console);
+    console[k] = (...a) => {
+      try {
+        send(k + ' ' + a.map(x => { try { return typeof x === 'object' && x !== null ? JSON.stringify(x) : String(x); } catch (e) { return 'unprintable'; } }).join(' '));
+      } catch (e) {}
+      return orig(...a);
+    };
+  }
+  window.addEventListener('unhandledrejection', (e) => send('unhandledrejection ' + String(e.reason && (e.reason.stack || e.reason.message || e.reason)).slice(0, 400)));
+  window.addEventListener('error', (e) => send('windowerror ' + String(e.message).slice(0, 300)));
+})();
+</script>"##;
+
+fn maybe_inject_client_tap(content_type: String, body: axum::body::Bytes) -> axum::body::Bytes {
+    if std::env::var_os("SYNARA_TAP_CLIENT").is_none() || !content_type.contains("text/html") {
+        return body;
+    }
+    let Ok(mut html) = String::from_utf8(body.to_vec()) else {
+        return body;
+    };
+    if let Some(pos) = html.find("<script") {
+        html.insert_str(pos, CLIENT_TAP_SCRIPT);
+    } else {
+        html = format!("{CLIENT_TAP_SCRIPT}{html}");
+    }
+    axum::body::Bytes::from(html)
+}
+
+/// POST /__tap_client: client-side tap lines appended by the injected script.
+pub async fn tap_client(body: Body) -> StatusCode {
+    let Ok(bytes) = axum::body::to_bytes(body, 64 * 1024).await else {
+        return StatusCode::BAD_REQUEST;
+    };
+    if let Ok(mut f) = std::fs::OpenOptions::new()
+        .create(true)
+        .append(true)
+        .open("/tmp/ws_client_tap.log")
+    {
+        let _ = f.write_all(&bytes);
+        let _ = f.write_all(b"\n");
+    }
+    StatusCode::NO_CONTENT
 }
 
 /// Ctrl-C or SIGTERM: stop taking requests and finish the open ones.

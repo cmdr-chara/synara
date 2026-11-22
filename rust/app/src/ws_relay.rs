@@ -713,12 +713,27 @@ async fn relay(
     let _ = resp;
     let (mut client_tx, mut client_rx) = client.split();
     let (mut up_tx, mut up_rx) = upstream.split();
+    // Debug tap: SYNARA_TAP_WS=/path appends every text frame (">" to
+    // upstream, "<" from upstream) so relayed wire shapes can be studied.
+    let tap_path = std::env::var("SYNARA_TAP_WS").ok();
+    let tap = std::sync::Arc::new(move |dir: &str, t: &str| {
+        if let Some(p) = &tap_path
+            && let Ok(mut f) = std::fs::OpenOptions::new()
+                .create(true)
+                .append(true)
+                .open(p)
+        {
+            use std::io::Write;
+            let _ = writeln!(f, "{dir}{t}");
+        }
+    });
     let (native_tx, mut native_rx) = unbounded_channel::<ClientMessage>();
     let streams: std::sync::Arc<
         std::sync::Mutex<std::collections::HashMap<String, tokio::task::JoinHandle<()>>>,
     > = std::sync::Arc::new(std::sync::Mutex::new(std::collections::HashMap::new()));
     let streams_in = streams.clone();
 
+    let tap_out = tap.clone();
     let to_upstream = async move {
         while let Some(msg) = client_rx.next().await {
             let msg = match msg {
@@ -764,6 +779,7 @@ async fn relay(
                             }
                         }
                     }
+                    tap_out(">", &t);
                     UpstreamMessage::Text(t.to_string().into())
                 }
                 ClientMessage::Binary(b) => UpstreamMessage::Binary(b),
@@ -794,7 +810,10 @@ async fn relay(
             let out = tokio::select! {
                 msg = up_rx.next() => match msg {
                     Some(Ok(m)) => match m {
-                        UpstreamMessage::Text(t) => ClientMessage::Text(t.to_string().into()),
+                        UpstreamMessage::Text(t) => {
+                            tap("<", &t);
+                            ClientMessage::Text(t.to_string().into())
+                        },
                         UpstreamMessage::Binary(b) => ClientMessage::Binary(b),
                         UpstreamMessage::Ping(p) => ClientMessage::Ping(p),
                         UpstreamMessage::Pong(p) => ClientMessage::Pong(p),

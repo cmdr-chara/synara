@@ -1,0 +1,162 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/workspace/",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "workspace-rs",
+  "exports": [
+    {
+      "name": "listLocalPreviewWorktreeRoots",
+      "file": "apps/server/src/workspace/localPreviewWorktrees.ts",
+      "line": 17,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly cwd: string;\n  readonly requestedPaths?: readonly string[];\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Effect.Effect<readonly string[], never, GitCore>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "parseManagedWorktreeWorkspaceRoot",
+      "file": "apps/server/src/workspace/managedWorktree.ts",
+      "line": 3,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly gitPointerFileContents: string;\n  readonly path: Pick<Path.Path, \"isAbsolute\" | \"normalize\" | \"resolve\" | \"sep\">;\n  readonly worktreePath: string;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveOutOfRootFileReference",
+      "file": "apps/server/src/workspace/outOfRootFileReference.ts",
+      "line": 57,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly workspaceRoot: string;\n  readonly relativePath: string;\n  readonly homeDir: string;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<string | null>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isContainedPath",
+      "file": "apps/server/src/workspace/realPathContainment.ts",
+      "line": 4,
+      "params": [
+        {
+          "name": "realRoot",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "candidatePath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveRealPathWithinRoot",
+      "file": "apps/server/src/workspace/realPathContainment.ts",
+      "line": 32,
+      "params": [
+        {
+          "name": "workspaceRoot",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "absolutePath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<string | null>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveRealPathForCreateWithinRoot",
+      "file": "apps/server/src/workspace/realPathContainment.ts",
+      "line": 48,
+      "params": [
+        {
+          "name": "workspaceRoot",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "absolutePath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<string | null>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "prepareRealPathForWriteWithinRoot",
+      "file": "apps/server/src/workspace/realPathContainment.ts",
+      "line": 99,
+      "params": [
+        {
+          "name": "workspaceRoot",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "absolutePath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<string | null>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

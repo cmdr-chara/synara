@@ -1,0 +1,41 @@
+{
+  "unit": "apps/server/src/workspace/",
+  "files": 14,
+  "fingerprint": "6210d323dc32070a",
+  "coverage": {
+    "lines": 774,
+    "reached": 655,
+    "files": [
+      {
+        "file": "apps/server/src/git/Services/GitCore.ts",
+        "lines": 444,
+        "reached": 444,
+        "missed": ""
+      },
+      {
+        "file": "apps/server/src/workspace/localPreviewWorktrees.ts",
+        "lines": 64,
+        "reached": 17,
+        "missed": "11-13, 22-65"
+      },
+      {
+        "file": "apps/server/src/workspace/managedWorktree.ts",
+        "lines": 17,
+        "reached": 13,
+        "missed": "11-12, 14-15"
+      },
+      {
+        "file": "apps/server/src/workspace/outOfRootFileReference.ts",
+        "lines": 104,
+        "reached": 60,
+        "missed": "35-38, 40-43, 74-90, 92-94, 98-113"
+      },
+      {
+        "file": "apps/server/src/workspace/realPathContainment.ts",
+        "lines": 145,
+        "reached": 121,
+        "missed": "18-20, 68-69, 73-74, 122-123, 132-133, 136-137, 142-146, 151-152, 154-155, 160-161"
+      }
+    ]
+  }
+}

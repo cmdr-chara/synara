@@ -1092,6 +1092,18 @@ impl Render for Native {
             .overflow_y_scrollbar();
         let query = self.search.read(cx).value().to_string().to_lowercase();
         sidebar = sidebar.child(
+            Button::new("app-menu")
+                .ghost()
+                .compact()
+                .label("Synara \u{25be}")
+                .w_full()
+                .on_click(cx.listener(|this, _ev, _w, cx| {
+                    this.view_files = false;
+                    this.view_dev = false;
+                    cx.notify();
+                })),
+        );
+        sidebar = sidebar.child(
             h_flex()
                 .gap_2()
                 .child(div().flex_1().child(Input::new(&self.search))),
@@ -1213,9 +1225,26 @@ impl Render for Native {
         let mut pane = v_flex().flex_1().h_full().p_4().gap_2();
         if self.selected_thread.is_none() {
             pane = pane
+                .relative()
                 .items_center()
                 .justify_center()
                 .gap_3()
+                .child(
+                    div()
+                        .absolute()
+                        .top(px(4.))
+                        .right(px(4.))
+                        .child(
+                            Button::new("support-synara")
+                                .ghost()
+                                .compact()
+                                .icon(IconName::Star)
+                                .label("Support Synara")
+                                .on_click(cx.listener(|_this, _ev, _w, cx| {
+                                    cx.open_url("https://github.com/Emanuele-web04/synara");
+                                })),
+                        ),
+                )
                 .child(div().text_2xl().child("\u{3a5}"))
                 .child(
                     div()

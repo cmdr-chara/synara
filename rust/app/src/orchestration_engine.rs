@@ -66,6 +66,8 @@ pub fn handle(_tag: &str, payload: &Value) -> Result<Value, WsErr> {
         .ok_or_else(|| err("orchestration.dispatchCommand payload is missing type"))?;
     match command_type {
         "thread.create" => thread_create(command),
+        "thread.handoff.create" => lineage_create(command, true),
+        "thread.fork.create" => lineage_create(command, false),
         "thread.archive" => thread_archive(command, true),
         "thread.unarchive" => thread_archive(command, false),
         "thread.delete" => thread_delete(command),
@@ -599,41 +601,12 @@ fn derive_associated(
     (path, branch_v, ref_v)
 }
 
-fn thread_create(command: &Map<String, Value>) -> Result<Value, WsErr> {
-    let command_id = s(command, "commandId").ok_or_else(|| err("thread.create missing commandId"))?;
-    let thread_id = s(command, "threadId").ok_or_else(|| err("thread.create missing threadId"))?;
-    let project_id = s(command, "projectId").ok_or_else(|| err("thread.create missing projectId"))?;
-    let title = s(command, "title").ok_or_else(|| err("thread.create missing title"))?;
-    let created_at =
-        s(command, "createdAt").ok_or_else(|| err("thread.create missing createdAt"))?;
 
-    let conn = open_state_rw()?;
-    conn.execute_batch("PRAGMA busy_timeout = 5000;")
-        .map_err(|e| err(e.to_string()))?;
-
-    // requireProject: the project must exist and not be deleted.
-    let project_kind: String = conn
-        .query_row(
-            "SELECT kind FROM projection_projects WHERE project_id = ?1 AND deleted_at IS NULL",
-            params![project_id],
-            |r| r.get(0),
-        )
-        .map_err(|_| err(format!("project {project_id} not found")))?;
-
-    // requireThreadAbsent.
-    let exists: bool = conn
-        .query_row(
-            "SELECT 1 FROM projection_threads WHERE thread_id = ?1",
-            params![thread_id],
-            |_| Ok(true),
-        )
-        .unwrap_or(false);
-    if exists {
-        return Err(err(format!("thread {thread_id} already exists")));
-    }
-
-    let is_group = is_group_container_kind(&project_kind);
-    let interaction_mode = s(command, "interactionMode").unwrap_or_else(|| "default".into());
+#[allow(clippy::type_complexity)]
+fn resolve_workspace_fields(
+    command: &Map<String, Value>,
+    is_group: bool,
+) -> (String, Value, Value, Value, Value, Value, Value, bool) {
     let env_mode = if is_group {
         "local".to_string()
     } else {
@@ -689,6 +662,46 @@ fn thread_create(command: &Map<String, Value>) -> Result<Value, WsErr> {
             .and_then(Value::as_bool)
             .unwrap_or(false)
     };
+    (env_mode, branch, worktree_path, working_directory, associated_path, associated_branch, associated_ref, create_branch_flow_completed)
+}
+
+fn thread_create(command: &Map<String, Value>) -> Result<Value, WsErr> {
+    let command_id = s(command, "commandId").ok_or_else(|| err("thread.create missing commandId"))?;
+    let thread_id = s(command, "threadId").ok_or_else(|| err("thread.create missing threadId"))?;
+    let project_id = s(command, "projectId").ok_or_else(|| err("thread.create missing projectId"))?;
+    let title = s(command, "title").ok_or_else(|| err("thread.create missing title"))?;
+    let created_at =
+        s(command, "createdAt").ok_or_else(|| err("thread.create missing createdAt"))?;
+
+    let conn = open_state_rw()?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| err(e.to_string()))?;
+
+    // requireProject: the project must exist and not be deleted.
+    let project_kind: String = conn
+        .query_row(
+            "SELECT kind FROM projection_projects WHERE project_id = ?1 AND deleted_at IS NULL",
+            params![project_id],
+            |r| r.get(0),
+        )
+        .map_err(|_| err(format!("project {project_id} not found")))?;
+
+    // requireThreadAbsent.
+    let exists: bool = conn
+        .query_row(
+            "SELECT 1 FROM projection_threads WHERE thread_id = ?1",
+            params![thread_id],
+            |_| Ok(true),
+        )
+        .unwrap_or(false);
+    if exists {
+        return Err(err(format!("thread {thread_id} already exists")));
+    }
+
+    let is_group = is_group_container_kind(&project_kind);
+    let interaction_mode = s(command, "interactionMode").unwrap_or_else(|| "default".into());
+    let (env_mode, branch, worktree_path, working_directory, associated_path, associated_branch, associated_ref, create_branch_flow_completed) =
+        resolve_workspace_fields(command, is_group);
     let is_pinned = command
         .get("isPinned")
         .and_then(Value::as_bool)
@@ -772,7 +785,7 @@ fn thread_create(command: &Map<String, Value>) -> Result<Value, WsErr> {
             stream_version,
             created_at,
             command_id,
-            Value::Object(ep).to_string(),
+            Value::Object(ep.clone()).to_string(),
         ],
     )
     .map_err(|e| err(format!("append thread.created event: {e}")))?;
@@ -787,8 +800,29 @@ fn thread_create(command: &Map<String, Value>) -> Result<Value, WsErr> {
     )
     .map_err(|e| err(format!("write command receipt: {e}")))?;
 
+    project_thread_created(&tx, &ep)?;
+
+    tx.commit().map_err(|e| err(e.to_string()))?;
+    Ok(json!({ "sequence": sequence }))
+}
+
+const PROVIDER_SEND_TURN_MAX_INPUT_CHARS: usize = 120_000;
+
+
+fn project_thread_created(conn: &Connection, p: &Map<String, Value>) -> Result<(), WsErr> {
+    let g = |k: &str| p.get(k).cloned().unwrap_or(Value::Null);
     let str_or_null = |v: &Value| -> Option<String> { v.as_str().map(str::to_string) };
-    tx.execute(
+    let thread_id = g("threadId").as_str().unwrap_or_default().to_string();
+    let project_id = g("projectId").as_str().unwrap_or_default().to_string();
+    let title = g("title").as_str().unwrap_or_default().to_string();
+    let created_at = g("createdAt").as_str().unwrap_or_default().to_string();
+    let last_known_pr = g("lastKnownPr");
+    let pull_requests = g("pullRequests");
+    let sidechat_context = g("sidechatContext");
+    let sidechat_last_activity_at = g("sidechatLastActivityAt");
+    let handoff = g("handoff");
+    let sidechat_source = g("sidechatSourceThreadId");
+    conn.execute(
         "INSERT INTO projection_threads (\
            thread_id, project_id, title, branch, worktree_path, latest_turn_id, \
            created_at, updated_at, deleted_at, runtime_mode, interaction_mode, \
@@ -807,49 +841,49 @@ fn thread_create(command: &Map<String, Value>) -> Result<Value, WsErr> {
            usage_limit_recovery_cancelled_at, usage_limit_recovery_cancelled_turn_id, \
            usage_limit_recovery_last_reset_at, pull_requests_json\
          ) VALUES (\
-           ?1, ?2, ?3, ?4, ?5, NULL, ?6, ?6, NULL, ?7, ?8, ?9, NULL, ?10, NULL, \
+           ?1, ?2, ?3, ?4, ?5, NULL, ?6, ?6, NULL, ?7, ?8, ?9, ?30, ?10, ?31, \
            ?11, ?12, ?13, NULL, ?14, ?15, ?16, ?17, NULL, 0, 0, 0, ?18, ?19, \
-           NULL, ?20, NULL, NULL, ?21, ?22, ?23, ?24, ?25, ?26, NULL, NULL, NULL, \
-           NULL, NULL, ?27, NULL, NULL, NULL, ?28, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, ?29)",
+           ?32, ?20, NULL, NULL, ?21, ?22, ?23, ?24, ?25, ?26, NULL, NULL, NULL, \
+           NULL, NULL, ?27, NULL, NULL, NULL, ?28, NULL, NULL, ?33, NULL, NULL, NULL, NULL, NULL, ?29)",
         params![
-            thread_id,                                                             // 1
-            project_id,                                                            // 2
-            title,                                                                 // 3
-            str_or_null(&branch),                                                  // 4
-            str_or_null(&worktree_path),                                           // 5
-            created_at,                                                            // 6
-            s(command, "runtimeMode").unwrap_or_else(|| "full-access".into()),      // 7
-            interaction_mode,                                                      // 8
-            opt(command, "modelSelection").to_string(),                            // 9
-            env_mode,                                                              // 10
-            str_or_null(&associated_path),                                         // 11
-            str_or_null(&associated_branch),                                       // 12
-            str_or_null(&associated_ref),                                          // 13
-            s(command, "parentThreadId"),                                          // 14
-            s(command, "subagentAgentId"),                                         // 15
-            s(command, "subagentNickname"),                                        // 16
-            s(command, "subagentRole"),                                            // 17
-            if last_known_pr.is_null() { None } else { Some(last_known_pr.to_string()) }, // 18
-            create_branch_flow_completed as i64,                                   // 19
-            is_pinned as i64,                                                      // 20
-            s(command, "creationSource"),                                          // 21
-            s(command, "sourceThreadId"),                                          // 22
-            s(command, "sourceTurnId"),                                            // 23
-            s(command, "gatewayOperationId"),                                      // 24
-            command.get("gatewayOperationIndex").and_then(Value::as_i64),          // 25
-            str_or_null(&working_directory),                                       // 26
-            if sidechat.is_null() { None } else { Some(created_at.clone()) },       // 27 sidechat_last_activity_at
-            if sidechat.is_null() { None } else { Some(sidechat.to_string()) },     // 28 sidechat_context_json
-            pull_requests.to_string(),                                             // 29 pull_requests_json
+            thread_id,
+            project_id,
+            title,
+            str_or_null(&g("branch")),
+            str_or_null(&g("worktreePath")),
+            created_at,
+            g("runtimeMode").as_str().unwrap_or("full-access"),
+            g("interactionMode").as_str().unwrap_or("default"),
+            g("modelSelection").to_string(),
+            g("envMode").as_str().unwrap_or("local"),
+            str_or_null(&g("associatedWorktreePath")),
+            str_or_null(&g("associatedWorktreeBranch")),
+            str_or_null(&g("associatedWorktreeRef")),
+            g("parentThreadId").as_str(),
+            g("subagentAgentId").as_str(),
+            g("subagentNickname").as_str(),
+            g("subagentRole").as_str(),
+            if last_known_pr.is_null() { None } else { Some(last_known_pr.to_string()) },
+            g("createBranchFlowCompleted").as_bool().unwrap_or(false) as i64,
+            g("isPinned").as_bool().unwrap_or(false) as i64,
+            g("creationSource").as_str(),
+            g("sourceThreadId").as_str(),
+            g("sourceTurnId").as_str(),
+            g("gatewayOperationId").as_str(),
+            g("gatewayOperationIndex").as_i64(),
+            str_or_null(&g("workingDirectory")),
+            if sidechat_last_activity_at.is_null() { None } else { Some(sidechat_last_activity_at.to_string().trim_matches('"').to_string()) },
+            if sidechat_context.is_null() { None } else { Some(sidechat_context.to_string()) },
+            if pull_requests.is_null() { "[]".to_string() } else { pull_requests.to_string() },
+            if handoff.is_null() { None } else { Some(handoff.to_string()) },
+            g("forkSourceThreadId").as_str(),
+            str_or_null(&sidechat_source),
+            g("forkSourceMessageId").as_str(),
         ],
     )
     .map_err(|e| err(format!("project thread: {e}")))?;
-
-    tx.commit().map_err(|e| err(e.to_string()))?;
-    Ok(json!({ "sequence": sequence }))
+    Ok(())
 }
-
-const PROVIDER_SEND_TURN_MAX_INPUT_CHARS: usize = 120_000;
 
 fn thread_turn_start(command: &Map<String, Value>) -> Result<Value, WsErr> {
     let command_id = s(command, "commandId").ok_or_else(|| err("missing commandId"))?;
@@ -5039,6 +5073,366 @@ fn user_bind_or_boundary(command: &Map<String, Value>, bind: bool) -> Result<Val
         Value::Object(payload),
     )];
     for ev in &events {
+        project_message_sent(&conn, &thread_id, &ev.payload)?;
+    }
+    let seq = commit_events(&conn, &events, &command_id)?;
+    Ok(json!({ "sequence": seq }))
+}
+
+struct LineageThread {
+    id: String,
+    project_id: String,
+    title: String,
+    fork_source_thread_id: Option<String>,
+    is_sidechat: bool,
+}
+
+fn parse_fork_version(title: &str) -> (String, i64) {
+    if let Some(end) = title.strip_suffix(')') {
+        if let Some(pos) = end.rfind(" (") {
+            if let Ok(n) = end[pos + 2..].parse::<i64>() {
+                if n >= 2 {
+                    return (end[..pos].to_string(), n);
+                }
+            }
+        }
+    }
+    (title.to_string(), 1)
+}
+
+fn find_lineage_root<'a>(
+    source: &'a LineageThread,
+    by_id: &'a std::collections::HashMap<String, LineageThread>,
+) -> (&'a LineageThread, bool) {
+    let mut visited = std::collections::HashSet::new();
+    visited.insert(source.id.clone());
+    let mut current = source;
+    while let Some(pid) = &current.fork_source_thread_id {
+        match by_id.get(pid) {
+            Some(p) if p.project_id == source.project_id && !visited.contains(&p.id) => {
+                visited.insert(p.id.clone());
+                current = p;
+            }
+            _ => return (current, false),
+        }
+    }
+    (current, true)
+}
+
+fn build_fork_thread_title(
+    conn: &Connection,
+    source: &LineageThread,
+    project_id: &str,
+) -> Result<String, WsErr> {
+    let mut stmt = conn
+        .prepare(
+            "SELECT thread_id, project_id, title, fork_source_thread_id, \
+             sidechat_source_thread_id IS NOT NULL OR sidechat_context_json IS NOT NULL \
+             FROM projection_threads WHERE project_id = ?1 AND deleted_at IS NULL",
+        )
+        .map_err(|e| err(e.to_string()))?;
+    let threads: Vec<LineageThread> = stmt
+        .query_map(params![project_id], |r| {
+            Ok(LineageThread {
+                id: r.get(0)?,
+                project_id: r.get(1)?,
+                title: r.get(2)?,
+                fork_source_thread_id: r.get(3)?,
+                is_sidechat: r.get::<_, bool>(4)?,
+            })
+        })
+        .map_err(|e| err(e.to_string()))?
+        .filter_map(|r| r.ok())
+        .collect();
+    let by_id: std::collections::HashMap<String, LineageThread> =
+        threads.into_iter().map(|t| (t.id.clone(), t)).collect();
+    let (root_thread, root_complete) = find_lineage_root(source, &by_id);
+    let (lineage_base, lineage_version) = if root_complete {
+        parse_fork_version(&root_thread.title)
+    } else {
+        parse_fork_version(&source.title)
+    };
+    let source_root_id = root_thread.id.clone();
+    let family: Vec<&LineageThread> = by_id
+        .values()
+        .filter(|t| {
+            if t.project_id != project_id || t.is_sidechat || !root_complete {
+                return false;
+            }
+            let (root, complete) = find_lineage_root(t, &by_id);
+            complete && root.id == source_root_id
+        })
+        .collect();
+    let latest_named_version = family.iter().fold(lineage_version, |latest, t| {
+        let (base, v) = parse_fork_version(&t.title);
+        if base == lineage_base {
+            latest.max(v)
+        } else {
+            latest
+        }
+    });
+    let next_version = (2)
+        .max(family.len() as i64 + 1)
+        .max(latest_named_version + 1);
+    Ok(format!("{lineage_base} ({next_version})"))
+}
+
+fn lineage_create(command: &Map<String, Value>, is_handoff: bool) -> Result<Value, WsErr> {
+    let ctype = if is_handoff {
+        "thread.handoff.create"
+    } else {
+        "thread.fork.create"
+    };
+    let command_id = s(command, "commandId").ok_or_else(|| err("missing commandId"))?;
+    let thread_id = s(command, "threadId").ok_or_else(|| err("missing threadId"))?;
+    let project_id = s(command, "projectId").ok_or_else(|| err("missing projectId"))?;
+    let source_thread_id =
+        s(command, "sourceThreadId").ok_or_else(|| err("missing sourceThreadId"))?;
+    let created_at = s(command, "createdAt").ok_or_else(|| err("missing createdAt"))?;
+
+    let conn = open_state_rw()?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| err(e.to_string()))?;
+
+    let project_kind: String = conn
+        .query_row(
+            "SELECT kind FROM projection_projects WHERE project_id = ?1 AND deleted_at IS NULL",
+            params![project_id],
+            |r| r.get(0),
+        )
+        .map_err(|_| {
+            err(format!(
+                "Project '{project_id}' does not exist for command '{ctype}'."
+            ))
+        })?;
+
+    // requireThread(sourceThreadId)
+    let src = conn
+        .query_row(
+            "SELECT project_id, title, handoff_json, model_selection_json, deleted_at, \
+             fork_source_thread_id, sidechat_source_thread_id, sidechat_context_json \
+             FROM projection_threads WHERE thread_id = ?1",
+            params![source_thread_id],
+            |r| {
+                Ok((
+                    r.get::<_, String>(0)?,
+                    r.get::<_, String>(1)?,
+                    r.get::<_, Option<String>>(2)?,
+                    r.get::<_, Option<String>>(3)?,
+                    r.get::<_, Option<String>>(4)?,
+                    r.get::<_, Option<String>>(5)?,
+                    r.get::<_, Option<String>>(6)?,
+                    r.get::<_, Option<String>>(7)?,
+                ))
+            },
+        )
+        .map_err(|_| {
+            err(format!(
+                "Thread '{source_thread_id}' does not exist for command '{ctype}'."
+            ))
+        })?;
+    let (
+        src_project_id,
+        src_title,
+        src_handoff,
+        src_model_sel,
+        src_deleted,
+        src_fork,
+        src_sc_tid,
+        src_sc_ctx,
+    ) = src;
+    if src_deleted.is_some() {
+        return Err(err(format!(
+            "Thread '{source_thread_id}' was deleted and cannot handle command '{ctype}'."
+        )));
+    }
+
+    // requireThreadAbsent(threadId)
+    let exists: bool = conn
+        .query_row(
+            "SELECT 1 FROM projection_threads WHERE thread_id = ?1",
+            params![thread_id],
+            |_| Ok(true),
+        )
+        .unwrap_or(false);
+    if exists {
+        return Err(err(format!(
+            "Thread '{thread_id}' already exists and cannot be created twice."
+        )));
+    }
+
+    // validateAutoRuntimeMode
+    let runtime_mode = s(command, "runtimeMode").unwrap_or_default();
+    let model_sel = opt(command, "modelSelection");
+    if let Some(issue) = auto_runtime_issue(&runtime_mode, &model_sel) {
+        return Err(err(issue));
+    }
+
+    if src_project_id != project_id {
+        return Err(err(format!(
+            "Source thread '{source_thread_id}' belongs to a different project."
+        )));
+    }
+
+    if is_handoff && src_handoff.is_some() {
+        let has_native: bool = conn
+            .query_row(
+                "SELECT 1 FROM projection_thread_messages WHERE thread_id = ?1 \
+                 AND role IN ('user','assistant') AND source IN ('native','async-user-input') \
+                 AND is_streaming = 0 LIMIT 1",
+                params![source_thread_id],
+                |_| Ok(true),
+            )
+            .unwrap_or(false);
+        if !has_native {
+            return Err(err(format!(
+                "Source thread '{source_thread_id}' must contain at least one native chat message after handoff before it can be handed off again."
+            )));
+        }
+    }
+
+    let sidechat_source = opt(command, "sidechatSourceThreadId");
+    let title = if is_handoff || !sidechat_source.is_null() {
+        s(command, "title").ok_or_else(|| err("missing title"))?
+    } else {
+        build_fork_thread_title(
+            &conn,
+            &LineageThread {
+                id: source_thread_id.clone(),
+                project_id: src_project_id.clone(),
+                title: src_title.clone(),
+                fork_source_thread_id: src_fork.clone(),
+                is_sidechat: src_sc_tid.is_some() || src_sc_ctx.is_some(),
+            },
+            &project_id,
+        )?
+    };
+
+    let is_group = is_group_container_kind(&project_kind);
+    let (
+        env_mode,
+        branch,
+        worktree_path,
+        working_directory,
+        associated_path,
+        associated_branch,
+        associated_ref,
+        create_branch_flow_completed,
+    ) = resolve_workspace_fields(command, is_group);
+
+    let source_provider: Option<String> = src_model_sel
+        .as_deref()
+        .and_then(|j| serde_json::from_str::<Value>(j).ok())
+        .and_then(|v| v.get("provider").and_then(Value::as_str).map(str::to_string));
+
+    let mut ep = Map::new();
+    let put = |ep: &mut Map<String, Value>, k: &str, v: Value| {
+        ep.insert(k.to_string(), v);
+    };
+    put(&mut ep, "threadId", json!(thread_id));
+    put(&mut ep, "projectId", json!(project_id));
+    put(&mut ep, "title", json!(title));
+    put(&mut ep, "modelSelection", opt(command, "modelSelection"));
+    put(&mut ep, "runtimeMode", opt(command, "runtimeMode"));
+    put(
+        &mut ep,
+        "interactionMode",
+        json!(s(command, "interactionMode").unwrap_or_else(|| "default".into())),
+    );
+    put(&mut ep, "envMode", json!(env_mode));
+    put(&mut ep, "branch", branch);
+    put(&mut ep, "worktreePath", worktree_path);
+    put(&mut ep, "workingDirectory", working_directory);
+    put(&mut ep, "associatedWorktreePath", associated_path);
+    put(&mut ep, "associatedWorktreeBranch", associated_branch);
+    put(&mut ep, "associatedWorktreeRef", associated_ref);
+    put(
+        &mut ep,
+        "createBranchFlowCompleted",
+        json!(create_branch_flow_completed),
+    );
+    put(&mut ep, "isPinned", json!(false));
+    put(&mut ep, "parentThreadId", Value::Null);
+    put(&mut ep, "subagentAgentId", Value::Null);
+    put(&mut ep, "subagentNickname", Value::Null);
+    put(&mut ep, "subagentRole", Value::Null);
+    if is_handoff {
+        put(&mut ep, "forkSourceThreadId", Value::Null);
+        put(
+            &mut ep,
+            "handoff",
+            json!({
+                "sourceThreadId": source_thread_id,
+                "sourceProvider": source_provider,
+                "importedAt": created_at,
+                "bootstrapStatus": "pending",
+            }),
+        );
+    } else {
+        put(&mut ep, "forkSourceThreadId", json!(source_thread_id));
+        if let Some(tm) = command.get("throughMessageId") {
+            put(&mut ep, "forkSourceMessageId", tm.clone());
+        }
+        put(&mut ep, "sidechatSourceThreadId", sidechat_source.clone());
+        put(
+            &mut ep,
+            "sidechatLastActivityAt",
+            if sidechat_source.is_null() {
+                Value::Null
+            } else {
+                json!(created_at)
+            },
+        );
+        put(&mut ep, "sidechatExpiredAt", Value::Null);
+        put(&mut ep, "handoff", Value::Null);
+    }
+    put(&mut ep, "createdAt", json!(created_at));
+    put(&mut ep, "updatedAt", json!(created_at));
+
+    let mut events: Vec<OutEvent> = vec![out_event(
+        "thread.created",
+        &thread_id,
+        &created_at,
+        Value::Object(ep.clone()),
+    )];
+    let import_source = if is_handoff {
+        "handoff-import"
+    } else {
+        "fork-import"
+    };
+    if let Some(msgs) = command.get("importedMessages").and_then(Value::as_array) {
+        for m in msgs {
+            let mut mp = Map::new();
+            mp.insert("threadId".into(), json!(thread_id));
+            mp.insert("messageId".into(), m.get("messageId").cloned().unwrap_or(Value::Null));
+            mp.insert("role".into(), m.get("role").cloned().unwrap_or(json!("user")));
+            mp.insert("text".into(), m.get("text").cloned().unwrap_or(json!("")));
+            if let Some(a) = m.get("attachments") {
+                mp.insert("attachments".into(), a.clone());
+            }
+            mp.insert("turnId".into(), Value::Null);
+            mp.insert("streaming".into(), json!(false));
+            mp.insert("source".into(), json!(import_source));
+            mp.insert(
+                "createdAt".into(),
+                m.get("createdAt").cloned().unwrap_or(json!(created_at)),
+            );
+            mp.insert(
+                "updatedAt".into(),
+                m.get("updatedAt").cloned().unwrap_or(json!(created_at)),
+            );
+            events.push(out_event(
+                "thread.message-sent",
+                &thread_id,
+                &created_at,
+                Value::Object(mp),
+            ));
+        }
+    }
+
+    // Projections (upstream projector semantics).
+    project_thread_created(&conn, &ep)?;
+    for ev in events.iter().skip(1) {
         project_message_sent(&conn, &thread_id, &ev.payload)?;
     }
     let seq = commit_events(&conn, &events, &command_id)?;

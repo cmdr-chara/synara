@@ -558,6 +558,40 @@ impl Render for Native {
             );
         }
 
+        // Activities (tool calls, errors) for the latest turn.
+        for a in arr(thread_v, "activities") {
+            let kind = str_at(a, "kind");
+            let summary = str_at(a, "summary");
+            if summary.is_empty() && kind.is_empty() {
+                continue;
+            }
+            let color = match str_at(a, "tone") {
+                "error" => theme.danger,
+                _ => theme.muted_foreground,
+            };
+            pane = pane.child(
+                div()
+                    .text_xs()
+                    .text_color(color)
+                    .child(format!("{kind} — {summary}")),
+            );
+        }
+
+        // Pending interactions (approvals awaiting a decision).
+        for p in arr(thread_v, "pendingInteractions") {
+            if str_at(p, "status") != "pending" {
+                continue;
+            }
+            let kind = str_at(p, "interaction_kind").replace('_', " ");
+            pane = pane.child(
+                div()
+                    .text_xs()
+                    .font_weight(FontWeight::SEMIBOLD)
+                    .text_color(theme.warning)
+                    .child(format!("approval pending: {kind}")),
+            );
+        }
+
         // ---- composer ----
         let composer_bar = h_flex()
             .w_full()

@@ -79,6 +79,7 @@ fn intercept_todo(
         && !text.contains("\"git.")
         && !text.contains("\"filesystem.browse")
         && !text.contains("server.listWorktrees")
+        && !text.contains("projects.listDirectories")
     {
         return None;
     }
@@ -94,6 +95,7 @@ fn intercept_todo(
         && !crate::git_domain::handles(tag)
         && tag != "filesystem.browse"
         && tag != "server.listWorktrees"
+        && tag != "projects.listDirectories"
     {
         return None;
     }
@@ -149,6 +151,10 @@ fn intercept_todo(
             .map_err(error_json)
     } else if tag == "server.listWorktrees" {
         crate::list_worktrees::list_worktrees()
+            .map(Some)
+            .map_err(error_json)
+    } else if tag == "projects.listDirectories" {
+        crate::projects_fs::list_directories(&payload)
             .map(Some)
             .map_err(error_json)
     } else if crate::git_domain::handles(tag) {

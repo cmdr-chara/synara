@@ -3,6 +3,7 @@ mod git_domain;
 mod list_worktrees;
 mod native_ws;
 mod original;
+mod projects_fs;
 mod runtime_status;
 mod server_env;
 mod shell_editor;

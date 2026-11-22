@@ -1224,11 +1224,40 @@ impl Render for Native {
         // ---- transcript ----
         let mut pane = v_flex().flex_1().h_full().p_4().gap_2();
         if self.selected_thread.is_none() {
+            const WM_CHARS: &[u8] = b"ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+            let wm_cols: Vec<Vec<String>> = (0..5)
+                .map(|c| {
+                    (0..30)
+                        .map(|r| {
+                            (0..13)
+                                .map(|j| {
+                                    WM_CHARS[((c * 31 + r * 13 + j * 7 + c * r) % 30) as usize]
+                                        as char
+                                })
+                                .collect()
+                        })
+                        .collect()
+                })
+                .collect();
+            let mut wm = h_flex().gap_6().px_4();
+            for col in wm_cols {
+                let mut v = v_flex();
+                for line in col {
+                    v = v.child(
+                        div()
+                            .text_xs()
+                            .text_color(rgba(0x00000010))
+                            .child(line),
+                    );
+                }
+                wm = wm.child(v);
+            }
             pane = pane
                 .relative()
                 .items_center()
                 .justify_center()
                 .gap_3()
+                .child(div().absolute().inset_0().overflow_hidden().child(wm))
                 .child(
                     div()
                         .absolute()

@@ -1,0 +1,461 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/providerUsage/providers/",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "providers-rs",
+  "exports": [
+    {
+      "name": "parseAntigravityQuotaSummary",
+      "file": "apps/server/src/providerUsage/providers/antigravity.ts",
+      "line": 228,
+      "params": [
+        {
+          "name": "quota",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ServerProviderUsageLimit.Type.Type.Type.Type[] | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "parseAntigravityQuota",
+      "file": "apps/server/src/providerUsage/providers/antigravity.ts",
+      "line": 265,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  loadAssist: unknown;\n  quota: unknown;\n  nowMs: number;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "parseClaudeUsage",
+      "file": "apps/server/src/providerUsage/providers/claude.ts",
+      "line": 457,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{ json: unknown; nowMs: number; planName?: string }",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "__resetClaudeUsageRateLimitState",
+      "file": "apps/server/src/providerUsage/providers/claude.ts",
+      "line": 558,
+      "params": [],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "parseCodexUsage",
+      "file": "apps/server/src/providerUsage/providers/codex.ts",
+      "line": 349,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  json: unknown;\n  headers?: Record<string, string>;\n  nowMs: number;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "cursorStateDbPaths",
+      "file": "apps/server/src/providerUsage/providers/cursor.ts",
+      "line": 42,
+      "params": [
+        {
+          "name": "ctx",
+          "ts_type": "Pick<ProviderUsageContext, \"homeDir\" | \"env\" | \"platform\">",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "parseCursorUsage",
+      "file": "apps/server/src/providerUsage/providers/cursor.ts",
+      "line": 97,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  usage: unknown;\n  credits?: unknown;\n  planName?: string;\n  nowMs: number;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isCursorSafeStorageValue",
+      "file": "apps/server/src/providerUsage/providers/cursorSafeStorage.ts",
+      "line": 27,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "unsealCursorSafeStorageValue",
+      "file": "apps/server/src/providerUsage/providers/cursorSafeStorage.ts",
+      "line": 117,
+      "params": [
+        {
+          "name": "ctx",
+          "ts_type": "Pick<ProviderUsageContext, \"platform\" | \"homeDir\" | \"env\" | \"isolateCredentials\">",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "stored",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<string | null>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "parseDevinUsage",
+      "file": "apps/server/src/providerUsage/providers/devin.ts",
+      "line": 163,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{ json: unknown; nowMs: number }",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "devinUsageCacheKey",
+      "file": "apps/server/src/providerUsage/providers/devin.ts",
+      "line": 271,
+      "params": [
+        {
+          "name": "ctx",
+          "ts_type": "ProviderUsageContext",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "auth",
+          "ts_type": "DevinUsageAuth | \"invalid-server\" | null",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "parseDroidUsage",
+      "file": "apps/server/src/providerUsage/providers/droid.ts",
+      "line": 96,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  json: unknown;\n  nowMs: number;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ServerProviderUsageSnapshot.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "__resetDroidUsageRateLimitState",
+      "file": "apps/server/src/providerUsage/providers/droid.ts",
+      "line": 165,
+      "params": [],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "decryptDroidCredentialFile",
+      "file": "apps/server/src/providerUsage/providers/droidCredentials.ts",
+      "line": 70,
+      "params": [
+        {
+          "name": "contents",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "key",
+          "ts_type": "Buffer",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "droidLocalIdentity",
+      "file": "apps/server/src/providerUsage/providers/droidCredentials.ts",
+      "line": 174,
+      "params": [
+        {
+          "name": "credential",
+          "ts_type": "DroidCredential",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "droidCredentialCacheKey",
+      "file": "apps/server/src/providerUsage/providers/droidCredentials.ts",
+      "line": 184,
+      "params": [
+        {
+          "name": "ctx",
+          "ts_type": "Pick<ProviderUsageContext, \"homeDir\" | \"nowMs\">",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "resolution",
+          "ts_type": "DroidCredentialResolution",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "apiKey",
+          "ts_type": "string | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "readDroidSecureKey",
+      "file": "apps/server/src/providerUsage/providers/droidSecureStorage.ts",
+      "line": 49,
+      "params": [
+        {
+          "name": "ctx",
+          "ts_type": "Pick<ProviderUsageContext, \"platform\" | \"homeDir\" | \"env\">",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "source",
+          "ts_type": "\"keyring\" | \"login-keychain\"",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<string | null>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "parseGrokAuthRecord",
+      "file": "apps/server/src/providerUsage/providers/grok.ts",
+      "line": 134,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "path",
+          "ts_type": "string",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "GrokSession | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "readGrokCachedLogin",
+      "file": "apps/server/src/providerUsage/providers/grok.ts",
+      "line": 164,
+      "params": [
+        {
+          "name": "env",
+          "ts_type": "NodeJS.ProcessEnv",
+          "optional": true,
+          "rest": false
+        },
+        {
+          "name": "homeDir",
+          "ts_type": "string",
+          "optional": true,
+          "rest": false
+        },
+        {
+          "name": "nowMs",
+          "ts_type": "number",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<GrokSession | null>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "parseGrokBilling",
+      "file": "apps/server/src/providerUsage/providers/grok.ts",
+      "line": 257,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  billing: unknown;\n  settings?: unknown;\n  session?: GrokSession;\n  nowMs: number;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "parseGrokApiKeyIdentity",
+      "file": "apps/server/src/providerUsage/providers/grok.ts",
+      "line": 345,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{ payload: unknown; nowMs: number }",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "parseOpenCodeGoUsage",
+      "file": "apps/server/src/providerUsage/providers/opencode.ts",
+      "line": 60,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{ json: unknown; nowMs: number }",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "__setClaudeAuthNudgeDepsForTests",
+      "file": "apps/server/src/providerUsage/providers/claude.ts",
+      "line": 452,
+      "reason": "uses `ClaudeAuthNudgeDeps`, which has function members"
+    },
+    {
+      "name": "resolveDroidLocalCredential",
+      "file": "apps/server/src/providerUsage/providers/droidCredentials.ts",
+      "line": 126,
+      "reason": "takes or returns a function"
+    }
+  ]
+}

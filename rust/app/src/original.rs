@@ -70,18 +70,27 @@ pub struct Original {
 
 impl Original {
     pub async fn start() -> Self {
-        let port = TcpListener::bind("127.0.0.1:0")
-            .and_then(|l| l.local_addr())
-            .map(|a| a.port())
-            .expect("a free port");
+        // Fixed upstream port: session cookies are named per-port
+        // (`synara_session_<port>`), so an ephemeral port would invalidate
+        // pairing on every restart. `SYNARA_UPSTREAM_PORT` overrides.
+        let port = std::env::var("SYNARA_UPSTREAM_PORT")
+            .ok()
+            .and_then(|p| p.parse().ok())
+            .unwrap_or(4773u16);
         let (program, rest) = RUN.split_first().expect("the original's command");
         let mut child = Command::new(resolve(program, port))
             .args(rest.iter().map(|w| resolve(w, port)))
             .args(std::env::args_os().skip(1))
             .current_dir(ROOT)
             .env("PORT", port.to_string())
+            .env("SYNARA_MODE", "desktop")
+            .env("SYNARA_DESKTOP_PARENT_STDIN", "1")
+            .env("SYNARA_STATIC_DIR", Path::new(ROOT).join("apps/web/dist"))
             .env_remove(FALLBACK_LOG)
-            .stdin(Stdio::null())
+            // Desktop-parent marker: stdin stays open for the child's lifetime
+            // (its watchdog exits when this closes) and enables desktop mode,
+            // where the startup token is a bootstrap credential.
+            .stdin(Stdio::piped())
             .spawn()
             .expect("starting the original");
         let deadline = Instant::now() + Duration::from_secs(60);
@@ -176,9 +185,9 @@ pub async fn proxy(State(original): State<Original>, req: Request) -> Response {
         .request(parts.method, format!("{}{target}", original.base))
         .body(body);
     for (name, value) in &parts.headers {
-        if name != header::HOST {
-            request = request.header(name, value);
-        }
+        // Keep the client-facing Host: upstream derives requestOrigin from it
+        // for the CSRF origin gate, which must match the browser's Origin.
+        request = request.header(name, value);
     }
     match request.send().await {
         Ok(answer) => {

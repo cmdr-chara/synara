@@ -112,6 +112,7 @@ fn intercept_todo(
         && !text.contains("server.subscribeKeepAwake")
         && !text.contains("stats.")
         && !text.contains("terminal.")
+        && !text.contains("orchestration.getSnapshot")
     {
         return None;
     }
@@ -158,6 +159,7 @@ fn intercept_todo(
         && tag != "server.subscribeProviderStatuses"
         && tag != "server.subscribeLifecycle"
         && tag != "server.subscribeKeepAwake"
+        && tag != "orchestration.getSnapshot"
         && !tag.starts_with("stats.")
         && !tag.starts_with("terminal.")
     {
@@ -554,6 +556,10 @@ fn intercept_todo(
         Ok(Some(crate::runtime_status::get_runtime_status()))
     } else if tag == "shell.openInEditor" {
         crate::shell_editor::open_in_editor(&payload)
+            .map(Some)
+            .map_err(error_json)
+    } else if tag == "orchestration.getSnapshot" {
+        crate::orchestration_snapshot::get_snapshot()
             .map(Some)
             .map_err(error_json)
     } else {

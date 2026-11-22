@@ -2,6 +2,7 @@ mod fs_browse;
 mod git_domain;
 mod list_worktrees;
 mod native_ws;
+mod orchestration_snapshot;
 mod original;
 mod projects_devserver;
 mod projects_fileops;

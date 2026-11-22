@@ -27,6 +27,7 @@ pub struct Native {
     selected_thread: Option<String>,
     thread_stream_id: Option<String>,
     composer: Entity<InputState>,
+    search: Entity<InputState>,
     sending: bool,
 }
 
@@ -78,6 +79,19 @@ impl Native {
                 },
             )
             .detach();
+            let search = cx.new(|cx| {
+                InputState::new(window, cx).placeholder("Search threads")
+            });
+            cx.subscribe_in(
+                &search,
+                window,
+                |_this: &mut Self, _state, event, _window, cx| {
+                    if let InputEvent::Change = event {
+                        cx.notify();
+                    }
+                },
+            )
+            .detach();
             let this = Self {
                 focus_handle: cx.focus_handle(),
                 client: Arc::new(Mutex::new(None)),
@@ -86,6 +100,7 @@ impl Native {
                 selected_thread: None,
                 thread_stream_id: None,
                 composer,
+                search,
                 sending: false,
             };
             this.refresh(cx);
@@ -219,6 +234,20 @@ impl Native {
             }
         })
         .detach();
+        cx.notify();
+    }
+
+    /// Deselect the current thread so the composer starts a new one.
+    fn new_thread(&mut self, cx: &mut Context<Self>) {
+        if let Some(old) = self.thread_stream_id.take() {
+            if let Ok(guard) = self.client.lock() {
+                if let Some(client) = guard.as_ref() {
+                    client.interrupt(&old);
+                }
+            }
+        }
+        self.selected_thread = None;
+        self.detail = None;
         cx.notify();
     }
 
@@ -368,7 +397,24 @@ impl Render for Native {
         let theme = cx.theme().clone();
 
         // ---- sidebar ----
-        let mut sidebar = v_flex().w(px(280.)).h_full().gap_1().p_2();
+        let mut sidebar = v_flex()
+            .w(px(280.))
+            .h_full()
+            .gap_1()
+            .p_2()
+            .overflow_y_scrollbar();
+        let query = self.search.read(cx).value().to_string().to_lowercase();
+        sidebar = sidebar.child(
+            h_flex()
+                .gap_2()
+                .child(div().flex_1().child(Input::new(&self.search)))
+                .child(
+                    Button::new("new-thread")
+                        .ghost()
+                        .label("+")
+                        .on_click(cx.listener(|this, _ev, _w, cx| this.new_thread(cx))),
+                ),
+        );
         for space in arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "spaces") {
             sidebar = sidebar.child(
                 div()
@@ -389,6 +435,13 @@ impl Render for Native {
             for thread in arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "threads")
                 .iter()
                 .filter(|t| str_at(t, "projectId") == pid)
+                .filter(|t| {
+                    query.is_empty()
+                        || str_at(t, "title").to_lowercase().contains(&query)
+                        || str_at(t, "latestReplyPreview")
+                            .to_lowercase()
+                            .contains(&query)
+                })
                 .cloned()
                 .collect::<Vec<_>>()
             {
@@ -415,7 +468,44 @@ impl Render for Native {
 
         // ---- transcript ----
         let mut pane = v_flex().flex_1().h_full().p_4().gap_2();
-        let messages = arr(get(self.detail.as_ref().unwrap_or(&Value::Null), "thread"), "messages");
+        let thread_v = get(self.detail.as_ref().unwrap_or(&Value::Null), "thread");
+        let session_status = str_at(get(thread_v, "session"), "status").to_string();
+        let turn_state = str_at(get(thread_v, "latestTurn"), "state").to_string();
+        let title = str_at(thread_v, "title").to_string();
+        if !title.is_empty() {
+            let mut header = h_flex().gap_2().child(
+                div()
+                    .text_sm()
+                    .font_weight(FontWeight::SEMIBOLD)
+                    .child(title),
+            );
+            if !session_status.is_empty() && session_status != "idle" {
+                header = header.child(
+                    div()
+                        .text_xs()
+                        .text_color(theme.muted_foreground)
+                        .child(session_status.clone()),
+                );
+            }
+            if turn_state == "pending" || turn_state == "running" {
+                header = header.child(
+                    div()
+                        .text_xs()
+                        .text_color(theme.warning)
+                        .child("working\u{2026}"),
+                );
+            }
+            if get(thread_v, "hasPendingApprovals").as_bool().unwrap_or(false) {
+                header = header.child(
+                    div()
+                        .text_xs()
+                        .text_color(theme.warning)
+                        .child("approval required"),
+                );
+            }
+            pane = pane.child(header);
+        }
+        let messages = arr(thread_v, "messages");
         if messages.is_empty() {
             pane = pane.child(
                 div()

@@ -57,6 +57,7 @@ pub struct Native {
     inbox_items: Vec<Value>,
     inbox_errors: Vec<Value>,
     inbox_loading: bool,
+    tools_expanded: bool,
 }
 
 fn get<'a>(v: &'a Value, k: &str) -> &'a Value {
@@ -170,6 +171,7 @@ impl Native {
                 inbox_items: Vec::new(),
                 inbox_errors: Vec::new(),
                 inbox_loading: false,
+                tools_expanded: false,
             };
             this.refresh(cx);
             this
@@ -1463,13 +1465,16 @@ impl Render for Native {
             }
         }
 
-        // Activities (tool calls, errors) for the latest turn.
-        for a in arr(thread_v, "activities") {
+        // Activities grouped in a collapsible tool-call card (web parity):
+        // a single activity stays a plain row; several collapse into a card.
+        let activities: Vec<Value> = arr(thread_v, "activities")
+            .iter()
+            .filter(|a| !str_at(a, "kind").is_empty() || !str_at(a, "summary").is_empty())
+            .cloned()
+            .collect();
+        let activity_row = |a: &Value| {
             let kind = str_at(a, "kind");
             let summary = str_at(a, "summary");
-            if summary.is_empty() && kind.is_empty() {
-                continue;
-            }
             let color = match str_at(a, "tone") {
                 "error" => theme.danger,
                 _ => theme.muted_foreground,
@@ -1481,17 +1486,54 @@ impl Render for Native {
             } else {
                 format!("{kind} — {summary}")
             };
-            pane = pane.child(
-                h_flex()
-                    .gap_2()
-                    .child(
-                        div()
-                            .text_xs()
-                            .text_color(theme.muted_foreground)
-                            .child("\u{25e6}"),
-                    )
-                    .child(div().text_xs().text_color(color).child(label)),
-            );
+            h_flex()
+                .gap_2()
+                .child(
+                    div()
+                        .text_xs()
+                        .text_color(theme.muted_foreground)
+                        .child("\u{25e6}"),
+                )
+                .child(div().text_xs().text_color(color).child(label))
+        };
+        if activities.len() == 1 {
+            pane = pane.child(activity_row(&activities[0]));
+        } else if activities.len() > 1 {
+            let mut card = v_flex()
+                .border_1()
+                .border_color(theme.border)
+                .rounded_lg()
+                .p_2()
+                .gap_1()
+                .child(
+                    h_flex()
+                        .id("tools-card")
+                        .cursor_pointer()
+                        .gap_2()
+                        .items_center()
+                        .on_click(cx.listener(|this, _ev, _w, cx| {
+                            this.tools_expanded = !this.tools_expanded;
+                            cx.notify();
+                        }))
+                        .child(
+                            Icon::new(AssetIcon::Wrench)
+                                .size(px(12.))
+                                .text_color(theme.muted_foreground),
+                        )
+                        .child(
+                            div().text_xs().font_weight(FontWeight::SEMIBOLD).child(format!(
+                                "{} actions {}",
+                                activities.len(),
+                                if self.tools_expanded { "\u{25be}" } else { "\u{25b8}" }
+                            )),
+                        ),
+                );
+            if self.tools_expanded {
+                for a in &activities {
+                    card = card.child(activity_row(a));
+                }
+            }
+            pane = pane.child(card);
         }
 
         // Active tools currently running.
@@ -1985,7 +2027,7 @@ impl Render for Native {
             .child(h_flex().justify_center().child(composer_col));
 
         // ---- settings pane ----
-        let mut settings_pane = v_flex()
+        let settings_pane = v_flex()
             .size_full()
             .p_4()
             .gap_4()

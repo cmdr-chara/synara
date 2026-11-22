@@ -298,6 +298,223 @@ fn list_result(payload: &Value) -> Result<Value, WsErr> {
     })
 }
 
+fn load_definition(conn: &Connection, id: &str) -> Result<Value, WsErr> {
+    conn.query_row(
+        &format!("SELECT {DEF_COLS} FROM automation_definitions WHERE automation_id = ?1"),
+        params![id],
+        |r| Ok(Value::Object(definition_from_row(r))),
+    )
+    .map_err(|_| err("Automation was not found."))
+}
+
+fn project_exists(conn: &Connection, project_id: &str) -> Result<(), WsErr> {
+    let n: i64 = conn
+        .query_row(
+            "SELECT COUNT(1) FROM projection_projects WHERE project_id = ?1 AND deleted_at IS NULL",
+            [project_id],
+            |r| r.get(0),
+        )
+        .map_err(|e| err(e.to_string()))?;
+    if n == 0 {
+        return Err(err(format!("Project \"{project_id}\" was not found.")));
+    }
+    Ok(())
+}
+
+fn create(payload: &Value) -> Result<Value, WsErr> {
+    if payload["schedule"]["type"].as_str() == Some("project-event") {
+        return Err(err(
+            "Project-event automations are reserved for the Project Coordinator and cannot be created from ordinary automation editing.",
+        ));
+    }
+    let conn = open_state_rw().map_err(|_| err("Failed to create automation."))?;
+    let project_id = payload["projectId"].as_str().unwrap_or_default();
+    project_exists(&conn, project_id)?;
+    let now = crate::todo::iso_now_ms();
+    let id = crate::orchestration_engine::uuid_v4();
+    let stop_after = payload["stopAfterConsecutiveFailures"].as_i64().unwrap_or(3);
+    conn.execute(
+        "INSERT INTO automation_definitions \
+         (automation_id, project_id, source_thread_id, name, prompt, schedule_json, \
+          enabled, next_run_at, model_selection_json, provider_options_json, \
+          runtime_mode, interaction_mode, worktree_mode, mode, target_thread_id, \
+          proposal_state, max_iterations, stop_after_consecutive_failures, \
+          stop_on_error, minimum_interval_seconds, max_runtime_seconds, \
+          retry_policy_json, misfire_policy, acknowledged_risks_json, \
+          completion_policy_json, iteration_count, managed_by_project, \
+          created_at, updated_at) \
+         VALUES (?1,?2,?3,?4,?5,?6,?7,NULL,?8,?9,?10,?11,?12,?13,?14,?15,?16,?17,?18,?19,?20,?21,?22,?23,'{\"type\":\"none\"}',0,0,?24,?24)",
+        rusqlite::params![
+            id,
+            project_id,
+            payload["sourceThreadId"].as_str(),
+            payload["name"].as_str().unwrap_or("Automation"),
+            payload["prompt"].as_str().unwrap_or_default(),
+            payload["schedule"].to_string(),
+            if payload["enabled"].as_bool().unwrap_or(true) { 1 } else { 0 },
+            payload["modelSelection"].to_string(),
+            payload["providerOptions"].to_string(),
+            payload["runtimeMode"].as_str().unwrap_or("approval-required"),
+            payload["interactionMode"].as_str().unwrap_or("default"),
+            payload["worktreeMode"].as_str().unwrap_or("auto"),
+            payload["mode"].as_str().unwrap_or("standalone"),
+            payload["targetThreadId"].as_str(),
+            payload["proposalState"].as_str(),
+            payload["maxIterations"].as_i64(),
+            stop_after,
+            1,
+            payload["minimumIntervalSeconds"].as_i64().unwrap_or(60),
+            payload["maxRuntimeSeconds"].as_i64().unwrap_or(3600),
+            payload["retryPolicy"].to_string(),
+            payload["misfirePolicy"].as_str().unwrap_or("coalesce"),
+            payload["acknowledgedRisks"].to_string(),
+            now,
+        ],
+    )
+    .map_err(|e| err(e.to_string()))?;
+    load_definition(&conn, &id)
+}
+
+fn update(payload: &Value) -> Result<Value, WsErr> {
+    let id = payload["id"].as_str().or_else(|| payload["automationId"].as_str())
+        .unwrap_or_default();
+    let conn = open_state_rw().map_err(|_| err("Failed to update automation."))?;
+    let _existing = load_definition(&conn, id)?;
+    let now = crate::todo::iso_now_ms();
+    // apply provided fields only
+    let sets: Vec<(&str, Value)> = [
+        ("name", payload.get("name").cloned()),
+        ("prompt", payload.get("prompt").cloned()),
+        ("schedule_json", payload.get("schedule").cloned()),
+        ("model_selection_json", payload.get("modelSelection").cloned()),
+        ("runtime_mode", payload.get("runtimeMode").cloned()),
+        ("interaction_mode", payload.get("interactionMode").cloned()),
+        ("worktree_mode", payload.get("worktreeMode").cloned()),
+        ("mode", payload.get("mode").cloned()),
+        ("target_thread_id", payload.get("targetThreadId").cloned()),
+    ]
+    .into_iter()
+    .filter(|(_, v)| v.is_some())
+    .map(|(k, v)| (k, v.unwrap()))
+    .collect();
+    for (col, v) in sets {
+        let sql = format!("UPDATE automation_definitions SET {col} = ?2 WHERE automation_id = ?1");
+        let bound = if v.is_string() {
+            v.as_str().unwrap_or_default().to_string()
+        } else {
+            v.to_string()
+        };
+        conn.execute(&sql, rusqlite::params![id, bound])
+            .map_err(|e| err(e.to_string()))?;
+    }
+    if let Some(en) = payload.get("enabled") {
+        let on = en.as_bool().unwrap_or(false);
+        conn.execute(
+            "UPDATE automation_definitions SET enabled = ?2, \
+             disabled_reason = CASE WHEN ?2 = 1 THEN NULL ELSE disabled_reason END, \
+             disabled_at = CASE WHEN ?2 = 1 THEN NULL ELSE disabled_at END \
+             WHERE automation_id = ?1",
+            rusqlite::params![id, if on { 1 } else { 0 }],
+        )
+        .map_err(|e| err(e.to_string()))?;
+    }
+    for (col, key) in [
+        ("max_iterations", "maxIterations"),
+        ("stop_after_consecutive_failures", "stopAfterConsecutiveFailures"),
+        ("minimum_interval_seconds", "minimumIntervalSeconds"),
+        ("max_runtime_seconds", "maxRuntimeSeconds"),
+    ] {
+        if let Some(v) = payload.get(key) {
+            if v.is_null() {
+                let _ = conn.execute(
+                    &format!("UPDATE automation_definitions SET {col} = NULL WHERE automation_id = ?1"),
+                    [id],
+                );
+            } else if let Some(n) = v.as_i64() {
+                conn.execute(
+                    &format!("UPDATE automation_definitions SET {col} = ?2 WHERE automation_id = ?1"),
+                    rusqlite::params![id, n],
+                )
+                .map_err(|e| err(e.to_string()))?;
+            }
+        }
+    }
+    conn.execute(
+        "UPDATE automation_definitions SET updated_at = ?2 WHERE automation_id = ?1",
+        rusqlite::params![id, now],
+    )
+    .map_err(|e| err(e.to_string()))?;
+    load_definition(&conn, id)
+}
+
+fn resolve_proposal(payload: &Value) -> Result<Value, WsErr> {
+    let id = payload["automationId"].as_str().unwrap_or_default();
+    let resolution = payload["resolution"].as_str().unwrap_or_default();
+    let conn = open_state_rw().map_err(|_| err("Failed to resolve automation proposal."))?;
+    let def = load_definition(&conn, id)?;
+    if def["proposalState"].as_str() != Some("pending") {
+        return Err(err("Automation proposal is no longer pending."));
+    }
+    let accepted = resolution == "accepted";
+    let now = crate::todo::iso_now_ms();
+    let changed = conn
+        .execute(
+            "UPDATE automation_definitions SET enabled = ?2, proposal_state = ?3, \
+             archived_at = ?4, updated_at = ?5 \
+             WHERE automation_id = ?1 AND proposal_state = 'pending'",
+            rusqlite::params![
+                id,
+                if accepted { 1 } else { 0 },
+                resolution,
+                if accepted { None } else { Some(now.clone()) },
+                now,
+            ],
+        )
+        .map_err(|e| err(e.to_string()))?;
+    if changed != 1 {
+        return Err(err("Automation proposal is no longer pending."));
+    }
+    Ok(json!({"definition": load_definition(&conn, id)?}))
+}
+
+fn run_now(payload: &Value) -> Result<Value, WsErr> {
+    let id = payload["automationId"].as_str().unwrap_or_default();
+    let conn = open_state_rw().map_err(|_| err("Failed to run automation."))?;
+    let def = load_definition(&conn, id)?;
+    if def["archivedAt"].as_str().is_some() {
+        return Err(err("Automation was not found."));
+    }
+    if def["proposalState"].as_str() == Some("pending") {
+        return Err(err("Pending automation proposals must be accepted before they can run."));
+    }
+    if def["enabled"].as_bool() == Some(false)
+        && def["disabledReason"].as_str() == Some("failures")
+    {
+        return Err(err("Re-enable the automation before running it again."));
+    }
+    if (def["mode"].as_str() == Some("heartbeat") || def["mode"].as_str() == Some("dedicated"))
+        && def["targetThreadId"].is_null()
+    {
+        return Err(err("Heartbeat automation has no target thread to continue."));
+    }
+    let now = crate::todo::iso_now_ms();
+    let run_id = crate::orchestration_engine::uuid_v4();
+    conn.execute(
+        "INSERT INTO automation_runs \
+         (run_id, automation_id, project_id, trigger_type, status, scheduled_for, \
+          permission_snapshot_json, created_at, updated_at) \
+         VALUES (?1,?2,?3,'manual','queued',?4,'{}',?4,?4)",
+        rusqlite::params![
+            run_id,
+            id,
+            def["projectId"].as_str().unwrap_or_default(),
+            now,
+        ],
+    )
+    .map_err(|e| err(e.to_string()))?;
+    load_run(&conn, &run_id)
+}
+
 pub fn handles(tag: &str) -> bool {
     matches!(
         tag,
@@ -307,12 +524,20 @@ pub fn handles(tag: &str) -> bool {
             | "automation.archiveRun"
             | "automation.cancelRun"
             | "automation.delete"
+            | "automation.create"
+            | "automation.update"
+            | "automation.resolveProposal"
+            | "automation.runNow"
     )
 }
 
 pub fn handle(tag: &str, payload: &Value) -> Result<Value, WsErr> {
     match tag {
         "automation.list" => list_result(payload),
+        "automation.create" => create(payload),
+        "automation.update" => update(payload),
+        "automation.resolveProposal" => resolve_proposal(payload),
+        "automation.runNow" => run_now(payload),
         "automation.getMemory" => {
             let id = payload
                 .get("automationId")

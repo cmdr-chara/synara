@@ -1,0 +1,217 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/hostConnections/",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "hostconnections-rs",
+  "exports": [
+    {
+      "name": "buildDialCandidates",
+      "file": "apps/server/src/hostConnections/dialer.ts",
+      "line": 110,
+      "params": [
+        {
+          "name": "host",
+          "ts_type": "Pick<typeof typeof typeof typeof AccountHost.Type.Type.Type.Type, \"id\" | \"endpoints\">",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "readonly TransportCandidate[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "exchangeRemoteFrame",
+      "file": "apps/server/src/hostConnections/dialer.ts",
+      "line": 235,
+      "params": [
+        {
+          "name": "socket",
+          "ts_type": "WebSocket",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "request",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "responseType",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "signal",
+          "ts_type": "AbortSignal",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<Record<string, unknown>>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "backgroundRetryDelayMs",
+      "file": "apps/server/src/hostConnections/supervisor.ts",
+      "line": 21,
+      "params": [
+        {
+          "name": "failures",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "error",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "number",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "attentionRetryDelayMs",
+      "file": "apps/server/src/hostConnections/supervisor.ts",
+      "line": 32,
+      "params": [
+        {
+          "name": "failures",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "number",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "remoteUnaryRpc",
+      "file": "apps/server/src/hostConnections/unaryRpc.ts",
+      "line": 4,
+      "params": [
+        {
+          "name": "socket",
+          "ts_type": "WebSocket",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "tag",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "payload",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "signal",
+          "ts_type": "AbortSignal",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<unknown>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "observeControllerAccount",
+      "file": "apps/server/src/hostConnections/accountObserver.ts",
+      "line": 8,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "HostDialError",
+      "file": "apps/server/src/hostConnections/dialer.ts",
+      "line": 68,
+      "reason": "class: extends another class, public parameter properties"
+    },
+    {
+      "name": "openRemoteChannel",
+      "file": "apps/server/src/hostConnections/dialer.ts",
+      "line": 223,
+      "reason": "uses `RemoteChannelInput`, which has function members"
+    },
+    {
+      "name": "openRemoteTlsChannel",
+      "file": "apps/server/src/hostConnections/dialer.ts",
+      "line": 228,
+      "reason": "uses `RemoteChannelInput`, which has function members"
+    },
+    {
+      "name": "dialHost",
+      "file": "apps/server/src/hostConnections/dialer.ts",
+      "line": 296,
+      "reason": "uses `DialInput`, which has function members"
+    },
+    {
+      "name": "RemoteHostTrustError",
+      "file": "apps/server/src/hostConnections/failure.ts",
+      "line": 9,
+      "reason": "class: extends another class"
+    },
+    {
+      "name": "classifyConnectionFailure",
+      "file": "apps/server/src/hostConnections/failure.ts",
+      "line": 11,
+      "reason": "checks `instanceof`: class identity does not survive the bridge"
+    },
+    {
+      "name": "makeHostConnectionsPort",
+      "file": "apps/server/src/hostConnections/port.ts",
+      "line": 65,
+      "reason": "uses `HostConnectionsPortDeps`, which has function members"
+    },
+    {
+      "name": "HostConnectionRegistry",
+      "file": "apps/server/src/hostConnections/registry.ts",
+      "line": 52,
+      "reason": "class: accessor `lifecycleGeneration`, async or generator method `resourcePool`, async or generator method `prepare`, async or generator method `call`, async or generator method `probe`"
+    },
+    {
+      "name": "HostConnectionRegistryService",
+      "file": "apps/server/src/hostConnections/registry.ts",
+      "line": 460,
+      "reason": "class: extends another class"
+    },
+    {
+      "name": "RemoteResourcePool",
+      "file": "apps/server/src/hostConnections/resourcePool.ts",
+      "line": 14,
+      "reason": "class: public parameter properties, accessor `closed`, async or generator method `forward`"
+    },
+    {
+      "name": "superviseHostConnections",
+      "file": "apps/server/src/hostConnections/supervisor.ts",
+      "line": 39,
+      "reason": "takes or returns a function"
+    }
+  ]
+}

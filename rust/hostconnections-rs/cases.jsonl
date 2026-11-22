@@ -1,0 +1,647 @@
+{"fn":"buildDialCandidates","args":[{}],"error":"Cannot read properties of undefined (reading 'map')"}
+{"fn":"buildDialCandidates","args":[[]],"error":"Cannot read properties of undefined (reading 'map')"}
+{"fn":"buildDialCandidates","args":[true],"error":"Cannot read properties of undefined (reading 'map')"}
+{"fn":"buildDialCandidates","args":[null],"error":"Cannot read properties of null (reading 'endpoints')"}
+{"fn":"buildDialCandidates","args":[{"a":"b"}],"error":"Cannot read properties of undefined (reading 'map')"}
+{"fn":"buildDialCandidates","args":["x"],"error":"Cannot read properties of undefined (reading 'map')"}
+{"fn":"buildDialCandidates","args":[["a",1]],"error":"Cannot read properties of undefined (reading 'map')"}
+{"fn":"buildDialCandidates","args":[0],"error":"Cannot read properties of undefined (reading 'map')"}
+{"fn":"buildDialCandidates","args":[{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'map')"}
+{"fn":"exchangeRemoteFrame","args":[{"a":{"b":"c"}},"x","ab",{}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[{"a":{"b":"c"}},{},"hello",["a",1]],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[{"a":"b"},{"a":"b"},"a:b:c",0],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[[],["a",1],"line1\nline2"],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[0,[],"emoji 👍🏽 mix  padded  ",{"$undefined":true}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[{},"x","a..bkey_name-1","x"],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":["x",null,"Hello Worldstraße",{"$undefined":true}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[{"a":"b"},[],"a😀b😀c",{"a":"b"}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[null,0,"Hello World",{}],"error":"Cannot read properties of null (reading 'on')"}
+{"fn":"exchangeRemoteFrame","args":[true,{},"日本語のテキスト"],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[[],0,"line1\nline2"],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[{"a":{"b":"c"}},["a",1],"hello",null],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[[],true,"Hello World"],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[0,true,"./x/**/*.json",{"$undefined":true}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[{"a":"b"},{"a":{"b":"c"}},"a",["a",1]],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":["x",true,"trailing.",[]],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[["a",1],["a",1],"src/a/b.ts",["a",1]],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[0,["a",1],"a.b.c","x"],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":["x",true,"src/a/b.ts","x"],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[0,["a",1],"emoji 👍🏽 mix﻿bom",{}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[0,{"a":"b"},"ünïcödé",true],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[0,true,"  padded  ",null],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[[],0,":",{"$undefined":true}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[[],0,"ΣΊΣΥΦΟΣ",[]],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[[],{"a":"b"},"a.b.c","x"],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[null,"x","Hello World",true],"error":"Cannot read properties of null (reading 'on')"}
+{"fn":"exchangeRemoteFrame","args":[{"a":{"b":"c"}},0,"./x/**/*.json",{"a":"b"}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[["a",1],0,"src/a/b.ts",{}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[0,{"a":{"b":"c"}},"Hello World",null],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[[],{"a":"b"},"é",true],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[[],{},"src/a/b.ts"],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[{},0,"a",{"a":"b"}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":["x",["a",1],"hello",["a",1]],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[0,null,"日本語のテキスト",[]],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[{"a":{"b":"c"}},["a",1],"./x/**/*.jsonns:key.path",true],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[[],[],"ünïcödé",{"a":"b"}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":["x",[],"./x/**/*.json",{"a":{"b":"c"}}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[null,0,"Hello World",true],"error":"Cannot read properties of null (reading 'on')"}
+{"fn":"exchangeRemoteFrame","args":[0,[],"a",{"a":{"b":"c"}}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[true,null,"key_name-1",true],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[[],["a",1],"ünïcödé",true],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[true,["a",1],"{name} has {count} items",true],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[{},true,"ΣΊΣΥΦΟΣ./x/**/*.json",{"a":{"b":"c"}}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[{},["a",1],":","x"],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[null,true,"tab\tseparated",0],"error":"Cannot read properties of null (reading 'on')"}
+{"fn":"exchangeRemoteFrame","args":[{},0,"helloİstanbul",[]],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[null,{},"hello","L"],"error":"Cannot read properties of null (reading 'on')"}
+{"fn":"exchangeRemoteFrame","args":[["a",1],{"a":{"b":"c"}},"x","x"],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[{"a":"b"},null,".leadingab","x"],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[[],true,"",null],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":["x","x","a:b:c",{}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[["a",1],true,"emoji 👍🏽 mix",null],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[true,["a",1],"key_name-1",{}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[{"a":"b"},true,"src/a/b.ts"],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[{},null,"  padded  ",{"$undefined":true}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[[],0,"a",{"$undefined":true}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":["x",null,"a",0],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[{"a":"b"},["a",1],":",0],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[{"a":"b"},{"a":"b"},"src/a/b.tssrc/a/b.ts"],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[{},{"a":{"b":"c"}},"ΣΊΣΥΦΟΣ",{"a":"b"}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[0,true,"é",null],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[null,null,"abc  padded  "],"error":"Cannot read properties of null (reading 'on')"}
+{"fn":"exchangeRemoteFrame","args":["x",{"a":"b"},"ünïcödé",[]],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[{"a":{"b":"c"}},{},"😀",["a",1]],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[0,{},"hello😀",true],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[[],{"a":{"b":"c"}},"line1\nline2",{"a":{"b":"c"}}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":["x","x","key_name-1Hello World"],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":["x",{},"HELLO",["a",1]],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[{"a":"b"},[],"trailing.",{}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":["x",true,"  padded  ","x"],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[{"a":"b"},{"a":"b"},"  padded  ",{"a":"b"}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[true,true,"key_name-1./x/**/*.json",["a",1]],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[["a",1],0,"﻿bom",true],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[{"a":{"b":"c"}},{"a":"b"},""],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[true,0,"src/a/b.ts",{}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[["a",1],{"a":{"b":"c"}},"日本語のテキスト",0],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[["a",1],{"a":{"b":"c"}},".leading",{"a":{"b":"c"}}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[[],0,"{name} has {count} items",["a",1]],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[true,null,"ab",null],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[0,{"a":"b"},"😀",{"$undefined":true}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[true,"x","a.b.ca",{"a":{"b":"c"}}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":["x",[],":","x"],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":["x",0,"emoji 👍🏽 mix",{}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":["x",true,"tab\tseparated",{"a":"b"}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[true,{"a":"b"},"hello",0],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[{"a":"b"},0,"ns:key.path",[]],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":["x",["a",1],"HELLO",true],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":["x",{"a":"b"},"a😀b😀c"],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[["a",1],true,"İstanbul",0],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[true,{"a":{"b":"c"}},"{name} has {count} items"],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[null,["a",1],"a","x"],"error":"Cannot read properties of null (reading 'on')"}
+{"fn":"exchangeRemoteFrame","args":["ARATE",null,"tab\tseparatedkey_name-1",{"$undefined":true}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[{},{"a":"b"},":",true],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":["x","x","a😀b😀c"],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[{"a":{"b":"c"}},{"a":"b"},".leadinga😀b😀c",true],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[[],true,"a.b.c",{"a":"b"}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[null,"x","x",0],"error":"Cannot read properties of null (reading 'on')"}
+{"fn":"exchangeRemoteFrame","args":[{"a":"b"},0,"tab\tseparated",true],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[[],[],"ünïcödé",null],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[null,"x","  padded    padded  ",{}],"error":"Cannot read properties of null (reading 'on')"}
+{"fn":"exchangeRemoteFrame","args":["O",["a",1],"HELLO",null],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[{},true,"é",["a",1]],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[["a",1],null,"{name} has {count} items",["a",1]],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[null,"x","line1\nline2",0],"error":"Cannot read properties of null (reading 'on')"}
+{"fn":"exchangeRemoteFrame","args":[[],{},"﻿bom"],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[true,true,"a.b.c",["a",1]],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[null,{"a":{"b":"c"}},"a:b:ca",{}],"error":"Cannot read properties of null (reading 'on')"}
+{"fn":"exchangeRemoteFrame","args":[[],true,"{name} has {count} itemsa",true],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[{"a":{"b":"c"}},[],"hello world",{"a":{"b":"c"}}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[["a",1],0,"abc",{}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[{"a":"b"},{"a":"b"},".leading",{"$undefined":true}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[0,{"a":{"b":"c"}},"a:b:c",{}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[{},null,"emoji 👍🏽 mix",["a",1]],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[{"a":"b"},["a",1],"ns:key.path",[]],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[{"a":{"b":"c"}},null,"src/a/b.ts",{"$undefined":true}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[{"a":{"b":"c"}},null,"ab",{"a":{"b":"c"}}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[{},{"a":{"b":"c"}},"HELLO",null],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":["x",{},"abc","x"],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[{},{},"ab"],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[["a",1],{"a":"b"},"abc:",{}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[true,{"a":{"b":"c"}},"a😀b😀ca😀b😀c","x"],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[[],[],"emoji 👍🏽 mix",{}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":["x",true,"ünïcödé",true],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[["a",1],{"a":"b"},"key_name-1","x"],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[{},"x","ünïcödé",null],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[{"a":"b"},{"a":"b"},"ΣΊΣΥΦΟΣ",0],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[{"a":{"b":"c"}},["a",1],"ΣΊΣΥΦΟΣ",{"a":{"b":"c"}}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[null,"x","ΣΊΣΥΦΟΣ","x"],"error":"Cannot read properties of null (reading 'on')"}
+{"fn":"exchangeRemoteFrame","args":[{"a":{"b":"c"}},true,"trailing.","x"],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[0,{"a":{"b":"c"}},"a.b.c",{"a":{"b":"c"}}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[[],[],"{name} has {count} itemsa..b",{}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[true,{"a":{"b":"c"}},"key_name-1.leading",true],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[0,0,"İstanbul",["a",1]],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[{"a":{"b":"c"}},"ine2","line1\nline2"],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[{"a":{"b":"c"}},true,"日本語のテキスト","日本語のテキ"],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[[],["a",1],"Hello World",[]],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":["x",{"a":{"b":"c"}},"a.b.c",null],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[{"a":{"b":"c"}},true,"straße",{"a":{"b":"c"}}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[["a",1],{"a":"b"},"Hello Worldsrc/a/b.ts",{"a":{"b":"c"}}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[true,{},":",{"a":{"b":"c"}}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[{"a":"b"},0,"a",null],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[["a",1],"x","a😀b😀cstraße","x"],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[{"a":"b"},{},"line1\nline2"],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":["x",["a",1],"straße",{"a":{"b":"c"}}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[[],{},"ünïcödé",{"a":{"b":"c"}}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[null,{},"a😀b😀c",{"$undefined":true}],"error":"Cannot read properties of null (reading 'on')"}
+{"fn":"exchangeRemoteFrame","args":[{"a":{"b":"c"}},["a",1],".leading",null],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[true,[],"İstanbultab\tseparated",true],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[{"a":{"b":"c"}},[],"hello",["a",1]],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[0,{"a":"b"},"a.b.c",{"$undefined":true}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":["x",{"a":{"b":"c"}},"hello world",{}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[[],"x",".leading",{"a":{"b":"c"}}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":["x",{"a":"b"},"a:b:c"],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[true,{"a":{"b":"c"}},"a..b",{}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[[],[],"a:b:c",true],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[null,{"a":{"b":"c"}},"a😀b😀c",{"a":{"b":"c"}}],"error":"Cannot read properties of null (reading 'on')"}
+{"fn":"exchangeRemoteFrame","args":[{},{},"ΣΊΣΥΦΟΣ",[]],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[0,{},"a",[]],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[["a",1],0,".leading","ing"],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[null,{"a":"b"},"line1\nline2line1\nline2",[]],"error":"Cannot read properties of null (reading 'on')"}
+{"fn":"exchangeRemoteFrame","args":[{},null,"a"],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[{"a":"b"},0,"HELLO",{"$undefined":true}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[["a",1],["a",1],"a:b:c",{"$undefined":true}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[{},[],"a..b",true],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[{},["a",1],"a:b:c",[]],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[0,"x","é",["a",1]],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[null,"x","./x/**/*.json",["a",1]],"error":"Cannot read properties of null (reading 'on')"}
+{"fn":"exchangeRemoteFrame","args":[{},true,"{name} has {count} items",[]],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[true,true,"hello world",["a",1]],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[0,{},"trailing.emoji 👍🏽 mix",[]],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[0,0,"é",{}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[null,true,"日本語のテキスト",{"a":"b"}],"error":"Cannot read properties of null (reading 'on')"}
+{"fn":"exchangeRemoteFrame","args":["x","x","straßea:b:c",{"$undefined":true}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[null,{"a":"b"},"key_name-1",{"$undefined":true}],"error":"Cannot read properties of null (reading 'on')"}
+{"fn":"exchangeRemoteFrame","args":[[],0,"a..b"],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[{"a":{"b":"c"}},{"a":{"b":"c"}},"日本語のテキスト",true],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":["x","x",":",null],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":["x","x","x"],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[["a",1],"x","x"],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[true,{},"",{"a":{"b":"c"}}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[true,"x","./x/**/*.json",{"$undefined":true}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[true,null,".leadingsrc/a/b.ts",["a",1]],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[{"a":"b"},0,"hello worlda"],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[{"a":{"b":"c"}},null,"İstanbul",true],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[0,true,":日本語のテキスト",{"a":{"b":"c"}}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[[],null,"src/a/b.ts",0],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[["a",1],"x","a😀b😀c",["a",1]],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[{},[],"ΣΊΣΥΦΟΣ",[]],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[0,0,"abc",{"a":{"b":"c"}}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[{"a":"b"},"😀b😀","a😀b😀c",null],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[0,true,"src/a/b.ts",true],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[["a",1],[],"a",{"$undefined":true}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[true,[],"ΣΊΣΥΦΟΣ",null],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[{"a":"b"},"x","İstanbul"],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":["x",["a",1],"src/a/b.ts.leading",{}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[["a",1],{},"line1\nline2",{}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[null,{},"İstanbul",0],"error":"Cannot read properties of null (reading 'on')"}
+{"fn":"exchangeRemoteFrame","args":[{},["a",1],"trailing."],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":["x",["a",1],"emoji 👍🏽 mix",0],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[{"a":"b"},null,"line1\nline2",0],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[{"a":{"b":"c"}},{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6},"ab",{}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[{"a":{"b":"c"}},{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7},"ab",{}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[{"a":{"b":"c"}},[3,1,2],"ab",{}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[{"a":{"b":"c"}},{},"ab",{}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[{"a":{"b":"c"}},"x","héllo wörld",{}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[{"a":{"b":"c"}},"x","👍🏽 thumbs",{}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[{"a":{"b":"c"}},"x","日本語",{}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[{"a":{"b":"c"}},"x","",{}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[{"a":{"b":"c"}},"x","é",{}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[{"a":{"b":"c"}},"x","İstanbul",{}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[{"a":{"b":"c"}},"x","straße",{}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[{"a":{"b":"c"}},"x","ılık ırmak",{}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[{"a":{"b":"c"}},"x","👨‍👩‍👧 family",{}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[{"a":{"b":"c"}},"x","a b",{}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[{"a":{"b":"c"}},"x","ΣΊΣΥΦΟΣ",{}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[{"a":{"b":"c"}},"x","a😀b",{}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[{"a":{"b":"c"}},"x","﻿bom",{}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[{"a":{"b":"c"}},"x","a²b x½ y①",{}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[{"a":{"b":"c"}},"x","aⅠb Ⅻ",{}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[{"a":{"b":"c"}},"x","a𐐀b 𝐀bc",{}],"error":"socket.on is not a function"}
+{"fn":"exchangeRemoteFrame","args":[{"a":{"b":"c"}},"x","कि ٣٤",{}],"error":"socket.on is not a function"}
+{"fn":"backgroundRetryDelayMs","args":[42,["a",1]],"ok":300000}
+{"fn":"backgroundRetryDelayMs","args":[100,{"a":"b"}],"ok":300000}
+{"fn":"backgroundRetryDelayMs","args":[1000,[]],"ok":300000}
+{"fn":"backgroundRetryDelayMs","args":[100,true],"ok":300000}
+{"fn":"backgroundRetryDelayMs","args":[1,0],"ok":2000}
+{"fn":"backgroundRetryDelayMs","args":[{"$num":"Infinity"},{}],"ok":300000}
+{"fn":"backgroundRetryDelayMs","args":[0.5,{}],"ok":1414.213562373095}
+{"fn":"backgroundRetryDelayMs","args":[42,[]],"ok":300000}
+{"fn":"backgroundRetryDelayMs","args":[-1,0],"ok":1000}
+{"fn":"backgroundRetryDelayMs","args":[1000,{"a":{"b":"c"}}],"ok":300000}
+{"fn":"backgroundRetryDelayMs","args":[1,["a",1]],"ok":2000}
+{"fn":"backgroundRetryDelayMs","args":[{"$num":"Infinity"},0],"ok":300000}
+{"fn":"backgroundRetryDelayMs","args":[0.5,{"a":"b"}],"ok":1414.213562373095}
+{"fn":"backgroundRetryDelayMs","args":[0.5,["a",1]],"ok":1414.213562373095}
+{"fn":"backgroundRetryDelayMs","args":[0,0],"ok":1000}
+{"fn":"backgroundRetryDelayMs","args":[9007199254740992,{"a":"b"}],"ok":300000}
+{"fn":"backgroundRetryDelayMs","args":[0.5,true],"ok":1414.213562373095}
+{"fn":"backgroundRetryDelayMs","args":[2147483648,{}],"ok":300000}
+{"fn":"backgroundRetryDelayMs","args":[-2.5,true],"ok":1000}
+{"fn":"backgroundRetryDelayMs","args":[{"$num":"-0"},[]],"ok":1000}
+{"fn":"backgroundRetryDelayMs","args":[0.5,"x"],"ok":1414.213562373095}
+{"fn":"backgroundRetryDelayMs","args":[10,{"a":{"b":"c"}}],"ok":30000}
+{"fn":"backgroundRetryDelayMs","args":[0,true],"ok":1000}
+{"fn":"backgroundRetryDelayMs","args":[{"$num":"Infinity"},null],"ok":300000}
+{"fn":"backgroundRetryDelayMs","args":[{"$num":"NaN"},[]],"ok":{"$num":"NaN"}}
+{"fn":"backgroundRetryDelayMs","args":[{"$num":"-Infinity"},{"a":"b"}],"ok":1000}
+{"fn":"backgroundRetryDelayMs","args":[42,{"a":{"b":"c"}}],"ok":300000}
+{"fn":"backgroundRetryDelayMs","args":[1000000,true],"ok":300000}
+{"fn":"backgroundRetryDelayMs","args":[{"$num":"-Infinity"},null],"ok":1000}
+{"fn":"backgroundRetryDelayMs","args":[10,{}],"ok":30000}
+{"fn":"backgroundRetryDelayMs","args":[-1,{"a":{"b":"c"}}],"ok":1000}
+{"fn":"backgroundRetryDelayMs","args":[1000000,[]],"ok":300000}
+{"fn":"backgroundRetryDelayMs","args":[100,["a",1]],"ok":300000}
+{"fn":"backgroundRetryDelayMs","args":[3,true],"ok":8000}
+{"fn":"backgroundRetryDelayMs","args":[1,null],"ok":2000}
+{"fn":"backgroundRetryDelayMs","args":[3,"x"],"ok":8000}
+{"fn":"backgroundRetryDelayMs","args":[0,["a",1]],"ok":1000}
+{"fn":"backgroundRetryDelayMs","args":[{"$num":"NaN"},{"a":"b"}],"ok":{"$num":"NaN"}}
+{"fn":"backgroundRetryDelayMs","args":[9007199254740992,["a",1]],"ok":300000}
+{"fn":"backgroundRetryDelayMs","args":[1000000,"x"],"ok":300000}
+{"fn":"backgroundRetryDelayMs","args":[100,0],"ok":300000}
+{"fn":"backgroundRetryDelayMs","args":[2,"x"],"ok":4000}
+{"fn":"backgroundRetryDelayMs","args":[-1,true],"ok":1000}
+{"fn":"backgroundRetryDelayMs","args":[100,{}],"ok":300000}
+{"fn":"backgroundRetryDelayMs","args":[0,{}],"ok":1000}
+{"fn":"backgroundRetryDelayMs","args":[1000000,0],"ok":300000}
+{"fn":"backgroundRetryDelayMs","args":[{"$num":"NaN"},0],"ok":{"$num":"NaN"}}
+{"fn":"backgroundRetryDelayMs","args":[1,{"a":"b"}],"ok":2000}
+{"fn":"backgroundRetryDelayMs","args":[{"$num":"-0"},{"a":"b"}],"ok":1000}
+{"fn":"backgroundRetryDelayMs","args":[10,["a",1]],"ok":30000}
+{"fn":"backgroundRetryDelayMs","args":[-1,["a",1]],"ok":1000}
+{"fn":"backgroundRetryDelayMs","args":[3,0],"ok":8000}
+{"fn":"backgroundRetryDelayMs","args":[1000000,["a",1]],"ok":300000}
+{"fn":"backgroundRetryDelayMs","args":[{"$num":"-Infinity"},0],"ok":1000}
+{"fn":"backgroundRetryDelayMs","args":[10,[]],"ok":30000}
+{"fn":"backgroundRetryDelayMs","args":[1000000,null],"ok":300000}
+{"fn":"backgroundRetryDelayMs","args":[100,null],"ok":300000}
+{"fn":"backgroundRetryDelayMs","args":[-1,"x"],"ok":1000}
+{"fn":"backgroundRetryDelayMs","args":[{"$num":"-Infinity"},{}],"ok":1000}
+{"fn":"backgroundRetryDelayMs","args":[10,null],"ok":30000}
+{"fn":"backgroundRetryDelayMs","args":[{"$num":"NaN"},true],"ok":{"$num":"NaN"}}
+{"fn":"backgroundRetryDelayMs","args":[{"$num":"-0"},{}],"ok":1000}
+{"fn":"backgroundRetryDelayMs","args":[{"$num":"-Infinity"},[]],"ok":1000}
+{"fn":"backgroundRetryDelayMs","args":[2,{}],"ok":4000}
+{"fn":"backgroundRetryDelayMs","args":[{"$num":"NaN"},null],"ok":{"$num":"NaN"}}
+{"fn":"backgroundRetryDelayMs","args":[{"$num":"-0"},null],"ok":1000}
+{"fn":"backgroundRetryDelayMs","args":[10,0],"ok":30000}
+{"fn":"backgroundRetryDelayMs","args":[{"$num":"-0"},["a",1]],"ok":1000}
+{"fn":"backgroundRetryDelayMs","args":[-1,{"a":"b"}],"ok":1000}
+{"fn":"backgroundRetryDelayMs","args":[{"$num":"-0"},{"a":{"b":"c"}}],"ok":1000}
+{"fn":"backgroundRetryDelayMs","args":[{"$num":"-Infinity"},{"a":{"b":"c"}}],"ok":1000}
+{"fn":"backgroundRetryDelayMs","args":[10,true],"ok":30000}
+{"fn":"backgroundRetryDelayMs","args":[3,["a",1]],"ok":8000}
+{"fn":"backgroundRetryDelayMs","args":[2,{"a":"b"}],"ok":4000}
+{"fn":"backgroundRetryDelayMs","args":[1000000,{"a":{"b":"c"}}],"ok":300000}
+{"fn":"backgroundRetryDelayMs","args":[0,{"a":"b"}],"ok":1000}
+{"fn":"backgroundRetryDelayMs","args":[100,[]],"ok":300000}
+{"fn":"backgroundRetryDelayMs","args":[42,null],"ok":300000}
+{"fn":"backgroundRetryDelayMs","args":[9007199254740992,true],"ok":300000}
+{"fn":"backgroundRetryDelayMs","args":[-2.5,{"a":"b"}],"ok":1000}
+{"fn":"backgroundRetryDelayMs","args":[{"$num":"NaN"},{}],"ok":{"$num":"NaN"}}
+{"fn":"backgroundRetryDelayMs","args":[{"$num":"-Infinity"},"x"],"ok":1000}
+{"fn":"backgroundRetryDelayMs","args":[-2.5,["a",1]],"ok":1000}
+{"fn":"backgroundRetryDelayMs","args":[9007199254740992,0],"ok":300000}
+{"fn":"backgroundRetryDelayMs","args":[0.5,null],"ok":1414.213562373095}
+{"fn":"backgroundRetryDelayMs","args":[-2.5,0],"ok":1000}
+{"fn":"backgroundRetryDelayMs","args":[2147483648,["a",1]],"ok":300000}
+{"fn":"backgroundRetryDelayMs","args":[1,{"a":{"b":"c"}}],"ok":2000}
+{"fn":"backgroundRetryDelayMs","args":[{"$num":"Infinity"},[]],"ok":300000}
+{"fn":"backgroundRetryDelayMs","args":[{"$num":"NaN"},["a",1]],"ok":{"$num":"NaN"}}
+{"fn":"backgroundRetryDelayMs","args":[1000,null],"ok":300000}
+{"fn":"backgroundRetryDelayMs","args":[42,{}],"ok":300000}
+{"fn":"backgroundRetryDelayMs","args":[0.5,[]],"ok":1414.213562373095}
+{"fn":"backgroundRetryDelayMs","args":[2,{"a":{"b":"c"}}],"ok":4000}
+{"fn":"backgroundRetryDelayMs","args":[{"$num":"-Infinity"},["a",1]],"ok":1000}
+{"fn":"backgroundRetryDelayMs","args":[2147483648,true],"ok":300000}
+{"fn":"backgroundRetryDelayMs","args":[{"$num":"-0"},0],"ok":1000}
+{"fn":"backgroundRetryDelayMs","args":[{"$num":"Infinity"},true],"ok":300000}
+{"fn":"backgroundRetryDelayMs","args":[1000000,{}],"ok":300000}
+{"fn":"backgroundRetryDelayMs","args":[-2.5,{"a":{"b":"c"}}],"ok":1000}
+{"fn":"backgroundRetryDelayMs","args":[3,{"a":{"b":"c"}}],"ok":8000}
+{"fn":"backgroundRetryDelayMs","args":[0.5,{"a":{"b":"c"}}],"ok":1414.213562373095}
+{"fn":"backgroundRetryDelayMs","args":[2147483648,0],"ok":300000}
+{"fn":"backgroundRetryDelayMs","args":[42,"x"],"ok":300000}
+{"fn":"backgroundRetryDelayMs","args":[9007199254740992,{}],"ok":300000}
+{"fn":"backgroundRetryDelayMs","args":[0,{"a":{"b":"c"}}],"ok":1000}
+{"fn":"backgroundRetryDelayMs","args":[2,["a",1]],"ok":4000}
+{"fn":"backgroundRetryDelayMs","args":[1,true],"ok":2000}
+{"fn":"backgroundRetryDelayMs","args":[{"$num":"NaN"},{"a":{"b":"c"}}],"ok":{"$num":"NaN"}}
+{"fn":"backgroundRetryDelayMs","args":[1,{}],"ok":2000}
+{"fn":"backgroundRetryDelayMs","args":[{"$num":"Infinity"},{"a":"b"}],"ok":300000}
+{"fn":"backgroundRetryDelayMs","args":[2147483648,{"a":"b"}],"ok":300000}
+{"fn":"backgroundRetryDelayMs","args":[1000,"x"],"ok":300000}
+{"fn":"backgroundRetryDelayMs","args":[-1,[]],"ok":1000}
+{"fn":"backgroundRetryDelayMs","args":[10,{"a":"b"}],"ok":30000}
+{"fn":"backgroundRetryDelayMs","args":[0,null],"ok":1000}
+{"fn":"backgroundRetryDelayMs","args":[-2.5,{}],"ok":1000}
+{"fn":"backgroundRetryDelayMs","args":[{"$num":"Infinity"},"x"],"ok":300000}
+{"fn":"backgroundRetryDelayMs","args":[-1,null],"ok":1000}
+{"fn":"backgroundRetryDelayMs","args":[0,[]],"ok":1000}
+{"fn":"backgroundRetryDelayMs","args":[1,"x"],"ok":2000}
+{"fn":"backgroundRetryDelayMs","args":[2147483648,{"a":{"b":"c"}}],"ok":300000}
+{"fn":"backgroundRetryDelayMs","args":[-1,{}],"ok":1000}
+{"fn":"backgroundRetryDelayMs","args":[0,"x"],"ok":1000}
+{"fn":"backgroundRetryDelayMs","args":[2147483648,"x"],"ok":300000}
+{"fn":"backgroundRetryDelayMs","args":[100,{"a":{"b":"c"}}],"ok":300000}
+{"fn":"backgroundRetryDelayMs","args":[{"$num":"Infinity"},{"a":{"b":"c"}}],"ok":300000}
+{"fn":"backgroundRetryDelayMs","args":[42,0],"ok":300000}
+{"fn":"backgroundRetryDelayMs","args":[3,{}],"ok":8000}
+{"fn":"backgroundRetryDelayMs","args":[9007199254740992,[]],"ok":300000}
+{"fn":"backgroundRetryDelayMs","args":[100,"x"],"ok":300000}
+{"fn":"backgroundRetryDelayMs","args":[42,true],"ok":300000}
+{"fn":"backgroundRetryDelayMs","args":[2,0],"ok":4000}
+{"fn":"backgroundRetryDelayMs","args":[1000,0],"ok":300000}
+{"fn":"backgroundRetryDelayMs","args":[1000,true],"ok":300000}
+{"fn":"backgroundRetryDelayMs","args":[1,[]],"ok":2000}
+{"fn":"backgroundRetryDelayMs","args":[3,null],"ok":8000}
+{"fn":"backgroundRetryDelayMs","args":[1000,["a",1]],"ok":300000}
+{"fn":"backgroundRetryDelayMs","args":[2,true],"ok":4000}
+{"fn":"backgroundRetryDelayMs","args":[-2.5,null],"ok":1000}
+{"fn":"backgroundRetryDelayMs","args":[1000,{}],"ok":300000}
+{"fn":"backgroundRetryDelayMs","args":[3,[]],"ok":8000}
+{"fn":"backgroundRetryDelayMs","args":[2147483648,[]],"ok":300000}
+{"fn":"backgroundRetryDelayMs","args":[1000000,{"a":"b"}],"ok":300000}
+{"fn":"backgroundRetryDelayMs","args":[{"$num":"NaN"},"x"],"ok":{"$num":"NaN"}}
+{"fn":"backgroundRetryDelayMs","args":[2,null],"ok":4000}
+{"fn":"backgroundRetryDelayMs","args":[2,[]],"ok":4000}
+{"fn":"backgroundRetryDelayMs","args":[1000,{"a":"b"}],"ok":300000}
+{"fn":"backgroundRetryDelayMs","args":[10,"x"],"ok":30000}
+{"fn":"backgroundRetryDelayMs","args":[-2.5,"x"],"ok":1000}
+{"fn":"backgroundRetryDelayMs","args":[2147483648,null],"ok":300000}
+{"fn":"backgroundRetryDelayMs","args":[3,{"a":"b"}],"ok":8000}
+{"fn":"backgroundRetryDelayMs","args":[9007199254740992,"x"],"ok":300000}
+{"fn":"backgroundRetryDelayMs","args":[0.5,0],"ok":1414.213562373095}
+{"fn":"backgroundRetryDelayMs","args":[9007199254740992,null],"ok":300000}
+{"fn":"backgroundRetryDelayMs","args":[{"$num":"-0"},"x"],"ok":1000}
+{"fn":"backgroundRetryDelayMs","args":[-2.5,[]],"ok":1000}
+{"fn":"backgroundRetryDelayMs","args":[42,{"a":"b"}],"ok":300000}
+{"fn":"backgroundRetryDelayMs","args":[9007199254740992,{"a":{"b":"c"}}],"ok":300000}
+{"fn":"backgroundRetryDelayMs","args":[{"$num":"Infinity"},["a",1]],"ok":300000}
+{"fn":"backgroundRetryDelayMs","args":[{"$num":"-0"},true],"ok":1000}
+{"fn":"backgroundRetryDelayMs","args":[{"$num":"-Infinity"},true],"ok":1000}
+{"fn":"backgroundRetryDelayMs","args":[-7.5,["a",1]],"ok":1000}
+{"fn":"backgroundRetryDelayMs","args":[0.1,["a",1]],"ok":1071.7734625362932}
+{"fn":"backgroundRetryDelayMs","args":[0.30000000000000004,["a",1]],"ok":1231.1444133449163}
+{"fn":"backgroundRetryDelayMs","args":[1e+21,["a",1]],"ok":300000}
+{"fn":"backgroundRetryDelayMs","args":[1e-7,["a",1]],"ok":1000.0000693147205}
+{"fn":"backgroundRetryDelayMs","args":[5e-324,["a",1]],"ok":1000}
+{"fn":"backgroundRetryDelayMs","args":[1.7976931348623157e+308,["a",1]],"ok":300000}
+{"fn":"backgroundRetryDelayMs","args":[42,{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6}],"ok":300000}
+{"fn":"backgroundRetryDelayMs","args":[42,{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7}],"ok":300000}
+{"fn":"backgroundRetryDelayMs","args":[42,[3,1,2]],"ok":300000}
+{"fn":"attentionRetryDelayMs","args":[3],"ok":240000}
+{"fn":"attentionRetryDelayMs","args":[1],"ok":60000}
+{"fn":"attentionRetryDelayMs","args":[2],"ok":120000}
+{"fn":"attentionRetryDelayMs","args":[0],"ok":60000}
+{"fn":"attentionRetryDelayMs","args":[{"$num":"Infinity"}],"ok":300000}
+{"fn":"attentionRetryDelayMs","args":[9007199254740992],"ok":300000}
+{"fn":"attentionRetryDelayMs","args":[{"$num":"-Infinity"}],"ok":60000}
+{"fn":"attentionRetryDelayMs","args":[-2.5],"ok":60000}
+{"fn":"attentionRetryDelayMs","args":[42],"ok":300000}
+{"fn":"attentionRetryDelayMs","args":[2147483648],"ok":300000}
+{"fn":"attentionRetryDelayMs","args":[10],"ok":300000}
+{"fn":"attentionRetryDelayMs","args":[{"$num":"NaN"}],"ok":{"$num":"NaN"}}
+{"fn":"attentionRetryDelayMs","args":[{"$num":"-0"}],"ok":60000}
+{"fn":"attentionRetryDelayMs","args":[-1],"ok":60000}
+{"fn":"attentionRetryDelayMs","args":[1000],"ok":300000}
+{"fn":"attentionRetryDelayMs","args":[100],"ok":300000}
+{"fn":"attentionRetryDelayMs","args":[0.5],"ok":60000}
+{"fn":"attentionRetryDelayMs","args":[1000000],"ok":300000}
+{"fn":"attentionRetryDelayMs","args":[-7.5],"ok":60000}
+{"fn":"attentionRetryDelayMs","args":[0.1],"ok":60000}
+{"fn":"attentionRetryDelayMs","args":[0.30000000000000004],"ok":60000}
+{"fn":"attentionRetryDelayMs","args":[1e+21],"ok":300000}
+{"fn":"attentionRetryDelayMs","args":[1e-7],"ok":60000}
+{"fn":"attentionRetryDelayMs","args":[5e-324],"ok":60000}
+{"fn":"attentionRetryDelayMs","args":[1.7976931348623157e+308],"ok":300000}
+{"fn":"remoteUnaryRpc","args":[{"a":"b"},"",true,true],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[true,"x","x",true],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[[],":straße",["a",1],{"a":{"b":"c"}}],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[[],"key_name-1",[],"x"],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{"a":"b"},"ünïcödé",["a",1],0],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{"a":"b"},"./x/**/*.json",{"a":{"b":"c"}},null],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[["a",1],"ünïcödé",true,true],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[["a",1],"😀",true,{"a":"b"}],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[[],"tab\tseparated",{"a":{"b":"c"}},{"a":{"b":"c"}}],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[true,"Hello World",0,{"a":"b"}],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{"a":{"b":"c"}},"a:b:c",null,{"a":"b"}],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[["a",1],"ab",[],null],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{"a":"b"},"key_name-1",["a",1],true],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[true,"astraße",null,"x"],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{"a":{"b":"c"}},"Hello Worldstraße","x",[]],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{},"straße{name} has {count} items",[],{"a":"b"}],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[[],"ΣΊΣΥΦΟΣ",{},0],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[[],"a.b.c","x","x"],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[["a",1],"src/a/b.ts",0,null],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{},".leading",{"a":"b"},[]],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{"a":"b"},"abc",null,{}],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{"a":{"b":"c"}},"./x/**/*.json",{"a":{"b":"c"}},{"a":{"b":"c"}}],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{"a":{"b":"c"}},"",0,0],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[null,"ab",0,"x"],"error":"Cannot read properties of null (reading 'on')"}
+{"fn":"remoteUnaryRpc","args":[0,"日本語のテキスト",{"a":"b"},true],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[0,"é",0,{}],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[true,"ΣΊΣΥΦΟΣtab\tseparated",null,null],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":["x","a..b",0,true],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[[],"  padded  ΣΊΣΥΦΟΣ",{"a":{"b":"c"}},["a",1]],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[0,"key_name-1",null,null],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[["a",1],"﻿bom",["a",1],"x"],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[["a",1],"日本語のテキスト",[],[]],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":["x","straßeé","x",[]],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[null,"﻿bom",true,{"a":{"b":"c"}}],"error":"Cannot read properties of null (reading 'on')"}
+{"fn":"remoteUnaryRpc","args":[["a",1],"hello",{"a":"b"},{}],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":["g",".leading",true,0],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[true,"a:b:c","c",true],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[[],"a😀b😀c","x",null],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{},"ns:key.path",{"a":{"b":"c"}},[]],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[0,"a😀b😀c  padded  ",true,null],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[0,"Hello Worldé",{},[]],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{"a":{"b":"c"}},"ns:key.path😀",[],0],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[true,"a.b.c",{"a":"b"},null],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":["x","Hello World",null,[]],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{"a":"b"},"key_name-1",[],true],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[["a",1],"😀",[],0],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[null,"straße",[],"x"],"error":"Cannot read properties of null (reading 'on')"}
+{"fn":"remoteUnaryRpc","args":[null,"hello world",{},{}],"error":"Cannot read properties of null (reading 'on')"}
+{"fn":"remoteUnaryRpc","args":[null,"a..b",[],{}],"error":"Cannot read properties of null (reading 'on')"}
+{"fn":"remoteUnaryRpc","args":[[],"a..ba.b.c",{"a":"b"},{}],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{"a":"b"},"x",{},"x"],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{"a":"b"},"é",true,{"a":{"b":"c"}}],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[null,"日本語のテキスト",["a",1],{"a":{"b":"c"}}],"error":"Cannot read properties of null (reading 'on')"}
+{"fn":"remoteUnaryRpc","args":[0,"İstanbulhello world",null,0],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":["x","line1\nline2","x","x"],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{},"ns:key.path",0,{}],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{"a":"b"},"ab",true,null],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{},"a..b",["a",1],true],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[true,":",null,true],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[[],"a.b.chello",0,null],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{},"ab",null,[]],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{"a":"b"},"ab","x",{}],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{"a":{"b":"c"}},"tab\tseparated",[],"x"],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[true,"ns:key.path:",{"a":{"b":"c"}},null],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":["x","日本語のテキストHello World",{"a":"b"},{}],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{},"HELLO",{"a":{"b":"c"}},{"a":"b"}],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[[],"é",{"a":"b"},[]],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[0,"emoji 👍🏽 mix",true,null],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{"a":"b"},"a😀b😀c",{"a":"b"},{"a":{"b":"c"}}],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{},"ünïcödékey_name-1",0,{"a":"b"}],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":["x","a",{"a":"b"},"a"],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[true,"","x",["a",1]],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":["x","x",null,{"a":"b"}],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{"a":{"b":"c"}},".leading",{"a":"b"},null],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[0,"straße",true,[]],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{},"Hello World",["a",1],["a",1]],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{"a":{"b":"c"}},"hello world",0,"r"],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[true,"﻿bom",["a",1],["a",1]],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[null,"hello world",0,[]],"error":"Cannot read properties of null (reading 'on')"}
+{"fn":"remoteUnaryRpc","args":[{"a":"b"},"a.b.c",true,["a",1]],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[[],"emoji 👍🏽 mixtrailing.",null,null],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[null,"﻿bom",[],true],"error":"Cannot read properties of null (reading 'on')"}
+{"fn":"remoteUnaryRpc","args":[{"a":{"b":"c"}},"日本語のテキスト",{},"x"],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[[],"İstanbul",{"a":{"b":"c"}},{"a":{"b":"c"}}],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{},"a:b:c",["a",1],true],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{"a":"b"},"",null,0],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[null,"a:b:c",["a",1],{}],"error":"Cannot read properties of null (reading 'on')"}
+{"fn":"remoteUnaryRpc","args":[{"a":{"b":"c"}},"a..b",{"a":{"b":"c"}},true],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[true,"straße",0,["a",1]],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":["x","﻿bom","x",["a",1]],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{"a":"b"},".leading",0,0],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[0,"hello",["a",1],null],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[[],"﻿bom",{"a":{"b":"c"}},["a",1]],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[true,"ΣΊΣΥΦΟΣ","x",{"a":"b"}],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{"a":{"b":"c"}},"ns:key.path",{"a":{"b":"c"}},{"a":{"b":"c"}}],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{},"ΣΊΣΥΦΟΣhello","x",{}],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":["x",".leading",[],[]],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":["x","  padded  ",{},0],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[["a",1],".leading",null,["a",1]],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{"a":{"b":"c"}},"key_name-1",{"a":{"b":"c"}},0],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[null,"ΣΊΣΥΦΟΣ",{"a":{"b":"c"}},["a",1]],"error":"Cannot read properties of null (reading 'on')"}
+{"fn":"remoteUnaryRpc","args":[null,"😀",["a",1],true],"error":"Cannot read properties of null (reading 'on')"}
+{"fn":"remoteUnaryRpc","args":[["a",1],"hello world",["a",1],["a",1]],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[true,"日本語のテキスト",true,["a",1]],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{"a":{"b":"c"}},"trailing.","x",true],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{"a":"b"},"Hello World",[],true],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{"a":"b"},"tab\tseparated😀",{"a":{"b":"c"}},true],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[null,"a😀b😀c",{},[]],"error":"Cannot read properties of null (reading 'on')"}
+{"fn":"remoteUnaryRpc","args":[{"a":{"b":"c"}},"src/a/b.ts","x",null],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{},"日本語のテキスト",[],null],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[true,"trailing.",["a",1],{}],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":["x",".leadingline1\nline2",{},{"a":"b"}],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{"a":{"b":"c"}},"tab\tseparated",{"a":{"b":"c"}},[]],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{"a":"b"},".leadingstraße",true,"x"],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[0,"ab",0,["a",1]],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[0,"key_name-1",null,true],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[null,"line1\nline2",{"a":"b"},["a",1]],"error":"Cannot read properties of null (reading 'on')"}
+{"fn":"remoteUnaryRpc","args":[{"a":{"b":"c"}},"key_name-1",{"a":{"b":"c"}},{"a":"b"}],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[true,"key_name-1trailing.",[],{"a":"b"}],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[["a",1],"{name} has {count} itemstab\tseparated","x",[]],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":["x","é",null,["a",1]],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[0,"trailing.",["a",1],0],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{},"  padded  ","x",{"a":{"b":"c"}}],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":["x","{name} has {count} itemsns:key.path",{"a":{"b":"c"}},{"a":{"b":"c"}}],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{"a":{"b":"c"}},"  padded  a😀b😀c","x",{"a":{"b":"c"}}],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[[],"日本語のテキスト",null,null],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{"a":{"b":"c"}},"trailing.",{},["a",1]],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[null,"Hello Worldns:key.path",0,[]],"error":"Cannot read properties of null (reading 'on')"}
+{"fn":"remoteUnaryRpc","args":[true,"é",true,{}],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[[],"a:b:c",null,"x"],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":["x","hello world","x",null],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[["a",1],"a",{},{"a":{"b":"c"}}],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[true,"tab\tseparated",null,[]],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[true,"a..b",{},"x"],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[null,":ΣΊΣΥΦΟΣ",["a",1],{}],"error":"Cannot read properties of null (reading 'on')"}
+{"fn":"remoteUnaryRpc","args":[{},"ns:key.pathhello",true,0],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{"a":"b"},"a",{},0],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{"a":{"b":"c"}},"trailing.",true,[]],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[[],"a:b:c",[],"x"],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[0,"{name} has {count} items","x",null],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{},"ünïcödé","x",{"a":{"b":"c"}}],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":["x","Hello World",{},{"a":"b"}],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[["a",1],"ab",{},true],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[true,"x","x","x"],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{},"trailing.tab\tseparated","x",{}],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[null,"abc",{"a":"b"},["a",1]],"error":"Cannot read properties of null (reading 'on')"}
+{"fn":"remoteUnaryRpc","args":["x","X",["a",1],{"a":{"b":"c"}}],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":["x","hello worlda",true,{}],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{"a":"b"},"./x/**/*.json",null,["a",1]],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":["x","😀",[],{"a":{"b":"c"}}],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[true,"",0,true],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{"a":"b"},"a.b.c",[],"x"],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[[],"abc",0,"x"],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[[],"hello world",{},{"a":{"b":"c"}}],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[true,"hello world",["a",1],{}],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[null,"tab\tseparated",[],{}],"error":"Cannot read properties of null (reading 'on')"}
+{"fn":"remoteUnaryRpc","args":[true,"ünïcödé",{},{"a":{"b":"c"}}],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{"a":{"b":"c"}},"ünïcödé{name} has {count} items",["a",1],{}],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":["x","日本語のテキスト","x",[]],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{"a":"b"},"Hello World",{},"x"],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[["a",1],"emoji 👍🏽 mix","x",{}],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[true,"ns:key.path",true,null],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{},"a:b:c",["a",1],"x"],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[0,"hello world",{},{"a":"b"}],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[[],"abc",null,true],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[null,"tab\tseparated","x",{"a":"b"}],"error":"Cannot read properties of null (reading 'on')"}
+{"fn":"remoteUnaryRpc","args":[0,"key_name-1",{},true],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{},"﻿bom",["a",1],0],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[["a",1],"﻿bom",{},true],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[[],"",0,{}],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[0,"ab",{"a":{"b":"c"}},{"a":{"b":"c"}}],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[true,"tab\tseparatedHello World","x",0],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[true,"{name} has {count} items",[],0],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[["a",1],"a😀b😀c",null,{"a":"b"}],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{"a":"b"},"hello world",{"a":{"b":"c"}},{"a":{"b":"c"}}],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[null,"İstanbul",{},null],"error":"Cannot read properties of null (reading 'on')"}
+{"fn":"remoteUnaryRpc","args":[true,"src/a/b.ts",[],0],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[0,"  padded  ",true,["a",1]],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":["x","hello world","x",0],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[[],"tab\tseparated",true,["a",1]],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{"a":"b"},".leading😀",true,{"a":{"b":"c"}}],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{"a":"b"},"日本語のテキスト",0,{"a":"b"}],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{"a":"b"},"ünïcödé",true,null],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[[],"ΣΊΣΥΦΟΣ",null,{}],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[true,"İstanbul",0,0],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[true,"trailing.",{},0],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{},"emoji 👍🏽 mix",{"a":{"b":"c"}},{"a":{"b":"c"}}],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[null,"",{"a":{"b":"c"}},[]],"error":"Cannot read properties of null (reading 'on')"}
+{"fn":"remoteUnaryRpc","args":[true,"a.b.c",null,null],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[["a",1],"key_name-1",true,[]],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":["x","",0,"x"],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{"a":"b"},"a.b.c",["a",1],true],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[[],"a.b.c",{"a":{"b":"c"}},"x"],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[null,"x",true,"x"],"error":"Cannot read properties of null (reading 'on')"}
+{"fn":"remoteUnaryRpc","args":[{},"",0,{"a":"b"}],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[null,"  padded  ",["a",1],"x"],"error":"Cannot read properties of null (reading 'on')"}
+{"fn":"remoteUnaryRpc","args":[["a",1],":",[],0],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{"a":"b"},"emoji 👍🏽 mix","x",true],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[["a",1],"a:b:c{name} has {count} items",{"a":"b"},true],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[[],".leading",[],null],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{"a":"b"},"héllo wörld",true,true],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{"a":"b"},"👍🏽 thumbs",true,true],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{"a":"b"},"日本語",true,true],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{"a":"b"},"é",true,true],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{"a":"b"},"İstanbul",true,true],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{"a":"b"},"straße",true,true],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{"a":"b"},"ılık ırmak",true,true],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{"a":"b"},"👨‍👩‍👧 family",true,true],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{"a":"b"},"a b",true,true],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{"a":"b"},"ΣΊΣΥΦΟΣ",true,true],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{"a":"b"},"a😀b",true,true],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{"a":"b"},"﻿bom",true,true],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{"a":"b"},"a²b x½ y①",true,true],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{"a":"b"},"aⅠb Ⅻ",true,true],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{"a":"b"},"a𐐀b 𝐀bc",true,true],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{"a":"b"},"कि ٣٤",true,true],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{"a":"b"},"",{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6},true],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{"a":"b"},"",{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7},true],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{"a":"b"},"",[3,1,2],true],"error":"socket.on is not a function"}
+{"fn":"remoteUnaryRpc","args":[{"a":"b"},"",{},true],"error":"socket.on is not a function"}

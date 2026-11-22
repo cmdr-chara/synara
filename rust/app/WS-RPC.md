@@ -3,16 +3,17 @@
 Extracted 2026-11-22 from `packages/contracts/src/rpc.ts` (`Rpc.make` declarations, 285 methods).
 Transport: `apps/server/src/wsRpc.ts` over the WS upgrade path; this is the app's real API surface — the 30 HTTP routes in ROUTES.md are auxiliary.
 
-Native coverage in rust/app (relay handles the rest): ~113/285.
+Native coverage in rust/app (relay handles the rest): ~119/285.
 - `bootstrap.negotiate` (HTTP GET /ws/negotiate)
 - `filesystem.browse`
 - `git.*` — 24 of 27 (missing: summarizeDiff, runStackedAction, handoffThread)
 - `githubInbox.*` — 3 of 3: list (GraphQL inbox + involvement docs via gh), issueDetail, issueComment; repositories resolved from projection projects' git remotes
 - `orchestration.*` — 11 of 27: getSnapshot, getShellSnapshot (heavy embeds stripped + latestReplyPreview), getThreadDetailSnapshot, searchThreads (LIKE over projection_thread_messages), replayEvents, getTurnDiff + getFullThreadDiff (checkpoint_diff_blobs; ignoreWhitespace unsupported), listProviderDeliveryBlockers, subscribeShell/subscribeThread/subscribeDomainEvents (polled streams) + unsubscribeShell/unsubscribeThread — all read from a byte copy of state.sqlite
-- `projects.*` — 16 of 17 + subscribeDevServerEvents/subscribeFileChange streams (missing: provisionFromGitHub)
-- `server.*` — 19 of 39: getEnvironment, getRuntimeStatus, getConfig, getSettings, updateSettings, subscribeSettings, subscribeConfig, subscribeProviderStatuses (empty until providers ported), subscribeLifecycle, subscribeKeepAwake, listWorktrees, upsertKeybinding, editKeybindings, listLocalServers, stopLocalServer, getDiagnostics, desktopUpdateStatus, desktopUpdate (unsupported: no updater bridge)
+- `projects.*` — 17 of 17 + subscribeDevServerEvents/subscribeFileChange streams (provisionFromGitHub clones via gh repo clone / git clone fallback)
+- `server.*` — 21 of 39: getEnvironment, getRuntimeStatus, getConfig, getSettings, updateSettings, subscribeSettings, subscribeConfig, subscribeProviderStatuses (on-disk provider-status snapshots), subscribeLifecycle, subscribeKeepAwake, listWorktrees, upsertKeybinding, editKeybindings, listLocalServers, stopLocalServer, getDiagnostics, listExternalMcpIntegrations (external_mcp_* tables), readThreadDiagnostics (paged orchestration_events + provider_runtime_events), desktopUpdateStatus, desktopUpdate (unsupported: no updater bridge)
 - `shell.openInEditor`
 - `stats.*` — 4 of 4: getProfileStats, getProfileTokenStats, getRecap, getUsageAnalytics (computed over a byte copy of state.sqlite; quota/pricing unavailable)
+- `provider.listModels` — cached catalog from userdata/provider-models/catalogs.json
 - `terminal.*` — 8 of 8 (incl. subscribeEvents stream)
 - `todo.*` — 5 of 5 (incl. subscribe stream)
 

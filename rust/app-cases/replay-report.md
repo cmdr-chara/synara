@@ -1,9 +1,9 @@
 # App replay
 
-Build: `bun run apps/server/src/index.ts --port 4577 --host 127.0.0.1 --no-browser --home-dir ./.rec-home --auth-token rectoken`
+Build: `/Users/devin/repos/synara/rust/app/target/debug/index`
 
 Passed: 179/179
 
-Fallback rate: not reported by this build
+Fallback rate: 100.0% (179/179 cases answered by the original)
 
 Every case matches.

@@ -6,7 +6,7 @@
     "run",
     "apps/server/src/index.ts",
     "--port",
-    "4577",
+    "{port}",
     "--host",
     "127.0.0.1",
     "--no-browser",
@@ -15,12 +15,13 @@
     "--auth-token",
     "rectoken"
   ],
-  "normalize": ["timestamps", "uuids"],
+  "normalize": [
+    "timestamps",
+    "uuids"
+  ],
   "normalizers": {
     "eventloop": "\"(sampleWindowMs|sampleCount|delayP50Ms|delayP99Ms|delayMaxMs|utilization|stallWindowCount|maxStallMs|discardedIdleGapCount|discardedIdleGapMs)\":[0-9.]+"
   },
   "timeout_secs": 60,
-  "http": {
-    "port": 4577
-  }
+  "http": {}
 }

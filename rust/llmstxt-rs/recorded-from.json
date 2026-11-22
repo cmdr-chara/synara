@@ -1,0 +1,17 @@
+{
+  "unit": "apps/marketing/src/app/llms.txt/",
+  "files": 1,
+  "fingerprint": "b29b9314068a41ef",
+  "coverage": {
+    "lines": 13,
+    "reached": 13,
+    "files": [
+      {
+        "file": "apps/marketing/src/app/llms.txt/route.ts",
+        "lines": 13,
+        "reached": 13,
+        "missed": ""
+      }
+    ]
+  }
+}

@@ -1,0 +1,127 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/processRuntime.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "processruntime-rs",
+  "exports": [
+    {
+      "name": "spawnProcess",
+      "file": "packages/shared/src/processRuntime.ts",
+      "line": 119,
+      "params": [
+        {
+          "name": "command",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "args",
+          "ts_type": "ReadonlyArray<string>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "options",
+          "ts_type": "(Omit<\n  SpawnOptions,\n  \"shell\" | \"windowsHide\" | \"windowsVerbatimArguments\"\n> &\n  (Pick<ProcessLaunchInput, \"platform\" | \"requireExecutable\">) &\n  {\n  /** Own a POSIX process group while keeping Windows launches attached for tree control. */\n  readonly ownProcessGroup?: boolean;\n  /** Opt-in for agent processes; internal request-path helpers keep their priority. */\n  readonly lowerPriority?: boolean;\n})",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "ChildProcess",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "spawnPlannedProcess",
+      "file": "packages/shared/src/processRuntime.ts",
+      "line": 137,
+      "params": [
+        {
+          "name": "plan",
+          "ts_type": "ProcessLaunchPlan",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "options",
+          "ts_type": "(Omit<\n  SpawnOptions,\n  \"shell\" | \"windowsHide\" | \"windowsVerbatimArguments\"\n> &\n  (Pick<ProcessLaunchInput, \"platform\" | \"requireExecutable\">) &\n  {\n  /** Own a POSIX process group while keeping Windows launches attached for tree control. */\n  readonly ownProcessGroup?: boolean;\n  /** Opt-in for agent processes; internal request-path helpers keep their priority. */\n  readonly lowerPriority?: boolean;\n})",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "ChildProcess",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "spawnProcessSync",
+      "file": "packages/shared/src/processRuntime.ts",
+      "line": 174,
+      "params": [
+        {
+          "name": "command",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "args",
+          "ts_type": "ReadonlyArray<string>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "options",
+          "ts_type": "(Omit<\n  SpawnSyncOptionsWithStringEncoding,\n  \"shell\" | \"windowsHide\" | \"windowsVerbatimArguments\"\n> &\n  (Pick<ProcessLaunchInput, \"platform\" | \"requireExecutable\">)) | (Omit<\n  SpawnSyncOptionsWithBufferEncoding,\n  \"shell\" | \"windowsHide\" | \"windowsVerbatimArguments\"\n> &\n  (Pick<ProcessLaunchInput, \"platform\" | \"requireExecutable\">))",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "SpawnSyncReturns<string> | SpawnSyncReturns<Buffer>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "execShellCommandSync",
+      "file": "packages/shared/src/processRuntime.ts",
+      "line": 192,
+      "params": [
+        {
+          "name": "command",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "options",
+          "ts_type": "(Omit<\n  ExecSyncOptionsWithStringEncoding,\n  \"shell\" | \"windowsHide\"\n> &\n  Pick<ProcessLaunchInput, \"platform\">)",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "execProcessFile",
+      "file": "packages/shared/src/processRuntime.ts",
+      "line": 206,
+      "reason": "takes or returns a function"
+    }
+  ]
+}

@@ -246,6 +246,75 @@ fn should_reject_untrusted_request_origin(
     }
 }
 
+/// `negotiateWsCompatibility`: Ok = `WsBootstrapNegotiateResult`-shaped JSON,
+/// Err = `WsCompatibilityError`-shaped JSON. Pure over the protocol inputs.
+pub fn negotiate(
+    epoch: i64,
+    min_rev: i64,
+    max_rev: i64,
+    required: &[String],
+) -> Result<Value, Value> {
+    if min_rev > max_rev {
+        return Err(error_body(
+            "The client sent an invalid WebSocket protocol range.",
+            "WS_PROTOCOL_INCOMPATIBLE",
+            "reload",
+        ));
+    }
+    if epoch != PROTOCOL_EPOCH {
+        let action = if epoch < PROTOCOL_EPOCH {
+            "update-client"
+        } else {
+            "update-server"
+        };
+        return Err(error_body(
+            &format!(
+                "WebSocket protocol epoch {epoch} is incompatible with server epoch {PROTOCOL_EPOCH}."
+            ),
+            "WS_PROTOCOL_INCOMPATIBLE",
+            action,
+        ));
+    }
+    let low = min_rev.max(MIN_REVISION);
+    let negotiated = max_rev.min(MAX_REVISION);
+    if negotiated < low {
+        let action = if max_rev < MIN_REVISION {
+            "update-client"
+        } else {
+            "update-server"
+        };
+        return Err(error_body(
+            &format!(
+                "WebSocket protocol revisions {min_rev}-{max_rev} do not overlap server revisions {MIN_REVISION}-{MAX_REVISION}."
+            ),
+            "WS_PROTOCOL_INCOMPATIBLE",
+            action,
+        ));
+    }
+    let missing: Vec<&str> = required
+        .iter()
+        .filter(|c| !SERVER_CAPABILITIES.contains(&c.as_str()))
+        .map(|c| c.as_str())
+        .collect();
+    if !missing.is_empty() {
+        return Err(error_body(
+            &format!(
+                "The server is missing required WebSocket capabilities: {}.",
+                missing.join(", ")
+            ),
+            "WS_CAPABILITIES_INCOMPATIBLE",
+            "update-server",
+        ));
+    }
+    Ok(json!({
+        "protocolEpoch": PROTOCOL_EPOCH,
+        "negotiatedRevision": negotiated,
+        "serverBuild": SERVER_BUILD,
+        "serverInstanceId": server_instance_id(),
+        "capabilities": SERVER_CAPABILITIES,
+    }))
+}
+
 fn error_body(
     message: &str,
     code: &str,
@@ -285,7 +354,7 @@ fn request_origin(headers: &HeaderMap) -> String {
 }
 
 /// `GET /ws/negotiate` handler.
-async fn negotiate(req: Request<axum::body::Body>) -> Response {
+async fn negotiate_route(req: Request<axum::body::Body>) -> Response {
     let cfg = config();
     let headers = req.headers().clone();
     let uri: Uri = req.uri().clone();
@@ -454,5 +523,5 @@ fn percent_decode(s: &str) -> String {
 }
 
 pub fn router() -> Router<Original> {
-    Router::new().route(WS_NEGOTIATE_HTTP_PATH, get(negotiate))
+    Router::new().route(WS_NEGOTIATE_HTTP_PATH, get(negotiate_route))
 }

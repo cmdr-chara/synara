@@ -10,6 +10,7 @@ mod runtime_status;
 mod server_env;
 mod server_settings;
 mod shell_editor;
+mod terminal;
 mod todo;
 mod units;
 mod ws_relay;

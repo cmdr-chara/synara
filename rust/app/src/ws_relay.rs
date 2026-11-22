@@ -89,6 +89,7 @@ fn intercept_todo(
         && !text.contains("server.getSettings")
         && !text.contains("server.updateSettings")
         && !text.contains("server.subscribeSettings")
+        && !text.contains("terminal.")
     {
         return None;
     }
@@ -114,6 +115,7 @@ fn intercept_todo(
         && tag != "server.getSettings"
         && tag != "server.updateSettings"
         && tag != "server.subscribeSettings"
+        && !tag.starts_with("terminal.")
     {
         return None;
     }
@@ -126,6 +128,27 @@ fn intercept_todo(
         .get("payload")
         .cloned()
         .unwrap_or(serde_json::Value::Null);
+    if tag == "terminal.subscribeEvents" {
+        let mut rx = crate::terminal::subscribe();
+        let tx = native_tx.clone();
+        let rid = request_id.clone();
+        let task = tokio::spawn(async move {
+            while let Ok(event) = rx.recv().await {
+                let chunk =
+                    serde_json::json!({"_tag": "Chunk", "requestId": rid, "values": [event]});
+                if tx
+                    .send(ClientMessage::Text(chunk.to_string().into()))
+                    .is_err()
+                {
+                    return;
+                }
+            }
+        });
+        if let Ok(mut map) = streams.lock() {
+            map.insert(request_id, task);
+        }
+        return Some(None);
+    }
     if tag == "server.subscribeSettings" {
         let (snapshot, mut rx) = crate::server_settings::subscribe();
         let tx = native_tx.clone();
@@ -202,6 +225,8 @@ fn intercept_todo(
         crate::list_worktrees::list_worktrees()
             .map(Some)
             .map_err(error_json)
+    } else if tag.starts_with("terminal.") {
+        crate::terminal::handle(tag, &payload).map_err(error_json)
     } else if tag == "server.getSettings" {
         crate::server_settings::get_settings(&payload)
             .map(Some)

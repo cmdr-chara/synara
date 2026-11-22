@@ -91,6 +91,8 @@ pub fn handle(_tag: &str, payload: &Value) -> Result<Value, WsErr> {
         "project.create" => project_create(command),
         "project.meta.update" => project_meta_update(command),
         "project.delete" => project_delete(command),
+        "thread.checkpoint.revert" => checkpoint_revert(command),
+        "thread.conversation.rollback" => conversation_rollback(command),
         other => Err(err(format!(
             "orchestration.dispatchCommand {other} is not ported yet (native engine slice)"
         ))),
@@ -2076,5 +2078,145 @@ fn project_delete(command: &Map<String, Value>) -> Result<Value, WsErr> {
         params![project_id, occurred_at],
     )
     .map_err(|e| err(e.to_string()))?;
+    Ok(json!({ "sequence": seq }))
+}
+
+// ---- thread.checkpoint.revert / thread.conversation.rollback ----
+
+fn checkpoint_revert(command: &Map<String, Value>) -> Result<Value, WsErr> {
+    let command_id = s(command, "commandId").ok_or_else(|| err("missing commandId"))?;
+    let thread_id = s(command, "threadId").ok_or_else(|| err("missing threadId"))?;
+    let created_at = s(command, "createdAt").ok_or_else(|| err("missing createdAt"))?;
+    let turn_count = command
+        .get("turnCount")
+        .and_then(Value::as_i64)
+        .unwrap_or(0);
+    let scope = s(command, "scope").unwrap_or_else(|| "thread".to_string());
+    let conn = open_state_rw()?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| err(e.to_string()))?;
+    require_thread(&conn, &thread_id)?;
+    if thread_has_in_flight(&conn, &thread_id)? {
+        return Err(err(format!(
+            "Thread '{thread_id}' has an active turn. Interrupt the current turn before reverting checkpoints."
+        )));
+    }
+    if thread_has_revert_in_progress(&conn, &thread_id)? {
+        return Err(err(format!(
+            "Thread '{thread_id}' already has a checkpoint revert in progress."
+        )));
+    }
+    let activity_id = uuid_v4();
+    let started = out_event(
+        "thread.activity-appended",
+        &thread_id,
+        &created_at,
+        json!({
+            "threadId": thread_id,
+            "activity": {
+                "id": activity_id,
+                "tone": "info",
+                "kind": "checkpoint.revert.started",
+                "summary": "Checkpoint revert started",
+                "payload": {"turnCount": turn_count, "scope": scope},
+                "turnId": null,
+                "createdAt": created_at,
+            }
+        }),
+    );
+    let mut requested = out_event(
+        "thread.checkpoint-revert-requested",
+        &thread_id,
+        &created_at,
+        json!({"threadId": thread_id, "turnCount": turn_count, "scope": scope, "createdAt": created_at}),
+    );
+    requested.causation_event_id = Some(started.event_id.clone());
+    let events = vec![started, requested];
+    let seq = commit_events(&conn, &events, &command_id)?;
+    // Projection: append the started activity with the thread's next sequence.
+    let next_seq: i64 = conn
+        .query_row(
+            "SELECT COALESCE(MAX(sequence), 0) + 1 FROM projection_thread_activities \
+             WHERE thread_id = ?1",
+            params![thread_id],
+            |r| r.get(0),
+        )
+        .map_err(|e| err(e.to_string()))?;
+    conn.execute(
+        "INSERT OR REPLACE INTO projection_thread_activities \
+         (activity_id, thread_id, turn_id, tone, kind, summary, payload_json, created_at, sequence) \
+         VALUES (?1, ?2, NULL, 'info', 'checkpoint.revert.started', 'Checkpoint revert started', ?3, ?4, ?5)",
+        params![
+            activity_id,
+            thread_id,
+            json!({"turnCount": turn_count, "scope": scope}).to_string(),
+            created_at,
+            next_seq,
+        ],
+    )
+    .map_err(|e| err(format!("activity projection: {e}")))?;
+    Ok(json!({ "sequence": seq }))
+}
+
+fn conversation_rollback(command: &Map<String, Value>) -> Result<Value, WsErr> {
+    let command_id = s(command, "commandId").ok_or_else(|| err("missing commandId"))?;
+    let thread_id = s(command, "threadId").ok_or_else(|| err("missing threadId"))?;
+    let created_at = s(command, "createdAt").ok_or_else(|| err("missing createdAt"))?;
+    let message_id = s(command, "messageId").ok_or_else(|| err("missing messageId"))?;
+    let num_turns = command
+        .get("numTurns")
+        .and_then(Value::as_i64)
+        .unwrap_or(0);
+    let conn = open_state_rw()?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| err(e.to_string()))?;
+    require_thread(&conn, &thread_id)?;
+    if thread_has_revert_in_progress(&conn, &thread_id)? {
+        return Err(err(format!(
+            "Thread '{thread_id}' already has a checkpoint revert in progress."
+        )));
+    }
+    // Read-model message order: insertion order (created_at, then id).
+    let mut st = conn
+        .prepare(
+            "SELECT message_id, role, turn_id FROM projection_thread_messages \
+             WHERE thread_id = ?1 ORDER BY created_at, message_id",
+        )
+        .map_err(|e| err(e.to_string()))?;
+    let messages: Vec<(String, String, Option<String>)> = st
+        .query_map(params![thread_id], |r| Ok((r.get(0)?, r.get(1)?, r.get(2)?)))
+        .map_err(|e| err(e.to_string()))?
+        .collect::<Result<_, _>>()
+        .map_err(|e| err(e.to_string()))?;
+    let target_index = messages.iter().position(|(id, _, _)| id == &message_id);
+    let target_index = match target_index {
+        Some(i) if messages[i].1 == "user" => i,
+        _ => {
+            return Err(err(
+                "Conversation rollback must target an existing user message.",
+            ))
+        }
+    };
+    let mut removed_turns: Vec<String> = Vec::new();
+    for (_, _, turn_id) in &messages[target_index..] {
+        if let Some(t) = turn_id {
+            if !removed_turns.contains(t) {
+                removed_turns.push(t.clone());
+            }
+        }
+    }
+    if num_turns <= 0 || removed_turns.len() as i64 != num_turns {
+        return Err(err(format!(
+            "Conversation rollback requested {num_turns} turn(s), but target message '{message_id}' would remove {} turn(s).",
+            removed_turns.len()
+        )));
+    }
+    let events = vec![out_event(
+        "thread.conversation-rollback-requested",
+        &thread_id,
+        &created_at,
+        json!({"threadId": thread_id, "messageId": message_id, "numTurns": num_turns, "createdAt": created_at}),
+    )];
+    let seq = commit_events(&conn, &events, &command_id)?;
     Ok(json!({ "sequence": seq }))
 }

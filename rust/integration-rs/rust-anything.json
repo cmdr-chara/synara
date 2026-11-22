@@ -1,0 +1,102 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/integration/",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "integration-rs",
+  "exports": [
+    {
+      "name": "gitRefExists",
+      "file": "apps/server/integration/OrchestrationEngineHarness.integration.ts",
+      "line": 105,
+      "params": [
+        {
+          "name": "cwd",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "ref",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "gitShowFileAtRef",
+      "file": "apps/server/integration/OrchestrationEngineHarness.integration.ts",
+      "line": 114,
+      "params": [
+        {
+          "name": "cwd",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "ref",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "filePath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "makeOrchestrationIntegrationHarness",
+      "file": "apps/server/integration/OrchestrationEngineHarness.integration.ts",
+      "line": 235,
+      "params": [
+        {
+          "name": "options",
+          "ts_type": "MakeOrchestrationIntegrationHarnessOptions",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "makeTestProviderAdapterHarness",
+      "file": "apps/server/integration/TestProviderAdapter.integration.ts",
+      "line": 229,
+      "params": [
+        {
+          "name": "options",
+          "ts_type": "MakeTestProviderAdapterHarnessOptions",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

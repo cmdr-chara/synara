@@ -22,6 +22,8 @@ pub struct Client {
     pending: Arc<Mutex<HashMap<String, Sender<Value>>>>,
     next_id: AtomicU64,
     alive: Arc<AtomicBool>,
+    base: String,
+    cookie: Option<String>,
 }
 
 impl Client {
@@ -177,7 +179,45 @@ impl Client {
             pending,
             next_id: AtomicU64::new(0),
             alive,
+            base,
+            cookie,
         }))
+    }
+
+    /// POST a composer attachment to the HTTP upload route (relayed upstream
+    /// by the front door). Returns the attachment object the turn payload
+    /// expects (type/id/mimeType/sizeBytes), or None on failure.
+    pub fn upload_attachment(
+        &self,
+        thread_id: &str,
+        kind: &str,
+        name: &str,
+        mime: &str,
+        bytes: &[u8],
+    ) -> Option<Value> {
+        let url = format!(
+            "{}/api/attachments/upload?threadId={}&type={}&name={}&mimeType={}",
+            self.base,
+            urlencoding::encode(thread_id),
+            kind,
+            urlencoding::encode(name),
+            urlencoding::encode(mime)
+        );
+        let agent = ureq::AgentBuilder::new().build();
+        let mut req = agent
+            .post(&url)
+            .set("Origin", &self.base)
+            .set("Content-Type", mime);
+        if let Some(cookie) = &self.cookie {
+            req = req.set("Cookie", cookie);
+        }
+        match req.send_bytes(bytes) {
+            Ok(r) => r.into_json::<Value>().ok().filter(|v| v.get("id").is_some()),
+            Err(e) => {
+                eprintln!("ws_client: attachment upload failed: {e}");
+                None
+            }
+        }
     }
 
     pub fn is_alive(&self) -> bool {

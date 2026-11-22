@@ -58,6 +58,9 @@ pub struct Native {
     inbox_errors: Vec<Value>,
     inbox_loading: bool,
     tools_expanded: bool,
+    pending_attachments: Vec<Value>,
+    composer_thread_id: Option<String>,
+    uploading: bool,
 }
 
 fn get<'a>(v: &'a Value, k: &str) -> &'a Value {
@@ -172,6 +175,9 @@ impl Native {
                 inbox_errors: Vec::new(),
                 inbox_loading: false,
                 tools_expanded: false,
+                pending_attachments: Vec::new(),
+                composer_thread_id: None,
+                uploading: false,
             };
             this.refresh(cx);
             this
@@ -383,6 +389,78 @@ impl Native {
             self.fetch_inbox(cx);
         }
         cx.notify();
+    }
+
+    /// "+" button: native file picker -> upload each file -> chip in composer.
+    fn attach(&mut self, cx: &mut Context<Self>) {
+        let rx = cx.prompt_for_paths(gpui::PathPromptOptions {
+            files: true,
+            directories: false,
+            multiple: true,
+            prompt: Some("Attach files".into()),
+        });
+        let client = self.client.clone();
+        if self.composer_thread_id.is_none() && self.selected_thread.is_none() {
+            self.composer_thread_id = Some(uuid());
+        }
+        let thread_id = self
+            .selected_thread
+            .clone()
+            .or_else(|| self.composer_thread_id.clone());
+        self.uploading = true;
+        cx.notify();
+        cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
+            let paths = rx.await.ok().and_then(|r| r.ok()).flatten().unwrap_or_default();
+            let cell = client.clone();
+            let thread_id = thread_id.unwrap_or_default();
+            let uploaded: Vec<Value> = cx
+                .background_executor()
+                .spawn(async move {
+                    let Some(c) = ensure_client(&cell) else {
+                        return Vec::new();
+                    };
+                    let mut out = Vec::new();
+                    for p in paths {
+                        let Ok(bytes) = std::fs::read(&p) else {
+                            continue;
+                        };
+                        let name = p
+                            .file_name()
+                            .and_then(|n| n.to_str())
+                            .unwrap_or("file")
+                            .to_string();
+                        let ext = p
+                            .extension()
+                            .and_then(|e| e.to_str())
+                            .unwrap_or("")
+                            .to_lowercase();
+                        let (kind, mime) = match ext.as_str() {
+                            "png" => ("image", "image/png"),
+                            "jpg" | "jpeg" => ("image", "image/jpeg"),
+                            "gif" => ("image", "image/gif"),
+                            "webp" => ("image", "image/webp"),
+                            "pdf" => ("file", "application/pdf"),
+                            "txt" | "md" => ("file", "text/plain"),
+                            "json" => ("file", "application/json"),
+                            "zip" => ("file", "application/zip"),
+                            _ => ("file", "application/octet-stream"),
+                        };
+                        if let Some(att) =
+                            c.upload_attachment(&thread_id, kind, &name, mime, &bytes)
+                        {
+                            out.push(att);
+                        }
+                    }
+                    out
+                })
+                .await;
+            let _ = this.update(cx, |this: &mut Self, cx| {
+                this.uploading = false;
+                this.pending_attachments.extend(uploaded);
+                cx.notify();
+            });
+        })
+        .detach();
     }
 
     /// Blocking RPC: GitHub inbox (PRs + issues of the project's repos).
@@ -951,6 +1029,17 @@ impl Native {
             .map(str::to_owned);
         let client = self.client.clone();
         let mode = self.runtime_mode;
+        // Attachments uploaded earlier keep the thread id they were staged
+        // under (a fresh thread adopts it as its id).
+        if self.composer_thread_id.is_none() && self.selected_thread.is_none() {
+            self.composer_thread_id = Some(uuid());
+        }
+        let attachments = std::mem::take(&mut self.pending_attachments);
+        let att_thread = if self.selected_thread.is_some() {
+            self.selected_thread.clone()
+        } else {
+            self.composer_thread_id.clone()
+        };
         cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
             let cell = client.clone();
             let client = cx
@@ -970,7 +1059,9 @@ impl Native {
                 "instanceId": "codex",
                 "model": "gpt-6-astra",
             });
-            let tid = selected.clone().unwrap_or_else(uuid);
+            let tid = selected.clone().unwrap_or_else(|| {
+                att_thread.clone().unwrap_or_else(uuid)
+            });
             let mut cmds = Vec::new();
             if selected.is_none() {
                 if let Some(pid) = project_id {
@@ -998,7 +1089,7 @@ impl Native {
                     "messageId": uuid(),
                     "role": "user",
                     "text": text,
-                    "attachments": [],
+                    "attachments": attachments,
                 },
                 "runtimeMode": mode,
                 "interactionMode": "default",
@@ -1955,6 +2046,13 @@ impl Render for Native {
                     .gap_2()
                     .items_center()
                     .child(
+                        Button::new("composer-attach")
+                            .ghost()
+                            .compact()
+                            .icon(IconName::Plus)
+                            .on_click(cx.listener(|this, _ev, _w, cx| this.attach(cx))),
+                    )
+                    .child(
                         Button::new("composer-mode")
                             .ghost()
                             .compact()
@@ -2008,6 +2106,45 @@ impl Render for Native {
                     ),
             );
         let mut composer_col = v_flex().w_full().max_w(px(640.)).gap_1();
+        if !self.pending_attachments.is_empty() || self.uploading {
+            let mut chips = h_flex().gap_1().flex_wrap();
+            if self.uploading {
+                chips = chips.child(
+                    div()
+                        .text_xs()
+                        .text_color(theme.muted_foreground)
+                        .child("uploading\u{2026}"),
+                );
+            }
+            for (i, a) in self.pending_attachments.iter().enumerate() {
+                let label = str_at(a, "name");
+                let label = if label.is_empty() {
+                    str_at(a, "fileName").to_string()
+                } else {
+                    label.to_string()
+                };
+                chips = chips.child(
+                    h_flex()
+                        .id(ElementId::Name(format!("att-{i}").into()))
+                        .cursor_pointer()
+                        .gap_1()
+                        .items_center()
+                        .border_1()
+                        .border_color(theme.border)
+                        .rounded_md()
+                        .px_2()
+                        .py_0p5()
+                        .on_click(cx.listener(move |this, _ev, _w, cx| {
+                            if i < this.pending_attachments.len() {
+                                this.pending_attachments.remove(i);
+                            }
+                            cx.notify();
+                        }))
+                        .child(div().text_xs().child(format!("{label} \u{00d7}"))),
+                );
+            }
+            composer_col = composer_col.child(chips);
+        }
         if self.selected_thread.is_none() && !self.view_files && !self.view_dev && !self.view_settings {
             composer_col = composer_col.child(
                 h_flex().child(

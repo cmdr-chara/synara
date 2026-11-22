@@ -1454,7 +1454,7 @@ impl Render for Native {
             pane = pane.child(
                 div()
                     .text_xs()
-                    .text_color(theme.accent)
+                    .text_color(theme.primary)
                     .child(format!("\u{25cf} tool running: {item}")),
             );
         }
@@ -1476,7 +1476,7 @@ impl Render for Native {
                     div()
                         .text_xs()
                         .font_weight(FontWeight::SEMIBOLD)
-                        .text_color(theme.accent)
+                        .text_color(theme.primary)
                         .child(if implemented {
                             "PROPOSED PLAN (implemented)".to_string()
                         } else {
@@ -1617,7 +1617,7 @@ impl Render for Native {
                             .id("files-up")
                             .cursor_pointer()
                             .text_xs()
-                            .text_color(theme.accent)
+                            .text_color(theme.primary)
                             .child("..")
                             .on_click(cx.listener(move |this, _ev, _w, cx| {
                                 this.load_dir(parent.clone(), cx)
@@ -1645,7 +1645,7 @@ impl Render for Native {
                             .rounded_md()
                             .text_sm()
                             .text_color(if is_dir {
-                                theme.accent
+                                theme.primary
                             } else {
                                 theme.foreground
                             })
@@ -1707,7 +1707,7 @@ impl Render for Native {
                 let pid_key = str_at(&s, "projectId").to_string();
                 let status = str_at(&s, "status");
                 let color = match status {
-                    "running" => theme.accent,
+                    "running" => theme.primary,
                     "failed" | "exited" | "stopped" => theme.danger,
                     _ => theme.muted_foreground,
                 };

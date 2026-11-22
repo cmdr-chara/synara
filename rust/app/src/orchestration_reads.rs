@@ -22,6 +22,7 @@ pub fn handles(tag: &str) -> bool {
             | "orchestration.unsubscribeShell"
             | "orchestration.unsubscribeThread"
             | "server.readThreadDiagnostics"
+            | "orchestration.getInlineVisual"
     )
 }
 
@@ -35,6 +36,7 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Value, WsErr> {
         // the unsubscribe calls only release bookkeeping upstream.
         "orchestration.unsubscribeShell" | "orchestration.unsubscribeThread" => Ok(Value::Null),
         "server.readThreadDiagnostics" => thread_diagnostics(payload),
+        "orchestration.getInlineVisual" => inline_visual(payload),
         _ => Err(err("unhandled orchestration read tag")),
     }
 }
@@ -507,4 +509,41 @@ fn thread_diagnostics(payload: &Value) -> Result<Value, WsErr> {
         result["nextCursor"] = json!(oldest.to_string());
     }
     Ok(result)
+}
+
+// ---------------------------------------------------------------------------
+// orchestration.getInlineVisual — reads
+// `<state>/attachments/visuals/sha256(threadId).hex/<visualId>.html`.
+// ---------------------------------------------------------------------------
+
+fn inline_visual(payload: &Value) -> Result<Value, WsErr> {
+    let thread_id = str_opt(payload, "threadId")
+        .ok_or_else(|| err("threadId is required"))?;
+    let visual_id = str_opt(payload, "visualId")
+        .ok_or_else(|| err("visualId is required"))?;
+    // InlineVisualId: ^vis_[0-9a-f]{32}$
+    let valid_id = visual_id.len() == 36
+        && visual_id.starts_with("vis_")
+        && visual_id[4..].chars().all(|c| c.is_ascii_hexdigit() && !c.is_ascii_uppercase());
+    if !valid_id {
+        return Err(err("This visual is no longer available."));
+    }
+    use sha2::Digest;
+    let mut hasher = sha2::Sha256::new();
+    hasher.update(thread_id.as_bytes());
+    let digest = format!("{:x}", hasher.finalize());
+    let path = std::path::PathBuf::from(crate::todo::state_dir())
+        .join("attachments/visuals")
+        .join(digest)
+        .join(format!("{visual_id}.html"));
+    let meta = match std::fs::metadata(&path) {
+        Ok(m) if m.is_file() => m,
+        _ => return Err(err("This visual is no longer available.")),
+    };
+    if meta.len() > 256 * 1024 {
+        return Err(err("This visual is no longer available."));
+    }
+    let html = std::fs::read_to_string(&path)
+        .map_err(|_| err("This visual is no longer available."))?;
+    Ok(json!({"visualId": visual_id, "html": html}))
 }

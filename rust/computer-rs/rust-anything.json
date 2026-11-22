@@ -1,0 +1,1926 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/computer/",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "computer-rs",
+  "exports": [
+    {
+      "name": "assertComputerClipboardWriteFits",
+      "file": "apps/server/src/computer/ComputerBackend.ts",
+      "line": 94,
+      "params": [
+        {
+          "name": "text",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "intersectComputerRects",
+      "file": "apps/server/src/computer/ComputerBackend.ts",
+      "line": 814,
+      "params": [
+        {
+          "name": "first",
+          "ts_type": "typeof typeof typeof typeof ComputerRect.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "second",
+          "ts_type": "typeof typeof typeof typeof ComputerRect.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ComputerRect.Type.Type.Type.Type | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "clampComputerMessage",
+      "file": "apps/server/src/computer/ComputerBackend.ts",
+      "line": 832,
+      "params": [
+        {
+          "name": "text",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "fallback",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "computerBackendActionResult",
+      "file": "apps/server/src/computer/ComputerBackend.ts",
+      "line": 840,
+      "params": [
+        {
+          "name": "computerId",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "action",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "result",
+          "ts_type": "ComputerBackendActionResult | void",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ComputerActionResult.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "assertDesktopOperationAdmission",
+      "file": "apps/server/src/computer/DesktopOperationQueue.ts",
+      "line": 20,
+      "params": [],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "computerActivationMetadata",
+      "file": "apps/server/src/computer/computerActivation.ts",
+      "line": 5,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly enableComputerControl?: boolean | undefined;\n  readonly computerControlMode?: typeof typeof typeof typeof ComputerControlMode.Type.Type.Type.Type | undefined;\n  readonly computerControlGeneration?: number | undefined;\n  /** Only the decider supplies fresh, user-authored text; replay uses frozen mode. */\n  readonly userMessageText?: string | undefined;\n  readonly dispatchOrigin?: string | undefined;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "{\n  computerControlMode: typeof typeof typeof typeof ComputerControlMode.Type.Type.Type.Type;\n  enableComputerControl: boolean;\n  computerControlGeneration: number;\n}",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "readComputerAuditFileTail",
+      "file": "apps/server/src/computer/computerAuditFile.ts",
+      "line": 14,
+      "params": [
+        {
+          "name": "path",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "maxBytes",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<ComputerAuditFileTail | null>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "readComputerAuditHistory",
+      "file": "apps/server/src/computer/computerAuditHistory.ts",
+      "line": 118,
+      "params": [
+        {
+          "name": "filePath",
+          "ts_type": "string | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "input",
+          "ts_type": "typeof typeof typeof typeof ComputerGetAuditHistoryInput.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<typeof typeof typeof typeof ComputerGetAuditHistoryResult.Type.Type.Type.Type>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "computerAuditGatewayRequestId",
+      "file": "apps/server/src/computer/computerAuditLog.ts",
+      "line": 107,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "{ gatewayRequestId?: string }",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "summarizeComputerAuditArgs",
+      "file": "apps/server/src/computer/computerAuditLog.ts",
+      "line": 124,
+      "params": [
+        {
+          "name": "args",
+          "ts_type": "Record<string, unknown>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Record<string, unknown>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "cuaTimingLogEnabled",
+      "file": "apps/server/src/computer/computerCallContext.ts",
+      "line": 51,
+      "params": [],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "cuaConditionalSettleEnabled",
+      "file": "apps/server/src/computer/computerCallContext.ts",
+      "line": 61,
+      "params": [],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "cuaActionSettleMsOverride",
+      "file": "apps/server/src/computer/computerCallContext.ts",
+      "line": 70,
+      "params": [],
+      "returns": "number | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "cuaCaptureReuseEnabled",
+      "file": "apps/server/src/computer/computerCallContext.ts",
+      "line": 86,
+      "params": [],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "cuaPreviewStillMsOverride",
+      "file": "apps/server/src/computer/computerCallContext.ts",
+      "line": 95,
+      "params": [],
+      "returns": "number | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "currentComputerCall",
+      "file": "apps/server/src/computer/computerCallContext.ts",
+      "line": 197,
+      "params": [],
+      "returns": "ComputerCallContext | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "createComputerCallContext",
+      "file": "apps/server/src/computer/computerCallContext.ts",
+      "line": 213,
+      "params": [],
+      "returns": "ComputerCallContext | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "markComputerCall",
+      "file": "apps/server/src/computer/computerCallContext.ts",
+      "line": 226,
+      "params": [
+        {
+          "name": "operation",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "computerDenylistMatch",
+      "file": "apps/server/src/computer/computerDenylist.ts",
+      "line": 101,
+      "params": [
+        {
+          "name": "identity",
+          "ts_type": "{\n  readonly name?: string | undefined;\n  readonly bundleId?: string | undefined;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ComputerDenylistMatch | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "registerNativeComputerElement",
+      "file": "apps/server/src/computer/computerElementIdentity.ts",
+      "line": 13,
+      "params": [
+        {
+          "name": "node",
+          "ts_type": "ComputerUiNode",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "identity",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "computerElementRefIdentity",
+      "file": "apps/server/src/computer/computerElementIdentity.ts",
+      "line": 22,
+      "params": [
+        {
+          "name": "ref",
+          "ts_type": "object",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "bindComputerTargetRef",
+      "file": "apps/server/src/computer/computerElementIdentity.ts",
+      "line": 27,
+      "params": [
+        {
+          "name": "target",
+          "ts_type": "typeof typeof typeof typeof ComputerTarget.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "ref",
+          "ts_type": "object",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ComputerTarget.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "observedComputerTargetNode",
+      "file": "apps/server/src/computer/computerElementIdentity.ts",
+      "line": 36,
+      "params": [
+        {
+          "name": "target",
+          "ts_type": "typeof typeof typeof typeof ComputerTarget.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ComputerUiNode | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "decodeResyncRequest",
+      "file": "apps/server/src/computer/computerFrameRoute.ts",
+      "line": 22,
+      "params": [
+        {
+          "name": "message",
+          "ts_type": "string | Uint8Array",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "\"resync\" | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "windowsCoveringPoint",
+      "file": "apps/server/src/computer/computerGeometry.ts",
+      "line": 17,
+      "params": [
+        {
+          "name": "windows",
+          "ts_type": "readonly typeof typeof typeof typeof ComputerWindow.Type.Type.Type.Type[]",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "windowId",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "point",
+          "ts_type": "typeof typeof typeof typeof ComputerPoint.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "readonly typeof typeof typeof typeof ComputerWindow.Type.Type.Type.Type[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "topmostWindowAtPoint",
+      "file": "apps/server/src/computer/computerGeometry.ts",
+      "line": 45,
+      "params": [
+        {
+          "name": "windows",
+          "ts_type": "readonly typeof typeof typeof typeof ComputerWindow.Type.Type.Type.Type[]",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "point",
+          "ts_type": "typeof typeof typeof typeof ComputerPoint.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ComputerWindow.Type.Type.Type.Type | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "rectContainsPoint",
+      "file": "apps/server/src/computer/computerGeometry.ts",
+      "line": 59,
+      "params": [
+        {
+          "name": "rect",
+          "ts_type": "typeof typeof typeof typeof ComputerRect.Type.Type.Type.Type | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "point",
+          "ts_type": "typeof typeof typeof typeof ComputerPoint.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "requireWindowBounds",
+      "file": "apps/server/src/computer/computerGeometry.ts",
+      "line": 79,
+      "params": [
+        {
+          "name": "window",
+          "ts_type": "Pick<typeof typeof typeof typeof ComputerWindow.Type.Type.Type.Type, \"id\" | \"bounds\">",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "action",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ComputerRect.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "responsibleDesktopBundleId",
+      "file": "apps/server/src/computer/computerSetupSignal.ts",
+      "line": 49,
+      "params": [
+        {
+          "name": "env",
+          "ts_type": "Readonly<Record<string, string | undefined>>",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "computerSetupSignal",
+      "file": "apps/server/src/computer/computerSetupSignal.ts",
+      "line": 111,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  /** A thrown failure, if the call failed. */\n  readonly error?: unknown;\n  /** Availability carried by a successful result, when it carries one. */\n  readonly availability?: typeof typeof typeof typeof ComputerAvailability.Type.Type.Type.Type | undefined;\n  /** Grants the backend currently lacks, freshly established. */\n  readonly missing?: readonly typeof typeof typeof typeof ComputerPermission.Type.Type.Type.Type[] | undefined;\n  /**\n   * How the backend's build is signed, when it has an answer. Used only when the\n   * availability did not carry one of its own, which it does whenever it reports\n   * a blocking grant.\n   */\n  readonly buildSignature?: typeof typeof typeof typeof ComputerBuildSignature.Type.Type.Type.Type | undefined;\n  /**\n   * The responsible app, defaulted from the environment. A parameter only so\n   * tests can drive both branches; nothing else passes it.\n   */\n  readonly bundleId?: string | undefined;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ComputerSetupSignal | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "computerSetupToolNote",
+      "file": "apps/server/src/computer/computerSetupSignal.ts",
+      "line": 168,
+      "params": [
+        {
+          "name": "signal",
+          "ts_type": "ComputerSetupSignal",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "cuaMaskedActivationEnabled",
+      "file": "apps/server/src/computer/computerShield.ts",
+      "line": 28,
+      "params": [],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "cuaMaskedActivationOptIn",
+      "file": "apps/server/src/computer/computerShield.ts",
+      "line": 36,
+      "params": [],
+      "returns": "ReadonlySet<string>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "maskedActivationOptedIn",
+      "file": "apps/server/src/computer/computerShield.ts",
+      "line": 47,
+      "params": [
+        {
+          "name": "optIn",
+          "ts_type": "ReadonlySet<string>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "bundleId",
+          "ts_type": "string | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "messageDesignatesComputerSpaces",
+      "file": "apps/server/src/computer/computerSpaceDesignation.ts",
+      "line": 11,
+      "params": [
+        {
+          "name": "text",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "readonly number[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "computerSpaceDesignationForMessages",
+      "file": "apps/server/src/computer/computerSpaceDesignation.ts",
+      "line": 32,
+      "params": [
+        {
+          "name": "messages",
+          "ts_type": "readonly typeof typeof typeof typeof OrchestrationMessage.Type.Type.Type.Type[]",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "readonly number[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "currentComputerTask",
+      "file": "apps/server/src/computer/computerTaskContext.ts",
+      "line": 6,
+      "params": [],
+      "returns": "CuaComputerTask | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "startComputerTurnTiming",
+      "file": "apps/server/src/computer/computerTurnTiming.ts",
+      "line": 77,
+      "params": [
+        {
+          "name": "threadId",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "turnId",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "endComputerTurnTiming",
+      "file": "apps/server/src/computer/computerTurnTiming.ts",
+      "line": 80,
+      "params": [
+        {
+          "name": "threadId",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "turnId",
+          "ts_type": "string",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "beginComputerTurnCall",
+      "file": "apps/server/src/computer/computerTurnTiming.ts",
+      "line": 83,
+      "params": [
+        {
+          "name": "threadId",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "turnId",
+          "ts_type": "string | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "kind",
+          "ts_type": "\"observation\" | \"write\"",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "messageRequestsVisibleUse",
+      "file": "apps/server/src/computer/computerVisibleUse.ts",
+      "line": 138,
+      "params": [
+        {
+          "name": "text",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "context",
+          "ts_type": "ComputerForegroundContext",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "latestUserAuthoredMessage",
+      "file": "apps/server/src/computer/computerVisibleUse.ts",
+      "line": 233,
+      "params": [
+        {
+          "name": "messages",
+          "ts_type": "readonly typeof typeof typeof typeof OrchestrationMessage.Type.Type.Type.Type[]",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof OrchestrationMessage.Type.Type.Type.Type | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "computerForegroundScopeChangedSince",
+      "file": "apps/server/src/computer/computerVisibleUse.ts",
+      "line": 246,
+      "params": [
+        {
+          "name": "messages",
+          "ts_type": "readonly typeof typeof typeof typeof OrchestrationMessage.Type.Type.Type.Type[]",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "lastMessageId",
+          "ts_type": "string | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "computerForegroundAuthorizationForMessages",
+      "file": "apps/server/src/computer/computerVisibleUse.ts",
+      "line": 270,
+      "params": [
+        {
+          "name": "messages",
+          "ts_type": "readonly typeof typeof typeof typeof OrchestrationMessage.Type.Type.Type.Type[]",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "context",
+          "ts_type": "ComputerForegroundContext",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "ComputerForegroundAuthorization",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "cuaSpaceInventory",
+      "file": "apps/server/src/computer/cuaSpaceInventory.ts",
+      "line": 7,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "Record<string, unknown>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ComputerSpaceInventory.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "cursorToolActivity",
+      "file": "apps/server/src/computer/cursorActivity.ts",
+      "line": 4,
+      "params": [
+        {
+          "name": "tool",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "cursorRuntimeActivity",
+      "file": "apps/server/src/computer/cursorActivity.ts",
+      "line": 71,
+      "params": [
+        {
+          "name": "event",
+          "ts_type": "typeof typeof typeof ProviderRuntimeEventV2.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isModelDesktopObservationActive",
+      "file": "apps/server/src/computer/modelDesktopObservation.ts",
+      "line": 5,
+      "params": [],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "screenshotPointToDesktop",
+      "file": "apps/server/src/computer/screenshotFrames.ts",
+      "line": 197,
+      "params": [
+        {
+          "name": "frame",
+          "ts_type": "ScreenshotFrame",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "x",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "y",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ComputerPoint.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "screenshotRectToDesktop",
+      "file": "apps/server/src/computer/screenshotFrames.ts",
+      "line": 234,
+      "params": [
+        {
+          "name": "frame",
+          "ts_type": "ScreenshotFrame",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "rect",
+          "ts_type": "typeof typeof typeof typeof ComputerRect.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ComputerRect.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "screenshotDeltaToDesktop",
+      "file": "apps/server/src/computer/screenshotFrames.ts",
+      "line": 254,
+      "params": [
+        {
+          "name": "frame",
+          "ts_type": "ScreenshotFrame",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "deltaX",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "deltaY",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "{ readonly deltaX: number; readonly deltaY: number }",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "decodePngLuma",
+      "file": "apps/server/src/computer/scrollCalibration.ts",
+      "line": 53,
+      "params": [
+        {
+          "name": "bytes",
+          "ts_type": "Uint8Array",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<LumaImage | undefined>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "estimateVerticalTravel",
+      "file": "apps/server/src/computer/scrollCalibration.ts",
+      "line": 240,
+      "params": [
+        {
+          "name": "before",
+          "ts_type": "LumaImage",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "after",
+          "ts_type": "LumaImage",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "options",
+          "ts_type": "VerticalTravelOptions",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "number | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveStillIntervalMs",
+      "file": "apps/server/src/computer/stillFramePublisher.ts",
+      "line": 52,
+      "params": [
+        {
+          "name": "intervalMs",
+          "ts_type": "number | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "number",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveComputerPoint",
+      "file": "apps/server/src/computer/uiTreeTargeting.ts",
+      "line": 97,
+      "params": [
+        {
+          "name": "target",
+          "ts_type": "typeof typeof typeof typeof ComputerTarget.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "screenSize",
+          "ts_type": "typeof typeof typeof typeof ComputerScreenSize.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ComputerPoint.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveComputerSemanticTarget",
+      "file": "apps/server/src/computer/uiTreeTargeting.ts",
+      "line": 126,
+      "params": [
+        {
+          "name": "root",
+          "ts_type": "ComputerUiNode",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "target",
+          "ts_type": "typeof typeof typeof typeof ComputerTarget.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "allowOffscreen",
+          "ts_type": "boolean",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "ComputerTargetMatch",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveComputerUniqueTextTarget",
+      "file": "apps/server/src/computer/uiTreeTargeting.ts",
+      "line": 215,
+      "params": [
+        {
+          "name": "root",
+          "ts_type": "ComputerUiNode",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "windowId",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "allowOffscreen",
+          "ts_type": "boolean",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "ComputerTargetMatch",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveComputerWindowTarget",
+      "file": "apps/server/src/computer/uiTreeTargeting.ts",
+      "line": 257,
+      "params": [
+        {
+          "name": "root",
+          "ts_type": "ComputerUiNode",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "windowId",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ComputerTargetMatch | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "activationPointForNode",
+      "file": "apps/server/src/computer/uiTreeTargeting.ts",
+      "line": 309,
+      "params": [
+        {
+          "name": "node",
+          "ts_type": "ComputerUiNode",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ComputerPoint.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "candidateDescriptions",
+      "file": "apps/server/src/computer/uiTreeTargeting.ts",
+      "line": 313,
+      "params": [
+        {
+          "name": "nodes",
+          "ts_type": "readonly ComputerUiNode[]",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "readonly ComputerTargetCandidate[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "computerTargetCandidates",
+      "file": "apps/server/src/computer/uiTreeTargeting.ts",
+      "line": 325,
+      "params": [
+        {
+          "name": "root",
+          "ts_type": "ComputerUiNode",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "readonly ComputerTargetCandidate[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "actionableElements",
+      "file": "apps/server/src/computer/uiTreeTargeting.ts",
+      "line": 463,
+      "params": [
+        {
+          "name": "root",
+          "ts_type": "ComputerUiNode",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "filter",
+          "ts_type": "ComputerActionableElementFilter",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "ComputerActionableElements",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "diffActionableElements",
+      "file": "apps/server/src/computer/uiTreeTargeting.ts",
+      "line": 561,
+      "params": [
+        {
+          "name": "before",
+          "ts_type": "readonly ComputerActionableElement[]",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "after",
+          "ts_type": "readonly ComputerActionableElement[]",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ComputerActionableElementsDiff",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "describeTarget",
+      "file": "apps/server/src/computer/uiTreeTargeting.ts",
+      "line": 612,
+      "params": [
+        {
+          "name": "target",
+          "ts_type": "typeof typeof typeof typeof ComputerTarget.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "normalizeLabelSpaces",
+      "file": "apps/server/src/computer/uiTreeTargeting.ts",
+      "line": 643,
+      "params": [
+        {
+          "name": "label",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "describeComputerUiTree",
+      "file": "apps/server/src/computer/uiTreeText.ts",
+      "line": 17,
+      "params": [
+        {
+          "name": "root",
+          "ts_type": "ComputerUiNode",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "clampNodeText",
+      "file": "apps/server/src/computer/uiTreeText.ts",
+      "line": 40,
+      "params": [
+        {
+          "name": "text",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "maxLength",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "clampTextToLength",
+      "file": "apps/server/src/computer/utf8Truncation.ts",
+      "line": 15,
+      "params": [
+        {
+          "name": "text",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "maxLength",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [
+    {
+      "name": "ComputerControlState",
+      "file": "apps/server/src/computer/ComputerControlState.ts",
+      "line": 14,
+      "constructor": [
+        {
+          "name": "filePath",
+          "ts_type": "string",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "methods": [
+        {
+          "name": "get",
+          "file": "apps/server/src/computer/ComputerControlState.ts",
+          "line": 58,
+          "params": [
+            {
+              "name": "threadId",
+              "ts_type": "string",
+              "optional": false,
+              "rest": false
+            }
+          ],
+          "returns": "ThreadControlState",
+          "is_async": false,
+          "is_generator": false,
+          "type_params": [],
+          "uses_instanceof": false
+        },
+        {
+          "name": "allows",
+          "file": "apps/server/src/computer/ComputerControlState.ts",
+          "line": 63,
+          "params": [
+            {
+              "name": "threadId",
+              "ts_type": "string",
+              "optional": false,
+              "rest": false
+            },
+            {
+              "name": "generation",
+              "ts_type": "number",
+              "optional": false,
+              "rest": false
+            }
+          ],
+          "returns": "boolean",
+          "is_async": false,
+          "is_generator": false,
+          "type_params": [],
+          "uses_instanceof": false
+        },
+        {
+          "name": "set",
+          "file": "apps/server/src/computer/ComputerControlState.ts",
+          "line": 68,
+          "params": [
+            {
+              "name": "threadId",
+              "ts_type": "string",
+              "optional": false,
+              "rest": false
+            },
+            {
+              "name": "disabled",
+              "ts_type": "boolean",
+              "optional": false,
+              "rest": false
+            }
+          ],
+          "returns": "Promise<void>",
+          "is_async": false,
+          "is_generator": false,
+          "type_params": [],
+          "uses_instanceof": false
+        },
+        {
+          "name": "recordChatIntent",
+          "file": "apps/server/src/computer/ComputerControlState.ts",
+          "line": 83,
+          "params": [
+            {
+              "name": "threadId",
+              "ts_type": "string",
+              "optional": false,
+              "rest": false
+            },
+            {
+              "name": "enabled",
+              "ts_type": "boolean",
+              "optional": false,
+              "rest": false
+            },
+            {
+              "name": "generation",
+              "ts_type": "number",
+              "optional": false,
+              "rest": false
+            }
+          ],
+          "returns": "Promise<void>",
+          "is_async": false,
+          "is_generator": false,
+          "type_params": [],
+          "uses_instanceof": false
+        }
+      ],
+      "blocker": null
+    },
+    {
+      "name": "ScreenshotFrameRegistry",
+      "file": "apps/server/src/computer/screenshotFrames.ts",
+      "line": 57,
+      "constructor": [],
+      "methods": [
+        {
+          "name": "record",
+          "file": "apps/server/src/computer/screenshotFrames.ts",
+          "line": 80,
+          "params": [
+            {
+              "name": "threadId",
+              "ts_type": "string",
+              "optional": false,
+              "rest": false
+            },
+            {
+              "name": "screenshot",
+              "ts_type": "(Pick<\n  typeof typeof typeof ComputerScreenshot.Type.Type.Type,\n  \"width\" | \"height\" | \"region\" | \"scale\"\n> & { readonly bytesBase64?: string })",
+              "optional": false,
+              "rest": false
+            },
+            {
+              "name": "windowId",
+              "ts_type": "string",
+              "optional": true,
+              "rest": false
+            }
+          ],
+          "returns": "ScreenshotFrame | undefined",
+          "is_async": false,
+          "is_generator": false,
+          "type_params": [],
+          "uses_instanceof": false
+        },
+        {
+          "name": "latest",
+          "file": "apps/server/src/computer/screenshotFrames.ts",
+          "line": 122,
+          "params": [
+            {
+              "name": "threadId",
+              "ts_type": "string",
+              "optional": false,
+              "rest": false
+            }
+          ],
+          "returns": "ScreenshotFrame | undefined",
+          "is_async": false,
+          "is_generator": false,
+          "type_params": [],
+          "uses_instanceof": false
+        },
+        {
+          "name": "matchLatest",
+          "file": "apps/server/src/computer/screenshotFrames.ts",
+          "line": 127,
+          "params": [
+            {
+              "name": "threadId",
+              "ts_type": "string",
+              "optional": false,
+              "rest": false
+            },
+            {
+              "name": "screenshot",
+              "ts_type": "typeof typeof typeof typeof ComputerScreenshot.Type.Type.Type.Type",
+              "optional": false,
+              "rest": false
+            },
+            {
+              "name": "windowId",
+              "ts_type": "string",
+              "optional": true,
+              "rest": false
+            }
+          ],
+          "returns": "ScreenshotFrame | undefined",
+          "is_async": false,
+          "is_generator": false,
+          "type_params": [],
+          "uses_instanceof": false
+        },
+        {
+          "name": "resolve",
+          "file": "apps/server/src/computer/screenshotFrames.ts",
+          "line": 159,
+          "params": [
+            {
+              "name": "threadId",
+              "ts_type": "string",
+              "optional": false,
+              "rest": false
+            },
+            {
+              "name": "screenshotId",
+              "ts_type": "string",
+              "optional": true,
+              "rest": false
+            }
+          ],
+          "returns": "ScreenshotFrame",
+          "is_async": false,
+          "is_generator": false,
+          "type_params": [],
+          "uses_instanceof": false
+        }
+      ],
+      "blocker": null
+    },
+    {
+      "name": "ScrollGearingStore",
+      "file": "apps/server/src/computer/scrollCalibration.ts",
+      "line": 357,
+      "constructor": [],
+      "methods": [
+        {
+          "name": "gearing",
+          "file": "apps/server/src/computer/scrollCalibration.ts",
+          "line": 361,
+          "params": [
+            {
+              "name": "key",
+              "ts_type": "string | undefined",
+              "optional": false,
+              "rest": false
+            }
+          ],
+          "returns": "number",
+          "is_async": false,
+          "is_generator": false,
+          "type_params": [],
+          "uses_instanceof": false
+        },
+        {
+          "name": "has",
+          "file": "apps/server/src/computer/scrollCalibration.ts",
+          "line": 371,
+          "params": [
+            {
+              "name": "key",
+              "ts_type": "string | undefined",
+              "optional": false,
+              "rest": false
+            }
+          ],
+          "returns": "boolean",
+          "is_async": false,
+          "is_generator": false,
+          "type_params": [],
+          "uses_instanceof": false
+        },
+        {
+          "name": "plan",
+          "file": "apps/server/src/computer/scrollCalibration.ts",
+          "line": 382,
+          "params": [
+            {
+              "name": "key",
+              "ts_type": "string | undefined",
+              "optional": false,
+              "rest": false
+            },
+            {
+              "name": "requested",
+              "ts_type": "number",
+              "optional": false,
+              "rest": false
+            },
+            {
+              "name": "fallback",
+              "ts_type": "number",
+              "optional": true,
+              "rest": false
+            }
+          ],
+          "returns": "number",
+          "is_async": false,
+          "is_generator": false,
+          "type_params": [],
+          "uses_instanceof": false
+        },
+        {
+          "name": "learn",
+          "file": "apps/server/src/computer/scrollCalibration.ts",
+          "line": 408,
+          "params": [
+            {
+              "name": "key",
+              "ts_type": "string | undefined",
+              "optional": false,
+              "rest": false
+            },
+            {
+              "name": "injected",
+              "ts_type": "number",
+              "optional": false,
+              "rest": false
+            },
+            {
+              "name": "traveled",
+              "ts_type": "number",
+              "optional": false,
+              "rest": false
+            }
+          ],
+          "returns": "boolean",
+          "is_async": false,
+          "is_generator": false,
+          "type_params": [],
+          "uses_instanceof": false
+        }
+      ],
+      "blocker": null
+    }
+  ],
+  "js_only": [
+    {
+      "name": "ComputerApprovalQueueFullError",
+      "file": "apps/server/src/computer/ComputerApprovalGate.ts",
+      "line": 37,
+      "reason": "class: extends another class, public field `code`, public field `retryable`"
+    },
+    {
+      "name": "ComputerApprovalExpiredError",
+      "file": "apps/server/src/computer/ComputerApprovalGate.ts",
+      "line": 51,
+      "reason": "class: extends another class, public field `code`, public field `effect`, public field `retryable`"
+    },
+    {
+      "name": "ComputerApprovalGate",
+      "file": "apps/server/src/computer/ComputerApprovalGate.ts",
+      "line": 68,
+      "reason": "class: async or generator method `requestTask`, async or generator method `request`"
+    },
+    {
+      "name": "ComputerBackendError",
+      "file": "apps/server/src/computer/ComputerBackend.ts",
+      "line": 286,
+      "reason": "class: extends another class, public field `retryable`, public field `dormant`, public field `rejectedOperation`, public field `setupRequired`, public field `inputPause`, public field `controlRevoked`"
+    },
+    {
+      "name": "ComputerLeaseError",
+      "file": "apps/server/src/computer/ComputerManager.ts",
+      "line": 361,
+      "reason": "class: extends another class, public field `code`"
+    },
+    {
+      "name": "ComputerManager",
+      "file": "apps/server/src/computer/ComputerManager.ts",
+      "line": 392,
+      "reason": "class: public field `computerId`, accessor `agentDialect`, accessor `supportsFocusNeutralSemanticText`, public field `cursorActivity`, public field `spaceBroker`, accessor `supportsBrowser`, async or generator method `admitControl`, async or generator method `setControlEnabled`, async or generator method `emergencyStopInput`, async or generator method `availability`, async or generator method `missingPermissions`, async or generator method `getStatus`, async or generator method `provision`, async or generator method `listWindows`, async or generator method `getState`, async or generator method `captureScreenshot`, async or generator method `waitForSettle`, async or generator method `captureFocusedWindow`, async or generator method `captureActionScreenshot`, async or generator method `getScreenSize`, async or generator method `launchApp`, async or generator method `listApps`, async or generator method `setWindowFrame`, async or generator method `invokeMenu`, async or generator method `setWindowMinimized`, async or generator method `setAppVisibility`, async or generator method `verifyState`, async or generator method `zoomWindow`, async or generator method `killApp`, async or generator method `getAccessibilityTree`, async or generator method `getCursorPosition`, async or generator method `getThreadState`, async or generator method `withUserPointTarget`, async or generator method `click`, async or generator method `doubleClick`, async or generator method `tripleClick`, async or generator method `rightClick`, async or generator method `activateWindow`, async or generator method `foregroundWithRestore`, async or generator method `withForegroundRestore`, async or generator method `moveCursor`, async or generator method `drag`, async or generator method `scroll`, async or generator method `scrollCalibrated`, async or generator method `typeText`, async or generator method `typeTextAt`, async or generator method `pressKey`, async or generator method `hotkey`, async or generator method `readClipboard`, async or generator method `writeClipboard`, async or generator method `paste`, async or generator method `setValue`, async or generator method `performAction`, async or generator method `selectText`, async or generator method `withAgentActivity`, async or generator method `browserCall`, async or generator method `releaseDesktopControl`, async or generator method `recordThreadError`, async or generator method `requestKeyframe`, async or generator method `flushStreamTransitions`, async or generator method `handleThreadRemoved`, async or generator method `handleThreadRestored`, async or generator method `dispose`"
+    },
+    {
+      "name": "errorMessage",
+      "file": "apps/server/src/computer/ComputerManager.ts",
+      "line": 5567,
+      "reason": "checks `instanceof`: class identity does not survive the bridge"
+    },
+    {
+      "name": "ComputerSpaceError",
+      "file": "apps/server/src/computer/ComputerSpaceBroker.ts",
+      "line": 11,
+      "reason": "class: extends another class"
+    },
+    {
+      "name": "ComputerSpaceBroker",
+      "file": "apps/server/src/computer/ComputerSpaceBroker.ts",
+      "line": 40,
+      "reason": "class: async or generator method `inspect`, async or generator method `reserve`, async or generator method `select`, async or generator method `assertAppMutationAllowed`, async or generator method `assertWindowAllowed`"
+    },
+    {
+      "name": "CuaActionError",
+      "file": "apps/server/src/computer/CuaComputerBackend.ts",
+      "line": 87,
+      "reason": "class: extends another class, public parameter properties"
+    },
+    {
+      "name": "CuaComputerBackend",
+      "file": "apps/server/src/computer/CuaComputerBackend.ts",
+      "line": 295,
+      "reason": "class: accessor `focusNeutralSemanticText`, accessor `exactTargetBackgroundInput`, public field `computerId`, accessor `agentDialect`, public field `browser`, async or generator method `probeAvailability`, async or generator method `availability`, async or generator method `missingPermissions`, async or generator method `provision`, async or generator method `listSpaces`, async or generator method `listWindows`, async or generator method `getScreenSize`, async or generator method `focusWindow`, async or generator method `checkInputReady`, async or generator method `waitForSettle`, async or generator method `raiseWindow`, async or generator method `clearFocusWindow`, async or generator method `captureScreenshot`, async or generator method `getState`, async or generator method `moveCursor`, async or generator method `drag`, async or generator method `scroll`, async or generator method `setValue`, async or generator method `performAction`, async or generator method `selectText`, async or generator method `readClipboard`, async or generator method `writeClipboard`, async or generator method `prepareClipboardPaste`, async or generator method `launchApp`, async or generator method `listApps`, async or generator method `setWindowFrame`, async or generator method `invokeMenu`, async or generator method `setWindowMinimized`, async or generator method `setAppVisibility`, async or generator method `verifyState`, async or generator method `killApp`, async or generator method `zoomWindow`, async or generator method `getAccessibilityTree`, async or generator method `getCursorPosition`, async or generator method `attachStream`, async or generator method `detachStream`, async or generator method `requestKeyframe`, async or generator method `stopInput`, async or generator method `endTask`, async or generator method `engageShield`, async or generator method `releaseShield`, async or generator method `releaseAllShields`, async or generator method `dispose`"
+    },
+    {
+      "name": "DesktopOperationQueue",
+      "file": "apps/server/src/computer/DesktopOperationQueue.ts",
+      "line": 32,
+      "reason": "class: extends another class"
+    },
+    {
+      "name": "FakeComputerBackend",
+      "file": "apps/server/src/computer/FakeComputerBackend.ts",
+      "line": 158,
+      "reason": "class: public field `computerId`, public field `calls`, public field `browser`, public field `waitForSettle`, public field `engageShield`, public field `releaseShield`, public field `releaseAllShields`, public field `agentDialect`, async or generator method `availability`, async or generator method `probeAvailability`, async or generator method `missingPermissions`, async or generator method `listWindows`, async or generator method `getScreenSize`, async or generator method `getState`, async or generator method `captureScreenshot`, async or generator method `launchApp`, async or generator method `listApps`, async or generator method `setWindowFrame`, async or generator method `invokeMenu`, async or generator method `setWindowMinimized`, async or generator method `setAppVisibility`, async or generator method `verifyState`, async or generator method `zoomWindow`, async or generator method `killApp`, async or generator method `getAccessibilityTree`, async or generator method `getCursorPosition`, async or generator method `raiseWindow`, async or generator method `focusWindow`, async or generator method `clearFocusWindow`, async or generator method `click`, async or generator method `doubleClick`, async or generator method `tripleClick`, async or generator method `rightClick`, async or generator method `moveCursor`, async or generator method `drag`, async or generator method `scroll`, async or generator method `typeText`, async or generator method `pressKey`, async or generator method `hotkey`, async or generator method `readClipboard`, async or generator method `writeClipboard`, async or generator method `setValue`, async or generator method `performAction`, async or generator method `selectText`, async or generator method `attachStream`, async or generator method `detachStream`, async or generator method `requestKeyframe`, async or generator method `dispose`"
+    },
+    {
+      "name": "UnavailableComputerBackend",
+      "file": "apps/server/src/computer/UnavailableComputerBackend.ts",
+      "line": 58,
+      "reason": "class: public field `computerId`, public field `browser`"
+    },
+    {
+      "name": "computerAuditTailLines",
+      "file": "apps/server/src/computer/computerAuditFile.ts",
+      "line": 64,
+      "reason": "generator: returns a lazy iterator"
+    },
+    {
+      "name": "ComputerAuditLog",
+      "file": "apps/server/src/computer/computerAuditLog.ts",
+      "line": 186,
+      "reason": "class: async or generator method `flush`, async or generator method `readHistory`"
+    },
+    {
+      "name": "ComputerCallTiming",
+      "file": "apps/server/src/computer/computerCallContext.ts",
+      "line": 118,
+      "reason": "class: async or generator method `span`"
+    },
+    {
+      "name": "ComputerCallContext",
+      "file": "apps/server/src/computer/computerCallContext.ts",
+      "line": 174,
+      "reason": "class: public field `timing`"
+    },
+    {
+      "name": "withComputerCallContext",
+      "file": "apps/server/src/computer/computerCallContext.ts",
+      "line": 201,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "timedComputerLeg",
+      "file": "apps/server/src/computer/computerCallContext.ts",
+      "line": 220,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "ComputerDenylistError",
+      "file": "apps/server/src/computer/computerDenylist.ts",
+      "line": 124,
+      "reason": "class: extends another class, public field `app`"
+    },
+    {
+      "name": "retainComputerElementRef",
+      "file": "apps/server/src/computer/computerElementIdentity.ts",
+      "line": 17,
+      "reason": "generic over `T`: values of any shape, functions included"
+    },
+    {
+      "name": "ComputerEventInterests",
+      "file": "apps/server/src/computer/computerEventInterests.ts",
+      "line": 12,
+      "reason": "class: `ComputerEventInterests constructor`: takes or returns a function"
+    },
+    {
+      "name": "makeComputerFrameSink",
+      "file": "apps/server/src/computer/computerFrameRoute.ts",
+      "line": 26,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "makeComputerFrameRouteLayer",
+      "file": "apps/server/src/computer/computerFrameRoute.ts",
+      "line": 34,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "computerFailureNeedsSetup",
+      "file": "apps/server/src/computer/computerSetupSignal.ts",
+      "line": 97,
+      "reason": "checks `instanceof`: class identity does not survive the bridge"
+    },
+    {
+      "name": "withComputerTask",
+      "file": "apps/server/src/computer/computerTaskContext.ts",
+      "line": 12,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "ComputerTurnTimings",
+      "file": "apps/server/src/computer/computerTurnTiming.ts",
+      "line": 12,
+      "reason": "class: `ComputerTurnTimings constructor`: takes or returns a function"
+    },
+    {
+      "name": "CursorActivity",
+      "file": "apps/server/src/computer/cursorActivity.ts",
+      "line": 97,
+      "reason": "class: async or generator method `during`"
+    },
+    {
+      "name": "withModelDesktopObservation",
+      "file": "apps/server/src/computer/modelDesktopObservation.ts",
+      "line": 10,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "ScrollGearingFile",
+      "file": "apps/server/src/computer/scrollGearingFile.ts",
+      "line": 38,
+      "reason": "class: `ScrollGearingFile constructor`: takes or returns a function"
+    },
+    {
+      "name": "StillFramePublisher",
+      "file": "apps/server/src/computer/stillFramePublisher.ts",
+      "line": 148,
+      "reason": "class: async or generator method `attach`, async or generator method `detach`, async or generator method `requestKeyframe`, async or generator method `publish`"
+    },
+    {
+      "name": "ComputerTargetError",
+      "file": "apps/server/src/computer/uiTreeTargeting.ts",
+      "line": 63,
+      "reason": "class: extends another class, public field `code`, public field `candidates`, public field `notFound`, public field `unresolvedTextControl`"
+    },
+    {
+      "name": "waitForControl",
+      "file": "apps/server/src/computer/waitForControl.ts",
+      "line": 11,
+      "reason": "checks `instanceof`: class identity does not survive the bridge"
+    },
+    {
+      "name": "waitForWindow",
+      "file": "apps/server/src/computer/waitForWindow.ts",
+      "line": 12,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "makeWsComputerHandlers",
+      "file": "apps/server/src/computer/wsComputerHandlers.ts",
+      "line": 149,
+      "reason": "uses `AgentGatewaySessionRegistryShape`, which has function members"
+    }
+  ]
+}

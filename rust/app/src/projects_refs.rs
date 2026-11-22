@@ -86,6 +86,45 @@ pub fn resolve_workspace_file_references(payload: &Value) -> Result<Value, WsErr
     Ok(json!({ "relativePaths": resolved }))
 }
 
+const MAX_ANCESTOR_WALK_DEPTH: usize = 32;
+
+/// Clean-room `isWorkspaceRelativePathSafe`: non-empty, not absolute
+/// (POSIX `/` or Windows `X:\`/`X:/`), no `.`/`..` segments.
+fn is_workspace_relative_path_safe(value: &str) -> bool {
+    let t = value.trim();
+    if t.is_empty() || t.starts_with('/') {
+        return false;
+    }
+    let b = t.as_bytes();
+    if b.len() >= 3 && b[1] == b':' && (b[2] == b'\\' || b[2] == b'/') && b[0].is_ascii_alphabetic()
+    {
+        return false;
+    }
+    t.split(['/', '\\']).all(|seg| seg != ".." && seg != ".")
+}
+
+/// Clean-room `isContainedPath`: candidate equals root or sits under it.
+fn is_contained_path(root: &Path, candidate: &Path) -> bool {
+    candidate == root || candidate.starts_with(root)
+}
+
+fn realpath(p: &Path) -> Option<PathBuf> {
+    std::fs::canonicalize(p).ok()
+}
+
+/// `projects.resolveOutOfRootFileReference` — a chat reference that is missing
+/// under the workspace root may be relative to an ancestor of the root
+/// (agents emit paths like `Outbox/note.md` for a root inside a deeper dir).
+/// Returns the canonical absolute path of the first ancestor match, or null.
+/// Upstream semantics (apps/server/src/workspace/outOfRootFileReference.ts,
+/// unflagged — readable source):
+/// - unsafe reference (null bytes, absolute, `.`/`..`) → null
+/// - missing root, or root outside the real home → null
+/// - the in-root join existing (file or dir) → null — this method only
+///   relocates references genuinely missing under the root
+/// - ancestors of the root (nearest first, excluding the root itself) are
+///   tried up to the home directory, depth-capped at 32
+/// - the match must canonicalize to a regular file still inside home
 pub fn resolve_out_of_root_file_reference(payload: &Value) -> Result<Value, WsErr> {
     let cwd = cwd_of(payload)?;
     let rel = payload
@@ -99,19 +138,47 @@ pub fn resolve_out_of_root_file_reference(payload: &Value) -> Result<Value, WsEr
                 Some("VALIDATION"),
             )
         })?;
-    let home = home_dir();
-    let cwd_canon = std::fs::canonicalize(&cwd).unwrap_or(cwd.clone());
-    let home_canon = std::fs::canonicalize(&home).unwrap_or(home.clone());
-    let mut dir = Some(cwd_canon.as_path());
-    while let Some(d) = dir {
-        let candidate = d.join(rel);
-        if candidate.is_file() {
-            return Ok(json!({ "fullPath": candidate.to_string_lossy() }));
+    let null_result = || Ok(json!({ "fullPath": Value::Null }));
+    if rel.contains('\0') || !is_workspace_relative_path_safe(rel) {
+        return null_result();
+    }
+    let (Some(real_home), Some(real_root)) = (realpath(&home_dir()), realpath(&cwd)) else {
+        return null_result();
+    };
+    if !is_contained_path(&real_home, &real_root) {
+        return null_result();
+    }
+    let segments: Vec<&str> = rel.split(['/', '\\']).collect();
+    let in_root = segments.iter().fold(real_root.clone(), |p, s| p.join(s));
+    match in_root.symlink_metadata() {
+        Ok(_) => return null_result(),
+        Err(e) => {
+            // Only a genuinely missing path permits relocation (ENOENT=2,
+            // ENOTDIR=20); other failures belong to the original read.
+            let missing = e.kind() == std::io::ErrorKind::NotFound || e.raw_os_error() == Some(20);
+            if !missing {
+                return null_result();
+            }
         }
-        if d == home_canon {
+    }
+    let mut ancestor = real_root.parent().map(Path::to_path_buf);
+    let mut depth = 0;
+    while let Some(dir) = ancestor {
+        if depth >= MAX_ANCESTOR_WALK_DEPTH || !is_contained_path(&real_home, &dir) {
             break;
         }
-        dir = d.parent();
+        let candidate = segments.iter().fold(dir.clone(), |p, s| p.join(s));
+        if let Some(real_candidate) = realpath(&candidate) {
+            if is_contained_path(&real_home, &real_candidate) && real_candidate.is_file() {
+                return Ok(json!({ "fullPath": real_candidate.to_string_lossy() }));
+            }
+        }
+        let parent = dir.parent().map(Path::to_path_buf);
+        if parent.as_deref() == Some(dir.as_path()) {
+            break;
+        }
+        ancestor = parent;
+        depth += 1;
     }
-    Ok(json!({ "fullPath": Value::Null }))
+    null_result()
 }

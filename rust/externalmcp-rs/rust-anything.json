@@ -1,0 +1,559 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/externalMcp/",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "externalmcp-rs",
+  "exports": [
+    {
+      "name": "makeWindowsRuntimeAclPowerShellInvocation",
+      "file": "apps/server/src/externalMcp/bridge.ts",
+      "line": 57,
+      "params": [
+        {
+          "name": "targetPath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isOwnerPrivateWindowsRuntimeAcl",
+      "file": "apps/server/src/externalMcp/bridge.ts",
+      "line": 81,
+      "params": [
+        {
+          "name": "snapshot",
+          "ts_type": "WindowsRuntimeAclSnapshot",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveExternalMcpBaseDir",
+      "file": "apps/server/src/externalMcp/bridge.ts",
+      "line": 134,
+      "params": [
+        {
+          "name": "homeDir",
+          "ts_type": "string",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "externalMcpClientStorePath",
+      "file": "apps/server/src/externalMcp/bridge.ts",
+      "line": 151,
+      "params": [
+        {
+          "name": "baseDir",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "integrationId",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "discoverServerRuntime",
+      "file": "apps/server/src/externalMcp/bridge.ts",
+      "line": 327,
+      "params": [
+        {
+          "name": "baseDir",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "{\n  readonly state: typeof typeof typeof typeof PersistedServerRuntimeState.Type.Type.Type.Type;\n  readonly sourcePath: string;\n}",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "discoverExternalMcpRuntime",
+      "file": "apps/server/src/externalMcp/bridge.ts",
+      "line": 334,
+      "params": [
+        {
+          "name": "baseDir",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "{\n  readonly state: typeof typeof typeof typeof PersistedServerRuntimeState.Type.Type.Type.Type;\n  readonly sourcePath: string;\n}",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "writeExternalMcpClientCredential",
+      "file": "apps/server/src/externalMcp/bridge.ts",
+      "line": 396,
+      "params": [
+        {
+          "name": "baseDir",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "paired",
+          "ts_type": "typeof typeof typeof typeof ExternalMcpPairResult.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "readExternalMcpClientCredential",
+      "file": "apps/server/src/externalMcp/bridge.ts",
+      "line": 421,
+      "params": [
+        {
+          "name": "baseDir",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "integrationId",
+          "ts_type": "string",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "ExternalMcpClientCredentialStore",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "readExternalMcpResponseText",
+      "file": "apps/server/src/externalMcp/bridge.ts",
+      "line": 546,
+      "params": [
+        {
+          "name": "response",
+          "ts_type": "Response",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "timeoutMs",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<string>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "requestTimeoutForBody",
+      "file": "apps/server/src/externalMcp/bridge.ts",
+      "line": 627,
+      "params": [
+        {
+          "name": "body",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "number",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "makeExternalMcpExecutionAdmission",
+      "file": "apps/server/src/externalMcp/executionAdmission.ts",
+      "line": 8,
+      "params": [
+        {
+          "name": "slotCount",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "readExternalMcpBody",
+      "file": "apps/server/src/externalMcp/httpRoute.ts",
+      "line": 61,
+      "params": [
+        {
+          "name": "request",
+          "ts_type": "HttpServerRequest.HttpServerRequest",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "timeoutMs",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "Effect.Effect<((| { readonly kind: \"ok\"; readonly body: unknown }\n  | { readonly kind: \"invalid\" }\n  | { readonly kind: \"too-large\" }) | { readonly kind: \"timeout\" })>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "readExternalMcpManagementBody",
+      "file": "apps/server/src/externalMcp/httpRoute.ts",
+      "line": 72,
+      "params": [
+        {
+          "name": "request",
+          "ts_type": "HttpServerRequest.HttpServerRequest",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "timeoutMs",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "Effect.Effect<((| { readonly kind: \"ok\"; readonly body: unknown }\n  | { readonly kind: \"invalid\" }\n  | { readonly kind: \"too-large\" }) | { readonly kind: \"timeout\" })>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "externalMcpLauncher",
+      "file": "apps/server/src/externalMcp/launcher.ts",
+      "line": 16,
+      "params": [
+        {
+          "name": "args",
+          "ts_type": "ReadonlyArray<string>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ExternalMcpStdioConfiguration.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "externalMcpShellCommand",
+      "file": "apps/server/src/externalMcp/launcher.ts",
+      "line": 28,
+      "params": [
+        {
+          "name": "config",
+          "ts_type": "typeof typeof typeof typeof ExternalMcpStdioConfiguration.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "platform",
+          "ts_type": "NodeJS.Platform",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "buildExternalMcpOverviewProjects",
+      "file": "apps/server/src/externalMcp/overview.ts",
+      "line": 26,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly projects: ReadonlyArray<OverviewProjectInput>;\n  readonly threads: ReadonlyArray<OverviewThreadInput>;\n  readonly allowedProjectIds: ReadonlySet<string>;\n  readonly includeThreadMetadata: boolean;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "buildExternalMcpOverviewNextSteps",
+      "file": "apps/server/src/externalMcp/overview.ts",
+      "line": 72,
+      "params": [
+        {
+          "name": "capabilities",
+          "ts_type": "ReadonlySet<typeof typeof typeof typeof ExternalMcpCapability.Type.Type.Type.Type>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ReadonlyArray<string>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveExternalMcpRuntimePolicy",
+      "file": "apps/server/src/externalMcp/runtimePolicy.ts",
+      "line": 12,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly requestedEnvironment?: \"local\" | \"worktree\";\n  readonly requestedRuntimeMode?: typeof typeof typeof typeof RuntimeMode.Type.Type.Type.Type;\n  readonly capabilities: ReadonlySet<typeof typeof typeof typeof ExternalMcpCapability.Type.Type.Type.Type | string>;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ExternalMcpRuntimePolicy",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "computeExternalMcpRuntimeProof",
+      "file": "apps/server/src/externalMcp/runtimeProof.ts",
+      "line": 6,
+      "params": [
+        {
+          "name": "secret",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "nonce",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "runtimeProofsMatch",
+      "file": "apps/server/src/externalMcp/runtimeProof.ts",
+      "line": 13,
+      "params": [
+        {
+          "name": "expected",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "actual",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "quoteExternalMcpShellArgument",
+      "file": "apps/server/src/externalMcp/shell.ts",
+      "line": 1,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "requestedExternalMcpRunId",
+      "file": "apps/server/src/externalMcp/waitForTask.ts",
+      "line": 20,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{ readonly runId?: string | null | undefined }",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "latestTurnId",
+          "ts_type": "string | null",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "latestExternalMcpWaitState",
+      "file": "apps/server/src/externalMcp/waitForTask.ts",
+      "line": 25,
+      "params": [
+        {
+          "name": "thread",
+          "ts_type": "{\n  readonly latestTurn: {\n    readonly turnId: string;\n    readonly state: (| \"idle\"\n  | \"pending\"\n  | \"running\"\n  | \"completed\"\n  | \"error\"\n  | \"interrupted\");\n  } | null;\n  readonly session: { readonly status: string } | null;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "{ readonly runId: string | null; readonly state: (| \"idle\"\n  | \"pending\"\n  | \"running\"\n  | \"completed\"\n  | \"error\"\n  | \"interrupted\") } | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "terminalExternalMcpSessionStateForRun",
+      "file": "apps/server/src/externalMcp/waitForTask.ts",
+      "line": 44,
+      "params": [
+        {
+          "name": "thread",
+          "ts_type": "{\n    readonly latestTurn: {\n      readonly turnId: string;\n      readonly state: (| \"idle\"\n  | \"pending\"\n  | \"running\"\n  | \"completed\"\n  | \"error\"\n  | \"interrupted\");\n    } | null;\n    readonly session: { readonly status: string } | null;\n  }",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "runId",
+          "ts_type": "string | null",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Extract<(| \"idle\"\n  | \"pending\"\n  | \"running\"\n  | \"completed\"\n  | \"error\"\n  | \"interrupted\"), \"error\" | \"interrupted\"> | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "makeExternalMcpAuditCompletion",
+      "file": "apps/server/src/externalMcp/auditCompletion.ts",
+      "line": 18,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "ExternalMcpBridgeError",
+      "file": "apps/server/src/externalMcp/bridge.ts",
+      "line": 93,
+      "reason": "class: extends another class"
+    },
+    {
+      "name": "fetchExternalMcpWithTimeout",
+      "file": "apps/server/src/externalMcp/bridge.ts",
+      "line": 506,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "verifyServerRuntime",
+      "file": "apps/server/src/externalMcp/bridge.ts",
+      "line": 613,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "verifyExternalMcpRuntime",
+      "file": "apps/server/src/externalMcp/bridge.ts",
+      "line": 620,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "pairExternalMcpClient",
+      "file": "apps/server/src/externalMcp/bridge.ts",
+      "line": 703,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "serveExternalMcpStdio",
+      "file": "apps/server/src/externalMcp/bridge.ts",
+      "line": 848,
+      "reason": "checks `instanceof`: class identity does not survive the bridge"
+    },
+    {
+      "name": "verifyExternalMcpTransportCredential",
+      "file": "apps/server/src/externalMcp/credentialVerification.ts",
+      "line": 13,
+      "reason": "uses `ExternalMcpServiceShape`, which has function members"
+    }
+  ]
+}

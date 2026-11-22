@@ -559,6 +559,52 @@ impl Native {
         cx.notify();
     }
 
+    /// Dispatch thread.approval.respond for a pending interaction.
+    fn respond_approval(&mut self, request_id: String, decision: &str, cx: &mut Context<Self>) {
+        let Some(tid) = self.selected_thread.clone() else {
+            return;
+        };
+        let client = self.client.clone();
+        let decision = decision.to_string();
+        cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
+            let cell = client.clone();
+            let cmd = json!({
+                "type": "thread.approval.respond",
+                "commandId": uuid(),
+                "threadId": tid,
+                "requestId": request_id,
+                "decision": decision,
+                "createdAt": now_iso(),
+            });
+            let r = cx
+                .background_executor()
+                .spawn(async move {
+                    ensure_client(&cell)
+                        .and_then(|c| c.call("orchestration.dispatchCommand", cmd))
+                })
+                .await;
+            if r.is_none() {
+                eprintln!("native: approval.respond dispatch failed");
+            }
+            let cell = client.clone();
+            let p = json!({"threadId": tid});
+            let d = cx
+                .background_executor()
+                .spawn(async move {
+                    ensure_client(&cell)
+                        .and_then(|c| c.call("orchestration.getThreadDetailSnapshot", p))
+                })
+                .await;
+            let _ = this.update(cx, |this: &mut Self, cx| {
+                if let Some(d) = d {
+                    this.detail = Some(d);
+                }
+                cx.notify();
+            });
+        })
+        .detach();
+    }
+
     /// Composer: send the draft as a turn on the selected thread, or create a
     /// thread in the first project then start the turn.
     fn send(&mut self, window: &mut Window, cx: &mut Context<Self>) {
@@ -944,13 +990,30 @@ impl Render for Native {
                 continue;
             }
             let kind = str_at(p, "interaction_kind").replace('_', " ");
-            pane = pane.child(
+            let rid = str_at(p, "request_id").to_string();
+            let mut row_el = h_flex().gap_2().child(
                 div()
                     .text_xs()
                     .font_weight(FontWeight::SEMIBOLD)
                     .text_color(theme.warning)
                     .child(format!("approval pending: {kind}")),
             );
+            if !rid.is_empty() {
+                for (label, decision) in [("Approve", "accept"), ("Decline", "decline")] {
+                    let r = rid.clone();
+                    row_el = row_el.child(
+                        Button::new(ElementId::Name(
+                            format!("approve-{decision}-{rid}").into(),
+                        ))
+                        .ghost()
+                        .label(label)
+                        .on_click(cx.listener(move |this, _ev, _w, cx| {
+                            this.respond_approval(r.clone(), decision, cx)
+                        })),
+                    );
+                }
+            }
+            pane = pane.child(row_el);
         }
 
         // ---- files browser / viewer ----

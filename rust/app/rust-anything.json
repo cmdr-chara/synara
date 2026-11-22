@@ -2,7 +2,19 @@
   "schema": "rust-anything/front-door@1",
   "name": "index",
   "commands": [],
-  "units": [],
+  "units": [
+    {
+      "name": "staticassets",
+      "crate": "staticassets-rs",
+      "path": "../staticassets-rs",
+      "commands": [],
+      "routes": [
+        "GET /index.html",
+        "GET /"
+      ],
+      "switch": "RUST_ANYTHING_UNIT_STATICASSETS"
+    }
+  ],
   "kind": "http",
   "routes": [
     "GET /api/auth/clients",

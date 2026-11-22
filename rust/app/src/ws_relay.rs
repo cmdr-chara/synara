@@ -118,6 +118,8 @@ fn intercept_todo(
         && !text.contains("provider.listModels")
         && !text.contains("server.listExternalMcpIntegrations")
         && !text.contains("server.readThreadDiagnostics")
+        && !text.contains("server.listMcp")
+        && !text.contains("server.getMcp")
     {
         return None;
     }
@@ -151,6 +153,7 @@ fn intercept_todo(
         && tag != "projects.subscribeDevServerEvents"
         && tag != "projects.subscribeFileChange"
         && !crate::projects_provision::handles(tag)
+        && !crate::mcp_connectors::handles(tag)
         && tag != "server.upsertKeybinding"
         && tag != "server.editKeybindings"
         && tag != "server.listLocalServers"
@@ -783,6 +786,10 @@ fn intercept_todo(
             .map_err(error_json)
     } else if crate::projects_provision::handles(tag) {
         crate::projects_provision::handle(tag, &payload)
+            .map(Some)
+            .map_err(error_json)
+    } else if crate::mcp_connectors::handles(tag) {
+        crate::mcp_connectors::handle(tag, &payload)
             .map(Some)
             .map_err(error_json)
     } else if tag.starts_with("githubInbox.") {

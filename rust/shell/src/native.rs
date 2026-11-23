@@ -61,6 +61,11 @@ mod icons {
     pub const FOLDER_OPEN: &[u8] = include_bytes!("../assets/icons/folder-open.svg");
     pub const CODEX: &[u8] = include_bytes!("../assets/icons/codex.svg");
     pub const LOGO: &[u8] = include_bytes!("../assets/icons/synara-logo.svg");
+    pub const SHIELD_ACCESS: &[u8] =
+        include_bytes!("../assets/icons/shield-access.svg");
+    pub const SHIELD_CODE: &[u8] = include_bytes!("../assets/icons/shield-code.svg");
+    pub const CHEVRON_DOWN: &[u8] =
+        include_bytes!("../assets/icons/chevron-down-small.svg");
 }
 
 fn svg_icon(data: &'static [u8]) -> Icon {
@@ -245,7 +250,7 @@ impl Native {
     pub fn new(window: &mut Window, cx: &mut App) -> Entity<Self> {
         cx.new(|cx| {
             let composer = cx.new(|cx| {
-                InputState::new(window, cx).placeholder("Do anything in Synara")
+                InputState::new(window, cx).placeholder("")
             });
             cx.subscribe_in(
                 &composer,
@@ -3018,68 +3023,95 @@ impl Render for Native {
         // ---- composer ----
         // chat-composer-shell squircle: 19px radius card, hairline border,
         // soft surface shadow (approximated by the border + card tone).
-        let circle_btn = |id: &'static str, icon: &'static [u8]| {
+        let mode_accent = rgb(0xc24904);
+        let draft_empty = self.composer.read(cx).value().trim().is_empty();
+        let mut input_zone = div().relative().child(
             div()
-                .id(id)
-                .size(px(28.))
-                .flex()
-                .items_center()
-                .justify_center()
-                .rounded_full()
-                .border_1()
-                .border_color(theme.border)
-                .cursor_pointer()
-                .child(
-                    svg_icon(icon)
-                        .size(px(16.))
-                        .text_color(theme.muted_foreground),
-                )
-        };
+                .min_h(px(21.))
+                .child(Input::new(&self.composer).appearance(false)),
+        );
+        if draft_empty {
+            // Placeholder rendered on top: the web uses muted-foreground/40,
+            // much lighter than the editor's own muted foreground tone.
+            input_zone = input_zone.child(
+                div()
+                    .absolute()
+                    .top(px(3.))
+                    .left(px(16.))
+                    .text_size(px(13.5))
+                    .text_color(rgba(0x67676766))
+                    .child("Do anything in Synara"),
+            );
+        }
         let composer_card = v_flex()
             .w_full()
-            .max_w(px(759.))
+            .max_w(px(755.))
             .border_1()
             .border_color(theme.border)
             .rounded(px(19.))
             .bg(theme.popover)
             .shadow_md()
-            .px_3()
-            .pt(px(10.))
-            .pb(px(9.))
-            .gap_2()
-            .child(Input::new(&self.composer).appearance(false))
+            .px_2()
+            .pt(px(4.))
+            .pb(px(15.))
+            .gap(px(23.))
+            .child(input_zone)
             .child(
                 h_flex()
-                    .gap_2()
+                    .gap_3()
                     .items_center()
                     .child(
-                        circle_btn("composer-attach", icons::PLUS).on_click(
-                            cx.listener(|this, _ev, _w, cx| this.attach(cx)),
-                        ),
+                        // "+" extras trigger: 28px filled circle, black/3%.
+                        div()
+                            .id("composer-attach")
+                            .size(px(28.))
+                            .flex()
+                            .items_center()
+                            .justify_center()
+                            .rounded_full()
+                            .bg(rgba(0x00000008))
+                            .cursor_pointer()
+                            .hover(|d| d.bg(rgba(0x00000010)))
+                            .child(
+                                svg_icon(icons::PLUS)
+                                    .size(px(14.))
+                                    .text_color(theme.foreground),
+                            )
+                            .on_click(
+                                cx.listener(|this, _ev, _w, cx| this.attach(cx)),
+                            ),
                     )
                     .child(
                         h_flex()
                             .id("composer-mode")
                             .cursor_pointer()
-                            .gap_1()
+                            .gap(px(6.))
                             .items_center()
+                            .px(px(10.))
+                            .py(px(3.))
+                            .rounded(px(8.))
                             .child(
-                                Icon::new(AssetIcon::TriangleAlert)
-                                    .size(px(12.))
-                                    .text_color(rgb(0xf59e0b)),
+                                svg_icon(match self.runtime_mode {
+                                    "auto" => icons::SHIELD_CODE,
+                                    _ => icons::SHIELD_ACCESS,
+                                })
+                                .size(px(14.))
+                                .text_color(mode_accent),
                             )
                             .child(
                                 div()
                                     .text_size(px(12.))
-                                    .text_color(rgb(0xf59e0b))
-                                    .child(format!(
-                                        "{} \u{25be}",
-                                        match self.runtime_mode {
-                                            "approval-required" => "Approval required",
-                                            "auto" => "Approve for me",
-                                            _ => "Full access",
-                                        }
-                                    )),
+                                    .text_color(mode_accent)
+                                    .child(match self.runtime_mode {
+                                        "approval-required" => "Approval required",
+                                        "auto" => "Approve for me",
+                                        _ => "Full access",
+                                    }),
+                            )
+                            .child(
+                                svg_icon(icons::CHEVRON_DOWN)
+                                    .size(px(12.))
+                                    .text_color(mode_accent.opacity(0.7)),
                             )
                             .on_click(cx.listener(|this, _ev, _w, cx| {
                                 this.runtime_mode = match this.runtime_mode {
@@ -3095,7 +3127,9 @@ impl Render for Native {
                         Button::new("composer-model")
                             .ghost()
                             .compact()
-                            .label("\u{25b8} GPT-6 Astra \u{25be}")
+                            .icon(svg_icon(icons::CODEX))
+                            .label("GPT-6 Astra")
+                            .dropdown_caret(true)
                             .dropdown_menu(|menu, _, _| {
                                 menu.item(PopupMenuItem::new("\u{2713} GPT-6 Astra (codex)"))
                             }),
@@ -3103,7 +3137,6 @@ impl Render for Native {
                     .child({
                         // Empty draft renders the muted (disabled) circle like
                         // the web composer; filled primary once there's text.
-                        let draft_empty = self.composer.read(cx).value().trim().is_empty();
                         div()
                             .id("send")
                             .size(px(28.))
@@ -3112,20 +3145,20 @@ impl Render for Native {
                             .justify_center()
                             .rounded_full()
                             .bg(if draft_empty {
-                                rgb(0xcfcfcf).into()
+                                theme.foreground.opacity(0.2)
                             } else {
-                                theme.primary
+                                theme.foreground
                             })
                             .cursor_pointer()
                             .child(
                                 svg_icon(icons::SEND)
-                                    .size(px(14.))
+                                    .size(px(20.))
                                     .text_color(theme.background),
                             )
                             .on_click(cx.listener(|this, _ev, w, cx| this.send(w, cx)))
                     }),
             );
-        let mut composer_col = v_flex().w_full().max_w(px(759.)).gap_0();
+        let mut composer_col = v_flex().w_full().max_w(px(755.)).gap_0();
         if !self.pending_attachments.is_empty() || self.uploading {
             let mut chips = h_flex().gap_1().flex_wrap().pb_1();
             if self.uploading {
@@ -3168,11 +3201,11 @@ impl Render for Native {
         composer_col = composer_col.child(composer_card);
         let composer_bar = div()
             .w_full()
-            .pb(px(16.))
+            .pb(px(18.))
             .child(
                 h_flex()
                     .justify_center()
-                    .pr(px(40.))
+                    .pr(px(4.))
                     .child(composer_col),
             );
 

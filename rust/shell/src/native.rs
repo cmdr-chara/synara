@@ -1341,6 +1341,47 @@ impl Native {
         self.close_tab(tid, cx);
     }
 
+    /// Context-menu actions: fork or hand off a thread. Both dispatch the
+    /// lineage command upstream's threadContextMenu sends, then refetch the
+    /// snapshot so the new row appears in the sidebar.
+    fn lineage(&mut self, tid: String, is_handoff: bool, cx: &mut Context<Self>) {
+        let project_id = self
+            .snapshot
+            .as_ref()
+            .and_then(|s| {
+                arr(s, "threads").iter().find_map(|t| {
+                    if str_at(t, "id") == tid {
+                        Some(str_at(t, "projectId").to_string())
+                    } else {
+                        None
+                    }
+                })
+            })
+            .unwrap_or_else(|| "default".to_string());
+        let client = self.client.clone();
+        let ctype = if is_handoff {
+            "thread.handoff.create"
+        } else {
+            "thread.fork.create"
+        };
+        cx.background_executor()
+            .spawn(async move {
+                let Some(client) = ensure_client(&client) else {
+                    return;
+                };
+                let payload = json!({
+                    "type": ctype,
+                    "commandId": uuid(),
+                    "threadId": uuid(),
+                    "projectId": project_id,
+                    "sourceThreadId": tid,
+                    "createdAt": now_iso(),
+                });
+                client.call("orchestration.dispatchCommand", payload);
+            })
+            .detach();
+    }
+
     /// Rail button: toggle the bottom terminal drawer. Opening spawns a PTY
     /// session on the workspace root via terminal.open and subscribes to its
     /// event stream; closing kills it.
@@ -9531,6 +9572,8 @@ impl Render for Native {
             let tid_copy = menu_tid.clone();
             let tid_arch = menu_tid.clone();
             let tid_close = menu_tid.clone();
+            let tid_fork = menu_tid.clone();
+            let tid_hand = menu_tid.clone();
             let pin_label = if is_pinned { "Unpin" } else { "Pin" };
             ctx_overlay = ctx_overlay
                 .child(
@@ -9584,6 +9627,12 @@ impl Render for Native {
                             cx.write_to_clipboard(gpui::ClipboardItem::new_string(
                                 tid_copy.clone(),
                             ));
+                        })))
+                        .child(row("ctx-fork", "Fork".to_string(), Box::new(move |this, _w, cx| {
+                            this.lineage(tid_fork.clone(), false, cx);
+                        })))
+                        .child(row("ctx-handoff", "Handoff".to_string(), Box::new(move |this, _w, cx| {
+                            this.lineage(tid_hand.clone(), true, cx);
                         })))
                         .child(div().h(px(1.)).w_full().bg(theme.border))
                         .child(row("ctx-archive", "Archive".to_string(), Box::new(move |this, _w, cx| {

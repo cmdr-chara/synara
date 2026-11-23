@@ -124,6 +124,7 @@ fn intercept_todo(
         && !text.contains("account.")
         && !text.contains("hosts.")
         && !text.contains("device.")
+        && !text.contains("editor.")
         && !text.contains("ExternalMcp")
         && !text.contains("server.readThreadDiagnostics")
         && !text.contains("server.listMcp")
@@ -198,6 +199,7 @@ fn intercept_todo(
         && !crate::account::handles(tag)
         && !crate::hosts::handles(tag)
         && !crate::device::handles(tag)
+        && !crate::editor::handles(tag)
         && !tag.starts_with("githubInbox.")
         && !crate::pull_requests::handles(tag)
         && !crate::automation::handles(tag)
@@ -990,6 +992,10 @@ fn intercept_todo(
             .map_err(error_json)
     } else if crate::device::handles(tag) {
         crate::device::handle(tag, &payload)
+            .map(Some)
+            .map_err(error_json)
+    } else if crate::editor::handles(tag) {
+        crate::editor::handle(tag, &payload)
             .map(Some)
             .map_err(error_json)
     } else if crate::studio::handles(tag) {

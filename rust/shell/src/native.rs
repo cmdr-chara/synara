@@ -3811,26 +3811,23 @@ impl Render for Native {
             )
             .into_any_element()
         };
-        // Segmented control (active chip on light-gray).
+        // Upstream segmented = ghost buttons gap-1; active gets a gray "secondary" fill.
         let seg = |opts: &[&'static str], active: usize| {
-            let mut s = h_flex()
-                .items_center()
-                .rounded(px(10.))
-                .bg(gpui::rgba(0x00000008))
-                .p(px(2.))
-                .gap(px(2.));
+            let mut s = h_flex().items_center().gap(px(4.));
             for (i, o) in opts.iter().enumerate() {
                 let mut c = div()
-                    .h(px(24.))
-                    .px(px(10.))
+                    .h(px(32.))
+                    .px(px(11.))
                     .flex()
                     .items_center()
-                    .rounded(px(7.));
+                    .rounded(px(8.));
                 if i == active {
-                    c = c.bg(gpui::white()).border_1().border_color(gpui::rgba(0x00000012));
+                    c = c.bg(rgb(0xf2f2f2));
                 }
                 let tc = if i == active { theme.foreground } else { theme.muted_foreground };
-                s = s.child(c.child(div().text_xs().text_color(tc).child(*o)));
+                s = s.child(
+                    c.child(div().text_size(px(13.)).font_weight(FontWeight::MEDIUM).text_color(tc).child(*o)),
+                );
             }
             s.into_any_element()
         };
@@ -3995,7 +3992,8 @@ impl Render for Native {
             .overflow_y_scroll()
             .vertical_scrollbar(&self.settings_scroll)
             .px_6()
-            .py_8()
+            .pt(px(27.))
+            .pb_8()
             .gap_5();
         {
             let mut head = h_flex().w_full().items_start().justify_between().gap_4();

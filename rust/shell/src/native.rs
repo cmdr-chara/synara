@@ -2001,7 +2001,7 @@ fn row(
         .gap_1()
         .cursor_pointer()
         .rounded_md()
-        .child(div().text_sm().font_weight(FontWeight::SEMIBOLD).child(title))
+        .child(div().text_size(px(13.)).font_weight(FontWeight::SEMIBOLD).child(title))
         .child(div().text_xs().text_color(theme.muted_foreground).child(subtitle));
     if selected {
         el = el.bg(theme.list_active);
@@ -2759,7 +2759,7 @@ impl Render for Native {
                 h_flex().w_full().justify_center().child(
                     div().w(px(755.)).child(
                         div()
-                            .text_sm()
+                            .text_size(px(13.))
                             .text_color(theme.muted_foreground)
                             .child("Select a thread or type below"),
                     ),
@@ -2799,7 +2799,7 @@ impl Render for Native {
                         h_flex()
                             .w(px(755.))
                             .justify_end()
-                            .child(pill.child(div().text_sm().child(text))),
+                            .child(pill.child(div().text_size(px(13.)).child(text))),
                     ),
                 );
             } else {
@@ -3101,7 +3101,7 @@ impl Render for Native {
                 if self.files_loading {
                     files_pane = files_pane.child(
                         div()
-                            .text_sm()
+                            .text_size(px(13.))
                             .text_color(theme.muted_foreground)
                             .child("loading\u{2026}"),
                     );
@@ -3116,7 +3116,7 @@ impl Render for Native {
                             .px_2()
                             .py_1()
                             .rounded_md()
-                            .text_sm()
+                            .text_size(px(13.))
                             .text_color(if is_dir {
                                 theme.primary
                             } else {
@@ -3171,7 +3171,7 @@ impl Render for Native {
             if self.dev_servers.is_empty() {
                 dev_pane = dev_pane.child(
                     div()
-                        .text_sm()
+                        .text_size(px(13.))
                         .text_color(theme.muted_foreground)
                         .child("No dev servers running"),
                 );
@@ -3246,7 +3246,7 @@ impl Render for Native {
                 )
                 .child(
                     div()
-                        .text_sm()
+                        .text_size(px(13.))
                         .text_color(theme.muted_foreground)
                         .child(format!("{greeting} {sub}")),
                 );
@@ -3260,8 +3260,8 @@ impl Render for Native {
                     h_flex()
                         .justify_between()
                         .items_center()
-                        .child(div().text_sm().child(format!("Today's tasks {}", self.inbox_tasks.len())))
-                        .child(div().text_sm().text_color(theme.muted_foreground).child("All tasks")),
+                        .child(div().text_size(px(13.)).child(format!("Today's tasks {}", self.inbox_tasks.len())))
+                        .child(div().text_size(px(13.)).text_color(theme.muted_foreground).child("All tasks")),
                 )
                 .child(
                     h_flex()
@@ -3274,7 +3274,7 @@ impl Render for Native {
                         )
                         .child(
                             div()
-                                .text_sm()
+                                .text_size(px(13.))
                                 .whitespace_nowrap()
                                 .text_color(theme.muted_foreground)
                                 .child("Add a task for today, or press Tab to hand it to an agent"),
@@ -3290,7 +3290,7 @@ impl Render for Native {
                 .filter(|s: &String| !s.is_empty())
                 .unwrap_or_else(|| "Nothing ran yet today. This fills in as your agents work.".to_string());
             right_col = right_col.child(tile(
-                div().p_4().text_sm().child(recap_text).into_any_element(),
+                div().p_4().text_size(px(13.)).child(recap_text).into_any_element(),
             ));
             let provider = self
                 .inbox_usage
@@ -3314,7 +3314,7 @@ impl Render for Native {
                 v_flex()
                     .p_4()
                     .gap_2()
-                    .child(div().text_sm().text_color(theme.muted_foreground).child(format!("Left on {provider}, weekly")))
+                    .child(div().text_size(px(13.)).text_color(theme.muted_foreground).child(format!("Left on {provider}, weekly")))
                     .child(
                         h_flex()
                             .items_center()
@@ -3339,7 +3339,7 @@ impl Render for Native {
                                     .bg(theme.border)
                                     .child(div().w(gpui::relative((pct / 100.0) as f32)).h_full().rounded(px(3.)).bg(rgb(0x22a865))),
                             )
-                            .child(div().text_sm().text_color(theme.muted_foreground).child(format!("Resets in {resets}"))),
+                            .child(div().text_size(px(13.)).text_color(theme.muted_foreground).child(format!("Resets in {resets}"))),
                     )
                     .into_any_element(),
             ));
@@ -3358,7 +3358,7 @@ impl Render for Native {
                         .justify_between()
                         .child(
                             div()
-                                .text_sm()
+                                .text_size(px(13.))
                                 .text_color(theme.muted_foreground)
                                 .child("Sign in to automatically save private recaps across your devices."),
                         )
@@ -3742,8 +3742,8 @@ impl Render for Native {
                         .flex_1()
                         .min_w_0()
                         .gap(px(2.))
-                        .child(div().text_sm().font_weight(FontWeight::MEDIUM).child(title))
-                        .child(div().w_full().text_sm().text_color(theme.muted_foreground).child(desc)),
+                        .child(div().text_size(px(13.)).font_weight(FontWeight::MEDIUM).child(title))
+                        .child(div().w_full().text_size(px(13.)).text_color(theme.muted_foreground).child(desc)),
                 )
                 .child(ctrl)
         };
@@ -3761,7 +3761,7 @@ impl Render for Native {
             if let Some(ic) = icon {
                 b = b.child(svg_icon(ic).size(px(14.)).text_color(theme.muted_foreground));
             }
-            b.child(div().text_sm().whitespace_nowrap().child(label))
+            b.child(div().text_size(px(13.)).whitespace_nowrap().child(label))
                 .child(svg_icon(icons::CHEVRON_DOWN).size(px(12.)).text_color(theme.muted_foreground))
                 .into_any_element()
         };
@@ -3775,14 +3775,14 @@ impl Render for Native {
                 .rounded(px(8.))
                 .border_1()
                 .border_color(theme.border)
-                .child(div().text_sm().whitespace_nowrap().child(label))
+                .child(div().text_size(px(13.)).whitespace_nowrap().child(label))
                 .into_any_element()
         };
         let section_label = |t: &'static str| {
             div()
                 .px_2()
                 .py_1()
-                .text_sm()
+                .text_size(px(13.))
                 .text_color(theme.muted_foreground)
                 .child(t)
         };
@@ -3852,7 +3852,7 @@ impl Render for Native {
                 .border_1()
                 .border_color(theme.border)
                 .bg(rgb(color))
-                .child(div().text_sm().text_color(ink).child(hex_label))
+                .child(div().text_size(px(13.)).text_color(ink).child(hex_label))
                 .into_any_element()
         };
         // Thin track slider + value label.
@@ -3906,9 +3906,9 @@ impl Render for Native {
                         .rounded(px(8.))
                         .border_1()
                         .border_color(theme.border)
-                        .child(div().text_sm().child(v)),
+                        .child(div().text_size(px(13.)).child(v)),
                 )
-                .child(div().text_sm().text_color(theme.muted_foreground).child("px"))
+                .child(div().text_size(px(13.)).text_color(theme.muted_foreground).child("px"))
                 .into_any_element()
         };
         // Miniature app-window mockup for the Appearance theme picker, matching
@@ -3917,16 +3917,19 @@ impl Render for Native {
         struct MockColors { backdrop: u32, panel: u32, hbar: u32, hbar_soft: u32, card: u32, rowbar: u32, hairline: u32 }
         const MOCK_LIGHT: MockColors = MockColors { backdrop: 0xe9e9e9, panel: 0xf6f6f6, hbar: 0xcfcfcf, hbar_soft: 0xe0e0e0, card: 0xffffff, rowbar: 0xe3e3e3, hairline: 0xefefef };
         const MOCK_DARK: MockColors = MockColors { backdrop: 0x5f5f5f, panel: 0x2c2c2c, hbar: 0xa6a6a6, hbar_soft: 0x7d7d7d, card: 0x3a3a3a, rowbar: 0x707070, hairline: 0x4d4d4d };
+        // Upstream MOCKUP_LAYOUT resolves percentages against the containing
+        // block's width; at a 190x133 thumb the panel is 160 wide and the card
+        // 132, giving the absolute values used below.
         let mock_surface = |c: &MockColors| {
             div()
                 .size_full()
                 .bg(rgb(c.backdrop))
                 .child(
-                    div().absolute().left(px(15.)).right(px(15.)).top(px(19.)).bottom_0()
+                    div().absolute().left(px(15.)).right(px(15.)).top(px(22.)).bottom_0()
                         .bg(rgb(c.panel)).rounded_t(px(8.))
-                        .child(div().absolute().left(px(52.)).top(px(15.)).w(px(64.)).h(px(4.)).rounded_full().bg(rgb(c.hbar)))
-                        .child(div().absolute().left(px(38.)).top(px(23.)).w(px(92.)).h(px(3.)).rounded_full().bg(rgb(c.hbar_soft)))
-                        .child(div().absolute().left(px(15.)).right(px(15.)).top(px(38.)).bottom_0()
+                        .child(div().absolute().left(px(50.)).top(px(14.)).w(px(61.)).h(px(4.)).rounded_full().bg(rgb(c.hbar)))
+                        .child(div().absolute().left(px(36.)).top(px(22.)).w(px(88.)).h(px(3.)).rounded_full().bg(rgb(c.hbar_soft)))
+                        .child(div().absolute().left(px(14.)).right(px(14.)).top(px(37.)).bottom_0()
                             .bg(rgb(c.card)).rounded_t(px(6.))
                             .child(rows_card(c))),
                 )
@@ -3934,10 +3937,10 @@ impl Render for Native {
         fn rows_card(c: &MockColors) -> gpui::Div {
             let mut card = div().size_full();
             for i in 0..3 {
-                let y = 9. + (i as f32) * 21.;
+                let y = 9. + (i as f32) * 21.5;
                 card = card
-                    .child(div().absolute().left(px(13.)).top(px(y)).w(px(37.)).h(px(4.)).rounded_full().bg(rgb(c.rowbar)))
-                    .child(div().absolute().left(px(13.)).right(px(13.)).top(px(y + 11.)).h(px(1.)).bg(rgb(c.hairline)));
+                    .child(div().absolute().left(px(13.)).top(px(y)).w(px(47.)).h(px(4.)).rounded_full().bg(rgb(c.rowbar)))
+                    .child(div().absolute().left(px(13.)).right(px(13.)).top(px(y + 12.3)).h(px(1.)).bg(rgb(c.hairline)));
             }
             card
         }
@@ -3963,7 +3966,7 @@ impl Render for Native {
                 .border_2()
                 .border_color(if selected { theme_fg } else { gpui::transparent_black() })
                 .child(
-                    div().w(px(190.)).h(px(110.)).rounded(px(8.)).overflow_hidden().relative()
+                    div().w(px(190.)).h(px(133.)).rounded(px(8.)).overflow_hidden().relative()
                         .child(thumb),
                 );
             v_flex()
@@ -3972,7 +3975,7 @@ impl Render for Native {
                 .gap(px(6.))
                 .items_center()
                 .child(frame)
-                .child(div().text_sm().when(selected, |d| d.font_weight(FontWeight::MEDIUM)).child(label))
+                .child(div().text_size(px(13.)).when(selected, |d| d.font_weight(FontWeight::MEDIUM)).child(label))
                 .into_any_element()
         };
 
@@ -4030,7 +4033,7 @@ impl Render for Native {
                     .child(
                         div()
                             .w_full()
-                            .text_sm()
+                            .text_size(px(13.))
                             .text_color(theme.muted_foreground)
                             .line_height(px(22.))
                             .child(match &*self.settings_section {
@@ -4112,8 +4115,8 @@ impl Render for Native {
                                             .flex_1()
                                             .min_w_0()
                                             .gap(px(2.))
-                                            .child(div().text_sm().font_weight(FontWeight::MEDIUM).child("Keep computer awake"))
-                                            .child(div().w_full().text_sm().text_color(theme.muted_foreground).child("Uses macOS caffeinate. On: Keep this computer awake at all times. Agent: Keep this computer awake while an agent is working. Off: Let the system sleep normally."))
+                                            .child(div().text_size(px(13.)).font_weight(FontWeight::MEDIUM).child("Keep computer awake"))
+                                            .child(div().w_full().text_size(px(13.)).text_color(theme.muted_foreground).child("Uses macOS caffeinate. On: Keep this computer awake at all times. Agent: Keep this computer awake while an agent is working. Off: Let the system sleep normally."))
                                             .child(div().pt_1().text_xs().text_color(theme.muted_foreground).child("Off \u{00b7} Idle")),
                                     )
                                     .child(seg(&["On", "Agent", "Off"], 2)),
@@ -4182,7 +4185,7 @@ impl Render for Native {
                                     h_flex()
                                         .items_center()
                                         .gap_3()
-                                        .child(div().text_sm().child("Test"))
+                                        .child(div().text_size(px(13.)).child("Test"))
                                         .child(toggle(true))
                                         .into_any_element(),
                                 ))
@@ -4203,7 +4206,7 @@ impl Render for Native {
                         .w(px(170.))
                         .items_center()
                         .justify_between()
-                        .child(div().text_sm().child(label))
+                        .child(div().text_size(px(13.)).child(label))
                         .child(toggle(on))
                         .into_any_element()
                 };
@@ -4572,7 +4575,7 @@ impl Render for Native {
                     .rounded(px(10.))
                     .bg(gpui::rgba(0x0000000a))
                     .child(svg_icon(icons::SEARCH).size(px(16.)).text_color(theme.muted_foreground))
-                    .child(div().flex_1().text_sm().text_color(theme.muted_foreground).child("Search shortcuts"))
+                    .child(div().flex_1().text_size(px(13.)).text_color(theme.muted_foreground).child("Search shortcuts"))
                     .child(div().text_xs().text_color(theme.muted_foreground).child("\u{2318}K"))
                     .into_any_element();
                 let mut list = v_flex();
@@ -4590,7 +4593,7 @@ impl Render for Native {
                                 .py(px(1.5))
                                 .rounded(px(10.))
                                 .bg(gpui::rgba(0x00000008))
-                                .text_sm()
+                                .text_size(px(13.))
                                 .text_color(theme.muted_foreground)
                                 .child(kbd),
                         );
@@ -4612,7 +4615,7 @@ impl Render for Native {
                                 v_flex()
                                     .flex_1()
                                     .min_w_0()
-                                    .child(div().text_sm().line_height(px(18.)).font_weight(FontWeight::MEDIUM).child(title))
+                                    .child(div().text_size(px(13.)).line_height(px(18.)).font_weight(FontWeight::MEDIUM).child(title))
                                     .child(div().w_full().text_xs().line_height(px(16.)).text_color(theme.muted_foreground).child(desc)),
                             )
                             .child(right),
@@ -4638,7 +4641,7 @@ impl Render for Native {
                     Vec::new()
                 })
                 .collect();
-            let dash = |v: &Value| div().text_sm().text_color(theme.muted_foreground).child("\u{2014}").into_any_element();
+            let dash = |v: &Value| div().text_size(px(13.)).text_color(theme.muted_foreground).child("\u{2014}").into_any_element();
             fn provider_display(id: &str) -> &str {
                 match id {
                     "codex" => "Codex", "claudeAgent" | "claude" => "Claude", "cursor" => "Cursor",
@@ -4659,7 +4662,7 @@ impl Render for Native {
                         .flex_1()
                         .items_center()
                         .gap(px(2.))
-                        .child(div().text_sm().font_weight(FontWeight::MEDIUM).child(val))
+                        .child(div().text_size(px(13.)).font_weight(FontWeight::MEDIUM).child(val))
                         .child(div().text_xs().text_color(theme.muted_foreground).child(label))
                         .into_any_element()
                 };
@@ -4669,8 +4672,8 @@ impl Render for Native {
                         .items_center()
                         .justify_between()
                         .py(px(4.))
-                        .child(div().text_sm().text_color(theme.muted_foreground).child(label))
-                        .child(div().text_sm().child(val))
+                        .child(div().text_size(px(13.)).text_color(theme.muted_foreground).child(label))
+                        .child(div().text_size(px(13.)).child(val))
                         .into_any_element()
                 };
                 let heat_col = || {
@@ -4698,9 +4701,9 @@ impl Render for Native {
                                     .flex()
                                     .items_center()
                                     .justify_center()
-                                    .child(div().text_sm().font_weight(FontWeight::SEMIBOLD).text_color(gpui::white()).child("DE")),
+                                    .child(div().text_size(px(13.)).font_weight(FontWeight::SEMIBOLD).text_color(gpui::white()).child("DE")),
                             )
-                            .child(div().text_sm().font_weight(FontWeight::SEMIBOLD).child("Devin"))
+                            .child(div().text_size(px(13.)).font_weight(FontWeight::SEMIBOLD).child("Devin"))
                             .child(div().text_xs().text_color(theme.muted_foreground).child("@devin \u{b7} Synara")),
                     )
                     .child(
@@ -4751,12 +4754,12 @@ impl Render for Native {
                                     .flex_1()
                                     .gap_1()
                                     .child(section_label("Most used plugins"))
-                                    .child(div().py(px(4.)).text_sm().text_color(theme.muted_foreground).child("No skills or agents used yet.")),
+                                    .child(div().py(px(4.)).text_size(px(13.)).text_color(theme.muted_foreground).child("No skills or agents used yet.")),
                             ),
                     )
                     .child(section_label("Model usage"))
-                    .child(div().text_sm().text_color(theme.muted_foreground).child("Share of turns."))
-                    .child(div().pt_1().text_sm().text_color(theme.muted_foreground).child("No model activity yet."));
+                    .child(div().text_size(px(13.)).text_color(theme.muted_foreground).child("Share of turns."))
+                    .child(div().pt_1().text_size(px(13.)).text_color(theme.muted_foreground).child("No model activity yet."));
             }
 
             // ---------- Accounts ----------
@@ -4813,7 +4816,7 @@ impl Render for Native {
                                         .flex_1()
                                         .min_w_0()
                                         .gap(px(1.))
-                                        .child(div().text_sm().font_weight(FontWeight::MEDIUM).child(name))
+                                        .child(div().text_size(px(13.)).font_weight(FontWeight::MEDIUM).child(name))
                                         .child(
                                             h_flex()
                                                 .items_center()
@@ -4904,14 +4907,14 @@ impl Render for Native {
                                     .gap_2p5()
                                     .px_3()
                                     .py(px(10.))
-                                    .child(div().w(px(16.)).text_sm().text_color(theme.muted_foreground).child("\u{283f}"))
+                                    .child(div().w(px(16.)).text_size(px(13.)).text_color(theme.muted_foreground).child("\u{283f}"))
                                     .child(svg_icon(p_icon(pid)).size(px(16.)).text_color(theme.foreground))
                                     .child(
                                         v_flex()
                                             .flex_1()
                                             .min_w_0()
                                             .gap(px(1.))
-                                            .child(div().text_sm().font_weight(FontWeight::MEDIUM).child(name.clone()))
+                                            .child(div().text_size(px(13.)).font_weight(FontWeight::MEDIUM).child(name.clone()))
                                             .child(div().text_xs().text_color(theme.muted_foreground).child(status.clone())),
                                     )
                                     .children(if *upd {
@@ -4949,10 +4952,10 @@ impl Render for Native {
                                             .w_full()
                                             .items_center()
                                             .justify_between()
-                                            .child(div().text_sm().font_weight(FontWeight::MEDIUM).child("Keep Synara responsive"))
+                                            .child(div().text_size(px(13.)).font_weight(FontWeight::MEDIUM).child("Keep Synara responsive"))
                                             .child(toggle(true)),
                                     )
-                                    .child(div().w_full().text_sm().text_color(theme.muted_foreground).child(
+                                    .child(div().w_full().text_size(px(13.)).text_color(theme.muted_foreground).child(
                                         "Give agent processes and their commands a moderately lower CPU priority when the machine is busy."))
                                     .child(div().w_full().text_xs().text_color(theme.muted_foreground).child(
                                         "Applies to newly launched agent processes. Restart existing sessions to apply consistently.")),
@@ -4971,8 +4974,8 @@ impl Render for Native {
                                     .px_3()
                                     .py(px(10.))
                                     .gap(px(2.))
-                                    .child(div().text_sm().font_weight(FontWeight::MEDIUM).child("Provider updates"))
-                                    .child(div().w_full().text_sm().text_color(theme.muted_foreground).child(
+                                    .child(div().text_size(px(13.)).font_weight(FontWeight::MEDIUM).child("Provider updates"))
+                                    .child(div().w_full().text_size(px(13.)).text_color(theme.muted_foreground).child(
                                         "Review installed provider tools that Synara can safely update."))
                                     .child(div().w_full().text_xs().text_color(theme.muted_foreground).child(
                                         "1 update available")),
@@ -5000,8 +5003,8 @@ impl Render for Native {
                             .px_3()
                             .py(px(10.))
                             .gap_2()
-                            .child(div().text_sm().font_weight(FontWeight::MEDIUM).child("Saved model slugs"))
-                            .child(div().w_full().text_sm().text_color(theme.muted_foreground).child("Add custom model slugs for supported providers."))
+                            .child(div().text_size(px(13.)).font_weight(FontWeight::MEDIUM).child("Saved model slugs"))
+                            .child(div().w_full().text_size(px(13.)).text_color(theme.muted_foreground).child("Add custom model slugs for supported providers."))
                             .child(
                                 h_flex()
                                     .w_full()
@@ -5052,10 +5055,10 @@ impl Render for Native {
                                     .w_full()
                                     .items_center()
                                     .justify_between()
-                                    .child(div().text_sm().font_weight(FontWeight::MEDIUM).child("Synara skills folder"))
+                                    .child(div().text_size(px(13.)).font_weight(FontWeight::MEDIUM).child("Synara skills folder"))
                                     .child(div().text_xs().text_color(theme.muted_foreground).child(format!("{} of {} skills enabled", skills.len(), skills.len()))),
                             )
-                            .child(div().w_full().text_sm().text_color(theme.muted_foreground).child(
+                            .child(div().w_full().text_size(px(13.)).text_color(theme.muted_foreground).child(
                                 "Skills placed here are available on every provider. When a provider already ships its own copy of a skill, that copy is used; otherwise Synara's copy is the fallback."))
                             .child(div().w_full().text_xs().text_color(theme.muted_foreground).child("~/.synara/skills"))
                             .into_any_element(),
@@ -5067,8 +5070,8 @@ impl Render for Native {
                             .px_3()
                             .py(px(10.))
                             .gap(px(2.))
-                            .child(div().text_sm().font_weight(FontWeight::MEDIUM).child("No skills found"))
-                            .child(div().w_full().text_sm().text_color(theme.muted_foreground).child(
+                            .child(div().text_size(px(13.)).font_weight(FontWeight::MEDIUM).child("No skills found"))
+                            .child(div().w_full().text_size(px(13.)).text_color(theme.muted_foreground).child(
                                 "Add a skill folder containing a SKILL.md to the Synara skills folder above, or install skills for any supported provider."))
                             .into_any_element(),
                     ));
@@ -5083,7 +5086,7 @@ impl Render for Native {
                             .px_3()
                             .py(px(8.))
                             .gap(px(1.))
-                            .child(div().text_sm().font_weight(FontWeight::MEDIUM).child(nm))
+                            .child(div().text_size(px(13.)).font_weight(FontWeight::MEDIUM).child(nm))
                             .child(div().text_xs().text_color(theme.muted_foreground).child(desc))
                             .into_any_element(),
                     ));
@@ -5131,7 +5134,7 @@ impl Render for Native {
                                     .px_3()
                                     .py(px(9.))
                                     .child(svg_icon(p_icon2(pid)).size(px(16.)).text_color(theme.foreground))
-                                    .child(div().flex_1().text_sm().font_weight(FontWeight::MEDIUM).child(name.to_string()))
+                                    .child(div().flex_1().text_size(px(13.)).font_weight(FontWeight::MEDIUM).child(name.to_string()))
                                     .child(toggle(*on))
                                     .into_any_element();
                                 if i > 0 { vec![divider().into_any_element(), row] } else { vec![row] }
@@ -5147,14 +5150,14 @@ impl Render for Native {
                             .gap_3()
                             .px_3()
                             .py(px(10.))
-                            .child(div().flex_1().min_w_0().w_full().text_sm().text_color(theme.muted_foreground).child(
+                            .child(div().flex_1().min_w_0().w_full().text_size(px(13.)).text_color(theme.muted_foreground).child(
                                 "Show both limits as two rings, or a single ring for one of them."))
                             .child(
                                 h_flex()
                                     .gap_3()
-                                    .child(div().text_sm().font_weight(FontWeight::MEDIUM).child("Both"))
-                                    .child(div().text_sm().text_color(theme.muted_foreground).child("5h"))
-                                    .child(div().text_sm().text_color(theme.muted_foreground).child("Weekly")),
+                                    .child(div().text_size(px(13.)).font_weight(FontWeight::MEDIUM).child("Both"))
+                                    .child(div().text_size(px(13.)).text_color(theme.muted_foreground).child("5h"))
+                                    .child(div().text_size(px(13.)).text_color(theme.muted_foreground).child("Weekly")),
                             )
                             .into_any_element(),
                     ))
@@ -5183,7 +5186,7 @@ impl Render for Native {
                     .bg(gpui::rgba(0x0000000a))
                     .items_center()
                     .child(svg_icon(icons::SEARCH).size(px(16.)).text_color(theme.muted_foreground))
-                    .child(div().text_sm().text_color(theme.muted_foreground).child("Search connectors"))
+                    .child(div().text_size(px(13.)).text_color(theme.muted_foreground).child("Search connectors"))
                     .into_any_element();
                 let dark_btn = |label: &'static str| {
                     div()
@@ -5278,10 +5281,10 @@ impl Render for Native {
                                             .flex_1()
                                             .min_w_0()
                                             .gap(px(1.))
-                                            .child(div().text_sm().font_weight(FontWeight::MEDIUM).child(*name))
+                                            .child(div().text_size(px(13.)).font_weight(FontWeight::MEDIUM).child(*name))
                                             .child(div().w_full().text_xs().text_color(theme.muted_foreground).child(*desc)),
                                     )
-                                    .child(div().px_2().text_sm().text_color(theme.muted_foreground).child("+")),
+                                    .child(div().px_2().text_size(px(13.)).text_color(theme.muted_foreground).child("+")),
                             );
                         }
                         if chunk.len() == 1 {
@@ -5325,8 +5328,8 @@ impl Render for Native {
                                             .flex_1()
                                             .min_w_0()
                                             .gap(px(2.))
-                                            .child(div().text_sm().font_weight(FontWeight::MEDIUM).child("Name"))
-                                            .child(div().w_full().text_sm().text_color(theme.muted_foreground).child(
+                                            .child(div().text_size(px(13.)).font_weight(FontWeight::MEDIUM).child("Name"))
+                                            .child(div().w_full().text_size(px(13.)).text_color(theme.muted_foreground).child(
                                                 "How this connection appears in Synara. Works with Codex, Claude, and any other MCP-capable agent.")),
                                     )
                                     .child(
@@ -5361,15 +5364,15 @@ impl Render for Native {
                                             .flex_1()
                                             .min_w_0()
                                             .gap(px(2.))
-                                            .child(div().text_sm().font_weight(FontWeight::MEDIUM).child("Advanced permissions"))
-                                            .child(div().w_full().text_sm().text_color(theme.muted_foreground).child(
+                                            .child(div().text_size(px(13.)).font_weight(FontWeight::MEDIUM).child("Advanced permissions"))
+                                            .child(div().w_full().text_size(px(13.)).text_color(theme.muted_foreground).child(
                                                 "Optional access for existing tasks, shared checkouts, or execution without approvals. The safe defaults are recommended.")),
                                     )
                                     .child(
                                         h_flex()
                                             .items_center()
                                             .gap_1()
-                                            .child(div().text_sm().text_color(theme.muted_foreground).child("Review"))
+                                            .child(div().text_size(px(13.)).text_color(theme.muted_foreground).child("Review"))
                                             .child(svg_icon(icons::CHEVRON_RIGHT).size(px(14.)).text_color(theme.muted_foreground)),
                                     )
                                     .into_any_element(),
@@ -5388,8 +5391,8 @@ impl Render for Native {
                                             .flex_1()
                                             .min_w_0()
                                             .gap(px(2.))
-                                            .child(div().text_sm().font_weight(FontWeight::MEDIUM).child("Create connection"))
-                                            .child(div().w_full().text_sm().text_color(theme.muted_foreground).child(
+                                            .child(div().text_size(px(13.)).font_weight(FontWeight::MEDIUM).child("Create connection"))
+                                            .child(div().w_full().text_size(px(13.)).text_color(theme.muted_foreground).child(
                                                 "The connection lasts 30 days and can be revoked at any time. The next screen gives you one prompt to paste into your agent.")),
                                     )
                                     .child(dark_btn("Create connection"))
@@ -5404,8 +5407,8 @@ impl Render for Native {
                             .px_3()
                             .py(px(10.))
                             .gap(px(2.))
-                            .child(div().text_sm().font_weight(FontWeight::MEDIUM).child("No connected agents"))
-                            .child(div().text_sm().text_color(theme.muted_foreground).child("Connect Codex, Claude, or another local MCP agent to create and follow Synara tasks."))
+                            .child(div().text_size(px(13.)).font_weight(FontWeight::MEDIUM).child("No connected agents"))
+                            .child(div().text_size(px(13.)).text_color(theme.muted_foreground).child("Connect Codex, Claude, or another local MCP agent to create and follow Synara tasks."))
                             .into_any_element(),
                     ));
                 }
@@ -5417,7 +5420,7 @@ impl Render for Native {
                             .px_3()
                             .py(px(8.))
                             .gap(px(1.))
-                            .child(div().text_sm().font_weight(FontWeight::MEDIUM).child(nm))
+                            .child(div().text_size(px(13.)).font_weight(FontWeight::MEDIUM).child(nm))
                             .child(div().text_xs().text_color(theme.muted_foreground).child(st))
                             .into_any_element(),
                     ));
@@ -5433,8 +5436,8 @@ impl Render for Native {
                             .px_3()
                             .py(px(10.))
                             .gap(px(1.))
-                            .child(div().text_sm().font_weight(FontWeight::MEDIUM).child("Unavailable in this build"))
-                            .child(div().text_sm().text_color(theme.muted_foreground).child(
+                            .child(div().text_size(px(13.)).font_weight(FontWeight::MEDIUM).child("Unavailable in this build"))
+                            .child(div().text_size(px(13.)).text_color(theme.muted_foreground).child(
                                 "Remote connections require the Node 24 server runtime."))
                             .into_any_element(),
                     ));
@@ -5451,10 +5454,10 @@ impl Render for Native {
                             .items_center()
                             .justify_between()
                             .px_2()
-                            .child(div().text_sm().font_weight(FontWeight::SEMIBOLD).text_color(theme.muted_foreground).child("Computer control"))
+                            .child(div().text_size(px(13.)).font_weight(FontWeight::SEMIBOLD).text_color(theme.muted_foreground).child("Computer control"))
                             .child(toggle(false)),
                     )
-                    .child(div().w_full().px_2().text_sm().text_color(theme.muted_foreground).child(
+                    .child(div().w_full().px_2().text_size(px(13.)).text_color(theme.muted_foreground).child(
                         "Enable Computer by default in any chat. Leave this off and use /computer-use for one request without adding Computer tools to ordinary turns."))
                     .child(card(
                         v_flex()
@@ -5475,9 +5478,9 @@ impl Render for Native {
                                                     .items_center()
                                                     .gap_1p5()
                                                     .child(div().w(px(6.)).h(px(6.)).rounded_full().bg(rgb(0xd43d3d)))
-                                                    .child(div().text_sm().font_weight(FontWeight::MEDIUM).child(if avail { "Computer control is available" } else { "Computer control is unavailable" })),
+                                                    .child(div().text_size(px(13.)).font_weight(FontWeight::MEDIUM).child(if avail { "Computer control is available" } else { "Computer control is unavailable" })),
                                             )
-                                            .child(div().text_sm().text_color(theme.muted_foreground).child(
+                                            .child(div().text_size(px(13.)).text_color(theme.muted_foreground).child(
                                                 "Computer requires a connected Synara desktop host, which owns native access on that computer.")),
                                     )
                                     .child(outline_btn("Set up"))
@@ -5496,8 +5499,8 @@ impl Render for Native {
                                             .flex_1()
                                             .min_w_0()
                                             .gap(px(2.))
-                                            .child(div().text_sm().font_weight(FontWeight::MEDIUM).child("Cursor colors"))
-                                            .child(div().w_full().text_sm().text_color(theme.muted_foreground).child(
+                                            .child(div().text_size(px(13.)).font_weight(FontWeight::MEDIUM).child("Cursor colors"))
+                                            .child(div().w_full().text_size(px(13.)).text_color(theme.muted_foreground).child(
                                                 "The agent pointer is stock monochrome by default \u{2014} like a normal pointer. Custom colors apply to new computer sessions.")),
                                     )
                                     .child(seg(&["Stock", "Custom"], 0))
@@ -5516,8 +5519,8 @@ impl Render for Native {
                                             .flex_1()
                                             .min_w_0()
                                             .gap(px(2.))
-                                            .child(div().text_sm().font_weight(FontWeight::MEDIUM).child("Preview"))
-                                            .child(div().w_full().text_sm().text_color(theme.muted_foreground).child(
+                                            .child(div().text_size(px(13.)).font_weight(FontWeight::MEDIUM).child("Preview"))
+                                            .child(div().w_full().text_size(px(13.)).text_color(theme.muted_foreground).child(
                                                 "Show the live preview the first time an agent acts on the desktop in a chat. Compact keeps it small and glanceable; Large gives it the full wide card.")),
                                     )
                                     .child(toggle(true))
@@ -5532,7 +5535,7 @@ impl Render for Native {
                             .items_center()
                             .justify_between()
                             .child(section_label("Getting started"))
-                            .child(div().px_2().py_1().text_sm().text_color(theme.muted_foreground).child("\u{2304} Hide guide")),
+                            .child(div().px_2().py_1().text_size(px(13.)).text_color(theme.muted_foreground).child("\u{2304} Hide guide")),
                     )
                     .child(card(
                         v_flex()
@@ -5541,8 +5544,8 @@ impl Render for Native {
                                     .px_3()
                                     .py(px(8.))
                                     .gap(px(1.))
-                                    .child(div().text_sm().font_weight(FontWeight::MEDIUM).child("Ask for a task"))
-                                    .child(div().w_full().text_sm().text_color(theme.muted_foreground).child(
+                                    .child(div().text_size(px(13.)).font_weight(FontWeight::MEDIUM).child("Ask for a task"))
+                                    .child(div().w_full().text_size(px(13.)).text_color(theme.muted_foreground).child(
                                         "Type /computer-use followed by your task, for example: \u{201c}/computer-use open Calculator and calculate 123 \u{d7} 45.\u{201d} This enables Computer for that request only. The default setting below can enable it on every turn.")),
                             )
                             .child(divider())
@@ -5551,8 +5554,8 @@ impl Render for Native {
                                     .px_3()
                                     .py(px(8.))
                                     .gap(px(1.))
-                                    .child(div().text_sm().font_weight(FontWeight::MEDIUM).child("Approve the task"))
-                                    .child(div().w_full().text_sm().text_color(theme.muted_foreground).child(
+                                    .child(div().text_size(px(13.)).font_weight(FontWeight::MEDIUM).child("Approve the task"))
+                                    .child(div().w_full().text_size(px(13.)).text_color(theme.muted_foreground).child(
                                         "If asked, approve Computer for the task. Use the permission guide when desktop access is missing. Synara may still ask before consequential actions.")),
                             )
                             .child(divider())
@@ -5561,8 +5564,8 @@ impl Render for Native {
                                     .px_3()
                                     .py(px(8.))
                                     .gap(px(1.))
-                                    .child(div().text_sm().font_weight(FontWeight::MEDIUM).child("Follow and stop"))
-                                    .child(div().w_full().text_sm().text_color(theme.muted_foreground).child(
+                                    .child(div().text_size(px(13.)).font_weight(FontWeight::MEDIUM).child("Follow and stop"))
+                                    .child(div().w_full().text_size(px(13.)).text_color(theme.muted_foreground).child(
                                         "Watch the preview while the agent works. Use Stop in the chat to interrupt the task. Closing the preview only hides it.")),
                             )
                             .into_any_element(),
@@ -5574,8 +5577,8 @@ impl Render for Native {
                             .items_center()
                             .justify_between()
                             .px_2()
-                            .child(div().text_sm().text_color(theme.muted_foreground).child("Recent Computer actions"))
-                            .child(div().text_sm().text_color(theme.muted_foreground).child("\u{203a} Show history")),
+                            .child(div().text_size(px(13.)).text_color(theme.muted_foreground).child("Recent Computer actions"))
+                            .child(div().text_size(px(13.)).text_color(theme.muted_foreground).child("\u{203a} Show history")),
                     );
             }
 
@@ -5593,8 +5596,8 @@ impl Render for Native {
                                 v_flex()
                                     .flex_1()
                                     .gap(px(2.))
-                                    .child(div().text_sm().font_weight(FontWeight::MEDIUM).child("Take an AppSnap to show your agent another app's window"))
-                                    .child(div().w_full().text_sm().text_color(theme.muted_foreground).child(
+                                    .child(div().text_size(px(13.)).font_weight(FontWeight::MEDIUM).child("Take an AppSnap to show your agent another app's window"))
+                                    .child(div().w_full().text_size(px(13.)).text_color(theme.muted_foreground).child(
                                         "Press your two-key shortcut while any app is frontmost. Synara captures that window as an image, brings itself forward, and attaches the snap to a task composer \u{2014} the capture stays on this device until you send the message."))
                                     .child(div().w_full().text_xs().text_color(theme.muted_foreground).child(
                                         "AppSnap requires the Synara desktop app on macOS.")),
@@ -5614,10 +5617,10 @@ impl Render for Native {
                                             .w_full()
                                             .items_center()
                                             .justify_between()
-                                            .child(div().text_sm().font_weight(FontWeight::MEDIUM).child("Enable AppSnap"))
+                                            .child(div().text_size(px(13.)).font_weight(FontWeight::MEDIUM).child("Enable AppSnap"))
                                             .child(toggle(false)),
                                     )
-                                    .child(div().w_full().text_sm().text_color(theme.muted_foreground).child(
+                                    .child(div().w_full().text_size(px(13.)).text_color(theme.muted_foreground).child(
                                         "Run the capture listener in the background while Synara is open."))
                                     .child(div().w_full().text_xs().text_color(theme.muted_foreground).child(
                                         "Available in the Synara desktop app")),
@@ -5636,15 +5639,15 @@ impl Render for Native {
                                             .flex_1()
                                             .min_w_0()
                                             .gap(px(2.))
-                                            .child(div().text_sm().font_weight(FontWeight::MEDIUM).child("Shortcut"))
-                                            .child(div().w_full().text_sm().text_color(theme.muted_foreground).child(
+                                            .child(div().text_size(px(13.)).font_weight(FontWeight::MEDIUM).child("Shortcut"))
+                                            .child(div().w_full().text_size(px(13.)).text_color(theme.muted_foreground).child(
                                                 "Choose exactly two keys: one modifier and one other key. Synara checks its own bindings and asks macOS whether another app already owns the shortcut before saving it.")),
                                     )
                                     .child(
                                         v_flex()
                                             .items_end()
                                             .gap(px(2.))
-                                            .child(div().text_sm().child("\u{2325} left + \u{2325} right"))
+                                            .child(div().text_size(px(13.)).child("\u{2325} left + \u{2325} right"))
                                             .child(div().text_xs().text_color(theme.muted_foreground).child("Current shortcut")),
                                     )
                                     .into_any_element(),
@@ -5666,8 +5669,8 @@ impl Render for Native {
                                             .flex_1()
                                             .min_w_0()
                                             .gap(px(2.))
-                                            .child(div().text_sm().font_weight(FontWeight::MEDIUM).child("Capture sound"))
-                                            .child(div().w_full().text_sm().text_color(theme.muted_foreground).child(
+                                            .child(div().text_size(px(13.)).font_weight(FontWeight::MEDIUM).child("Capture sound"))
+                                            .child(div().w_full().text_size(px(13.)).text_color(theme.muted_foreground).child(
                                                 "Play a short shutter cue when a window is captured.")),
                                     )
                                     .child(div().text_xs().text_color(theme.muted_foreground).child("Preview"))
@@ -5701,7 +5704,7 @@ impl Render for Native {
                             .flex()
                             .items_center()
                             .justify_center()
-                            .child(div().text_sm().text_color(theme.muted_foreground).child("No app-managed worktrees found yet.")),
+                            .child(div().text_size(px(13.)).text_color(theme.muted_foreground).child("No app-managed worktrees found yet.")),
                     );
                 }
                 for w in &wts {
@@ -5712,7 +5715,7 @@ impl Render for Native {
                             .px_3()
                             .py(px(8.))
                             .gap(px(1.))
-                            .child(div().text_sm().font_weight(FontWeight::MEDIUM).child(nm))
+                            .child(div().text_size(px(13.)).font_weight(FontWeight::MEDIUM).child(nm))
                             .child(div().text_xs().text_color(theme.muted_foreground).child(path))
                             .into_any_element(),
                     ));
@@ -5734,8 +5737,8 @@ impl Render for Native {
                         .justify_center()
                         .gap_2()
                         .child(svg_icon(icons::TRASH).size(px(20.)).text_color(theme.muted_foreground))
-                        .child(div().text_sm().font_weight(FontWeight::MEDIUM).child("No archived threads"))
-                        .child(div().text_sm().text_color(theme.muted_foreground).child(
+                        .child(div().text_size(px(13.)).font_weight(FontWeight::MEDIUM).child("No archived threads"))
+                        .child(div().text_size(px(13.)).text_color(theme.muted_foreground).child(
                             "Archived threads will appear here and can be restored to the sidebar.")),
                 );
             }
@@ -5765,8 +5768,8 @@ impl Render for Native {
                                             .flex_1()
                                             .min_w_0()
                                             .gap(px(2.))
-                                            .child(div().text_sm().font_weight(FontWeight::MEDIUM).child("Recovery tools"))
-                                            .child(div().w_full().text_sm().text_color(theme.muted_foreground).child(
+                                            .child(div().text_size(px(13.)).font_weight(FontWeight::MEDIUM).child("Recovery tools"))
+                                            .child(div().w_full().text_size(px(13.)).text_color(theme.muted_foreground).child(
                                                 "Rebuild local project indexes without clearing existing chats when the local state gets out of sync."))
                                             .child(div().w_full().text_xs().text_color(theme.muted_foreground).child(
                                                 "Visible because projects exist but no chat history is currently available.")),
@@ -5782,7 +5785,7 @@ impl Render for Native {
                                     .justify_between()
                                     .px_3()
                                     .py(px(8.))
-                                    .child(div().text_sm().child("What this does"))
+                                    .child(div().text_size(px(13.)).child("What this does"))
                                     .child(svg_icon(icons::CHEVRON_RIGHT).size(px(14.)).text_color(theme.muted_foreground))
                                     .into_any_element(),
                             )
@@ -5797,7 +5800,7 @@ impl Render for Native {
                     .child(card(
                         v_flex()
                             .child(srow("Version", "Current application version.",
-                                div().text_sm().text_color(theme.muted_foreground).child("1.6.4").into_any_element()))
+                                div().text_size(px(13.)).text_color(theme.muted_foreground).child("1.6.4").into_any_element()))
                             .child(divider())
                             .child(srow("Release history",
                                 "A running log of every update, newest first. Same notes the post-update dialog shows, kept here so you can revisit them any time.",
@@ -5815,7 +5818,7 @@ impl Render for Native {
                         .justify_between()
                         .px_3()
                         .py(px(10.))
-                        .child(div().text_sm().font_weight(FontWeight::MEDIUM).child(label))
+                        .child(div().text_size(px(13.)).font_weight(FontWeight::MEDIUM).child(label))
                         .child(ctrl)
                         .into_any_element()
                 };
@@ -5842,7 +5845,7 @@ impl Render for Native {
                             .child(div().text_xs().text_color(gpui::white()).child("Aa"))
                             .into_any_element()
                     } else {
-                        div().text_sm().text_color(accent_c).child("Aa").into_any_element()
+                        div().text_size(px(13.)).text_color(accent_c).child("Aa").into_any_element()
                     };
                     let mut sel = h_flex()
                         .w_full()
@@ -5856,9 +5859,9 @@ impl Render for Native {
                         .border_1()
                         .border_color(theme.border);
                     if dark {
-                        sel = sel.bg(rgb(0x111111)).child(div().text_sm().text_color(gpui::white()).child("Synara"));
+                        sel = sel.bg(rgb(0x111111)).child(div().text_size(px(13.)).text_color(gpui::white()).child("Synara"));
                     } else {
-                        sel = sel.child(div().text_sm().child("Synara"));
+                        sel = sel.child(div().text_size(px(13.)).child("Synara"));
                     }
                     settings_pane = settings_pane.child(card(
                         v_flex()
@@ -5870,19 +5873,19 @@ impl Render for Native {
                                     .px_3()
                                     .pt_3()
                                     .pb_1()
-                                    .child(div().text_sm().font_weight(FontWeight::MEDIUM).child(name))
+                                    .child(div().text_size(px(13.)).font_weight(FontWeight::MEDIUM).child(name))
                                     .child(
                                         h_flex()
                                             .items_center()
                                             .gap_3()
-                                            .child(div().text_sm().text_color(theme.muted_foreground).child("Import"))
-                                            .child(div().text_sm().text_color(theme.muted_foreground).child("Copy"))
+                                            .child(div().text_size(px(13.)).text_color(theme.muted_foreground).child("Import"))
+                                            .child(div().text_size(px(13.)).text_color(theme.muted_foreground).child("Copy"))
                                             .child(
                                                 h_flex()
                                                     .items_center()
                                                     .gap_1()
                                                     .child(aa_chip)
-                                                    .child(div().text_sm().child("Synara")),
+                                                    .child(div().text_size(px(13.)).child("Synara")),
                                             ),
                                     ),
                             )
@@ -5893,20 +5896,20 @@ impl Render for Native {
                                     .justify_between()
                                     .px_3()
                                     .pb_2()
-                                    .child(div().text_sm().text_color(theme.muted_foreground).child(desc))
+                                    .child(div().text_size(px(13.)).text_color(theme.muted_foreground).child(desc))
                                     .when(dark, |d| {
                                         d.child(
                                             h_flex()
                                                 .items_center()
                                                 .gap_2()
-                                                .child(div().text_sm().text_color(theme.muted_foreground).child("Use dark theme"))
+                                                .child(div().text_size(px(13.)).text_color(theme.muted_foreground).child("Use dark theme"))
                                                 .child(toggle(true)),
                                         )
                                     }),
                             )
                             .child(
                                 div().w_full().px_3().child(
-                                    sel.child(div().text_sm().text_color(accent_c).child("Accent preview")),
+                                    sel.child(div().text_size(px(13.)).text_color(accent_c).child("Accent preview")),
                                 ),
                             )
                             .child(divider())
@@ -6015,11 +6018,13 @@ impl Render for Native {
                     );
             }
         }
-        // Center the content column at upstream max-w-2xl (672px).
+        // Center the content column at upstream max-w-2xl (672px); upstream's
+        // scrollbar gutter shifts the center ~6px left, so reserve it.
         let settings_pane = h_flex()
             .flex_1()
             .w_full()
             .justify_center()
+            .pr(px(13.))
             .child(settings_pane);
         if std::env::var("SYNARA_SCROLL_BOTTOM").is_ok() {
             self.settings_scroll.scroll_to_bottom();
@@ -6050,7 +6055,7 @@ impl Render for Native {
                 .child(svg_icon(icons::SEARCH).size(px(14.)).text_color(theme.muted_foreground))
                 .child(
                     div()
-                        .text_sm()
+                        .text_size(px(13.))
                         .text_color(theme.muted_foreground)
                         .child("Search settings..."),
                 ),
@@ -6069,7 +6074,7 @@ impl Render for Native {
                         .mt(px(5.))
                         .px_2()
                         .py_1()
-                        .text_sm()
+                        .text_size(px(13.))
                         .text_color(theme.muted_foreground)
                         .child(*group),
                 );
@@ -6086,7 +6091,7 @@ impl Render for Native {
                     .rounded(px(6.))
                     .cursor_pointer()
                     .child(svg_icon(icon).size(px(16.)).text_color(if active { theme.foreground } else { theme.muted_foreground }))
-                    .child(div().text_sm().whitespace_nowrap().child(*label));
+                    .child(div().text_size(px(13.)).whitespace_nowrap().child(*label));
                 if let Some(b) = badge {
                     row = row.child(
                         div()
@@ -6128,7 +6133,7 @@ impl Render for Native {
                 .cursor_pointer()
                 .child(
                     div()
-                        .text_sm()
+                        .text_size(px(13.))
                         .text_color(if active {
                             theme.foreground
                         } else {
@@ -6182,7 +6187,7 @@ impl Render for Native {
                             .child(
                                 div()
                                     .mt(px(4.))
-                                    .text_sm()
+                                    .text_size(px(13.))
                                     .text_color(theme.muted_foreground)
                                     .child("Add anything you need to do"),
                             )
@@ -6201,7 +6206,7 @@ impl Render for Native {
                                     )
                                     .child(
                                         div()
-                                            .text_sm()
+                                            .text_size(px(13.))
                                             .text_color(theme.muted_foreground)
                                             .child("Add a task, or press Tab to hand it to an agent"),
                                     ),
@@ -6264,14 +6269,14 @@ impl Render for Native {
                         .px(px(2.))
                         .child(
                             div()
-                                .text_sm()
+                                .text_size(px(13.))
                                 .font_weight(FontWeight::SEMIBOLD)
                                 .child(name),
                         )
                         .child(
                             div()
                                 .ml(px(4.))
-                                .text_sm()
+                                .text_size(px(13.))
                                 .text_color(theme.muted_foreground)
                                 .child(format!("{n}")),
                         )
@@ -6349,7 +6354,7 @@ impl Render for Native {
                             .gap(px(6.))
                             .child(
                                 div()
-                                    .text_sm()
+                                    .text_size(px(13.))
                                     .font_weight(FontWeight::MEDIUM)
                                     .whitespace_nowrap()
                                     .overflow_hidden()
@@ -6385,7 +6390,7 @@ impl Render for Native {
                     )
                     .child(
                         div()
-                            .text_sm()
+                            .text_size(px(13.))
                             .text_color(theme.muted_foreground)
                             .child(format!("{kanban_count} tasks")),
                     )
@@ -6418,7 +6423,7 @@ impl Render for Native {
                             .px(px(10.))
                             .flex()
                             .items_center()
-                            .child(div().text_sm().child("+ New task")),
+                            .child(div().text_size(px(13.)).child("+ New task")),
                     ),
             )
             .child(
@@ -6436,7 +6441,7 @@ impl Render for Native {
                     )
                     .child(
                         div()
-                            .text_sm()
+                            .text_size(px(13.))
                             .text_color(theme.muted_foreground)
                             .child("Needs review"),
                     ),
@@ -6503,7 +6508,7 @@ impl Render for Native {
                     )
                     .child(
                         div()
-                            .text_sm()
+                            .text_size(px(13.))
                             .text_color(theme.muted_foreground)
                             .child("Search or paste a PR link"),
                     ),
@@ -6516,7 +6521,7 @@ impl Render for Native {
                     .items_center()
                     .child(
                         div()
-                            .text_sm()
+                            .text_size(px(13.))
                             .font_weight(FontWeight::SEMIBOLD)
                             .border_b_2()
                             .border_color(theme.foreground)
@@ -6524,13 +6529,13 @@ impl Render for Native {
                     )
                     .child(
                         div()
-                            .text_sm()
+                            .text_size(px(13.))
                             .text_color(theme.muted_foreground)
                             .child("PRs"),
                     )
                     .child(
                         div()
-                            .text_sm()
+                            .text_size(px(13.))
                             .text_color(theme.muted_foreground)
                             .child("Issues"),
                     ),
@@ -6555,7 +6560,7 @@ impl Render for Native {
             )
             .child(
                 div()
-                    .text_sm()
+                    .text_size(px(13.))
                     .text_color(theme.muted_foreground)
                     .child("Choose one from the sidebar to review it"),
             );
@@ -6587,13 +6592,13 @@ impl Render for Native {
                             .size(px(14.))
                             .text_color(theme.foreground),
                     )
-                    .child(div().text_sm().child("New automation")),
+                    .child(div().text_size(px(13.)).child("New automation")),
             )
             .child(
                 div()
                     .mt_2()
                     .px_4()
-                    .text_sm()
+                    .text_size(px(13.))
                     .text_color(theme.muted_foreground)
                     .child("No automations yet"),
             );
@@ -6632,13 +6637,13 @@ impl Render for Native {
                     )
                     .child(
                         div()
-                            .text_sm()
+                            .text_size(px(13.))
                             .text_color(theme.muted_foreground)
                             .child("Pick an automation in the panel to see its runs, or"),
                     )
                     .child(
                         div()
-                            .text_sm()
+                            .text_size(px(13.))
                             .text_color(theme.muted_foreground)
                             .child("schedule a new one."),
                     )
@@ -6653,7 +6658,7 @@ impl Render for Native {
                             .bg(theme.foreground)
                             .child(
                                 div()
-                                    .text_sm()
+                                    .text_size(px(13.))
                                     .text_color(theme.background)
                                     .child("New automation"),
                             ),
@@ -6681,7 +6686,7 @@ impl Render for Native {
                     .child(
                         div()
                             .pl_1()
-                            .text_sm()
+                            .text_size(px(13.))
                             .text_color(theme.muted_foreground)
                             .child("\u{2304}"),
                     )
@@ -6704,21 +6709,21 @@ impl Render for Native {
                             .size(px(14.))
                             .text_color(theme.muted_foreground),
                     )
-                    .child(div().text_sm().child("New hub")),
+                    .child(div().text_size(px(13.)).child("New hub")),
             )
             .child(
                 div()
                     .mt_2()
                     .px_2()
                     .py_1()
-                    .text_sm()
+                    .text_size(px(13.))
                     .text_color(theme.muted_foreground)
                     .child("Hubs"),
             )
             .child(
                 div()
                     .px_4()
-                    .text_sm()
+                    .text_size(px(13.))
                     .text_color(theme.muted_foreground)
                     .child("No hubs yet"),
             );
@@ -6736,7 +6741,7 @@ impl Render for Native {
             )
             .child(
                 div()
-                    .text_sm()
+                    .text_size(px(13.))
                     .text_color(theme.muted_foreground)
                     .child("Create one from the sidebar to coordinate work across repos."),
             );
@@ -6761,7 +6766,7 @@ impl Render for Native {
             spaces_panel = spaces_panel.child(
                 div()
                     .px_4()
-                    .text_sm()
+                    .text_size(px(13.))
                     .text_color(theme.muted_foreground)
                     .child("No spaces yet"),
             );
@@ -6779,7 +6784,7 @@ impl Render for Native {
                                 .size(px(14.))
                                 .text_color(theme.muted_foreground),
                         )
-                        .child(div().text_sm().child(str_at(&s, "name").to_string())),
+                        .child(div().text_size(px(13.)).child(str_at(&s, "name").to_string())),
                 );
             }
         }

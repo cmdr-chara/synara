@@ -910,7 +910,6 @@ fn thread_turn_start(command: &Map<String, Value>) -> Result<Value, WsErr> {
     let command_id = s(command, "commandId").ok_or_else(|| err("missing commandId"))?;
     let thread_id = s(command, "threadId").ok_or_else(|| err("missing threadId"))?;
     for k in [
-        "asyncUserInputResponse",
         "sourceProposedPlan",
         "resumePrecondition",
         "reviewTarget",
@@ -921,6 +920,11 @@ fn thread_turn_start(command: &Map<String, Value>) -> Result<Value, WsErr> {
             )));
         }
     }
+    // asyncUserInputResponse: upstream loads the referenced question message to
+    // validate the answers, then steers the turn. With no provider runtime the
+    // recorded response is best-effort: mark the question answered so the card
+    // settles, then continue as a normal steer.
+    let async_response = command.get("asyncUserInputResponse").cloned();
     let message = command
         .get("message")
         .and_then(Value::as_object)
@@ -1033,6 +1037,30 @@ fn thread_turn_start(command: &Map<String, Value>) -> Result<Value, WsErr> {
     turn_event.causation_event_id = Some(message_event_id);
     events.push(turn_event);
 
+    // Record the async-user-input answer on the referenced question message so
+    // the card settles as responded; resolve any open pending interaction too.
+    if let Some(resp) = async_response.as_ref().and_then(Value::as_object) {
+        if let Some(mid) = s(resp, "messageId") {
+            let answers = resp.get("answers").cloned().unwrap_or(json!([]));
+            // Contract: AsyncUserInputResponse = { messageId, answers }.
+            let response = json!({ "messageId": mid, "answers": answers });
+            conn.execute(
+                "UPDATE projection_thread_messages \
+                 SET async_user_input_json = json_set(async_user_input_json, '$.response', json(?3)) \
+                 WHERE thread_id=?1 AND message_id=?2 AND async_user_input_json IS NOT NULL",
+                params![thread_id, mid, response.to_string()],
+            )
+            .map_err(|e| err(format!("record async-user-input response: {e}")))?;
+            conn.execute(
+                "UPDATE projection_pending_interactions \
+                 SET status='resolved', decision='responded', resolved_at=?2 \
+                 WHERE thread_id=?1 AND status='pending' AND interaction_kind='userInput'",
+                params![thread_id, iso_now_ms()],
+            )
+            .map_err(|e| err(format!("resolve pending interaction: {e}")))?;
+        }
+    }
+
     let seq = commit_events(&conn, &events, &command_id)?;
 
     // --- projection: message row + thread shell fields ---------------------
@@ -1096,6 +1124,7 @@ fn thread_turn_start(command: &Map<String, Value>) -> Result<Value, WsErr> {
         sets.push(("snooze_reminder_at", Value::Null));
     }
     update_projection(&conn, &thread_id, &sets)?;
+
     Ok(json!({ "sequence": seq }))
 }
 

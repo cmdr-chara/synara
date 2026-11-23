@@ -270,6 +270,10 @@ pub struct Native {
     sponsor_dismissed: bool,
     search_open: bool,
     sidebar_collapsed: bool,
+    // Async user-input (pending question) cards: expanded ids and the
+    // (message_id, question_index) -> chosen option label draft.
+    user_input_open: Vec<String>,
+    user_input_draft: Vec<(String, usize, String)>,
 }
 
 const SETTINGS_SEARCH_ORDER: &[(&str, &str)] = &[
@@ -612,6 +616,8 @@ impl Native {
                 sponsor_dismissed: false,
             search_open: false,
             sidebar_collapsed: false,
+            user_input_open: Vec::new(),
+            user_input_draft: Vec::new(),
             find_open: false,
                 find_input: None,
                 find_query: String::new(),
@@ -2457,6 +2463,79 @@ impl Native {
         .detach();
     }
 
+    /// Answer an async user-input card. Upstream (useAsyncUserInputResponse)
+    /// steers a turn whose message is formatAsyncUserInputResponse and whose
+    /// asyncUserInputResponse binds the answers to the question message.
+    fn respond_user_input(
+        &mut self,
+        msg_id: String,
+        questions: Vec<String>,
+        answers: Vec<String>,
+        cx: &mut Context<Self>,
+    ) {
+        let Some(tid) = self.selected_thread.clone() else {
+            return;
+        };
+        let client = self.client.clone();
+        let mode = self.runtime_mode;
+        let imode = self.interaction_mode;
+        cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
+            let text = questions
+                .iter()
+                .zip(answers.iter())
+                .map(|(q, a)| format!("{q}\n{a}"))
+                .collect::<Vec<_>>()
+                .join("\n\n");
+            let cell = client.clone();
+            let t2 = tid.clone();
+            let cmd = json!({
+                "type": "thread.turn.start",
+                "commandId": uuid(),
+                "threadId": t2,
+                "message": {
+                    "messageId": uuid(),
+                    "role": "user",
+                    "text": text,
+                    "attachments": [],
+                },
+                "asyncUserInputResponse": {
+                    "messageId": msg_id,
+                    "answers": answers,
+                },
+                "dispatchMode": "steer",
+                "runtimeMode": mode,
+                "interactionMode": imode,
+                "createdAt": now_iso(),
+            });
+            let r = cx
+                .background_executor()
+                .spawn(async move {
+                    ensure_client(&cell)
+                        .and_then(|c| c.call("orchestration.dispatchCommand", cmd))
+                })
+                .await;
+            if r.is_none() {
+                eprintln!("native: user-input respond dispatch failed");
+            }
+            let cell = client.clone();
+            let p = json!({"threadId": tid});
+            let d = cx
+                .background_executor()
+                .spawn(async move {
+                    ensure_client(&cell)
+                        .and_then(|c| c.call("orchestration.getThreadDetailSnapshot", p))
+                })
+                .await;
+            let _ = this.update(cx, |this: &mut Self, cx| {
+                if let Some(d) = d {
+                    this.detail = Some(d);
+                }
+                cx.notify();
+            });
+        })
+        .detach();
+    }
+
     /// Upstream stop affordance: dispatch thread.turn.interrupt and hold the
     /// queued follow-ups (upstream pauses the waiting queue on a user Stop).
     fn stop(&mut self, cx: &mut Context<Self>) {
@@ -3313,10 +3392,228 @@ impl Render for Native {
                     })
                     .unwrap_or_default();
             }
+            // Async user-input card (upstream AsyncUserInputCard): question
+            // rows with option picks, submitted as a steered turn.
+            let aui = get(m, "asyncUserInput");
+            let questions = arr(aui, "questions");
+            if !questions.is_empty() {
+                let msg_id = str_at(m, "id").to_string();
+                let done: Vec<String> = arr(get(aui, "response"), "answers")
+                    .iter()
+                    .filter_map(Value::as_str)
+                    .map(str::to_string)
+                    .collect();
+                let answered = !done.is_empty();
+                let n = questions.len();
+
+                let mut card = v_flex()
+                    .w_full()
+                    .gap_3()
+                    .border_1()
+                    .border_color(theme.border)
+                    .rounded(px(12.))
+                    .px(px(14.))
+                    .py(px(14.));
+                // Header pill: "? N question(s)" (+ "✓ Answered").
+                let mut head = h_flex()
+                    .gap_2()
+                    .items_center()
+                    .child(
+                        svg_icon(icons::HELP)
+                            .size(px(14.))
+                            .text_color(theme.muted_foreground),
+                    )
+                    .child(
+                        div()
+                            .text_size(px(13.))
+                            .text_color(theme.muted_foreground)
+                            .child(format!(
+                                "{n} {}",
+                                if n == 1 { "question" } else { "questions" }
+                            )),
+                    );
+                if answered {
+                    head = head
+                        .child(
+                            svg_icon(icons::CHECK)
+                                .size(px(12.))
+                                .text_color(theme.muted_foreground),
+                        )
+                        .child(
+                            div()
+                                .text_size(px(13.))
+                                .text_color(theme.muted_foreground)
+                                .child("Answered"),
+                        );
+                }
+                card = card.child(head);
+
+                if answered {
+                    for (qi, q) in questions.iter().enumerate() {
+                        let mut qa = v_flex().gap_1().child(
+                            div()
+                                .text_size(px(13.))
+                                .font_weight(FontWeight::MEDIUM)
+                                .child(str_at(q, "title").to_string()),
+                        );
+                        if let Some(a) = done.get(qi) {
+                            qa = qa.child(
+                                div()
+                                    .text_size(px(13.))
+                                    .text_color(theme.muted_foreground)
+                                    .child(a.clone()),
+                            );
+                        }
+                        card = card.child(qa);
+                    }
+                } else {
+                    // Effective pick per question: draft override, else the
+                    // first option (upstream preselects options[0]).
+                    let mut all_answerable = true;
+                    for (qi, q) in questions.iter().enumerate() {
+                        let title = str_at(q, "title").to_string();
+                        let options: Vec<String> = arr(q, "options")
+                            .iter()
+                            .filter_map(Value::as_str)
+                            .map(str::to_string)
+                            .collect();
+                        let pick = self
+                            .user_input_draft
+                            .iter()
+                            .find(|(id, i, _)| id == &msg_id && *i == qi)
+                            .map(|(_, _, l)| l.clone())
+                            .or_else(|| options.first().cloned());
+                        let mut qv = v_flex().gap_2().child(
+                            div()
+                                .text_size(px(13.))
+                                .font_weight(FontWeight::MEDIUM)
+                                .child(title),
+                        );
+                        if options.is_empty() {
+                            all_answerable = false;
+                            qv = qv.child(
+                                div()
+                                    .text_size(px(12.))
+                                    .text_color(theme.muted_foreground)
+                                    .child("Type your answer in the composer below"),
+                            );
+                        } else {
+                            let mut orow = h_flex().gap_2().flex_wrap();
+                            for opt in options {
+                                let chosen = pick.as_deref() == Some(opt.as_str());
+                                let mid2 = msg_id.clone();
+                                let opt2 = opt.clone();
+                                let mut ob = div()
+                                    .id(ElementId::Name(
+                                        format!("uinput-{msg_id}-{qi}-{opt}").into(),
+                                    ))
+                                    .px(px(10.))
+                                    .py(px(4.))
+                                    .rounded(px(999.))
+                                    .border_1()
+                                    .cursor_pointer()
+                                    .text_size(px(12.))
+                                    .child(opt);
+                                if chosen {
+                                    ob = ob
+                                        .border_color(theme.foreground)
+                                        .bg(theme.list_active)
+                                        .text_color(theme.foreground);
+                                } else {
+                                    ob = ob
+                                        .border_color(theme.border)
+                                        .text_color(theme.muted_foreground)
+                                        .hover(|d| d.bg(rgba(0x00000005)));
+                                }
+                                ob = ob.on_click(cx.listener(
+                                    move |this, _ev, _w, cx| {
+                                        this.user_input_draft.retain(|(id, i, _)| {
+                                            !(id == &mid2 && *i == qi)
+                                        });
+                                        this.user_input_draft
+                                            .push((mid2.clone(), qi, opt2.clone()));
+                                        cx.notify();
+                                    },
+                                ));
+                                orow = orow.child(ob);
+                            }
+                            qv = qv.child(orow);
+                        }
+                        card = card.child(qv);
+                    }
+                    // Footer: hint + Send (disabled until every question's
+                    // effective pick exists).
+                    let sendable = all_answerable;
+                    let mut foot = h_flex().items_center().justify_between().child(
+                        div()
+                            .text_size(px(12.))
+                            .text_color(theme.muted_foreground)
+                            .child("The agent can keep working"),
+                    );
+                    if sendable {
+                        let mid3 = msg_id.clone();
+                        let qs: Vec<String> = questions
+                            .iter()
+                            .map(|q| str_at(q, "title").to_string())
+                            .collect();
+                        let answers: Vec<String> = questions
+                            .iter()
+                            .enumerate()
+                            .map(|(qi, q)| {
+                                self.user_input_draft
+                                    .iter()
+                                    .find(|(id, i, _)| id == &msg_id && *i == qi)
+                                    .map(|(_, _, l)| l.clone())
+                                    .or_else(|| {
+                                        arr(q, "options")
+                                            .first()
+                                            .and_then(Value::as_str)
+                                            .map(str::to_string)
+                                    })
+                                    .unwrap_or_default()
+                            })
+                            .collect();
+                        foot = foot.child(
+                            Button::new(ElementId::Name(
+                                format!("uinput-send-{mid3}").into(),
+                            ))
+                            .primary()
+                            .label("Send answer")
+                            .on_click(cx.listener(move |this, _ev, _w, cx| {
+                                this.respond_user_input(
+                                    mid3.clone(),
+                                    qs.clone(),
+                                    answers.clone(),
+                                    cx,
+                                );
+                            })),
+                        );
+                    } else {
+                        foot = foot.child(
+                            div()
+                                .px(px(10.))
+                                .py(px(4.))
+                                .rounded(px(8.))
+                                .text_size(px(12.))
+                                .text_color(theme.muted_foreground.opacity(0.5))
+                                .child("Send answer"),
+                        );
+                    }
+                    card = card.child(foot);
+                }
+                pane = pane.child(
+                    h_flex().w_full().justify_center().child(
+                        div().w(px(726.)).child(card),
+                    ),
+                );
+                continue;
+            }
+
             if text.trim().is_empty() {
                 continue;
             }
             let is_match = !find_q.is_empty() && text.to_lowercase().contains(&find_q);
+
             if role == "user" {
                 let mut pill = div()
                     .bg(theme.list_active)

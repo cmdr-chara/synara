@@ -273,6 +273,7 @@ pub struct Native {
     // Async user-input (pending question) cards: expanded ids and the
     // (message_id, question_index) -> chosen option label draft.
     user_input_open: Vec<String>,
+    ctx_menu: Option<(String, f32, f32)>,
     user_input_draft: Vec<(String, usize, String)>,
 }
 
@@ -617,6 +618,7 @@ impl Native {
             search_open: false,
             sidebar_collapsed: false,
             user_input_open: Vec::new(),
+            ctx_menu: None,
             user_input_draft: Vec::new(),
             find_open: false,
                 find_input: None,
@@ -2966,9 +2968,23 @@ impl Render for Native {
             } else {
                 el = el.hover(|d| d.bg(theme.secondary));
             }
+            let tid_ctx = tid.clone();
             el.on_click(cx.listener(move |this, _ev, _w, cx| {
+                this.ctx_menu = None;
                 this.open_thread(tid.clone(), cx)
             }))
+            .on_mouse_down(
+                gpui::MouseButton::Right,
+                cx.listener(move |this, ev: &gpui::MouseDownEvent, _w, cx| {
+                    this.ctx_menu = Some((
+                        tid_ctx.clone(),
+                        ev.position.x.as_f32(),
+                        ev.position.y.as_f32(),
+                    ));
+                    cx.notify();
+                    cx.stop_propagation();
+                }),
+            )
         };
         // Projects: only real (non-chat) projects appear here — chat-kind
         // projects (Home) surface only via the "Chats" section. Pinned first,
@@ -9474,6 +9490,112 @@ impl Render for Native {
             body = body.child(changes_pane.border_l_1().border_color(theme.border));
         }
 
+        // Thread context menu (right-click on a sidebar thread row): upstream
+        // threadContextMenu — rename, pin, copy thread id, archive, close tab.
+        let mut ctx_overlay = div().absolute().inset_0().size_full();
+        if let Some((menu_tid, mx, my)) = self.ctx_menu.clone() {
+            let menu_title = self
+                .snapshot
+                .as_ref()
+                .and_then(|s| {
+                    arr(s, "threads").iter().find_map(|t| {
+                        if str_at(t, "id") == menu_tid {
+                            Some(str_at(t, "title").to_string())
+                        } else {
+                            None
+                        }
+                    })
+                })
+                .unwrap_or_default();
+            let is_pinned = self.pinned_threads.contains(&menu_tid);
+            let row = |id: &'static str,
+                       label: String,
+                       cb: Box<dyn Fn(&mut Self, &mut Window, &mut Context<Self>) + 'static>| {
+                Button::new(id)
+                    .ghost()
+                    .w_full()
+                    .h(px(30.))
+                    .justify_start()
+                    .px_2()
+                    .label(label)
+                    .on_click(cx.listener(move |this, _ev, w, cx| {
+                        this.ctx_menu = None;
+                        cb(this, w, cx);
+                        cx.notify();
+                    }))
+                    .into_any_element()
+            };
+            let tid_rename = menu_tid.clone();
+            let title_rename = menu_title.clone();
+            let tid_pin = menu_tid.clone();
+            let tid_copy = menu_tid.clone();
+            let tid_arch = menu_tid.clone();
+            let tid_close = menu_tid.clone();
+            let pin_label = if is_pinned { "Unpin" } else { "Pin" };
+            ctx_overlay = ctx_overlay
+                .child(
+                    div()
+                        .absolute()
+                        .inset_0()
+                        .size_full()
+                        .on_mouse_down(
+                            gpui::MouseButton::Left,
+                            cx.listener(|this, _ev, _w, cx| {
+                                this.ctx_menu = None;
+                                cx.notify();
+                            }),
+                        )
+                        .on_mouse_down(
+                            gpui::MouseButton::Right,
+                            cx.listener(|this, _ev, _w, cx| {
+                                this.ctx_menu = None;
+                                cx.notify();
+                            }),
+                        ),
+                )
+                .child(
+                    v_flex()
+                        .absolute()
+                        .left(px(mx))
+                        .top(px(my))
+                        .w(px(180.))
+                        .p_1()
+                        .gap_y(px(1.))
+                        .bg(theme.popover)
+                        .border_1()
+                        .border_color(theme.border)
+                        .rounded_lg()
+                        .shadow_md()
+                        .child(row("ctx-rename", "Rename".to_string(), Box::new(move |this, w, cx| {
+                            this.open_thread(tid_rename.clone(), cx);
+                            let input = cx.new(|cx| {
+                                InputState::new(w, cx).placeholder("Thread title")
+                            });
+                            input.update(cx, |s, cx| {
+                                s.set_value(title_rename.clone(), w, cx);
+                            });
+                            this.rename_input = Some(input);
+                            this.renaming = true;
+                        })))
+                        .child(row("ctx-pin", pin_label.to_string(), Box::new(move |this, _w, cx| {
+                            this.toggle_pin(tid_pin.clone(), cx);
+                        })))
+                        .child(row("ctx-copy", "Copy thread ID".to_string(), Box::new(move |_this, _w, cx| {
+                            cx.write_to_clipboard(gpui::ClipboardItem::new_string(
+                                tid_copy.clone(),
+                            ));
+                        })))
+                        .child(div().h(px(1.)).w_full().bg(theme.border))
+                        .child(row("ctx-archive", "Archive".to_string(), Box::new(move |this, _w, cx| {
+                            this.open_thread(tid_arch.clone(), cx);
+                            this.archive_selected(cx);
+                        })))
+                        .child(row("ctx-close", "Close tab".to_string(), Box::new(move |this, _w, cx| {
+                            this.close_tab(tid_close.clone(), cx);
+                        }))),
+                );
+        }
+
         v_flex()
             .size_full()
             .key_context("native")
@@ -9492,5 +9614,6 @@ impl Render for Native {
             .text_color(theme.foreground)
             .child(strip)
             .child(body)
+            .child(ctx_overlay)
     }
 }

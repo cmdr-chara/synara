@@ -5179,25 +5179,25 @@ impl Render for Native {
                     ("developer", "Developer tools"),
                     ("productivity", "Productivity"),
                 ];
-                let items: [(&'static str, &'static str, &'static str, &'static [u8]); 18] = [
-                    ("popular","Supabase","Query Postgres, manage projects, and deploy Edge Functions.",icons::B_SUPABASE),
-                    ("popular","Vercel","Manage projects and deployments, and read deployment logs.",icons::B_VERCEL),
-                    ("popular","Slack","Search, read, and post in your workspace. Needs your own Slack app.",icons::B_SLACK),
-                    ("popular","Linear","Find, create, and update issues, projects, and comments.",icons::B_LINEAR),
-                    ("popular","Notion","Search, read, and edit pages and databases.",icons::B_NOTION),
-                    ("popular","Stripe","Work with customers, payments, and Stripe docs.",icons::B_STRIPE),
-                    ("developer","WorkOS","Manage users, organizations, SSO, and AuthKit in your dashboard.",icons::B_WORKOS),
-                    ("developer","Convex","Start Convex apps and get setup and scaling guidance.",icons::B_CONVEX),
-                    ("developer","Cloudflare","Build with Workers, KV, R2, and D1 on your account.",icons::B_CLOUDFLARE),
-                    ("developer","Sentry","Investigate errors, issues, and releases.",icons::B_SENTRY),
-                    ("developer","Neon","Manage serverless Postgres projects and branches.",icons::B_NEON),
-                    ("developer","PostHog","Query product analytics, feature flags, and errors.",icons::B_POSTHOG),
-                    ("developer","Netlify","Create, deploy, and manage Netlify sites.",icons::B_NETLIFY),
-                    ("developer","Railway","Deploy and manage Railway projects and services.",icons::B_RAILWAY),
-                    ("developer","Prisma","Manage Prisma Postgres databases and backups.",icons::B_PRISMA),
-                    ("developer","Hugging Face","Search models, datasets, Spaces, and papers.",icons::B_HUGGINGFACE),
-                    ("productivity","Atlassian","Work with Jira issues and Confluence pages.",icons::B_ATLASSIAN),
-                    ("productivity","Todoist","Find, add, and complete tasks and projects.",icons::B_TODOIST),
+                let items: [(&'static str, &'static str, &'static str, &'static str); 18] = [
+                    ("popular","Supabase","Query Postgres, manage projects, and deploy Edge Functions.","supabase"),
+                    ("popular","Vercel","Manage projects and deployments, and read deployment logs.","vercel"),
+                    ("popular","Slack","Search, read, and post in your workspace. Needs your own Slack app.","slack"),
+                    ("popular","Linear","Find, create, and update issues, projects, and comments.","linear"),
+                    ("popular","Notion","Search, read, and edit pages and databases.","notion"),
+                    ("popular","Stripe","Work with customers, payments, and Stripe docs.","stripe"),
+                    ("developer","WorkOS","Manage users, organizations, SSO, and AuthKit in your dashboard.","workos"),
+                    ("developer","Convex","Start Convex apps and get setup and scaling guidance.","convex"),
+                    ("developer","Cloudflare","Build with Workers, KV, R2, and D1 on your account.","cloudflare"),
+                    ("developer","Sentry","Investigate errors, issues, and releases.","sentry"),
+                    ("developer","Neon","Manage serverless Postgres projects and branches.","neon"),
+                    ("developer","PostHog","Query product analytics, feature flags, and errors.","posthog"),
+                    ("developer","Netlify","Create, deploy, and manage Netlify sites.","netlify"),
+                    ("developer","Railway","Deploy and manage Railway projects and services.","railway"),
+                    ("developer","Prisma","Manage Prisma Postgres databases and backups.","prisma"),
+                    ("developer","Hugging Face","Search models, datasets, Spaces, and papers.","huggingface"),
+                    ("productivity","Atlassian","Work with Jira issues and Confluence pages.","atlassian"),
+                    ("productivity","Todoist","Find, add, and complete tasks and projects.","todoist"),
                 ];
                 settings_pane = settings_pane
                     .child(search)
@@ -5233,7 +5233,14 @@ impl Render for Native {
                                             .flex()
                                             .items_center()
                                             .justify_center()
-                                            .child(svg_icon(*icon).size(px(20.))),
+                                            .child(
+                                            gpui::img(
+                                                std::path::PathBuf::from(
+                                                    format!("{}/assets/icons/brands/{}.svg", env!("CARGO_MANIFEST_DIR"), *icon),
+                                                ),
+                                            )
+                                            .size(px(20.)),
+                                        ),
                                     )
                                     .child(
                                         v_flex()

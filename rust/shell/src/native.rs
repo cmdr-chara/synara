@@ -4014,10 +4014,12 @@ impl Render for Native {
                     .text_color(theme.background),
             )
             .on_click(cx.listener(|this, _ev, w, cx| this.send(w, cx)));
-        // Upstream: started threads use the single-row composer — the card holds
-        // [+ | input | send] and the pickers move to a row under the card.
-        // New-thread (home) keeps the block layout with controls inside.
-        let composer_card: Div = if in_thread {
+        // Upstream: started threads use the single-row composer while the draft
+        // is one plain line — the card holds [+ | input | send] and the pickers
+        // move to a row under the card. Multi-line drafts and the home composer
+        // keep the block layout with controls inside.
+        let row_composer = in_thread && !draft_text.contains('\n');
+        let composer_card: Div = if row_composer {
             div()
                 .w_full()
                 .max_w(px(755.))
@@ -4222,7 +4224,7 @@ impl Render for Native {
             composer_col = composer_col.child(menu_card);
         }
         composer_col = composer_col.child(composer_card);
-        if in_thread {
+        if row_composer {
             // Pickers row under the composer card (upstream "row" layout):
             // interaction mode on the left, model picker on the right.
             composer_col = composer_col.child(

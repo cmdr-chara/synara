@@ -288,6 +288,56 @@ fn intercept_todo(
         }
         return Some(None);
     }
+    if tag == "computer.subscribeEvents" {
+        let tx = native_tx.clone();
+        let rid = request_id.clone();
+        let task = tokio::spawn(async move {
+            let mut rx = crate::computer_native::action_events();
+            let send = |tx: &tokio::sync::mpsc::UnboundedSender<ClientMessage>,
+                        rid: &str,
+                        ev: serde_json::Value|
+             -> bool {
+                let chunk =
+                    serde_json::json!({"_tag": "Chunk", "requestId": rid, "values": [ev]});
+                tx.send(ClientMessage::Text(chunk.to_string().into())).is_ok()
+            };
+            let mut last_sig = String::new();
+            if let Ok(w) = crate::computer_native::windows_value() {
+                last_sig = w.to_string();
+                if !send(&tx, &rid, serde_json::json!({"type": "computer.windows-changed", "windows": w})) {
+                    return;
+                }
+            }
+            let mut tick = tokio::time::interval(std::time::Duration::from_millis(800));
+            tick.tick().await;
+            loop {
+                tokio::select! {
+                    _ = tick.tick() => {
+                        if let Ok(w) = crate::computer_native::windows_value() {
+                            let sig = w.to_string();
+                            if sig != last_sig {
+                                last_sig = sig;
+                                if !send(&tx, &rid, serde_json::json!({"type": "computer.windows-changed", "windows": w})) {
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                    ev = rx.recv() => {
+                        if let Ok(ev) = ev {
+                            if !send(&tx, &rid, ev) {
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        if let Ok(mut map) = streams.lock() {
+            map.insert(request_id, task);
+        }
+        return Some(None);
+    }
     if tag == "orchestration.subscribeShell" {
         let tx = native_tx.clone();
         let rid = request_id.clone();

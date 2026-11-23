@@ -131,6 +131,22 @@ fn list_windows() -> Result<Vec<Value>, String> {
     Ok(v["windows"].as_array().cloned().unwrap_or_default())
 }
 
+/// Window list as a JSON value, for the subscribeEvents poller.
+pub fn windows_value() -> Result<Value, String> {
+    Ok(Value::Array(list_windows()?))
+}
+
+fn action_channel() -> &'static tokio::sync::broadcast::Sender<Value> {
+    static CH: std::sync::OnceLock<tokio::sync::broadcast::Sender<Value>> =
+        std::sync::OnceLock::new();
+    CH.get_or_init(|| tokio::sync::broadcast::channel(64).0)
+}
+
+/// Live `computer.action` events from this server's own dispatches.
+pub fn action_events() -> tokio::sync::broadcast::Receiver<Value> {
+    action_channel().subscribe()
+}
+
 fn base64(bytes: &[u8]) -> String {
     const T: &[u8] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
     let mut s = String::new();
@@ -242,6 +258,17 @@ fn require_ax() -> Result<(), String> {
     }
 }
 
+fn publish_action(action: &str, ok: bool, result: &Value, window_id: Option<&str>) {
+    let mut ev = json!({"type": "computer.action", "action": action, "ok": ok});
+    if let Some(d) = result.get("delivery") {
+        ev["delivery"] = d.clone();
+    }
+    if let Some(w) = window_id {
+        ev["windowId"] = json!(w);
+    }
+    let _ = action_channel().send(ev);
+}
+
 fn action_result(action: &str, point: Option<(f64, f64)>) -> Value {
     let mut v = json!({"computerId": COMPUTER_ID, "action": action});
     if let Some((x, y)) = point {
@@ -293,6 +320,52 @@ fn set_control_enabled(payload: &Value) -> Result<Value, String> {
     Ok(json!({"enabled": enabled, "generation": generation}))
 }
 
+/// Resolve a semantic target (windowId/nodePath/ref/role/label) to a live AX
+/// element and apply `op` through the helper. Returns the element's
+/// activation point plus its role/label for the action result.
+fn ax_action(payload: &Value, op: &str) -> Result<Value, String> {
+    require_ax()?;
+    let mut a = json!({"op": op});
+    for k in ["windowId", "role", "label"] {
+        if let Some(s) = payload[k].as_str() {
+            a[k] = json!(s);
+        }
+    }
+    if let Some(np) = payload.get("nodePath") {
+        a["nodePath"] = np.clone();
+    }
+    for k in ["ref", "refOrdinal"] {
+        if let Some(n) = payload[k].as_i64() {
+            a[k] = json!(n);
+        }
+    }
+    match op {
+        "setvalue" => a["value"] = payload["value"].clone(),
+        "perform" => a["action"] = payload["action"].clone(),
+        "selecttext" => {
+            a["start"] = payload["start"].clone();
+            a["length"] = payload["length"].clone();
+        }
+        _ => {}
+    }
+    // Semantic targeting needs a window or a semantic selector; a bare
+    // x/y target resolves to the frontmost window's tree.
+    let r = helper("axaction", &a)?;
+    if r["ok"].as_bool() != Some(true) {
+        return Err(r["error"].as_str().unwrap_or("The target did not resolve.").to_string());
+    }
+    Ok(r)
+}
+
+fn ax_result(action: &str, resolved: &Value) -> Value {
+    let mut v = json!({"computerId": COMPUTER_ID, "action": action});
+    if let Some(p) = resolved.get("point") {
+        v["point"] = p.clone();
+    }
+    v["delivery"] = json!({"path": "ax-write", "verified": "unverifiable"});
+    v
+}
+
 /// Returns Some(result) when this module handles `tag` natively on macOS.
 #[cfg(target_os = "macos")]
 pub fn handle(tag: &str, payload: &Value) -> Option<Result<Value, String>> {
@@ -340,12 +413,55 @@ pub fn handle(tag: &str, payload: &Value) -> Option<Result<Value, String>> {
                 if payload["includeScreenshot"].as_bool() == Some(true) {
                     v["screenshot"] = capture_screenshot()?;
                 }
+                // Accessibility tree of the target window (or the frontmost
+                // app's focused window). A failed walk is a partial state,
+                // never a hard error — the window list still stands.
+                let mut ta = json!({});
+                if let Some(w) = payload["windowId"].as_str() {
+                    ta["windowId"] = json!(w);
+                }
+                match helper("tree", &ta) {
+                    Ok(t) if t["ok"].as_bool() == Some(true) => {
+                        v["root"] = t["root"].clone();
+                        if payload["includeText"].as_bool() == Some(true) {
+                            let mut lines = Vec::new();
+                            collect_text(&t["root"], &mut lines);
+                            if let Some(needle) = payload["labelContains"].as_str() {
+                                let n = needle.to_lowercase();
+                                lines.retain(|l| l.to_lowercase().contains(&n));
+                            }
+                            v["text"] = json!(lines.join("\n"));
+                        }
+                    }
+                    _ => {
+                        v["accessibility"] = json!({
+                            "status": "unavailable",
+                            "unavailableWindowIds": []
+                        });
+                    }
+                }
                 Ok(v)
             }
             "computer.provision" => Ok(json!({
                 "summary": "Computer permissions are ready. Send a message to continue; no action is retried automatically.",
                 "status": status_json()
             })),
+            "computer.setValue" => {
+                let r = ax_action(payload, "setvalue")?;
+                let mut v = ax_result("computer_set_value", &r);
+                if let Some(val) = r.get("value") {
+                    v["value"] = val.clone();
+                }
+                Ok(v)
+            }
+            "computer.performAction" => {
+                let r = ax_action(payload, "perform")?;
+                Ok(ax_result("computer_perform_action", &r))
+            }
+            "computer.selectText" => {
+                let r = ax_action(payload, "selecttext")?;
+                Ok(ax_result("computer_select_text", &r))
+            }
             "computer.setControlEnabled" => set_control_enabled(payload),
             "computer.launchApp" => {
                 let app = payload["app"].as_str().unwrap_or("");
@@ -466,7 +582,35 @@ pub fn handle(tag: &str, payload: &Value) -> Option<Result<Value, String>> {
     })();
     match r {
         Err(m) if m == MISS => None,
+        Ok(v) => {
+            if let Some(name) = tag
+                .strip_prefix("computer.")
+                .filter(|n| ACTION_TAGS.contains(n))
+            {
+                publish_action(name, true, &v, payload["windowId"].as_str());
+            }
+            Some(Ok(v))
+        }
         _ => Some(r),
+    }
+}
+
+const ACTION_TAGS: &[&str] = &[
+    "click", "doubleClick", "rightClick", "moveCursor", "drag", "scroll",
+    "typeText", "pressKey", "hotkey", "setValue", "performAction",
+    "selectText", "input.click", "input.scroll", "input.key",
+];
+
+fn collect_text(node: &Value, out: &mut Vec<String>) {
+    if let Some(l) = node["label"].as_str().filter(|s| !s.is_empty()) {
+        out.push(l.to_string());
+    } else if let Some(val) = node["value"].as_str().filter(|s| !s.is_empty()) {
+        out.push(val.to_string());
+    }
+    if let Some(kids) = node["children"].as_array() {
+        for k in kids {
+            collect_text(k, out);
+        }
     }
 }
 

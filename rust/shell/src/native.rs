@@ -75,6 +75,7 @@ mod icons {
     pub const FILTER: &[u8] = include_bytes!("../assets/icons/filter-1.svg");
     pub const PLUS_MED: &[u8] = include_bytes!("../assets/icons/plus-medium.svg");
     pub const PENCIL: &[u8] = include_bytes!("../assets/icons/pencil.svg");
+    pub const TRASH: &[u8] = include_bytes!("../assets/icons/trash-can.svg");
     pub const S_PEOPLE_ID_CARD: &[u8] =
         include_bytes!("../assets/icons/people-id-card.svg");
     pub const S_COLOR_PALETTE: &[u8] =
@@ -3905,11 +3906,15 @@ impl Render for Native {
                                 "general" => "Defaults for new chats, power, time, and getting started.".to_string(),
                                 "appearance" => "Customize the theme, typography, density, and time format.".to_string(),
                                 "notifications" => "Choose how Synara tells you when work finishes or needs attention.".to_string(),
+                                "layout" => "Choose what the sidebar, the chat top bar, and the Environment panel show.".to_string(),
+                                "chats" => "Control live responses, follow-ups, review defaults, and safety confirmations.".to_string(),
+                                "shortcuts" => "Change, add, or remove the shortcut for every Synara command.".to_string(),
                                 _ => format!("{section_title} settings are not yet ported to the native shell."),
                             }),
                     ),
             );
-            head = head.child(outline_btn("\u{21ba} Restore defaults"));
+            let reset_label = if self.settings_section == "shortcuts" { "\u{21ba} Reset all to defaults" } else { "\u{21ba} Restore defaults" };
+            head = head.child(outline_btn(reset_label));
             settings_pane = settings_pane.child(div().mb_2().child(head));
 
             if self.settings_section == "general" {
@@ -4034,6 +4039,426 @@ impl Render for Native {
                                 .into_any_element(),
                         )),
                 );
+            }
+
+            if self.settings_section == "layout" {
+                let mtog = |label: &'static str, on: bool| {
+                    h_flex()
+                        .w(px(170.))
+                        .items_center()
+                        .justify_between()
+                        .child(div().text_sm().child(label))
+                        .child(toggle(on))
+                        .into_any_element()
+                };
+                let env_group = |label: &'static str,
+                                 left: Vec<gpui::AnyElement>,
+                                 right: Vec<gpui::AnyElement>| {
+                    v_flex()
+                        .gap_2()
+                        .child(div().text_xs().text_color(theme.muted_foreground).child(label))
+                        .child(
+                            h_flex()
+                                .gap_8()
+                                .child(v_flex().gap_2().children(left))
+                                .child(v_flex().gap_2().children(right)),
+                        )
+                        .into_any_element()
+                };
+                settings_pane = settings_pane
+                    .child(
+                        v_flex()
+                            .gap_1p5()
+                            .child(section_label("Sidebar organization"))
+                            .child(card(
+                                v_flex()
+                                    .child(srow(
+                                        "Project order",
+                                        "Controls how projects are arranged in the main sidebar.",
+                                        select_pill("Manual order".to_string(), None),
+                                    ))
+                                    .child(divider())
+                                    .child(srow(
+                                        "Thread order",
+                                        "Controls how threads are arranged inside each project in the main sidebar.",
+                                        select_pill("Recently active".to_string(), None),
+                                    ))
+                                    .child(divider())
+                                    .child(srow(
+                                        "Working and unread on top",
+                                        "With Recently active order, move working and unread threads above the rest. The list holds still while your pointer is over it.",
+                                        toggle(true).into_any_element(),
+                                    ))
+                                    .into_any_element(),
+                            )),
+                    )
+                    .child(
+                        v_flex()
+                            .gap_1p5()
+                            .child(section_label("Sidebar sections"))
+                            .child(card(
+                                v_flex()
+                                    .child(srow(
+                                        "Chats",
+                                        "Show the standalone Chats list in the sidebar footer (chats not tied to a project).",
+                                        toggle(true).into_any_element(),
+                                    ))
+                                    .child(divider())
+                                    .child(srow(
+                                        "Hubs",
+                                        "Show the Hubs tab in the sidebar switcher.",
+                                        toggle(true).into_any_element(),
+                                    ))
+                                    .child(divider())
+                                    .child(srow(
+                                        "Automation runs",
+                                        "Show the thread each standalone automation run creates. Runs stay listed on the automation's page either way; threads owned by dedicated or heartbeat automations always stay visible.",
+                                        toggle(true).into_any_element(),
+                                    ))
+                                    .child(divider())
+                                    .child(srow(
+                                        "Child threads",
+                                        "Show threads an agent created from another thread nested under that thread.",
+                                        toggle(false).into_any_element(),
+                                    ))
+                                    .into_any_element(),
+                            )),
+                    )
+                    .child(
+                        v_flex()
+                            .gap_1p5()
+                            .child(section_label("Environment panel"))
+                            .child(card(
+                                v_flex()
+                                    .child(srow(
+                                        "Open by default",
+                                        "Open the chat Environment panel automatically on normal threads. When off, the panel stays closed until you open it. Your last open/close also updates this preference.",
+                                        toggle(false).into_any_element(),
+                                    ))
+                                    .child(divider())
+                                    .child(
+                                        div().px_3().py(px(10.)).child(env_group(
+                                            "Code and status",
+                                            vec![
+                                                mtog("Subagents", true),
+                                                mtog("Repository", true),
+                                                mtog("Editor", true),
+                                            ],
+                                            vec![
+                                                mtog("Usage", true),
+                                                mtog("Pull request", true),
+                                                mtog("Actions", true),
+                                            ],
+                                        )),
+                                    )
+                                    .child(divider())
+                                    .child(
+                                        div().px_3().py(px(10.)).child(env_group(
+                                            "Context and notes",
+                                            vec![
+                                                mtog("Recap", true),
+                                                mtog("Project instructions", false),
+                                            ],
+                                            vec![
+                                                mtog("Pinned messages", true),
+                                                mtog("Notepad", false),
+                                            ],
+                                        )),
+                                    )
+                                    .into_any_element(),
+                            )),
+                    )
+                    .child(
+                        v_flex()
+                            .gap_1p5()
+                            .child(section_label("Chat top bar"))
+                            .child(card(
+                                v_flex()
+                                    .child(srow(
+                                        "Thread tabs",
+                                        "Show open threads as tabs in the chat header. Turn off to show only the current thread's title.",
+                                        toggle(true).into_any_element(),
+                                    ))
+                                    .child(divider())
+                                    .child(srow(
+                                        "Hand off",
+                                        "Show the Hand off button in the chat top bar. Handing off stays available from a thread's sidebar menu and the composer's model picker.",
+                                        toggle(true).into_any_element(),
+                                    ))
+                                    .child(divider())
+                                    .child(srow(
+                                        "Project actions",
+                                        "Show the selected project's actions in the chat top bar. When off, actions still run from their keybindings and the Environment panel's Actions section.",
+                                        toggle(true).into_any_element(),
+                                    ))
+                                    .into_any_element(),
+                            )),
+                    )
+                    .child(
+                        v_flex()
+                            .gap_1p5()
+                            .child(section_label("Opens on its own"))
+                            .child(card(
+                                v_flex()
+                                    .child(srow(
+                                        "Automatically open simulator",
+                                        "Open the iOS Simulator pane when an agent uses a device. Turn this off to use Simulator.app without the mirrored pane reopening. You can still open the pane manually.",
+                                        toggle(true).into_any_element(),
+                                    ))
+                                    .into_any_element(),
+                            )),
+                    );
+            }
+
+            if self.settings_section == "chats" {
+                settings_pane = settings_pane
+                    .child(
+                        v_flex()
+                            .gap_1p5()
+                            .child(section_label("Conversation"))
+                            .child(card(
+                                v_flex()
+                                    .child(srow(
+                                        "Follow-up behavior",
+                                        "Choose whether messages sent during an active turn wait in the queue or steer the current run. Ctrl/Cmd+Enter uses the opposite behavior for one message.",
+                                        seg(&["Queue", "Steer"], 0),
+                                    ))
+                                    .child(divider())
+                                    .child(srow(
+                                        "Side chat expiry",
+                                        "Expire a side chat after it sits idle, unviewed and not running, for this long. Expired side chats are read-only and unload their provider session.",
+                                        seg(&["1 hour", "24 hours", "Never"], 0),
+                                    ))
+                                    .child(divider())
+                                    .child(srow(
+                                        "Enter while dictating",
+                                        "Choose what Enter does while a voice note is recording: stop and transcribe into the composer, or stop and send the message once it is transcribed.",
+                                        seg(&["Stop", "Stop and send"], 0),
+                                    ))
+                                    .child(divider())
+                                    .child(srow(
+                                        "Assistant output",
+                                        "Show token-by-token output while a response is in progress.",
+                                        toggle(true).into_any_element(),
+                                    ))
+                                    .child(divider())
+                                    .child(srow(
+                                        "Fold finished turns",
+                                        "Hide a finished turn's tool calls and intermediate messages behind a single \"Worked for\u{2026}\" line. A turn stays open while it runs or while its background subagents are still working. Turn this off to keep every step visible.",
+                                        toggle(true).into_any_element(),
+                                    ))
+                                    .child(divider())
+                                    .child(srow(
+                                        "Move sent messages to top",
+                                        "Move each sent message to the top of the conversation. Turn off to keep it at the bottom and follow replies as they stream.",
+                                        toggle(true).into_any_element(),
+                                    ))
+                                    .child(divider())
+                                    .child(srow(
+                                        "Effort slider",
+                                        "Show effort as a slider at the bottom of the composer's model picker, with fast mode and reset alongside it, instead of separate Effort and Speed rows.",
+                                        toggle(true).into_any_element(),
+                                    ))
+                                    .child(divider())
+                                    .child(srow(
+                                        "Show suggestions",
+                                        "After a reply finishes, show a predicted next message in the empty composer. Press Tab to insert it as a draft you can edit before sending.",
+                                        toggle(true).into_any_element(),
+                                    ))
+                                    .into_any_element(),
+                            )),
+                    )
+                    .child(
+                        v_flex()
+                            .gap_1p5()
+                            .child(section_label("Review"))
+                            .child(card(
+                                v_flex()
+                                    .child(srow(
+                                        "Diff layout",
+                                        "Default stacked or split layout for threads without a saved choice. Each thread remembers its review-panel changes independently.",
+                                        seg(&["Stacked", "Split"], 1),
+                                    ))
+                                    .child(divider())
+                                    .child(srow(
+                                        "Open pull requests and issues",
+                                        "Choose where a pull request or issue link in a chat opens: the built-in review view, the in-app browser, or your external browser. Ctrl/Cmd+click always opens the external browser.",
+                                        select_pill("In Synara".to_string(), None),
+                                    ))
+                                    .child(divider())
+                                    .child(srow(
+                                        "Pull request diff colors",
+                                        "Show additions in green and deletions in red in pull request summaries.",
+                                        toggle(true).into_any_element(),
+                                    ))
+                                    .child(divider())
+                                    .child(srow(
+                                        "Include fork upstreams",
+                                        "Also list pull requests and issues from each project's other GitHub remotes, such as the repository a fork was made from. Off reads only the project's own repository.",
+                                        toggle(false).into_any_element(),
+                                    ))
+                                    .child(divider())
+                                    .child(srow(
+                                        "Diff line wrapping",
+                                        "Set the default wrap state when the diff panel opens. The in-panel wrap toggle only affects the current diff session.",
+                                        toggle(false).into_any_element(),
+                                    ))
+                                    .into_any_element(),
+                            )),
+                    )
+                    .child(
+                        v_flex()
+                            .gap_1p5()
+                            .child(section_label("Safety confirmations"))
+                            .child(card(
+                                v_flex()
+                                    .child(srow(
+                                        "Delete confirmation",
+                                        "Ask before deleting a thread and its chat history.",
+                                        toggle(true).into_any_element(),
+                                    ))
+                                    .child(divider())
+                                    .child(srow(
+                                        "Archive confirmation",
+                                        "Ask before archiving a thread.",
+                                        toggle(false).into_any_element(),
+                                    ))
+                                    .child(divider())
+                                    .child(srow(
+                                        "Terminal close confirmation",
+                                        "Ask before closing a terminal tab and clearing its history.",
+                                        toggle(true).into_any_element(),
+                                    ))
+                                    .into_any_element(),
+                            )),
+                    );
+            }
+
+
+            if self.settings_section == "shortcuts" {
+                let shortcut_rows: [(&'static str, &'static str, &'static str); 69] = [
+    ("Toggle sidebar", "Collapse or reveal the sidebar shell.", "\u{2318}B"),
+    ("Add project", "Open the Create project dialog to import a local folder.", "\u{21e7}\u{2318}O"),
+    ("Search projects and threads", "Open the sidebar search palette from anywhere in the app.", "\u{2318}K"),
+    ("Toggle Activity", "Show or hide running tasks, completed work, and items that need attention.", "\u{2325}\u{2318}U"),
+    ("Import thread", "Bring an existing conversation into the current workspace.", "\u{2318}I"),
+    ("Previous space", "Switch to the previous project space and restore its last working context.", "\u{2325}\u{2318}Left"),
+    ("Next space", "Switch to the next project space and restore its last working context.", "\u{2325}\u{2318}Right"),
+    ("New thread", "Start a fresh thread in the current project, or the most recent one.", "\u{2318}N"),
+    ("New thread in latest project", "Jump back into the most recently used project with a new thread.", "\u{21e7}\u{2318}N"),
+    ("New chat", "Open the empty chat landing view.", "\u{2325}\u{2318}N"),
+    ("New terminal thread", "Create a thread that opens directly into terminal mode.", "\u{21e7}\u{2318}T"),
+    ("New Claude thread", "Start a fresh thread with Claude selected.", "\u{2325}\u{2318}C"),
+    ("New Codex thread", "Start a fresh thread with Codex selected.", "\u{2325}\u{2318}X"),
+    ("New Cursor thread", "Start a fresh thread with Cursor selected.", "\u{2325}\u{2318}R"),
+    ("Split chat", "Open the current conversation in a second pane.", "\u{2318}\\"),
+    ("Previous recent view", "Cycle backward through recently opened primary views.", "\u{2303}\u{21e7}Tab"),
+    ("Next recent view", "Cycle forward through recently opened primary views.", "\u{2303}Tab"),
+    ("Model picker", "Open the composer provider and model picker.", "\u{21e7}\u{2318}M"),
+    ("Next model", "Cycle to the next model for the active provider (favorites first, then remaining models).", "\u{2325}]"),
+    ("Previous model", "Cycle to the previous model for the active provider (favorites first, then remaining models).", "\u{2325}["),
+    ("Next model effort", "Cycle the model's available effort levels and briefly show the selected level.", "\u{21e7}Tab"),
+    ("Reasoning picker", "Open the composer reasoning and trait controls.", "\u{21e7}\u{2318}E"),
+    ("Open usage settings", "Open Settings \u{2192} Usage for provider quota and token totals.", "\u{21e7}\u{2318}U"),
+    ("Focus composer", "Focus or blur the chat prompt composer.", "\u{2318}L"),
+    ("Find in thread", "Search the current transcript and jump to each matching message.", "\u{2318}F"),
+    ("Search files", "Open the workspace file-name search palette.", "\u{2318}P"),
+    ("Search snippets", "Open the workspace content search palette across file snippets.", "\u{21e7}\u{2318}F"),
+    ("Toggle terminal", "Show or hide the terminal surface for the active thread.", "\u{2318}J"),
+    ("Focus terminal", "Open or focus the terminal panel for this thread.", "\u{2318}T"),
+    ("Close terminal", "Close the terminal session for this thread.", "\u{2318}W"),
+    ("Toggle diff", "Open or close the working tree diff panel.", "\u{2318}D"),
+    ("Next change", "Jump the diff viewport to the next changed file.", "\u{2325}Down"),
+    ("Previous change", "Jump the diff viewport to the previous changed file.", "\u{2325}Up"),
+    ("Toggle side chat", "Open or hide a side chat beside the main conversation.", "\u{2325}\u{2318}S"),
+    ("Toggle browser", "Reveal the built-in browser panel for the active thread.", "\u{21e7}\u{2318}B"),
+    ("Toggle iOS Simulator", "Reveal the iOS Simulator panel for the active thread. macOS servers only.", ""),
+    ("Copy thread ID", "Copy the active thread's ID to the clipboard.", "\u{21e7}\u{2318}C"),
+    ("Archive thread", "Archive the active chat, with the same confirmation and undo as the thread menu.", "\u{2325}\u{21e7}\u{2318}A"),
+    ("Snooze thread", "Open the snooze date and time picker for the active chat.", "\u{2325}\u{21e7}\u{2318}S"),
+    ("Mark thread unread", "Mark the active chat unread and restore its dismissed notification.", "\u{2325}\u{21e7}\u{2318}U"),
+    ("Previous visible thread", "Cycle to the previous thread that is currently visible in the sidebar.", "\u{21e7}\u{2318}["),
+    ("Next visible thread", "Cycle to the next thread that is currently visible in the sidebar.", "\u{21e7}\u{2318}]"),
+    ("Next chat needing attention", "Open the most urgent other chat: one waiting on you first, then unseen work, as Activity's Priority ranks them.", "\u{2325}\u{2318}A"),
+    ("Previous tab", "Switch to the open thread tab on the left of the active one.", "\u{2303}\u{2318}Left"),
+    ("Next tab", "Switch to the open thread tab on the right of the active one.", "\u{2303}\u{2318}Right"),
+    ("Close tab", "Close the active open-thread tab, like a browser tab.", "\u{2318}W"),
+    ("Open in favorite editor", "Send the current thread or workspace target to your preferred editor.", "\u{2318}O"),
+    ("Save file", "Write the focused editor's unsaved changes back to disk.", "\u{2318}S"),
+    ("Commit and push", "Commit pending changes and push the active thread's repo.", "\u{2303}\u{2318}P"),
+    ("Editor commands", "Open the editor command picker for the focused code editor.", "F1"),
+    ("Rename symbol", "Rename the symbol under the cursor across the workspace.", "F2"),
+    ("Go to definition", "Jump to the definition of the symbol under the cursor.", "F12"),
+    ("Find references", "List references to the symbol under the cursor.", "\u{21e7}F12"),
+    ("Go to symbol in file", "Jump to a symbol in the open file.", ""),
+    ("Go to line", "Jump to a line, or line:column, in the open file.", ""),
+    ("Show problems", "List diagnostics for the open file.", ""),
+    ("Quick fix", "Show quick fixes and refactorings for the code at the cursor.", "\u{2318}."),
+    ("Start or continue debugging", "Launch the debugger for the open file, or continue a paused session.", "F5"),
+    ("Stop debugging", "Stop the current debug session.", "\u{21e7}F5"),
+    ("Toggle breakpoint", "Add or remove a breakpoint on the cursor line.", "F9"),
+    ("Step over", "Run the next statement without entering calls.", "F10"),
+    ("Step into", "Enter the next call.", "F11"),
+    ("Step out", "Run until the current call returns.", "\u{21e7}F11"),
+    ("Open full-width terminal workspace", "Expand the active thread into the workspace terminal layout.", "\u{21e7}\u{2318}J"),
+    ("Focus terminal tab", "Switch the workspace to the terminal tab.", "\u{2303}1"),
+    ("Focus chat tab", "Switch the workspace back to the chat tab.", "\u{2303}2"),
+    ("Close active workspace panel", "Close the currently focused workspace panel or tab.", "\u{2318}W"),
+    ("Jump to visible thread 1\u{2013}9", "Focus a visible thread directly from the sidebar number row.", "\u{2318}1\u{2013}9"),
+    ("Jump to space 1\u{2013}9", "Switch straight to a tab of the space switcher. 1 is always Void.", "\u{2325}\u{2318}1\u{2013}9"),
+];
+                let search_field = h_flex()
+                    .w_full()
+                    .h(px(32.))
+                    .items_center()
+                    .px_3()
+                    .rounded(px(8.))
+                    .border_1()
+                    .border_color(theme.border)
+                    .justify_between()
+                    .child(div().text_sm().text_color(theme.muted_foreground).child("Search shortcuts"))
+                    .child(div().text_xs().text_color(theme.muted_foreground).child("\u{2318}K"))
+                    .into_any_element();
+                let mut list = v_flex();
+                let mut first = true;
+                for (title, desc, kbd) in shortcut_rows {
+                    if !first {
+                        list = list.child(divider());
+                    }
+                    first = false;
+                    let mut right = h_flex().items_center().gap_2();
+                    if !kbd.is_empty() {
+                        right = right.child(div().text_sm().text_color(theme.muted_foreground).child(kbd));
+                    }
+                    right = right.child(
+                        h_flex()
+                            .items_center()
+                            .gap_1()
+                            .child(svg_icon(icons::PENCIL).size(px(14.)).text_color(theme.muted_foreground))
+                            .child(svg_icon(icons::TRASH).size(px(14.)).text_color(theme.muted_foreground)),
+                    );
+                    list = list.child(
+                        h_flex()
+                            .w_full()
+                            .items_center()
+                            .justify_between()
+                            .gap_3()
+                            .px_3()
+                            .py(px(8.))
+                            .child(
+                                v_flex()
+                                    .flex_1()
+                                    .min_w_0()
+                                    .gap(px(1.))
+                                    .child(div().text_sm().font_weight(FontWeight::MEDIUM).child(title))
+                                    .child(div().w_full().text_sm().text_color(theme.muted_foreground).child(desc)),
+                            )
+                            .child(right),
+                    );
+                }
+                settings_pane = settings_pane
+                    .child(search_field)
+                    .child(card(list.into_any_element()));
             }
 
             if self.settings_section == "appearance" {

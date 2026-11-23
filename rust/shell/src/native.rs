@@ -2205,7 +2205,17 @@ impl Render for Native {
                 .mt(px(15.))
                 .text_size(px(13.))
                 .text_color(theme.muted_foreground)
-                .child("Projects"),
+                .child(if self.view_spaces {
+                    // spaces — upstream navigates INTO the space: same sidebar
+                    // chrome, the section label is the space name.
+                    arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "spaces")
+                        .first()
+                        .map(|s| str_at(s, "name").to_string())
+                        .filter(|n: &String| !n.is_empty())
+                        .unwrap_or_else(|| "Void".to_string())
+                } else {
+                    "Projects".to_string()
+                }),
         );
         if arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "projects").is_empty() {
             sidebar = sidebar.child(
@@ -6774,8 +6784,9 @@ impl Render for Native {
             )
             .child(
                 div()
-                    .mt_2()
-                    .px_4()
+                    .mt(px(26.))
+                    .w_full()
+                    .text_center()
                     .text_size(px(13.))
                     .text_color(theme.muted_foreground)
                     .child("No automations yet"),
@@ -6891,7 +6902,7 @@ impl Render for Native {
             )
             .child(
                 div()
-                    .mt_2()
+                    .mt(px(14.))
                     .px_2()
                     .py_1()
                     .text_size(px(13.))
@@ -6900,7 +6911,9 @@ impl Render for Native {
             )
             .child(
                 div()
-                    .px_4()
+                    .mt(px(24.))
+                    .w_full()
+                    .text_center()
                     .text_size(px(13.))
                     .text_color(theme.muted_foreground)
                     .child("No hubs yet"),
@@ -6924,48 +6937,7 @@ impl Render for Native {
                     .child("Create one from the sidebar to coordinate work across repos."),
             );
 
-        // spaces — a left-panel view like upstream (workspaces list); the main
-        // surface stays whatever it was.
-        let mut spaces_panel = v_flex().flex_1().h_full().px(px(6.)).py(px(6.)).gap(px(2.));
-        spaces_panel = spaces_panel.child(
-            div()
-                .px_2()
-                .pb_2()
-                .text_base()
-                .font_weight(FontWeight::SEMIBOLD)
-                .child("Spaces"),
-        );
-        let space_list: Vec<Value> = arr(
-            self.snapshot.as_ref().unwrap_or(&Value::Null),
-            "spaces",
-        )
-        .to_vec();
-        if space_list.is_empty() {
-            spaces_panel = spaces_panel.child(
-                div()
-                    .px_4()
-                    .text_size(px(13.))
-                    .text_color(theme.muted_foreground)
-                    .child("No spaces yet"),
-            );
-        } else {
-            for s in space_list {
-                spaces_panel = spaces_panel.child(
-                    h_flex()
-                        .h(px(28.))
-                        .px_2()
-                        .gap_2()
-                        .items_center()
-                        .rounded(px(6.))
-                        .child(
-                            svg_icon(icons::STAR)
-                                .size(px(14.))
-                                .text_color(theme.muted_foreground),
-                        )
-                        .child(div().text_size(px(13.)).child(str_at(&s, "name").to_string())),
-                );
-            }
-        }
+
 
         // ---- terminal surface (upstream workspace mode: the Terminal surface
         // replaces transcript + composer; TerminalWorkspaceTabs switches surfaces) ----
@@ -7598,8 +7570,6 @@ impl Render for Native {
                 autom_panel.into_any_element()
             } else if self.view_studio {
                 studio_panel.into_any_element()
-            } else if self.view_spaces {
-                spaces_panel.into_any_element()
             } else {
                 sidebar.w_full().into_any_element()
             };

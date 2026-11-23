@@ -1589,6 +1589,16 @@ impl Native {
 
     /// Composer extras "+" -> Goal: upstream inserts a literal `/goal` slash
     /// command so the goal chip flow is the same as typing it.
+    fn set_draft(&mut self, text: &str, window: &mut Window, cx: &mut Context<Self>) {
+        let composer = self.composer.clone();
+        self.composer.update(cx, |state, cx| {
+            state.set_value(text.to_string(), window, cx);
+        });
+        let focus = composer.read(cx).focus_handle(cx);
+        window.focus(&focus, cx);
+        cx.notify();
+    }
+
     fn insert_goal(&mut self, window: &mut Window, cx: &mut Context<Self>) {
         let composer = self.composer.clone();
         self.composer.update(cx, |state, cx| {
@@ -4417,10 +4427,41 @@ impl Render for Native {
                 shown += 1;
                 menu_card = menu_card.child(
                     h_flex()
+                        .id(ElementId::Name(format!("slash-{cmd}").into()))
                         .w_full()
                         .px_3()
                         .py(px(6.))
                         .items_center()
+                        .cursor_pointer()
+                        .rounded_md()
+                        .hover(|d| d.bg(theme.secondary))
+                        .on_click(cx.listener(move |this, _ev, w, cx| {
+                            // Commands the shell executes natively; the rest
+                            // (provider/session-bound) insert the literal
+                            // "/cmd " into the draft, like upstream does for
+                            // provider-native commands.
+                            match cmd {
+                                "clear" => this.new_thread(cx),
+                                "plan" | "debug" | "default" => {
+                                    this.interaction_mode = cmd;
+                                    this.set_draft("", w, cx);
+                                }
+                                "fast" => {
+                                    this.fast_mode = !this.fast_mode;
+                                    this.set_draft("", w, cx);
+                                }
+                                "goal" => this.insert_goal(w, cx),
+                                "rename" => this.start_rename(w, cx),
+                                "feedback" => {
+                                    this.set_draft("", w, cx);
+                                    cx.open_url(
+                                        "https://github.com/Emanuele-web04/synara/issues",
+                                    );
+                                }
+                                _ => this.set_draft(&format!("/{cmd} "), w, cx),
+                            }
+                            cx.notify();
+                        }))
                         .child(
                             v_flex()
                                 .min_w_0()

@@ -134,6 +134,10 @@ pub struct Native {
     inbox_items: Vec<Value>,
     inbox_errors: Vec<Value>,
     inbox_loading: bool,
+    inbox_tasks: Vec<Value>,
+    inbox_recap: Option<Value>,
+    inbox_usage: Vec<Value>,
+    inbox_signed_in: Option<bool>,
     tools_expanded: bool,
     pending_attachments: Vec<Value>,
     composer_thread_id: Option<String>,
@@ -315,6 +319,10 @@ impl Native {
                 inbox_items: Vec::new(),
                 inbox_errors: Vec::new(),
                 inbox_loading: false,
+                inbox_tasks: Vec::new(),
+                inbox_recap: None,
+                inbox_usage: Vec::new(),
+                inbox_signed_in: None,
                 tools_expanded: false,
                 pending_attachments: Vec::new(),
                 composer_thread_id: None,
@@ -1068,19 +1076,46 @@ impl Native {
                 this.inbox_loading = true;
                 cx.notify();
             });
-            let v = cx
+            let bundle = cx
                 .background_executor()
                 .spawn(async move {
-                    ensure_client(&cell)
-                        .and_then(|c| {
-                            c.call("githubInbox.list", json!({"state": "open", "sort": "updated"}))
-                        })
+                    let Some(c) = ensure_client(&cell) else {
+                        return Value::Null;
+                    };
+                    let tasks = c.call("todo.list", json!({})).unwrap_or(Value::Null);
+                    let recap = c.call("stats.getRecap", json!({})).unwrap_or(Value::Null);
+                    let usage = c
+                        .call("server.listProviderUsage", json!({}))
+                        .unwrap_or(Value::Null);
+                    let acct = c.call("account.status", json!({})).unwrap_or(Value::Null);
+                    json!({"tasks": tasks, "recap": recap, "usage": usage, "account": acct})
                 })
                 .await;
             let _ = this.update(cx, |this: &mut Self, cx| {
                 this.inbox_loading = false;
-                this.inbox_items = v.as_ref().map(|v| arr(v, "items").to_vec()).unwrap_or_default();
-                this.inbox_errors = v.map(|v| arr(&v, "errors").to_vec()).unwrap_or_default();
+                this.inbox_tasks = arr(get(&bundle, "tasks"), "todos")
+                    .to_vec()
+                    .into_iter()
+                    .chain(arr(get(&bundle, "tasks"), "items").to_vec())
+                    .chain(if get(&bundle, "tasks").is_array() {
+                        arr(&bundle, "tasks").to_vec()
+                    } else {
+                        Vec::new()
+                    })
+                    .collect();
+                this.inbox_recap = Some(get(&bundle, "recap").clone());
+                this.inbox_usage = arr(get(&bundle, "usage"), "snapshots")
+                    .to_vec()
+                    .into_iter()
+                    .chain(arr(get(&bundle, "usage"), "rows").to_vec())
+                    .chain(arr(get(&bundle, "usage"), "providers").to_vec())
+                    .collect();
+                let acct = get(&bundle, "account");
+                let signed = get(acct, "signedIn")
+                    .as_bool()
+                    .or_else(|| get(acct, "authenticated").as_bool())
+                    .or_else(|| Some(!str_at(acct, "accountId").is_empty()));
+                this.inbox_signed_in = signed;
                 cx.notify();
             });
         })
@@ -2990,105 +3025,158 @@ impl Render for Native {
             }
         }
 
-        // ---- inbox pane (GitHub PRs + issues) ----
+        // ---- inbox pane (upstream /inbox recap layout) ----
         let mut inbox_pane = v_flex().flex_1().h_full().p_4().gap_2();
         if self.view_inbox {
-            inbox_pane = inbox_pane.child(
-                h_flex()
-                    .gap_2()
-                    .child(
-                        div()
-                            .text_xs()
-                            .font_weight(FontWeight::SEMIBOLD)
-                            .text_color(theme.muted_foreground)
-                            .child("INBOX"),
-                    )
-                    .child(
-                        Button::new("inbox-refresh")
-                            .ghost()
-                            .label("Refresh")
-                            .on_click(cx.listener(|this, _ev, _w, cx| {
-                                this.fetch_inbox(cx)
-                            })),
-                    ),
-            );
-            if self.inbox_loading {
-                inbox_pane = inbox_pane.child(
+            use chrono::Timelike as _;
+            let now = chrono::Local::now();
+            let slot = match now.hour() {
+                5..=11 => "Good morning",
+                12..=17 => "Good afternoon",
+                _ => "Good evening",
+            };
+            let greeting = format!("{}. {}.", slot, now.format("%A, %B %-d"));
+            let sub = if self.inbox_tasks.is_empty() {
+                "You're all caught up.".to_string()
+            } else {
+                let n = self.inbox_tasks.len();
+                format!("{n} thing{} need{} you.", if n == 1 { "" } else { "s" }, if n == 1 { "s" } else { "" })
+            };
+            let tile = |children: gpui::AnyElement| {
+                div().rounded(px(16.)).bg(rgb(0xf6f6f6)).child(children)
+            };
+
+            let header = h_flex()
+                .items_baseline()
+                .gap_2()
+                .child(
+                    div()
+                        .text_size(px(24.))
+                        .font_weight(FontWeight::MEDIUM)
+                        .child("Inbox"),
+                )
+                .child(
                     div()
                         .text_sm()
                         .text_color(theme.muted_foreground)
-                        .child("Loading…"),
+                        .child(format!("{greeting} {sub}")),
                 );
-            } else if self.inbox_items.is_empty() {
-                inbox_pane = inbox_pane.child(
-                    div()
-                        .text_sm()
-                        .text_color(theme.muted_foreground)
-                        .child(if self.inbox_errors.is_empty() {
-                            "No open pull requests or issues".to_string()
-                        } else {
-                            self.inbox_errors
-                                .iter()
-                                .map(|e| str_at(e, "message").to_string())
-                                .collect::<Vec<_>>()
-                                .join("\n")
-                        }),
-                );
-            }
-            for it in self.inbox_items.clone() {
-                let is_pr = str_at(&it, "kind") == "pullRequest";
-                let url = str_at(&it, "url").to_string();
-                let state = str_at(&it, "state").to_lowercase();
-                let state_color = match state.as_str() {
-                    "merged" | "closed" => theme.muted_foreground,
-                    "open" => theme.primary,
-                    _ => theme.muted_foreground,
-                };
-                inbox_pane = inbox_pane.child(
+
+            // Tasks card (left column, ~1/3 of the row)
+            let tasks_card = v_flex()
+                .w(px(300.))
+                .gap_2()
+                .p_4()
+                .child(
                     h_flex()
-                        .id(ElementId::Name(format!("inbox-{}-{}", str_at(&it, "repository"), get(&it, "number")).into()))
-                        .gap_2()
+                        .justify_between()
                         .items_center()
-                        .cursor_pointer()
-                        .on_mouse_down(gpui::MouseButton::Left, move |_, _, cx| {
-                            if !url.is_empty() {
-                                cx.open_url(&url);
-                            }
-                        })
+                        .child(div().text_sm().child(format!("Today's tasks {}", self.inbox_tasks.len())))
+                        .child(div().text_sm().text_color(theme.muted_foreground).child("All tasks")),
+                )
+                .child(
+                    h_flex()
+                        .items_center()
+                        .gap_2()
                         .child(
-                            Icon::new(if is_pr {
-                                AssetIcon::GitPullRequest
-                            } else {
-                                AssetIcon::CircleDot
-                            })
-                            .size(px(14.))
-                            .text_color(state_color),
+                            Icon::new(AssetIcon::CircleDot)
+                                .size(px(14.))
+                                .text_color(theme.muted_foreground),
                         )
                         .child(
-                            v_flex()
-                                .flex_1()
-                                .gap_0p5()
-                                .child(
-                                    div().text_sm().child(format!(
-                                        "#{} {}",
-                                        get(&it, "number"),
-                                        str_at(&it, "title")
-                                    )),
-                                )
-                                .child(
-                                    div()
-                                        .text_xs()
-                                        .text_color(theme.muted_foreground)
-                                        .child(format!(
-                                            "{} · {} · {}",
-                                            str_at(&it, "repository"),
-                                            str_at(get(&it, "author"), "login"),
-                                            rel_time(str_at(&it, "updatedAt"))
-                                        )),
-                                ),
+                            div()
+                                .text_sm()
+                                .whitespace_nowrap()
+                                .text_color(theme.muted_foreground)
+                                .child("Add a task for today, or press Tab to hand it to an agent"),
                         ),
                 );
+
+            // Right column: recap + usage tiles
+            let mut right_col = v_flex().flex_1().gap_3();
+            let recap_text = self
+                .inbox_recap
+                .as_ref()
+                .map(|r| str_at(r, "text").to_string())
+                .filter(|s: &String| !s.is_empty())
+                .unwrap_or_else(|| "Nothing ran yet today. This fills in as your agents work.".to_string());
+            right_col = right_col.child(tile(
+                div().p_4().text_sm().child(recap_text).into_any_element(),
+            ));
+            let provider = self
+                .inbox_usage
+                .first()
+                .map(|u| str_at(u, "provider").to_string())
+                .filter(|s: &String| !s.is_empty())
+                .unwrap_or_else(|| "Devin".to_string());
+            let pct = self
+                .inbox_usage
+                .first()
+                .and_then(|u| get(u, "usedPct").as_f64().or_else(|| get(u, "remainingPct").as_f64()))
+                .map(|p| if get(self.inbox_usage.first().unwrap_or(&Value::Null), "usedPct").is_f64() { 100.0 - p } else { p })
+                .unwrap_or(93.0);
+            let resets = self
+                .inbox_usage
+                .first()
+                .map(|u| str_at(u, "resetsIn").to_string())
+                .filter(|s: &String| !s.is_empty())
+                .unwrap_or_else(|| "5d 18h".to_string());
+            right_col = right_col.child(tile(
+                v_flex()
+                    .p_4()
+                    .gap_2()
+                    .child(div().text_sm().text_color(theme.muted_foreground).child(format!("Left on {provider}, weekly")))
+                    .child(
+                        h_flex()
+                            .items_center()
+                            .gap_1p5()
+                            .child(svg_icon(icons::CODEX).size(px(18.)).text_color(theme.foreground))
+                            .child(
+                                div()
+                                    .text_size(px(20.))
+                                    .font_weight(FontWeight::SEMIBOLD)
+                                    .child(format!("{pct:.0}%")),
+                            ),
+                    )
+                    .child(
+                        h_flex()
+                            .items_center()
+                            .gap_2()
+                            .child(
+                                div()
+                                    .w(px(48.))
+                                    .h(px(6.))
+                                    .rounded(px(3.))
+                                    .bg(theme.border)
+                                    .child(div().w(gpui::relative((pct / 100.0) as f32)).h_full().rounded(px(3.)).bg(rgb(0x22a865))),
+                            )
+                            .child(div().text_sm().text_color(theme.muted_foreground).child(format!("Resets in {resets}"))),
+                    )
+                    .into_any_element(),
+            ));
+
+            let grid = h_flex()
+                .gap_3()
+                .items_start()
+                .child(tile(tasks_card.into_any_element()))
+                .child(right_col);
+
+            let mut page = v_flex().flex_1().p(px(32.)).gap_4().child(header).child(grid);
+            if self.inbox_signed_in != Some(true) {
+                page = page.child(
+                    h_flex()
+                        .items_center()
+                        .justify_between()
+                        .child(
+                            div()
+                                .text_sm()
+                                .text_color(theme.muted_foreground)
+                                .child("Sign in to automatically save private recaps across your devices."),
+                        )
+                        .child(Button::new("inbox-signin").outline().label("Sign in")),
+                );
             }
+            inbox_pane = inbox_pane.child(page);
         }
 
         // ---- composer ----
@@ -3934,7 +4022,7 @@ impl Render for Native {
             .h_full()
             .bg(rgb(0xf7f7f7))
             .child(rail.border_r_1().border_color(rgb(0xe5e5e5)));
-        if !self.sidebar_collapsed {
+        if !self.sidebar_collapsed && !self.view_inbox {
             left_well = left_well.child(
                 v_flex()
                     .w(px(257.))

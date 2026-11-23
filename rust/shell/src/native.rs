@@ -6312,7 +6312,7 @@ impl Render for Native {
         // /kanban — header strip + one column per project of task cards
         // (threads are the upstream kanban items; "Chats" groups chat-kind).
         let live = |t: &Value| get(t, "deletedAt").is_null() && get(t, "archivedAt").is_null();
-        let mut kanban_cols = h_flex().px_4().pt_2().gap_3().items_start();
+        let mut kanban_cols = h_flex().px_4().gap_4().items_start();
         let mut kanban_count = 0usize;
         {
             let snap = self.snapshot.clone().unwrap_or(Value::Null);
@@ -6357,14 +6357,14 @@ impl Render for Native {
             kanban_count = groups.iter().map(|g| g.1.len()).sum();
             for (name, kids) in groups {
                 let n = kids.len();
-                let mut col = v_flex().w(px(275.)).gap(px(6.));
+                let mut col = v_flex().w(px(288.)).gap(px(8.));
                 col = col.child(
                     h_flex()
                         .items_center()
                         .px(px(2.))
                         .child(
                             div()
-                                .text_size(px(13.))
+                                .text_size(px(14.))
                                 .font_weight(FontWeight::SEMIBOLD)
                                 .child(name),
                         )
@@ -6389,7 +6389,7 @@ impl Render for Native {
                     if when.is_empty() {
                         when = rel_time(str_at(t, "createdAt"));
                     }
-                    let mut meta = h_flex().gap(px(6.)).items_center().child(
+                    let mut meta = h_flex().gap(px(8.)).items_center().child(
                         svg_icon(icons::CODEX)
                             .size(px(12.))
                             .text_color(theme.muted_foreground),
@@ -6441,15 +6441,16 @@ impl Render for Native {
                     );
                     col = col.child(
                         v_flex()
-                            .rounded(px(10.))
+                            .rounded(px(8.))
                             .bg(theme.background)
                             .border_1()
                             .border_color(theme.border)
-                            .p(px(8.))
+                            .px(px(12.))
+                            .py(px(10.))
                             .gap(px(6.))
                             .child(
                                 div()
-                                    .text_size(px(13.))
+                                    .text_size(px(14.))
                                     .font_weight(FontWeight::MEDIUM)
                                     .whitespace_nowrap()
                                     .overflow_hidden()
@@ -6524,7 +6525,8 @@ impl Render for Native {
             .child(
                 h_flex()
                     .px(px(16.))
-                    .pb(px(4.))
+                    .pt(px(12.))
+                    .pb(px(8.))
                     .gap(px(6.))
                     .items_center()
                     .child(
@@ -6536,7 +6538,7 @@ impl Render for Native {
                     )
                     .child(
                         div()
-                            .text_size(px(13.))
+                            .text_size(px(11.))
                             .text_color(theme.muted_foreground)
                             .child("Needs review"),
                     ),
@@ -6544,10 +6546,55 @@ impl Render for Native {
             .child(kanban_cols);
 
         // /pull-requests — "Code review" list panel + empty detail pane.
-        let mut pr_rows = v_flex().px_2().pt_2().gap(px(8.));
-        for _ in 0..8 {
-            pr_rows = pr_rows.child(div().h(px(56.)).rounded(px(8.)).bg(rgb(0xf4f4f4)));
-        }
+        // Upstream empty list: centered Empty block then per-repo warning callouts.
+        let pr_rows = v_flex()
+            .px_2()
+            .pt(px(50.))
+            .gap(px(12.))
+            .child(
+                v_flex()
+                    .w_full()
+                    .items_center()
+                    .gap(px(6.))
+                    .child(
+                        div()
+                            .text_size(px(14.))
+                            .font_weight(FontWeight::MEDIUM)
+                            .child("No pull requests"),
+                    )
+                    .child(
+                        div()
+                            .text_size(px(14.))
+                            .font_weight(FontWeight::MEDIUM)
+                            .child("and issues found"),
+                    )
+                    .child(
+                        div()
+                            .pt(px(4.))
+                            .text_size(px(12.))
+                            .text_color(theme.muted_foreground)
+                            .child("Nothing here in the"),
+                    )
+                    .child(
+                        div()
+                            .text_size(px(12.))
+                            .text_color(theme.muted_foreground)
+                            .child("repositories of your projects."),
+                    ),
+            )
+            .child(
+                div()
+                    .mt(px(35.))
+                    .rounded(px(8.))
+                    .border_1()
+                    .border_color(rgb(0xf0d9a8))
+                    .bg(rgb(0xfdf6e8))
+                    .px_3()
+                    .py_2()
+                    .text_size(px(12.))
+                    .text_color(theme.foreground)
+                    .child("1 project repository was unavailable. Healthy repositories are still shown."),
+            );
         let pullreq_panel = v_flex()
             .flex_1()
             .h_full()
@@ -6615,24 +6662,60 @@ impl Render for Native {
                     .gap_4()
                     .items_center()
                     .child(
-                        div()
-                            .text_size(px(13.))
-                            .font_weight(FontWeight::SEMIBOLD)
-                            .border_b_2()
-                            .border_color(theme.foreground)
-                            .child("All"),
+                        h_flex()
+                            .gap_1()
+                            .items_center()
+                            .h(px(24.))
+                            .px_2()
+                            .rounded(px(6.))
+                            .border_1()
+                            .border_color(theme.border)
+                            .bg(rgb(0xf5f5f5))
+                            .child(
+                                div()
+                                    .text_size(px(13.))
+                                    .child("All"),
+                            )
+                            .child(
+                                div()
+                                    .text_size(px(12.))
+                                    .text_color(theme.muted_foreground)
+                                    .child("0"),
+                            ),
                     )
                     .child(
-                        div()
-                            .text_size(px(13.))
-                            .text_color(theme.muted_foreground)
-                            .child("PRs"),
+                        h_flex()
+                            .gap_1()
+                            .items_baseline()
+                            .child(
+                                div()
+                                    .text_size(px(13.))
+                                    .text_color(theme.muted_foreground)
+                                    .child("PRs"),
+                            )
+                            .child(
+                                div()
+                                    .text_size(px(12.))
+                                    .text_color(theme.muted_foreground)
+                                    .child("0"),
+                            ),
                     )
                     .child(
-                        div()
-                            .text_size(px(13.))
-                            .text_color(theme.muted_foreground)
-                            .child("Issues"),
+                        h_flex()
+                            .gap_1()
+                            .items_baseline()
+                            .child(
+                                div()
+                                    .text_size(px(13.))
+                                    .text_color(theme.muted_foreground)
+                                    .child("Issues"),
+                            )
+                            .child(
+                                div()
+                                    .text_size(px(12.))
+                                    .text_color(theme.muted_foreground)
+                                    .child("0"),
+                            ),
                     ),
             )
             .child(pr_rows);

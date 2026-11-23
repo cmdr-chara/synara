@@ -102,9 +102,33 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Value, WsErr> {
         "thread.task.stop" => thread_simple(command, "thread.task-stop-requested"),
         "thread.task.background" => thread_simple(command, "thread.task-background-requested"),
         "thread.approval.respond" => {
+            // Resolve the pending approval row like upstream's projection:
+            // the response settles the card with the given decision.
+            if let (Some(tid), Some(rid)) = (s(command, "threadId"), s(command, "requestId")) {
+                let conn = open_state_rw()?;
+                let decision = s(command, "decision").unwrap_or_else(|| "responded".into());
+                conn.execute(
+                    "UPDATE projection_pending_interactions \
+                     SET status='resolved', decision=?3, resolved_at=?4 \
+                     WHERE thread_id=?1 AND request_id=?2 AND status='pending'",
+                    params![tid, rid, decision, iso_now_ms()],
+                )
+                .map_err(|e| err(format!("resolve approval: {e}")))?;
+            }
             thread_simple(command, "thread.approval-response-requested")
         }
         "thread.user-input.respond" => {
+            if let (Some(tid), Some(rid)) = (s(command, "threadId"), s(command, "requestId")) {
+                let conn = open_state_rw()?;
+                let decision = s(command, "decision").unwrap_or_else(|| "responded".into());
+                conn.execute(
+                    "UPDATE projection_pending_interactions \
+                     SET status='resolved', decision=?3, resolved_at=?4 \
+                     WHERE thread_id=?1 AND request_id=?2 AND status='pending'",
+                    params![tid, rid, decision, iso_now_ms()],
+                )
+                .map_err(|e| err(format!("resolve user-input: {e}")))?;
+            }
             thread_simple(command, "thread.user-input-response-requested")
         }
         "thread.pinned-message.add" => pinned_message(command, "add"),

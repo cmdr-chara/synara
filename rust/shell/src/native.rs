@@ -3915,8 +3915,8 @@ impl Render for Native {
             if str_at(p, "status") != "pending" {
                 continue;
             }
-            let kind = str_at(p, "interaction_kind").replace('_', " ");
-            let rid = str_at(p, "request_id").to_string();
+            let kind = str_at(p, "interactionKind").replace('_', " ");
+            let rid = str_at(p, "requestId").to_string();
             let mut row_el = h_flex().gap_2().child(
                 div()
                     .text_xs()

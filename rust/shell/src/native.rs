@@ -3949,6 +3949,9 @@ impl Render for Native {
             .gap_6();
         {
             let mut head = h_flex().items_start().justify_between().gap_4();
+            if self.settings_section == "profile" {
+                head = h_flex().items_start().w_full().justify_end().gap_4();
+            } else {
             head = head.child(
                 v_flex()
                     .gap(px(6.))
@@ -3989,6 +3992,7 @@ impl Render for Native {
                             }),
                     ),
             );
+            }
             if self.settings_section == "profile" {
                 head = head.child(h_flex().gap_2().child(outline_btn("Share")).child(outline_btn("Edit")));
             } else {
@@ -4636,7 +4640,7 @@ impl Render for Native {
                         v_flex()
                             .w_full()
                             .gap_2()
-                            .child(h_flex().gap(px(3.)).children((0..27).map(|_| heat_col())))
+                            .child(h_flex().gap(px(3.)).children((0..44).map(|_| heat_col())))
                             .child(
                                 h_flex()
                                     .w_full()
@@ -4673,7 +4677,8 @@ impl Render for Native {
                             ),
                     )
                     .child(section_label("Model usage"))
-                    .child(div().text_sm().text_color(theme.muted_foreground).child("Share of turns."));
+                    .child(div().text_sm().text_color(theme.muted_foreground).child("Share of turns."))
+                    .child(div().pt_1().text_sm().text_color(theme.muted_foreground).child("No model activity yet."));
             }
 
             // ---------- Accounts ----------
@@ -5153,22 +5158,20 @@ impl Render for Native {
                     settings_pane = settings_pane.child(section_label(cat_name));
                     let cat_items: Vec<_> = items.iter().filter(|(c, ..)| c == cat).collect();
                     for chunk in cat_items.chunks(2) {
-                        let mut row = h_flex().w_full().gap_3();
+                        let mut row = h_flex().w_full().gap(px(24.));
                         for (_, name, desc, color) in chunk {
                             row = row.child(
                                 h_flex()
                                     .flex_1()
+                                    .min_w_0()
                                     .items_center()
                                     .gap_3()
-                                    .px_3()
-                                    .py(px(10.))
-                                    .rounded(px(10.))
-                                    .border_1()
-                                    .border_color(theme.border)
+                                    .py(px(8.))
                                     .child(
                                         div()
                                             .w(px(24.))
                                             .h(px(24.))
+                                            .flex_shrink_0()
                                             .rounded(px(6.))
                                             .bg(rgb(*color))
                                             .flex()
@@ -5178,8 +5181,7 @@ impl Render for Native {
                                     )
                                     .child(
                                         v_flex()
-                                            .flex_1()
-                                            .min_w_0()
+                                            .w(px(210.))
                                             .gap(px(1.))
                                             .child(div().text_sm().font_weight(FontWeight::MEDIUM).child(*name))
                                             .child(div().w_full().text_xs().text_color(theme.muted_foreground).child(*desc)),

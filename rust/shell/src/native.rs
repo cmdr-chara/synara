@@ -3743,7 +3743,7 @@ impl Render for Native {
                         .min_w_0()
                         .gap(px(2.))
                         .child(div().text_sm().font_weight(FontWeight::MEDIUM).child(title))
-                        .child(div().w_full().text_sm().text_color(theme.muted_foreground).child(desc)),
+                        .child(div().w_full().text_xs().text_color(theme.muted_foreground).child(desc)),
                 )
                 .child(ctrl)
         };
@@ -3813,18 +3813,24 @@ impl Render for Native {
         };
         // Segmented control (active chip on light-gray).
         let seg = |opts: &[&'static str], active: usize| {
-            let mut s = h_flex().items_center().rounded(px(8.)).p(px(2.)).gap(px(2.));
+            let mut s = h_flex()
+                .items_center()
+                .rounded(px(10.))
+                .bg(gpui::rgba(0x00000008))
+                .p(px(2.))
+                .gap(px(2.));
             for (i, o) in opts.iter().enumerate() {
                 let mut c = div()
                     .h(px(24.))
                     .px(px(10.))
                     .flex()
                     .items_center()
-                    .rounded(px(6.));
+                    .rounded(px(7.));
                 if i == active {
-                    c = c.bg(rgb(0xf0f0f0));
+                    c = c.bg(gpui::white()).border_1().border_color(gpui::rgba(0x00000012));
                 }
-                s = s.child(c.child(div().text_xs().child(*o)));
+                let tc = if i == active { theme.foreground } else { theme.muted_foreground };
+                s = s.child(c.child(div().text_xs().text_color(tc).child(*o)));
             }
             s.into_any_element()
         };
@@ -3980,7 +3986,7 @@ impl Render for Native {
             .vertical_scrollbar(&self.settings_scroll)
             .px_6()
             .py_8()
-            .gap_6();
+            .gap_5();
         {
             let mut head = h_flex().w_full().items_start().justify_between().gap_4();
             if self.settings_section == "profile" {
@@ -4054,7 +4060,7 @@ impl Render for Native {
                 let reset_label = if self.settings_section == "shortcuts" { "\u{21ba} Reset all to defaults" } else { "\u{21ba} Restore defaults" };
                 head = head.child(outline_btn(reset_label));
             }
-            settings_pane = settings_pane.child(div().mb_2().child(head));
+            settings_pane = settings_pane.child(head);
 
             if self.settings_section == "general" {
                 settings_pane = settings_pane

@@ -3025,9 +3025,12 @@ impl Render for Native {
         // soft surface shadow (approximated by the border + card tone).
         let mode_accent = rgb(0xc24904);
         let draft_empty = self.composer.read(cx).value().trim().is_empty();
+        // Upstream ComposerPromptEditor: font-system-ui text-chat (13px)
+        // leading-relaxed (1.625 -> ~21.1px/line), min-height 2lh (~42px),
+        // padding x12/top12/bottom8; placeholder sits at the text origin.
         let mut input_zone = div().relative().child(
             div()
-                .min_h(px(21.))
+                .min_h(px(42.25))
                 .child(Input::new(&self.composer).appearance(false)),
         );
         if draft_empty {
@@ -3036,9 +3039,10 @@ impl Render for Native {
             input_zone = input_zone.child(
                 div()
                     .absolute()
-                    .top(px(3.))
-                    .left(px(16.))
-                    .text_size(px(13.5))
+                    .top(px(12.))
+                    .left(px(12.))
+                    .text_size(px(13.))
+                    .line_height(px(21.125))
                     .text_color(rgba(0x67676766))
                     .child("Do anything in Synara"),
             );
@@ -3053,8 +3057,8 @@ impl Render for Native {
             .shadow_md()
             .px_2()
             .pt(px(4.))
-            .pb(px(15.))
-            .gap(px(23.))
+            .pb(px(8.))
+            .gap(px(8.))
             .child(input_zone)
             .child(
                 h_flex()

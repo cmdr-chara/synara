@@ -6,7 +6,7 @@ use serde_json::{json, Value};
 use std::sync::{Arc, Mutex};
 
 use gpui_kit::component::{
-    button::{Button, ButtonVariants as _},
+    button::{Button, ButtonCustomVariant, ButtonRounded, ButtonVariant, ButtonVariants as _},
     h_flex,
     input::{Editor, EditorState, Input, InputEvent, InputState},
     menu::{DropdownMenu as _, PopupMenuItem},
@@ -54,6 +54,13 @@ mod icons {
     pub const X: &[u8] = include_bytes!("../assets/icons/x.svg");
     pub const UNDO: &[u8] = include_bytes!("../assets/icons/arrow-undo-up.svg");
     pub const FILE_TEXT: &[u8] = include_bytes!("../assets/icons/file-text.svg");
+    pub const PAPERCLIP: &[u8] = include_bytes!("../assets/icons/paperclip-1.svg");
+    pub const WINDOW: &[u8] = include_bytes!("../assets/icons/window.svg");
+    pub const GOAL: &[u8] = include_bytes!("../assets/icons/target-arrow.svg");
+    pub const TODOS: &[u8] = include_bytes!("../assets/icons/todos.svg");
+    pub const BUG: &[u8] = include_bytes!("../assets/icons/bug.svg");
+    pub const ZAP: &[u8] = include_bytes!("../assets/icons/zap.svg");
+    pub const CHECK: &[u8] = include_bytes!("../assets/icons/checkmark-1.svg");
     pub const UNSTAGE: &[u8] =
         include_bytes!("../assets/icons/arrow-rotate-counter-clockwise.svg");
     pub const STAGE: &[u8] = include_bytes!("../assets/icons/plus-medium.svg");
@@ -232,6 +239,8 @@ pub struct Native {
     pending_attachments: Vec<Value>,
     composer_thread_id: Option<String>,
     uploading: bool,
+    interaction_mode: &'static str,
+    fast_mode: bool,
     open_threads: Vec<String>,
     pinned_threads: Vec<String>,
     renaming: bool,
@@ -539,6 +548,8 @@ impl Native {
                 inbox_updates: Vec::new(),
                 tools_expanded: false,
                 pending_attachments: Vec::new(),
+                interaction_mode: "default",
+                fast_mode: false,
                 composer_thread_id: None,
                 uploading: false,
                 open_threads: Vec::new(),
@@ -1401,6 +1412,82 @@ impl Native {
             let _ = this.update(cx, |this: &mut Self, cx| {
                 this.uploading = false;
                 this.pending_attachments.extend(uploaded);
+                cx.notify();
+            });
+        })
+        .detach();
+    }
+
+    /// Composer extras "+" -> Goal: upstream inserts a literal `/goal` slash
+    /// command so the goal chip flow is the same as typing it.
+    fn insert_goal(&mut self, window: &mut Window, cx: &mut Context<Self>) {
+        let composer = self.composer.clone();
+        self.composer.update(cx, |state, cx| {
+            let current = state.value().to_string();
+            if !current.trim_start().to_lowercase().starts_with("/goal") {
+                let next = if current.trim().is_empty() {
+                    "/goal ".to_string()
+                } else {
+                    format!("/goal {}", current)
+                };
+                state.set_value(next, window, cx);
+            }
+        });
+        let focus = composer.read(cx).focus_handle(cx);
+        window.focus(&focus, cx);
+        cx.notify();
+    }
+
+    /// Attach-window rows: capture the CG window and upload it as an image
+    /// attachment, mirroring upstream appSnap.captureWindow.
+    fn capture_window(&mut self, window_id: String, title: String, cx: &mut Context<Self>) {
+        let num = window_id.rsplit(':').next().unwrap_or("0").to_string();
+        let client = self.client.clone();
+        if self.composer_thread_id.is_none() && self.selected_thread.is_none() {
+            self.composer_thread_id = Some(uuid());
+        }
+        let thread_id = self
+            .selected_thread
+            .clone()
+            .or_else(|| self.composer_thread_id.clone());
+        self.uploading = true;
+        cx.notify();
+        cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
+            let cell = client.clone();
+            let tid = thread_id.unwrap_or_default();
+            let uploaded: Option<Value> = cx
+                .background_executor()
+                .spawn(async move {
+                    let Some(c) = ensure_client(&cell) else {
+                        return None;
+                    };
+                    let path = std::env::temp_dir().join(format!("synara-win-{num}.png"));
+                    let ok = std::process::Command::new("screencapture")
+                        .args(["-x", "-l", &num])
+                        .arg(&path)
+                        .status()
+                        .map(|s| s.success())
+                        .unwrap_or(false);
+                    if !ok {
+                        return None;
+                    }
+                    let Ok(bytes) = std::fs::read(&path) else {
+                        return None;
+                    };
+                    let _ = std::fs::remove_file(&path);
+                    let name = if title.is_empty() {
+                        "window.png".to_string()
+                    } else {
+                        format!("{title}.png")
+                    };
+                    c.upload_attachment(&tid, "image", &name, "image/png", &bytes)
+                })
+                .await;
+            let _ = this.update(cx, |this: &mut Self, cx| {
+                this.uploading = false;
+                if let Some(att) = uploaded {
+                    this.pending_attachments.push(att);
+                }
                 cx.notify();
             });
         })
@@ -3699,24 +3786,134 @@ impl Render for Native {
             );
         }
         let in_thread = self.selected_thread.is_some();
-        // "+" extras trigger: 28px filled circle, black/3%.
-        let plus_btn = div()
-            .id("composer-attach")
-            .size(px(28.))
-            .flex()
-            .flex_none()
-            .items_center()
-            .justify_center()
-            .rounded_full()
-            .bg(rgba(0x00000008))
-            .cursor_pointer()
-            .hover(|d| d.bg(rgba(0x00000010)))
-            .child(
-                svg_icon(icons::PLUS)
-                    .size(px(14.))
-                    .text_color(theme.foreground),
-            )
-            .on_click(cx.listener(|this, _ev, _w, cx| this.attach(cx)));
+        // "+" extras trigger: 28px filled circle, black/3%; opens the upstream
+        // "Add" extras menu (files, attach window, goal, plan/debug/fast).
+        let extras_weak = cx.weak_entity();
+        let extras_cell = self.client.clone();
+        let imode = self.interaction_mode;
+        let fast_on = self.fast_mode;
+        let plus_btn = Button::new("composer-attach")
+            .compact()
+            .icon(svg_icon(icons::PLUS).size(px(14.)))
+            .rounded(ButtonRounded::Size(px(14.)))
+            .with_variant(ButtonVariant::Custom(
+                ButtonCustomVariant::new(cx)
+                    .color(rgba(0x00000008).into())
+                    .foreground(theme.foreground)
+                    .hover(rgba(0x00000010).into()),
+            ))
+            .w(px(28.))
+            .h(px(28.))
+            .dropdown_menu(move |menu, window, cx| {
+                let wins: Vec<(String, String, String)> = ensure_client(&extras_cell)
+                    .and_then(|c| c.call("computer.listWindows", json!({})))
+                    .and_then(|v| v.get("windows").cloned())
+                    .and_then(|v| v.as_array().cloned())
+                    .unwrap_or_default()
+                    .iter()
+                    .filter_map(|w| {
+                        let id = w.get("id").and_then(|s| s.as_str())?.to_string();
+                        let title = w
+                            .get("title")
+                            .and_then(|s| s.as_str())
+                            .unwrap_or("")
+                            .to_string();
+                        let app = w
+                            .get("appName")
+                            .and_then(|s| s.as_str())
+                            .unwrap_or("")
+                            .to_string();
+                        Some((id, title, app))
+                    })
+                    .take(12)
+                    .collect();
+                let weak = extras_weak.clone();
+                let mut m = menu
+                    .min_w(px(280.))
+                    .item(PopupMenuItem::label("Add"))
+                    .item(
+                        PopupMenuItem::new("Files and folders")
+                            .icon(svg_icon(icons::PAPERCLIP).size(px(14.)))
+                            .on_click(move |_, _w, cx| {
+                                let _ = weak.update(cx, |this, cx| this.attach(cx));
+                            }),
+                    );
+                let weak = extras_weak.clone();
+                m = m.submenu_with_icon(
+                    Some(svg_icon(icons::WINDOW).size(px(14.))),
+                    "Attach window",
+                    window,
+                    cx,
+                    move |sm, _, _| {
+                        let mut sm = sm.min_w(px(260.));
+                        if wins.is_empty() {
+                            sm = sm.item(PopupMenuItem::new("No windows").disabled(true));
+                        } else {
+                            for (id, title, app) in &wins {
+                                let label = if title.is_empty() {
+                                    app.clone()
+                                } else {
+                                    format!("{app} — {title}")
+                                };
+                                let id = id.clone();
+                                let title = title.clone();
+                                let weak = weak.clone();
+                                sm = sm.item(
+                                    PopupMenuItem::new(label)
+                                        .icon(svg_icon(icons::WINDOW).size(px(14.)))
+                                        .on_click(move |_, _w, cx| {
+                                            let _ = weak.update(cx, |this, cx| {
+                                                this.capture_window(id.clone(), title.clone(), cx);
+                                            });
+                                        }),
+                                );
+                            }
+                        }
+                        sm
+                    },
+                );
+                let weak = extras_weak.clone();
+                m = m.item(
+                    PopupMenuItem::new("Goal")
+                        .icon(svg_icon(icons::GOAL).size(px(14.)))
+                        .on_click(move |_, w, cx| {
+                            let _ = weak.update(cx, |this, cx| this.insert_goal(w, cx));
+                        }),
+                );
+                for (label, icon, mode) in [
+                    ("Plan Mode", icons::TODOS, "plan"),
+                    ("Debug Mode", icons::BUG, "debug"),
+                ] {
+                    let weak = extras_weak.clone();
+                    m = m.item(
+                        PopupMenuItem::new(label)
+                            .icon(svg_icon(icon).size(px(14.)))
+                            .checked(imode == mode)
+                            .on_click(move |_, _w, cx| {
+                                let _ = weak.update(cx, |this, cx| {
+                                    this.interaction_mode = if this.interaction_mode == mode {
+                                        "default"
+                                    } else {
+                                        mode
+                                    };
+                                    cx.notify();
+                                });
+                            }),
+                    );
+                }
+                let weak = extras_weak.clone();
+                m.item(
+                    PopupMenuItem::new("Fast Mode")
+                        .icon(svg_icon(icons::ZAP).size(px(14.)))
+                        .checked(fast_on)
+                        .on_click(move |_, _w, cx| {
+                            let _ = weak.update(cx, |this, cx| {
+                                this.fast_mode = !this.fast_mode;
+                                cx.notify();
+                            });
+                        }),
+                )
+            });
         let build_mode_chip = |cx: &mut Context<Self>| {
             h_flex()
             .id("composer-mode")

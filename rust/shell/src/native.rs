@@ -52,6 +52,7 @@ mod icons {
     pub const SEND: &[u8] = include_bytes!("../assets/icons/arrow-up.svg");
     pub const FOLDER: &[u8] = include_bytes!("../assets/icons/folder-closed.svg");
     pub const TERMINAL: &[u8] = include_bytes!("../assets/icons/square-terminal.svg");
+    pub const PIN: &[u8] = include_bytes!("../assets/icons/pin.svg");
     pub const LOGO: &[u8] = include_bytes!("../assets/icons/synara-logo.svg");
 }
 
@@ -1886,7 +1887,7 @@ impl Render for Native {
                 );
             if is_pinned {
                 el = el.child(
-                    svg_icon(icons::NEW_THREAD)
+                    svg_icon(icons::PIN)
                         .size(px(11.))
                         .text_color(theme.muted_foreground),
                 );

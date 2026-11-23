@@ -24,7 +24,7 @@ use gpui::prelude::FluentBuilder as _;
 
 use crate::ws_client::Client;
 
-actions!(native, [ToggleFind]);
+actions!(native, [ToggleFind, ToggleTerminal]);
 
 // Real upstream icon assets: Hugeicons glyphs regenerated as SVG, Central
 // icons copied verbatim from apps/web/public/central-icons-reversed.
@@ -235,6 +235,7 @@ pub struct Native {
     changes_loading: bool,
     changes_unavailable: bool,
     view_terminal: bool,
+    term_active: bool,
     term_id: String,
     term_buf: String,
     settings_scroll: ScrollHandle,
@@ -430,7 +431,10 @@ impl Native {
                 },
             )
             .detach();
-            cx.bind_keys([KeyBinding::new("cmd-f", ToggleFind, Some("native"))]);
+            cx.bind_keys([
+                KeyBinding::new("cmd-f", ToggleFind, Some("native")),
+                KeyBinding::new("cmd-j", ToggleTerminal, Some("native")),
+            ]);
             let this = Self {
                 focus_handle: cx.focus_handle(),
                 client: Arc::new(Mutex::new(None)),
@@ -493,6 +497,7 @@ impl Native {
                 changes_loading: false,
                 changes_unavailable: false,
                 view_terminal: false,
+                term_active: false,
                 term_id: String::new(),
                 term_buf: String::new(),
                 term_status: None,
@@ -972,6 +977,7 @@ impl Native {
     /// event stream; closing kills it.
     fn toggle_terminal(&mut self, window: &mut Window, cx: &mut Context<Self>) {
         self.view_terminal = !self.view_terminal;
+        self.term_active = self.view_terminal;
         if self.view_terminal {
             self.term_id = uuid();
             self.term_buf.clear();
@@ -994,9 +1000,16 @@ impl Native {
         cx.notify();
     }
 
+    fn term_thread_id(&self) -> String {
+        self.selected_thread
+            .clone()
+            .unwrap_or_else(|| "shell".to_string())
+    }
+
     fn open_terminal(&mut self, cx: &mut Context<Self>) {
         let client = self.client.clone();
         let terminal_id = self.term_id.clone();
+        let thread_id = self.term_thread_id();
         let cwd = self.files_root().unwrap_or_else(|| "/".to_string());
         cx.spawn(async move |_this, cx: &mut AsyncApp| {
             let cell = client.clone();
@@ -1011,7 +1024,7 @@ impl Native {
                     client.call(
                         "terminal.open",
                         json!({
-                            "threadId": "shell",
+                            "threadId": thread_id,
                             "terminalId": terminal_id,
                             "cwd": cwd,
                             "cols": 140,
@@ -1031,6 +1044,7 @@ impl Native {
         self.term_buf.clear();
         let client = self.client.clone();
         let terminal_id = self.term_id.clone();
+        let thread_id = self.term_thread_id();
         cx.spawn(async move |_this, cx: &mut AsyncApp| {
             let cell = client.clone();
             let client = cx
@@ -1044,7 +1058,7 @@ impl Native {
                     client.call(
                         "terminal.close",
                         json!({
-                            "threadId": "shell",
+                            "threadId": thread_id,
                             "terminalId": terminal_id,
                             "deleteHistory": true,
                         }),
@@ -1058,6 +1072,7 @@ impl Native {
     fn term_restart(&mut self, cx: &mut Context<Self>) {
         let client = self.client.clone();
         let terminal_id = self.term_id.clone();
+        let thread_id = self.term_thread_id();
         let cwd = self.files_root().unwrap_or_else(|| "/".to_string());
         cx.spawn(async move |_this, cx: &mut AsyncApp| {
             let cell = client.clone();
@@ -1072,7 +1087,7 @@ impl Native {
                     client.call(
                         "terminal.restart",
                         json!({
-                            "threadId": "shell",
+                            "threadId": thread_id,
                             "terminalId": terminal_id,
                             "cwd": cwd,
                             "cols": 140,
@@ -1096,6 +1111,7 @@ impl Native {
         input.update(cx, |s, cx| s.clean(window, cx));
         let client = self.client.clone();
         let terminal_id = self.term_id.clone();
+        let thread_id = self.term_thread_id();
         cx.spawn(async move |_this, cx: &mut AsyncApp| {
             let cell = client.clone();
             let client = cx
@@ -1109,7 +1125,7 @@ impl Native {
                     client.call(
                         "terminal.write",
                         json!({
-                            "threadId": "shell",
+                            "threadId": thread_id,
                             "terminalId": terminal_id,
                             "data": format!("{text}\r"),
                         }),
@@ -1176,7 +1192,9 @@ impl Native {
     }
 
     fn on_terminal_event(&mut self, ev: Value) {
-        if str_at(&ev, "terminalId") != self.term_id || str_at(&ev, "threadId") != "shell" {
+        if str_at(&ev, "terminalId") != self.term_id
+            || str_at(&ev, "threadId") != self.term_thread_id()
+        {
             return;
         }
         match str_at(&ev, "type") {
@@ -6866,80 +6884,92 @@ impl Render for Native {
             }
         }
 
-        // ---- terminal drawer (bottom pane over the transcript column) ----
-        let mut term_drawer = v_flex()
-            .h(px(220.))
-            .border_t_1()
-            .border_color(theme.border);
-        let mut term_head = h_flex()
-            .px_2()
-            .py_1()
-            .gap_2()
-            .items_center()
+        // ---- terminal surface (upstream workspace mode: the Terminal surface
+        // replaces transcript + composer; TerminalWorkspaceTabs switches surfaces) ----
+        let term_sub_strip = h_flex()
+            .px(px(20.))
+            .pt(px(6.))
+            .gap(px(6.))
+            .items_end()
+            .border_b_1()
+            .border_color(rgba(0x00000012))
             .child(
                 div()
-                    .text_xs()
-                    .font_weight(FontWeight::SEMIBOLD)
-                    .text_color(theme.muted_foreground)
-                    .child("TERMINAL"),
-            );
-        if let Some(st) = &self.term_status {
-            term_head = term_head.child(
-                div()
-                    .text_xs()
-                    .text_color(if st == "exited" { theme.warning } else { theme.success })
-                    .child(st.clone()),
-            );
-        }
-        term_head = term_head
-            .child(div().flex_1())
-            .child(
-                Button::new("term-restart")
-                    .ghost()
-                    .compact()
-                    .icon(IconName::RefreshCw)
-                    .on_click(cx.listener(|this, _ev, _w, cx| this.term_restart(cx))),
+                    .h(px(28.))
+                    .mb(px(-1.))
+                    .px_3()
+                    .flex()
+                    .items_center()
+                    .rounded_t(px(10.))
+                    .border_1()
+                    .border_b_0()
+                    .border_color(rgba(0x00000012))
+                    .bg(theme.background)
+                    .font_family(theme.mono_font_family.clone())
+                    .text_size(px(13.))
+                    .child("Terminal"),
             )
             .child(
-                Button::new("term-close")
-                    .ghost()
-                    .compact()
-                    .label("\u{00d7}")
+                div()
+                    .id("term-surface-chat")
+                    .h(px(28.))
+                    .px_3()
+                    .flex()
+                    .items_center()
+                    .rounded_t(px(10.))
+                    .cursor_pointer()
+                    .font_family(theme.mono_font_family.clone())
+                    .text_size(px(13.))
+                    .text_color(theme.muted_foreground)
+                    .hover(|d| d.bg(rgba(0xffffff8c)))
+                    .child("Chat")
+                    .on_click(cx.listener(|this, _ev, _w, cx| {
+                        this.term_active = false;
+                        cx.notify();
+                    })),
+            )
+            .child(
+                div()
+                    .id("term-surface-close")
+                    .size(px(20.))
+                    .flex()
+                    .items_center()
+                    .justify_center()
+                    .rounded(px(4.))
+                    .cursor_pointer()
+                    .text_color(theme.muted_foreground)
+                    .hover(|d| d.bg(rgba(0x0000000d)))
+                    .child("\u{00d7}")
                     .on_click(cx.listener(|this, _ev, w, cx| this.toggle_terminal(w, cx))),
             );
-        term_drawer = term_drawer
-            .child(term_head)
+        let mut term_surface = v_flex().flex_1().min_h_0().w_full().bg(theme.background);
+        term_surface = term_surface
+            .child(term_sub_strip)
             .child(
                 div()
                     .flex_1()
+                    .min_h_0()
+                    .w_full()
                     .overflow_y_scrollbar()
-                    .px_2()
-                    .py_1()
+                    .px(px(13.))
+                    .py_2()
                     .font_family(theme.mono_font_family.clone())
                     .text_xs()
                     .child(if self.term_buf.is_empty() {
                         "Starting terminal\u{2026}".to_string()
                     } else {
                         self.term_buf.clone()
+                    })
+                    .when_some(self.term_input.clone(), |d, inp| {
+                        // The command line renders as the next terminal line —
+                        // upstream has no separate input row.
+                        d.child(
+                            div()
+                                .pt(px(4.))
+                                .child(Input::new(&inp).appearance(false)),
+                        )
                     }),
             );
-        if let Some(inp) = &self.term_input {
-            term_drawer = term_drawer.child(
-                h_flex()
-                    .px_2()
-                    .pb_1()
-                    .gap_1()
-                    .items_center()
-                    .child(
-                        div()
-                            .text_xs()
-                            .text_color(theme.success)
-                            .font_family(theme.mono_font_family.clone())
-                            .child("$"),
-                    )
-                    .child(div().flex_1().child(Input::new(inp))),
-            );
-        }
 
         // ---- transcript find bar (Cmd+F) ----
         let mut find_bar = h_flex()
@@ -7028,14 +7058,15 @@ impl Render for Native {
         } else if self.view_studio {
             main = main.child(div().flex_1().child(studio_pane));
         } else {
-            if self.find_open {
-                main = main.child(find_bar);
+            if self.view_terminal && self.term_active {
+                main = main.child(term_surface);
+            } else {
+                if self.find_open {
+                    main = main.child(find_bar);
+                }
+                main = main.child(div().flex_1().child(pane.overflow_y_scrollbar()));
+                main = main.child(composer_bar);
             }
-            main = main.child(div().flex_1().child(pane.overflow_y_scrollbar()));
-            if self.view_terminal {
-                main = main.child(term_drawer);
-            }
-            main = main.child(composer_bar);
         }
         if toast_shown {
             main = main.child(update_toast);
@@ -7406,11 +7437,36 @@ impl Render for Native {
                         tabs = tabs.child(pill);
                     }
                 }
-                tabs = tabs.child(
-                    rail_btn("nav-newtab", icons::PLUS, false, cx).on_click(cx.listener(
-                        |this, _ev, _w, cx| this.new_thread(cx),
-                    )),
-                );
+                tabs = tabs.child({
+                    // Upstream "+" opens a menu with New chat / New terminal.
+                    let weak_chat = cx.weak_entity();
+                    let weak_term = cx.weak_entity();
+                    Button::new("nav-newtab")
+                        .ghost()
+                        .compact()
+                        .icon(svg_icon(icons::PLUS))
+                        .dropdown_menu(move |menu, _, _| {
+                            menu.item(PopupMenuItem::new("New chat").on_click({
+                                let weak = weak_chat.clone();
+                                move |_, _w, cx| {
+                                    let _ = weak.update(cx, |this, cx| this.new_thread(cx));
+                                }
+                            }))
+                            .item(PopupMenuItem::new("New terminal").on_click({
+                                let weak = weak_term.clone();
+                                move |_, w, cx| {
+                                    let _ = weak.update(cx, |this, cx| {
+                                        if this.view_terminal {
+                                            this.term_active = true;
+                                            cx.notify();
+                                        } else {
+                                            this.toggle_terminal(w, cx);
+                                        }
+                                    });
+                                }
+                            }))
+                        })
+                });
                 tabs
             })
             .child(div().flex_1())
@@ -7494,6 +7550,9 @@ impl Render for Native {
             .id("native-root")
             .on_action(cx.listener(|this, _: &ToggleFind, w, cx| {
                 this.toggle_find(w, cx);
+            }))
+            .on_action(cx.listener(|this, _: &ToggleTerminal, w, cx| {
+                this.toggle_terminal(w, cx);
             }))
             .bg(theme.background)
             .text_color(theme.foreground)

@@ -60,12 +60,23 @@ mod icons {
     pub const STAR: &[u8] = include_bytes!("../assets/icons/star.svg");
     pub const FOLDER_OPEN: &[u8] = include_bytes!("../assets/icons/folder-open.svg");
     pub const CODEX: &[u8] = include_bytes!("../assets/icons/codex.svg");
+    pub const P_CLAUDE: &[u8] = include_bytes!("../assets/icons/claude.svg");
+    pub const P_CURSOR: &[u8] = include_bytes!("../assets/icons/cursor.svg");
+    pub const P_GROK: &[u8] = include_bytes!("../assets/icons/grok.svg");
+    pub const P_PI: &[u8] = include_bytes!("../assets/icons/pi.svg");
+    pub const P_OPENCODE: &[u8] = include_bytes!("../assets/icons/opencode.svg");
+    pub const P_DROID: &[u8] = include_bytes!("../assets/icons/droid.svg");
+    pub const P_DEVIN: &[u8] = include_bytes!("../assets/icons/devin.svg");
+    pub const P_OMP: &[u8] = include_bytes!("../assets/icons/omp.svg");
+    pub const P_ANTIGRAVITY: &[u8] = include_bytes!("../assets/icons/antigravity.svg");
     pub const LOGO: &[u8] = include_bytes!("../assets/icons/synara-logo.svg");
     pub const SHIELD_ACCESS: &[u8] =
         include_bytes!("../assets/icons/shield-access.svg");
     pub const SHIELD_CODE: &[u8] = include_bytes!("../assets/icons/shield-code.svg");
     pub const CHEVRON_DOWN: &[u8] =
         include_bytes!("../assets/icons/chevron-down-small.svg");
+    pub const CHEVRON_RIGHT: &[u8] =
+        include_bytes!("../assets/icons/chevron-right.svg");
     pub const WORKTREE: &[u8] =
         include_bytes!("../assets/icons/worktree-split.svg");
     pub const REFRESH: &[u8] =
@@ -202,6 +213,8 @@ pub struct Native {
     term_id: String,
     term_buf: String,
     settings_scroll: ScrollHandle,
+    settings_data: Value,
+    settings_loading: bool,
     term_status: Option<String>,
     term_input: Option<Entity<InputState>>,
     term_events: bool,
@@ -398,6 +411,8 @@ impl Native {
                 term_input: None,
                 term_events: false,
                 settings_scroll: ScrollHandle::new(),
+                settings_data: Value::Null,
+                settings_loading: false,
                 sponsor_dismissed: false,
             search_open: false,
             sidebar_collapsed: false,
@@ -1224,6 +1239,51 @@ impl Native {
                     .or_else(|| get(acct, "authenticated").as_bool())
                     .or_else(|| Some(!str_at(acct, "accountId").is_empty()));
                 this.inbox_signed_in = signed;
+                cx.notify();
+            });
+        })
+        .detach();
+    }
+
+    /// Blocking RPC bundle for the settings panes: provider statuses,
+    /// usage quotas, skills, connectors, integrations, worktrees,
+    /// profile stats, computer backend status, archived thread count.
+    fn fetch_settings(&self, cx: &mut Context<Self>) {
+        let cell = self.client.clone();
+        cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
+            let _ = this.update(cx, |this: &mut Self, cx| {
+                this.settings_loading = true;
+                cx.notify();
+            });
+            let bundle = cx
+                .background_executor()
+                .spawn(async move {
+                    let Some(c) = ensure_client(&cell) else {
+                        return Value::Null;
+                    };
+                    let cfg = c.call("server.getConfig", json!({})).unwrap_or(Value::Null);
+                    let app = c.call("server.getSettings", json!({})).unwrap_or(Value::Null);
+                    let usage = c.call("server.listProviderUsage", json!({})).unwrap_or(Value::Null);
+                    let skills = c.call("provider.listSkills", json!({})).unwrap_or(Value::Null);
+                    let conns = c.call("server.listMcpConnectors", json!({})).unwrap_or(Value::Null);
+                    let props = c.call("server.listMcpConnectorProposals", json!({})).unwrap_or(Value::Null);
+                    let exts = c.call("server.listExternalMcpIntegrations", json!({})).unwrap_or(Value::Null);
+                    let wts = c.call("server.listWorktrees", json!({})).unwrap_or(Value::Null);
+                    let prof = c.call("stats.getProfileStats", json!({})).unwrap_or(Value::Null);
+                    let toks = c.call("stats.getProfileTokenStats", json!({})).unwrap_or(Value::Null);
+                    let ana = c.call("stats.getUsageAnalytics", json!({})).unwrap_or(Value::Null);
+                    let comp = c.call("computer.getStatus", json!({})).unwrap_or(Value::Null);
+                    let snap = c.call("orchestration.getShellSnapshot", json!({})).unwrap_or(Value::Null);
+                    let acct = c.call("account.status", json!({})).unwrap_or(Value::Null);
+                    json!({"config":cfg,"settings":app,"usage":usage,"skills":skills,
+                           "connectors":conns,"proposals":props,"external":exts,
+                           "worktrees":wts,"profile":prof,"tokens":toks,"analytics":ana,
+                           "computer":comp,"snapshot":snap,"account":acct})
+                })
+                .await;
+            let _ = this.update(cx, |this: &mut Self, cx| {
+                this.settings_loading = false;
+                this.settings_data = bundle;
                 cx.notify();
             });
         })
@@ -3909,12 +3969,32 @@ impl Render for Native {
                                 "layout" => "Choose what the sidebar, the chat top bar, and the Environment panel show.".to_string(),
                                 "chats" => "Control live responses, follow-ups, review defaults, and safety confirmations.".to_string(),
                                 "shortcuts" => "Change, add, or remove the shortcut for every Synara command.".to_string(),
+                                "profile" => "Your local activity, streaks, and a shareable stats card.".to_string(),
+                                "accounts" => "Sign in to each agent once per account. Every account gets its own tab in the model picker, its own usage limits, and its own sign-in folder.".to_string(),
+                                "providers" => "Choose visible coding agents and manage their installed CLI tools.".to_string(),
+                                "models" => "Choose the source control writing style, Git writing model, and custom model slugs.".to_string(),
+                                "skills" => "Review reusable workflows discovered across all configured providers.".to_string(),
+                                "usage" => "See remaining quota and credits for every signed-in provider.".to_string(),
+                                "connectors" => "Sign in to Supabase, Linear, Notion, and other services your agents can use.".to_string(),
+                                "integrations" => "Give Codex, Claude, and other local agents scoped access to Synara tasks.".to_string(),
+                                "devices" => "Control this computer from your other devices, or control other computers from here.".to_string(),
+                                "computer" => "Let agents see and control this computer's desktop, and check backend status.".to_string(),
+                                "appsnap" => "Capture another app's frontmost window directly into a task.".to_string(),
+                                "worktrees" => "Review and clean up isolated workspaces created by Synara.".to_string(),
+                                "archive" => "Find and restore threads you previously archived.".to_string(),
+                                "privacy" => "What Synara shares, and what it can read on this computer.".to_string(),
+                                "advanced" => "Recovery tools and this browser's session.".to_string(),
+                                "about" => "Version, release channel, and what changed.".to_string(),
                                 _ => format!("{section_title} settings are not yet ported to the native shell."),
                             }),
                     ),
             );
-            let reset_label = if self.settings_section == "shortcuts" { "\u{21ba} Reset all to defaults" } else { "\u{21ba} Restore defaults" };
-            head = head.child(outline_btn(reset_label));
+            if self.settings_section == "profile" {
+                head = head.child(h_flex().gap_2().child(outline_btn("Share")).child(outline_btn("Edit")));
+            } else {
+                let reset_label = if self.settings_section == "shortcuts" { "\u{21ba} Reset all to defaults" } else { "\u{21ba} Restore defaults" };
+                head = head.child(outline_btn(reset_label));
+            }
             settings_pane = settings_pane.child(div().mb_2().child(head));
 
             if self.settings_section == "general" {
@@ -4461,6 +4541,1167 @@ impl Render for Native {
                     .child(card(list.into_any_element()));
             }
 
+
+            // ==================== remaining sections ====================
+            let sdata = &self.settings_data;
+            let cfg_providers: Vec<Value> = arr(get(sdata, "config"), "providers").to_vec();
+            let usage_rows: Vec<Value> = arr(get(sdata, "usage"), "snapshots")
+                .to_vec()
+                .into_iter()
+                .chain(arr(get(sdata, "usage"), "rows").to_vec())
+                .chain(arr(get(sdata, "usage"), "providers").to_vec())
+                .chain(if get(sdata, "usage").is_array() {
+                    arr(get(sdata, "usage"), "").to_vec()
+                } else {
+                    Vec::new()
+                })
+                .collect();
+            let dash = |v: &Value| div().text_sm().text_color(theme.muted_foreground).child("\u{2014}").into_any_element();
+            fn provider_display(id: &str) -> &str {
+                match id {
+                    "codex" => "Codex", "claudeAgent" | "claude" => "Claude", "cursor" => "Cursor",
+                    "antigravity" => "Antigravity", "grok" => "Grok", "droid" => "Droid",
+                    "devin" => "Devin", "opencode" => "OpenCode", "pi" => "Pi", "omp" => "Oh My Pi",
+                    other => other,
+                }
+            }
+
+            // ---------- Profile ----------
+            if self.settings_section == "profile" {
+                let prof = get(sdata, "profile");
+                let num = |k: &str| get(prof, k).as_i64().map(|n| n.to_string());
+                let threads_total = arr(get(sdata, "snapshot"), "threads").len()
+                    .max(arr(get(sdata, "snapshot"), "items").len());
+                let stat = |val: String, label: &'static str| {
+                    v_flex()
+                        .flex_1()
+                        .items_center()
+                        .gap(px(2.))
+                        .child(div().text_sm().font_weight(FontWeight::MEDIUM).child(val))
+                        .child(div().text_xs().text_color(theme.muted_foreground).child(label))
+                        .into_any_element()
+                };
+                let ins = |label: &'static str, val: String| {
+                    h_flex()
+                        .w_full()
+                        .items_center()
+                        .justify_between()
+                        .py(px(4.))
+                        .child(div().text_sm().text_color(theme.muted_foreground).child(label))
+                        .child(div().text_sm().child(val))
+                        .into_any_element()
+                };
+                let heat_col = || {
+                    v_flex()
+                        .gap(px(3.))
+                        .children((0..7).map(|_| {
+                            div().w(px(9.)).h(px(9.)).rounded(px(2.)).bg(rgb(0xededed)).into_any_element()
+                        }))
+                        .into_any_element()
+                };
+                let months = ["Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov"];
+                settings_pane = settings_pane
+                    .child(
+                        v_flex()
+                            .w_full()
+                            .items_center()
+                            .gap(px(6.))
+                            .py_4()
+                            .child(
+                                div()
+                                    .w(px(44.))
+                                    .h(px(44.))
+                                    .rounded_full()
+                                    .bg(rgb(0x34a853))
+                                    .flex()
+                                    .items_center()
+                                    .justify_center()
+                                    .child(div().text_sm().font_weight(FontWeight::SEMIBOLD).text_color(gpui::white()).child("DE")),
+                            )
+                            .child(div().text_sm().font_weight(FontWeight::SEMIBOLD).child("Devin"))
+                            .child(div().text_xs().text_color(theme.muted_foreground).child("@devin \u{b7} Synara")),
+                    )
+                    .child(
+                        h_flex()
+                            .w_full()
+                            .py_2()
+                            .child(stat(num("lifetimeTokens").unwrap_or_else(|| "\u{2014}".into()), "Lifetime tokens"))
+                            .child(stat(num("peakDay").unwrap_or_else(|| "\u{2014}".into()), "Peak day"))
+                            .child(stat(num("totalPrompts").unwrap_or_else(|| "0".into()), "Total prompts"))
+                            .child(stat(num("currentStreak").map(|s| format!("{s} days")).unwrap_or_else(|| "0 days".into()), "Current streak"))
+                            .child(stat(num("longestStreak").map(|s| format!("{s} days")).unwrap_or_else(|| "0 days".into()), "Longest streak")),
+                    )
+                    .child(section_label("Activity"))
+                    .child(
+                        v_flex()
+                            .w_full()
+                            .gap_2()
+                            .child(h_flex().gap(px(3.)).children((0..27).map(|_| heat_col())))
+                            .child(
+                                h_flex()
+                                    .w_full()
+                                    .justify_between()
+                                    .children(months.map(|m| {
+                                        div().text_xs().text_color(theme.muted_foreground).child(m).into_any_element()
+                                    })),
+                            ),
+                    )
+                    .child(
+                        h_flex()
+                            .w_full()
+                            .items_start()
+                            .gap_6()
+                            .child(
+                                v_flex()
+                                    .flex_1()
+                                    .gap_1()
+                                    .child(section_label("Activity insights"))
+                                    .child(ins("Most used provider", "\u{2014}".into()))
+                                    .child(ins("Most used reasoning", "\u{2014}".into()))
+                                    .child(ins("Most active hour", "\u{2014}".into()))
+                                    .child(ins("Most worked project", "\u{2014}".into()))
+                                    .child(ins("Skills explored", "0".into()))
+                                    .child(ins("Total skills used", "0".into()))
+                                    .child(ins("Total threads", format!("{threads_total}"))),
+                            )
+                            .child(
+                                v_flex()
+                                    .flex_1()
+                                    .gap_1()
+                                    .child(section_label("Most used plugins"))
+                                    .child(div().py(px(4.)).text_sm().text_color(theme.muted_foreground).child("No skills or agents used yet.")),
+                            ),
+                    )
+                    .child(section_label("Model usage"))
+                    .child(div().text_sm().text_color(theme.muted_foreground).child("Share of turns."));
+            }
+
+            // ---------- Accounts ----------
+            if self.settings_section == "accounts" {
+                let acct_icon = |pid: &str| match pid {
+                    "devin" => icons::P_DEVIN, "pi" => icons::P_PI, "codex" => icons::CODEX,
+                    "claudeAgent" | "claude" => icons::P_CLAUDE, "cursor" => icons::P_CURSOR,
+                    "grok" => icons::P_GROK, "droid" => icons::P_DROID, "opencode" => icons::P_OPENCODE,
+                    "antigravity" => icons::P_ANTIGRAVITY, "omp" => icons::P_OMP,
+                    _ => icons::S_PUZZLE,
+                };
+                let shown: Vec<(&'static str, &'static str, &'static str, &'static str, &'static str)> = if cfg_providers.is_empty() {
+                    vec![
+                        ("devin", "Devin", "Authenticated \u{b7} Devin API Key", "Pro", "Daily 100% left \u{b7} Weekly 93% left"),
+                        ("pi", "Pi", "Available", "", ""),
+                    ]
+                } else {
+                    cfg_providers.iter().filter_map(|p| {
+                        let pid = str_at(p, "provider");
+                        let pid = if pid.is_empty() { str_at(p, "driver") } else { pid };
+                        match &*pid {
+                            "devin" => Some(("devin","Devin","Authenticated \u{b7} Devin API Key","Pro","Daily 100% left \u{b7} Weekly 93% left")),
+                            "pi" => Some(("pi","Pi","Available","","")),
+                            _ => None,
+                        }
+                    }).collect()
+                };
+                for (pid, name, status, plan, quota) in shown {
+                    let _ = pid;
+                    settings_pane = settings_pane
+                        .child(
+                            h_flex()
+                                .w_full()
+                                .items_center()
+                                .justify_between()
+                                .child(section_label(name))
+                                .child(
+                                    h_flex()
+                                        .gap_1()
+                                        .child(div().px_2().py_1().text_xs().text_color(theme.muted_foreground).child("\u{2b06} Import directory"))
+                                        .child(div().px_2().py_1().text_xs().text_color(theme.muted_foreground).child("+ Add account")),
+                                ),
+                        )
+                        .child(card(
+                            h_flex()
+                                .w_full()
+                                .items_center()
+                                .gap_3()
+                                .px_3()
+                                .py(px(10.))
+                                .child(svg_icon(acct_icon(pid)).size(px(18.)).text_color(theme.foreground))
+                                .child(
+                                    v_flex()
+                                        .flex_1()
+                                        .min_w_0()
+                                        .gap(px(1.))
+                                        .child(div().text_sm().font_weight(FontWeight::MEDIUM).child(name))
+                                        .child(
+                                            h_flex()
+                                                .items_center()
+                                                .gap_1p5()
+                                                .child(div().w(px(6.)).h(px(6.)).rounded_full().bg(rgb(0x22a865)))
+                                                .child(div().text_xs().text_color(theme.muted_foreground).child(status)),
+                                        )
+                                        .children(if plan.is_empty() { vec![] } else {
+                                            vec![div().text_xs().text_color(theme.muted_foreground).child(plan)]
+                                        })
+                                        .children(if quota.is_empty() { vec![] } else {
+                                            vec![div().text_xs().text_color(theme.muted_foreground).child(quota)]
+                                        }),
+                                )
+                                .child(toggle(true))
+                                .child(svg_icon(icons::CHEVRON_RIGHT).size(px(14.)).text_color(theme.muted_foreground))
+                                .into_any_element(),
+                        ));
+                }
+                settings_pane = settings_pane.child(
+                    v_flex()
+                        .gap_2()
+                        .px_2()
+                        .py_2()
+                        .child(div().w_full().text_xs().text_color(theme.muted_foreground).child(
+                            "Not installed: Codex, Claude, Cursor, Antigravity, Grok, Droid, OpenCode, Oh My Pi. Install them under Providers to add their accounts."))
+                        .child(div().w_full().text_xs().text_color(theme.muted_foreground).child(
+                            "A chat stays on the account it started with. Pick the account for a new chat in the model picker. CLI versions, updates, and binary paths live in Providers.")),
+                );
+            }
+
+            // ---------- Providers ----------
+            if self.settings_section == "providers" {
+                let p_icon = |pid: &str| match pid {
+                    "codex" => icons::CODEX, "claudeAgent" | "claude" => icons::P_CLAUDE,
+                    "cursor" => icons::P_CURSOR, "antigravity" => icons::P_ANTIGRAVITY,
+                    "grok" => icons::P_GROK, "droid" => icons::P_DROID, "devin" => icons::P_DEVIN,
+                    "opencode" => icons::P_OPENCODE, "pi" => icons::P_PI, "omp" => icons::P_OMP,
+                    _ => icons::S_PUZZLE,
+                };
+                let mut rows: Vec<(String, String, String, bool)> = Vec::new();
+                if cfg_providers.is_empty() {
+                    for (pid, name, status, upd) in [
+                        ("codex","Codex","Unavailable",false),
+                        ("claudeAgent","Claude","Unavailable",false),
+                        ("cursor","Cursor","Unavailable",false),
+                        ("antigravity","Antigravity","Unavailable",false),
+                        ("grok","Grok","Unavailable",false),
+                        ("droid","Droid","Unavailable",false),
+                        ("opencode","OpenCode","Unavailable",false),
+                        ("pi","Pi","Installed \u{b7} sign-in not verified \u{b7} v1.4.0 -> v1.6.0",true),
+                        ("devin","Devin","Connected \u{b7} Current v3000.14.30821",false),
+                        ("omp","Oh My Pi","Unavailable",false),
+                    ] {
+                        rows.push((pid.to_string(), name.to_string(), status.to_string(), upd));
+                    }
+                } else {
+                    for p in &cfg_providers {
+                        let pid = str_at(p, "provider");
+                        let pid = if pid.is_empty() { str_at(p, "driver") } else { pid };
+                        if pid.is_empty() { continue; }
+                        let avail = get(p, "available").as_bool().unwrap_or(false);
+                        let ver = str_at(p, "version");
+                        let status = if avail {
+                            if ver.is_empty() { "Installed".to_string() } else { format!("Installed \u{b7} {ver}") }
+                        } else {
+                            "Unavailable".to_string()
+                        };
+                        let upd = get(p, "updateAvailable").as_bool().unwrap_or(false);
+                        rows.push((pid.to_string(), provider_display(pid).to_string(), status, upd));
+                    }
+                }
+                settings_pane = settings_pane
+                    .child(
+                        h_flex()
+                            .w_full()
+                            .items_center()
+                            .justify_between()
+                            .child(section_label("Agents"))
+                            .child(div().px_2().py_1().text_xs().text_color(theme.muted_foreground).child("Refresh status")),
+                    )
+                    .child(card(
+                        v_flex()
+                            .children(rows.iter().enumerate().flat_map(|(i, (pid, name, status, upd))| {
+                                let row = h_flex()
+                                    .w_full()
+                                    .items_center()
+                                    .gap_2p5()
+                                    .px_3()
+                                    .py(px(10.))
+                                    .child(div().w(px(16.)).text_sm().text_color(theme.muted_foreground).child("\u{283f}"))
+                                    .child(svg_icon(p_icon(pid)).size(px(16.)).text_color(theme.foreground))
+                                    .child(
+                                        v_flex()
+                                            .flex_1()
+                                            .min_w_0()
+                                            .gap(px(1.))
+                                            .child(div().text_sm().font_weight(FontWeight::MEDIUM).child(name.clone()))
+                                            .child(div().text_xs().text_color(theme.muted_foreground).child(status.clone())),
+                                    )
+                                    .children(if *upd {
+                                        vec![div()
+                                            .px_2()
+                                            .py_1()
+                                            .rounded(px(6.))
+                                            .border_1()
+                                            .border_color(theme.border)
+                                            .text_xs()
+                                            .child("\u{2b07} Update")
+                                            .into_any_element()]
+                                    } else { vec![] })
+                                    .child(toggle(true))
+                                    .child(svg_icon(icons::CHEVRON_RIGHT).size(px(14.)).text_color(theme.muted_foreground))
+                                    .into_any_element();
+                                if i > 0 {
+                                    vec![divider().into_any_element(), row]
+                                } else {
+                                    vec![row]
+                                }
+                            }))
+                            .into_any_element(),
+                    ))
+                    .child(section_label("Performance"))
+                    .child(card(
+                        v_flex()
+                            .child(
+                                v_flex()
+                                    .px_3()
+                                    .py(px(10.))
+                                    .gap(px(2.))
+                                    .child(
+                                        h_flex()
+                                            .w_full()
+                                            .items_center()
+                                            .justify_between()
+                                            .child(div().text_sm().font_weight(FontWeight::MEDIUM).child("Keep Synara responsive"))
+                                            .child(toggle(true)),
+                                    )
+                                    .child(div().w_full().text_sm().text_color(theme.muted_foreground).child(
+                                        "Give agent processes and their commands a moderately lower CPU priority when the machine is busy."))
+                                    .child(div().w_full().text_xs().text_color(theme.muted_foreground).child(
+                                        "Applies to newly launched agent processes. Restart existing sessions to apply consistently.")),
+                            )
+                            .into_any_element(),
+                    ))
+                    .child(section_label("Updates"))
+                    .child(card(
+                        v_flex()
+                            .child(srow("Automatic CLI update checks",
+                                "Check Codex, Claude, and other provider CLIs for newer versions in the background.",
+                                toggle(true)))
+                            .child(divider())
+                            .child(
+                                v_flex()
+                                    .px_3()
+                                    .py(px(10.))
+                                    .gap(px(2.))
+                                    .child(div().text_sm().font_weight(FontWeight::MEDIUM).child("Provider updates"))
+                                    .child(div().w_full().text_sm().text_color(theme.muted_foreground).child(
+                                        "Review installed provider tools that Synara can safely update."))
+                                    .child(div().w_full().text_xs().text_color(theme.muted_foreground).child(
+                                        "No provider updates detected")),
+                            )
+                            .into_any_element(),
+                    ));
+            }
+
+            // ---------- Models ----------
+            if self.settings_section == "models" {
+                settings_pane = settings_pane
+                    .child(section_label("Generation defaults"))
+                    .child(card(
+                        v_flex()
+                            .child(srow("Source control writing style", "In each project, matches recent change descriptions and change request titles.", select_pill("Repository conventions".into(), None)))
+                            .child(divider())
+                            .child(srow("Add Synara attribution", "Adds a \"Created with Synara\" link to the end of pull request descriptions that Synara creates. Commits and branch names are never changed.", toggle(true)))
+                            .child(divider())
+                            .child(srow("Git writing model", "Used for generated commit messages, PR titles, and branch names.", select_pill("GPT-6 Luna".into(), None)))
+                            .into_any_element(),
+                    ))
+                    .child(section_label("Custom models"))
+                    .child(card(
+                        v_flex()
+                            .px_3()
+                            .py(px(10.))
+                            .gap_2()
+                            .child(div().text_sm().font_weight(FontWeight::MEDIUM).child("Saved model slugs"))
+                            .child(div().w_full().text_sm().text_color(theme.muted_foreground).child("Add custom model slugs for supported providers."))
+                            .child(
+                                h_flex()
+                                    .w_full()
+                                    .items_center()
+                                    .gap_2()
+                                    .child(select_pill("Codex".into(), None))
+                                    .child(
+                                        div()
+                                            .flex_1()
+                                            .h(px(30.))
+                                            .px_2()
+                                            .rounded(px(6.))
+                                            .border_1()
+                                            .border_color(theme.border)
+                                            .flex()
+                                            .items_center()
+                                            .child(div().text_xs().text_color(theme.muted_foreground).child("gpt-6.7-codex-ultra-preview")),
+                                    )
+                                    .child(outline_btn("+ Add")),
+                            )
+                            .into_any_element(),
+                    ));
+            }
+
+            // ---------- Skills ----------
+            if self.settings_section == "skills" {
+                let skills = arr(get(sdata, "skills"), "skills").to_vec();
+                let skills = if skills.is_empty() { arr(get(sdata, "skills"), "items").to_vec() } else { skills };
+                settings_pane = settings_pane
+                    .child(section_label("Portable skills"))
+                    .child(card(
+                        v_flex()
+                            .px_3()
+                            .py(px(10.))
+                            .gap(px(2.))
+                            .child(
+                                h_flex()
+                                    .w_full()
+                                    .items_center()
+                                    .justify_between()
+                                    .child(div().text_sm().font_weight(FontWeight::MEDIUM).child("Synara skills folder"))
+                                    .child(div().text_xs().text_color(theme.muted_foreground).child(format!("{} of {} skills enabled", skills.len(), skills.len()))),
+                            )
+                            .child(div().w_full().text_sm().text_color(theme.muted_foreground).child(
+                                "Skills placed here are available on every provider. When a provider already ships its own copy of a skill, that copy is used; otherwise Synara's copy is the fallback."))
+                            .child(div().w_full().text_xs().text_color(theme.muted_foreground).child("~/.synara/skills"))
+                            .into_any_element(),
+                    ))
+                    .child(section_label("Skills"));
+                if skills.is_empty() {
+                    settings_pane = settings_pane.child(card(
+                        v_flex()
+                            .px_3()
+                            .py(px(10.))
+                            .gap(px(2.))
+                            .child(div().text_sm().font_weight(FontWeight::MEDIUM).child("No skills found"))
+                            .child(div().w_full().text_sm().text_color(theme.muted_foreground).child(
+                                "Add a skill folder containing a SKILL.md to the Synara skills folder above, or install skills for any supported provider."))
+                            .into_any_element(),
+                    ));
+                }
+                for s in &skills {
+                    let nm = str_at(s, "name").to_string();
+                    let desc = str_at(s, "description").to_string();
+                    let pv = str_at(s, "provider").to_string();
+                    let desc = if desc.is_empty() { provider_display(&pv).to_string() } else { desc };
+                    settings_pane = settings_pane.child(card(
+                        v_flex()
+                            .px_3()
+                            .py(px(8.))
+                            .gap(px(1.))
+                            .child(div().text_sm().font_weight(FontWeight::MEDIUM).child(nm))
+                            .child(div().text_xs().text_color(theme.muted_foreground).child(desc))
+                            .into_any_element(),
+                    ));
+                }
+            }
+
+            // ---------- Usage ----------
+            if self.settings_section == "usage" {
+                let p_icon2 = |pid: &str| match pid {
+                    "codex" => icons::CODEX, "claudeAgent" | "claude" => icons::P_CLAUDE,
+                    "cursor" => icons::P_CURSOR, "antigravity" => icons::P_ANTIGRAVITY,
+                    "grok" => icons::P_GROK, "droid" => icons::P_DROID, "devin" => icons::P_DEVIN,
+                    "opencode" => icons::P_OPENCODE, "pi" => icons::P_PI, "omp" => icons::P_OMP,
+                    _ => icons::S_PUZZLE,
+                };
+                let sidebar_rows: [(&'static str, &'static str, bool); 9] = [
+                    ("codex","Codex",true), ("claudeAgent","Claude",true), ("cursor","Cursor",false),
+                    ("antigravity","Antigravity",false), ("grok","Grok",false), ("droid","Droid",false),
+                    ("opencode","OpenCode",false), ("pi","Pi",false), ("devin","Devin",false),
+                ];
+                settings_pane = settings_pane
+                    .child(
+                        h_flex()
+                            .gap_1()
+                            .child(
+                                div()
+                                    .px_2()
+                                    .py_1()
+                                    .rounded(px(6.))
+                                    .bg(rgb(0xeeeeee))
+                                    .text_xs()
+                                    .font_weight(FontWeight::MEDIUM)
+                                    .child("Overview"),
+                            )
+                            .child(div().px_2().py_1().text_xs().text_color(theme.muted_foreground).child("Analytics")),
+                    )
+                    .child(section_label("Sidebar \u{b7} up to 2 accounts"))
+                    .child(card(
+                        v_flex()
+                            .children(sidebar_rows.iter().enumerate().flat_map(|(i, (pid, name, on))| {
+                                let row = h_flex()
+                                    .w_full()
+                                    .items_center()
+                                    .gap_2p5()
+                                    .px_3()
+                                    .py(px(9.))
+                                    .child(svg_icon(p_icon2(pid)).size(px(16.)).text_color(theme.foreground))
+                                    .child(div().flex_1().text_sm().font_weight(FontWeight::MEDIUM).child(name.to_string()))
+                                    .child(toggle(*on))
+                                    .into_any_element();
+                                if i > 0 { vec![divider().into_any_element(), row] } else { vec![row] }
+                            }))
+                            .into_any_element(),
+                    ))
+                    .child(section_label("Ring"))
+                    .child(card(
+                        h_flex()
+                            .w_full()
+                            .items_center()
+                            .justify_between()
+                            .gap_3()
+                            .px_3()
+                            .py(px(10.))
+                            .child(div().flex_1().min_w_0().w_full().text_sm().text_color(theme.muted_foreground).child(
+                                "Show both limits as two rings, or a single ring for one of them."))
+                            .child(
+                                h_flex()
+                                    .gap_3()
+                                    .child(div().text_sm().font_weight(FontWeight::MEDIUM).child("Both"))
+                                    .child(div().text_sm().text_color(theme.muted_foreground).child("5h"))
+                                    .child(div().text_sm().text_color(theme.muted_foreground).child("Weekly")),
+                            )
+                            .into_any_element(),
+                    ))
+                    .child(section_label("Usage popovers"))
+                    .child(card(
+                        v_flex()
+                            .child(srow("Show details by default",
+                                "Open the details below the limits. When off, they stay behind the Details toggle; your last toggle also updates this preference.",
+                                toggle(false)))
+                            .child(divider())
+                            .child(srow("Banked resets",
+                                "Include Codex banked resets in the details.",
+                                toggle(true)))
+                            .into_any_element(),
+                    ));
+            }
+
+            // ---------- Connectors ----------
+            if self.settings_section == "connectors" {
+                let search = div()
+                    .w_full()
+                    .h(px(30.))
+                    .px_2()
+                    .rounded(px(8.))
+                    .border_1()
+                    .border_color(theme.border)
+                    .flex()
+                    .items_center()
+                    .child(div().text_xs().text_color(theme.muted_foreground).child("Search connectors"))
+                    .into_any_element();
+                let dark_btn = |label: &'static str| {
+                    div()
+                        .px_3()
+                        .py_1p5()
+                        .rounded_full()
+                        .bg(rgb(0x26251f))
+                        .text_xs()
+                        .font_weight(FontWeight::MEDIUM)
+                        .text_color(gpui::white())
+                        .child(label)
+                        .into_any_element()
+                };
+                let catalog: [(&'static str, &'static str); 3] = [
+                    ("popular", "Popular"),
+                    ("developer", "Developer tools"),
+                    ("productivity", "Productivity"),
+                ];
+                let items: [(&'static str, &'static str, &'static str, u32); 18] = [
+                    ("popular","Supabase","Query Postgres, manage projects, and deploy Edge Functions.",0x3ecf8e),
+                    ("popular","Vercel","Manage projects and deployments, and read deployment logs.",0x111111),
+                    ("popular","Slack","Search, read, and post in your workspace. Needs your own Slack app.",0xe01e5a),
+                    ("popular","Linear","Find, create, and update issues, projects, and comments.",0x5e6ad2),
+                    ("popular","Notion","Search, read, and edit pages and databases.",0x111111),
+                    ("popular","Stripe","Work with customers, payments, and Stripe docs.",0x635bff),
+                    ("developer","WorkOS","Manage users, organizations, SSO, and AuthKit in your dashboard.",0x6363f1),
+                    ("developer","Convex","Start Convex apps and get setup and scaling guidance.",0xee342f),
+                    ("developer","Cloudflare","Build with Workers, KV, R2, and D1 on your account.",0xf48120),
+                    ("developer","Sentry","Investigate errors, issues, and releases.",0x362d59),
+                    ("developer","Neon","Manage serverless Postgres projects and branches.",0x00e599),
+                    ("developer","PostHog","Query product analytics, feature flags, and errors.",0x111111),
+                    ("developer","Netlify","Create, deploy, and manage Netlify sites.",0x20c6b7),
+                    ("developer","Railway","Deploy and manage Railway projects and services.",0x111111),
+                    ("developer","Prisma","Manage Prisma Postgres databases and backups.",0x2d3748),
+                    ("developer","Hugging Face","Search models, datasets, Spaces, and papers.",0xffd21e),
+                    ("productivity","Atlassian","Work with Jira issues and Confluence pages.",0x1868db),
+                    ("productivity","Todoist","Find, add, and complete tasks and projects.",0xe44332),
+                ];
+                settings_pane = settings_pane
+                    .child(search)
+                    .child(
+                        h_flex()
+                            .gap_2()
+                            .child(dark_btn("+ Add custom"))
+                            .child(outline_btn("Add local server")),
+                    )
+                    .child(div().w_full().text_xs().text_color(theme.muted_foreground).child(
+                        "Agents in new chats can use the services you connect here. Pi, Devin, and Antigravity don't support connectors yet."));
+                for (cat, cat_name) in &catalog {
+                    settings_pane = settings_pane.child(section_label(cat_name));
+                    let cat_items: Vec<_> = items.iter().filter(|(c, ..)| c == cat).collect();
+                    for chunk in cat_items.chunks(2) {
+                        let mut row = h_flex().w_full().gap_3();
+                        for (_, name, desc, color) in chunk {
+                            row = row.child(
+                                h_flex()
+                                    .flex_1()
+                                    .items_center()
+                                    .gap_3()
+                                    .px_3()
+                                    .py(px(10.))
+                                    .rounded(px(10.))
+                                    .border_1()
+                                    .border_color(theme.border)
+                                    .child(
+                                        div()
+                                            .w(px(24.))
+                                            .h(px(24.))
+                                            .rounded(px(6.))
+                                            .bg(rgb(*color))
+                                            .flex()
+                                            .items_center()
+                                            .justify_center()
+                                            .child(div().text_xs().font_weight(FontWeight::BOLD).text_color(gpui::white()).child((*name).chars().next().unwrap_or('?').to_string())),
+                                    )
+                                    .child(
+                                        v_flex()
+                                            .flex_1()
+                                            .min_w_0()
+                                            .gap(px(1.))
+                                            .child(div().text_sm().font_weight(FontWeight::MEDIUM).child(*name))
+                                            .child(div().w_full().text_xs().text_color(theme.muted_foreground).child(*desc)),
+                                    )
+                                    .child(div().text_sm().text_color(theme.muted_foreground).child("+")),
+                            );
+                        }
+                        if chunk.len() == 1 {
+                            row = row.child(div().flex_1());
+                        }
+                        settings_pane = settings_pane.child(row);
+                    }
+                }
+            }
+
+            // ---------- External agents (integrations) ----------
+            if self.settings_section == "integrations" {
+                let dark_btn = |label: &'static str| {
+                    div()
+                        .px_3()
+                        .py_1p5()
+                        .rounded_full()
+                        .bg(rgb(0x26251f))
+                        .text_xs()
+                        .font_weight(FontWeight::MEDIUM)
+                        .text_color(gpui::white())
+                        .child(label)
+                        .into_any_element()
+                };
+                let exts = arr(get(sdata, "external"), "integrations").to_vec();
+                let exts = if exts.is_empty() { arr(get(sdata, "external"), "items").to_vec() } else { exts };
+                settings_pane = settings_pane
+                    .child(section_label("Connect a coding agent"))
+                    .child(card(
+                        v_flex()
+                            .child(
+                                h_flex()
+                                    .w_full()
+                                    .items_center()
+                                    .gap_3()
+                                    .px_3()
+                                    .py(px(10.))
+                                    .child(
+                                        v_flex()
+                                            .flex_1()
+                                            .min_w_0()
+                                            .gap(px(2.))
+                                            .child(div().text_sm().font_weight(FontWeight::MEDIUM).child("Name"))
+                                            .child(div().w_full().text_sm().text_color(theme.muted_foreground).child(
+                                                "How this connection appears in Synara. Works with Codex, Claude, and any other MCP-capable agent.")),
+                                    )
+                                    .child(
+                                        div()
+                                            .w(px(160.))
+                                            .h(px(30.))
+                                            .px_2()
+                                            .rounded(px(6.))
+                                            .border_1()
+                                            .border_color(theme.border)
+                                            .flex()
+                                            .items_center()
+                                            .child(div().text_xs().child("Coding agent")),
+                                    )
+                                    .into_any_element(),
+                            )
+                            .child(divider())
+                            .child(srow("Access all of Synara",
+                                "The agent can discover and work in every project, including ones you add later. Turn off to pick specific projects.",
+                                toggle(true)))
+                            .child(divider())
+                            .child(
+                                h_flex()
+                                    .w_full()
+                                    .items_center()
+                                    .justify_between()
+                                    .gap_3()
+                                    .px_3()
+                                    .py(px(10.))
+                                    .child(
+                                        v_flex()
+                                            .flex_1()
+                                            .min_w_0()
+                                            .gap(px(2.))
+                                            .child(div().text_sm().font_weight(FontWeight::MEDIUM).child("Advanced permissions"))
+                                            .child(div().w_full().text_sm().text_color(theme.muted_foreground).child(
+                                                "Optional access for existing tasks, shared checkouts, or execution without approvals. The safe defaults are recommended.")),
+                                    )
+                                    .child(
+                                        h_flex()
+                                            .items_center()
+                                            .gap_1()
+                                            .child(div().text_sm().text_color(theme.muted_foreground).child("Review"))
+                                            .child(svg_icon(icons::CHEVRON_RIGHT).size(px(14.)).text_color(theme.muted_foreground)),
+                                    )
+                                    .into_any_element(),
+                            )
+                            .child(divider())
+                            .child(
+                                h_flex()
+                                    .w_full()
+                                    .items_center()
+                                    .justify_between()
+                                    .gap_3()
+                                    .px_3()
+                                    .py(px(10.))
+                                    .child(
+                                        v_flex()
+                                            .flex_1()
+                                            .min_w_0()
+                                            .gap(px(2.))
+                                            .child(div().text_sm().font_weight(FontWeight::MEDIUM).child("Create connection"))
+                                            .child(div().w_full().text_sm().text_color(theme.muted_foreground).child(
+                                                "The connection lasts 30 days and can be revoked at any time. The next screen gives you one prompt to paste into your agent.")),
+                                    )
+                                    .child(dark_btn("Create connection"))
+                                    .into_any_element(),
+                            )
+                            .into_any_element(),
+                    ))
+                    .child(section_label("Connected agents"));
+                if exts.is_empty() {
+                    settings_pane = settings_pane.child(card(
+                        div().px_3().py(px(10.)).text_sm().text_color(theme.muted_foreground)
+                            .child("No external agents connected.").into_any_element(),
+                    ));
+                }
+                for e in &exts {
+                    let nm = str_at(e, "name").to_string();
+                    let st = str_at(e, "status").to_string();
+                    settings_pane = settings_pane.child(card(
+                        v_flex()
+                            .px_3()
+                            .py(px(8.))
+                            .gap(px(1.))
+                            .child(div().text_sm().font_weight(FontWeight::MEDIUM).child(nm))
+                            .child(div().text_xs().text_color(theme.muted_foreground).child(st))
+                            .into_any_element(),
+                    ));
+                }
+            }
+
+            // ---------- Devices (connections) ----------
+            if self.settings_section == "devices" {
+                settings_pane = settings_pane
+                    .child(section_label("Connections"))
+                    .child(card(
+                        v_flex()
+                            .px_3()
+                            .py(px(10.))
+                            .gap(px(1.))
+                            .child(div().text_sm().font_weight(FontWeight::MEDIUM).child("Unavailable in this build"))
+                            .child(div().text_sm().text_color(theme.muted_foreground).child(
+                                "Remote connections require the Node 24 server runtime."))
+                            .into_any_element(),
+                    ));
+            }
+
+            // ---------- Computer use ----------
+            if self.settings_section == "computer" {
+                let comp = get(sdata, "computer");
+                let avail = get(comp, "available").as_bool().unwrap_or(false);
+                settings_pane = settings_pane
+                    .child(
+                        h_flex()
+                            .w_full()
+                            .items_center()
+                            .justify_between()
+                            .px_2()
+                            .child(div().text_sm().font_weight(FontWeight::SEMIBOLD).text_color(theme.muted_foreground).child("Computer control"))
+                            .child(toggle(false)),
+                    )
+                    .child(div().w_full().px_2().text_sm().text_color(theme.muted_foreground).child(
+                        "Enable Computer by default in any chat. Leave this off and use /computer-use for one request without adding Computer tools to ordinary turns."))
+                    .child(card(
+                        v_flex()
+                            .child(
+                                h_flex()
+                                    .w_full()
+                                    .items_center()
+                                    .gap_2()
+                                    .px_3()
+                                    .py(px(10.))
+                                    .child(div().w(px(6.)).h(px(6.)).rounded_full().bg(rgb(0xd43d3d)))
+                                    .child(
+                                        v_flex()
+                                            .flex_1()
+                                            .gap(px(1.))
+                                            .child(div().text_sm().font_weight(FontWeight::MEDIUM).child(if avail { "Computer control is available" } else { "Computer control is unavailable" }))
+                                            .child(div().text_sm().text_color(theme.muted_foreground).child(
+                                                "Computer requires a connected Synara desktop host, which owns native access on that computer.")),
+                                    )
+                                    .child(outline_btn("Set up"))
+                                    .into_any_element(),
+                            )
+                            .into_any_element(),
+                    ))
+                    .child(card(
+                        v_flex()
+                            .child(
+                                h_flex()
+                                    .w_full()
+                                    .items_center()
+                                    .gap_3()
+                                    .px_3()
+                                    .py(px(10.))
+                                    .child(
+                                        v_flex()
+                                            .flex_1()
+                                            .min_w_0()
+                                            .gap(px(2.))
+                                            .child(div().text_sm().font_weight(FontWeight::MEDIUM).child("Cursor colors"))
+                                            .child(div().w_full().text_sm().text_color(theme.muted_foreground).child(
+                                                "The agent pointer is stock monochrome by default \u{2014} like a normal pointer. Custom colors apply to new computer sessions.")),
+                                    )
+                                    .child(
+                                        h_flex()
+                                            .items_center()
+                                            .gap_3()
+                                            .child(div().text_sm().font_weight(FontWeight::MEDIUM).child("Stock"))
+                                            .child(div().text_sm().text_color(theme.muted_foreground).child("Custom")),
+                                    )
+                                    .into_any_element(),
+                            )
+                            .child(divider())
+                            .child(
+                                h_flex()
+                                    .w_full()
+                                    .items_center()
+                                    .gap_3()
+                                    .px_3()
+                                    .py(px(10.))
+                                    .child(
+                                        v_flex()
+                                            .flex_1()
+                                            .min_w_0()
+                                            .gap(px(2.))
+                                            .child(div().text_sm().font_weight(FontWeight::MEDIUM).child("Preview"))
+                                            .child(div().w_full().text_sm().text_color(theme.muted_foreground).child(
+                                                "Show the live preview the first time an agent acts on the desktop in a chat. Compact keeps it small and glanceable; Large gives it the full wide card.")),
+                                    )
+                                    .child(toggle(true))
+                                    .child(
+                                        h_flex()
+                                            .items_center()
+                                            .gap_3()
+                                            .child(div().px_2().py(px(2.)).rounded(px(5.)).border_1().border_color(theme.border).text_sm().child("Compact"))
+                                            .child(div().text_sm().text_color(theme.muted_foreground).child("Large")),
+                                    )
+                                    .into_any_element(),
+                            )
+                            .into_any_element(),
+                    ))
+                    .child(
+                        h_flex()
+                            .w_full()
+                            .items_center()
+                            .justify_between()
+                            .child(section_label("Getting started"))
+                            .child(div().px_2().py_1().text_sm().text_color(theme.muted_foreground).child("\u{2304} Hide guide")),
+                    )
+                    .child(card(
+                        v_flex()
+                            .child(
+                                v_flex()
+                                    .px_3()
+                                    .py(px(8.))
+                                    .gap(px(1.))
+                                    .child(div().text_sm().font_weight(FontWeight::MEDIUM).child("Ask for a task"))
+                                    .child(div().w_full().text_sm().text_color(theme.muted_foreground).child(
+                                        "Type /computer-use followed by your task, for example: \u{201c}/computer-use open Calculator and calculate 123 \u{d7} 45.\u{201d} This enables Computer for that request only. The default setting below can enable it on every turn.")),
+                            )
+                            .child(divider())
+                            .child(
+                                v_flex()
+                                    .px_3()
+                                    .py(px(8.))
+                                    .gap(px(1.))
+                                    .child(div().text_sm().font_weight(FontWeight::MEDIUM).child("Approve the task"))
+                                    .child(div().w_full().text_sm().text_color(theme.muted_foreground).child(
+                                        "If asked, approve Computer for the task. Use the permission guide when desktop access is missing. Synara may still ask before consequential actions.")),
+                            )
+                            .child(divider())
+                            .child(
+                                v_flex()
+                                    .px_3()
+                                    .py(px(8.))
+                                    .gap(px(1.))
+                                    .child(div().text_sm().font_weight(FontWeight::MEDIUM).child("Follow and stop"))
+                                    .child(div().w_full().text_sm().text_color(theme.muted_foreground).child(
+                                        "Watch the preview while the agent works. Use Stop in the chat to interrupt the task. Closing the preview only hides it.")),
+                            )
+                            .into_any_element(),
+                    ))
+                    .child(div().pt_1().child(outline_btn("Got it")))
+                    .child(
+                        h_flex()
+                            .w_full()
+                            .items_center()
+                            .justify_between()
+                            .px_2()
+                            .child(div().text_sm().text_color(theme.muted_foreground).child("Recent Computer actions"))
+                            .child(div().text_sm().text_color(theme.muted_foreground).child("\u{203a} Show history")),
+                    );
+            }
+
+            // ---------- AppSnap ----------
+            if self.settings_section == "appsnap" {
+                settings_pane = settings_pane
+                    .child(card(
+                        h_flex()
+                            .w_full()
+                            .gap_3()
+                            .px_3()
+                            .py(px(10.))
+                            .child(svg_icon(icons::S_SCREEN_CAPTURE).size(px(18.)).text_color(theme.muted_foreground))
+                            .child(
+                                v_flex()
+                                    .flex_1()
+                                    .gap(px(2.))
+                                    .child(div().text_sm().font_weight(FontWeight::MEDIUM).child("Take an AppSnap to show your agent another app's window"))
+                                    .child(div().w_full().text_sm().text_color(theme.muted_foreground).child(
+                                        "Press your two-key shortcut while any app is frontmost. Synara captures that window as an image, brings itself forward, and attaches the snap to a task composer \u{2014} the capture stays on this device until you send the message."))
+                                    .child(div().w_full().text_xs().text_color(theme.muted_foreground).child(
+                                        "AppSnap requires the Synara desktop app on macOS.")),
+                            )
+                            .into_any_element(),
+                    ))
+                    .child(section_label("Capture"))
+                    .child(card(
+                        v_flex()
+                            .child(
+                                v_flex()
+                                    .px_3()
+                                    .py(px(10.))
+                                    .gap(px(2.))
+                                    .child(
+                                        h_flex()
+                                            .w_full()
+                                            .items_center()
+                                            .justify_between()
+                                            .child(div().text_sm().font_weight(FontWeight::MEDIUM).child("Enable AppSnap"))
+                                            .child(toggle(false)),
+                                    )
+                                    .child(div().w_full().text_sm().text_color(theme.muted_foreground).child(
+                                        "Run the capture listener in the background while Synara is open."))
+                                    .child(div().w_full().text_xs().text_color(theme.muted_foreground).child(
+                                        "Available in the Synara desktop app")),
+                            )
+                            .child(divider())
+                            .child(
+                                h_flex()
+                                    .w_full()
+                                    .items_center()
+                                    .justify_between()
+                                    .gap_3()
+                                    .px_3()
+                                    .py(px(10.))
+                                    .child(
+                                        v_flex()
+                                            .flex_1()
+                                            .min_w_0()
+                                            .gap(px(2.))
+                                            .child(div().text_sm().font_weight(FontWeight::MEDIUM).child("Shortcut"))
+                                            .child(div().w_full().text_sm().text_color(theme.muted_foreground).child(
+                                                "Choose exactly two keys: one modifier and one other key. Synara checks its own bindings and asks macOS whether another app already owns the shortcut before saving it.")),
+                                    )
+                                    .child(
+                                        v_flex()
+                                            .items_end()
+                                            .gap(px(2.))
+                                            .child(div().text_sm().child("\u{2325} left + \u{2325} right"))
+                                            .child(div().text_xs().text_color(theme.muted_foreground).child("Current shortcut")),
+                                    )
+                                    .into_any_element(),
+                            )
+                            .child(divider())
+                            .child(srow("Destination",
+                                "Snaps join the task you interacted with in the last minute, and consecutive snaps stay together. Otherwise Synara opens a fresh task with the capture attached.",
+                                select_pill("Automatic".into(), None)))
+                            .child(divider())
+                            .child(
+                                h_flex()
+                                    .w_full()
+                                    .items_center()
+                                    .gap_2()
+                                    .px_3()
+                                    .py(px(10.))
+                                    .child(
+                                        v_flex()
+                                            .flex_1()
+                                            .min_w_0()
+                                            .gap(px(2.))
+                                            .child(div().text_sm().font_weight(FontWeight::MEDIUM).child("Capture sound"))
+                                            .child(div().w_full().text_sm().text_color(theme.muted_foreground).child(
+                                                "Play a short shutter cue when a window is captured.")),
+                                    )
+                                    .child(div().text_xs().text_color(theme.muted_foreground).child("Preview"))
+                                    .child(toggle(true))
+                                    .into_any_element(),
+                            )
+                            .into_any_element(),
+                    ));
+            }
+
+            // ---------- Worktrees ----------
+            if self.settings_section == "worktrees" {
+                let wts = arr(get(sdata, "worktrees"), "worktrees").to_vec();
+                let wts = if wts.is_empty() { arr(get(sdata, "worktrees"), "items").to_vec() } else { wts };
+                settings_pane = settings_pane
+                    .child(section_label("Defaults"))
+                    .child(card(
+                        srow("Delete worktree on archive",
+                            "After Archive's Undo period, remove a clean worktree only if the task has stopped and no other task uses it. Its branch remains available for recovery.",
+                            toggle(false))
+                        .into_any_element(),
+                    ));
+                if wts.is_empty() {
+                    settings_pane = settings_pane.child(
+                        div()
+                            .w_full()
+                            .rounded(px(12.))
+                            .border_1()
+                            .border_color(theme.border)
+                            .py(px(24.))
+                            .flex()
+                            .items_center()
+                            .justify_center()
+                            .child(div().text_sm().text_color(theme.muted_foreground).child("No app-managed worktrees found yet.")),
+                    );
+                }
+                for w in &wts {
+                    let nm = str_at(w, "name").to_string();
+                    let path = str_at(w, "path").to_string();
+                    settings_pane = settings_pane.child(card(
+                        v_flex()
+                            .px_3()
+                            .py(px(8.))
+                            .gap(px(1.))
+                            .child(div().text_sm().font_weight(FontWeight::MEDIUM).child(nm))
+                            .child(div().text_xs().text_color(theme.muted_foreground).child(path))
+                            .into_any_element(),
+                    ));
+                }
+            }
+
+            // ---------- Archive ----------
+            if self.settings_section == "archive" {
+                settings_pane = settings_pane.child(
+                    div()
+                        .w_full()
+                        .rounded(px(12.))
+                        .border_1()
+                        .border_color(theme.border)
+                        .py(px(40.))
+                        .flex()
+                        .flex_col()
+                        .items_center()
+                        .justify_center()
+                        .gap_2()
+                        .child(svg_icon(icons::TRASH).size(px(20.)).text_color(theme.muted_foreground))
+                        .child(div().text_sm().font_weight(FontWeight::MEDIUM).child("No archived threads"))
+                        .child(div().text_sm().text_color(theme.muted_foreground).child(
+                            "Archived threads will appear here and can be restored to the sidebar.")),
+                );
+            }
+
+            // ---------- Privacy ----------
+            if self.settings_section == "privacy" {
+                // Upstream renders nothing extra in this build (Safari onboarding and
+                // product-analytics rows are desktop/remote-gated) — title + subtitle only.
+            }
+
+            // ---------- Advanced ----------
+            if self.settings_section == "advanced" {
+                settings_pane = settings_pane
+                    .child(section_label("Developer tools"))
+                    .child(card(
+                        v_flex()
+                            .child(
+                                h_flex()
+                                    .w_full()
+                                    .items_center()
+                                    .justify_between()
+                                    .gap_3()
+                                    .px_3()
+                                    .py(px(10.))
+                                    .child(
+                                        v_flex()
+                                            .flex_1()
+                                            .min_w_0()
+                                            .gap(px(2.))
+                                            .child(div().text_sm().font_weight(FontWeight::MEDIUM).child("Recovery tools"))
+                                            .child(div().w_full().text_sm().text_color(theme.muted_foreground).child(
+                                                "Rebuild local project indexes without clearing existing chats when the local state gets out of sync."))
+                                            .child(div().w_full().text_xs().text_color(theme.muted_foreground).child(
+                                                "Visible because projects exist but no chat history is currently available.")),
+                                    )
+                                    .child(outline_btn("Repair state"))
+                                    .into_any_element(),
+                            )
+                            .child(divider())
+                            .child(
+                                h_flex()
+                                    .w_full()
+                                    .items_center()
+                                    .justify_between()
+                                    .px_3()
+                                    .py(px(8.))
+                                    .child(div().text_sm().child("What this does"))
+                                    .child(svg_icon(icons::CHEVRON_RIGHT).size(px(14.)).text_color(theme.muted_foreground))
+                                    .into_any_element(),
+                            )
+                            .into_any_element(),
+                    ));
+            }
+
+            // ---------- About ----------
+            if self.settings_section == "about" {
+                settings_pane = settings_pane
+                    .child(section_label("About"))
+                    .child(card(
+                        v_flex()
+                            .child(srow("Version", "Current application version.",
+                                div().text_sm().text_color(theme.muted_foreground).child("1.6.4").into_any_element()))
+                            .child(divider())
+                            .child(srow("Release history",
+                                "A running log of every update, newest first. Same notes the post-update dialog shows, kept here so you can revisit them any time.",
+                                outline_btn("View release history")))
+                            .into_any_element(),
+                    ));
+            }
+
             if self.settings_section == "appearance" {
                 // Plain row without a description line.
                 let prow = |label: &'static str, ctrl: gpui::AnyElement| {
@@ -4749,6 +5990,9 @@ impl Render for Native {
                 settings_nav_el = settings_nav_el.child(
                     row.on_click(cx.listener(move |this, _ev, _w, cx| {
                         this.settings_section = sid;
+                        if this.settings_data.is_null() {
+                            this.fetch_settings(cx);
+                        }
                         cx.notify();
                     })),
                 );
@@ -5825,6 +7069,9 @@ impl Render for Native {
                         let was = this.view_settings;
                         this.clear_views();
                         this.view_settings = !was;
+                        if this.view_settings && this.settings_data.is_null() {
+                            this.fetch_settings(cx);
+                        }
                         cx.notify();
                     }),
                 ),

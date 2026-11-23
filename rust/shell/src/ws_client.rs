@@ -283,6 +283,37 @@ impl Client {
         out
     }
 
+    /// First Chunk of a stream request, then Interrupt. For subscribe-style
+    /// tags where the initial snapshot is the data (e.g.
+    /// server.subscribeProviderStatuses).
+    pub fn call_first_chunk(&self, tag: &str, payload: Value) -> Option<Value> {
+        let (id, rx) = self.request(tag, payload)?;
+        let mut out = None;
+        for _ in 0..600 {
+            match rx.recv_timeout(Duration::from_millis(100)) {
+                Ok(msg) => match msg.get("_tag").and_then(Value::as_str) {
+                    Some("Chunk") => {
+                        out = msg
+                            .get("values")
+                            .and_then(Value::as_array)
+                            .and_then(|v| v.first().cloned());
+                        break;
+                    }
+                    Some("Exit") => break,
+                    _ => continue,
+                },
+                Err(std::sync::mpsc::RecvTimeoutError::Timeout) => continue,
+                Err(_) => break,
+            }
+        }
+        let _ = self.pending.lock().map(|mut m| m.remove(&id));
+        let frame = json!({"_tag": "Interrupt", "requestId": id});
+        if let Ok(mut w) = self.writer.lock() {
+            let _ = w.send(Message::Text(frame.to_string().into()));
+        }
+        out
+    }
+
     /// Ask the server to stop an in-flight request or stream.
     pub fn interrupt(&self, request_id: &str) {
         let _ = self.pending.lock().map(|mut m| m.remove(request_id));

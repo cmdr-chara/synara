@@ -220,6 +220,7 @@ pub struct Native {
     inbox_recap: Option<Value>,
     inbox_usage: Vec<Value>,
     inbox_signed_in: Option<bool>,
+    inbox_updates: Vec<Value>,
     tools_expanded: bool,
     pending_attachments: Vec<Value>,
     composer_thread_id: Option<String>,
@@ -477,6 +478,7 @@ impl Native {
                 inbox_recap: None,
                 inbox_usage: Vec::new(),
                 inbox_signed_in: None,
+                inbox_updates: Vec::new(),
                 tools_expanded: false,
                 pending_attachments: Vec::new(),
                 composer_thread_id: None,
@@ -1298,7 +1300,10 @@ impl Native {
                         .call("server.listProviderUsage", json!({}))
                         .unwrap_or(Value::Null);
                     let acct = c.call("account.status", json!({})).unwrap_or(Value::Null);
-                    json!({"tasks": tasks, "recap": recap, "usage": usage, "account": acct})
+                    let provs = c
+                        .call_first_chunk("server.subscribeProviderStatuses", json!({}))
+                        .unwrap_or(Value::Null);
+                    json!({"tasks": tasks, "recap": recap, "usage": usage, "account": acct, "providers": provs})
                 })
                 .await;
             let _ = this.update(cx, |this: &mut Self, cx| {
@@ -1326,6 +1331,19 @@ impl Native {
                     .or_else(|| get(acct, "authenticated").as_bool())
                     .or_else(|| Some(!str_at(acct, "accountId").is_empty()));
                 this.inbox_signed_in = signed;
+                // Upstream getNotifiableProviderUpdateStatuses: behind_latest,
+                // latestVersion known, one-click update command present.
+                this.inbox_updates = arr(get(&bundle, "providers"), "providers")
+                    .to_vec()
+                    .into_iter()
+                    .filter(|p| {
+                        let adv = get(p, "versionAdvisory");
+                        str_at(adv, "status") == "behind_latest"
+                            && !get(adv, "latestVersion").is_null()
+                            && get(adv, "canUpdate").as_bool() == Some(true)
+                            && !get(adv, "updateCommand").is_null()
+                    })
+                    .collect();
                 cx.notify();
             });
         })
@@ -3225,9 +3243,9 @@ impl Render for Native {
                         .child(format!("{greeting} {sub}")),
                 );
 
-            // Tasks card (left column, ~1/3 of the row)
+            // Tasks card (left column, 4/12 of the upstream @5xl grid)
             let tasks_card = v_flex()
-                .w(px(300.))
+                .w_full()
                 .gap_2()
                 .p_4()
                 .child(
@@ -3319,12 +3337,22 @@ impl Render for Native {
             ));
 
             let grid = h_flex()
-                .gap_3()
+                .gap(px(16.))
                 .items_start()
-                .child(tile(tasks_card.into_any_element()))
+                .child(
+                    tile(tasks_card.into_any_element())
+                        .w(gpui::relative(4.0 / 12.0)),
+                )
                 .child(right_col);
 
-            let mut page = v_flex().flex_1().p(px(32.)).gap_4().child(header).child(grid);
+            let mut page = v_flex()
+                .flex_1()
+                .px(px(32.))
+                .pt(px(74.))
+                .pb(px(32.))
+                .gap_4()
+                .child(header)
+                .child(grid);
             if self.inbox_signed_in != Some(true) {
                 page = page.child(
                     h_flex()
@@ -3340,6 +3368,86 @@ impl Render for Native {
                 );
             }
             inbox_pane = inbox_pane.child(page);
+        }
+
+        // Provider-update toast (upstream toastManager warning card): global
+        // overlay over the main column, centered, does not shift content.
+        let mut update_toast = div().absolute().top(px(-12.)).w_full().flex().justify_center();
+        let mut toast_shown = false;
+        if !self.inbox_updates.is_empty() {
+            toast_shown = true;
+            let n = self.inbox_updates.len();
+            let pname = {
+                let id = str_at(&self.inbox_updates[0], "provider");
+                match id {
+                    "codex" => "Codex", "claudeAgent" | "claude" => "Claude",
+                    "cursor" => "Cursor", "antigravity" => "Antigravity",
+                    "grok" => "Grok", "droid" => "Droid", "devin" => "Devin",
+                    "opencode" => "OpenCode", "pi" => "Pi",
+                    "omp" => "Oh My Pi", other => other,
+                }
+            };
+            let (title, desc) = if n == 1 {
+                (
+                    format!("{pname} update available"),
+                    format!("{pname} has a newer version available."),
+                )
+            } else {
+                (
+                    format!("{n} provider updates available"),
+                    format!(
+                        "{pname} and {} more provider{} have newer versions available.",
+                        n - 1,
+                        if n == 2 { "" } else { "s" }
+                    ),
+                )
+            };
+            update_toast = update_toast.child(
+                h_flex()
+                    .w(px(364.))
+                    .gap_2()
+                    .items_start()
+                    .rounded(px(12.))
+                    .bg(rgb(0xffffff))
+                    .border_1()
+                    .border_color(theme.border)
+                    .p(px(14.))
+                    .child(
+                        Icon::new(AssetIcon::TriangleAlert)
+                            .size(px(16.))
+                            .text_color(rgb(0xc24904)),
+                    )
+                    .child(
+                        v_flex()
+                            .flex_1()
+                            .gap(px(6.))
+                            .child(
+                                div()
+                                    .text_size(px(13.))
+                                    .font_weight(FontWeight::MEDIUM)
+                                    .child(title),
+                            )
+                            .child(
+                                div()
+                                    .text_size(px(13.))
+                                    .text_color(theme.muted_foreground)
+                                    .child(desc),
+                            )
+                            .child(
+                                h_flex()
+                                    .mt(px(6.))
+                                    .gap(px(16.))
+                                    .child(div().text_size(px(13.)).child("Review updates"))
+                                    .child(div().text_size(px(13.)).child("Update all")),
+                            ),
+                    )
+                    .child(
+                        div()
+                            .text_size(px(13.))
+                            .text_color(theme.muted_foreground)
+                            .child("\u{00d7}"),
+                    ),
+            );
         }
 
         // ---- composer ----
@@ -6898,7 +7006,8 @@ impl Render for Native {
         }
 
         // ---- main column under the strip: panes + composer ----
-        let mut main = v_flex().flex_1().h_full();
+        // .relative() hosts the provider-update toast overlay.
+        let mut main = v_flex().flex_1().h_full().relative();
         if self.view_settings {
             main = main.child(div().flex_1().child(settings_pane));
         } else if self.view_dev {
@@ -6927,6 +7036,9 @@ impl Render for Native {
                 main = main.child(term_drawer);
             }
             main = main.child(composer_bar);
+        }
+        if toast_shown {
+            main = main.child(update_toast);
         }
 
         // ---- changes dock (right pane) ----

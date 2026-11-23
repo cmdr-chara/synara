@@ -3573,8 +3573,13 @@ impl Render for Native {
         } else {
             thread_model
         };
-        let model_label = if in_thread && !thread_model.is_empty() {
-            thread_model
+        let model_label = if in_thread {
+            if thread_model.is_empty() {
+                // Upstream seeds temporary chat threads with Devin Small.
+                "Devin Small".to_string()
+            } else {
+                thread_model
+            }
         } else {
             "GPT-6 Astra".to_string()
         };
@@ -3611,42 +3616,8 @@ impl Render for Native {
                     .text_color(theme.background),
             )
             .on_click(cx.listener(|this, _ev, w, cx| this.send(w, cx)));
-        let composer_card: Div = if in_thread {
-            // Thread view: upstream ComposerCapsule — one-row rounded-full
-            // capsule with "+", the input and the send button only; the mode
-            // and model chips move to a row below it.
-            let mut capsule_input = div().flex_1().min_w_0().relative().child(
-                div()
-                    .h(px(40.))
-                    .child(Input::new(&self.composer).appearance(false)),
-            );
-            if draft_empty {
-                capsule_input = capsule_input.child(
-                    div()
-                        .absolute()
-                        .top(px(9.))
-                        .left(px(6.))
-                        .text_size(px(13.))
-                        .line_height(px(21.125))
-                        .text_color(rgba(0x67676766))
-                        .child("Do anything in Synara"),
-                );
-            }
-            h_flex()
-                .w_full()
-                .h(px(42.))
-                .items_center()
-                .gap(px(6.))
-                .border_1()
-                .border_color(theme.border)
-                .rounded_full()
-                .bg(theme.popover)
-                .shadow_md()
-                .pl(px(7.))
-                .pr(px(7.))
-                .child(plus_btn)
-                .child(capsule_input)
-                .child(send_btn)
+        let composer_card: Div = if false {
+            unreachable!()
         } else {
             v_flex()
                 .w_full()
@@ -3712,21 +3683,39 @@ impl Render for Native {
             }
             composer_col = composer_col.child(chips);
         }
-        composer_col = composer_col.child(composer_card);
         if in_thread {
-            // Chips row below the capsule (upstream): mode chip on the left,
-            // model chip on the right.
+            // Upstream thread composer floats context chips above the card:
+            // the thread's project on the left, "Temporary" on the right.
+            let thread_pid = str_at(thread_v, "projectId").to_string();
+            let proj_name = arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "projects")
+                .iter()
+                .find(|p| str_at(p, "id") == thread_pid)
+                .map(|p| str_at(p, "title").to_string())
+                .filter(|n: &String| !n.is_empty())
+                .unwrap_or_else(|| thread_pid.clone());
+            let chip = |text: String| {
+                div()
+                    .px(px(8.))
+                    .py(px(2.))
+                    .rounded(px(6.))
+                    .bg(theme.popover)
+                    .border_1()
+                    .border_color(theme.border)
+                    .text_size(px(11.))
+                    .text_color(theme.muted_foreground)
+                    .child(text)
+            };
             composer_col = composer_col.child(
                 h_flex()
                     .w_full()
-                    .mt(px(8.))
-                    .px(px(14.))
                     .items_center()
-                    .child(build_mode_chip(cx))
+                    .pb(px(4.))
+                    .child(chip(format!("\u{29c9} {proj_name}")))
                     .child(div().flex_1())
-                    .child(build_model_chip()),
+                    .child(chip("\u{25cc} Temporary".to_string())),
             );
         }
+        composer_col = composer_col.child(composer_card);
         let composer_bar = div()
             .w_full()
             .pb(px(18.))

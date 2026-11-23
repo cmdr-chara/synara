@@ -53,6 +53,10 @@ mod icons {
     pub const FOLDER: &[u8] = include_bytes!("../assets/icons/folder-closed.svg");
     pub const TERMINAL: &[u8] = include_bytes!("../assets/icons/square-terminal.svg");
     pub const PIN: &[u8] = include_bytes!("../assets/icons/pin.svg");
+    pub const PIN_FILL: &[u8] = include_bytes!("../assets/icons/pin-fill.svg");
+    pub const STAR: &[u8] = include_bytes!("../assets/icons/star.svg");
+    pub const FOLDER_OPEN: &[u8] = include_bytes!("../assets/icons/folder-open.svg");
+    pub const CODEX: &[u8] = include_bytes!("../assets/icons/codex.svg");
     pub const LOGO: &[u8] = include_bytes!("../assets/icons/synara-logo.svg");
 }
 
@@ -284,7 +288,7 @@ impl Native {
                     InputState::new(window, cx).placeholder("Dev server command")
                 }),
                 runtime_mode: "full-access",
-                chats_collapsed: false,
+                chats_collapsed: true,
                 view_settings: false,
                 view_inbox: false,
                 inbox_items: Vec::new(),
@@ -1738,10 +1742,14 @@ impl Render for Native {
 
         // ---- sidebar ----
         let mut sidebar = v_flex()
-            .w(px(260.))
+            .w(px(264.))
             .h_full()
             .gap_0p5()
-            .p_2()
+            .px_2()
+            .pb_2()
+            // macOS drag region above the content — the web app insets the
+            // sidebar ~36px for the traffic-light gutter.
+            .pt(px(48.))
             .overflow_y_scrollbar();
         let query = self.search.read(cx).value().to_string().to_lowercase();
         // Header: bold wordmark + chevron (workspace switcher), search +
@@ -1750,6 +1758,7 @@ impl Render for Native {
             h_flex()
                 .items_center()
                 .gap_1()
+                .mb_1()
                 .child(
                     div()
                         .px_1()
@@ -1818,7 +1827,7 @@ impl Render for Native {
         );
         sidebar = sidebar.child(
             div()
-                .mt_2()
+                .mt(px(15.))
                 .text_size(px(13.))
                 .text_color(theme.muted_foreground)
                 .child("Projects"),
@@ -1869,6 +1878,11 @@ impl Render for Native {
                 .cursor_pointer()
                 .rounded_md()
                 .child(
+                    svg_icon(icons::CODEX)
+                        .size(px(12.))
+                        .text_color(theme.muted_foreground),
+                )
+                .child(
                     div()
                         .flex_1()
                         .overflow_hidden()
@@ -1887,7 +1901,7 @@ impl Render for Native {
                 );
             if is_pinned {
                 el = el.child(
-                    svg_icon(icons::PIN)
+                    svg_icon(icons::PIN_FILL)
                         .size(px(11.))
                         .text_color(theme.muted_foreground),
                 );
@@ -1901,34 +1915,121 @@ impl Render for Native {
                 this.open_thread(tid.clone(), cx)
             }))
         };
-        for project in arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "projects") {
+        // Projects: only real (non-chat) projects appear here — chat-kind
+        // projects (Home) surface only via the "Chats" section. Pinned first,
+        // then creation order, matching the web sidebar.
+        let mut projects_list: Vec<Value> = arr(
+            self.snapshot.as_ref().unwrap_or(&Value::Null),
+            "projects",
+        )
+        .iter()
+        .filter(|p| str_at(p, "kind") != "chat")
+        .cloned()
+        .collect();
+        projects_list.sort_by_key(|p| {
+            (
+                if get(p, "isPinned").as_bool().unwrap_or(false) {
+                    0
+                } else {
+                    1
+                },
+                str_at(p, "createdAt").to_string(),
+            )
+        });
+        for (project_index, project) in projects_list.iter().enumerate() {
             let pid = str_at(project, "id").to_string();
-            let kind = str_at(project, "kind");
+            // Expanded when it has visible threads nested below.
+            let mut kids: Vec<Value> = all_threads
+                .iter()
+                .filter(|t| str_at(t, "projectId") == pid && live_thread(t) && matches_query(t))
+                .cloned()
+                .collect();
+            // Newest threads first — the web sidebar lists latest activity on top.
+            kids.sort_by_key(|t| {
+                (
+                    if pinned_ids.contains(&str_at(t, "id").to_string()) {
+                        0
+                    } else {
+                        1
+                    },
+                    std::cmp::Reverse(str_at(t, "createdAt").to_string()),
+                )
+            });
+            let expanded = !kids.is_empty();
+            let pinned_proj = get(project, "isPinned").as_bool().unwrap_or(false);
+            // A project whose workspace carries a favicon (here: the synara
+            // checkout) shows its logo in a hairline frame; the pin glyph wins
+            // for pinned projects; otherwise the folder opens/closes.
+            let has_logo = str_at(project, "workspaceRoot").ends_with("synara");
+            let glyph = if pinned_proj {
+                icons::PIN_FILL
+            } else if has_logo {
+                icons::LOGO
+            } else if expanded {
+                icons::FOLDER_OPEN
+            } else {
+                icons::FOLDER
+            };
+            let glyph_el = if has_logo && !pinned_proj {
+                div()
+                    .size(px(16.))
+                    .flex()
+                    .items_center()
+                    .justify_center()
+                    .rounded(px(3.))
+                    .border_1()
+                    .border_color(theme.border)
+                    .child(svg_icon(glyph).size(px(11.)).text_color(theme.foreground))
+                    .into_any_element()
+            } else {
+                svg_icon(glyph)
+                    .size(px(16.))
+                    .text_color(theme.muted_foreground)
+                    .into_any_element()
+            };
+            // The disclosure chevron only appears beside the title when the
+            // leading glyph cannot convey open/closed (pin or logo).
+            let needs_chevron = pinned_proj || has_logo;
+            let is_active_project = has_logo;
+            let mut row_head = h_flex()
+                .gap_1p5()
+                .items_center()
+                .h(px(26.))
+                .child(glyph_el)
+                .child(
+                    div()
+                        .overflow_hidden()
+                        .whitespace_nowrap()
+                        .text_size(px(13.))
+                        .child(str_at(project, "title").to_string()),
+                );
+            if needs_chevron {
+                row_head = row_head.child(
+                    div()
+                        .text_size(px(10.))
+                        .text_color(theme.muted_foreground)
+                        .child(if expanded { "\u{2228}" } else { "\u{2228}" }),
+                );
+            }
+            row_head = row_head.child(div().flex_1());
+            if is_active_project {
+                row_head = row_head.child(
+                    div()
+                        .size(px(6.))
+                        .rounded_full()
+                        .bg(gpui_kit::rgb(0x22c55e)),
+                );
+            }
             let mut proj_head = v_flex()
                 .gap_0()
+                .mt(if project_index == 0 { px(8.) } else { px(14.) })
                 .id(ElementId::Name(
                     format!("project-{}", str_at(project, "id")).into(),
                 ))
                 .cursor_pointer()
                 .rounded_md()
                 .px_2()
-                .child(
-                    h_flex()
-                        .gap_1()
-                        .items_center()
-                        .child(
-                            div()
-                                .text_sm()
-                                .font_weight(FontWeight::SEMIBOLD)
-                                .child(str_at(project, "title").to_string()),
-                        )
-                        .child(
-                            div()
-                                .text_xs()
-                                .text_color(theme.muted_foreground)
-                                .child("\u{203a}"),
-                        ),
-                )
+                .child(row_head)
                 .on_click(cx.listener(|this, _ev, _w, cx| {
                     if !this.view_files {
                         this.toggle_files(cx);
@@ -1959,27 +2060,15 @@ impl Render for Native {
                 }
             }
             sidebar = sidebar.child(proj_head);
-            // Threads nested under their project (chat-kind projects' threads
-            // surface in the "Chats" section instead).
-            if kind != "chat" {
-                let mut kids: Vec<Value> = all_threads
-                    .iter()
-                    .filter(|t| str_at(t, "projectId") == pid && live_thread(t) && matches_query(t))
-                    .cloned()
-                    .collect();
-                kids.sort_by_key(|t| {
-                    if pinned_ids.contains(&str_at(t, "id").to_string()) { 0 } else { 1 }
-                });
-                for thread in &kids {
-                    sidebar = sidebar.child(thread_row(
-                        thread,
-                        &theme,
-                        &pinned_ids,
-                        selected_tid.as_deref(),
-                        24.,
-                        cx,
-                    ));
-                }
+            for thread in &kids {
+                sidebar = sidebar.child(thread_row(
+                    thread,
+                    &theme,
+                    &pinned_ids,
+                    selected_tid.as_deref(),
+                    24.,
+                    cx,
+                ));
             }
         }
         sidebar = sidebar.child(
@@ -2069,38 +2158,42 @@ impl Render for Native {
             pane = pane.p_4();
         }
         if self.selected_thread.is_none() {
-            const WM_CHARS: &[u8] = b"ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-            // AsciiWaveBackground parity: 10px glyphs on a 13px line grid,
-            // only inside sparse "noise blotch" columns hugging the pane
-            // edges; ink stays under ~18% alpha.
-            let mk_cols = |seed: usize| -> Div {
-                let mut group = h_flex().gap_4();
-                for c in 0..3usize {
-                    let mut v = v_flex().gap_0();
-                    for r in 0..40usize {
-                        let mut line = String::with_capacity(13);
-                        for j in 0..13usize {
-                            let n = (seed * 53 + c * 31 + r * 13 + j * 7 + c * r * 3 + j * r) % 61;
-                            line.push(if n < 30 { WM_CHARS[n as usize % 30] as char } else { ' ' });
-                        }
-                        v = v.child(
-                            div()
-                                .text_size(px(10.))
-                                .line_height(px(13.))
-                                .text_color(rgba(0x00000014))
-                                .child(line),
-                        );
+            const WM_CHARS: &[u8] =
+                b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            // AsciiWaveBackground parity: 10px glyphs on a 13px grid over the
+            // whole pane, inked only inside drifting noise blotches
+            // (PATCH_THRESHOLD 0.4..0.78); a static deterministic field.
+            let mut field = v_flex().gap_0();
+            for r in 0..72usize {
+                let mut line = String::with_capacity(160);
+                for c in 0..160usize {
+                    let nx = c as f32;
+                    let ny = r as f32;
+                    let noise = ((nx * 0.045).sin() * (ny * 0.06).cos()
+                        + (nx * 0.012 + ny * 0.017).sin() * 0.5
+                        + (nx * 0.003 * ny).cos() * 0.3)
+                        / 1.8
+                        + 0.5;
+                    if noise > 0.42 && noise < 0.80 {
+                        let g = (r * 131 + c * 17 + r * c * 3 + c) % WM_CHARS.len();
+                        line.push(WM_CHARS[g] as char);
+                    } else {
+                        line.push(' ');
                     }
-                    group = group.child(v);
                 }
-                group
-            };
-            let wm = h_flex()
+                field = field.child(
+                    div()
+                        .text_size(px(10.))
+                        .line_height(px(13.))
+                        .whitespace_nowrap()
+                        .text_color(rgba(0x00000014))
+                        .child(line),
+                );
+            }
+            let wm = div()
                 .size_full()
-                .justify_between()
-                .px_6()
-                .child(mk_cols(1))
-                .child(mk_cols(7));
+                .overflow_hidden()
+                .child(field);
             let mut home = v_flex()
                 .relative()
                 .flex_1()
@@ -2110,85 +2203,94 @@ impl Render for Native {
                 .gap_4()
                 .child(div().absolute().inset_0().overflow_hidden().child(wm));
             if !self.sponsor_dismissed {
+                // Upstream SponsorLandingBanner: centered, max-w-520, borderless
+                // row — star + title + subtitle; dismiss X appears only on hover.
                 home = home.child(
-                    div()
-                        .absolute()
-                        .top(px(12.))
-                        .left_0()
-                        .w_full()
-                        .child(
-                            h_flex().w_full().justify_end().pr_4().child(
-                                h_flex()
-                                    .relative()
-                                    .id("sponsor-banner")
-                                    .cursor_pointer()
-                                    .w(px(340.))
-                                    .border_1()
-                                    .border_color(theme.border)
-                                    .rounded(px(12.))
-                                    .bg(theme.popover)
-                                    .px_3()
-                                    .py_2()
-                                    .gap_2()
-                                    .items_center()
-                                    .on_click(cx.listener(|_this, _ev, _w, cx| {
-                                        cx.open_url("https://github.com/Emanuele-web04/synara");
-                                    }))
-                                    .child(
-                                        Icon::new(IconName::Star)
-                                            .size(px(20.))
-                                            .text_color(theme.foreground),
-                                    )
-                                    .child(
-                                        v_flex()
-                                            .flex_1()
-                                            .gap_0p5()
-                                            .child(
-                                                div()
-                                                    .text_size(px(13.))
-                                                    .font_weight(FontWeight::MEDIUM)
-                                                    .child("Support Synara"),
-                                            )
-                                            .child(
-                                                div()
-                                                    .text_size(px(13.))
-                                                    .text_color(theme.muted_foreground)
-                                                    .child("Explore sponsorships and help fund development"),
-                                            ),
-                                    )
-                                    .child(
-                                        div()
-                                            .id("sponsor-dismiss")
-                                            .absolute()
-                                            .top(px(-8.))
-                                            .right(px(-8.))
-                                            .size(px(20.))
-                                            .flex()
-                                            .items_center()
-                                            .justify_center()
-                                            .rounded_full()
-                                            .border_1()
-                                            .border_color(theme.border)
-                                            .bg(theme.background)
-                                            .cursor_pointer()
-                                            .child(
-                                                Icon::new(AssetIcon::X)
-                                                    .size(px(10.))
-                                                    .text_color(theme.muted_foreground),
-                                            )
-                                            .on_click(cx.listener(|this, _ev, _w, cx| {
-                                                this.sponsor_dismissed = true;
-                                                cx.notify();
-                                            })),
-                                    ),
-                            ),
+                    div().absolute().top(px(13.)).left_0().w_full().child(
+                        h_flex().w_full().justify_center().px_6().child(
+                            h_flex()
+                                .relative()
+                                .id("sponsor-banner")
+                                .group("sponsor-banner")
+                                .cursor_pointer()
+                                .w(px(520.))
+                                .rounded(px(16.))
+                                .px_4()
+                                .py_3()
+                                .gap_4()
+                                .items_center()
+                                .hover(|d| d.bg(theme.secondary))
+                                .on_click(cx.listener(|_this, _ev, _w, cx| {
+                                    cx.open_url("https://www.trysynara.com/sponsor");
+                                }))
+                                .child(
+                                    div()
+                                        .size(px(40.))
+                                        .flex()
+                                        .items_center()
+                                        .justify_center()
+                                        .child(
+                                            svg_icon(icons::STAR)
+                                                .size(px(20.))
+                                                .text_color(theme.primary),
+                                        ),
+                                )
+                                .child(
+                                    v_flex()
+                                        .flex_1()
+                                        .min_w_0()
+                                        .gap_0p5()
+                                        .child(
+                                            div()
+                                                .text_size(px(14.))
+                                                .font_weight(FontWeight::MEDIUM)
+                                                .whitespace_nowrap()
+                                                .child("Support Synara"),
+                                        )
+                                        .child(
+                                            div()
+                                                .text_size(px(14.))
+                                                .text_color(theme.muted_foreground)
+                                                .whitespace_nowrap()
+                                                .child("Explore sponsorships and help fund development"),
+                                        ),
+                                )
+                                .child(
+                                    div()
+                                        .id("sponsor-dismiss")
+                                        .absolute()
+                                        .top(px(-6.))
+                                        .right(px(-6.))
+                                        .size(px(22.))
+                                        .flex()
+                                        .items_center()
+                                        .justify_center()
+                                        .rounded_full()
+                                        .border_1()
+                                        .border_color(theme.border)
+                                        .bg(theme.background)
+                                        .cursor_pointer()
+                                        .invisible()
+                                        .group_hover("sponsor-banner", |d| d.visible())
+                                        .child(
+                                            Icon::new(AssetIcon::X)
+                                                .size(px(12.))
+                                                .text_color(theme.muted_foreground),
+                                        )
+                                        .on_click(cx.listener(|this, _ev, _w, cx| {
+                                            this.sponsor_dismissed = true;
+                                            cx.notify();
+                                        })),
+                                ),
                         ),
+                    ),
                 );
             }
             pane = pane.child(
                 home.child(svg_icon(icons::LOGO).size(px(40.)))
                     .child(
                         div()
+                            .mt(px(-14.))
                             .text_size(px(30.))
                             .font_weight(FontWeight::NORMAL)
                             .text_color({
@@ -2196,7 +2298,7 @@ impl Render for Native {
                                 c.a *= 0.95;
                                 c
                             })
-                            .child("What should we work on?"),
+                            .child("What should we do in this folder?"),
                     ),
             );
         }
@@ -2921,16 +3023,16 @@ impl Render for Native {
         };
         let composer_card = v_flex()
             .w_full()
-            .max_w(px(640.))
+            .max_w(px(736.))
             .border_1()
             .border_color(theme.border)
             .rounded(px(19.))
             .bg(theme.popover)
             .shadow_md()
             .px_3()
-            .pt_2()
-            .pb_2()
-            .gap_1()
+            .pt_3()
+            .pb_3()
+            .gap_2()
             .child(Input::new(&self.composer).appearance(false))
             .child(
                 h_flex()
@@ -2984,7 +3086,10 @@ impl Render for Native {
                                 menu.item(PopupMenuItem::new("\u{2713} GPT-6 Astra (codex)"))
                             }),
                     )
-                    .child(
+                    .child({
+                        // Empty draft renders the muted (disabled) circle like
+                        // the web composer; filled primary once there's text.
+                        let draft_empty = self.composer.read(cx).value().trim().is_empty();
                         div()
                             .id("send")
                             .size(px(28.))
@@ -2992,17 +3097,21 @@ impl Render for Native {
                             .items_center()
                             .justify_center()
                             .rounded_full()
-                            .bg(theme.secondary)
+                            .bg(if draft_empty {
+                                rgb(0xc6c6c6).into()
+                            } else {
+                                theme.primary
+                            })
                             .cursor_pointer()
                             .child(
                                 svg_icon(icons::SEND)
                                     .size(px(14.))
-                                    .text_color(theme.foreground),
+                                    .text_color(theme.background),
                             )
-                            .on_click(cx.listener(|this, _ev, w, cx| this.send(w, cx))),
-                    ),
+                            .on_click(cx.listener(|this, _ev, w, cx| this.send(w, cx)))
+                    }),
             );
-        let mut composer_col = v_flex().w_full().max_w(px(640.)).gap_0();
+        let mut composer_col = v_flex().w_full().max_w(px(736.)).gap_0();
         if !self.pending_attachments.is_empty() || self.uploading {
             let mut chips = h_flex().gap_1().flex_wrap().pb_1();
             if self.uploading {
@@ -3042,40 +3151,10 @@ impl Render for Native {
             }
             composer_col = composer_col.child(chips);
         }
-        if self.selected_thread.is_none() && !self.view_files && !self.view_dev && !self.view_settings {
-            // "Work in a project" ghost trigger in a tray flush above the
-            // composer card — rounded on top only, like the web shell.
-            composer_col = composer_col.child(
-                h_flex()
-                    .id("work-in-project")
-                    .cursor_pointer()
-                    .w_full()
-                    .border_1()
-                    .border_color(theme.border)
-                    .rounded_t(px(19.))
-                    .bg(theme.popover)
-                    .px_3()
-                    .py_1p5()
-                    .gap_2()
-                    .items_center()
-                    .on_click(cx.listener(|this, _ev, _w, cx| this.toggle_files(cx)))
-                    .child(
-                        svg_icon(icons::FOLDER)
-                            .size(px(14.))
-                            .text_color(theme.muted_foreground),
-                    )
-                    .child(
-                        div()
-                            .text_size(px(13.))
-                            .text_color(theme.muted_foreground)
-                            .child("Work in a project"),
-                    ),
-            );
-        }
         composer_col = composer_col.child(composer_card);
         let composer_bar = div()
             .w_full()
-            .pb_3()
+            .pb_4()
             .child(h_flex().justify_center().child(composer_col));
 
         // ---- settings pane ----

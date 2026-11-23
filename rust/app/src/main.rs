@@ -13,6 +13,7 @@ mod mcp_connectors;
 mod provider_cache;
 mod skills_catalog;
 mod computer_audit;
+mod computer_native;
 mod orchestration_engine;
 mod project_agent;
 mod project_imports;

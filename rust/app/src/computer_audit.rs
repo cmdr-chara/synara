@@ -330,6 +330,13 @@ pub fn handles(tag: &str) -> bool {
 }
 
 pub fn handle(tag: &str, payload: &Value) -> Result<Value, WsErr> {
+    // Under the no-upstream front door, real macOS backend methods first;
+    // whatever it does not cover falls to the unsupported mirror below.
+    if tag != "computer.getAuditHistory" {
+        if let Some(result) = crate::computer_native::handle(tag, payload) {
+            return result.map_err(err);
+        }
+    }
     match tag {
         "computer.getAuditHistory" => get_audit_history(payload),
         "computer.getStatus" => Ok(unsupported_status()),

@@ -3,7 +3,7 @@
 Extracted 2026-11-22 from `packages/contracts/src/rpc.ts` (`Rpc.make` declarations, 285 methods).
 Transport: `apps/server/src/wsRpc.ts` over the WS upgrade path; this is the app's real API surface — the 30 HTTP routes in ROUTES.md are auxiliary.
 
-Native coverage in rust/app (relay handles the rest): ~184/285.
+Native coverage in rust/app (relay handles the rest): ~202/285.
 - `bootstrap.negotiate` (HTTP GET /ws/negotiate)
 - `filesystem.browse`
 - `git.*` — 26 of 27 (missing: summarizeDiff)
@@ -21,7 +21,7 @@ Native coverage in rust/app (relay handles the rest): ~184/285.
 - `automation.*` — 11 of 11: list, getMemory, markRunRead, archiveRun, cancelRun, delete, subscribe (snapshot stream), create, update, resolveProposal, runNow (queued run; no scheduler dispatch yet)
 - `projectAgent.*` — 35 of 38: reads (listTasks, listActivity, listDocuments, readDocument w/ disk-mirror sha256 conflict, listThreadIndex, listEvidence, listSummaries, getOverview) + writes (createTask/updateTask w/ deps-cycle+evidence guards, receipts idempotency, unblockDependents; startGoal/updateGoal/pauseGoal/resumeGoal/stopGoal w/ turn interrupts; excludeThread; configure w/ provider checks + coordinator thread/automation adoption + seed docs + greeting; linkProject/unlinkProject; writeDocument w/ mirror+conflictPending; pause/resume/archive/unarchive w/ automation disable-restore + thread archive/unarchive/turn-interrupt dispatches). delete (confirmName + requireEmpty + thread.delete dispatches + project.delete + context-dir trash), exportDocuments, restartCoordinator. library.* complete (mkdir/rename/delete/history --follow/restore/status, marker-owned git store). Missing: resolveWorker/refreshDigest/backfillSummaries (coordinator runtime)
 - `studio.*` — 1 of 1: listThreadOutputs (checkpoint + activity file paths, managed-tree exclusions, scaffold self-heal)
-- `computer.*` — 3 of 25: getAuditHistory + getStatus/getThreadState (upstream unsupported shapes verbatim under SYNARA_NO_UPSTREAM; other calls relay). getAuditHistory (bounded tail of state_dir/computer-audit.jsonl + .1/.2 rotations, sha256 file/line identity, base64url position cursors, verbatim limits/cursor errors). Remaining 22 need the CuaComputerBackend subsystem (macOS AT-SPI/screen capture)
+- `computer.*` — 21 of 25 under SYNARA_NO_UPSTREAM: real macOS backend via state_dir-compiled Swift helper (CGWindowList/CGEvent/AX) — getStatus/provision (permission-required verbatim w/ missing grants), getScreenSize, listWindows (cua:pid:wid ids + bounds + stackingIndex), getThreadState (+cursor), getState (+PNG screenshot via screencapture), launchApp (open -n), setControlEnabled (computer-control.json, disable→generation+1, 0600 tmp+rename), click/doubleClick/rightClick/input.click, moveCursor, drag, scroll/input.scroll (wheel telemetry), typeText, pressKey/input.key, hotkey (CGEvent + flag mask). getAuditHistory (bounded tail + base64url cursors, verbatim errors). Missing: subscribeEvents (event stream), setValue/performAction/selectText (element-targeted AX tree)
 
 Deferred with reasons: projectAgent writes + coordinator runtime, automation run dispatch; account/hosts/device need the remote pairing authority; provider.*/getConfig need the provider CLI matrix; readThreadDiagnostics/providerUsage are impl-flagged; voice/generate*/transcribe need the provider runtime; editor.* needs the editor runtime.
 

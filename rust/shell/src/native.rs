@@ -4662,13 +4662,13 @@ impl Render for Native {
                             .justify_between()
                             .gap_3()
                             .px_3()
-                            .py(px(3.5))
+                            .py(px(10.))
                             .child(
                                 v_flex()
                                     .flex_1()
                                     .min_w_0()
                                     .child(div().text_size(px(13.)).line_height(px(18.)).font_weight(FontWeight::MEDIUM).child(title))
-                                    .child(div().w_full().text_xs().line_height(px(16.)).text_color(theme.muted_foreground).child(desc)),
+                                    .child(div().w_full().text_size(px(13.)).line_height(px(16.)).text_color(theme.muted_foreground).child(desc)),
                             )
                             .child(right),
                     );
@@ -5647,6 +5647,7 @@ impl Render for Native {
                             .child(
                                 v_flex()
                                     .flex_1()
+                                    .min_w_0()
                                     .gap(px(2.))
                                     .child(div().text_size(px(13.)).font_weight(FontWeight::MEDIUM).child("Take an AppSnap to show your agent another app's window"))
                                     .child(div().w_full().text_size(px(13.)).text_color(theme.muted_foreground).child(
@@ -5661,9 +5662,11 @@ impl Render for Native {
                         v_flex()
                             .child(
                                 v_flex()
+                                    .w_full()
                                     .px_3()
                                     .py(px(10.))
                                     .gap(px(2.))
+                                    .min_w_0()
                                     .child(
                                         h_flex()
                                             .w_full()

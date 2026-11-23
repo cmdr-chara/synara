@@ -3977,8 +3977,15 @@ impl Render for Native {
         };
 
         let settings_h = window.viewport_size().height - px(47.);
+        // Upstream: connectors+usage -> max-w-4xl (896), profile -> max-w-3xl
+        // (768), everything else -> max-w-2xl (672), mx-auto centered.
+        let settings_w = px(match self.settings_section {
+            "connectors" | "usage" => 896.,
+            "profile" => 768.,
+            _ => 672.,
+        });
         let mut settings_pane = v_flex()
-            .w(px(672.))
+            .w(settings_w)
             .h(settings_h)
             .id("settings-scroll")
             .track_scroll(&self.settings_scroll)
@@ -5169,16 +5176,16 @@ impl Render for Native {
 
             // ---------- Connectors ----------
             if self.settings_section == "connectors" {
-                let search = div()
+                let search = h_flex()
                     .w_full()
-                    .h(px(30.))
-                    .px_2()
-                    .rounded(px(8.))
-                    .border_1()
-                    .border_color(theme.border)
-                    .flex()
+                    .h(px(36.))
+                    .px_3()
+                    .gap_2()
+                    .rounded(px(10.))
+                    .bg(gpui::rgba(0x0000000a))
                     .items_center()
-                    .child(div().text_xs().text_color(theme.muted_foreground).child("Search connectors"))
+                    .child(svg_icon(icons::SEARCH).size(px(16.)).text_color(theme.muted_foreground))
+                    .child(div().text_sm().text_color(theme.muted_foreground).child("Search connectors"))
                     .into_any_element();
                 let dark_btn = |label: &'static str| {
                     div()
@@ -5226,8 +5233,16 @@ impl Render for Native {
                             .child(outline_btn("Add local server")),
                     )
                     ;
+                let mut catalog_grid = v_flex().w_full().gap(px(2.));
+                let mut first_cat = true;
                 for (cat, cat_name) in &catalog {
-                    settings_pane = settings_pane.child(section_label(cat_name));
+                    let label = section_label(cat_name);
+                    catalog_grid = catalog_grid.child(if first_cat {
+                        first_cat = false;
+                        label
+                    } else {
+                        label.mt(px(16.))
+                    });
                     let cat_items: Vec<_> = items.iter().filter(|(c, ..)| c == cat).collect();
                     for chunk in cat_items.chunks(2) {
                         let mut row = h_flex().w_full().gap(px(24.));
@@ -5238,7 +5253,7 @@ impl Render for Native {
                                     .min_w_0()
                                     .items_center()
                                     .gap_3()
-                                    .py(px(8.))
+                                    .py(px(10.))
                                     .child(
                                         div()
                                             .w(px(44.))
@@ -5274,9 +5289,10 @@ impl Render for Native {
                         if chunk.len() == 1 {
                             row = row.child(div().flex_1());
                         }
-                        settings_pane = settings_pane.child(row);
+                        catalog_grid = catalog_grid.child(row);
                     }
                 }
+                settings_pane = settings_pane.child(catalog_grid);
             }
 
             // ---------- External agents (integrations) ----------
@@ -5386,8 +5402,13 @@ impl Render for Native {
                     .child(section_label("Connected agents"));
                 if exts.is_empty() {
                     settings_pane = settings_pane.child(card(
-                        div().px_3().py(px(10.)).text_sm().text_color(theme.muted_foreground)
-                            .child("No external agents connected.").into_any_element(),
+                        v_flex()
+                            .px_3()
+                            .py(px(10.))
+                            .gap(px(2.))
+                            .child(div().text_sm().font_weight(FontWeight::MEDIUM).child("No connected agents"))
+                            .child(div().text_sm().text_color(theme.muted_foreground).child("Connect Codex, Claude, or another local MCP agent to create and follow Synara tasks."))
+                            .into_any_element(),
                     ));
                 }
                 for e in &exts {
@@ -6004,7 +6025,7 @@ impl Render for Native {
         }
 
         // ---- settings sidebar nav (replaces project sidebar) ----
-        let mut settings_nav_el = v_flex().flex_1().h_full().px(px(6.)).py(px(6.)).gap(px(2.));
+        let mut settings_nav_el = v_flex().flex_1().h_full().px(px(6.)).pt(px(12.)).pb(px(6.)).gap(px(2.));
         settings_nav_el = settings_nav_el.child(
             div()
                 .px_2()
@@ -6043,7 +6064,8 @@ impl Render for Native {
             if !group.is_empty() {
                 nav_list = nav_list.child(
                     div()
-                        .mt_3()
+                        .flex_shrink_0()
+                        .mt(px(5.))
                         .px_2()
                         .py_1()
                         .text_sm()
@@ -6055,6 +6077,7 @@ impl Render for Native {
                 let active = *id == self.settings_section;
                 let mut row = h_flex()
                     .id(ElementId::Name(format!("setnav-{id}").into()))
+                    .flex_shrink_0()
                     .h(px(28.))
                     .px_2()
                     .gap_2()

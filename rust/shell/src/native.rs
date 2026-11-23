@@ -290,6 +290,10 @@ fn arr<'a>(v: &'a Value, k: &str) -> &'a [Value] {
     get(v, k).as_array().map(Vec::as_slice).unwrap_or(&[])
 }
 
+fn get_mut<'a>(v: &'a mut Value, k: &str) -> Option<&'a mut Value> {
+    v.get_mut(k)
+}
+
 fn now_iso() -> String {
     chrono::Utc::now().to_rfc3339_opts(chrono::SecondsFormat::Millis, true)
 }
@@ -1409,6 +1413,43 @@ impl Native {
                 this.settings_data = bundle;
                 cx.notify();
             });
+        })
+        .detach();
+    }
+
+    /// Upstream rail "…" checkbox: toggles `key` inside
+    /// settings.railShortcuts and persists via server.updateSettings.
+    fn toggle_rail_shortcut(&mut self, key: &str, cx: &mut Context<Self>) {
+        let mut next: Vec<String> = arr(
+            get(&self.settings_data, "settings"),
+            "railShortcuts",
+        )
+        .iter()
+        .filter_map(|v| v.as_str().map(|s| s.to_string()))
+        .collect();
+        if let Some(pos) = next.iter().position(|k| k == key) {
+            next.remove(pos);
+        } else {
+            next.push(key.to_string());
+        }
+        if let Some(obj) = get_mut(&mut self.settings_data, "settings")
+            .and_then(|s| s.as_object_mut())
+        {
+            obj.insert(
+                "railShortcuts".to_string(),
+                json!(next.iter().map(|s| s.as_str()).collect::<Vec<_>>()),
+            );
+        }
+        cx.notify();
+        let cell = self.client.clone();
+        let payload = json!({"railShortcuts": next});
+        cx.spawn(async move |_this: WeakEntity<Self>, cx: &mut AsyncApp| {
+            cx.background_executor()
+                .spawn(async move {
+                    let _ = ensure_client(&cell)
+                        .and_then(|c| c.call("server.updateSettings", payload));
+                })
+                .await;
         })
         .detach();
     }
@@ -7342,19 +7383,113 @@ impl Render for Native {
                     }),
                 ),
             )
-            .child(
-                rail_btn("nav-more", icons::MORE, self.view_settings, cx).on_click(
-                    cx.listener(|this, _ev, _w, cx| {
-                        let was = this.view_settings;
-                        this.clear_views();
-                        this.view_settings = !was;
-                        if this.view_settings && this.settings_data.is_null() {
-                            this.fetch_settings(cx);
+            .child({
+                // Upstream "…" opens a popover: Hubs, then checkbox groups for
+                // spaces and projects pinned in the rail, then Customize.
+                let more_weak = cx.weak_entity();
+                let snap = self.snapshot.clone().unwrap_or(Value::Null);
+                let mut more_spaces: Vec<(String, String)> = Vec::new();
+                more_spaces.push(("space:void".to_string(), "Void".to_string()));
+                for s in arr(&snap, "spaces") {
+                    let id = str_at(s, "id").to_string();
+                    if id.is_empty() {
+                        continue;
+                    }
+                    let name = str_at(s, "name").to_string();
+                    more_spaces.push((format!("space:{id}"), name));
+                }
+                let mut more_projects: Vec<(String, String)> = Vec::new();
+                for p in arr(&snap, "projects") {
+                    // Upstream lists ordinary space projects only
+                    // (isOrdinarySpaceProject): no chat/group/studio kinds.
+                    if str_at(p, "kind") != "project" {
+                        continue;
+                    }
+                    let id = str_at(p, "id").to_string();
+                    if id.is_empty() {
+                        continue;
+                    }
+                    let title = str_at(p, "title").to_string();
+                    more_projects.push((format!("project:{id}"), title));
+                }
+                let pinned: Vec<String> = arr(
+                    get(&self.settings_data, "settings"),
+                    "railShortcuts",
+                )
+                .iter()
+                .filter_map(|v| v.as_str().map(|s| s.to_string()))
+                .collect();
+                Button::new("nav-more")
+                    .ghost()
+                    .compact()
+                    .icon(svg_icon(icons::MORE).size(px(20.)).text_color(glyph_idle))
+                    .dropdown_menu(move |menu, _, _| {
+                        let mut m = menu
+                            .min_w(px(256.))
+                            .max_h(px(500.))
+                            .item(PopupMenuItem::new("Hubs").on_click({
+                                let weak = more_weak.clone();
+                                move |_, _w, cx| {
+                                    let _ = weak.update(cx, |this, cx| {
+                                        this.open_route(5, cx);
+                                    });
+                                }
+                            }))
+                            .item(PopupMenuItem::separator())
+                            .item(PopupMenuItem::label("Spaces in the rail"));
+                        for (key, label) in &more_spaces {
+                            let checked = pinned.iter().any(|k| k == key);
+                            let weak = more_weak.clone();
+                            let key = key.clone();
+                            m = m.item(
+                                PopupMenuItem::new(label.clone())
+                                    .checked(checked)
+                                    .on_click(move |_, _w, cx| {
+                                        let _ = weak.update(cx, |this, cx| {
+                                            this.toggle_rail_shortcut(&key, cx);
+                                        });
+                                    }),
+                            );
                         }
-                        cx.notify();
-                    }),
-                ),
-            )
+                        m = m
+                            .item(PopupMenuItem::separator())
+                            .item(PopupMenuItem::label("Projects in the rail"));
+                        if more_projects.is_empty() {
+                            m = m.item(
+                                PopupMenuItem::new("No projects").disabled(true),
+                            );
+                        } else {
+                            for (key, label) in &more_projects {
+                                let checked = pinned.iter().any(|k| k == key);
+                                let weak = more_weak.clone();
+                                let key = key.clone();
+                                m = m.item(
+                                    PopupMenuItem::new(label.clone())
+                                        .checked(checked)
+                                        .on_click(move |_, _w, cx| {
+                                            let _ = weak.update(cx, |this, cx| {
+                                                this.toggle_rail_shortcut(&key, cx);
+                                            });
+                                        }),
+                                );
+                            }
+                        }
+                        m.item(PopupMenuItem::separator())
+                            .item(PopupMenuItem::new("Customize").on_click({
+                                let weak = more_weak.clone();
+                                move |_, _w, cx| {
+                                    let _ = weak.update(cx, |this, cx| {
+                                        this.clear_views();
+                                        this.view_settings = true;
+                                        if this.settings_data.is_null() {
+                                            this.fetch_settings(cx);
+                                        }
+                                        cx.notify();
+                                    });
+                                }
+                            }))
+                    })
+            })
             .child(div().flex_1())
             .child(
                 rail_btn("nav-help", icons::HELP, false, cx)

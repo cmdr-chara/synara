@@ -4567,7 +4567,16 @@ impl Render for Native {
                     first = false;
                     let mut right = h_flex().items_center().gap_2();
                     if !kbd.is_empty() {
-                        right = right.child(div().text_sm().text_color(theme.muted_foreground).child(kbd));
+                        right = right.child(
+                            div()
+                                .px(px(7.))
+                                .py(px(1.5))
+                                .rounded(px(10.))
+                                .bg(gpui::rgba(0x00000008))
+                                .text_sm()
+                                .text_color(theme.muted_foreground)
+                                .child(kbd),
+                        );
                     }
                     right = right.child(
                         h_flex()
@@ -4583,14 +4592,13 @@ impl Render for Native {
                             .justify_between()
                             .gap_3()
                             .px_3()
-                            .py(px(8.))
+                            .py(px(3.5))
                             .child(
                                 v_flex()
                                     .flex_1()
                                     .min_w_0()
-                                    .gap(px(1.))
                                     .child(div().text_sm().font_weight(FontWeight::MEDIUM).child(title))
-                                    .child(div().w_full().text_sm().text_color(theme.muted_foreground).child(desc)),
+                                    .child(div().w_full().text_xs().text_color(theme.muted_foreground).child(desc)),
                             )
                             .child(right),
                     );

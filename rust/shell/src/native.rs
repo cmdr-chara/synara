@@ -13,7 +13,7 @@ use gpui_kit::component::{
     scroll::ScrollableElement as _,
     spinner::Spinner,
     text::TextView,
-    theme::{Theme, ThemeMode},
+    theme::Theme,
     v_flex,
     Icon,
     ActiveTheme as _, IconName, Sizable as _,
@@ -68,6 +68,38 @@ mod icons {
         include_bytes!("../assets/icons/chevron-down-small.svg");
     pub const WORKTREE: &[u8] =
         include_bytes!("../assets/icons/worktree-split.svg");
+    pub const S_PEOPLE_ID_CARD: &[u8] =
+        include_bytes!("../assets/icons/people-id-card.svg");
+    pub const S_COLOR_PALETTE: &[u8] =
+        include_bytes!("../assets/icons/color-palette.svg");
+    pub const S_LAYOUT_SIDEBAR: &[u8] =
+        include_bytes!("../assets/icons/layout-sidebar.svg");
+    pub const S_CHAT_BUBBLES: &[u8] =
+        include_bytes!("../assets/icons/chat-bubbles.svg");
+    pub const S_BELL: &[u8] = include_bytes!("../assets/icons/bell.svg");
+    pub const S_SHORTCUT: &[u8] = include_bytes!("../assets/icons/shortcut.svg");
+    pub const S_PUZZLE: &[u8] = include_bytes!("../assets/icons/puzzle.svg");
+    pub const S_BRAIN: &[u8] = include_bytes!("../assets/icons/brain.svg");
+    pub const S_BUILDING_BLOCKS: &[u8] =
+        include_bytes!("../assets/icons/building-blocks.svg");
+    pub const S_GAUGE: &[u8] = include_bytes!("../assets/icons/gauge.svg");
+    pub const S_CONNECTORS: &[u8] =
+        include_bytes!("../assets/icons/connectors-1.svg");
+    pub const S_PLUGIN: &[u8] = include_bytes!("../assets/icons/plugin-1.svg");
+    pub const S_GLOBE: &[u8] = include_bytes!("../assets/icons/globe.svg");
+    pub const S_COMPUTER_USE: &[u8] =
+        include_bytes!("../assets/icons/computer-use.svg");
+    pub const S_SCREEN_CAPTURE: &[u8] =
+        include_bytes!("../assets/icons/screen-capture.svg");
+    pub const S_BRANCH_SIMPLE: &[u8] =
+        include_bytes!("../assets/icons/branch-simple.svg");
+    pub const S_ARCHIVE: &[u8] = include_bytes!("../assets/icons/archive.svg");
+    pub const S_SHIELD: &[u8] = include_bytes!("../assets/icons/shield.svg");
+    pub const S_TOOLBOX: &[u8] = include_bytes!("../assets/icons/toolbox.svg");
+    pub const S_CIRCLE_INFO: &[u8] =
+        include_bytes!("../assets/icons/circle-info.svg");
+    pub const S_GEAR: &[u8] =
+        include_bytes!("../assets/icons/settings-gear-4.svg");
 }
 
 fn svg_icon(data: &'static [u8]) -> Icon {
@@ -130,6 +162,7 @@ pub struct Native {
     runtime_mode: &'static str,
     chats_collapsed: bool,
     view_settings: bool,
+    settings_section: &'static str,
     view_inbox: bool,
     inbox_items: Vec<Value>,
     inbox_errors: Vec<Value>,
@@ -315,6 +348,7 @@ impl Native {
                 runtime_mode: "full-access",
                 chats_collapsed: true,
                 view_settings: false,
+                settings_section: "general",
                 view_inbox: false,
                 inbox_items: Vec::new(),
                 inbox_errors: Vec::new(),
@@ -3485,75 +3519,320 @@ impl Render for Native {
             );
 
         // ---- settings pane ----
-        let settings_pane = v_flex()
-            .size_full()
-            .p_4()
-            .gap_4()
-            .child(
-                div()
-                    .text_xl()
-                    .font_weight(FontWeight::SEMIBOLD)
-                    .child("Settings"),
-            )
-            .child(
+        // ---- settings pane (upstream /settings layout) ----
+        // Nav: (group label, [(section id, label, icon, badge)])
+        let settings_nav: &[(&str, &[(&str, &str, &[u8], Option<&str>)])] = &[
+            ("", &[
+                ("profile", "Profile", icons::USER, None),
+                ("accounts", "Accounts", icons::S_PEOPLE_ID_CARD, None),
+            ]),
+            ("Synara", &[
+                ("general", "General", icons::S_GEAR, None),
+                ("appearance", "Appearance", icons::S_COLOR_PALETTE, None),
+                ("layout", "Layout", icons::S_LAYOUT_SIDEBAR, None),
+                ("chats", "Chats", icons::S_CHAT_BUBBLES, None),
+                ("notifications", "Notifications", icons::S_BELL, None),
+                ("shortcuts", "Keyboard shortcuts", icons::S_SHORTCUT, None),
+            ]),
+            ("Agents", &[
+                ("providers", "Providers", icons::S_PUZZLE, None),
+                ("models", "Models", icons::S_BRAIN, None),
+                ("skills", "Skills", icons::S_BUILDING_BLOCKS, None),
+                ("usage", "Usage", icons::S_GAUGE, None),
+            ]),
+            ("Connections", &[
+                ("connectors", "Connectors", icons::S_CONNECTORS, None),
+                ("integrations", "External agents", icons::S_PLUGIN, None),
+                ("devices", "Devices", icons::S_GLOBE, None),
+                ("computer", "Computer use", icons::S_COMPUTER_USE, Some("Beta")),
+                ("appsnap", "AppSnap", icons::S_SCREEN_CAPTURE, None),
+            ]),
+            ("Workspace", &[
+                ("worktrees", "Worktrees", icons::S_BRANCH_SIMPLE, None),
+                ("archive", "Archive", icons::S_ARCHIVE, None),
+            ]),
+            ("System", &[
+                ("privacy", "Privacy", icons::S_SHIELD, None),
+                ("advanced", "Advanced", icons::S_TOOLBOX, None),
+                ("about", "About", icons::S_CIRCLE_INFO, None),
+            ]),
+        ];
+        let section_title: &str = settings_nav
+            .iter()
+            .flat_map(|(_, items)| items.iter())
+            .find(|(id, ..)| *id == self.settings_section)
+            .map(|(_, l, ..)| *l)
+            .unwrap_or("General");
+
+        // Settings card: rounded-xl, faint fill (foreground/2%), hairline border.
+        let card = |rows: gpui::AnyElement| {
+            div()
+                .rounded(px(12.))
+                .border_1()
+                .border_color(theme.border)
+                .bg(rgb(0xfafafa))
+                .child(rows)
+        };
+        // One row: title + description left, control right.
+        let srow = |title: &'static str, desc: &'static str, ctrl: gpui::AnyElement| {
+            h_flex()
+                .w_full()
+                .items_center()
+                .justify_between()
+                .gap_3()
+                .px_3()
+                .py(px(10.))
+                .child(
+                    v_flex()
+                        .flex_1()
+                        .min_w_0()
+                        .gap(px(2.))
+                        .child(div().text_sm().font_weight(FontWeight::MEDIUM).child(title))
+                        .child(div().w_full().text_sm().text_color(theme.muted_foreground).child(desc)),
+                )
+                .child(ctrl)
+        };
+        let divider = || div().h(px(1.)).w_full().bg(theme.border);
+        // Select-style control pill (static parity render).
+        let select_pill = |label: String, icon: Option<&'static [u8]>| {
+            let mut b = h_flex()
+                .h(px(28.))
+                .px(px(10.))
+                .gap_1p5()
+                .items_center()
+                .rounded(px(8.))
+                .border_1()
+                .border_color(theme.border);
+            if let Some(ic) = icon {
+                b = b.child(svg_icon(ic).size(px(14.)).text_color(theme.muted_foreground));
+            }
+            b.child(div().text_sm().whitespace_nowrap().child(label))
+                .child(svg_icon(icons::CHEVRON_DOWN).size(px(12.)).text_color(theme.muted_foreground))
+                .into_any_element()
+        };
+        let outline_btn = |label: &'static str| {
+            div()
+                .h(px(28.))
+                .px_3()
+                .flex()
+                .items_center()
+                .rounded(px(8.))
+                .border_1()
+                .border_color(theme.border)
+                .child(div().text_sm().whitespace_nowrap().child(label))
+                .into_any_element()
+        };
+        let section_label = |t: &'static str| {
+            div()
+                .px_2()
+                .py_1()
+                .text_sm()
+                .text_color(theme.muted_foreground)
+                .child(t)
+        };
+
+        let mut settings_pane = v_flex().flex_1().h_full().px_6().py_8().gap_6();
+        {
+            let mut head = h_flex().items_start().justify_between().gap_4();
+            head = head.child(
                 v_flex()
-                    .gap_2()
+                    .gap(px(6.))
                     .child(
                         div()
-                            .text_xs()
-                            .font_weight(FontWeight::SEMIBOLD)
-                            .text_color(theme.muted_foreground)
-                            .child("APPEARANCE"),
-                    )
-                    .child(
-                        h_flex()
-                            .gap_2()
-                            .child(
-                                Button::new("theme-light")
-                                    .icon(IconName::Sun)
-                                    .label("Light")
-                                    .on_click(cx.listener(|_this, _ev, _w, cx| {
-                                        Theme::change(ThemeMode::Light, None, cx);
-                                    })),
-                            )
-                            .child(
-                                Button::new("theme-dark")
-                                    .icon(IconName::Moon)
-                                    .label("Dark")
-                                    .on_click(cx.listener(|_this, _ev, _w, cx| {
-                                        Theme::change(ThemeMode::Dark, None, cx);
-                                    })),
-                            ),
-                    ),
-            )
-            .child(
-                v_flex()
-                    .gap_2()
-                    .child(
-                        div()
-                            .text_xs()
-                            .font_weight(FontWeight::SEMIBOLD)
-                            .text_color(theme.muted_foreground)
-                            .child("ABOUT"),
+                            .text_xl()
+                            .font_weight(FontWeight::MEDIUM)
+                            .child(section_title.to_string()),
                     )
                     .child(
                         div()
                             .text_sm()
-                            .child("Synara (Rust port)"),
-                    )
-                    .child(
-                        Button::new("about-repo")
-                            .ghost()
-                            .compact()
-                            .icon(IconName::ExternalLink)
-                            .label("github.com/cmdr-chara/synara")
-                            .on_click(cx.listener(|_this, _ev, _w, cx| {
-                                cx.open_url(
-                                    "https://github.com/cmdr-chara/synara/tree/feat/rust-port",
-                                );
-                            })),
+                            .text_color(theme.muted_foreground)
+                            .child(if self.settings_section == "general" {
+                                "Defaults for new chats, power, time, and getting started.".to_string()
+                            } else {
+                                format!("{section_title} settings are not yet ported to the native shell.")
+                            }),
                     ),
             );
+            if self.settings_section == "general" {
+                head = head.child(outline_btn("\u{21ba} Restore defaults"));
+            }
+            settings_pane = settings_pane.child(div().mb_2().child(head));
+
+            if self.settings_section == "general" {
+                settings_pane = settings_pane
+                    .child(
+                        v_flex()
+                            .gap_1p5()
+                            .child(section_label("New chats"))
+                            .child(card(
+                        v_flex()
+                            .child(srow(
+                                "Agent and account",
+                                "New chats start on this account until you pick another in the model picker. After that they reuse your most recent choice.",
+                                select_pill("Codex".to_string(), Some(icons::CODEX)),
+                            ))
+                            .child(divider())
+                            .child(srow(
+                                "New threads",
+                                "Pick the default workspace mode for newly created draft threads.",
+                                select_pill("Local".to_string(), None),
+                            ))
+                            .into_any_element(),
+                            )
+                            .into_any_element(),
+                        ),
+                    )
+                    .child(
+                        v_flex()
+                            .gap_1p5()
+                            .child(section_label("Power"))
+                            .child(card(
+                        v_flex()
+                            .child(srow(
+                                "Keep computer awake",
+                                "Uses macOS caffeinate. On: Keep this computer awake at all times. Agent: Keep this computer awake while an agent is working. Off: Let the system sleep normally.",
+                                h_flex()
+                                    .items_center()
+                                    .rounded(px(8.))
+                                    .border_1()
+                                    .border_color(theme.border)
+                                    .p(px(2.))
+                                    .gap(px(2.))
+                                    .child(div().h(px(24.)).px(px(10.)).flex().items_center().rounded(px(6.)).child(div().text_xs().child("On")))
+                                    .child(div().h(px(24.)).px(px(10.)).flex().items_center().rounded(px(6.)).child(div().text_xs().child("Agent")))
+                                    .child(div().h(px(24.)).px(px(10.)).flex().items_center().rounded(px(6.)).bg(theme.foreground).child(div().text_xs().text_color(theme.background).child("Off")))
+                                    .into_any_element(),
+                            ))
+                            .into_any_element(),
+                            )
+                            .into_any_element(),
+                        ),
+                    )
+                    .child(
+                        v_flex()
+                            .gap_1p5()
+                            .child(section_label("Time"))
+                            .child(card(
+                        v_flex()
+                            .child(srow(
+                                "Time format",
+                                "System default follows your browser or OS clock preference.",
+                                select_pill("System default".to_string(), None),
+                            ))
+                            .into_any_element(),
+                            )
+                            .into_any_element(),
+                        ),
+                    )
+                    .child(
+                        v_flex()
+                            .gap_1p5()
+                            .child(section_label("Getting started"))
+                            .child(card(
+                        v_flex()
+                            .child(srow(
+                                "Welcome tour",
+                                "Replay the first-run setup: agents, account, iPhone pairing, and first project.",
+                                outline_btn("Open welcome tour"),
+                            ))
+                            .child(divider())
+                            .child(srow(
+                                "App tour",
+                                "See where Activity, Tasks, Inbox, and Code review live.",
+                                outline_btn("Replay tour"),
+                            ))
+                            .into_any_element(),
+                            )
+                            .into_any_element(),
+                        ),
+                    );
+            }
+        }
+        // Center the content column at upstream max-w-2xl (672px).
+        let settings_pane = h_flex()
+            .flex_1()
+            .w_full()
+            .justify_center()
+            .child(div().w(px(672.)).child(settings_pane));
+
+        // ---- settings sidebar nav (replaces project sidebar) ----
+        let mut settings_nav_el = v_flex().flex_1().h_full().px(px(6.)).py(px(6.)).gap(px(2.));
+        settings_nav_el = settings_nav_el.child(
+            div()
+                .px_2()
+                .pb_2()
+                .text_base()
+                .font_weight(FontWeight::SEMIBOLD)
+                .child("Settings"),
+        );
+        settings_nav_el = settings_nav_el.child(
+            h_flex()
+                .mx_1()
+                .mb_2()
+                .h(px(30.))
+                .px_2()
+                .gap_2()
+                .items_center()
+                .rounded(px(8.))
+                .border_1()
+                .border_color(theme.border)
+                .bg(rgb(0xfafafa))
+                .child(svg_icon(icons::SEARCH).size(px(14.)).text_color(theme.muted_foreground))
+                .child(
+                    div()
+                        .text_sm()
+                        .text_color(theme.muted_foreground)
+                        .child("Search settings..."),
+                ),
+        );
+        for (group, items) in settings_nav {
+            if !group.is_empty() {
+                settings_nav_el = settings_nav_el.child(
+                    div()
+                        .mt_3()
+                        .px_2()
+                        .py_1()
+                        .text_sm()
+                        .text_color(theme.muted_foreground)
+                        .child(*group),
+                );
+            }
+            for (id, label, icon, badge) in *items {
+                let active = *id == self.settings_section;
+                let mut row = h_flex()
+                    .id(ElementId::Name(format!("setnav-{id}").into()))
+                    .h(px(28.))
+                    .px_2()
+                    .gap_2()
+                    .items_center()
+                    .rounded(px(6.))
+                    .cursor_pointer()
+                    .child(svg_icon(icon).size(px(16.)).text_color(if active { theme.foreground } else { theme.muted_foreground }))
+                    .child(div().text_sm().whitespace_nowrap().child(*label));
+                if let Some(b) = badge {
+                    row = row.child(
+                        div()
+                            .ml_auto()
+                            .rounded_full()
+                            .px(px(6.))
+                            .text_xs()
+                            .text_color(theme.muted_foreground)
+                            .border_1()
+                            .border_color(theme.border)
+                            .child(*b),
+                    );
+                }
+                let sid: &'static str = id;
+                let row = if active { row.bg(theme.list_active) } else { row };
+                settings_nav_el = settings_nav_el.child(
+                    row.on_click(cx.listener(move |this, _ev, _w, cx| {
+                        this.settings_section = sid;
+                        cx.notify();
+                    })),
+                );
+            }
+        }
 
         // ---- terminal drawer (bottom pane over the transcript column) ----
         let mut term_drawer = v_flex()
@@ -4023,6 +4302,11 @@ impl Render for Native {
             .bg(rgb(0xf7f7f7))
             .child(rail.border_r_1().border_color(rgb(0xe5e5e5)));
         if !self.sidebar_collapsed && !self.view_inbox {
+            let side: gpui::AnyElement = if self.view_settings {
+                settings_nav_el.into_any_element()
+            } else {
+                sidebar.w_full().into_any_element()
+            };
             left_well = left_well.child(
                 v_flex()
                     .w(px(257.))
@@ -4034,7 +4318,7 @@ impl Render for Native {
                     .border_color(rgb(0xe5e5e5))
                     .rounded(px(10.))
                     .overflow_hidden()
-                    .child(sidebar.w_full()),
+                    .child(side),
             );
         }
 

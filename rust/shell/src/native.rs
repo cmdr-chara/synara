@@ -5460,10 +5460,7 @@ impl Render for Native {
                                     .child(outline_btn("Set up"))
                                     .into_any_element(),
                             )
-                            .into_any_element(),
-                    ))
-                    .child(card(
-                        v_flex()
+                            .child(divider())
                             .child(
                                 h_flex()
                                     .w_full()
@@ -5480,13 +5477,7 @@ impl Render for Native {
                                             .child(div().w_full().text_sm().text_color(theme.muted_foreground).child(
                                                 "The agent pointer is stock monochrome by default \u{2014} like a normal pointer. Custom colors apply to new computer sessions.")),
                                     )
-                                    .child(
-                                        h_flex()
-                                            .items_center()
-                                            .gap_3()
-                                            .child(div().text_sm().font_weight(FontWeight::MEDIUM).child("Stock"))
-                                            .child(div().text_sm().text_color(theme.muted_foreground).child("Custom")),
-                                    )
+                                    .child(seg(&["Stock", "Custom"], 0))
                                     .into_any_element(),
                             )
                             .child(divider())
@@ -5507,13 +5498,7 @@ impl Render for Native {
                                                 "Show the live preview the first time an agent acts on the desktop in a chat. Compact keeps it small and glanceable; Large gives it the full wide card.")),
                                     )
                                     .child(toggle(true))
-                                    .child(
-                                        h_flex()
-                                            .items_center()
-                                            .gap_3()
-                                            .child(div().px_2().py(px(2.)).rounded(px(5.)).border_1().border_color(theme.border).text_sm().child("Compact"))
-                                            .child(div().text_sm().text_color(theme.muted_foreground).child("Large")),
-                                    )
+                                    .child(seg(&["Compact", "Large"], 0))
                                     .into_any_element(),
                             )
                             .into_any_element(),

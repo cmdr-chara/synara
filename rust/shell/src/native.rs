@@ -119,6 +119,25 @@ mod icons {
         include_bytes!("../assets/icons/circle-info.svg");
     pub const S_GEAR: &[u8] =
         include_bytes!("../assets/icons/settings-gear-4.svg");
+    pub const B_SUPABASE: &[u8] = include_bytes!("../assets/icons/brands/supabase.svg");
+    pub const B_VERCEL: &[u8] = include_bytes!("../assets/icons/brands/vercel.svg");
+    pub const B_SLACK: &[u8] = include_bytes!("../assets/icons/brands/slack.svg");
+    pub const B_LINEAR: &[u8] = include_bytes!("../assets/icons/brands/linear.svg");
+    pub const B_NOTION: &[u8] = include_bytes!("../assets/icons/brands/notion.svg");
+    pub const B_STRIPE: &[u8] = include_bytes!("../assets/icons/brands/stripe.svg");
+    pub const B_WORKOS: &[u8] = include_bytes!("../assets/icons/brands/workos.svg");
+    pub const B_CONVEX: &[u8] = include_bytes!("../assets/icons/brands/convex.svg");
+    pub const B_CLOUDFLARE: &[u8] = include_bytes!("../assets/icons/brands/cloudflare.svg");
+    pub const B_SENTRY: &[u8] = include_bytes!("../assets/icons/brands/sentry.svg");
+    pub const B_NEON: &[u8] = include_bytes!("../assets/icons/brands/neon.svg");
+    pub const B_POSTHOG: &[u8] = include_bytes!("../assets/icons/brands/posthog.svg");
+    pub const B_NETLIFY: &[u8] = include_bytes!("../assets/icons/brands/netlify.svg");
+    pub const B_RAILWAY: &[u8] = include_bytes!("../assets/icons/brands/railway.svg");
+    pub const B_PRISMA: &[u8] = include_bytes!("../assets/icons/brands/prisma.svg");
+    pub const B_HUGGINGFACE: &[u8] = include_bytes!("../assets/icons/brands/huggingface.svg");
+    pub const B_ATLASSIAN: &[u8] = include_bytes!("../assets/icons/brands/atlassian.svg");
+    pub const B_TODOIST: &[u8] = include_bytes!("../assets/icons/brands/todoist.svg");
+    pub const B_MCP: &[u8] = include_bytes!("../assets/icons/brands/mcp.svg");
 }
 
 fn svg_icon(data: &'static [u8]) -> Icon {
@@ -213,6 +232,7 @@ pub struct Native {
     term_id: String,
     term_buf: String,
     settings_scroll: ScrollHandle,
+    settings_nav_scroll: ScrollHandle,
     settings_data: Value,
     settings_loading: bool,
     term_status: Option<String>,
@@ -411,6 +431,7 @@ impl Native {
                 term_input: None,
                 term_events: false,
                 settings_scroll: ScrollHandle::new(),
+                settings_nav_scroll: ScrollHandle::new(),
                 settings_data: Value::Null,
                 settings_loading: false,
                 sponsor_dismissed: false,
@@ -3746,6 +3767,7 @@ impl Render for Native {
         };
         let outline_btn = |label: &'static str| {
             div()
+                .flex_shrink_0()
                 .h(px(28.))
                 .px_3()
                 .flex()
@@ -3807,25 +3829,24 @@ impl Render for Native {
             s.into_any_element()
         };
         // Color swatch pill: bordered pill with color box + hex label.
+        // Color-filled pill with the hex label inside, like upstream's theme swatch.
         let swatch_pill = |hex_label: &'static str, color: u32| {
-            h_flex()
-                .h(px(28.))
-                .px(px(8.))
-                .gap_2()
+            let r = ((color >> 16) & 0xff) as f32;
+            let g = ((color >> 8) & 0xff) as f32;
+            let b = (color & 0xff) as f32;
+            let lum = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+            let ink = if lum > 140. { rgba(0x000000aa) } else { rgba(0xffffffcc) };
+            div()
+                .w(px(160.))
+                .h(px(26.))
+                .px_3()
+                .flex()
                 .items_center()
                 .rounded(px(8.))
                 .border_1()
                 .border_color(theme.border)
-                .child(
-                    div()
-                        .w(px(14.))
-                        .h(px(14.))
-                        .rounded(px(4.))
-                        .bg(rgb(color))
-                        .border_1()
-                        .border_color(theme.border),
-                )
-                .child(div().text_sm().child(hex_label))
+                .bg(rgb(color))
+                .child(div().text_sm().text_color(ink).child(hex_label))
                 .into_any_element()
         };
         // Thin track slider + value label.
@@ -3884,55 +3905,68 @@ impl Render for Native {
                 .child(div().text_sm().text_color(theme.muted_foreground).child("px"))
                 .into_any_element()
         };
-        // Mini window mock for the Appearance theme picker.
-        let mini_pane = |bgc: u32, bar: u32| {
+        // Miniature app-window mockup for the Appearance theme picker, matching
+        // upstream ThemeModePicker (MOCKUP_COLORS + MOCKUP_LAYOUT) pixel for pixel.
+        // Thumb area is 190x133 (aspect 10/7 inside border-2 + p-3px of a 200px card).
+        struct MockColors { backdrop: u32, panel: u32, hbar: u32, hbar_soft: u32, card: u32, rowbar: u32, hairline: u32 }
+        const MOCK_LIGHT: MockColors = MockColors { backdrop: 0xe9e9e9, panel: 0xf6f6f6, hbar: 0xcfcfcf, hbar_soft: 0xe0e0e0, card: 0xffffff, rowbar: 0xe3e3e3, hairline: 0xefefef };
+        const MOCK_DARK: MockColors = MockColors { backdrop: 0x5f5f5f, panel: 0x2c2c2c, hbar: 0xa6a6a6, hbar_soft: 0x7d7d7d, card: 0x3a3a3a, rowbar: 0x707070, hairline: 0x4d4d4d };
+        let mock_surface = |c: &MockColors| {
             div()
-                .flex_1()
-                .h_full()
-                .bg(rgb(bgc))
-                .p(px(8.))
+                .size_full()
+                .bg(rgb(c.backdrop))
                 .child(
-                    v_flex()
-                        .gap(px(5.))
-                        .child(div().w(px(40.)).h(px(4.)).rounded(px(2.)).bg(rgb(bar)))
-                        .child(div().w(px(30.)).h(px(4.)).rounded(px(2.)).bg(rgb(bar)))
-                        .child(div().w(px(34.)).h(px(4.)).rounded(px(2.)).bg(rgb(bar))),
+                    div().absolute().left(px(15.)).right(px(15.)).top(px(19.)).bottom_0()
+                        .bg(rgb(c.panel)).rounded_t(px(8.))
+                        .child(div().absolute().left(px(52.)).top(px(15.)).w(px(64.)).h(px(4.)).rounded_full().bg(rgb(c.hbar)))
+                        .child(div().absolute().left(px(38.)).top(px(23.)).w(px(92.)).h(px(3.)).rounded_full().bg(rgb(c.hbar_soft)))
+                        .child(div().absolute().left(px(15.)).right(px(15.)).top(px(38.)).bottom_0()
+                            .bg(rgb(c.card)).rounded_t(px(6.))
+                            .child(rows_card(c))),
                 )
         };
-        let theme_fg = theme.foreground;
-        let theme_bd = theme.border;
-        let theme_card = move |kind: u8, label: &'static str, selected: bool| {
-            let mut frame = div()
-                .w(px(124.))
-                .h(px(88.))
-                .rounded(px(10.))
-                .overflow_hidden()
-                .border_color(if selected { theme_fg } else { theme_bd });
-            if selected {
-                frame = frame.border_2();
-            } else {
-                frame = frame.border_1();
+        fn rows_card(c: &MockColors) -> gpui::Div {
+            let mut card = div().size_full();
+            for i in 0..3 {
+                let y = 9. + (i as f32) * 21.;
+                card = card
+                    .child(div().absolute().left(px(13.)).top(px(y)).w(px(37.)).h(px(4.)).rounded_full().bg(rgb(c.rowbar)))
+                    .child(div().absolute().left(px(13.)).right(px(13.)).top(px(y + 11.)).h(px(1.)).bg(rgb(c.hairline)));
             }
-            let content = match kind {
-                0 => h_flex()
+            card
+        }
+        let theme_fg = theme.foreground;
+        let theme_card = move |kind: u8, label: &'static str, selected: bool| {
+            let thumb: gpui::AnyElement = match kind {
+                0 => div()
                     .size_full()
-                    .child(mini_pane(0xf5f5f5, 0xd4d4d4))
-                    .child(mini_pane(0x1a1a1a, 0x404040))
+                    .child(mock_surface(&MOCK_LIGHT))
+                    .child(
+                        div().absolute().right_0().top_0().bottom_0().w(px(95.)).overflow_hidden()
+                            .child(div().absolute().right_0().top_0().bottom_0().w(px(190.))
+                                .child(mock_surface(&MOCK_DARK))),
+                    )
                     .into_any_element(),
-                1 => div()
-                    .size_full()
-                    .child(mini_pane(0xf5f5f5, 0xd4d4d4))
-                    .into_any_element(),
-                _ => div()
-                    .size_full()
-                    .child(mini_pane(0x1a1a1a, 0x404040))
-                    .into_any_element(),
+                1 => div().size_full().child(mock_surface(&MOCK_LIGHT)).into_any_element(),
+                _ => div().size_full().child(mock_surface(&MOCK_DARK)).into_any_element(),
             };
+            let frame = div()
+                .w_full()
+                .p(px(3.))
+                .rounded(px(14.))
+                .border_2()
+                .border_color(if selected { theme_fg } else { gpui::transparent_black() })
+                .child(
+                    div().w(px(190.)).h(px(133.)).rounded(px(8.)).overflow_hidden().relative()
+                        .child(thumb),
+                );
             v_flex()
+                .flex_1()
+                .min_w_0()
                 .gap(px(6.))
                 .items_center()
-                .child(frame.child(content))
-                .child(div().text_sm().child(label))
+                .child(frame)
+                .child(div().text_sm().when(selected, |d| d.font_weight(FontWeight::MEDIUM)).child(label))
                 .into_any_element()
         };
 
@@ -3948,23 +3982,44 @@ impl Render for Native {
             .py_8()
             .gap_6();
         {
-            let mut head = h_flex().items_start().justify_between().gap_4();
+            let mut head = h_flex().w_full().items_start().justify_between().gap_4();
             if self.settings_section == "profile" {
                 head = h_flex().items_start().w_full().justify_end().gap_4();
             } else {
             head = head.child(
                 v_flex()
+                    .flex_1()
+                    .min_w_0()
                     .gap(px(6.))
                     .child(
-                        div()
-                            .text_xl()
-                            .font_weight(FontWeight::MEDIUM)
-                            .child(section_title.to_string()),
+                        h_flex()
+                            .items_center()
+                            .gap_2()
+                            .child(
+                                div()
+                                    .text_xl()
+                                    .font_weight(FontWeight::MEDIUM)
+                                    .child(section_title.to_string()),
+                            )
+                            .when(self.settings_section == "computer", |row| {
+                                row.child(
+                                    div()
+                                        .px_1p5()
+                                        .rounded(px(5.))
+                                        .border_1()
+                                        .border_color(theme.border)
+                                        .text_xs()
+                                        .text_color(theme.muted_foreground)
+                                        .child("Beta"),
+                                )
+                            }),
                     )
                     .child(
                         div()
                             .text_sm()
                             .text_color(theme.muted_foreground)
+                            .whitespace_nowrap()
+                            .overflow_hidden()
                             .child(match &*self.settings_section {
                                 "general" => "Defaults for new chats, power, time, and getting started.".to_string(),
                                 "appearance" => "Customize the theme, typography, density, and time format.".to_string(),
@@ -5124,25 +5179,25 @@ impl Render for Native {
                     ("developer", "Developer tools"),
                     ("productivity", "Productivity"),
                 ];
-                let items: [(&'static str, &'static str, &'static str, u32); 18] = [
-                    ("popular","Supabase","Query Postgres, manage projects, and deploy Edge Functions.",0x3ecf8e),
-                    ("popular","Vercel","Manage projects and deployments, and read deployment logs.",0x111111),
-                    ("popular","Slack","Search, read, and post in your workspace. Needs your own Slack app.",0xe01e5a),
-                    ("popular","Linear","Find, create, and update issues, projects, and comments.",0x5e6ad2),
-                    ("popular","Notion","Search, read, and edit pages and databases.",0x111111),
-                    ("popular","Stripe","Work with customers, payments, and Stripe docs.",0x635bff),
-                    ("developer","WorkOS","Manage users, organizations, SSO, and AuthKit in your dashboard.",0x6363f1),
-                    ("developer","Convex","Start Convex apps and get setup and scaling guidance.",0xee342f),
-                    ("developer","Cloudflare","Build with Workers, KV, R2, and D1 on your account.",0xf48120),
-                    ("developer","Sentry","Investigate errors, issues, and releases.",0x362d59),
-                    ("developer","Neon","Manage serverless Postgres projects and branches.",0x00e599),
-                    ("developer","PostHog","Query product analytics, feature flags, and errors.",0x111111),
-                    ("developer","Netlify","Create, deploy, and manage Netlify sites.",0x20c6b7),
-                    ("developer","Railway","Deploy and manage Railway projects and services.",0x111111),
-                    ("developer","Prisma","Manage Prisma Postgres databases and backups.",0x2d3748),
-                    ("developer","Hugging Face","Search models, datasets, Spaces, and papers.",0xffd21e),
-                    ("productivity","Atlassian","Work with Jira issues and Confluence pages.",0x1868db),
-                    ("productivity","Todoist","Find, add, and complete tasks and projects.",0xe44332),
+                let items: [(&'static str, &'static str, &'static str, &'static [u8]); 18] = [
+                    ("popular","Supabase","Query Postgres, manage projects, and deploy Edge Functions.",icons::B_SUPABASE),
+                    ("popular","Vercel","Manage projects and deployments, and read deployment logs.",icons::B_VERCEL),
+                    ("popular","Slack","Search, read, and post in your workspace. Needs your own Slack app.",icons::B_SLACK),
+                    ("popular","Linear","Find, create, and update issues, projects, and comments.",icons::B_LINEAR),
+                    ("popular","Notion","Search, read, and edit pages and databases.",icons::B_NOTION),
+                    ("popular","Stripe","Work with customers, payments, and Stripe docs.",icons::B_STRIPE),
+                    ("developer","WorkOS","Manage users, organizations, SSO, and AuthKit in your dashboard.",icons::B_WORKOS),
+                    ("developer","Convex","Start Convex apps and get setup and scaling guidance.",icons::B_CONVEX),
+                    ("developer","Cloudflare","Build with Workers, KV, R2, and D1 on your account.",icons::B_CLOUDFLARE),
+                    ("developer","Sentry","Investigate errors, issues, and releases.",icons::B_SENTRY),
+                    ("developer","Neon","Manage serverless Postgres projects and branches.",icons::B_NEON),
+                    ("developer","PostHog","Query product analytics, feature flags, and errors.",icons::B_POSTHOG),
+                    ("developer","Netlify","Create, deploy, and manage Netlify sites.",icons::B_NETLIFY),
+                    ("developer","Railway","Deploy and manage Railway projects and services.",icons::B_RAILWAY),
+                    ("developer","Prisma","Manage Prisma Postgres databases and backups.",icons::B_PRISMA),
+                    ("developer","Hugging Face","Search models, datasets, Spaces, and papers.",icons::B_HUGGINGFACE),
+                    ("productivity","Atlassian","Work with Jira issues and Confluence pages.",icons::B_ATLASSIAN),
+                    ("productivity","Todoist","Find, add, and complete tasks and projects.",icons::B_TODOIST),
                 ];
                 settings_pane = settings_pane
                     .child(search)
@@ -5152,14 +5207,13 @@ impl Render for Native {
                             .child(dark_btn("+ Add custom"))
                             .child(outline_btn("Add local server")),
                     )
-                    .child(div().w_full().text_xs().text_color(theme.muted_foreground).child(
-                        "Agents in new chats can use the services you connect here. Pi, Devin, and Antigravity don't support connectors yet."));
+                    ;
                 for (cat, cat_name) in &catalog {
                     settings_pane = settings_pane.child(section_label(cat_name));
                     let cat_items: Vec<_> = items.iter().filter(|(c, ..)| c == cat).collect();
                     for chunk in cat_items.chunks(2) {
                         let mut row = h_flex().w_full().gap(px(24.));
-                        for (_, name, desc, color) in chunk {
+                        for (_, name, desc, icon) in chunk {
                             row = row.child(
                                 h_flex()
                                     .flex_1()
@@ -5169,24 +5223,27 @@ impl Render for Native {
                                     .py(px(8.))
                                     .child(
                                         div()
-                                            .w(px(24.))
-                                            .h(px(24.))
+                                            .w(px(44.))
+                                            .h(px(44.))
                                             .flex_shrink_0()
-                                            .rounded(px(6.))
-                                            .bg(rgb(*color))
+                                            .rounded(px(14.))
+                                            .border_1()
+                                            .border_color(theme.border)
+                                            .bg(gpui::white())
                                             .flex()
                                             .items_center()
                                             .justify_center()
-                                            .child(div().text_xs().font_weight(FontWeight::BOLD).text_color(gpui::white()).child((*name).chars().next().unwrap_or('?').to_string())),
+                                            .child(svg_icon(*icon).size(px(20.))),
                                     )
                                     .child(
                                         v_flex()
-                                            .w(px(210.))
+                                            .flex_1()
+                                            .min_w_0()
                                             .gap(px(1.))
                                             .child(div().text_sm().font_weight(FontWeight::MEDIUM).child(*name))
                                             .child(div().w_full().text_xs().text_color(theme.muted_foreground).child(*desc)),
                                     )
-                                    .child(div().text_sm().text_color(theme.muted_foreground).child("+")),
+                                    .child(div().px_2().text_sm().text_color(theme.muted_foreground).child("+")),
                             );
                         }
                         if chunk.len() == 1 {
@@ -5739,7 +5796,7 @@ impl Render for Native {
                         .child(section_label("Theme"))
                         .child(
                             h_flex()
-                                .gap_4()
+                                .gap_3()
                                 .child(theme_card(0, "System", true))
                                 .child(theme_card(1, "Light", false))
                                 .child(theme_card(2, "Dark", false)),
@@ -5837,7 +5894,7 @@ impl Render for Native {
                                     .into_any_element(),
                             ))
                             .child(divider())
-                            .child(prow("Code font", select_pill("*JetBrains Mono*".to_string(), None)))
+                            .child(prow("Code font", select_pill("\"JetBrains Mono\"".to_string(), None)))
                             .child(divider())
                             .child(prow("Window", seg(&["Solid", "Translucent"], 1)))
                             .child(divider())
@@ -5966,9 +6023,16 @@ impl Render for Native {
                         .child("Search settings..."),
                 ),
         );
+        let mut nav_list = v_flex()
+            .flex_1()
+            .min_h_0()
+            .id("settings-nav-scroll")
+            .track_scroll(&self.settings_nav_scroll)
+            .overflow_y_scroll()
+            .gap(px(2.));
         for (group, items) in settings_nav {
             if !group.is_empty() {
-                settings_nav_el = settings_nav_el.child(
+                nav_list = nav_list.child(
                     div()
                         .mt_3()
                         .px_2()
@@ -6005,7 +6069,7 @@ impl Render for Native {
                 }
                 let sid: &'static str = id;
                 let row = if active { row.bg(theme.list_active) } else { row };
-                settings_nav_el = settings_nav_el.child(
+                nav_list = nav_list.child(
                     row.on_click(cx.listener(move |this, _ev, _w, cx| {
                         this.settings_section = sid;
                         if this.settings_data.is_null() {
@@ -6016,6 +6080,7 @@ impl Render for Native {
                 );
             }
         }
+        settings_nav_el = settings_nav_el.child(nav_list);
 
         // ==================== rail route views ====================
         // Segmented pill chip — upstream: muted rounded track, white active.

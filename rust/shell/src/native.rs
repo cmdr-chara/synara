@@ -2516,6 +2516,21 @@ impl Render for Native {
             let title = str_at(thread, "title");
             let is_pinned = pinned.contains(&tid);
             let is_sel = selected == Some(tid.as_str());
+            // Upstream: the row's leading glyph is the thread's provider icon
+            // (session.providerName), not a uniform marker.
+            let provider = str_at(get(thread, "session"), "providerName");
+            let provider_icon: &[u8] = match provider {
+                "pi" => icons::P_PI,
+                "claude" => icons::P_CLAUDE,
+                "devin" => icons::P_DEVIN,
+                "cursor" => icons::P_CURSOR,
+                "opencode" => icons::P_OPENCODE,
+                "omp" => icons::P_OMP,
+                "droid" => icons::P_DROID,
+                "antigravity" => icons::P_ANTIGRAVITY,
+                "grok" => icons::P_GROK,
+                _ => icons::CODEX,
+            };
             let mut el = h_flex()
                 .id(ElementId::Name(format!("thread-{tid}").into()))
                 .w_full()
@@ -2527,7 +2542,7 @@ impl Render for Native {
                 .cursor_pointer()
                 .rounded_md()
                 .child(
-                    svg_icon(icons::CODEX)
+                    svg_icon(provider_icon)
                         .size(px(12.))
                         .text_color(theme.muted_foreground),
                 )

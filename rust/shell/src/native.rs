@@ -3963,7 +3963,7 @@ impl Render for Native {
                 .border_2()
                 .border_color(if selected { theme_fg } else { gpui::transparent_black() })
                 .child(
-                    div().w(px(190.)).h(px(133.)).rounded(px(8.)).overflow_hidden().relative()
+                    div().w(px(190.)).h(px(110.)).rounded(px(8.)).overflow_hidden().relative()
                         .child(thumb),
                 );
             v_flex()
@@ -5846,7 +5846,6 @@ impl Render for Native {
                     };
                     let mut sel = h_flex()
                         .w_full()
-                        .mx_3()
                         .mt_1()
                         .mb_2()
                         .h(px(36.))
@@ -5905,7 +5904,11 @@ impl Render for Native {
                                         )
                                     }),
                             )
-                            .child(sel.child(div().text_sm().text_color(accent_c).child("Accent preview")))
+                            .child(
+                                div().w_full().px_3().child(
+                                    sel.child(div().text_sm().text_color(accent_c).child("Accent preview")),
+                                ),
+                            )
                             .child(divider())
                             .child(prow("Accent", swatch_pill(al, acc)))
                             .child(divider())

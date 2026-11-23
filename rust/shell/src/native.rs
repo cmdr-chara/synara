@@ -3560,9 +3560,10 @@ impl Render for Native {
         let rail = v_flex()
             .w(px(51.))
             .h_full()
-            .py(px(14.))
+            .pt(px(7.))
+            .pb(px(4.))
             .items_center()
-            .gap(px(5.))
+            .gap(px(6.))
             .child(
                 rail_btn("nav-home", icons::HOME, home_active, cx).on_click(cx.listener(
                     |this, _ev, _w, cx| {
@@ -3617,6 +3618,16 @@ impl Render for Native {
                 ),
             )
             .child(
+                rail_btn("nav-studio", icons::STUDIO, false, cx).on_click(
+                    cx.listener(|this, _ev, _w, cx| {
+                        this.view_settings = false;
+                        this.view_inbox = false;
+                        this.view_files = false;
+                        this.toggle_dev(cx);
+                    }),
+                ),
+            )
+            .child(
                 rail_btn("nav-more", icons::MORE, self.view_settings, cx).on_click(
                     cx.listener(|this, _ev, _w, cx| {
                         this.view_settings = !this.view_settings;
@@ -3654,7 +3665,7 @@ impl Render for Native {
             .border_b_1()
             .border_color(rgb(0xe5e5e5))
             .items_center()
-            .pr(px(28.))
+            .pr(px(19.))
             .child(
                 div()
                     .w(px(51.))

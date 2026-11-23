@@ -3523,7 +3523,8 @@ impl Render for Native {
         // chat-composer-shell squircle: 19px radius card, hairline border,
         // soft surface shadow (approximated by the border + card tone).
         let mode_accent = rgb(0xc24904);
-        let draft_empty = self.composer.read(cx).value().trim().is_empty();
+        let draft_text = self.composer.read(cx).value().to_string();
+        let draft_empty = draft_text.trim().is_empty();
         // Upstream ComposerPromptEditor: font-system-ui text-chat (13px)
         // leading-relaxed (1.625 -> ~21.1px/line), min-height 2lh (~42px),
         // padding x12/top12/bottom8; placeholder sits at the text origin.
@@ -3755,6 +3756,91 @@ impl Render for Native {
                     .child(div().flex_1())
                     .child(chip("\u{25cc} Temporary".to_string())),
             );
+        }
+        if draft_text.starts_with('/') && !draft_text.contains(' ') {
+            // Upstream ComposerCommandMenu: popup card above the composer
+            // listing built-in slash commands filtered by the "/query".
+            const SLASH_COMMANDS: [(&str, &str, &str); 18] = [
+                ("clear", "Clear", "Start a fresh thread and clear the current conversation context"),
+                ("compact", "Compact Context", "Compact the current thread context to free space"),
+                ("model", "Model", "Switch response model for this thread"),
+                ("plan", "Plan Mode", "Switch this thread into plan mode"),
+                ("debug", "Debug Mode", "Switch this thread into evidence-first debug mode"),
+                ("default", "Default Mode", "Switch this thread back to normal chat mode"),
+                ("review", "Code Review", "Start a code review for current changes"),
+                ("fork", "Fork", "Fork this thread into local or a new worktree"),
+                ("side", "Sidechat", "Open a guarded Side from this thread, optionally on another provider"),
+                ("status", "Status", "Show context usage and rate-limit status"),
+                ("subagents", "Subagents", "Insert a prompt that asks the assistant to delegate work"),
+                ("computer-use", "Computer Use", "Use Synara Computer for this request only"),
+                ("fast", "Fast Mode", "Turn fast mode on or off for this thread"),
+                ("export", "Export", "Download this thread as a ZIP archive (thread.json + transcript.md)"),
+                ("goal", "Goal", "Set, edit, pause, resume, or clear this thread's persistent goal"),
+                ("rename", "Rename", "Regenerate this thread title, or set an exact title"),
+                ("feedback", "Feedback on Synara", "Send feedback to the Synara team"),
+                ("automation", "Automation", "Create an automation from this thread"),
+            ];
+            let query = draft_text[1..].to_lowercase();
+            let mut menu_card = v_flex()
+                .w_full()
+                .max_h(px(300.))
+                .border_1()
+                .border_color(theme.border)
+                .rounded(px(12.))
+                .bg(theme.popover)
+                .shadow_md()
+                .py_1()
+                .mb(px(6.));
+            let mut shown = 0;
+            for (cmd, title, desc) in SLASH_COMMANDS {
+                if !query.is_empty() && !cmd.contains(query.as_str()) {
+                    continue;
+                }
+                shown += 1;
+                menu_card = menu_card.child(
+                    h_flex()
+                        .w_full()
+                        .px_3()
+                        .py(px(6.))
+                        .items_center()
+                        .child(
+                            v_flex()
+                                .min_w_0()
+                                .flex_1()
+                                .child(
+                                    div()
+                                        .text_size(px(13.))
+                                        .font_weight(FontWeight::MEDIUM)
+                                        .child(title),
+                                )
+                                .child(
+                                    div()
+                                        .text_size(px(11.))
+                                        .text_color(theme.muted_foreground)
+                                        .child(desc),
+                                ),
+                        )
+                        .child(
+                            div()
+                                .ml_2()
+                                .flex_none()
+                                .text_size(px(12.))
+                                .text_color(theme.muted_foreground)
+                                .child(format!("/{cmd}")),
+                        ),
+                );
+            }
+            if shown == 0 {
+                menu_card = menu_card.child(
+                    div()
+                        .px_3()
+                        .py_2()
+                        .text_size(px(13.))
+                        .text_color(theme.muted_foreground)
+                        .child("No matching command."),
+                );
+            }
+            composer_col = composer_col.child(menu_card);
         }
         composer_col = composer_col.child(composer_card);
         let composer_bar = div()

@@ -2177,7 +2177,7 @@ impl Render for Native {
                         + (nx * 0.003 * ny).cos() * 0.3)
                         / 1.8
                         + 0.5;
-                    if noise > 0.60 && noise < 0.80 && (r * 7 + c * 13) % 5 < 1 {
+                    if noise > 0.55 && noise < 0.85 && (r * 7 + c * 13) % 4 < 1 {
                         let g = (r * 131 + c * 17 + r * c * 3 + c) % WM_CHARS.len();
                         line.push(WM_CHARS[g] as char);
                     } else {
@@ -2209,14 +2209,14 @@ impl Render for Native {
                 // Upstream SponsorLandingBanner: centered, max-w-520, borderless
                 // row — star + title + subtitle; dismiss X appears only on hover.
                 home = home.child(
-                    div().absolute().top(px(15.)).left_0().w_full().child(
-                        h_flex().w_full().justify_center().px_6().child(
+                    div().absolute().top(px(22.)).left_0().w_full().child(
+                        h_flex().w_full().justify_center().px_6().pl(px(66.)).child(
                             h_flex()
                                 .relative()
                                 .id("sponsor-banner")
                                 .group("sponsor-banner")
                                 .cursor_pointer()
-                                .w(px(520.))
+                                .w(px(588.))
                                 .rounded(px(16.))
                                 .px_4()
                                 .py(px(9.))
@@ -2294,7 +2294,7 @@ impl Render for Native {
                 home.child(svg_icon(icons::LOGO).size(px(40.)))
                     .child(
                         div()
-                            .mt(px(-10.))
+                            .mt(px(-17.))
                             .text_size(px(30.))
                             .font_weight(FontWeight::NORMAL)
                             .text_color({
@@ -3158,7 +3158,7 @@ impl Render for Native {
         composer_col = composer_col.child(composer_card);
         let composer_bar = div()
             .w_full()
-            .pb(px(4.))
+            .pb(px(16.))
             .child(
                 h_flex()
                     .justify_center()

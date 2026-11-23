@@ -241,6 +241,8 @@ pub struct Native {
     uploading: bool,
     interaction_mode: &'static str,
     fast_mode: bool,
+    queued_turns: Vec<String>,
+    queue_paused: bool,
     open_threads: Vec<String>,
     pinned_threads: Vec<String>,
     renaming: bool,
@@ -316,6 +318,23 @@ fn provider_icon(provider: &str) -> &'static [u8] {
 
 fn str_at<'a>(v: &'a Value, k: &str) -> &'a str {
     get(v, k).as_str().unwrap_or("")
+}
+
+/// Upstream derivePhase(session): closed->disconnected, connecting->connecting,
+/// running->running, otherwise ready.
+fn session_phase(detail: Option<&Value>) -> &'static str {
+    let status = detail
+        .map(|d| get(d, "thread"))
+        .map(|t| get(t, "session"))
+        .and_then(|s| s.get("status"))
+        .and_then(Value::as_str)
+        .unwrap_or("");
+    match status {
+        "running" => "running",
+        "connecting" => "connecting",
+        "closed" => "disconnected",
+        _ => "ready",
+    }
 }
 
 fn arr<'a>(v: &'a Value, k: &str) -> &'a [Value] {
@@ -565,6 +584,8 @@ impl Native {
                 pending_attachments: Vec::new(),
                 interaction_mode: "default",
                 fast_mode: false,
+                queued_turns: Vec::new(),
+                queue_paused: false,
                 composer_thread_id: None,
                 uploading: false,
                 open_threads: Vec::new(),
@@ -743,6 +764,56 @@ impl Native {
                     }
                     cx.notify();
                 });
+                // Queued follow-ups drain once the turn settles (upstream's
+                // queuedComposerDrain; a user Stop holds them instead).
+                let next = this
+                    .update(cx, |this: &mut Self, _| {
+                        if this.queue_paused
+                            || this.sending
+                            || this.queued_turns.is_empty()
+                            || session_phase(this.detail.as_ref()) != "ready"
+                        {
+                            return None;
+                        }
+                        this.selected_thread.clone().map(|t| {
+                            (
+                                t,
+                                this.queued_turns.first().cloned().unwrap_or_default(),
+                                this.runtime_mode,
+                            )
+                        })
+                    })
+                    .ok()
+                    .flatten();
+                if let Some((qtid, qtext, qmode)) = next {
+                    let cmd = json!({
+                        "type": "thread.turn.start",
+                        "commandId": uuid(),
+                        "threadId": qtid,
+                        "message": {
+                            "messageId": uuid(),
+                            "role": "user",
+                            "text": qtext,
+                            "attachments": [],
+                        },
+                        "runtimeMode": qmode,
+                        "interactionMode": "default",
+                        "createdAt": now_iso(),
+                    });
+                    let c = client.clone();
+                    let r = cx
+                        .background_executor()
+                        .spawn(async move { c.call("orchestration.dispatchCommand", cmd) })
+                        .await;
+                    if r.is_some() {
+                        let _ = this.update(cx, |this: &mut Self, cx| {
+                            if !this.queued_turns.is_empty() {
+                                this.queued_turns.remove(0);
+                            }
+                            cx.notify();
+                        });
+                    }
+                }
             }
         })
         .detach();
@@ -2368,12 +2439,67 @@ impl Native {
         .detach();
     }
 
+    /// Upstream stop affordance: dispatch thread.turn.interrupt and hold the
+    /// queued follow-ups (upstream pauses the waiting queue on a user Stop).
+    fn stop(&mut self, cx: &mut Context<Self>) {
+        let Some(tid) = self.selected_thread.clone() else {
+            return;
+        };
+        if !self.queued_turns.is_empty() {
+            self.queue_paused = true;
+        }
+        let client = self.client.clone();
+        let cmd = json!({
+            "type": "thread.turn.interrupt",
+            "requestedBy": "user",
+            "commandId": uuid(),
+            "threadId": tid,
+            "createdAt": now_iso(),
+        });
+        cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
+            let cell = client.clone();
+            let client = cx
+                .background_executor()
+                .spawn(async move { ensure_client(&cell) })
+                .await;
+            if let Some(client) = client {
+                let c = client.clone();
+                let _ = cx
+                    .background_executor()
+                    .spawn(async move { c.call("orchestration.dispatchCommand", cmd) })
+                    .await;
+                let c = client.clone();
+                let p = json!({"threadId": tid});
+                let d = cx
+                    .background_executor()
+                    .spawn(async move { c.call("orchestration.getThreadDetailSnapshot", p) })
+                    .await;
+                let _ = this.update(cx, |this: &mut Self, cx| {
+                    this.detail = d;
+                    cx.notify();
+                });
+            }
+        })
+        .detach();
+        cx.notify();
+    }
+
     /// Composer: send the draft as a turn on the selected thread, or create a
     /// thread in the first project then start the turn.
     fn send(&mut self, window: &mut Window, cx: &mut Context<Self>) {
         let text = self.composer.read(cx).value().to_string();
         let text = text.trim().to_string();
         if text.is_empty() || self.sending {
+            return;
+        }
+        // While a turn is live, upstream enqueues the follow-up instead of
+        // sending it (the queued pills render above the composer).
+        if self.selected_thread.is_some()
+            && matches!(session_phase(self.detail.as_ref()), "running" | "connecting")
+        {
+            self.queued_turns.push(text);
+            self.composer.update(cx, |s, cx| s.clean(window, cx));
+            cx.notify();
             return;
         }
         self.sending = true;
@@ -4239,28 +4365,49 @@ impl Render for Native {
                     menu.item(PopupMenuItem::new("\u{2713} GPT-6 Astra (codex)"))
                 })
         };
-        // Empty draft renders the muted (disabled) circle like
-        // the web composer; filled primary once there's text.
-        let send_btn = div()
-            .id("send")
-            .size(px(28.))
-            .flex()
-            .flex_none()
-            .items_center()
-            .justify_center()
-            .rounded_full()
-            .bg(if draft_empty {
-                theme.foreground.opacity(0.2)
-            } else {
-                theme.foreground
-            })
-            .cursor_pointer()
-            .child(
-                svg_icon(icons::SEND)
-                    .size(px(20.))
-                    .text_color(theme.background),
-            )
-            .on_click(cx.listener(|this, _ev, w, cx| this.send(w, cx)));
+        // While the selected thread's turn is live, upstream swaps the send
+        // button for a prominent dark stop square (thread.turn.interrupt).
+        let turn_live = in_thread
+            && matches!(session_phase(self.detail.as_ref()), "running" | "connecting");
+        let send_btn = if turn_live {
+            div()
+                .id("send")
+                .size(px(28.))
+                .flex()
+                .flex_none()
+                .items_center()
+                .justify_center()
+                .rounded_full()
+                .bg(theme.foreground)
+                .cursor_pointer()
+                .child(div().size(px(10.)).rounded(px(2.)).bg(theme.background))
+                .on_click(cx.listener(|this, _ev, _w, cx| this.stop(cx)))
+                .into_any_element()
+        } else {
+            // Empty draft renders the muted (disabled) circle like
+            // the web composer; filled primary once there's text.
+            div()
+                .id("send")
+                .size(px(28.))
+                .flex()
+                .flex_none()
+                .items_center()
+                .justify_center()
+                .rounded_full()
+                .bg(if draft_empty {
+                    theme.foreground.opacity(0.2)
+                } else {
+                    theme.foreground
+                })
+                .cursor_pointer()
+                .child(
+                    svg_icon(icons::SEND)
+                        .size(px(20.))
+                        .text_color(theme.background),
+                )
+                .on_click(cx.listener(|this, _ev, w, cx| this.send(w, cx)))
+                .into_any_element()
+        };
         // Upstream: started threads use the single-row composer while the draft
         // is one plain line — the card holds [+ | input | send] and the pickers
         // move to a row under the card. Multi-line drafts and the home composer
@@ -4500,6 +4647,102 @@ impl Render for Native {
                 );
             }
             composer_col = composer_col.child(menu_card);
+        }
+        if !self.queued_turns.is_empty() {
+            // Upstream ComposerQueuedHeader: stacked panel above the composer,
+            // one row per queued follow-up (steer icon + preview + actions).
+            let mut panel = v_flex()
+                .w_full()
+                .border_1()
+                .border_color(theme.border)
+                .rounded(px(12.))
+                .bg(theme.popover)
+                .mb(px(6.))
+                .py_1();
+            if self.queue_paused {
+                panel = panel.child(
+                    h_flex()
+                        .w_full()
+                        .px_3()
+                        .py(px(6.))
+                        .items_center()
+                        .child(
+                            div()
+                                .flex_1()
+                                .text_size(px(12.))
+                                .text_color(theme.muted_foreground)
+                                .child("Queue paused — queued follow-ups are held."),
+                        )
+                        .child(
+                            div()
+                                .id("queue-resume")
+                                .cursor_pointer()
+                                .px_2()
+                                .py(px(2.))
+                                .rounded_md()
+                                .text_size(px(12.))
+                                .hover(|d| d.bg(theme.secondary))
+                                .child("Resume")
+                                .on_click(cx.listener(|this, _ev, _w, cx| {
+                                    this.queue_paused = false;
+                                    cx.notify();
+                                })),
+                        ),
+                );
+            }
+            for (i, qtext) in self.queued_turns.iter().enumerate() {
+                let preview: String = qtext.chars().take(120).collect();
+                panel = panel.child(
+                    h_flex()
+                        .id(ElementId::Name(format!("queued-{i}").into()))
+                        .w_full()
+                        .px_3()
+                        .py(px(6.))
+                        .items_center()
+                        .gap_2()
+                        .cursor_pointer()
+                        .hover(|d| d.bg(theme.secondary))
+                        .on_click(cx.listener(move |this, _ev, w, cx| {
+                            // Upstream Edit: move the queued text back into the
+                            // composer draft.
+                            if i < this.queued_turns.len() {
+                                let text = this.queued_turns.remove(i);
+                                this.set_draft(&text, w, cx);
+                            }
+                        }))
+                        .child(
+                            svg_icon(icons::SEND)
+                                .size(px(14.))
+                                .text_color(theme.muted_foreground),
+                        )
+                        .child(
+                            div()
+                                .flex_1()
+                                .min_w_0()
+                                .text_size(px(13.))
+                                .overflow_hidden()
+                                .child(preview),
+                        )
+                        .child(
+                            div()
+                                .id(ElementId::Name(format!("queued-rm-{i}").into()))
+                                .flex_none()
+                                .cursor_pointer()
+                                .px_1()
+                                .text_size(px(13.))
+                                .text_color(theme.muted_foreground)
+                                .child("\u{00d7}")
+                                .on_click(cx.listener(move |this, _ev, _w, cx| {
+                                    cx.stop_propagation();
+                                    if i < this.queued_turns.len() {
+                                        this.queued_turns.remove(i);
+                                    }
+                                    cx.notify();
+                                })),
+                        ),
+                );
+            }
+            composer_col = composer_col.child(panel);
         }
         composer_col = composer_col.child(composer_card);
         if row_composer {

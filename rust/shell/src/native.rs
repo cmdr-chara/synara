@@ -52,6 +52,7 @@ mod icons {
     pub const SEND: &[u8] = include_bytes!("../assets/icons/arrow-up.svg");
     pub const ARROW_DOWN: &[u8] = include_bytes!("../assets/icons/arrow-down.svg");
     pub const X: &[u8] = include_bytes!("../assets/icons/x.svg");
+    pub const UNDO: &[u8] = include_bytes!("../assets/icons/arrow-undo-up.svg");
     pub const FILE_TEXT: &[u8] = include_bytes!("../assets/icons/file-text.svg");
     pub const UNSTAGE: &[u8] =
         include_bytes!("../assets/icons/arrow-rotate-counter-clockwise.svg");
@@ -2881,12 +2882,58 @@ impl Render for Native {
                 if is_match {
                     pill = pill.border_1().border_color(theme.warning);
                 }
+                // Upstream user-message footer: right-aligned timestamp
+                // (hover-reveal) + copy / edit (pencil) / revert (undo).
+                let mut ufooter = h_flex()
+                    .mt(px(4.))
+                    .gap(px(2.))
+                    .items_center()
+                    .justify_end();
+                let uts = clock_time(str_at(m, "createdAt"));
+                if !uts.is_empty() {
+                    ufooter = ufooter.child(
+                        div()
+                            .mr(px(4.))
+                            .text_size(px(11.))
+                            .text_color(theme.muted_foreground.opacity(0.45))
+                            .child(uts),
+                    );
+                }
+                for (iid, data) in [
+                    ("umsg-copy", icons::COPY),
+                    ("umsg-edit", icons::NEW_THREAD),
+                    ("umsg-revert", icons::UNDO),
+                ] {
+                    let msg_id = str_at(m, "id").to_string();
+                    ufooter = ufooter.child(
+                        div()
+                            .id(ElementId::Name(
+                                format!("{iid}-{msg_id}").into(),
+                            ))
+                            .size(px(22.))
+                            .flex()
+                            .items_center()
+                            .justify_center()
+                            .rounded(px(6.))
+                            .cursor_pointer()
+                            .hover(|d| d.bg(rgba(0x00000008)))
+                            .child(
+                                svg_icon(data)
+                                    .size(px(13.))
+                                    .text_color(theme.muted_foreground.opacity(0.45)),
+                            ),
+                    );
+                }
                 pane = pane.child(
                     h_flex().w_full().justify_center().child(
-                        h_flex()
-                            .w(px(726.))
-                            .justify_end()
-                            .child(pill.child(div().text_size(px(13.)).child(text))),
+                        h_flex().w(px(726.)).justify_end().child(
+                            v_flex()
+                                .items_end()
+                                .child(pill.child(
+                                    div().text_size(px(13.)).child(text),
+                                ))
+                                .child(ufooter),
+                        ),
                     ),
                 );
             } else {

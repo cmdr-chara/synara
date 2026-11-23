@@ -4892,7 +4892,7 @@ impl Render for Native {
                                     .child(div().w_full().text_sm().text_color(theme.muted_foreground).child(
                                         "Review installed provider tools that Synara can safely update."))
                                     .child(div().w_full().text_xs().text_color(theme.muted_foreground).child(
-                                        "No provider updates detected")),
+                                        "1 update available")),
                             )
                             .into_any_element(),
                     ));
@@ -4937,7 +4937,17 @@ impl Render for Native {
                                             .items_center()
                                             .child(div().text_xs().text_color(theme.muted_foreground).child("gpt-6.7-codex-ultra-preview")),
                                     )
-                                    .child(outline_btn("+ Add")),
+                                    .child(
+                                        div()
+                                            .px_3()
+                                            .py_1p5()
+                                            .rounded_full()
+                                            .bg(rgb(0x26251f))
+                                            .text_xs()
+                                            .font_weight(FontWeight::MEDIUM)
+                                            .text_color(gpui::white())
+                                            .child("+ Add"),
+                                    ),
                             )
                             .into_any_element(),
                     ));
@@ -5352,12 +5362,18 @@ impl Render for Native {
                                     .gap_2()
                                     .px_3()
                                     .py(px(10.))
-                                    .child(div().w(px(6.)).h(px(6.)).rounded_full().bg(rgb(0xd43d3d)))
                                     .child(
                                         v_flex()
                                             .flex_1()
+                                            .min_w_0()
                                             .gap(px(1.))
-                                            .child(div().text_sm().font_weight(FontWeight::MEDIUM).child(if avail { "Computer control is available" } else { "Computer control is unavailable" }))
+                                            .child(
+                                                h_flex()
+                                                    .items_center()
+                                                    .gap_1p5()
+                                                    .child(div().w(px(6.)).h(px(6.)).rounded_full().bg(rgb(0xd43d3d)))
+                                                    .child(div().text_sm().font_weight(FontWeight::MEDIUM).child(if avail { "Computer control is available" } else { "Computer control is unavailable" })),
+                                            )
                                             .child(div().text_sm().text_color(theme.muted_foreground).child(
                                                 "Computer requires a connected Synara desktop host, which owns native access on that computer.")),
                                     )

@@ -69,9 +69,20 @@ fn svg_icon(data: &'static [u8]) -> Icon {
 
 // Small ghost icon button matching the web sidebar-icon-button affordance.
 fn icon_btn(id: &'static str, data: &'static [u8], size: f32, hover: Hsla, ink: Hsla) -> Stateful<Div> {
+    icon_btn_pad(id, data, size, 16., hover, ink)
+}
+
+fn icon_btn_pad(
+    id: &'static str,
+    data: &'static [u8],
+    size: f32,
+    pad: f32,
+    hover: Hsla,
+    ink: Hsla,
+) -> Stateful<Div> {
     div()
         .id(ElementId::Name(id.into()))
-        .size(px(size + 16.))
+        .size(px(size + pad))
         .flex()
         .items_center()
         .justify_center()
@@ -1791,14 +1802,14 @@ impl Render for Native {
                 )
                 .child(div().flex_1())
                 .child(
-                    icon_btn("sidebar-search", icons::SEARCH, 18., theme.secondary, theme.muted_foreground)
+                    icon_btn_pad("sidebar-search", icons::SEARCH, 18., 8., theme.secondary, theme.muted_foreground)
                         .on_click(cx.listener(|this, _ev, _w, cx| {
                             this.search_open = !this.search_open;
                             cx.notify();
                         })),
                 )
                 .child(
-                    icon_btn("sidebar-new", icons::NEW_THREAD, 18., theme.secondary, theme.muted_foreground)
+                    icon_btn_pad("sidebar-new", icons::NEW_THREAD, 18., 8., theme.secondary, theme.muted_foreground)
                         .on_click(cx.listener(|this, _ev, _w, cx| this.new_thread(cx))),
                 ),
         );

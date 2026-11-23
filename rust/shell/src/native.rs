@@ -53,6 +53,9 @@ mod icons {
     pub const FOLDER: &[u8] = include_bytes!("../assets/icons/folder-closed.svg");
     pub const TERMINAL: &[u8] = include_bytes!("../assets/icons/square-terminal.svg");
     pub const PIN: &[u8] = include_bytes!("../assets/icons/pin.svg");
+    pub const PANEL_TOP_OPEN: &[u8] =
+        include_bytes!("../assets/icons/panel-top-open.svg");
+    pub const LAYOUT_RIGHT: &[u8] = include_bytes!("../assets/icons/layout-right.svg");
     pub const PIN_FILL: &[u8] = include_bytes!("../assets/icons/pin-fill.svg");
     pub const STAR: &[u8] = include_bytes!("../assets/icons/star.svg");
     pub const FOLDER_OPEN: &[u8] = include_bytes!("../assets/icons/folder-open.svg");
@@ -1742,14 +1745,14 @@ impl Render for Native {
 
         // ---- sidebar ----
         let mut sidebar = v_flex()
-            .w(px(264.))
+            .w_full()
             .h_full()
             .gap_0p5()
             .px_2()
             .pb_2()
-            // macOS drag region above the content — the web app insets the
-            // sidebar ~36px for the traffic-light gutter.
-            .pt(px(48.))
+            // Card interior below the top strip — the first row lands ~4px
+            // under the card's top edge like the upstream panel.
+            .pt(px(4.))
             .overflow_y_scrollbar();
         let query = self.search.read(cx).value().to_string().to_lowercase();
         // Header: bold wordmark + chevron (workspace switcher), search +
@@ -2174,7 +2177,7 @@ impl Render for Native {
                         + (nx * 0.003 * ny).cos() * 0.3)
                         / 1.8
                         + 0.5;
-                    if noise > 0.42 && noise < 0.80 {
+                    if noise > 0.60 && noise < 0.80 && (r * 7 + c * 13) % 5 < 1 {
                         let g = (r * 131 + c * 17 + r * c * 3 + c) % WM_CHARS.len();
                         line.push(WM_CHARS[g] as char);
                     } else {
@@ -2206,7 +2209,7 @@ impl Render for Native {
                 // Upstream SponsorLandingBanner: centered, max-w-520, borderless
                 // row — star + title + subtitle; dismiss X appears only on hover.
                 home = home.child(
-                    div().absolute().top(px(13.)).left_0().w_full().child(
+                    div().absolute().top(px(15.)).left_0().w_full().child(
                         h_flex().w_full().justify_center().px_6().child(
                             h_flex()
                                 .relative()
@@ -2216,9 +2219,10 @@ impl Render for Native {
                                 .w(px(520.))
                                 .rounded(px(16.))
                                 .px_4()
-                                .py_3()
+                                .py(px(9.))
                                 .gap_4()
                                 .items_center()
+                                .bg(rgb(0xf6f6f6))
                                 .hover(|d| d.bg(theme.secondary))
                                 .on_click(cx.listener(|_this, _ev, _w, cx| {
                                     cx.open_url("https://www.trysynara.com/sponsor");
@@ -2290,7 +2294,7 @@ impl Render for Native {
                 home.child(svg_icon(icons::LOGO).size(px(40.)))
                     .child(
                         div()
-                            .mt(px(-14.))
+                            .mt(px(-10.))
                             .text_size(px(30.))
                             .font_weight(FontWeight::NORMAL)
                             .text_color({
@@ -3023,15 +3027,15 @@ impl Render for Native {
         };
         let composer_card = v_flex()
             .w_full()
-            .max_w(px(736.))
+            .max_w(px(759.))
             .border_1()
             .border_color(theme.border)
             .rounded(px(19.))
             .bg(theme.popover)
             .shadow_md()
             .px_3()
-            .pt_3()
-            .pb_3()
+            .pt(px(10.))
+            .pb(px(9.))
             .gap_2()
             .child(Input::new(&self.composer).appearance(false))
             .child(
@@ -3111,7 +3115,7 @@ impl Render for Native {
                             .on_click(cx.listener(|this, _ev, w, cx| this.send(w, cx)))
                     }),
             );
-        let mut composer_col = v_flex().w_full().max_w(px(736.)).gap_0();
+        let mut composer_col = v_flex().w_full().max_w(px(759.)).gap_0();
         if !self.pending_attachments.is_empty() || self.uploading {
             let mut chips = h_flex().gap_1().flex_wrap().pb_1();
             if self.uploading {
@@ -3154,8 +3158,13 @@ impl Render for Native {
         composer_col = composer_col.child(composer_card);
         let composer_bar = div()
             .w_full()
-            .pb_4()
-            .child(h_flex().justify_center().child(composer_col));
+            .pb(px(4.))
+            .child(
+                h_flex()
+                    .justify_center()
+                    .pr(px(40.))
+                    .child(composer_col),
+            );
 
         // ---- settings pane ----
         let settings_pane = v_flex()
@@ -3367,33 +3376,8 @@ impl Render for Native {
                 );
         }
 
-        // ---- top bar: new-thread "+" left, right-side pane/notif icons;
-        // transparent so the shell band shows through like in the web app.
-        let top_bar = h_flex()
-            .w_full()
-            .h(px(44.))
-            .px_2()
-            .items_center()
-            .gap_1()
-            .child(
-                icon_btn("topbar-new", icons::PLUS, 18., theme.secondary, theme.muted_foreground)
-                    .on_click(cx.listener(|this, _ev, _w, cx| this.new_thread(cx))),
-            )
-            .child(div().flex_1())
-            .child(
-                icon_btn("topbar-bell", icons::BELL, 18., theme.secondary, theme.muted_foreground)
-                    .on_click(cx.listener(|this, _ev, _w, cx| {
-                        this.toggle_inbox(cx);
-                    })),
-            )
-            .child(
-                icon_btn("topbar-dock", icons::SIDEBAR_RIGHT, 18., theme.secondary, theme.muted_foreground)
-                    .on_click(cx.listener(|this, _ev, _w, cx| {
-                        this.toggle_changes(cx);
-                    })),
-            );
-
-        let mut main = v_flex().flex_1().h_full().child(top_bar);
+        // ---- main column under the strip: panes + composer ----
+        let mut main = v_flex().flex_1().h_full();
         if self.view_settings {
             main = main.child(div().flex_1().child(settings_pane.overflow_y_scrollbar()));
         } else if self.view_dev {
@@ -3576,17 +3560,9 @@ impl Render for Native {
         let rail = v_flex()
             .w(px(51.))
             .h_full()
-            .py(px(10.))
+            .py(px(14.))
             .items_center()
-            .gap(px(6.))
-            .child(
-                rail_btn("nav-sidebartoggle", icons::SIDEBAR_LEFT, false, cx).on_click(
-                    cx.listener(|this, _ev, _w, cx| {
-                        this.sidebar_collapsed = !this.sidebar_collapsed;
-                        cx.notify();
-                    }),
-                ),
-            )
+            .gap(px(5.))
             .child(
                 rail_btn("nav-home", icons::HOME, home_active, cx).on_click(cx.listener(
                     |this, _ev, _w, cx| {
@@ -3616,12 +3592,6 @@ impl Render for Native {
                 ),
             )
             .child(
-                rail_btn("nav-kanban", icons::KANBAN, self.view_changes, cx)
-                    .on_click(cx.listener(|this, _ev, _w, cx| {
-                        this.toggle_changes(cx);
-                    })),
-            )
-            .child(
                 rail_btn("nav-tasks", icons::TASKS, self.view_dev, cx).on_click(
                     cx.listener(|this, _ev, _w, cx| {
                         this.view_settings = false;
@@ -3645,12 +3615,6 @@ impl Render for Native {
                         this.toggle_dev(cx);
                     }),
                 ),
-            )
-            .child(
-                rail_btn("nav-studio", icons::STUDIO, self.view_terminal, cx)
-                    .on_click(cx.listener(|this, _ev, w, cx| {
-                        this.toggle_terminal(w, cx);
-                    })),
             )
             .child(
                 rail_btn("nav-more", icons::MORE, self.view_settings, cx).on_click(
@@ -3679,7 +3643,82 @@ impl Render for Native {
                     })),
             );
 
-        let mut root = h_flex()
+        // ---- top strip (AppShellTopStrip) ----
+        // 47px #f7f7f7 band + 1px border over rail+panel+content: sidebar
+        // toggle centered over the rail at left, Environment + dock toggles
+        // at right (Hugeicons panel-top-open / layout-right).
+        let strip = h_flex()
+            .w_full()
+            .h(px(47.))
+            .bg(rgb(0xf7f7f7))
+            .border_b_1()
+            .border_color(rgb(0xe5e5e5))
+            .items_center()
+            .pr(px(28.))
+            .child(
+                div()
+                    .w(px(51.))
+                    .flex()
+                    .items_center()
+                    .justify_center()
+                    .child(
+                        rail_btn("nav-sidebartoggle", icons::SIDEBAR_LEFT, false, cx).on_click(
+                            cx.listener(|this, _ev, _w, cx| {
+                                this.sidebar_collapsed = !this.sidebar_collapsed;
+                                cx.notify();
+                            }),
+                        ),
+                    ),
+            )
+            .child(div().flex_1())
+            .child(
+                rail_btn("nav-env", icons::PANEL_TOP_OPEN, self.view_files, cx).on_click(
+                    cx.listener(|this, _ev, _w, cx| {
+                        this.toggle_files(cx);
+                    }),
+                ),
+            )
+            .child(
+                rail_btn("nav-dock", icons::LAYOUT_RIGHT, self.view_changes, cx).on_click(
+                    cx.listener(|this, _ev, _w, cx| {
+                        this.toggle_changes(cx);
+                    }),
+                ),
+            );
+
+        // ---- left column: #f7f7f7 well holding the rail and the floating
+        // white sidebar card (bordered right+bottom, rounded corners, ~4px
+        // bottom inset) exactly like upstream's app-rail-panel.
+        let mut left_well = h_flex()
+            .h_full()
+            .bg(rgb(0xf7f7f7))
+            .child(rail.border_r_1().border_color(rgb(0xe5e5e5)));
+        if !self.sidebar_collapsed {
+            left_well = left_well.child(
+                v_flex()
+                    .w(px(257.))
+                    .h_full()
+                    .mb(px(4.))
+                    .bg(theme.background)
+                    .border_r_1()
+                    .border_b_1()
+                    .border_color(rgb(0xe5e5e5))
+                    .rounded(px(10.))
+                    .overflow_hidden()
+                    .child(sidebar.w_full()),
+            );
+        }
+
+        let mut body = h_flex()
+            .flex_1()
+            .h_full()
+            .child(left_well)
+            .child(main);
+        if self.view_changes {
+            body = body.child(changes_pane.border_l_1().border_color(theme.border));
+        }
+
+        v_flex()
             .size_full()
             .key_context("native")
             .on_action(cx.listener(|this, _: &ToggleFind, w, cx| {
@@ -3687,14 +3726,7 @@ impl Render for Native {
             }))
             .bg(theme.background)
             .text_color(theme.foreground)
-            .child(rail.border_r_1().border_color(theme.border));
-        if !self.sidebar_collapsed {
-            root = root.child(sidebar.border_r_1().border_color(theme.border));
-        }
-        root = root.child(main);
-        if self.view_changes {
-            root = root.child(changes_pane.border_l_1().border_color(theme.border));
-        }
-        root
+            .child(strip)
+            .child(body)
     }
 }

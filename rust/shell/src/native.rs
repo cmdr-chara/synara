@@ -299,6 +299,21 @@ fn get<'a>(v: &'a Value, k: &str) -> &'a Value {
     v.get(k).unwrap_or(&Value::Null)
 }
 
+fn provider_icon(provider: &str) -> &'static [u8] {
+    match provider {
+        "pi" => icons::P_PI,
+        "claude" => icons::P_CLAUDE,
+        "devin" => icons::P_DEVIN,
+        "cursor" => icons::P_CURSOR,
+        "opencode" => icons::P_OPENCODE,
+        "omp" => icons::P_OMP,
+        "droid" => icons::P_DROID,
+        "antigravity" => icons::P_ANTIGRAVITY,
+        "grok" => icons::P_GROK,
+        _ => icons::CODEX,
+    }
+}
+
 fn str_at<'a>(v: &'a Value, k: &str) -> &'a str {
     get(v, k).as_str().unwrap_or("")
 }
@@ -2518,19 +2533,7 @@ impl Render for Native {
             let is_sel = selected == Some(tid.as_str());
             // Upstream: the row's leading glyph is the thread's provider icon
             // (session.providerName), not a uniform marker.
-            let provider = str_at(get(thread, "session"), "providerName");
-            let provider_icon: &[u8] = match provider {
-                "pi" => icons::P_PI,
-                "claude" => icons::P_CLAUDE,
-                "devin" => icons::P_DEVIN,
-                "cursor" => icons::P_CURSOR,
-                "opencode" => icons::P_OPENCODE,
-                "omp" => icons::P_OMP,
-                "droid" => icons::P_DROID,
-                "antigravity" => icons::P_ANTIGRAVITY,
-                "grok" => icons::P_GROK,
-                _ => icons::CODEX,
-            };
+            let provider_icon = provider_icon(str_at(get(thread, "session"), "providerName"));
             let mut el = h_flex()
                 .id(ElementId::Name(format!("thread-{tid}").into()))
                 .w_full()
@@ -8380,9 +8383,16 @@ impl Render for Native {
                                 theme.border.opacity(0.)
                             })
                             .child(
-                                Icon::new(IconName::Bot)
-                                    .size(px(13.))
-                                    .text_color(theme.muted_foreground),
+                                svg_icon(provider_icon(str_at(
+                                    snap_threads
+                                        .iter()
+                                        .find(|t| str_at(t, "id") == ot)
+                                        .map(|t| get(t, "session"))
+                                        .unwrap_or(&Value::Null),
+                                    "providerName",
+                                )))
+                                .size(px(13.))
+                                .text_color(theme.muted_foreground),
                             )
                             .child(
                                 div()

@@ -1078,8 +1078,12 @@ fn thread_turn_start(command: &Map<String, Value>) -> Result<Value, WsErr> {
         sets.push(("updated_at", created_v.clone()));
     }
     if dispatch_origin != "automation" {
-        sets.push(("runtime_mode", runtime_mode.clone()));
-        sets.push(("interaction_mode", interaction_mode.clone()));
+        if !runtime_mode.is_null() {
+            sets.push(("runtime_mode", runtime_mode.clone()));
+        }
+        if !interaction_mode.is_null() {
+            sets.push(("interaction_mode", interaction_mode.clone()));
+        }
     }
     // Fresh thread (no turn, no session): adopt the requested model selection.
     if row.latest_turn_id.is_none()

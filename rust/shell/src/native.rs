@@ -7045,7 +7045,9 @@ impl Render for Native {
         let mut changes_pane = v_flex()
             .w(px(300.))
             .h_full()
-            .p_3()
+            .px(px(12.))
+            .pb_3()
+            .pt(px(9.))
             .gap_2()
             .child(
                 h_flex()
@@ -7053,7 +7055,7 @@ impl Render for Native {
                     .justify_between()
                     .child(
                         div()
-                            .text_xs()
+                            .text_size(px(12.))
                             .font_weight(FontWeight::SEMIBOLD)
                             .text_color(theme.muted_foreground)
                             .child("CHANGES"),

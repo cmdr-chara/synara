@@ -1,0 +1,23 @@
+{
+  "provider": "pi",
+  "instanceId": "pi",
+  "driver": "pi",
+  "status": "error",
+  "available": false,
+  "installed": false,
+  "authStatus": "unknown",
+  "checkedAt": "2026-11-22T20:48:43Z",
+  "message": "Pi CLI (`pi`) is not installed or not on PATH.",
+  "displayName": "Pi",
+  "enabled": true,
+  "versionAdvisory": {
+    "status": "behind_latest",
+    "currentVersion": "1.4.0",
+    "latestVersion": "1.6.0",
+    "latestVersionKnowable": true,
+    "updateCommand": "pi update",
+    "canUpdate": true,
+    "checkedAt": "2026-11-22T12:46:55.173Z",
+    "message": null
+  }
+}

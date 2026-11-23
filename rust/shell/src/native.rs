@@ -8457,18 +8457,186 @@ impl Render for Native {
                     })
             })
             .child(div().flex_1())
-            .child(
-                rail_btn("nav-help", icons::HELP, false, cx)
-                    .on_click(cx.listener(|_this, _ev, _w, cx| {
-                        cx.open_url("https://github.com/Emanuele-web04/synara");
-                    })),
-            )
-            .child(
-                rail_btn("nav-user", icons::USER, false, cx)
-                    .on_click(cx.listener(|_this, _ev, _w, cx| {
-                        cx.open_url("https://github.com/Emanuele-web04/synara");
-                    })),
-            );
+            .child({
+                // Upstream help menu (SidebarHelpMenu): "What's new" header,
+                // the three latest release rows (title + date), "Full
+                // changelog", then Keybindings / Send feedback / Docs.
+                // Release rows open the release-history dialog upstream; the
+                // shell has no dialog surface yet, so they open the docs
+                // page instead.
+                let help_weak = cx.weak_entity();
+                const RELEASES: [(&str, &str); 3] = [
+                    ("Use connectors with Antigravity", "Nov 20"),
+                    ("See what your agent is doing", "Nov 19"),
+                    ("Play local videos", "Nov 17"),
+                ];
+                Button::new("nav-help")
+                    .ghost()
+                    .compact()
+                    .icon(svg_icon(icons::HELP).size(px(20.)).text_color(glyph_idle))
+                    .dropdown_menu(move |menu, _, _| {
+                        let mut m = menu
+                            .min_w(px(256.))
+                            .item(PopupMenuItem::label("What's new"));
+                        for (title, date) in RELEASES {
+                            m = m.item(
+                                PopupMenuItem::element(move |_, _| {
+                                    h_flex()
+                                        .w(px(230.))
+                                        .justify_between()
+                                        .child(div().text_size(px(13.)).child(title))
+                                        .child(
+                                            div()
+                                                .text_size(px(11.))
+                                                .text_color(rgba(0x777777aa))
+                                                .child(date),
+                                        )
+                                })
+                                .on_click(|_, _w, cx| {
+                                    cx.open_url("https://trysynara.com/docs");
+                                }),
+                            );
+                        }
+                        m = m
+                            .item(
+                                PopupMenuItem::new("Full changelog")
+                                    .icon(svg_icon(icons::STAR).size(px(14.)))
+                                    .on_click(|_, _w, cx| {
+                                        cx.open_url("https://trysynara.com/docs");
+                                    }),
+                            )
+                            .item(PopupMenuItem::separator())
+                            .item(
+                                PopupMenuItem::new("Keybindings")
+                                    .icon(svg_icon(icons::S_SHORTCUT).size(px(14.)))
+                                    .on_click({
+                                        let weak = help_weak.clone();
+                                        move |_, _w, cx| {
+                                            let _ = weak.update(cx, |this, cx| {
+                                                this.clear_views();
+                                                this.view_settings = true;
+                                                this.settings_section = "shortcuts";
+                                                if this.settings_data.is_null() {
+                                                    this.fetch_settings(cx);
+                                                }
+                                                cx.notify();
+                                            });
+                                        }
+                                    }),
+                            )
+                            .item(
+                                PopupMenuItem::new("Send feedback")
+                                    .icon(svg_icon(icons::PENCIL).size(px(14.)))
+                                    .on_click(|_, _w, cx| {
+                                        cx.open_url(
+                                            "https://github.com/Emanuele-web04/synara/issues",
+                                        );
+                                    }),
+                            );
+                        m.item(
+                            PopupMenuItem::new("Docs")
+                                .icon(svg_icon(icons::FILE_TEXT).size(px(14.)))
+                                .on_click(|_, _w, cx| {
+                                    cx.open_url("https://trysynara.com/docs");
+                                }),
+                        )
+                    })
+            })
+            .child({
+                // Upstream signed-out account menu (AccountFooterControl):
+                // "You're in local mode" header + Sign in button, then
+                // Settings. Sign in opens the sign-in dialog upstream; the
+                // shell's equivalent surface is Settings → Accounts.
+                let user_weak = cx.weak_entity();
+                Button::new("nav-user")
+                    .ghost()
+                    .compact()
+                    .icon(svg_icon(icons::USER).size(px(20.)).text_color(glyph_idle))
+                    .dropdown_menu(move |menu, _, _| {
+                        let weak = user_weak.clone();
+                        menu.min_w(px(256.))
+                            .item(
+                                PopupMenuItem::element(|_, _| {
+                                    v_flex()
+                                        .w(px(230.))
+                                        .gap_0p5()
+                                        .child(
+                                            div()
+                                                .text_size(px(13.))
+                                                .font_weight(FontWeight::MEDIUM)
+                                                .child("You're in local mode"),
+                                        )
+                                        .child(
+                                            div()
+                                                .text_size(px(12.))
+                                                .text_color(rgba(0x777777aa))
+                                                .child(
+                                                    "Sign in to sync your profile and workspace across devices.",
+                                                ),
+                                        )
+                                })
+                                .disabled(true),
+                            )
+                            .item(
+                                PopupMenuItem::element(|_, _| {
+                                    div()
+                                        .w(px(230.))
+                                        .h(px(30.))
+                                        .rounded(px(8.))
+                                        .bg(rgb(0x1a1a1a))
+                                        .flex()
+                                        .items_center()
+                                        .justify_center()
+                                        .child(
+                                            div()
+                                                .text_size(px(13.))
+                                                .text_color(rgb(0xffffff))
+                                                .child("Sign in"),
+                                        )
+                                })
+                                .on_click({
+                                    let w = weak.clone();
+                                    move |_, _w, cx| {
+                                        let _ = w.update(cx, |this, cx| {
+                                            this.clear_views();
+                                            this.view_settings = true;
+                                            this.settings_section = "accounts";
+                                            if this.settings_data.is_null() {
+                                                this.fetch_settings(cx);
+                                            }
+                                            cx.notify();
+                                        });
+                                    }
+                                }),
+                            )
+                            .item(PopupMenuItem::separator())
+                            .item(
+                                PopupMenuItem::element(|_, _| {
+                                    h_flex()
+                                        .w(px(230.))
+                                        .items_center()
+                                        .justify_between()
+                                        .child(div().text_size(px(13.)).child("Settings"))
+                                        .child(
+                                            div()
+                                                .text_size(px(11.))
+                                                .text_color(rgba(0x777777aa))
+                                                .child("\u{2318},"),
+                                        )
+                                })
+                                .on_click(move |_, _w, cx| {
+                                    let _ = weak.update(cx, |this, cx| {
+                                        this.clear_views();
+                                        this.view_settings = true;
+                                        if this.settings_data.is_null() {
+                                            this.fetch_settings(cx);
+                                        }
+                                        cx.notify();
+                                    });
+                                }),
+                            )
+                    })
+            });
 
         // ---- top strip (AppShellTopStrip) ----
         // 47px #f7f7f7 band, borderless, over rail+panel+content: sidebar

@@ -68,6 +68,13 @@ mod icons {
         include_bytes!("../assets/icons/chevron-down-small.svg");
     pub const WORKTREE: &[u8] =
         include_bytes!("../assets/icons/worktree-split.svg");
+    pub const REFRESH: &[u8] =
+        include_bytes!("../assets/icons/arrow-rotate-clockwise.svg");
+    pub const SORT: &[u8] =
+        include_bytes!("../assets/icons/sort-arrow-up-down.svg");
+    pub const FILTER: &[u8] = include_bytes!("../assets/icons/filter-1.svg");
+    pub const PLUS_MED: &[u8] = include_bytes!("../assets/icons/plus-medium.svg");
+    pub const PENCIL: &[u8] = include_bytes!("../assets/icons/pencil.svg");
     pub const S_PEOPLE_ID_CARD: &[u8] =
         include_bytes!("../assets/icons/people-id-card.svg");
     pub const S_COLOR_PALETTE: &[u8] =
@@ -164,6 +171,12 @@ pub struct Native {
     view_settings: bool,
     settings_section: &'static str,
     view_inbox: bool,
+    view_tasks: bool,
+    view_kanban: bool,
+    view_pullreq: bool,
+    view_autom: bool,
+    view_studio: bool,
+    view_spaces: bool,
     inbox_items: Vec<Value>,
     inbox_errors: Vec<Value>,
     inbox_loading: bool,
@@ -350,6 +363,12 @@ impl Native {
                 view_settings: false,
                 settings_section: "general",
                 view_inbox: false,
+                view_tasks: false,
+                view_kanban: false,
+                view_pullreq: false,
+                view_autom: false,
+                view_studio: false,
+                view_spaces: false,
                 inbox_items: Vec::new(),
                 inbox_errors: Vec::new(),
                 inbox_loading: false,
@@ -457,10 +476,7 @@ impl Native {
         self.selected_thread = Some(thread_id.clone());
         self.renaming = false;
         // Selecting a thread always returns to the transcript surface.
-        self.view_files = false;
-        self.view_dev = false;
-        self.view_inbox = false;
-        self.view_settings = false;
+        self.clear_views();
         self.fetch_git_status(cx);
         if !self.open_threads.contains(&thread_id) {
             self.open_threads.push(thread_id.clone());
@@ -654,6 +670,13 @@ impl Native {
         if self.view_files {
             self.view_dev = false;
             self.view_inbox = false;
+            self.view_tasks = false;
+            self.view_kanban = false;
+            self.view_pullreq = false;
+            self.view_autom = false;
+            self.view_studio = false;
+            self.view_spaces = false;
+            self.view_settings = false;
             if self.files_dir.is_empty() {
                 if let Some(root) = self.files_root() {
                     self.load_dir(root, cx);
@@ -679,7 +702,55 @@ impl Native {
             self.view_files = false;
             self.view_dev = false;
             self.view_settings = false;
+            self.view_tasks = false;
+            self.view_kanban = false;
+            self.view_pullreq = false;
+            self.view_autom = false;
+            self.view_studio = false;
+            self.view_spaces = false;
             self.fetch_inbox(cx);
+        }
+        cx.notify();
+    }
+
+    /// Clear every rail-route surface (the transcript shows when all are
+    /// off). Docks (changes/terminal) are independent surfaces, untouched.
+    fn clear_views(&mut self) {
+        self.view_files = false;
+        self.view_dev = false;
+        self.view_inbox = false;
+        self.view_settings = false;
+        self.view_tasks = false;
+        self.view_kanban = false;
+        self.view_pullreq = false;
+        self.view_autom = false;
+        self.view_studio = false;
+        self.view_spaces = false;
+    }
+
+    /// Rail route toggle: open that surface (closing the others); clicking
+    /// the active one again returns to the transcript.
+    fn open_route(&mut self, which: u8, cx: &mut Context<Self>) {
+        let was = match which {
+            1 => self.view_tasks,
+            2 => self.view_kanban,
+            3 => self.view_pullreq,
+            4 => self.view_autom,
+            5 => self.view_studio,
+            6 => self.view_spaces,
+            _ => false,
+        };
+        self.clear_views();
+        if !was {
+            match which {
+                1 => self.view_tasks = true,
+                2 => self.view_kanban = true,
+                3 => self.view_pullreq = true,
+                4 => self.view_autom = true,
+                5 => self.view_studio = true,
+                6 => self.view_spaces = true,
+                _ => {}
+            }
         }
         cx.notify();
     }
@@ -3834,6 +3905,675 @@ impl Render for Native {
             }
         }
 
+        // ==================== rail route views ====================
+        // Segmented pill chip — upstream: muted rounded track, white active.
+        let seg_chip = |id: &'static str, label: &'static str, active: bool| {
+            let d = div()
+                .id(ElementId::Name(id.into()))
+                .h(px(24.))
+                .px(px(10.))
+                .flex()
+                .items_center()
+                .rounded(px(6.))
+                .cursor_pointer()
+                .child(
+                    div()
+                        .text_sm()
+                        .text_color(if active {
+                            theme.foreground
+                        } else {
+                            theme.muted_foreground
+                        })
+                        .child(label),
+                );
+            if active { d.bg(theme.background) } else { d }
+        };
+
+        // /tasks — rail only: List|Kanban toggle top-right, centered column.
+        let tasks_pane = v_flex()
+            .flex_1()
+            .h_full()
+            .child(
+                h_flex()
+                    .w_full()
+                    .pt(px(9.))
+                    .pr(px(19.))
+                    .child(div().flex_1())
+                    .child(
+                        h_flex()
+                            .gap(px(2.))
+                            .p(px(2.))
+                            .rounded(px(8.))
+                            .bg(rgb(0xf0f0f0))
+                            .child(seg_chip("seg-tasks-list", "List", true).on_click(cx.listener(
+                                |this, _e, _w, cx| this.open_route(1, cx),
+                            )))
+                            .child(seg_chip("seg-tasks-kanban", "Kanban", false).on_click(
+                                cx.listener(|this, _e, _w, cx| this.open_route(2, cx)),
+                            )),
+                    ),
+            )
+            .child(
+                // Upstream: a centered fixed-width column, contents
+                // left-aligned; add-task row is a faint borderless row.
+                v_flex()
+                    .flex_1()
+                    .items_center()
+                    .child(
+                        v_flex()
+                            .w(px(560.))
+                            .pt(px(36.))
+                            .child(
+                                div()
+                                    .text_size(px(24.))
+                                    .font_weight(FontWeight::SEMIBOLD)
+                                    .child("Tasks"),
+                            )
+                            .child(
+                                div()
+                                    .mt(px(4.))
+                                    .text_sm()
+                                    .text_color(theme.muted_foreground)
+                                    .child("Add anything you need to do"),
+                            )
+                            .child(
+                                h_flex()
+                                    .mt(px(36.))
+                                    .h(px(28.))
+                                    .gap(px(10.))
+                                    .items_center()
+                                    .child(
+                                        div()
+                                            .size(px(14.))
+                                            .rounded_full()
+                                            .border_1()
+                                            .border_color(theme.muted_foreground),
+                                    )
+                                    .child(
+                                        div()
+                                            .text_sm()
+                                            .text_color(theme.muted_foreground)
+                                            .child("Add a task, or press Tab to hand it to an agent"),
+                                    ),
+                            ),
+                    ),
+            );
+
+        // /kanban — header strip + one column per project of task cards
+        // (threads are the upstream kanban items; "Chats" groups chat-kind).
+        let live = |t: &Value| get(t, "deletedAt").is_null() && get(t, "archivedAt").is_null();
+        let mut kanban_cols = h_flex().px_4().pt_2().gap_3().items_start();
+        let mut kanban_count = 0usize;
+        {
+            let snap = self.snapshot.clone().unwrap_or(Value::Null);
+            let kb_projects = arr(&snap, "projects");
+            let kb_threads = arr(&snap, "threads");
+            let chat_ids: Vec<String> = kb_projects
+                .iter()
+                .filter(|p| str_at(p, "kind") == "chat")
+                .map(|p| str_at(p, "id").to_string())
+                .collect();
+            let mut groups: Vec<(String, Vec<Value>)> = Vec::new();
+            for p in kb_projects {
+                if str_at(p, "kind") == "chat" {
+                    continue;
+                }
+                let pid = str_at(p, "id");
+                let mut kids: Vec<Value> = kb_threads
+                    .iter()
+                    .filter(|t| str_at(t, "projectId") == pid && live(t))
+                    .cloned()
+                    .collect();
+                kids.sort_by_key(|t| std::cmp::Reverse(str_at(t, "updatedAt").to_string()));
+                if !kids.is_empty() {
+                    groups.push((str_at(p, "title").to_string(), kids));
+                }
+            }
+            let mut chats: Vec<Value> = kb_threads
+                .iter()
+                .filter(|t| {
+                    live(t)
+                        && (chat_ids.iter().any(|id| id == str_at(t, "projectId"))
+                            || !kb_projects
+                                .iter()
+                                .any(|p| str_at(p, "id") == str_at(t, "projectId")))
+                })
+                .cloned()
+                .collect();
+            chats.sort_by_key(|t| std::cmp::Reverse(str_at(t, "updatedAt").to_string()));
+            if !chats.is_empty() {
+                groups.push(("Chats".to_string(), chats));
+            }
+            kanban_count = groups.iter().map(|g| g.1.len()).sum();
+            for (name, kids) in groups {
+                let n = kids.len();
+                let mut col = v_flex().w(px(275.)).gap(px(6.));
+                col = col.child(
+                    h_flex()
+                        .items_center()
+                        .px(px(2.))
+                        .child(
+                            div()
+                                .text_sm()
+                                .font_weight(FontWeight::SEMIBOLD)
+                                .child(name),
+                        )
+                        .child(
+                            div()
+                                .ml(px(4.))
+                                .text_sm()
+                                .text_color(theme.muted_foreground)
+                                .child(format!("{n}")),
+                        )
+                        .child(div().flex_1())
+                        .child(
+                            svg_icon(icons::PLUS)
+                                .size(px(14.))
+                                .text_color(theme.muted_foreground),
+                        ),
+                );
+                for t in &kids {
+                    let title = str_at(t, "title").to_string();
+                    let branch = str_at(t, "branch");
+                    let mut when = rel_time(str_at(t, "updatedAt"));
+                    if when.is_empty() {
+                        when = rel_time(str_at(t, "createdAt"));
+                    }
+                    let mut meta = h_flex().gap(px(6.)).items_center().child(
+                        svg_icon(icons::CODEX)
+                            .size(px(12.))
+                            .text_color(theme.muted_foreground),
+                    );
+                    if !branch.is_empty() {
+                        meta = meta.child(
+                            h_flex()
+                                .gap(px(2.))
+                                .items_center()
+                                .child(
+                                    svg_icon(icons::S_BRANCH_SIMPLE)
+                                        .size(px(11.))
+                                        .text_color(theme.muted_foreground),
+                                )
+                                .child(
+                                    div()
+                                        .text_xs()
+                                        .text_color(theme.muted_foreground)
+                                        .whitespace_nowrap()
+                                        .overflow_hidden()
+                                        .child(branch.to_string()),
+                                ),
+                        );
+                    }
+                    meta = meta.child(
+                        div()
+                            .text_xs()
+                            .text_color(theme.muted_foreground)
+                            .child(when),
+                    );
+                    meta = meta.child(
+                        h_flex()
+                            .ml_auto()
+                            .gap(px(4.))
+                            .items_center()
+                            .child(
+                                div()
+                                    .size(px(8.))
+                                    .rounded_full()
+                                    .border_1()
+                                    .border_color(theme.muted_foreground),
+                            )
+                            .child(
+                                div()
+                                    .text_xs()
+                                    .text_color(theme.muted_foreground)
+                                    .child("Draft"),
+                            ),
+                    );
+                    col = col.child(
+                        v_flex()
+                            .rounded(px(10.))
+                            .bg(theme.background)
+                            .border_1()
+                            .border_color(theme.border)
+                            .p(px(8.))
+                            .gap(px(6.))
+                            .child(
+                                div()
+                                    .text_sm()
+                                    .font_weight(FontWeight::MEDIUM)
+                                    .whitespace_nowrap()
+                                    .overflow_hidden()
+                                    .child(title),
+                            )
+                            .child(meta),
+                    );
+                }
+                kanban_cols = kanban_cols.child(col);
+            }
+        }
+        let kanban_pane = v_flex()
+            .flex_1()
+            .h_full()
+            .child(
+                h_flex()
+                    .w_full()
+                    .px(px(12.))
+                    .pt(px(9.))
+                    .pb(px(6.))
+                    .gap(px(8.))
+                    .items_center()
+                    .child(
+                        svg_icon(icons::SIDEBAR_LEFT)
+                            .size(px(18.))
+                            .text_color(theme.muted_foreground),
+                    )
+                    .child(
+                        div()
+                            .text_base()
+                            .font_weight(FontWeight::SEMIBOLD)
+                            .child("Kanban"),
+                    )
+                    .child(
+                        div()
+                            .text_sm()
+                            .text_color(theme.muted_foreground)
+                            .child(format!("{kanban_count} tasks")),
+                    )
+                    .child(div().flex_1())
+                    .child(
+                        h_flex()
+                            .gap(px(2.))
+                            .p(px(2.))
+                            .rounded(px(8.))
+                            .bg(rgb(0xf0f0f0))
+                            .child(seg_chip("seg-kb-list", "List", false).on_click(cx.listener(
+                                |this, _e, _w, cx| this.open_route(1, cx),
+                            )))
+                            .child(seg_chip("seg-kb-kanban", "Kanban", true).on_click(
+                                cx.listener(|this, _e, _w, cx| this.open_route(2, cx)),
+                            )),
+                    )
+                    .child(
+                        h_flex()
+                            .gap(px(2.))
+                            .p(px(2.))
+                            .rounded(px(8.))
+                            .bg(rgb(0xf0f0f0))
+                            .child(seg_chip("seg-kb-att", "Attention", true))
+                            .child(seg_chip("seg-kb-classic", "Classic", false)),
+                    )
+                    .child(
+                        div()
+                            .h(px(26.))
+                            .px(px(10.))
+                            .flex()
+                            .items_center()
+                            .child(div().text_sm().child("+ New task")),
+                    ),
+            )
+            .child(
+                h_flex()
+                    .px(px(16.))
+                    .pb(px(4.))
+                    .gap(px(6.))
+                    .items_center()
+                    .child(
+                        div()
+                            .size(px(12.))
+                            .rounded(px(3.))
+                            .border_1()
+                            .border_color(theme.muted_foreground),
+                    )
+                    .child(
+                        div()
+                            .text_sm()
+                            .text_color(theme.muted_foreground)
+                            .child("Needs review"),
+                    ),
+            )
+            .child(kanban_cols);
+
+        // /pull-requests — "Code review" list panel + empty detail pane.
+        let mut pr_rows = v_flex().px_2().pt_2().gap(px(8.));
+        for _ in 0..8 {
+            pr_rows = pr_rows.child(div().h(px(56.)).rounded(px(8.)).bg(rgb(0xf4f4f4)));
+        }
+        let pullreq_panel = v_flex()
+            .flex_1()
+            .h_full()
+            .px(px(6.))
+            .py(px(6.))
+            .gap(px(2.))
+            .child(
+                h_flex()
+                    .px_2()
+                    .pb_2()
+                    .items_center()
+                    .child(
+                        div()
+                            .text_base()
+                            .font_weight(FontWeight::SEMIBOLD)
+                            .child("Code review"),
+                    )
+                    .child(div().flex_1())
+                    .child(
+                        svg_icon(icons::SORT)
+                            .size(px(14.))
+                            .text_color(theme.muted_foreground),
+                    )
+                    .child(div().w(px(8.)))
+                    .child(
+                        svg_icon(icons::FILTER)
+                            .size(px(14.))
+                            .text_color(theme.muted_foreground),
+                    )
+                    .child(div().w(px(8.)))
+                    .child(
+                        svg_icon(icons::MORE)
+                            .size(px(14.))
+                            .text_color(theme.muted_foreground),
+                    ),
+            )
+            .child(
+                h_flex()
+                    .mx_1()
+                    .mb_2()
+                    .h(px(30.))
+                    .px_2()
+                    .gap_2()
+                    .items_center()
+                    .rounded(px(8.))
+                    .border_1()
+                    .border_color(theme.border)
+                    .bg(rgb(0xfafafa))
+                    .child(
+                        svg_icon(icons::SEARCH)
+                            .size(px(14.))
+                            .text_color(theme.muted_foreground),
+                    )
+                    .child(
+                        div()
+                            .text_sm()
+                            .text_color(theme.muted_foreground)
+                            .child("Search or paste a PR link"),
+                    ),
+            )
+            .child(
+                h_flex()
+                    .px_2()
+                    .pb_2()
+                    .gap_4()
+                    .items_center()
+                    .child(
+                        div()
+                            .text_sm()
+                            .font_weight(FontWeight::SEMIBOLD)
+                            .border_b_2()
+                            .border_color(theme.foreground)
+                            .child("All"),
+                    )
+                    .child(
+                        div()
+                            .text_sm()
+                            .text_color(theme.muted_foreground)
+                            .child("PRs"),
+                    )
+                    .child(
+                        div()
+                            .text_sm()
+                            .text_color(theme.muted_foreground)
+                            .child("Issues"),
+                    ),
+            )
+            .child(pr_rows);
+        let pullreq_pane = v_flex()
+            .flex_1()
+            .h_full()
+            .items_center()
+            .justify_center()
+            .gap_2()
+            .child(
+                svg_icon(icons::PULL_REQUESTS)
+                    .size(px(36.))
+                    .text_color(theme.muted_foreground),
+            )
+            .child(
+                div()
+                    .text_base()
+                    .font_weight(FontWeight::MEDIUM)
+                    .child("Select a pull request or issue"),
+            )
+            .child(
+                div()
+                    .text_sm()
+                    .text_color(theme.muted_foreground)
+                    .child("Choose one from the sidebar to review it"),
+            );
+
+        // /automations — list panel + empty detail pane w/ refresh affordance.
+        let autom_panel = v_flex()
+            .flex_1()
+            .h_full()
+            .px(px(6.))
+            .py(px(6.))
+            .gap(px(2.))
+            .child(
+                div()
+                    .px_2()
+                    .pb_2()
+                    .text_base()
+                    .font_weight(FontWeight::SEMIBOLD)
+                    .child("Automations"),
+            )
+            .child(
+                h_flex()
+                    .h(px(28.))
+                    .px_2()
+                    .gap_2()
+                    .items_center()
+                    .rounded(px(6.))
+                    .child(
+                        svg_icon(icons::PLUS_MED)
+                            .size(px(14.))
+                            .text_color(theme.foreground),
+                    )
+                    .child(div().text_sm().child("New automation")),
+            )
+            .child(
+                div()
+                    .mt_2()
+                    .px_4()
+                    .text_sm()
+                    .text_color(theme.muted_foreground)
+                    .child("No automations yet"),
+            );
+        let autom_pane = v_flex()
+            .flex_1()
+            .h_full()
+            .child(
+                h_flex()
+                    .w_full()
+                    .pt(px(9.))
+                    .pr(px(19.))
+                    .child(div().flex_1())
+                    .child(
+                        svg_icon(icons::REFRESH)
+                            .size(px(18.))
+                            .text_color(theme.muted_foreground),
+                    ),
+            )
+            .child(
+                v_flex()
+                    .flex_1()
+                    .items_center()
+                    .justify_center()
+                    .gap_2()
+                    .pb(px(120.))
+                    .child(
+                        svg_icon(icons::AUTOMATIONS)
+                            .size(px(32.))
+                            .text_color(theme.muted_foreground),
+                    )
+                    .child(
+                        div()
+                            .text_base()
+                            .font_weight(FontWeight::MEDIUM)
+                            .child("Automations"),
+                    )
+                    .child(
+                        div()
+                            .text_sm()
+                            .text_color(theme.muted_foreground)
+                            .child("Pick an automation in the panel to see its runs, or"),
+                    )
+                    .child(
+                        div()
+                            .text_sm()
+                            .text_color(theme.muted_foreground)
+                            .child("schedule a new one."),
+                    )
+                    .child(
+                        div()
+                            .mt_2()
+                            .h(px(30.))
+                            .px_4()
+                            .flex()
+                            .items_center()
+                            .rounded(px(8.))
+                            .bg(theme.foreground)
+                            .child(
+                                div()
+                                    .text_sm()
+                                    .text_color(theme.background)
+                                    .child("New automation"),
+                            ),
+                    ),
+            );
+
+        // /hubs (studio rail icon) — hubs list panel + empty pane.
+        let studio_panel = v_flex()
+            .flex_1()
+            .h_full()
+            .px(px(6.))
+            .py(px(6.))
+            .gap(px(2.))
+            .child(
+                h_flex()
+                    .px_2()
+                    .pb_2()
+                    .items_center()
+                    .child(
+                        div()
+                            .text_base()
+                            .font_weight(FontWeight::SEMIBOLD)
+                            .child("Hubs"),
+                    )
+                    .child(
+                        div()
+                            .pl_1()
+                            .text_sm()
+                            .text_color(theme.muted_foreground)
+                            .child("\u{2304}"),
+                    )
+                    .child(div().flex_1())
+                    .child(
+                        svg_icon(icons::SEARCH)
+                            .size(px(14.))
+                            .text_color(theme.muted_foreground),
+                    ),
+            )
+            .child(
+                h_flex()
+                    .h(px(28.))
+                    .px_2()
+                    .gap_2()
+                    .items_center()
+                    .rounded(px(6.))
+                    .child(
+                        svg_icon(icons::PENCIL)
+                            .size(px(14.))
+                            .text_color(theme.muted_foreground),
+                    )
+                    .child(div().text_sm().child("New hub")),
+            )
+            .child(
+                div()
+                    .mt_2()
+                    .px_2()
+                    .py_1()
+                    .text_sm()
+                    .text_color(theme.muted_foreground)
+                    .child("Hubs"),
+            )
+            .child(
+                div()
+                    .px_4()
+                    .text_sm()
+                    .text_color(theme.muted_foreground)
+                    .child("No hubs yet"),
+            );
+        let studio_pane = v_flex()
+            .flex_1()
+            .h_full()
+            .items_center()
+            .justify_center()
+            .gap_2()
+            .child(
+                div()
+                    .text_base()
+                    .font_weight(FontWeight::MEDIUM)
+                    .child("No hubs yet"),
+            )
+            .child(
+                div()
+                    .text_sm()
+                    .text_color(theme.muted_foreground)
+                    .child("Create one from the sidebar to coordinate work across repos."),
+            );
+
+        // spaces — a left-panel view like upstream (workspaces list); the main
+        // surface stays whatever it was.
+        let mut spaces_panel = v_flex().flex_1().h_full().px(px(6.)).py(px(6.)).gap(px(2.));
+        spaces_panel = spaces_panel.child(
+            div()
+                .px_2()
+                .pb_2()
+                .text_base()
+                .font_weight(FontWeight::SEMIBOLD)
+                .child("Spaces"),
+        );
+        let space_list: Vec<Value> = arr(
+            self.snapshot.as_ref().unwrap_or(&Value::Null),
+            "spaces",
+        )
+        .to_vec();
+        if space_list.is_empty() {
+            spaces_panel = spaces_panel.child(
+                div()
+                    .px_4()
+                    .text_sm()
+                    .text_color(theme.muted_foreground)
+                    .child("No spaces yet"),
+            );
+        } else {
+            for s in space_list {
+                spaces_panel = spaces_panel.child(
+                    h_flex()
+                        .h(px(28.))
+                        .px_2()
+                        .gap_2()
+                        .items_center()
+                        .rounded(px(6.))
+                        .child(
+                            svg_icon(icons::STAR)
+                                .size(px(14.))
+                                .text_color(theme.muted_foreground),
+                        )
+                        .child(div().text_sm().child(str_at(&s, "name").to_string())),
+                );
+            }
+        }
+
         // ---- terminal drawer (bottom pane over the transcript column) ----
         let mut term_drawer = v_flex()
             .h(px(220.))
@@ -3983,6 +4723,17 @@ impl Render for Native {
             main = main.child(div().flex_1().child(files_pane.overflow_y_scrollbar()));
         } else if self.view_inbox {
             main = main.child(div().flex_1().child(inbox_pane.overflow_y_scrollbar()));
+        } else if self.view_tasks {
+            main = main.child(div().flex_1().child(tasks_pane));
+        } else if self.view_kanban {
+            main = main
+                .child(div().flex_1().child(kanban_pane.overflow_y_scrollbar()));
+        } else if self.view_pullreq {
+            main = main.child(div().flex_1().child(pullreq_pane));
+        } else if self.view_autom {
+            main = main.child(div().flex_1().child(autom_pane));
+        } else if self.view_studio {
+            main = main.child(div().flex_1().child(studio_pane));
         } else {
             if self.find_open {
                 main = main.child(find_bar);
@@ -4152,8 +4903,16 @@ impl Render for Native {
                 .bg(theme.border)
                 .my(px(3.))
         };
-        let home_active =
-            !self.view_files && !self.view_dev && !self.view_settings && !self.view_inbox;
+        let home_active = !self.view_files
+            && !self.view_dev
+            && !self.view_settings
+            && !self.view_inbox
+            && !self.view_tasks
+            && !self.view_kanban
+            && !self.view_pullreq
+            && !self.view_autom
+            && !self.view_studio
+            && !self.view_spaces;
         let rail = v_flex()
             .w(px(51.))
             .h_full()
@@ -4164,10 +4923,7 @@ impl Render for Native {
             .child(
                 rail_btn("nav-home", icons::HOME, home_active, cx).on_click(cx.listener(
                     |this, _ev, _w, cx| {
-                        this.view_files = false;
-                        this.view_dev = false;
-                        this.view_settings = false;
-                        this.view_inbox = false;
+                        this.clear_views();
                         this.view_changes = false;
                         cx.notify();
                     },
@@ -4181,58 +4937,44 @@ impl Render for Native {
                 ),
             )
             .child(
-                rail_btn("nav-spaces", icons::SPACES, self.view_files, cx).on_click(
+                rail_btn("nav-spaces", icons::SPACES, self.view_spaces, cx).on_click(
                     cx.listener(|this, _ev, _w, cx| {
-                        this.view_settings = false;
-                        this.view_inbox = false;
-                        this.toggle_files(cx);
+                        this.open_route(6, cx);
                     }),
                 ),
             )
             .child(
-                rail_btn("nav-tasks", icons::TASKS, self.view_dev, cx).on_click(
+                rail_btn("nav-tasks", icons::TASKS, self.view_tasks, cx).on_click(
                     cx.listener(|this, _ev, _w, cx| {
-                        this.view_settings = false;
-                        this.view_inbox = false;
-                        this.toggle_dev(cx);
+                        this.open_route(1, cx);
                     }),
                 ),
             )
             .child(
-                rail_btn("nav-pullrequests", icons::PULL_REQUESTS, false, cx).on_click(
-                    cx.listener(|this, _ev, _w, cx| {
-                        this.toggle_inbox(cx);
-                    }),
-                ),
+                rail_btn("nav-pullrequests", icons::PULL_REQUESTS, self.view_pullreq, cx)
+                    .on_click(cx.listener(|this, _ev, _w, cx| {
+                        this.open_route(3, cx);
+                    })),
             )
             .child(
-                rail_btn("nav-automations", icons::AUTOMATIONS, false, cx).on_click(
-                    cx.listener(|this, _ev, _w, cx| {
-                        this.view_settings = false;
-                        this.view_inbox = false;
-                        this.toggle_dev(cx);
-                    }),
-                ),
+                rail_btn("nav-automations", icons::AUTOMATIONS, self.view_autom, cx)
+                    .on_click(cx.listener(|this, _ev, _w, cx| {
+                        this.open_route(4, cx);
+                    })),
             )
             .child(
-                rail_btn("nav-studio", icons::STUDIO, false, cx).on_click(
+                rail_btn("nav-studio", icons::STUDIO, self.view_studio, cx).on_click(
                     cx.listener(|this, _ev, _w, cx| {
-                        this.view_settings = false;
-                        this.view_inbox = false;
-                        this.view_files = false;
-                        this.toggle_dev(cx);
+                        this.open_route(5, cx);
                     }),
                 ),
             )
             .child(
                 rail_btn("nav-more", icons::MORE, self.view_settings, cx).on_click(
                     cx.listener(|this, _ev, _w, cx| {
-                        this.view_settings = !this.view_settings;
-                        if this.view_settings {
-                            this.view_files = false;
-                            this.view_dev = false;
-                            this.view_inbox = false;
-                        }
+                        let was = this.view_settings;
+                        this.clear_views();
+                        this.view_settings = !was;
                         cx.notify();
                     }),
                 ),
@@ -4301,9 +5043,21 @@ impl Render for Native {
             .h_full()
             .bg(rgb(0xf7f7f7))
             .child(rail.border_r_1().border_color(rgb(0xe5e5e5)));
-        if !self.sidebar_collapsed && !self.view_inbox {
+        if !self.sidebar_collapsed
+            && !self.view_inbox
+            && !self.view_tasks
+            && !self.view_kanban
+        {
             let side: gpui::AnyElement = if self.view_settings {
                 settings_nav_el.into_any_element()
+            } else if self.view_pullreq {
+                pullreq_panel.into_any_element()
+            } else if self.view_autom {
+                autom_panel.into_any_element()
+            } else if self.view_studio {
+                studio_panel.into_any_element()
+            } else if self.view_spaces {
+                spaces_panel.into_any_element()
             } else {
                 sidebar.w_full().into_any_element()
             };

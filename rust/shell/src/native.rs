@@ -5232,24 +5232,27 @@ impl Render for Native {
                 let search = h_flex()
                     .w_full()
                     .h(px(36.))
-                    .px_3()
-                    .gap_2()
-                    .rounded(px(10.))
-                    .bg(gpui::rgba(0x0000000a))
+                    .pl(px(14.))
+                    .pr_4()
+                    .gap(px(8.))
+                    .rounded_full()
+                    .border_1()
+                    .border_color(theme.border)
+                    .bg(rgb(0xf7f7f7))
                     .items_center()
-                    .child(svg_icon(icons::SEARCH).size(px(16.)).text_color(theme.muted_foreground))
+                    .child(svg_icon(icons::SEARCH).size(px(14.)).text_color(theme.muted_foreground))
                     .child(div().text_size(px(13.)).text_color(theme.muted_foreground).child("Search connectors"))
                     .into_any_element();
                 let dark_btn = |label: &'static str| {
-                    div()
-                        .px_3()
-                        .py_1p5()
+                    h_flex()
+                        .h(px(36.))
+                        .px_4()
+                        .gap_1p5()
+                        .items_center()
                         .rounded_full()
                         .bg(rgb(0x26251f))
-                        .text_xs()
-                        .font_weight(FontWeight::MEDIUM)
-                        .text_color(gpui::white())
-                        .child(label)
+                        .child(svg_icon(icons::PLUS).size(px(16.)).text_color(gpui::white()))
+                        .child(div().text_size(px(13.)).font_weight(FontWeight::MEDIUM).text_color(gpui::white()).child(label))
                         .into_any_element()
                 };
                 let catalog: [(&'static str, &'static str); 3] = [
@@ -5282,8 +5285,17 @@ impl Render for Native {
                     .child(
                         h_flex()
                             .gap_2()
-                            .child(dark_btn("+ Add custom"))
-                            .child(outline_btn("Add local server")),
+                            .child(dark_btn("Add custom"))
+                            .child(
+                                h_flex()
+                                    .h(px(36.))
+                                    .px_4()
+                                    .items_center()
+                                    .rounded_full()
+                                    .border_1()
+                                    .border_color(theme.border)
+                                    .child(div().text_size(px(13.)).font_weight(FontWeight::MEDIUM).child("Add local server")),
+                            ),
                     )
                     ;
                 let mut catalog_grid = v_flex().w_full().gap(px(2.));

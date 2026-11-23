@@ -3,7 +3,7 @@
 Extracted 2026-11-22 from `packages/contracts/src/rpc.ts` (`Rpc.make` declarations, 285 methods).
 Transport: `apps/server/src/wsRpc.ts` over the WS upgrade path; this is the app's real API surface — the 30 HTTP routes in ROUTES.md are auxiliary.
 
-Native coverage in rust/app (relay handles the rest): ~263/285.
+Native coverage in rust/app (relay handles the rest): ~267/285.
 - `bootstrap.negotiate` (HTTP GET /ws/negotiate)
 - `filesystem.browse`
 - `git.*` — 26 of 27 (missing: summarizeDiff)
@@ -24,9 +24,10 @@ Native coverage in rust/app (relay handles the rest): ~263/285.
 - `account.*` — 19 of 19 mirrors: signed-out status, idempotent signOut, verbatim upstream fallback errors (no account backend)
 - `hosts.*` — 19 of 19 mirrors: empty local sessions/connections lists, verbatim upstream fallback errors
 - `device.*` — 20 of 20 mirrors: unsupported-platform getThreadState snapshot, verbatim unsupported message, never-completing subscribeEvents
+- `editor.*` — 4 of 4: NATIVE_EDITOR_UNAVAILABLE refusal verbatim
 - `computer.*` — 25 of 25 under SYNARA_NO_UPSTREAM: real macOS backend via state_dir-compiled Swift helper (CGWindowList/CGEvent/AX) — getStatus/provision (permission-required verbatim w/ missing grants), getScreenSize, listWindows (cua:pid:wid ids + bounds + stackingIndex), getThreadState (+cursor), getState (+PNG screenshot via screencapture), launchApp (open -n), setControlEnabled (computer-control.json, disable→generation+1, 0600 tmp+rename), click/doubleClick/rightClick/input.click, moveCursor, drag, scroll/input.scroll (wheel telemetry), typeText, pressKey/input.key, hotkey (CGEvent + flag mask). getAuditHistory (bounded tail + base64url cursors, verbatim errors). All 25 native: + AX-element-targeted setValue/performAction/selectText (nodePath/ref/role+label resolution, ambiguity refused, read-back values), subscribeEvents (polled windows-changed diffs + broadcast computer.action events), getState root ComputerUiNode tree + includeText/labelContains text digest
 
-Deferred with reasons: projectAgent writes + coordinator runtime, automation run dispatch; account/hosts/device answered via verbatim mirrors pending a pairing authority; provider.*/getConfig need the provider CLI matrix; readThreadDiagnostics/providerUsage are impl-flagged; voice/generate*/transcribe need the provider runtime; editor.* needs the editor runtime.
+Deferred with reasons: projectAgent writes + coordinator runtime, automation run dispatch; provider.*/getConfig need the provider CLI matrix; readThreadDiagnostics/providerUsage are impl-flagged; voice/generate*/transcribe need the provider runtime; editor.* answered via the verbatim NATIVE_EDITOR_UNAVAILABLE gate refusal.
 
 
 

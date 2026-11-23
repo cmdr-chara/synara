@@ -180,6 +180,7 @@ pub struct Native {
     thread_stream_id: Option<String>,
     composer: Entity<InputState>,
     search: Entity<InputState>,
+    settings_search: Entity<InputState>,
     sending: bool,
     view_files: bool,
     files_dir: String,
@@ -245,6 +246,31 @@ pub struct Native {
     search_open: bool,
     sidebar_collapsed: bool,
 }
+
+const SETTINGS_SEARCH_ORDER: &[(&str, &str)] = &[
+    ("profile", "Profile"),
+    ("accounts", "Accounts"),
+    ("general", "General"),
+    ("appearance", "Appearance"),
+    ("layout", "Layout"),
+    ("chats", "Chats"),
+    ("notifications", "Notifications"),
+    ("shortcuts", "Keyboard shortcuts"),
+    ("providers", "Providers"),
+    ("models", "Models"),
+    ("skills", "Skills"),
+    ("usage", "Usage"),
+    ("connectors", "Connectors"),
+    ("integrations", "External agents"),
+    ("devices", "Devices"),
+    ("computer", "Computer use"),
+    ("appsnap", "AppSnap"),
+    ("worktrees", "Worktrees"),
+    ("archive", "Archive"),
+    ("privacy", "Privacy"),
+    ("advanced", "Advanced"),
+    ("about", "About"),
+];
 
 fn get<'a>(v: &'a Value, k: &str) -> &'a Value {
     v.get(k).unwrap_or(&Value::Null)
@@ -364,6 +390,33 @@ impl Native {
                 },
             )
             .detach();
+            let settings_search = cx.new(|cx| {
+                InputState::new(window, cx).placeholder("Search settings...")
+            });
+            cx.subscribe_in(
+                &settings_search,
+                window,
+                |this: &mut Self, _state, event, window, cx| match event {
+                    InputEvent::Change => cx.notify(),
+                    InputEvent::PressEnter { .. } => {
+                        let q = this.settings_search.read(cx).value().to_lowercase();
+                        if let Some(sid) = SETTINGS_SEARCH_ORDER
+                            .iter()
+                            .find(|(_, l)| l.to_lowercase().contains(q.trim()))
+                            .map(|(id, _)| *id)
+                        {
+                            this.settings_section = sid;
+                            if this.settings_data.is_null() {
+                                this.fetch_settings(cx);
+                            }
+                            this.settings_search.update(cx, |s, cx| s.set_value("", window, cx));
+                        }
+                        cx.notify();
+                    }
+                    _ => {}
+                },
+            )
+            .detach();
             cx.bind_keys([KeyBinding::new("cmd-f", ToggleFind, Some("native"))]);
             let this = Self {
                 focus_handle: cx.focus_handle(),
@@ -374,6 +427,7 @@ impl Native {
                 thread_stream_id: None,
                 composer,
                 search,
+                settings_search,
                 sending: false,
                 view_files: false,
                 files_dir: String::new(),
@@ -6043,19 +6097,19 @@ impl Render for Native {
                 .mx_1()
                 .mb_2()
                 .h(px(30.))
-                .px_2()
-                .gap_2()
+                .pl(px(14.))
+                .pr_2()
+                .gap(px(8.))
                 .items_center()
-                .rounded(px(8.))
+                .rounded_full()
                 .border_1()
                 .border_color(theme.border)
-                .bg(rgb(0xfafafa))
+                .bg(rgb(0xf7f7f7))
                 .child(svg_icon(icons::SEARCH).size(px(14.)).text_color(theme.muted_foreground))
                 .child(
                     div()
-                        .text_size(px(13.))
-                        .text_color(theme.muted_foreground)
-                        .child("Search settings..."),
+                        .flex_1()
+                        .child(Input::new(&self.settings_search).appearance(false)),
                 ),
         );
         let mut nav_list = v_flex()
@@ -6064,55 +6118,82 @@ impl Render for Native {
             .track_scroll(&self.settings_nav_scroll)
             .overflow_y_scroll()
             .gap(px(2.));
-        for (group, items) in settings_nav {
-            if !group.is_empty() {
+        let nav_row = |id: &'static str, label: &'static str, icon: &'static [u8], badge: Option<&'static str>, cx: &mut gpui::Context<Self>| {
+            let active = id == self.settings_section;
+            let mut row = h_flex()
+                .id(ElementId::Name(format!("setnav-{id}").into()))
+                .flex_shrink_0()
+                .h(px(28.))
+                .px_2()
+                .gap_2()
+                .items_center()
+                .rounded(px(6.))
+                .cursor_pointer()
+                .child(svg_icon(icon).size(px(16.)).text_color(if active { theme.foreground } else { theme.muted_foreground }))
+                .child(div().text_size(px(13.)).whitespace_nowrap().child(label));
+            if let Some(b) = badge {
+                row = row.child(
+                    div()
+                        .ml_auto()
+                        .rounded_full()
+                        .px(px(6.))
+                        .text_xs()
+                        .text_color(theme.muted_foreground)
+                        .border_1()
+                        .border_color(theme.border)
+                        .child(b),
+                );
+            }
+            if active {
+                row = row.bg(theme.list_active);
+            }
+            row.on_click(cx.listener(move |this, _ev, w, cx| {
+                this.settings_section = id;
+                this.settings_search.update(cx, |s, cx| s.set_value("", w, cx));
+                if this.settings_data.is_null() {
+                    this.fetch_settings(cx);
+                }
+                cx.notify();
+            }))
+        };
+        let nav_query = self.settings_search.read(cx).value().trim().to_lowercase();
+        if nav_query.is_empty() {
+            for (group, items) in settings_nav {
+                if !group.is_empty() {
+                    nav_list = nav_list.child(
+                        div()
+                            .flex_shrink_0()
+                            .mt(px(5.))
+                            .px_2()
+                            .py_1()
+                            .text_size(px(13.))
+                            .text_color(theme.muted_foreground)
+                            .child(*group),
+                    );
+                }
+                for (id, label, icon, badge) in *items {
+                    nav_list = nav_list.child(nav_row(id, label, icon, *badge, cx));
+                }
+            }
+        } else {
+            let mut any = false;
+            for (_group, items) in settings_nav {
+                for (id, label, icon, badge) in *items {
+                    if !label.to_lowercase().contains(nav_query.as_str()) {
+                        continue;
+                    }
+                    any = true;
+                    nav_list = nav_list.child(nav_row(id, label, icon, *badge, cx));
+                }
+            }
+            if !any {
                 nav_list = nav_list.child(
                     div()
-                        .flex_shrink_0()
-                        .mt(px(5.))
                         .px_2()
                         .py_1()
                         .text_size(px(13.))
                         .text_color(theme.muted_foreground)
-                        .child(*group),
-                );
-            }
-            for (id, label, icon, badge) in *items {
-                let active = *id == self.settings_section;
-                let mut row = h_flex()
-                    .id(ElementId::Name(format!("setnav-{id}").into()))
-                    .flex_shrink_0()
-                    .h(px(28.))
-                    .px_2()
-                    .gap_2()
-                    .items_center()
-                    .rounded(px(6.))
-                    .cursor_pointer()
-                    .child(svg_icon(icon).size(px(16.)).text_color(if active { theme.foreground } else { theme.muted_foreground }))
-                    .child(div().text_size(px(13.)).whitespace_nowrap().child(*label));
-                if let Some(b) = badge {
-                    row = row.child(
-                        div()
-                            .ml_auto()
-                            .rounded_full()
-                            .px(px(6.))
-                            .text_xs()
-                            .text_color(theme.muted_foreground)
-                            .border_1()
-                            .border_color(theme.border)
-                            .child(*b),
-                    );
-                }
-                let sid: &'static str = id;
-                let row = if active { row.bg(theme.list_active) } else { row };
-                nav_list = nav_list.child(
-                    row.on_click(cx.listener(move |this, _ev, _w, cx| {
-                        this.settings_section = sid;
-                        if this.settings_data.is_null() {
-                            this.fetch_settings(cx);
-                        }
-                        cx.notify();
-                    })),
+                        .child("No matching settings"),
                 );
             }
         }
